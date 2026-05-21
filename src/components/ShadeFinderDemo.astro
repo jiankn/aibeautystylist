@@ -1,61 +1,71 @@
-<section class="tool-shell card">
+<!-- 
+  ShadeFinderDemo.astro
+  SEO 微工具核心组件：3 步问答 → 诊断结果 → CTA 引导至 Try-On Studio
+  继承 BaseLayout 的轻奢品牌样式体系
+-->
+<section class="tool-shell card shade-finder-shell">
   <div class="tool-header">
     <div>
       <span class="eyebrow">Free AI Diagnosis</span>
-      <h2>Shade Finder 微工具</h2>
-      <p>先从 3 个问题开始，后面再接自拍上传、真实图像分析和 SKU 库。</p>
+      <h2>Shade Finder</h2>
+      <p>回答 3 个问题，30 秒找到最适合你的唇色。</p>
     </div>
     <div class="trust-badge">🔒 No Face Data Saved · Processed & Deleted Instantly</div>
   </div>
 
   <div class="tool-steps">
+    <!-- 步骤 1：问答输入 -->
     <section class="tool-step" data-step="input">
       <form class="tool-form" data-shade-form>
         <label>
-          <span>你的肤色倾向</span>
-          <select name="undertone">
-            <option value="cool">冷调 / Cool</option>
-            <option value="warm">暖调 / Warm</option>
-            <option value="neutral">中性 / Neutral</option>
-            <option value="olive">橄榄调 / Olive</option>
+          <span>你的肤色冷暖调</span>
+          <select name="undertone" id="sf-undertone">
+            <option value="cool">冷调 Cool — 手腕血管偏蓝紫</option>
+            <option value="warm">暖调 Warm — 手腕血管偏绿</option>
+            <option value="neutral">中性 Neutral — 蓝绿都有</option>
+            <option value="olive">橄榄调 Olive — 偏黄绿底色</option>
           </select>
         </label>
 
         <label>
           <span>你想要的妆感</span>
-          <select name="lookGoal">
-            <option value="soft-glam">Soft Glam</option>
-            <option value="office-glow">Office Glow</option>
-            <option value="date-night">Date Night</option>
+          <select name="lookGoal" id="sf-lookgoal">
+            <option value="soft-glam">Soft Glam — 柔光优雅</option>
+            <option value="office-glow">Office Glow — 通勤清透</option>
+            <option value="date-night">Date Night — 约会氛围</option>
           </select>
         </label>
 
         <label>
           <span>你的上手程度</span>
-          <select name="experience">
-            <option value="beginner">新手</option>
-            <option value="intermediate">轻度进阶</option>
+          <select name="experience" id="sf-experience">
+            <option value="beginner">新手 — 从来没化过</option>
+            <option value="intermediate">进阶 — 偶尔画</option>
           </select>
         </label>
 
-        <button class="btn" type="submit">开始诊断</button>
+        <button class="btn" type="submit">开始诊断我的唇色</button>
+        <p class="sf-hint">30 秒完成 · 100% 免费</p>
       </form>
     </section>
 
+    <!-- 步骤 2：分析加载动画 -->
     <section class="tool-step is-hidden" data-step="loading">
       <div class="loading-state">
         <div class="spinner"></div>
-        <h3>Analyzing your undertone...</h3>
-        <p>Checking contrast, color profile and makeup goal.</p>
+        <h3>Analyzing your skin undertone…</h3>
+        <p>正在匹配你的冷暖调、妆感偏好与色号库。</p>
       </div>
     </section>
 
+    <!-- 步骤 3：诊断结果 + 商品推荐 + CTA -->
     <section class="tool-step is-hidden" data-step="result">
       <div class="result-grid">
+        <!-- 左侧：诊断结论 -->
         <div>
           <span class="result-label">Your diagnosis</span>
           <h3 data-result-title>Cool Olive Undertone</h3>
-          <p data-result-summary>
+          <p class="sf-result-summary" data-result-summary>
             你适合冷调灰粉和柔莓色，暖橘系容易显脏并削弱整体精神感。
           </p>
           <ul class="check-list compact" data-result-reasons>
@@ -65,23 +75,37 @@
           </ul>
         </div>
 
-        <div class="result-card">
-          <span class="pill">Real SKU binding</span>
-          <h4 data-product-name>MAC Lipstick · Mehr</h4>
-          <p data-product-copy>适合作为第一支安全牌，能快速提升气色而不过分成熟。</p>
+        <!-- 右侧：推荐商品卡 -->
+        <div class="result-card sf-product-card">
+          <span class="pill">Your Perfect Match</span>
+          <div class="sf-swatch-row">
+            <div class="sf-swatch" data-swatch-color></div>
+            <div>
+              <h4 data-product-name>MAC Lipstick · Mehr</h4>
+              <p class="sf-product-shade" data-product-shade>Dirty Blue Pink</p>
+            </div>
+          </div>
+          <p class="sf-product-copy" data-product-copy>适合作为第一支安全牌，能快速提升气色而不过分成熟。</p>
           <a class="text-link" href="/tutorial">继续看完整教程 →</a>
         </div>
       </div>
 
+      <!-- CTA：引导至 Try-On Studio -->
+      <div class="sf-cta-block">
+        <h3>想看更精准的结果？</h3>
+        <p>上传自拍，AI 会根据你的真实五官和肤色，推荐 3 套量身定制的妆容方案，还能在线试色。</p>
+        <a class="btn sf-cta-btn" href="/try-on">上传自拍获取 AI 诊断 →</a>
+      </div>
+
       <div class="tool-actions">
         <button class="btn btn-secondary" type="button" data-reset-tool>重新选择</button>
-        <a class="btn" href="/membership">查看完整 AI Makeup Plan</a>
       </div>
     </section>
   </div>
 </section>
 
 <script>
+  // ─── DOM 引用 ───
   const form = document.querySelector('[data-shade-form]');
   const inputStep = document.querySelector('[data-step="input"]');
   const loadingStep = document.querySelector('[data-step="loading"]');
@@ -93,7 +117,10 @@
   const reasonsEl = document.querySelector('[data-result-reasons]');
   const productNameEl = document.querySelector('[data-product-name]');
   const productCopyEl = document.querySelector('[data-product-copy]');
+  const productShadeEl = document.querySelector('[data-product-shade]');
+  const swatchEl = document.querySelector('[data-swatch-color]');
 
+  // ─── 步骤切换 ───
   const setStep = (nextStep) => {
     [inputStep, loadingStep, resultStep].forEach((element) => {
       if (!element) return;
@@ -101,42 +128,164 @@
     });
   };
 
+  // ─── 色号映射表：根据冷暖调推荐不同唇色（静态数据，不消耗 AI 配额）───
+  const shadeMap = {
+    cool: {
+      diagnosis: 'Cool Undertone · 冷调清透型',
+      summary: '你的肤色属于冷调，适合蓝底粉色、玫瑰色和莓果色系。暖橘色会让你看起来暗沉。',
+      reasons: ['适合玫瑰粉和莓果色系', '避免暖橘色和珊瑚色', '唇颊同色能提升整体精致感'],
+      product: { name: 'MAC Lipstick · Mehr', shade: 'Dirty Blue Pink', copy: '经典蓝调玫瑰色，冷调肤色的安全牌。自然提气色，不挑场合。', color: '#A45A52' },
+    },
+    warm: {
+      diagnosis: 'Warm Undertone · 暖调活力型',
+      summary: '你的肤色属于暖调，适合珊瑚色、蜜桃色和暖棕色系。冷调蓝粉色会让你看起来苍白。',
+      reasons: ['适合珊瑚色和蜜桃色系', '避免冷调蓝粉色', '暖棕裸色是日常百搭色'],
+      product: { name: 'Charlotte Tilbury · Pillow Talk', shade: 'Warm Nude Pink', copy: '经典暖调裸粉色，柔雾质地自然提亮，适合通勤和约会。', color: '#C4756E' },
+    },
+    neutral: {
+      diagnosis: 'Neutral Undertone · 中性百搭型',
+      summary: '你的肤色属于中性调，大部分色系都能驾驭。可以大胆尝试玫瑰色到珊瑚色的广阔色域。',
+      reasons: ['冷暖色系都能驾驭', '玫瑰色是最安全的选择', '可以根据场景自由切换风格'],
+      product: { name: 'YSL Rouge Pur Couture · N°1', shade: 'Le Rouge', copy: '经典正红色，中性调的标志性色号。提气场但不突兀。', color: '#B83235' },
+    },
+    olive: {
+      diagnosis: 'Cool Olive Undertone · 橄榄冷调型',
+      summary: '你的肤色有独特的黄绿底色，适合偏灰调的玫瑰色和莓果色。纯暖色会显脏。',
+      reasons: ['适合偏灰的冷调玫瑰色', '避免纯橘色和荧光粉', '莓果色能衬托肤色通透感'],
+      product: { name: 'MAC Lipstick · Mehr', shade: 'Dirty Blue Pink', copy: '冷灰调玫瑰，橄榄肤色的经典推荐。自然高级，第一支必入。', color: '#A45A52' },
+    },
+  };
+
+  // ─── 表单提交 ───
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const formData = new FormData(form);
-    const payload = Object.fromEntries(formData.entries());
+    const undertone = String(formData.get('undertone') || 'cool');
 
     setStep('loading');
 
-    const response = await fetch('/api/shade-diagnosis', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+    // 模拟分析延迟（实际是查表，不消耗 API 配额）
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const result = await response.json();
+    const data = shadeMap[undertone] || shadeMap.cool;
 
-    if (titleEl) titleEl.textContent = result.diagnosis;
-    if (summaryEl) summaryEl.textContent = result.summary;
-    if (productNameEl) productNameEl.textContent = result.product.name;
-    if (productCopyEl) productCopyEl.textContent = result.product.copy;
+    if (titleEl) titleEl.textContent = data.diagnosis;
+    if (summaryEl) summaryEl.textContent = data.summary;
+    if (productNameEl) productNameEl.textContent = data.product.name;
+    if (productCopyEl) productCopyEl.textContent = data.product.copy;
+    if (productShadeEl) productShadeEl.textContent = data.product.shade;
+    if (swatchEl) swatchEl.style.backgroundColor = data.product.color;
 
     if (reasonsEl) {
       reasonsEl.innerHTML = '';
-      result.reasons.forEach((reason) => {
+      data.reasons.forEach((reason) => {
         const item = document.createElement('li');
         item.textContent = reason;
         reasonsEl.appendChild(item);
       });
     }
 
-    window.setTimeout(() => setStep('result'), 700);
+    window.setTimeout(() => setStep('result'), 300);
   });
 
+  // ─── 重置 ───
   resetButton?.addEventListener('click', () => {
     form?.reset();
     setStep('input');
   });
 </script>
+
+<style>
+  /* ─── Shade Finder 专属样式（继承全局轻奢体系） ─── */
+  .shade-finder-shell {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .sf-hint {
+    text-align: center;
+    font-size: 0.78rem;
+    opacity: 0.45;
+    margin-top: 8px;
+  }
+
+  /* 诊断结果摘要 */
+  .sf-result-summary {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    opacity: 0.85;
+    margin-bottom: 12px;
+  }
+
+  /* 推荐商品卡 */
+  .sf-product-card {
+    padding: 20px;
+  }
+
+  .sf-swatch-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 12px 0 8px;
+  }
+
+  .sf-swatch {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #A45A52;
+    border: 3px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+  }
+
+  .sf-product-shade {
+    font-size: 0.78rem;
+    opacity: 0.5;
+    margin-top: 2px;
+  }
+
+  .sf-product-copy {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    opacity: 0.75;
+    margin: 8px 0 12px;
+  }
+
+  /* CTA 区块：引导至 Try-On Studio */
+  .sf-cta-block {
+    margin-top: 28px;
+    padding: 28px 24px;
+    background: linear-gradient(
+      135deg,
+      rgba(178, 138, 138, 0.08),
+      rgba(178, 138, 138, 0.03)
+    );
+    border: 1px solid rgba(178, 138, 138, 0.18);
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .sf-cta-block h3 {
+    font-size: 1.15rem;
+    margin-bottom: 8px;
+  }
+
+  .sf-cta-block p {
+    font-size: 0.88rem;
+    opacity: 0.7;
+    line-height: 1.65;
+    margin-bottom: 16px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sf-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+    padding: 12px 28px;
+  }
+</style>
