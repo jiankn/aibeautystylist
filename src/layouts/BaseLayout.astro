@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'AI Beauty Stylist',
+  description = 'AI 个性化试妆、教程与工具推荐平台。',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="container nav-wrap">
+          <a class="brand" href="/">
+            <span class="brand-mark">AB</span>
+            <span>AI Beauty Stylist</span>
+          </a>
+          <nav class="nav-links">
+            <a href="/try-on">Try On</a>
+            <a href="/tools/shade-finder">Shade Finder</a>
+            <a href="/tutorial">Tutorial</a>
+            <a href="/membership">Membership</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <div class="container footer-grid">
+          <div>
+            <p class="footer-title">AI Beauty Stylist MVP</p>
+            <p class="footer-copy">
+              用 `Astro + Cloudflare` 搭建的 AI 美妆顾问前端底座，面向内容站、微工具与会员产品的混合形态。
+            </p>
+          </div>
+          <div>
+            <p class="footer-title">现在可继续接入</p>
+            <ul class="footer-list">
+              <li>Cloudflare Workers API</li>
+              <li>D1 / R2 / Cache</li>
+              <li>Auth / Stripe</li>
+              <li>外部 AI 图像模型</li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

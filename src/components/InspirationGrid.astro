@@ -1,0 +1,57 @@
+---
+const looks = [
+  {
+    title: '通勤提气色',
+    tone: 'Rose nude',
+    description: '轻薄底妆 + 柔雾豆沙，适合早八和视频会议。',
+  },
+  {
+    title: '温柔约会',
+    tone: 'Muted berry',
+    description: '柔莓色唇颊呼应，气质更亲近但不失精致。',
+  },
+  {
+    title: '轻熟精致',
+    tone: 'Champagne taupe',
+    description: '用干净结构感提升“高级感”，不靠厚重堆砌。',
+  },
+  {
+    title: '上镜拍照',
+    tone: 'Contrast boost',
+    description: '加强轮廓、眉眼与唇部对比，镜头里更立体。',
+  },
+  {
+    title: '新手日常',
+    tone: 'Easy routine',
+    description: '优先低出错率步骤，帮助用户第一次就成功。',
+  },
+  {
+    title: '高级晚宴',
+    tone: 'Deep glow',
+    description: '更强氛围感与层次感，适合重要场景和夜晚。',
+  },
+];
+---
+
+<section class="section section-soft">
+  <div class="container">
+    <div class="section-copy">
+      <span class="eyebrow">Inspiration gallery</span>
+      <h2>不是给你功能列表，而是先给你想试的感觉。</h2>
+      <p>
+        先用灵感图激发期待，再把每个场景入口引导进试妆和教程流程，符合 PRD 里的“先场景，后配置”。
+      </p>
+    </div>
+
+    <div class="grid-cards grid-cards-3">
+      {looks.map((look) => (
+        <article class="card look-card">
+          <span class="pill">{look.tone}</span>
+          <h3>{look.title}</h3>
+          <p>{look.description}</p>
+          <a class="text-link" href="/tools/shade-finder">进入这个场景 →</a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

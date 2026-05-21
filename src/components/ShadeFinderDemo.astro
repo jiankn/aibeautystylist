@@ -1,0 +1,142 @@
+<section class="tool-shell card">
+  <div class="tool-header">
+    <div>
+      <span class="eyebrow">Free AI Diagnosis</span>
+      <h2>Shade Finder 微工具</h2>
+      <p>先从 3 个问题开始，后面再接自拍上传、真实图像分析和 SKU 库。</p>
+    </div>
+    <div class="trust-badge">🔒 No Face Data Saved · Processed & Deleted Instantly</div>
+  </div>
+
+  <div class="tool-steps">
+    <section class="tool-step" data-step="input">
+      <form class="tool-form" data-shade-form>
+        <label>
+          <span>你的肤色倾向</span>
+          <select name="undertone">
+            <option value="cool">冷调 / Cool</option>
+            <option value="warm">暖调 / Warm</option>
+            <option value="neutral">中性 / Neutral</option>
+            <option value="olive">橄榄调 / Olive</option>
+          </select>
+        </label>
+
+        <label>
+          <span>你想要的妆感</span>
+          <select name="lookGoal">
+            <option value="soft-glam">Soft Glam</option>
+            <option value="office-glow">Office Glow</option>
+            <option value="date-night">Date Night</option>
+          </select>
+        </label>
+
+        <label>
+          <span>你的上手程度</span>
+          <select name="experience">
+            <option value="beginner">新手</option>
+            <option value="intermediate">轻度进阶</option>
+          </select>
+        </label>
+
+        <button class="btn" type="submit">开始诊断</button>
+      </form>
+    </section>
+
+    <section class="tool-step is-hidden" data-step="loading">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <h3>Analyzing your undertone...</h3>
+        <p>Checking contrast, color profile and makeup goal.</p>
+      </div>
+    </section>
+
+    <section class="tool-step is-hidden" data-step="result">
+      <div class="result-grid">
+        <div>
+          <span class="result-label">Your diagnosis</span>
+          <h3 data-result-title>Cool Olive Undertone</h3>
+          <p data-result-summary>
+            你适合冷调灰粉和柔莓色，暖橘系容易显脏并削弱整体精神感。
+          </p>
+          <ul class="check-list compact" data-result-reasons>
+            <li>适合冷调灰粉和柔莓色</li>
+            <li>优先强化唇部与眼下气色</li>
+            <li>建议从低对比度日常妆开始</li>
+          </ul>
+        </div>
+
+        <div class="result-card">
+          <span class="pill">Real SKU binding</span>
+          <h4 data-product-name>MAC Lipstick · Mehr</h4>
+          <p data-product-copy>适合作为第一支安全牌，能快速提升气色而不过分成熟。</p>
+          <a class="text-link" href="/tutorial">继续看完整教程 →</a>
+        </div>
+      </div>
+
+      <div class="tool-actions">
+        <button class="btn btn-secondary" type="button" data-reset-tool>重新选择</button>
+        <a class="btn" href="/membership">查看完整 AI Makeup Plan</a>
+      </div>
+    </section>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector('[data-shade-form]');
+  const inputStep = document.querySelector('[data-step="input"]');
+  const loadingStep = document.querySelector('[data-step="loading"]');
+  const resultStep = document.querySelector('[data-step="result"]');
+  const resetButton = document.querySelector('[data-reset-tool]');
+
+  const titleEl = document.querySelector('[data-result-title]');
+  const summaryEl = document.querySelector('[data-result-summary]');
+  const reasonsEl = document.querySelector('[data-result-reasons]');
+  const productNameEl = document.querySelector('[data-product-name]');
+  const productCopyEl = document.querySelector('[data-product-copy]');
+
+  const setStep = (nextStep) => {
+    [inputStep, loadingStep, resultStep].forEach((element) => {
+      if (!element) return;
+      element.classList.toggle('is-hidden', element.dataset.step !== nextStep);
+    });
+  };
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+
+    setStep('loading');
+
+    const response = await fetch('/api/shade-diagnosis', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (titleEl) titleEl.textContent = result.diagnosis;
+    if (summaryEl) summaryEl.textContent = result.summary;
+    if (productNameEl) productNameEl.textContent = result.product.name;
+    if (productCopyEl) productCopyEl.textContent = result.product.copy;
+
+    if (reasonsEl) {
+      reasonsEl.innerHTML = '';
+      result.reasons.forEach((reason) => {
+        const item = document.createElement('li');
+        item.textContent = reason;
+        reasonsEl.appendChild(item);
+      });
+    }
+
+    window.setTimeout(() => setStep('result'), 700);
+  });
+
+  resetButton?.addEventListener('click', () => {
+    form?.reset();
+    setStep('input');
+  });
+</script>

@@ -1,0 +1,36 @@
+---
+const steps = [
+  {
+    title: '上传素颜照',
+    description: '上传前先解释用途、保存策略与删除能力，降低心理门槛。',
+  },
+  {
+    title: '选择适合你的方案',
+    description: '先给诊断，再给方案卡，强调“为什么适合你”。',
+  },
+  {
+    title: '获得教程和工具推荐',
+    description: '把教程和真实 SKU 绑定，避免停留在“AI 画得好看”层面。',
+  },
+];
+---
+
+<section class="section section-soft">
+  <div class="container">
+    <div class="section-copy">
+      <span class="eyebrow">How it works</span>
+      <h2>三步闭环，验证 MVP 的核心价值。</h2>
+      <p>这一部分对应 PRD 里的“上传 → 诊断 → 方案 → 教程/工具推荐”的最小闭环。</p>
+    </div>
+
+    <div class="grid-cards grid-cards-3">
+      {steps.map((step, index) => (
+        <article class="card step-card">
+          <span class="scenario-index">0{index + 1}</span>
+          <h3>{step.title}</h3>
+          <p>{step.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

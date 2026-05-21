@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.astro/
+.wrangler/
+
+# Environment variables & secrets
+.env
+.env.production
+.env.local
+.dev.vars
+
+# OS metadata
+.DS_Store
+Thumbs.db

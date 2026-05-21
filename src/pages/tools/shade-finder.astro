@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ShadeFinderDemo from '../../components/ShadeFinderDemo.astro';
+---
+
+<BaseLayout
+  title="Shade Finder | AI Beauty Stylist"
+  description="通过 3 个问题进入 AI 唇色诊断流程，后续可继续接入自拍分析与真实 SKU 推荐。"
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Micro-tool MVP</span>
+      <h1>Which lipstick shade actually suits you?</h1>
+      <p>
+        这个页面是项目第一批 Product-Led SEO 微工具入口，当前已具备真实页面结构、交互流程和 mock diagnosis API，下一步可继续接入自拍上传与外部模型服务。
+      </p>
+    </div>
+
+    <div class="container">
+      <ShadeFinderDemo />
+    </div>
+  </section>
+</BaseLayout>

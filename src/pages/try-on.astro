@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TryOnStudio from '../components/TryOnStudio.astro';
+---
+
+<BaseLayout
+  title="Try On | AI Beauty Stylist"
+  description="上传自拍、获取 AI 面部与色彩诊断、查看 3 套更适合你的妆容方案。"
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Try On</span>
+      <h1>从“上传照片”到“选方案”，先把 MVP 核心闭环打通。</h1>
+      <p>
+        这个页面承接 PRD 里的核心价值：不是给你滤镜，而是先判断、再推荐、再引导进入教程与工具购买决策。
+      </p>
+    </div>
+
+    <div class="container">
+      <TryOnStudio />
+    </div>
+  </section>
+</BaseLayout>

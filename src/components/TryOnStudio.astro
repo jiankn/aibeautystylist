@@ -1,0 +1,443 @@
+<section class="tool-shell card tryon-shell">
+  <div class="tool-header">
+    <div>
+      <span class="eyebrow">Core MVP flow</span>
+      <h2>Try On Studio</h2>
+      <p>这一页开始接近 PRD 的核心闭环：上传自拍、生成诊断、给出 3 套方案，再进入教程与会员承接。</p>
+    </div>
+    <div class="trust-badge">🔒 仅用于生成你的个性化妆容与教程 · 你可随时删除</div>
+  </div>
+
+  <div class="tool-steps">
+    <section class="tool-step" data-tryon-step="input">
+      <div class="tryon-intro-grid">
+        <form class="tool-form" data-tryon-form>
+          <label class="upload-field">
+            <span>上传素颜照（当前仅做本地预览）</span>
+            <div class="upload-dropzone">
+              <input type="file" name="photo" accept="image/*" data-photo-input />
+              <div>
+                <strong>点击选择自拍</strong>
+                <p>建议正脸、自然光、无遮挡，便于后续接真实分析模型。</p>
+              </div>
+            </div>
+          </label>
+
+          <div class="tool-form-row">
+            <label>
+              <span>场景目标</span>
+              <select name="scenario">
+                <option value="office">通勤 / 面试</option>
+                <option value="date">约会 / 晚间氛围</option>
+                <option value="photo">拍照 / 上镜</option>
+              </select>
+            </label>
+
+            <label>
+              <span>你的熟练度</span>
+              <select name="experience">
+                <option value="beginner">新手</option>
+                <option value="intermediate">轻度进阶</option>
+              </select>
+            </label>
+          </div>
+
+          <button class="btn" type="submit">生成我的试妆方案</button>
+        </form>
+
+        <div class="upload-preview-card">
+          <span class="pill">Preview</span>
+          <div class="upload-preview-frame">
+            <img class="upload-preview-image is-hidden" alt="自拍预览" data-upload-preview />
+            <div class="upload-preview-placeholder" data-upload-placeholder>
+              上传后这里会显示你的照片预览。
+            </div>
+          </div>
+          <p class="upload-preview-note">当前阶段先做前端流程验证，后续会接真实上传、分析与生成服务。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tool-step is-hidden" data-tryon-step="loading">
+      <div class="loading-state tryon-loading">
+        <div class="spinner"></div>
+        <h3>Analyzing your face structure & color profile...</h3>
+        <p>正在生成诊断报告、筛选 3 套更适合你的妆容方案。</p>
+      </div>
+    </section>
+
+    <section class="tool-step is-hidden" data-tryon-step="result">
+      <div class="tryon-result-grid">
+        <div class="compare-panel">
+          <div class="compare-frame-grid">
+            <article class="compare-frame">
+              <span class="pill">Before</span>
+              <div class="compare-image-shell">
+                <img class="compare-image is-hidden" alt="原始照片预览" data-before-image />
+                <div class="compare-placeholder" data-before-placeholder>未上传照片时，这里将展示默认占位图。</div>
+              </div>
+            </article>
+
+            <article class="compare-frame compare-frame-after">
+              <span class="pill">After</span>
+              <div class="after-look-shell">
+                <strong data-selected-look-name>Office Glow</strong>
+                <p data-selected-look-finish>柔雾裸粉</p>
+                <div class="after-look-stats">
+                  <span data-selected-look-focus>气色、眉眼清晰度</span>
+                  <span data-selected-look-time>8 min</span>
+                </div>
+                <p class="after-look-copy" data-selected-look-reason>最快提升精神感，适合通勤和视频会议。</p>
+              </div>
+            </article>
+          </div>
+
+          <article class="share-card-mock">
+            <div class="share-card-header">
+              <span class="pill">Share card mock</span>
+              <span class="share-export-status" data-share-status>可复制分享文案</span>
+            </div>
+            <p class="share-badge" data-share-badge>Work-ready glow</p>
+            <h3 data-share-title>My AI Office Makeup Plan</h3>
+            <p data-share-subtitle>Less effort, more polished every day.</p>
+            <p class="share-card-look" data-share-look>Office Glow · 柔雾裸粉</p>
+            <div class="share-card-tags" data-share-tags></div>
+            <p class="share-card-cta" data-share-cta>复制分享文案给朋友，或者继续进入教程细化动作。</p>
+            <div class="share-card-actions">
+              <button class="btn btn-secondary" type="button" data-share-export>复制分享文案</button>
+              <a class="text-link" data-continue-link href="/tutorial?look=office-glow">继续完善这套教程 →</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="card diagnosis-card">
+          <span class="result-label">AI diagnosis</span>
+          <h3 data-diagnosis-title>Warm-neutral undertone · Soft definition fit</h3>
+          <p data-diagnosis-summary>你的五官更适合低浓度但有结构的妆容路线，重点是提气色和清晰度。</p>
+          <ul class="check-list compact" data-face-notes>
+            <li>底妆适合轻薄提亮</li>
+            <li>眉眼结构比大面积色彩更关键</li>
+            <li>唇颊同色能让整体更干净高级</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="result-section-head">
+        <div>
+          <span class="eyebrow">Look options</span>
+          <h3>从 3 套方案里选你最想先试的一套</h3>
+        </div>
+        <a class="btn btn-secondary" href="/membership">解锁完整高清试妆</a>
+      </div>
+
+      <div class="look-card-grid" data-look-list></div>
+
+      <div class="result-grid result-grid-bottom">
+        <article class="card selected-look-detail">
+          <span class="pill">Selected tutorial preview</span>
+          <h4 data-selected-look-heading>Office Glow</h4>
+          <p class="selected-look-copy" data-selected-look-headline>8 分钟把精神感提起来的通勤妆路线。</p>
+          <div class="step-preview-list" data-selected-steps></div>
+          <ul class="check-list compact" data-selected-selfchecks></ul>
+          <a class="text-link" data-tutorial-link href="/tutorial?look=office-glow">继续看完整教程 →</a>
+        </article>
+
+        <article class="card selected-kit-detail">
+          <span class="pill">Beauty kit</span>
+          <div class="kit-columns">
+            <div>
+              <strong>必备</strong>
+              <div class="product-stack" data-kit-must></div>
+            </div>
+            <div>
+              <strong>可替代</strong>
+              <div class="product-stack" data-kit-optional></div>
+            </div>
+            <div>
+              <strong>预算升级</strong>
+              <div class="product-stack" data-kit-upgrade></div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="tool-actions top-gap">
+        <button class="btn btn-secondary" type="button" data-tryon-reset>重新生成</button>
+        <a class="btn" data-final-tutorial-link href="/tutorial?look=office-glow">进入教程页</a>
+      </div>
+    </section>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector('[data-tryon-form]');
+  const photoInput = document.querySelector('[data-photo-input]');
+  const uploadPreview = document.querySelector('[data-upload-preview]');
+  const uploadPlaceholder = document.querySelector('[data-upload-placeholder]');
+  const beforeImage = document.querySelector('[data-before-image]');
+  const beforePlaceholder = document.querySelector('[data-before-placeholder]');
+  const resetButton = document.querySelector('[data-tryon-reset]');
+  const lookList = document.querySelector('[data-look-list]');
+
+  const diagnosisTitle = document.querySelector('[data-diagnosis-title]');
+  const diagnosisSummary = document.querySelector('[data-diagnosis-summary]');
+  const faceNotes = document.querySelector('[data-face-notes]');
+  const selectedLookName = document.querySelector('[data-selected-look-name]');
+  const selectedLookFinish = document.querySelector('[data-selected-look-finish]');
+  const selectedLookFocus = document.querySelector('[data-selected-look-focus]');
+  const selectedLookTime = document.querySelector('[data-selected-look-time]');
+  const selectedLookReason = document.querySelector('[data-selected-look-reason]');
+  const selectedLookHeading = document.querySelector('[data-selected-look-heading]');
+  const selectedLookHeadline = document.querySelector('[data-selected-look-headline]');
+  const selectedSteps = document.querySelector('[data-selected-steps]');
+  const selectedSelfChecks = document.querySelector('[data-selected-selfchecks]');
+  const kitMust = document.querySelector('[data-kit-must]');
+  const kitOptional = document.querySelector('[data-kit-optional]');
+  const kitUpgrade = document.querySelector('[data-kit-upgrade]');
+  const tutorialLink = document.querySelector('[data-tutorial-link]');
+  const finalTutorialLink = document.querySelector('[data-final-tutorial-link]');
+  const continueLink = document.querySelector('[data-continue-link]');
+  const shareTitle = document.querySelector('[data-share-title]');
+  const shareSubtitle = document.querySelector('[data-share-subtitle]');
+  const shareBadge = document.querySelector('[data-share-badge]');
+  const shareLook = document.querySelector('[data-share-look]');
+  const shareCta = document.querySelector('[data-share-cta]');
+  const shareTags = document.querySelector('[data-share-tags]');
+  const shareStatus = document.querySelector('[data-share-status]');
+  const shareExportButton = document.querySelector('[data-share-export]');
+
+  const steps = document.querySelectorAll('[data-tryon-step]');
+  let currentLooks = [];
+  let currentShareCard = null;
+  let selectedLookId = '';
+
+  const setStep = (nextStep) => {
+    steps.forEach((element) => {
+      element.classList.toggle('is-hidden', element.dataset.tryonStep !== nextStep);
+    });
+  };
+
+  const fillList = (container, items) => {
+    if (!container) return;
+    container.innerHTML = '';
+    items.forEach((item) => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      container.appendChild(li);
+    });
+  };
+
+  const renderTags = (container, items) => {
+    if (!container) return;
+    container.innerHTML = '';
+    items.forEach((item) => {
+      const span = document.createElement('span');
+      span.className = 'share-tag';
+      span.textContent = item;
+      container.appendChild(span);
+    });
+  };
+
+  const renderStepPreview = (container, items) => {
+    if (!container) return;
+    container.innerHTML = '';
+    items.slice(0, 3).forEach((item, index) => {
+      const article = document.createElement('article');
+      article.className = 'mini-step-card';
+      article.innerHTML = `
+        <span class="mini-step-index">0${index + 1}</span>
+        <strong>${item.title}</strong>
+        <p>${item.detail}</p>
+        <small>自检：${item.selfCheck}</small>
+      `;
+      container.appendChild(article);
+    });
+  };
+
+  const renderProductGroup = (container, items) => {
+    if (!container) return;
+    container.innerHTML = '';
+    items.forEach((item) => {
+      const article = document.createElement('article');
+      article.className = 'product-card';
+      article.innerHTML = `
+        <div class="product-card-head">
+          <p class="product-meta">${item.category} · ${item.shade}</p>
+          <span class="product-price">${item.price}</span>
+        </div>
+        <h5>${item.name}</h5>
+        <p class="product-reason">${item.why}</p>
+      `;
+      container.appendChild(article);
+    });
+  };
+
+  const getSelectedLook = () => currentLooks.find((item) => item.id === selectedLookId);
+
+  const renderLookCards = () => {
+    if (!lookList) return;
+    lookList.innerHTML = '';
+
+    currentLooks.forEach((look) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `look-option-card${look.id === selectedLookId ? ' is-active' : ''}`;
+      button.innerHTML = `
+        <span class="pill">${look.scenario}</span>
+        <h4>${look.name}</h4>
+        <p>${look.reason}</p>
+        <div class="look-option-meta">
+          <span>${look.difficulty}</span>
+          <span>${look.minutes}</span>
+          <span>${look.focus}</span>
+        </div>
+      `;
+      button.addEventListener('click', () => selectLook(look.id));
+      lookList.appendChild(button);
+    });
+  };
+
+  const selectLook = (lookId) => {
+    const look = currentLooks.find((item) => item.id === lookId);
+    if (!look) return;
+
+    selectedLookId = lookId;
+    if (selectedLookName) selectedLookName.textContent = look.name;
+    if (selectedLookFinish) selectedLookFinish.textContent = look.finish;
+    if (selectedLookFocus) selectedLookFocus.textContent = look.focus;
+    if (selectedLookTime) selectedLookTime.textContent = look.minutes;
+    if (selectedLookReason) selectedLookReason.textContent = look.reason;
+    if (selectedLookHeading) selectedLookHeading.textContent = look.name;
+    if (selectedLookHeadline) selectedLookHeadline.textContent = look.tutorialHeadline;
+
+    const tutorialHref = `/tutorial?look=${look.id}`;
+    if (tutorialLink) tutorialLink.setAttribute('href', tutorialHref);
+    if (finalTutorialLink) finalTutorialLink.setAttribute('href', tutorialHref);
+    if (continueLink) continueLink.setAttribute('href', tutorialHref);
+
+    renderStepPreview(selectedSteps, look.tutorialSteps || []);
+    fillList(selectedSelfChecks, look.selfChecks || []);
+    renderProductGroup(kitMust, look.kit?.mustHave || []);
+    renderProductGroup(kitOptional, look.kit?.optional || []);
+    renderProductGroup(kitUpgrade, look.kit?.upgrade || []);
+
+    if (shareLook) shareLook.textContent = `${look.name} · ${look.finish}`;
+    renderLookCards();
+  };
+
+  const updatePreviewImage = (file) => {
+    if (!file) {
+      uploadPreview?.classList.add('is-hidden');
+      beforeImage?.classList.add('is-hidden');
+      uploadPlaceholder?.classList.remove('is-hidden');
+      beforePlaceholder?.classList.remove('is-hidden');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== 'string') return;
+      if (uploadPreview) {
+        uploadPreview.setAttribute('src', reader.result);
+        uploadPreview.classList.remove('is-hidden');
+      }
+      if (beforeImage) {
+        beforeImage.setAttribute('src', reader.result);
+        beforeImage.classList.remove('is-hidden');
+      }
+      uploadPlaceholder?.classList.add('is-hidden');
+      beforePlaceholder?.classList.add('is-hidden');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const setShareStatus = (message) => {
+    if (shareStatus) shareStatus.textContent = message;
+  };
+
+  photoInput?.addEventListener('change', (event) => {
+    const input = event.currentTarget;
+    const file = input instanceof HTMLInputElement ? input.files?.[0] : undefined;
+    updatePreviewImage(file);
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(form);
+    const photo = photoInput instanceof HTMLInputElement ? photoInput.files?.[0] : undefined;
+
+    const payload = {
+      scenario: String(formData.get('scenario') || 'office'),
+      experience: String(formData.get('experience') || 'beginner'),
+      hasPhoto: Boolean(photo),
+    };
+
+    setStep('loading');
+
+    const response = await fetch('/api/try-on-plan', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+    currentLooks = Array.isArray(result.looks) ? result.looks : [];
+    currentShareCard = result.shareCard || null;
+    selectedLookId = currentLooks[0]?.id || '';
+
+    if (diagnosisTitle) diagnosisTitle.textContent = result.diagnosis.title;
+    if (diagnosisSummary) diagnosisSummary.textContent = result.diagnosis.summary;
+    if (shareTitle) shareTitle.textContent = result.shareCard.title;
+    if (shareSubtitle) shareSubtitle.textContent = result.shareCard.subtitle;
+    if (shareBadge) shareBadge.textContent = result.shareCard.badge;
+    if (shareCta) shareCta.textContent = result.shareCard.cta;
+    renderTags(shareTags, result.shareCard.hashtags || []);
+    fillList(faceNotes, result.diagnosis.faceNotes || []);
+
+    if (selectedLookId) {
+      selectLook(selectedLookId);
+    }
+
+    setShareStatus('可复制分享文案');
+    window.setTimeout(() => setStep('result'), 800);
+  });
+
+  shareExportButton?.addEventListener('click', async () => {
+    const look = getSelectedLook();
+    if (!look || !currentShareCard) return;
+
+    const shareText = [
+      currentShareCard.title,
+      currentShareCard.subtitle,
+      `${look.name} · ${look.finish}`,
+      `重点：${look.focus} · ${look.minutes}`,
+      `适合：${look.reason}`,
+      (currentShareCard.hashtags || []).join(' '),
+    ].join('\n');
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareText);
+        setShareStatus('已复制分享文案');
+      } else {
+        setShareStatus('当前浏览器不支持自动复制');
+      }
+    } catch (error) {
+      setShareStatus('复制失败，请手动复制');
+    }
+
+    window.setTimeout(() => setShareStatus('可复制分享文案'), 1800);
+  });
+
+  resetButton?.addEventListener('click', () => {
+    form?.reset();
+    currentLooks = [];
+    currentShareCard = null;
+    selectedLookId = '';
+    updatePreviewImage(undefined);
+    setShareStatus('可复制分享文案');
+    setStep('input');
+  });
+</script>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Perfect Lipstick Shade | AI Undertone Test</title>
+    <meta name="description" content="Take our free 3-question AI test to find out what lipstick shade suits you best based on your skin undertone. Stop buying the wrong shade!">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf9f8; /* Warm creamy white */
+            color: #333;
+        }
+        
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .btn-primary {
+            background-color: #b28a8a; /* Soft rose nude */
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #9c7373;
+        }
+        
+        .card {
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Privacy Trust Badge -->
+    <div class="fixed top-0 w-full bg-white/80 backdrop-blur-sm text-center text-xs py-2 text-gray-500 z-50">
+        🔒 No Face Data Saved &nbsp;&bull;&nbsp; Processed & Deleted Instantly
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-xl w-full bg-white rounded-2xl p-8 card mt-12 text-center" id="app-container">
+        
+        <!-- Step 1: Hook & Value Prop -->
+        <div id="step-1">
+            <span class="inline-block px-3 py-1 bg-rose-50 text-rose-800 text-xs font-medium rounded-full mb-4">Free AI Diagnosis</span>
+            <h1 class="text-3xl md:text-4xl font-semibold mb-4 text-gray-900 leading-tight">Which Lipstick Shade <br><i class="text-rose-400">Actually</i> Suits You?</h1>
+            <p class="text-gray-500 mb-8 font-light">Stop wasting money on shades that wash you out. Upload a quick selfie or answer 3 questions to discover your perfect match based on your unique undertone.</p>
+            
+            <div class="space-y-4">
+                <button onclick="nextStep()" class="w-full btn-primary py-4 rounded-xl font-medium text-lg flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    Upload Photo for AI Match
+                </button>
+                <button onclick="nextStep()" class="w-full bg-gray-50 text-gray-700 py-4 rounded-xl font-medium border border-gray-100 hover:bg-gray-100 transition">
+                    Take the 3-Question Quiz Instead
+                </button>
+            </div>
+            
+            <p class="text-xs text-gray-400 mt-6 mt-4">Takes 30 seconds. 100% Free.</p>
+        </div>
+
+        <!-- Step 2: The Quiz/Loading (Simulated) -->
+        <div id="step-2" class="hidden py-12">
+            <div class="animate-pulse flex flex-col items-center">
+                <div class="w-24 h-24 rounded-full border-4 border-rose-200 border-t-rose-500 animate-spin mb-6"></div>
+                <h2 class="text-xl serif italic text-gray-800">Analyzing your skin undertone...</h2>
+                <p class="text-sm text-gray-500 mt-2">Checking contrast and color profile</p>
+            </div>
+        </div>
+
+        <!-- Step 3: Result & Hook to Core App -->
+        <div id="step-3" class="hidden text-left">
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Your Diagnosis</span>
+            <h2 class="text-2xl serif text-gray-900 mb-2">Cool Olive Undertone</h2>
+            <p class="text-gray-600 mb-6 text-sm">You have a beautiful, complex skin tone. Warm oranges will clash and make you look tired, but muted cool mauves and berry tones will make your skin glow!</p>
+            
+            <h3 class="font-medium text-gray-900 mb-3 border-b pb-2">Your Perfect Match:</h3>
+            
+            <!-- Real SKU Binding (Affiliate) -->
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full shadow-sm" style="background-color: #A45A52;"></div>
+                    <div>
+                        <p class="font-semibold text-sm">MAC Lipstick</p>
+                        <p class="text-xs text-gray-500">Shade: Mehr (Dirty Blue Pink)</p>
+                    </div>
+                </div>
+                <a href="#" class="text-xs font-medium text-blue-600 underline">Buy on Sephora</a>
+            </div>
+
+            <!-- The Hook -->
+            <div class="bg-rose-50 p-6 rounded-2xl text-center border border-rose-100 mt-8">
+                <h3 class="serif text-lg mb-2 text-rose-900">Want to see this shade on your face?</h3>
+                <p class="text-sm text-rose-700/80 mb-4">Plus, get a full step-by-step tutorial on how to do a "Soft Glam" look tailored to your bone structure.</p>
+                <button class="w-full btn-primary py-3 rounded-xl font-medium text-sm shadow-lg shadow-rose-200">
+                    See My Full AI Makeup Plan
+                </button>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        function nextStep() {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+            
+            setTimeout(() => {
+                document.getElementById('step-2').classList.add('hidden');
+                document.getElementById('step-3').classList.remove('hidden');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

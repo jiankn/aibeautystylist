@@ -1,0 +1,6 @@
+APP_ENV=development
+AI_PROVIDER=mock
+UPLOAD_PROVIDER=mock
+STRIPE_PRICE_PRO_MONTHLY=price_pro_placeholder
+STRIPE_PRICE_PREMIUM_MONTHLY=price_premium_placeholder
+R2_PUBLIC_BASE_URL=https://example.r2.dev/public

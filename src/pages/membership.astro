@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const plans = [
+  {
+    name: 'Free',
+    price: '¥0',
+    value: '先知道什么适合你',
+    description: '适合第一次尝试、还不确定值不值得继续投入的人。',
+    features: ['1-2 套基础方案预览', '简版适合原因', '前 3 步教程预览'],
+    trigger: '当你只是想先确认方向时，不要急着付费。',
+  },
+  {
+    name: 'Pro',
+    price: '¥29 / 月',
+    value: '把适合你的妆真正学会',
+    description: '卖执行与落地：完整教程、高清试妆、更多方案与工具绑定。',
+    features: ['完整教程 + 错误提醒 + 自检点', '更多场景方案与高清结果图', 'SKU 级工具包与预算分层推荐'],
+    trigger: '当你已经知道“这套适合我”，下一步就是学会并买对。',
+    highlight: true,
+  },
+  {
+    name: 'Premium',
+    price: '¥79 / 月',
+    value: '以后由 AI 持续替你判断',
+    description: '卖长期省心：历史记录、风格成长档案、持续更新的场景建议。',
+    features: ['历史妆容与收藏回看', '长期风格档案与问题区域跟踪', '季节 / 场景 / 预算更新建议'],
+    trigger: '当你不想每次都重新判断，用订阅换省心。',
+  },
+];
+
+const moments = [
+  {
+    title: '你已经找到适合的方向',
+    copy: '免费版会让你“看到希望”，但真的要照着做出来，就该进入 Pro。',
+  },
+  {
+    title: '你不想再重复踩雷买错',
+    copy: '会员应该卖“买得更准”，而不是再给一堆看不懂的功能点。',
+  },
+  {
+    title: '你希望以后都有人替你判断',
+    copy: '订阅版的核心价值不是更多按钮，而是更少纠结、更少浪费时间。',
+  },
+];
+
+const faqs = [
+  {
+    question: '我现在就能付款吗？',
+    answer: '还不能。当前阶段已经把权益结构和升级时机落成页面，下一步会接 `Stripe` 与会员权限控制。',
+  },
+  {
+    question: '隐私和照片删除会怎么做？',
+    answer: '当前是本地预览 + mock 数据。接入真实上传后，会通过 `R2` 存储策略和可删除记录来实现隐私控制。',
+  },
+  {
+    question: '会员和订阅差别到底在哪？',
+    answer: '会员卖“把这一次学会”，订阅卖“以后持续替你判断”。前者偏执行，后者偏长期陪伴。',
+  },
+  {
+    question: '适合完全不会化妆的新手吗？',
+    answer: '适合。产品设计目标就是把“适合我”拆成能照着做、能买得对、能持续变好的路径。',
+  },
+];
+---
+
+<BaseLayout title="Membership | AI Beauty Stylist" description="会员页开始对齐 PRD：卖结果、卖省心、卖长期判断，而不是冷冰冰价格表。">
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Membership</span>
+      <h1>先卖结果，再卖省心，最后卖“以后都不用自己判断”。</h1>
+      <p>
+        这页现在开始更贴近 PRD：免费版卖惊喜与希望，`Pro` 卖执行与落地，`Premium` 卖长期省心与持续判断。
+      </p>
+    </div>
+
+    <div class="container result-grid result-grid-bottom">
+      <article class="card membership-hero-card membership-hero-card-accent">
+        <span class="pill">Beauty Pass</span>
+        <h3>用户付费，不是为了看 AI 画得多美。</h3>
+        <p>
+          真正愿意付费的原因是：**更确定、更省钱、更省时间地把自己变美**。所以会员页应该卖「结果」、卖「执行」，而不是卖功能堆砌。
+        </p>
+        <div class="membership-mini-metrics">
+          <div class="metric">
+            <strong>Free</strong>
+            <span>先看适合什么</span>
+          </div>
+          <div class="metric">
+            <strong>Pro</strong>
+            <span>把适合你的妆学会</span>
+          </div>
+          <div class="metric">
+            <strong>Premium</strong>
+            <span>以后交给 AI 持续判断</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card membership-hero-card">
+        <span class="pill">Upgrade trigger</span>
+        <h3>什么时候该升级？</h3>
+        <ul class="check-list compact">
+          <li>当你已经知道“它懂我”，下一步就是把这套妆真正做出来</li>
+          <li>当你不想再乱买口红、眼影、底妆，就该解锁工具与预算推荐</li>
+          <li>当你希望以后不同场景都有人替你判断，就该进入长期订阅</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="container grid-cards grid-cards-3 top-gap">
+      {plans.map((plan) => (
+        <article class={`card pricing-card${plan.highlight ? ' pricing-card-accent' : ''}`}>
+          <span class="pill">{plan.name}</span>
+          <h3>{plan.value}</h3>
+          <p class="price-line">
+            <strong>{plan.price}</strong>
+          </p>
+          <p>{plan.description}</p>
+          <ul class="check-list compact">
+            {plan.features.map((feature) => <li>{feature}</li>)}
+          </ul>
+          <p class="pricing-trigger">{plan.trigger}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <span class="eyebrow">Why people upgrade</span>
+      <h2>升级不是为了更多功能，而是为了更少纠结。</h2>
+    </div>
+
+    <div class="container grid-cards grid-cards-3">
+      {moments.map((moment) => (
+        <article class="card coach-card">
+          <h3>{moment.title}</h3>
+          <p>{moment.copy}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <span class="eyebrow">FAQ</span>
+      <h2>把用户真正在意的顾虑讲清楚</h2>
+    </div>
+
+    <div class="container grid-cards grid-cards-2">
+      {faqs.map((item) => (
+        <article class="card faq-card">
+          <h3>{item.question}</h3>
+          <p>{item.answer}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn btn-secondary" href="/try-on">继续试妆</a>
+      <a class="btn" href="/tutorial?look=office-glow">先看完整教程承接</a>
+    </div>
+  </section>
+</BaseLayout>

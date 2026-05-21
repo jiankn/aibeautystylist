@@ -1,0 +1,29 @@
+---
+const scenarios = [
+  '上班 10 分钟提气色',
+  '面试显精神',
+  '约会更温柔',
+  '拍照更上镜',
+  '新手第一次化妆',
+];
+---
+
+<section class="section" id="scenarios">
+  <div class="container">
+    <div class="section-copy">
+      <span class="eyebrow">Scenario entry</span>
+      <h2>按任务做导航，不按功能堆砌页面。</h2>
+      <p>当前首页结构直接对应 PRD 的任务型导航：`Discover / Try On / Tutorial / Beauty Kit / Membership`。</p>
+    </div>
+
+    <div class="grid-cards grid-cards-3">
+      {scenarios.map((scenario, index) => (
+        <article class="card scenario-card">
+          <span class="scenario-index">0{index + 1}</span>
+          <h3>{scenario}</h3>
+          <p>进入个性化方案，优先做低门槛、强结果感的妆容推荐。</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

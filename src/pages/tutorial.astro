@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getTryOnLookById } from '../lib/services/tryOnService';
+
+const lookId = Astro.url.searchParams.get('look');
+const selectedLook = (await getTryOnLookById(lookId)) ?? (await getTryOnLookById('office-glow'))!;
+
+const kitGroups = [
+  { title: '必备', items: selectedLook.kit.mustHave },
+  { title: '可替代', items: selectedLook.kit.optional },
+  { title: '预算升级', items: selectedLook.kit.upgrade },
+];
+---
+
+<BaseLayout title="Tutorial | AI Beauty Stylist" description="个性化教程页，包含步骤拆解、错误提醒、自检点与推荐工具包。">
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Guided tutorial</span>
+      <h1>{selectedLook.name}：像陪练一样带你画，而不是给你一篇长文章。</h1>
+      <p>
+        这页现在已经不只是占位说明了。你从 `Try On` 选中的方案，会带来对应的步骤拆解、常见失误提醒、自检点和工具包推荐。
+      </p>
+    </div>
+
+    <div class="container tutorial-overview-grid">
+      <article class="card selected-look-detail">
+        <span class="pill">Look summary</span>
+        <h3>{selectedLook.name}</h3>
+        <p>{selectedLook.reason}</p>
+        <p class="tutorial-summary-copy">{selectedLook.tutorialHeadline}</p>
+        <ul class="check-list compact">
+          <li>场景：{selectedLook.scenario}</li>
+          <li>难度：{selectedLook.difficulty}</li>
+          <li>耗时：{selectedLook.minutes}</li>
+          <li>重点：{selectedLook.focus}</li>
+          <li>妆效：{selectedLook.finish}</li>
+        </ul>
+      </article>
+
+      <div class="tutorial-side-grid">
+        <article class="card coach-card">
+          <span class="pill">Avoid these</span>
+          <h3>最容易翻车的 3 个点</h3>
+          <ul class="check-list compact">
+            {selectedLook.commonMistakes.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+
+        <article class="card coach-card">
+          <span class="pill">Self check</span>
+          <h3>画完后这样快速检查</h3>
+          <ul class="check-list compact">
+            {selectedLook.selfChecks.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
+    </div>
+
+    <div class="container tutorial-step-flow top-gap">
+      {selectedLook.tutorialSteps.map((step, index) => (
+        <article class="card tutorial-step-card">
+          <div class="tutorial-step-top">
+            <span class="scenario-index">0{index + 1}</span>
+            <div>
+              <h3>{step.title}</h3>
+              <p>{step.detail}</p>
+            </div>
+          </div>
+          <div class="tutorial-step-callouts">
+            <div class="step-callout">
+              <strong>别这样做</strong>
+              <p>{step.avoid}</p>
+            </div>
+            <div class="step-callout step-callout-accent">
+              <strong>过关标准</strong>
+              <p>{step.selfCheck}</p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="container top-gap">
+      <article class="card selected-kit-detail">
+        <span class="pill">Beauty kit</span>
+        <h3>这套妆真正需要的工具，不再只是名字列表</h3>
+        <div class="kit-columns top-gap-sm">
+          {kitGroups.map((group) => (
+            <section>
+              <strong>{group.title}</strong>
+              <div class="product-stack top-gap-sm">
+                {group.items.map((item) => (
+                  <article class="product-card">
+                    <div class="product-card-head">
+                      <p class="product-meta">{item.category} · {item.shade}</p>
+                      <span class="product-price">{item.price}</span>
+                    </div>
+                    <h5>{item.name}</h5>
+                    <p class="product-reason">{item.why}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </article>
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn btn-secondary" href="/try-on">返回重新选方案</a>
+      <a class="btn" href="/membership">解锁会员版完整试妆</a>
+    </div>
+  </section>
+</BaseLayout>
