@@ -13,7 +13,7 @@
       <div class="tryon-intro-grid">
         <form class="tool-form" data-tryon-form>
           <label class="upload-field">
-            <span>上传素颜照（当前仅做本地预览）</span>
+            <span>上传素颜照</span>
             <div class="upload-dropzone">
               <input type="file" name="photo" accept="image/*" data-photo-input />
               <div>
@@ -53,7 +53,7 @@
               上传后这里会显示你的照片预览。
             </div>
           </div>
-          <p class="upload-preview-note">当前阶段先做前端流程验证，后续会接真实上传、分析与生成服务。</p>
+          <p class="upload-preview-note">上传自拍后，AI 将为你生成个性化诊断和唇色推荐。</p>
         </div>
       </div>
     </section>
@@ -80,6 +80,10 @@
 
             <article class="compare-frame compare-frame-after">
               <span class="pill">After</span>
+              <div class="compare-image-shell">
+                <canvas class="compare-canvas is-hidden" data-after-canvas></canvas>
+                <div class="lip-color-swatch is-hidden" data-lip-swatch></div>
+              </div>
               <div class="after-look-shell">
                 <strong data-selected-look-name>Office Glow</strong>
                 <p data-selected-look-finish>柔雾裸粉</p>
@@ -110,6 +114,13 @@
           </article>
         </div>
 
+        <div class="fallback-banner is-hidden" data-fallback-banner>
+          <span>⚡ 当前使用演示数据</span>
+          <small data-fallback-reason></small>
+        </div>
+        <div class="remaining-badge is-hidden" data-remaining-badge>
+          今日剩余 AI 诊断次数：<strong data-remaining-count>3</strong>/3
+        </div>
         <div class="card diagnosis-card">
           <span class="result-label">AI diagnosis</span>
           <h3 data-diagnosis-title>Warm-neutral undertone · Soft definition fit</h3>
@@ -170,6 +181,7 @@
 </section>
 
 <script>
+  // ─── DOM 引用 ───
   const form = document.querySelector('[data-tryon-form]');
   const photoInput = document.querySelector('[data-photo-input]');
   const uploadPreview = document.querySelector('[data-upload-preview]');
@@ -178,6 +190,12 @@
   const beforePlaceholder = document.querySelector('[data-before-placeholder]');
   const resetButton = document.querySelector('[data-tryon-reset]');
   const lookList = document.querySelector('[data-look-list]');
+  const afterCanvas = document.querySelector('[data-after-canvas]');
+  const lipSwatch = document.querySelector('[data-lip-swatch]');
+  const fallbackBanner = document.querySelector('[data-fallback-banner]');
+  const fallbackReason = document.querySelector('[data-fallback-reason]');
+  const remainingBadge = document.querySelector('[data-remaining-badge]');
+  const remainingCount = document.querySelector('[data-remaining-count]');
 
   const diagnosisTitle = document.querySelector('[data-diagnosis-title]');
   const diagnosisSummary = document.querySelector('[data-diagnosis-summary]');
@@ -209,7 +227,81 @@
   const steps = document.querySelectorAll('[data-tryon-step]');
   let currentLooks = [];
   let currentShareCard = null;
+  let currentLipColors = null; // AI 返回的唇色映射表
+  let currentLandmarks = null; // MediaPipe 关键点缓存
+  let faceLandmarkerInstance = null; // MediaPipe 实例（懒加载）
   let selectedLookId = '';
+
+  // ─── 图片压缩工具：将自拍压缩到 ≤768px，JPEG quality 0.7 ───
+  const compressPhoto = (file) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = () => {
+        img.onload = () => {
+          const MAX_DIM = 768;
+          let { width, height } = img;
+          if (width > MAX_DIM || height > MAX_DIM) {
+            const ratio = Math.min(MAX_DIM / width, MAX_DIM / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // ─── MediaPipe 懒加载初始化 ───
+  const initMediaPipe = async () => {
+    if (faceLandmarkerInstance) return faceLandmarkerInstance;
+    try {
+      const { initFaceLandmarker } = await import('../lib/faceColorEngine');
+      faceLandmarkerInstance = await initFaceLandmarker();
+      return faceLandmarkerInstance;
+    } catch (error) {
+      console.warn('[TryOnStudio] MediaPipe 加载失败，将使用色号预览降级:', error);
+      return null;
+    }
+  };
+
+  // ─── Canvas 唇部着色 ───
+  const applyLipColorToCanvas = async (lipColorData) => {
+    if (!afterCanvas || !beforeImage || !lipColorData) return;
+    const imgEl = beforeImage;
+    if (!imgEl.naturalWidth) return;
+
+    // 如果有缓存的关键点，直接用
+    if (currentLandmarks) {
+      try {
+        const { applyLipColor } = await import('../lib/faceColorEngine');
+        applyLipColor(afterCanvas, imgEl, currentLandmarks, lipColorData);
+        afterCanvas.classList.remove('is-hidden');
+        lipSwatch?.classList.add('is-hidden');
+        return;
+      } catch (error) {
+        console.warn('[TryOnStudio] Canvas 着色失败:', error);
+      }
+    }
+
+    // 降级：显示色号预览色块
+    try {
+      const { renderColorSwatch } = await import('../lib/faceColorEngine');
+      if (lipSwatch) {
+        renderColorSwatch(lipSwatch, lipColorData);
+        lipSwatch.classList.remove('is-hidden');
+      }
+    } catch (error) {
+      console.warn('[TryOnStudio] 色号预览降级也失败:', error);
+    }
+  };
 
   const setStep = (nextStep) => {
     steps.forEach((element) => {
@@ -323,6 +415,11 @@
 
     if (shareLook) shareLook.textContent = `${look.name} · ${look.finish}`;
     renderLookCards();
+
+    // 切换方案时重新着色（无需再调 API）
+    if (currentLipColors && currentLipColors[lookId]) {
+      applyLipColorToCanvas(currentLipColors[lookId]);
+    }
   };
 
   const updatePreviewImage = (file) => {
@@ -331,6 +428,8 @@
       beforeImage?.classList.add('is-hidden');
       uploadPlaceholder?.classList.remove('is-hidden');
       beforePlaceholder?.classList.remove('is-hidden');
+      afterCanvas?.classList.add('is-hidden');
+      lipSwatch?.classList.add('is-hidden');
       return;
     }
 
@@ -366,26 +465,68 @@
     const formData = new FormData(form);
     const photo = photoInput instanceof HTMLInputElement ? photoInput.files?.[0] : undefined;
 
+    // 压缩照片到 ≤768px Base64
+    let photoBase64 = undefined;
+    if (photo) {
+      photoBase64 = await compressPhoto(photo);
+    }
+
     const payload = {
       scenario: String(formData.get('scenario') || 'office'),
       experience: String(formData.get('experience') || 'beginner'),
       hasPhoto: Boolean(photo),
+      photoBase64,
     };
 
     setStep('loading');
 
-    const response = await fetch('/api/try-on-plan', {
+    // 并行执行：1) 调用 AI API  2) 初始化 MediaPipe（如有照片）
+    const apiPromise = fetch('/api/try-on-plan', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+    }).then(r => {
+      if (r.status === 429) {
+        return r.json().then(data => ({ ...data, _rateLimited: true }));
+      }
+      return r.json();
     });
 
-    const result = await response.json();
+    // 有照片时并行启动 MediaPipe 关键点检测
+    const mediaPipePromise = photo ? (async () => {
+      const mp = await initMediaPipe();
+      if (mp && beforeImage && beforeImage.naturalWidth) {
+        currentLandmarks = mp.detect(beforeImage);
+      }
+    })() : Promise.resolve();
+
+    const [result] = await Promise.all([apiPromise, mediaPipePromise]);
+
+    // 处理限流
+    if (result._rateLimited) {
+      setStep('input');
+      alert(result.message || '今日免费诊断次数已用完（3次/天）');
+      return;
+    }
+
     currentLooks = Array.isArray(result.looks) ? result.looks : [];
     currentShareCard = result.shareCard || null;
+    currentLipColors = result._lipColors || null;
     selectedLookId = currentLooks[0]?.id || '';
+
+    // 更新降级横幅
+    if (result.meta?.fallback) {
+      fallbackBanner?.classList.remove('is-hidden');
+      if (fallbackReason) fallbackReason.textContent = result.meta.fallbackReason || '';
+    } else {
+      fallbackBanner?.classList.add('is-hidden');
+    }
+
+    // 更新剩余次数
+    if (typeof result._remaining === 'number' && photo) {
+      remainingBadge?.classList.remove('is-hidden');
+      if (remainingCount) remainingCount.textContent = String(result._remaining);
+    }
 
     if (diagnosisTitle) diagnosisTitle.textContent = result.diagnosis.title;
     if (diagnosisSummary) diagnosisSummary.textContent = result.diagnosis.summary;
@@ -435,9 +576,48 @@
     form?.reset();
     currentLooks = [];
     currentShareCard = null;
+    currentLipColors = null;
+    currentLandmarks = null;
     selectedLookId = '';
     updatePreviewImage(undefined);
     setShareStatus('可复制分享文案');
+    fallbackBanner?.classList.add('is-hidden');
+    remainingBadge?.classList.add('is-hidden');
     setStep('input');
   });
 </script>
+
+<style>
+  .fallback-banner {
+    padding: 10px 16px;
+    background: linear-gradient(135deg, rgba(255, 170, 0, 0.12), rgba(255, 170, 0, 0.06));
+    border: 1px solid rgba(255, 170, 0, 0.3);
+    border-radius: 8px;
+    color: #ffa500;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .fallback-banner small {
+    opacity: 0.7;
+    font-size: 0.75rem;
+  }
+  .remaining-badge {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    opacity: 0.65;
+    margin-bottom: 8px;
+  }
+  .compare-canvas {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  .lip-color-swatch {
+    margin-top: 8px;
+  }
+</style>

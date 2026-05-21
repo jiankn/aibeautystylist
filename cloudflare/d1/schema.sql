@@ -60,3 +60,13 @@ CREATE TABLE IF NOT EXISTS saved_looks (
 CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id);
 CREATE INDEX IF NOT EXISTS idx_tryon_jobs_user_id_created_at ON tryon_jobs(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_saved_looks_user_id_saved_at ON saved_looks(user_id, saved_at DESC);
+
+-- 使用频次记录表（用于免费版 IP 限流：每 IP 每天 3 次 AI 诊断）
+CREATE TABLE IF NOT EXISTS usage_records (
+  id TEXT PRIMARY KEY,
+  user_id TEXT,
+  ip_address TEXT NOT NULL,
+  action_type TEXT NOT NULL DEFAULT 'tryon_diagnosis',
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_usage_records_ip_date ON usage_records(ip_address, created_at);

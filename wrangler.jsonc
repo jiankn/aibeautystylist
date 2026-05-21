@@ -1,7 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "aibeauty",
-  "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2026-04-20",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
@@ -31,7 +30,9 @@
   ],
   "vars": {
     "APP_ENV": "development",
-    "AI_PROVIDER": "mock",
+    "AI_PROVIDER": "gemini",
     "UPLOAD_PROVIDER": "mock"
+    // 注意：GEMINI_API_KEY 应通过 wrangler secret put 设置，不要写在此文件中
+    // 运行命令：npx wrangler secret put GEMINI_API_KEY
   }
 }
