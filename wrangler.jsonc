@@ -6,10 +6,33 @@
   "assets": {
     "directory": "./dist"
   },
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "29f382b4bd0d41f187836f5b91c9dec7"
+    },
+    {
+      "binding": "USAGE_LIMITS",
+      "id": "b9b800faaf6e438ba7bf26115aa7d63d"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "aibeautystylist-db",
+      "database_id": "74c8904c-b371-4fe5-a8a4-2b5604683823"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "USER_UPLOADS",
+      "bucket_name": "aibeauty-assets"
+    }
+  ],
   "vars": {
     "APP_ENV": "production",
     "AI_PROVIDER": "gemini",
-    "UPLOAD_PROVIDER": "mock",
+    "UPLOAD_PROVIDER": "r2",
     "GEMINI_MODEL": "gemini-3.5-flash",
     "GEMINI_TIMEOUT_MS": "45000",
     "GEMINI_THINKING_LEVEL": "medium"
