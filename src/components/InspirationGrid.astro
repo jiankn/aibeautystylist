@@ -1,57 +1,146 @@
 ---
 const looks = [
   {
-    title: '通勤提气色',
-    tone: 'Rose nude',
-    description: '轻薄底妆 + 柔雾豆沙，适合早八和视频会议。',
+    title: 'Everyday Commute',
+    tone: 'Rose Nude',
+    description: 'Sheer base, soft taupe eyes, and a nude-pink lip — polished in 10 minutes.',
+    image: '/images/hero/look-commute.png',
+    brands: 'Laura Mercier · Charlotte Tilbury · Rare Beauty',
+    scenario: 'commute',
   },
   {
-    title: '温柔约会',
-    tone: 'Muted berry',
-    description: '柔莓色唇颊呼应，气质更亲近但不失精致。',
+    title: 'Soft Date Night',
+    tone: 'Muted Berry',
+    description: 'Dewy glass skin with gradient berry lips — romantic without trying too hard.',
+    image: '/images/hero/look-date.png',
+    brands: 'Laneige · Sulwhasoo · Dior',
+    scenario: 'date',
   },
   {
-    title: '轻熟精致',
-    tone: 'Champagne taupe',
-    description: '用干净结构感提升“高级感”，不靠厚重堆砌。',
+    title: 'Refined Elegance',
+    tone: 'Champagne Taupe',
+    description: 'Structured bone definition with warm bronze accents — quiet luxury.',
+    image: '/images/hero/look-refined.png',
+    brands: 'Charlotte Tilbury · Hourglass · Tom Ford',
+    scenario: 'refined',
   },
   {
-    title: '上镜拍照',
-    tone: 'Contrast boost',
-    description: '加强轮廓、眉眼与唇部对比，镜头里更立体。',
+    title: 'Camera Ready',
+    tone: 'Contrast Boost',
+    description: 'Enhanced dimension with copper smoky eyes — stunning on camera.',
+    image: '/images/hero/look-photogenic.png',
+    brands: 'Pat McGrath · MAC · Fenty Beauty',
+    scenario: 'photogenic',
   },
   {
-    title: '新手日常',
-    tone: 'Easy routine',
-    description: '优先低出错率步骤，帮助用户第一次就成功。',
+    title: 'Beginner Basics',
+    tone: 'Easy Routine',
+    description: 'Nearly bare-faced with just the essentials — impossible to get wrong.',
+    image: '/images/hero/look-beginner.png',
+    brands: 'Glossier · e.l.f. · Maybelline',
+    scenario: 'beginner',
   },
   {
-    title: '高级晚宴',
-    tone: 'Deep glow',
-    description: '更强氛围感与层次感，适合重要场景和夜晚。',
+    title: 'Evening Gala',
+    tone: 'Deep Glow',
+    description: 'Dramatic burgundy smoky eye with plum lips — commanding and opulent.',
+    image: '/images/hero/look-evening.png',
+    brands: 'Tom Ford · Charlotte Tilbury · NARS',
+    scenario: 'evening',
   },
 ];
 ---
 
-<section class="section section-soft">
+<section class="section section-soft" id="inspiration">
   <div class="container">
     <div class="section-copy">
-      <span class="eyebrow">Inspiration gallery</span>
-      <h2>不是给你功能列表，而是先给你想试的感觉。</h2>
+      <span class="eyebrow">Inspiration Gallery</span>
+      <h2>Find the vibe first, then learn how to recreate it.</h2>
       <p>
-        先用灵感图激发期待，再把每个场景入口引导进试妆和教程流程，符合 PRD 里的“先场景，后配置”。
+        Every look is designed for a real scenario. Tap into the one that speaks to you and start your try-on.
       </p>
     </div>
 
     <div class="grid-cards grid-cards-3">
       {looks.map((look) => (
-        <article class="card look-card">
-          <span class="pill">{look.tone}</span>
-          <h3>{look.title}</h3>
-          <p>{look.description}</p>
-          <a class="text-link" href="/tools/shade-finder">进入这个场景 →</a>
-        </article>
+        <a class="card look-card has-image" href={`/try-on?scenario=${look.scenario}`}>
+          <div class="look-card-img">
+            <img src={look.image} alt={look.title} loading="lazy" />
+          </div>
+          <div class="look-card-body">
+            <span class="pill">{look.tone}</span>
+            <h3>{look.title}</h3>
+            <p>{look.description}</p>
+            <span class="look-card-brands">{look.brands}</span>
+          </div>
+        </a>
       ))}
     </div>
   </div>
 </section>
+
+<style>
+  .look-card.has-image {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .look-card.has-image:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(62, 39, 39, 0.12);
+  }
+
+  .look-card-img {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+
+  .look-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .look-card.has-image:hover .look-card-img img {
+    transform: scale(1.06);
+  }
+
+  .look-card-body {
+    padding: 20px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .look-card-body h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .look-card-body p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .look-card-brands {
+    margin-top: 4px;
+    font-size: 0.72rem;
+    color: var(--accent-deep);
+    letter-spacing: 0.03em;
+    opacity: 0.7;
+  }
+
+  .look-card-body .pill {
+    align-self: flex-start;
+  }
+</style>

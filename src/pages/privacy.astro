@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy | AI Beauty Stylist"
+  description="How AI Beauty Stylist handles photos, diagnosis data, usage data, and privacy controls."
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Privacy</span>
+      <h1>Your photo is sensitive. The product is designed around that.</h1>
+      <p>
+        This policy describes the intended MVP privacy model for AI Beauty Stylist. It should be reviewed before production launch and updated when storage, accounts, and payments go live.
+      </p>
+    </div>
+
+    <div class="container grid-cards grid-cards-2">
+      <article class="card coach-card">
+        <h3>Photos</h3>
+        <p>In the current MVP, photo preview happens in the browser and photo data is sent only when a diagnosis is requested. Production storage must use short-lived R2 keys, explicit deletion, and limited retention.</p>
+      </article>
+      <article class="card coach-card">
+        <h3>Diagnosis data</h3>
+        <p>Diagnosis output may include undertone, look recommendations, tutorial steps, product picks, and share-card text. Saved history should require an account and clear consent.</p>
+      </article>
+      <article class="card coach-card">
+        <h3>Usage data</h3>
+        <p>Basic request metadata can be used for abuse prevention, rate limits, and product analytics. It should not be sold as personal beauty data.</p>
+      </article>
+      <article class="card coach-card">
+        <h3>Deletion</h3>
+        <p>The interface includes a delete action. Before launch, deletion must remove stored uploads, diagnosis jobs, and saved looks connected to the user where required by law.</p>
+      </article>
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn" href="/try-on">Continue to Try-On</a>
+      <a class="btn btn-secondary" href="/terms">Terms of Service</a>
+    </div>
+  </section>
+</BaseLayout>

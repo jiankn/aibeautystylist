@@ -1,47 +1,141 @@
 <section class="hero section">
   <div class="container hero-grid">
-    <div>
-      <span class="eyebrow">Beauty Stylist, not a filter app</span>
-      <h1>找到真正适合你的妆，而不是别人的教程。</h1>
+    <div class="hero-copy">
+      <span class="eyebrow">Your AI Beauty Concierge</span>
+      <h1>Find the look that's truly yours — not someone else's tutorial.</h1>
       <p class="lead">
-        上传一张素颜照，先看到适合你的妆容方向，再获得一步步能执行的教程与工具推荐。
+        Upload a bare-face selfie. Get AI-powered shade diagnosis, personalized looks, and step-by-step tutorials you can actually follow.
       </p>
       <div class="cta-row">
-        <a class="btn" href="/try-on">开始试妆</a>
-        <a class="btn btn-secondary" href="#scenarios">看看适合我的风格</a>
+        <a class="btn" href="/try-on">Start Your Try-On</a>
+        <a class="btn btn-secondary" href="#scenarios">Explore Styles</a>
       </div>
       <div class="metric-row">
         <div class="metric">
-          <strong>3 步</strong>
-          <span>上传、诊断、教程</span>
+          <strong>3 Steps</strong>
+          <span>Upload · Diagnose · Tutorial</span>
         </div>
         <div class="metric">
-          <strong>多场景</strong>
-          <span>通勤、约会、拍照、面试</span>
+          <strong>Any Scene</strong>
+          <span>Commute · Date · Photo · Interview</span>
         </div>
         <div class="metric">
-          <strong>隐私优先</strong>
-          <span>照片用途透明，可删除</span>
+          <strong>Privacy First</strong>
+          <span>Your photo, your control</span>
         </div>
       </div>
     </div>
 
-    <div class="hero-cards">
-      <article class="hero-card">
-        <span class="pill">Soft glam</span>
-        <h3>温柔但有精神感</h3>
-        <p>适合约会和拍照，重点提升轮廓和气色。</p>
-      </article>
-      <article class="hero-card hero-card-accent">
-        <span class="pill">Office glow</span>
-        <h3>10 分钟通勤提气色</h3>
-        <p>少步骤、低门槛、适合新手快速复制。</p>
-      </article>
-      <article class="hero-card">
-        <span class="pill">Diagnosis first</span>
-        <h3>先判断，再推荐</h3>
-        <p>围绕肤色、妆感目标和场景做个性化建议，而不是让用户盲试。</p>
-      </article>
+    <div class="hero-visuals">
+      <div class="hero-img-stack">
+        <div class="hero-img-main">
+          <img src="/images/hero/hero-polished-elegant.png" alt="Polished elegant makeup look" loading="eager" />
+          <span class="hero-img-label">Polished Glam</span>
+        </div>
+        <div class="hero-img-secondary">
+          <div class="hero-img-sm">
+            <img src="/images/hero/hero-inclusive-glow.png" alt="Luminous glow makeup on deep skin" loading="eager" />
+            <span class="hero-img-label">Radiant Glow</span>
+          </div>
+          <div class="hero-img-sm">
+            <img src="/images/hero/hero-asian-refined.png" alt="Refined clean beauty makeup" loading="eager" />
+            <span class="hero-img-label">Clean Beauty</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  .hero-copy {
+    max-width: 540px;
+  }
+
+  .hero-visuals {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-img-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .hero-img-main {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    box-shadow: 0 20px 60px rgba(62, 39, 39, 0.12);
+  }
+
+  .hero-img-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .hero-img-main:hover img {
+    transform: scale(1.03);
+  }
+
+  .hero-img-secondary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .hero-img-sm {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    box-shadow: 0 8px 30px rgba(62, 39, 39, 0.08);
+  }
+
+  .hero-img-sm img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .hero-img-sm:hover img {
+    transform: scale(1.05);
+  }
+
+  .hero-img-label {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 900px) {
+    .hero-img-stack {
+      max-width: 100%;
+    }
+
+    .hero-img-main {
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+    }
+
+    .hero-img-sm {
+      border-radius: 12px;
+    }
+  }
+</style>

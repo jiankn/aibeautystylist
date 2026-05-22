@@ -11,6 +11,11 @@
       "binding": "SESSION",
       "id": "replace-with-session-kv-id",
       "preview_id": "replace-with-session-kv-preview-id"
+    },
+    {
+      "binding": "USAGE_LIMITS",
+      "id": "replace-with-usage-kv-id",
+      "preview_id": "replace-with-usage-kv-preview-id"
     }
   ],
   "d1_databases": [
@@ -23,7 +28,7 @@
   ],
   "r2_buckets": [
     {
-      "binding": "ASSETS",
+      "binding": "USER_UPLOADS",
       "bucket_name": "aibeauty-assets",
       "preview_bucket_name": "aibeauty-assets-preview"
     }
@@ -31,7 +36,10 @@
   "vars": {
     "APP_ENV": "development",
     "AI_PROVIDER": "gemini",
-    "UPLOAD_PROVIDER": "mock"
+    "UPLOAD_PROVIDER": "mock",
+    "GEMINI_MODEL": "gemini-3.5-flash",
+    "GEMINI_TIMEOUT_MS": "45000",
+    "GEMINI_THINKING_LEVEL": "medium"
     // 注意：GEMINI_API_KEY 应通过 wrangler secret put 设置，不要写在此文件中
     // 运行命令：npx wrangler secret put GEMINI_API_KEY
   }

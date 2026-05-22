@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Terms of Service | AI Beauty Stylist"
+  description="Terms for using AI Beauty Stylist's makeup diagnosis, try-on, tutorials, and product recommendations."
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Terms</span>
+      <h1>Use AI Beauty Stylist as guidance, not a medical or professional guarantee.</h1>
+      <p>
+        These MVP terms set expectations for try-on results, product recommendations, account features, and future paid plans.
+      </p>
+    </div>
+
+    <div class="container grid-cards grid-cards-2">
+      <article class="card coach-card">
+        <h3>AI recommendations</h3>
+        <p>Results are generated from available inputs and may be imperfect. Lighting, camera quality, skin condition, and product availability can affect accuracy.</p>
+      </article>
+      <article class="card coach-card">
+        <h3>Product picks</h3>
+        <p>Recommended products are beauty guidance, not a guarantee of fit, safety, or availability. Always check ingredient lists and retailer details before purchase.</p>
+      </article>
+      <article class="card coach-card">
+        <h3>Paid features</h3>
+        <p>Membership and subscription features are planned. Billing, refunds, cancellation, and entitlement rules must be finalized before paid launch.</p>
+      </article>
+      <article class="card coach-card">
+        <h3>Acceptable use</h3>
+        <p>Do not upload images without permission, attempt to identify other people, or use the service for harassment, impersonation, or sensitive profiling.</p>
+      </article>
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn" href="/try-on">Start Try-On</a>
+      <a class="btn btn-secondary" href="/privacy">Privacy Policy</a>
+    </div>
+  </section>
+</BaseLayout>

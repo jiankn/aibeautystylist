@@ -1,14 +1,14 @@
 <!-- 
   ShadeFinderDemo.astro
-  SEO 微工具核心组件：3 步问答 → 诊断结果 → CTA 引导至 Try-On Studio
-  继承 BaseLayout 的轻奢品牌样式体系
+  SEO micro-tool: 3-step quiz → diagnosis result → CTA to Try-On Studio
+  Inherits BaseLayout's luxury beauty design system
 -->
 <section class="tool-shell card shade-finder-shell">
   <div class="tool-header">
     <div>
       <span class="eyebrow">Free AI Diagnosis</span>
       <h2>Shade Finder</h2>
-      <p>回答 3 个问题，30 秒找到最适合你的唇色。</p>
+      <p>Answer 3 questions. Find your perfect lip shade in 30 seconds.</p>
     </div>
     <div class="trust-badge">🔒 No Face Data Saved · Processed & Deleted Instantly</div>
   </div>
@@ -18,34 +18,34 @@
     <section class="tool-step" data-step="input">
       <form class="tool-form" data-shade-form>
         <label>
-          <span>你的肤色冷暖调</span>
+          <span>Your Skin Undertone</span>
           <select name="undertone" id="sf-undertone">
-            <option value="cool">冷调 Cool — 手腕血管偏蓝紫</option>
-            <option value="warm">暖调 Warm — 手腕血管偏绿</option>
-            <option value="neutral">中性 Neutral — 蓝绿都有</option>
-            <option value="olive">橄榄调 Olive — 偏黄绿底色</option>
+            <option value="cool">Cool — Wrist veins appear blue-purple</option>
+            <option value="warm">Warm — Wrist veins appear green</option>
+            <option value="neutral">Neutral — Mix of both</option>
+            <option value="olive">Olive — Yellow-green undertone</option>
           </select>
         </label>
 
         <label>
-          <span>你想要的妆感</span>
+          <span>Desired Look</span>
           <select name="lookGoal" id="sf-lookgoal">
-            <option value="soft-glam">Soft Glam — 柔光优雅</option>
-            <option value="office-glow">Office Glow — 通勤清透</option>
-            <option value="date-night">Date Night — 约会氛围</option>
+            <option value="soft-glam">Soft Glam — Luminous elegance</option>
+            <option value="office-glow">Office Glow — Sheer commute polish</option>
+            <option value="date-night">Date Night — Romantic mood</option>
           </select>
         </label>
 
         <label>
-          <span>你的上手程度</span>
+          <span>Experience Level</span>
           <select name="experience" id="sf-experience">
-            <option value="beginner">新手 — 从来没化过</option>
-            <option value="intermediate">进阶 — 偶尔画</option>
+            <option value="beginner">Beginner — Never done makeup</option>
+            <option value="intermediate">Intermediate — Occasional makeup</option>
           </select>
         </label>
 
-        <button class="btn" type="submit">开始诊断我的唇色</button>
-        <p class="sf-hint">30 秒完成 · 100% 免费</p>
+        <button class="btn" type="submit">Find My Perfect Shade</button>
+        <p class="sf-hint">30 seconds · 100% free</p>
       </form>
     </section>
 
@@ -54,7 +54,7 @@
       <div class="loading-state">
         <div class="spinner"></div>
         <h3>Analyzing your skin undertone…</h3>
-        <p>正在匹配你的冷暖调、妆感偏好与色号库。</p>
+        <p>Matching your undertone, look preference, and shade library.</p>
       </div>
     </section>
 
@@ -66,12 +66,12 @@
           <span class="result-label">Your diagnosis</span>
           <h3 data-result-title>Cool Olive Undertone</h3>
           <p class="sf-result-summary" data-result-summary>
-            你适合冷调灰粉和柔莓色，暖橘系容易显脏并削弱整体精神感。
+            Cool-toned dusty pinks and soft berries work best for you. Warm oranges may look muddy and dull your complexion.
           </p>
           <ul class="check-list compact" data-result-reasons>
-            <li>适合冷调灰粉和柔莓色</li>
-            <li>优先强化唇部与眼下气色</li>
-            <li>建议从低对比度日常妆开始</li>
+            <li>Cool-toned dusty pinks and soft berries are your ideal shades</li>
+            <li>Prioritize lip and under-eye color for instant radiance</li>
+            <li>Start with low-contrast, everyday looks for natural results</li>
           </ul>
         </div>
 
@@ -85,43 +85,61 @@
               <p class="sf-product-shade" data-product-shade>Dirty Blue Pink</p>
             </div>
           </div>
-          <p class="sf-product-copy" data-product-copy>适合作为第一支安全牌，能快速提升气色而不过分成熟。</p>
-          <a class="text-link" href="/tutorial">继续看完整教程 →</a>
+          <p class="sf-product-copy" data-product-copy>A safe first choice that instantly lifts your complexion without looking overdone.</p>
+          <a class="text-link" href="/tutorial">See Full Tutorial →</a>
         </div>
       </div>
 
       <!-- CTA：引导至 Try-On Studio -->
       <div class="sf-cta-block">
-        <h3>想看更精准的结果？</h3>
-        <p>上传自拍，AI 会根据你的真实五官和肤色，推荐 3 套量身定制的妆容方案，还能在线试色。</p>
-        <a class="btn sf-cta-btn" href="/try-on">上传自拍获取 AI 诊断 →</a>
+        <span class="eyebrow">Quick Diagnosis Complete</span>
+        <h3>This is just the starting point.</h3>
+        <p>Upload a selfie for AI-powered analysis of your actual features and skin tone — get 3 personalized looks with step-by-step tutorials.</p>
+        <a class="btn sf-cta-btn" href="/try-on">Upload Selfie for Full Diagnosis →</a>
       </div>
 
       <div class="tool-actions">
-        <button class="btn btn-secondary" type="button" data-reset-tool>重新选择</button>
+        <button class="btn btn-secondary" type="button" data-reset-tool>Start Over</button>
       </div>
     </section>
   </div>
 </section>
 
 <script>
-  // ─── DOM 引用 ───
-  const form = document.querySelector('[data-shade-form]');
-  const inputStep = document.querySelector('[data-step="input"]');
-  const loadingStep = document.querySelector('[data-step="loading"]');
-  const resultStep = document.querySelector('[data-step="result"]');
-  const resetButton = document.querySelector('[data-reset-tool]');
+  type ShadeStep = 'input' | 'loading' | 'result';
+  type Undertone = 'cool' | 'warm' | 'neutral' | 'olive';
+  type ShadeResult = {
+    diagnosis: string;
+    summary: string;
+    reasons: string[];
+    product: {
+      name: string;
+      shade: string;
+      copy: string;
+      color: string;
+    };
+  };
 
-  const titleEl = document.querySelector('[data-result-title]');
-  const summaryEl = document.querySelector('[data-result-summary]');
-  const reasonsEl = document.querySelector('[data-result-reasons]');
-  const productNameEl = document.querySelector('[data-product-name]');
-  const productCopyEl = document.querySelector('[data-product-copy]');
-  const productShadeEl = document.querySelector('[data-product-shade]');
-  const swatchEl = document.querySelector('[data-swatch-color]');
+  const qs = <T extends Element = HTMLElement>(selector: string) =>
+    document.querySelector(selector) as T | null;
+
+  // ─── DOM 引用 ───
+  const form = qs<HTMLFormElement>('[data-shade-form]');
+  const inputStep = qs<HTMLElement>('[data-step="input"]');
+  const loadingStep = qs<HTMLElement>('[data-step="loading"]');
+  const resultStep = qs<HTMLElement>('[data-step="result"]');
+  const resetButton = qs<HTMLButtonElement>('[data-reset-tool]');
+
+  const titleEl = qs<HTMLElement>('[data-result-title]');
+  const summaryEl = qs<HTMLElement>('[data-result-summary]');
+  const reasonsEl = qs<HTMLElement>('[data-result-reasons]');
+  const productNameEl = qs<HTMLElement>('[data-product-name]');
+  const productCopyEl = qs<HTMLElement>('[data-product-copy]');
+  const productShadeEl = qs<HTMLElement>('[data-product-shade]');
+  const swatchEl = qs<HTMLElement>('[data-swatch-color]');
 
   // ─── 步骤切换 ───
-  const setStep = (nextStep) => {
+  const setStep = (nextStep: ShadeStep) => {
     [inputStep, loadingStep, resultStep].forEach((element) => {
       if (!element) return;
       element.classList.toggle('is-hidden', element.dataset.step !== nextStep);
@@ -129,7 +147,7 @@
   };
 
   // ─── 色号映射表：根据冷暖调推荐不同唇色（静态数据，不消耗 AI 配额）───
-  const shadeMap = {
+  const shadeMap: Record<Undertone, ShadeResult> = {
     cool: {
       diagnosis: 'Cool Undertone · 冷调清透型',
       summary: '你的肤色属于冷调，适合蓝底粉色、玫瑰色和莓果色系。暖橘色会让你看起来暗沉。',
@@ -156,18 +174,22 @@
     },
   };
 
+  const isUndertone = (value: string): value is Undertone =>
+    Object.prototype.hasOwnProperty.call(shadeMap, value);
+
   // ─── 表单提交 ───
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const formData = new FormData(form);
-    const undertone = String(formData.get('undertone') || 'cool');
+    const rawUndertone = String(formData.get('undertone') || 'cool');
+    const undertone = isUndertone(rawUndertone) ? rawUndertone : 'cool';
 
     setStep('loading');
 
     // 模拟分析延迟（实际是查表，不消耗 API 配额）
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const data = shadeMap[undertone] || shadeMap.cool;
+    const data = shadeMap[undertone];
 
     if (titleEl) titleEl.textContent = data.diagnosis;
     if (summaryEl) summaryEl.textContent = data.summary;

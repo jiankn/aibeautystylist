@@ -1,28 +1,49 @@
 ---
 const scenarios = [
-  '上班 10 分钟提气色',
-  '面试显精神',
-  '约会更温柔',
-  '拍照更上镜',
-  '新手第一次化妆',
+  {
+    title: '10-min commute glow',
+    copy: 'A fast polished routine for office light, video calls, and everyday structure.',
+    href: '/scenarios/office-makeup',
+  },
+  {
+    title: 'Interview-ready polish',
+    copy: 'Controlled definition, calmer color, and a look that reads capable in person.',
+    href: '/scenarios/interview-makeup',
+  },
+  {
+    title: 'Soft date-night mood',
+    copy: 'Romantic color harmony with close-up friendly skin and softly defined edges.',
+    href: '/scenarios/date-night-makeup',
+  },
+  {
+    title: 'Bridal soft glam',
+    copy: 'Long-wear glow, camera balance, and a tutorial path for high-stakes days.',
+    href: '/scenarios/bridal-makeup',
+  },
+  {
+    title: 'First-timer basics',
+    copy: 'A beginner-safe path that keeps the step count low and the result repeatable.',
+    href: '/try-on?scenario=office',
+  },
 ];
 ---
 
 <section class="section" id="scenarios">
   <div class="container">
     <div class="section-copy">
-      <span class="eyebrow">Scenario entry</span>
-      <h2>按任务做导航，不按功能堆砌页面。</h2>
-      <p>当前首页结构直接对应 PRD 的任务型导航：`Discover / Try On / Tutorial / Beauty Kit / Membership`。</p>
+      <span class="eyebrow">Start from Your Goal</span>
+      <h2>Different scenes need different strategies. Pick yours.</h2>
+      <p>Each scenario gets a tailored AI recommendation — low effort, high impact looks that actually work for you.</p>
     </div>
 
     <div class="grid-cards grid-cards-3">
       {scenarios.map((scenario, index) => (
-        <article class="card scenario-card">
+        <a class="card scenario-card" href={scenario.href}>
           <span class="scenario-index">0{index + 1}</span>
-          <h3>{scenario}</h3>
-          <p>进入个性化方案，优先做低门槛、强结果感的妆容推荐。</p>
-        </article>
+          <h3>{scenario.title}</h3>
+          <p>{scenario.copy}</p>
+          <span class="text-link">Open guide</span>
+        </a>
       ))}
     </div>
   </div>

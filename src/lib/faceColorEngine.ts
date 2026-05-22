@@ -18,12 +18,6 @@ const OUTER_LIP_INDICES = [
   318, 402, 317, 14, 87, 178, 88, 95, 78,
 ];
 
-// 内唇轮廓（用于更精确的着色，可选）
-const INNER_LIP_INDICES = [
-  78, 191, 80, 81, 82, 13, 312, 311, 310, 415,
-  308, 324, 318, 402, 317, 14, 87, 178, 88, 95,
-];
-
 /** 唇色参数 */
 export interface LipColorParams {
   hex: string;

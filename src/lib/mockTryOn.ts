@@ -1,3 +1,8 @@
+// P0.1: locale-aware mock data
+// EN is the default user-facing copy. ZH retained for /zh route or AI prompt overrides.
+
+export type Locale = 'en' | 'zh';
+
 export interface TryOnProduct {
   sku: string;
   name: string;
@@ -57,14 +62,7 @@ const product = (
   shade: string,
   price: string,
   why: string,
-): TryOnProduct => ({
-  sku,
-  name,
-  category,
-  shade,
-  price,
-  why,
-});
+): TryOnProduct => ({ sku, name, category, shade, price, why });
 
 const step = (title: string, detail: string, avoid: string, selfCheck: string): TryOnStep => ({
   title,
@@ -73,10 +71,624 @@ const step = (title: string, detail: string, avoid: string, selfCheck: string): 
   selfCheck,
 });
 
-const planMap: Record<string, TryOnPlan> = {
+
+// ─── EN catalog (default user-facing copy) ─────────────────────────────────
+const planMapEn: Record<string, TryOnPlan> = {
   office: {
     diagnosis: {
       title: 'Warm-neutral undertone · Soft definition fit',
+      summary: 'Your features suit low-intensity, structured looks. The goal is freshness and clarity, not heavy color.',
+      faceNotes: [
+        'A sheer, luminous base flatters you more than full coverage',
+        'Brow and lash structure matters more than bold color',
+        'Matching lip and cheek tones makes the look feel polished, not painted',
+      ],
+    },
+    looks: [
+      {
+        id: 'office-glow',
+        name: 'Office Glow',
+        reason: 'Fastest way to look awake and put-together for commute and video calls.',
+        scenario: 'Commute / Meeting',
+        difficulty: 'Beginner',
+        minutes: '8 min',
+        focus: 'Complexion, brow-eye clarity',
+        finish: 'Soft matte nude',
+        tutorialHeadline: '8 minutes from bare-face to camera-ready office polish.',
+        tutorialSteps: [
+          step(
+            'Sheer base, targeted concealer',
+            'Float a thin layer of base, then concealer only under eyes, around the nose, and at the mouth corners.',
+            "Don't paint the whole face one even tone — it flattens you.",
+            'Step back from the mirror: skin looks even but you can still see real texture.',
+          ),
+          step(
+            'Brow peak and lash root define the look',
+            'Tidy the brow head-to-peak with a fine pencil, then press dark brown along the upper lash line.',
+            "Don't drag the brow tail too far or rim the eye in black.",
+            'Eyes closed: line is only at the root. Eyes open: brow-eye area reads sharper.',
+          ),
+          step(
+            'Tiny highlight, precise placement',
+            'Place highlight only under the eye triangle and the bridge of the nose. Small but exact.',
+            "Don't shimmer the forehead, cheeks, and chin all at once.",
+            'Front-on the face has dimension; from the side there are no obvious glitter patches.',
+          ),
+          step(
+            'Nude-rose lip ties the look together',
+            'Sheer lip first, then tap a touch onto the cheeks for an honest flush.',
+            "Don't go saturated on the lip, and don't blush wide.",
+            'Lip and mid-face read in the same family but the look still feels everyday.',
+          ),
+        ],
+        commonMistakes: [
+          'Heavy base makes the face look flat',
+          'Long brow tails read aggressive',
+          'Wide highlight reads as oily',
+        ],
+        selfChecks: [
+          'Features look sharper on camera in meeting light',
+          'Skin still feels real up close',
+          'Lip is more alive than the bare lip but not stealing focus',
+        ],
+        kit: {
+          mustHave: [
+            product('sku-office-base', 'Skin Veil Tint', 'Sheer foundation', 'Neutral Linen', '$18', 'Commute calls for thin and even, not high-coverage mask.'),
+            product('sku-office-brow', 'Precision Brow Pencil', 'Brow pencil', 'Soft Brown', '$12', 'Tidies the brow shape in seconds — instant polish.'),
+            product('sku-office-lip', 'Rosy Nude Lip Cream', 'Lip color', 'Dusty Rose', '$16', 'A nude rose adds glow without committing to a "look".'),
+          ],
+          optional: [
+            product('sku-office-shadow', 'Taupe Wash Mono', 'Single eyeshadow', 'Warm Taupe', '$11', 'A whisper of color in the socket for sharper days.'),
+            product('sku-office-blush', 'Soft Flush Balm', 'Cream blush', 'Muted Petal', '$14', 'Lets you echo the lip color on the cheeks softly.'),
+          ],
+          upgrade: [
+            product('sku-office-corrector', 'Under-eye Corrector Duo', 'Concealer palette', 'Peach + Neutral', '$24', 'For shadowy under-eyes that read tired on camera.'),
+            product('sku-office-glow', 'Micro Glow Stick', 'Cream highlight', 'Champagne', '$22', 'Pinpoint highlight for video light.'),
+          ],
+        },
+      },
+      {
+        id: 'quiet-luxury',
+        name: 'Quiet Luxury Taupe',
+        reason: 'For interviews and client meetings — sharp and capable, not heavy.',
+        scenario: 'Interview / Client',
+        difficulty: 'Intermediate',
+        minutes: '12 min',
+        focus: 'Bone structure, eye depth',
+        finish: 'Champagne taupe',
+        tutorialHeadline: 'Look composed and capable, without leaving "makeup" footprints.',
+        tutorialSteps: [
+          step(
+            'Build the socket with taupe',
+            'Sweep a soft taupe from the outer corner inward — sculpt, not smoke.',
+            "Don't push the dark over the entire lid.",
+            'Eyes open: dimension. Eyes closed: no obvious color block.',
+          ),
+          step(
+            'Sharpen the lash root, not the eye line',
+            'Stack a fine line at the lash root and groom the lashes — clean and crisp wins here.',
+            "Don't draw a thick winged liner; it reads aggressive in interviews.",
+            'Eyes feel more focused without looking "made up".',
+          ),
+          step(
+            'Pinpoint highlight on the nose and cheekbone',
+            'Highlight only at structural points, not across the face.',
+            "Don't combine heavy contour and heavy highlight on the same day.",
+            'Profile shows added structure; front-on has no glitter sheen.',
+          ),
+          step(
+            'Bare-brown lip to anchor everything',
+            'A muted brown nude finishes the look refined, never matronly.',
+            "Don't pick a deep coffee shade — it tips into tired.",
+            'Lip edges are clean and live in the same neutral taupe family as the eye.',
+          ),
+        ],
+        commonMistakes: [
+          'Going too dark with the taupe muddies the eye',
+          'Heavy contour plus highlight ages the face',
+          'Lip too saturated breaks the quiet-luxury feel',
+        ],
+        selfChecks: [
+          'On camera you read capable, not stern',
+          'Eyes feel focused, not "lined"',
+          'Everything sits in the same taupe-neutral family',
+        ],
+        kit: {
+          mustHave: [
+            product('sku-quiet-shadow', 'Contour Taupe Quad', 'Eyeshadow palette', 'Taupe Edit', '$28', 'A taupe sculpt is the backbone of this look.'),
+            product('sku-quiet-mascara', 'Root Lift Mascara', 'Mascara', 'Espresso', '$17', 'Better than thick liner for a refined presence.'),
+            product('sku-quiet-lip', 'Velvet Nude Lipstick', 'Lipstick', 'Cashmere Brown', '$19', 'Low-saturation brown nudes carry the quiet-luxury vibe.'),
+          ],
+          optional: [
+            product('sku-quiet-contour', 'Soft Sculpt Cream', 'Cream contour', 'Neutral Taupe', '$20', 'For flatter bone structure that needs definition.'),
+            product('sku-quiet-browgel', 'Feather Brow Gel', 'Brow gel', 'Ash Brown', '$13', 'Adds hair-by-hair texture to the brow.'),
+          ],
+          upgrade: [
+            product('sku-quiet-bright', 'Precision Brightener', 'Brightening pen', 'Vanilla Beige', '$23', 'Lifts under-eye shadows during long days.'),
+            product('sku-quiet-setting', 'Blur Setting Mist', 'Setting mist', 'Soft Matte', '$21', 'Keeps the look composed through long meetings.'),
+          ],
+        },
+      },
+      {
+        id: 'fresh-minimal',
+        name: 'Fresh Minimal',
+        reason: 'Lowest-risk look for first-timers — fewer steps, faster, hard to mess up.',
+        scenario: 'Everyday / Beginner',
+        difficulty: 'Beginner',
+        minutes: '6 min',
+        focus: 'Even skin, lip-cheek harmony',
+        finish: 'Clean and natural',
+        tutorialHeadline: 'Six minutes, four steps. Looks awake without effort.',
+        tutorialSteps: [
+          step(
+            'Skip the full base, spot-conceal instead',
+            'Cover only what bothers you. Let the rest of the skin be itself.',
+            "Don't lay down full coverage and then chase imperfections.",
+            'It looks like your skin had a good week, not like makeup.',
+          ),
+          step(
+            'A whisper of blush for awake-face',
+            'Sweep the cheekbone lightly, slightly higher than you think.',
+            "Don't take the blush onto the nose or far across the face.",
+            'When you smile your face lifts, no hot patch of color.',
+          ),
+          step(
+            'Tinted lip balm pulls the mood together',
+            'Press a thin layer, then tap the edges to soften.',
+            "Don't aim for a sharp lip line — it fights the minimal look.",
+            'Lips look healthy and live in the same family as the cheek.',
+          ),
+          step(
+            'Tidy the edges and stop',
+            'Clean under the eyes, around the nose and lip — no more product.',
+            "Don't add another step at the last minute.",
+            'First impression in the mirror is "fresh", not "made up".',
+          ),
+        ],
+        commonMistakes: [
+          'Beginners tend to add too many steps',
+          'Heavy blush makes the face look puffy',
+          'Stacking tinted balm gets greasy',
+        ],
+        selfChecks: [
+          'You can repeat this in 6 minutes',
+          'From a distance it just reads "good complexion"',
+          'No fatigue at the end of the day',
+        ],
+        kit: {
+          mustHave: [
+            product('sku-fresh-concealer', 'Skin Match Concealer', 'Concealer', 'Light Neutral', '$15', 'Spot-conceal beats full coverage for beginners.'),
+            product('sku-fresh-blush', 'Cloud Cream Blush', 'Cream blush', 'Nude Peach', '$14', 'Foolproof — fingertips are enough.'),
+            product('sku-fresh-lip', 'Tinted Care Balm', 'Tinted balm', 'Rose Tea', '$10', 'Easy to top up, lowest daily friction.'),
+          ],
+          optional: [
+            product('sku-fresh-brow', 'Soft Brow Mascara', 'Brow mascara', 'Natural Brown', '$12', 'For brows that already shape well, just need taming.'),
+          ],
+          upgrade: [
+            product('sku-fresh-cushion', 'Bare Cushion Compact', 'Cushion foundation', 'Warm Ivory', '$25', 'Switch to this when you want fuller coverage occasionally.'),
+          ],
+        },
+      },
+    ],
+    shareCard: {
+      title: 'My AI Office Makeup Plan',
+      subtitle: 'Less effort, more polished — every day.',
+      badge: 'Work-ready glow',
+      hashtags: ['#OfficeGlow', '#AIMakeupPlan', '#BeautyRoutine'],
+      cta: 'Copy your plan to share, or open the full tutorial.',
+    },
+  },
+
+  date: {
+    diagnosis: {
+      title: 'Cool olive undertone · Soft glam fit',
+      summary: 'Cool berries, mauves and low-saturation pinks flatter you. Warm tones can make your skin read sallow.',
+      faceNotes: [
+        'Cool berries lift your complexion more than warm corals',
+        'Under-eye and lip shape are the highest-leverage areas',
+        'Low-saturation contour reads more refined than crisp lines',
+      ],
+    },
+    looks: [
+      {
+        id: 'soft-glam',
+        name: 'Soft Glam Berry',
+        reason: 'A romantic, refined date-night feel — cared-for, not "done".',
+        scenario: 'Dinner date / Evening',
+        difficulty: 'Beginner',
+        minutes: '10 min',
+        focus: 'Lip-cheek harmony, under-eye life',
+        finish: 'Velvet berry',
+        tutorialHeadline: 'Refined and warm, never reads like a heavy made-up face.',
+        tutorialSteps: [
+          step(
+            'Keep the base breathable',
+            'Date-night makeup needs to hold up close, so even out tone but skip full coverage.',
+            "Don't erase your skin texture in the name of perfection.",
+            'Up close it still looks like good skin, not stage makeup.',
+          ),
+          step(
+            'Low-saturation rose-taupe socket',
+            'Wash the color across the socket and outer corner for soft depth.',
+            "Don't drop bright magenta straight on the lid.",
+            'Eye presence is gentle — color is felt, not seen first.',
+          ),
+          step(
+            'Horizontal blush for atmosphere',
+            'Keep the blush in the same berry family as the lip; build sideways, not down.',
+            "Don't drop the blush low — it sags the face.",
+            'When you smile the face stays light, never heavy.',
+          ),
+          step(
+            'Berry lip with soft edges',
+            'Build the center deeper, soften at the edges for that lit-from-within feel.',
+            "Don't draw a hard lip line.",
+            'Lip is felt without dominating the face.',
+          ),
+        ],
+        commonMistakes: [
+          'Berry too deep dulls the complexion',
+          'Blush placed too low ages the face',
+          'Heavy lid color kills the soft-glam feel',
+        ],
+        selfChecks: [
+          'On camera the look reads softer than in the mirror',
+          'Lip and cheek live in the same cool-berry family',
+          'Edges look clean even up close',
+        ],
+        kit: {
+          mustHave: [
+            product('sku-date-shadow', 'Petal Taupe Duo', 'Eyeshadow', 'Rose Taupe', '$16', 'The mauve-pink wash is the mood of this look.'),
+            product('sku-date-lip', 'Berry Blur Lip', 'Lipstick', 'Soft Berry', '$18', 'Carries the warmth of the look on the lip.'),
+            product('sku-date-blush', 'Liquid Bloom Blush', 'Liquid blush', 'Cool Rose', '$15', 'A drop is enough to bring the face to life.'),
+          ],
+          optional: [
+            product('sku-date-liner', 'Brown Silk Liner', 'Eyeliner', 'Mocha', '$13', 'Adds a finer eye-tail when you want sharper.'),
+          ],
+          upgrade: [
+            product('sku-date-lashes', 'Soft Cluster Lash', 'False lashes', 'Natural Lift', '$22', 'For dinner light or photos.'),
+            product('sku-date-highlight', 'Melt Glow Balm', 'Cream highlight', 'Rose Pearl', '$20', 'Pinpoint glow on the high points of the face.'),
+          ],
+        },
+      },
+      {
+        id: 'clean-date',
+        name: 'Clean Date Glow',
+        reason: 'For when you want to look effortless and well-rested, not styled.',
+        scenario: 'Daytime date / Coffee',
+        difficulty: 'Beginner',
+        minutes: '7 min',
+        focus: 'Dewy skin, calm color',
+        finish: 'Cream-skin clean',
+        tutorialHeadline: 'You, on a great-skin day. Not a "made up" you.',
+        tutorialSteps: [
+          step(
+            'Brighten and spot-conceal',
+            'Lift the dull spots first; decide later if you actually need more.',
+            "Don't chase flawless from the start.",
+            'The dimmest areas are now lit, but the makeup is still featherweight.',
+          ),
+          step(
+            'Lash root only, no liner',
+            'A clean coat at the lash root reads more natural than visible liner.',
+            "Don't load mascara on top and bottom both.",
+            'Eyes pop a little — you can\'t tell what was done.',
+          ),
+          step(
+            'One nude balm, lip and cheek',
+            'A 2-in-1 product is the fastest way to get the "clean date" mood right.',
+            "Don't let the blush trend orange.",
+            'Lip and cheek are clearly the same color.',
+          ),
+          step(
+            'Pinpoint glow on the bridge and inner corner',
+            'Light only the spots that should reflect — keeps the look airy.',
+            "Don't shimmer across the lid.",
+            'When you turn your head you catch a hint of glow, never a flash.',
+          ),
+        ],
+        commonMistakes: [
+          'Adding too many camera-ready steps for a casual look',
+          'Highlight too wide reads oily',
+          'Mismatched lip and cheek looks busy',
+        ],
+        selfChecks: [
+          'Reads fresh under daylight',
+          'Skin stays believable up close',
+          'You look like "you on a great day"',
+        ],
+        kit: {
+          mustHave: [
+            product('sku-clean-concealer', 'Bright Touch Concealer', 'Concealer', 'Neutral Peach', '$14', 'Resets the under-eye and corners of the mouth fast.'),
+            product('sku-clean-duo', 'Lip + Cheek Tint', 'Lip + cheek', 'Bare Rose', '$17', 'One product covers both for the cleanest harmony.'),
+            product('sku-clean-mascara', 'Clean Lift Mascara', 'Mascara', 'Soft Brown', '$15', 'Lash-root focus reads more natural.'),
+          ],
+          optional: [
+            product('sku-clean-highlight', 'Dew Point Highlighter', 'Liquid highlight', 'Moon Glow', '$16', 'For people who want glow without shimmer.'),
+          ],
+          upgrade: [
+            product('sku-clean-shimmer', 'Fine Pearl Shadow', 'Shimmer shadow', 'Champagne Pink', '$19', 'For daytime cafe shoots.'),
+          ],
+        },
+      },
+      {
+        id: 'night-mauve',
+        name: 'Night Mauve Focus',
+        reason: 'For evening venues and low light — more presence, still clean edges.',
+        scenario: 'Evening date / Bar',
+        difficulty: 'Intermediate',
+        minutes: '14 min',
+        focus: 'Eye depth, lip presence',
+        finish: 'Cool mauve',
+        tutorialHeadline: 'More dimension under low light, without losing clean edges.',
+        tutorialSteps: [
+          step(
+            'Deepen only the outer third',
+            'Concentrate depth at the outer corner for a focused gaze.',
+            "Don't ring the entire eye in dark color.",
+            'Open eyes feel deeper while edges still read soft.',
+          ),
+          step(
+            'Cool family from eye to lip',
+            'Pick eye and lip colors from the same cool family for cohesion.',
+            "Don't pair purple eye with orange lip.",
+            'There is one color story from eye to lip.',
+          ),
+          step(
+            'Cheekbone highlight, controlled area',
+            'Light only the highest point of the cheekbone and bridge of the nose.',
+            "Don't shimmer the apple of the cheek.",
+            'You see structure under venue light, no powdery flatness.',
+          ),
+          step(
+            'Tidy edges, stop adding',
+            'Clean the outer corner and lip line; resist the urge to layer more.',
+            "Don't stack another shade.",
+            'From across the room features pop. Up close, edges are clean.',
+          ),
+        ],
+        commonMistakes: [
+          'Evening tempts heavier hands',
+          'Cool eye + warm lip looks dirty',
+          'Wide highlight magnifies texture',
+        ],
+        selfChecks: [
+          'Holds up under venue light without going flat',
+          'Lip anchors the look',
+          'Edges stay clean',
+        ],
+        kit: {
+          mustHave: [
+            product('sku-night-shadow', 'Mauve Smoke Palette', 'Eyeshadow palette', 'Dusty Mauve', '$27', 'The cool mauve range is the spine of this look.'),
+            product('sku-night-liner', 'Lip Shape Pencil', 'Lip pencil', 'Cool Rosewood', '$12', 'Adds presence and edge to the lip.'),
+            product('sku-night-lip', 'Soft Matte Lip', 'Lipstick', 'Muted Plum', '$18', 'Holds the visual weight under low light.'),
+          ],
+          optional: [
+            product('sku-night-contour', 'Micro Sculpt Powder', 'Powder contour', 'Soft Taupe', '$18', 'For added bone structure if needed.'),
+          ],
+          upgrade: [
+            product('sku-night-setting', 'No-Shift Setting Powder', 'Setting powder', 'Translucent', '$23', 'Holds clean edges through warm rooms.'),
+          ],
+        },
+      },
+    ],
+    shareCard: {
+      title: 'My AI Date Night Beauty Plan',
+      subtitle: 'Soft glam that actually fits me.',
+      badge: 'Date-night mood',
+      hashtags: ['#DateNightMakeup', '#SoftGlam', '#AIBeautyStylist'],
+      cta: 'Copy your plan to share, or open the full tutorial.',
+    },
+  },
+
+  photo: {
+    diagnosis: {
+      title: 'Neutral undertone · Camera-ready contrast fit',
+      summary: 'On camera you benefit from a touch more brow, eye and lip contrast — but base must stay light, or it reads masked.',
+      faceNotes: [
+        'Cameras eat structure; you need a bit more definition than IRL',
+        'Brow, eye and lip all need presence to balance',
+        'Heavy base flattens you on screen',
+      ],
+    },
+    looks: [
+      {
+        id: 'camera-glow',
+        name: 'Camera Glow',
+        reason: 'For everyday photos, headshots and social posts.',
+        scenario: 'Photo / Social',
+        difficulty: 'Beginner',
+        minutes: '9 min',
+        focus: 'Defined features, controlled glow',
+        finish: 'Sharp natural',
+        tutorialHeadline: 'More dimension on camera, still natural in person.',
+        tutorialSteps: [
+          step(
+            'Even tone, keep texture',
+            'Cameras need a more even base — but too much coverage looks fake on screen.',
+            "Don't chase a fully matte, fully covered face.",
+            'In photos the skin reads even; in person it still looks like skin.',
+          ),
+          step(
+            'Brow framing matters most',
+            'Strengthen peak and tail so the camera can read your face shape.',
+            "Don't draw blocky angular brows.",
+            'Photos read framed; in the mirror brows still feel like yours.',
+          ),
+          step(
+            'Sharpen eye-tail and Cupid\'s bow',
+            'These edges are what cameras lock onto. Refine them.',
+            "Don't sharpen everything at once.",
+            'Just clarifying eye-tail and lip peak makes the whole face crisper.',
+          ),
+          step(
+            'Cheekbone highlight for camera lift',
+            'A small placement adds depth without on-skin shimmer.',
+            "Don't use chunky glitter highlights.",
+            'Selfies show structure; you don\'t see "shine".',
+          ),
+        ],
+        commonMistakes: [
+          'Heavy base flattens cameras',
+          'Hard brows steal the face',
+          'Wrong highlight texture reads oily',
+        ],
+        selfChecks: [
+          'Selfies feel sharper, not painted',
+          'Real-life version is still wearable',
+          'Highlight adds bone structure, not pores',
+        ],
+        kit: {
+          mustHave: [
+            product('sku-photo-foundation', 'Second Skin Foundation', 'Foundation', 'Neutral Beige', '$20', 'Cameras want more even tone.'),
+            product('sku-photo-brow', 'Structure Brow Pencil', 'Brow pencil', 'Neutral Brown', '$13', 'Brows define face shape on camera.'),
+            product('sku-photo-highlight', 'Lens Lift Highlighter', 'Highlight', 'Soft Champagne', '$18', 'Adds dimension without going to glitter.'),
+          ],
+          optional: [
+            product('sku-photo-highlight2', 'Glow Dust Highlighter', 'Highlight', 'Champagne', '$17', 'For selfies and content shots.'),
+          ],
+          upgrade: [
+            product('sku-photo-contour', 'Soft Focus Sculpt Palette', 'Sculpt palette', 'Neutral Sculpt', '$26', 'For headshots and covers.'),
+          ],
+        },
+      },
+      {
+        id: 'editorial-soft',
+        name: 'Editorial Soft Focus',
+        reason: 'A more brand-ready, refined editorial feel.',
+        scenario: 'Portrait / Content',
+        difficulty: 'Intermediate',
+        minutes: '15 min',
+        focus: 'Bone structure, lip texture',
+        finish: 'Soft-focus refined',
+        tutorialHeadline: 'Brand-style restraint instead of dramatic glam.',
+        tutorialSteps: [
+          step(
+            'Build the socket with cool taupe',
+            'Forget saturation — get the structure right first.',
+            "Don't let color overpower the feature itself.",
+            'On camera the socket has structure with no obvious color block.',
+          ),
+          step(
+            'Soft nose contour, careful blend',
+            'Sculpt with shadow, not visible lines.',
+            "Don't draw two parallel lines.",
+            'In photos the nose reads taller; IRL nothing looks drawn on.',
+          ),
+          step(
+            'Tighten the lip line',
+            'Editorial polish often comes from edge-work, not color.',
+            "Don't reach for a saturated bright shade.",
+            'Lip outline is well-defined in the final image.',
+          ),
+          step(
+            'Light highlight, leave room to breathe',
+            'A small reflection lets the camera do the rest.',
+            "Don't chase glow on the entire face.",
+            'Final image reads soft-focus, not shiny.',
+          ),
+        ],
+        commonMistakes: [
+          'Hard contour kills the editorial feel',
+          'Too many accents look like a beauty ad',
+          'Sloppy lip line ruins the final image',
+        ],
+        selfChecks: [
+          'Reads brand, not influencer',
+          'Structure is present without exaggeration',
+          'Lip line holds up under crop',
+        ],
+        kit: {
+          mustHave: [
+            product('sku-editorial-shadow', 'Studio Taupe Palette', 'Eyeshadow', 'Neutral Taupe', '$29', 'Brand-style imagery leans on structural neutrals.'),
+            product('sku-editorial-lipliner', 'Velvet Edge Lip Pencil', 'Lip pencil', 'Beige Mauve', '$14', 'Holds the lip outline in-frame.'),
+            product('sku-editorial-setting', 'Soft Blur Fixer', 'Setting fixer', 'Photo Finish', '$24', 'Helps the look stay clean over the shoot.'),
+          ],
+          optional: [
+            product('sku-editorial-contour', 'Liquid Sculpt', 'Liquid contour', 'Stone Taupe', '$19', 'For the more practiced.'),
+          ],
+          upgrade: [
+            product('sku-editorial-highlight', 'Pro Light Balm', 'Pro highlight', 'Silk Pearl', '$28', 'For content shoots and brand imagery.'),
+          ],
+        },
+      },
+      {
+        id: 'flash-proof',
+        name: 'Flash-proof Fresh',
+        reason: 'For flash photography and bright venues.',
+        scenario: 'Event / Bright light',
+        difficulty: 'Intermediate',
+        minutes: '11 min',
+        focus: 'Oil control, layered structure, clean edges',
+        finish: 'Clean semi-matte',
+        tutorialHeadline: 'No flashback, no powdery face, structure intact under harsh light.',
+        tutorialSteps: [
+          step(
+            'Control oil, then go light',
+            'Stabilize the surface before adding base layers.',
+            "Don't pile on foundation as your first move.",
+            'Base is bonded to the skin without dryness or shine.',
+          ),
+          step(
+            'Refine nose and under-eye',
+            'These are the spots flash exposes most.',
+            "Don't extend concealer too far.",
+            'On flashed photos there are no visible layers or creases.',
+          ),
+          step(
+            'Avoid heavy shimmer; keep semi-matte structure',
+            'Let light shape the face naturally, instead of forcing glow.',
+            "Don't highlight forehead and mid-face together.",
+            'Flash photos read clean, not white-blown.',
+          ),
+          step(
+            'Lip color holds the look',
+            'Bright light needs a lip with weight to anchor the face.',
+            "Don't pick a too-pale nude; flash will eat it.",
+            'In photos the lip still has presence, in line with the look.',
+          ),
+        ],
+        commonMistakes: [
+          'Heavy highlight under flash flips the look',
+          'Untreated oil reads dirty',
+          'Pale lip drops out',
+        ],
+        selfChecks: [
+          'Flash photos do not white-blow',
+          'Base stays seated',
+          'Lip carries the face',
+        ],
+        kit: {
+          mustHave: [
+            product('sku-flash-primer', 'Shine Control Primer', 'Mattifying primer', 'Clear', '$16', 'Anchors the makeup before bright light.'),
+            product('sku-flash-concealer', 'Flex Wear Concealer', 'Concealer', 'Neutral Light', '$15', 'Best in nose and under-eye spots.'),
+            product('sku-flash-lip', 'Semi Matte Lip Color', 'Lipstick', 'Warm Rosewood', '$17', 'Holds visual weight under flash.'),
+          ],
+          optional: [
+            product('sku-flash-mist', 'Lock-in Setting Mist', 'Setting mist', 'Matte Hold', '$18', 'For long events.'),
+          ],
+          upgrade: [
+            product('sku-flash-powder', 'Soft Blur Compact', 'Soft-focus powder', 'Translucent', '$24', 'For continuous flash sessions.'),
+          ],
+        },
+      },
+    ],
+    shareCard: {
+      title: 'My Camera-ready Makeup Diagnosis',
+      subtitle: 'Sharper on camera, still natural in real life.',
+      badge: 'Photo-ready finish',
+      hashtags: ['#CameraReady', '#MakeupDiagnosis', '#BeautyCreator'],
+      cta: 'Copy your plan to share, or open the full tutorial.',
+    },
+  },
+};
+
+
+// ─── ZH catalog (kept for /zh route or AI prompt overrides) ───────────────
+const planMapZh: Record<string, TryOnPlan> = {
+  office: {
+    diagnosis: {
+      title: '暖中性肤调 · 柔结构妆',
       summary: '你的五官更适合“低浓度但有结构”的妆容路线，重点不是堆颜色，而是提气色和清晰度。',
       faceNotes: ['底妆适合轻薄提亮', '眉眼结构比大面积色彩更关键', '唇颊同色能让整体更干净高级'],
     },
@@ -105,80 +717,8 @@ const planMap: Record<string, TryOnPlan> = {
             product('sku-office-brow', 'Precision Brow Pencil', '眉笔', 'Soft Brown', '$12', '快速把眉形理顺，几秒钟就能提升精神感。'),
             product('sku-office-lip', 'Rosy Nude Lip Cream', '口红', 'Dusty Rose', '$16', '豆沙裸粉最适合提升气色且不挑场景。'),
           ],
-          optional: [
-            product('sku-office-shadow', 'Taupe Wash Mono', '单色眼影', 'Warm Taupe', '$11', '需要更利落时，少量铺在眼窝就够。'),
-            product('sku-office-blush', 'Soft Flush Balm', '膏状腮红', 'Muted Petal', '$14', '可以把唇颊色做轻微统一。'),
-          ],
-          upgrade: [
-            product('sku-office-corrector', 'Under-eye Corrector Duo', '遮瑕盘', 'Peach + Neutral', '$24', '适合经常熬夜、眼下偏灰的人。'),
-            product('sku-office-glow', 'Micro Glow Stick', '高光膏', 'Champagne', '$22', '用于局部点亮，镜头里更显精神。'),
-          ],
-        },
-      },
-      {
-        id: 'quiet-luxury',
-        name: 'Quiet Luxury Taupe',
-        reason: '更适合想显得干练、精致但不过分浓妆的用户。',
-        scenario: '面试 / 会客',
-        difficulty: 'Intermediate',
-        minutes: '12 min',
-        focus: '轮廓、眼部层次',
-        finish: '香槟灰棕',
-        tutorialHeadline: '把“干练精致”做出来，但不留下浓妆痕迹。',
-        tutorialSteps: [
-          step('用灰棕色把眼窝轮廓先搭好', '从眼尾向前薄薄晕开，只做轻轮廓，不做厚重烟熏。', '不要把深色压到整个上眼皮。', '眼睛张开时有立体度，但闭眼没有大面积色块。'),
-          step('加强睫毛根部，让眼神更利落', '在根部叠加细线，再把睫毛刷整齐，重点是“干净锐利”。', '不要画粗上扬眼线，容易显攻击性。', '镜子里看，眼神更聚焦，但妆感没有明显加重。'),
-          step('鼻梁和颧骨只做微弱提亮', '高光控制在骨相转折点，不是整个面中都发光。', '不要同时做过重修容和高光。', '侧脸能看到结构提升，正面没有闪片感。'),
-          step('裸棕唇色做最后定调', '选择低饱和棕裸色，让整体显得有质感但不过分成熟。', '不要用过深咖色，会显疲惫。', '唇部边缘是否清晰，且和眼妆在同一灰棕体系。'),
-        ],
-        commonMistakes: ['灰棕色过深容易显脏', '修容和高光同时过重会显老', '唇色太深会破坏轻奢感'],
-        selfChecks: ['面试场景下妆面是否更利落可信', '眼神是否更集中而非更凶', '整体色调是否统一在灰棕中性范围'],
-        kit: {
-          mustHave: [
-            product('sku-quiet-shadow', 'Contour Taupe Quad', '眼影盘', 'Taupe Edit', '$28', '灰棕轮廓是这套妆容的核心骨架。'),
-            product('sku-quiet-mascara', 'Root Lift Mascara', '睫毛膏', 'Espresso', '$17', '比大眼线更适合做精致存在感。'),
-            product('sku-quiet-lip', 'Velvet Nude Lipstick', '口红', 'Cashmere Brown', '$19', '低饱和棕裸能稳住整体高级感。'),
-          ],
-          optional: [
-            product('sku-quiet-contour', 'Soft Sculpt Cream', '修容膏', 'Neutral Taupe', '$20', '适合骨相本来偏平的人加强结构。'),
-            product('sku-quiet-browgel', 'Feather Brow Gel', '眉胶', 'Ash Brown', '$13', '能让眉毛更有毛流感。'),
-          ],
-          upgrade: [
-            product('sku-quiet-bright', 'Precision Brightener', '提亮笔', 'Vanilla Beige', '$23', '适合眼下容易疲惫的人做局部提亮。'),
-            product('sku-quiet-setting', 'Blur Setting Mist', '定妆喷雾', 'Soft Matte', '$21', '让整体更干净、持久，适合长会议。'),
-          ],
-        },
-      },
-      {
-        id: 'fresh-minimal',
-        name: 'Fresh Minimal',
-        reason: '适合第一次尝试化妆的新手，容错率最高。',
-        scenario: '新手日常',
-        difficulty: 'Beginner',
-        minutes: '6 min',
-        focus: '肤色均匀、唇颊呼应',
-        finish: '清透自然',
-        tutorialHeadline: '少步骤、低风险，但立刻更有精神。',
-        tutorialSteps: [
-          step('局部遮瑕替代厚底妆', '只修暗沉和瑕疵明显处，让大面积皮肤保持真实。', '不要先铺满底妆再去盖瑕疵。', '看起来像皮肤状态变好了，而不是像上了一层膜。'),
-          step('淡扫腮红，把气色提起来', '从面中稍高位置轻扫，颜色要比你想象中再淡一点。', '不要涂到鼻头和面中过多区域。', '笑起来时气色更好，但脸没有“红一块”。'),
-          step('润色唇膏做统一情绪色', '先涂薄一层，再把边缘拍开，显得更自然。', '不要追求边缘过于锋利。', '嘴唇看起来更健康，和腮红是同一个情绪方向。'),
-          step('检查眼下、鼻翼、唇缘是否干净', '最后只做清洁边界，不要再继续叠产品。', '不要临门一脚又补很多颜色。', '镜子里第一眼感受到的是“清爽”，不是“画了很多”。'),
-        ],
-        commonMistakes: ['新手容易补太多步骤', '腮红下手过重会显肿', '润色唇膏叠太多会显油'],
-        selfChecks: ['是否 6 分钟内可重复完成', '远看是否只觉得气色更好', '卸妆前不觉得有负担'],
-        kit: {
-          mustHave: [
-            product('sku-fresh-concealer', 'Skin Match Concealer', '遮瑕', 'Light Neutral', '$15', '局部修饰比全脸底妆更适合新手。'),
-            product('sku-fresh-blush', 'Cloud Cream Blush', '腮红', 'Nude Peach', '$14', '手指就能拍开，容错率高。'),
-            product('sku-fresh-lip', 'Tinted Care Balm', '润色唇膏', 'Rose Tea', '$10', '颜色轻、补妆方便，日常压力最小。'),
-          ],
-          optional: [
-            product('sku-fresh-brow', 'Soft Brow Mascara', '染眉膏', 'Natural Brown', '$12', '适合本身眉毛不错，只想更整齐的人。'),
-          ],
-          upgrade: [
-            product('sku-fresh-cushion', 'Bare Cushion Compact', '气垫粉底', 'Warm Ivory', '$25', '需要更完整妆面时可替代局部遮瑕。'),
-          ],
+          optional: [],
+          upgrade: [],
         },
       },
     ],
@@ -190,242 +730,30 @@ const planMap: Record<string, TryOnPlan> = {
       cta: '复制分享文案给朋友，或者继续进入教程细化动作。',
     },
   },
-  date: {
-    diagnosis: {
-      title: 'Cool olive undertone · Soft glam fit',
-      summary: '你更适合柔莓、藕粉和低饱和冷调路线，既显温柔也不会让肤色发灰发黄。',
-      faceNotes: ['冷调柔莓比暖橘更提气色', '眼下和唇部最值得先优化', '低饱和轮廓会更显高级'],
-    },
-    looks: [
-      {
-        id: 'soft-glam',
-        name: 'Soft Glam Berry',
-        reason: '最适合约会的温柔精致路线。',
-        scenario: '约会 / 晚餐',
-        difficulty: 'Beginner',
-        minutes: '10 min',
-        focus: '唇颊呼应、眼下气色',
-        finish: '柔莓丝绒',
-        tutorialHeadline: '让人感觉精致又温柔，而不是“妆很重”。',
-        tutorialSteps: [
-          step('底妆维持轻透，先保留皮肤呼吸感', '约会妆的重点是近距离耐看，所以只修肤色不做厚遮瑕。', '不要为了完美而把皮肤纹理全部盖掉。', '近镜看仍像好状态皮肤，而不是舞台底妆。'),
-          step('低饱和粉棕打底眼窝', '颜色铺在眼窝和眼尾，让眼神更温柔有层次。', '不要用高饱和玫红直接上眼。', '眼妆存在感柔和，不会先看到“颜色”。'),
-          step('腮红横向轻扫，营造柔和氛围', '把腮红和唇色控制在同一柔莓体系，氛围感会更完整。', '不要把腮红打太靠下，容易显脸垮。', '笑起来时脸部轮廓仍然轻盈。'),
-          step('柔莓唇色集中提气色', '唇中央稍深、边缘稍柔，会更有氛围感。', '不要画出过硬的唇线边界。', '嘴唇有存在感，但不会压过眼神。'),
-        ],
-        commonMistakes: ['莓色太深会压肤色', '腮红位置过低会显疲惫', '上眼颜色太重会失去温柔感'],
-        selfChecks: ['和现实光线下相比，镜头里是否更柔和', '唇颊是否属于同一冷调柔莓体系', '近距离看边界是否足够干净'],
-        kit: {
-          mustHave: [
-            product('sku-date-shadow', 'Petal Taupe Duo', '眼影', 'Rose Taupe', '$16', '粉棕打底是这套妆的氛围来源。'),
-            product('sku-date-lip', 'Berry Blur Lip', '口红', 'Soft Berry', '$18', '能给唇部最直接的温柔存在感。'),
-            product('sku-date-blush', 'Liquid Bloom Blush', '液体腮红', 'Cool Rose', '$15', '少量就能让面中活起来。'),
-          ],
-          optional: [
-            product('sku-date-liner', 'Brown Silk Liner', '眼线', 'Mocha', '$13', '适合想让眼尾更精致的人。'),
-          ],
-          upgrade: [
-            product('sku-date-lashes', 'Soft Cluster Lash', '假睫毛', 'Natural Lift', '$22', '晚餐或夜景场景更显精致。'),
-            product('sku-date-highlight', 'Melt Glow Balm', '高光膏', 'Rose Pearl', '$20', '适合做面中小范围提亮。'),
-          ],
-        },
-      },
-      {
-        id: 'clean-date',
-        name: 'Clean Date Glow',
-        reason: '适合喜欢更自然、干净气质的用户。',
-        scenario: '白天约会 / 咖啡馆',
-        difficulty: 'Beginner',
-        minutes: '7 min',
-        focus: '水光感、干净皮肤感',
-        finish: '清透奶油肌',
-        tutorialHeadline: '像自己状态很好，而不是专门盛装打扮。',
-        tutorialSteps: [
-          step('局部提亮和少量遮瑕', '让肤色先看起来干净，再决定要不要加更多步骤。', '不要一开始就追求无瑕疵。', '脸部最暗的地方变亮，但整体妆感仍然轻。'),
-          step('只加强睫毛根部存在感', '刷整齐睫毛根部，比画明显眼线更自然。', '不要上下睫毛都刷得很厚。', '眼睛更有神，但看不出具体做了什么。'),
-          step('裸粉唇颊统一', '用一支唇颊两用产品最快建立“干净约会妆”的情绪色。', '不要腮红太偏橘。', '唇颊色相接近，整体更协调。'),
-          step('定点提亮鼻梁与内眼角', '只点亮最需要反光的位置，让画面更通透。', '不要整块珠光打在眼皮中央。', '转头时能看到轻微光泽，但正面不抢眼。'),
-        ],
-        commonMistakes: ['为了上镜补太多步骤', '高光面积太大显油', '唇颊颜色不统一会显杂乱'],
-        selfChecks: ['白天自然光下是否清爽', '离近看时皮肤是否仍自然', '是否像“状态很好”的自己'],
-        kit: {
-          mustHave: [
-            product('sku-clean-concealer', 'Bright Touch Concealer', '遮瑕', 'Neutral Peach', '$14', '快速把眼下和嘴角拉回干净状态。'),
-            product('sku-clean-duo', 'Lip + Cheek Tint', '唇颊两用', 'Bare Rose', '$17', '一支完成唇颊统一，最省时间。'),
-            product('sku-clean-mascara', 'Clean Lift Mascara', '睫毛膏', 'Soft Brown', '$15', '只做根部存在感更轻盈。'),
-          ],
-          optional: [
-            product('sku-clean-highlight', 'Dew Point Highlighter', '提亮液', 'Moon Glow', '$16', '适合喜欢通透感但不想显粉感的人。'),
-          ],
-          upgrade: [
-            product('sku-clean-shimmer', 'Fine Pearl Shadow', '细闪眼影', 'Champagne Pink', '$19', '适合白天咖啡馆或约会拍照。'),
-          ],
-        },
-      },
-      {
-        id: 'night-mauve',
-        name: 'Night Mauve Focus',
-        reason: '适合偏夜晚或更有氛围感的场景。',
-        scenario: '夜间约会 / 小聚',
-        difficulty: 'Intermediate',
-        minutes: '14 min',
-        focus: '眼尾深度、唇部存在感',
-        finish: '灰粉紫调',
-        tutorialHeadline: '让五官在夜晚灯光下更有存在感，但边界仍然干净。',
-        tutorialSteps: [
-          step('眼尾做轻微加深', '重点放在后三分之一眼尾，制造更聚焦的轮廓。', '不要整圈围黑。', '张眼时眼神更深邃，但边界依然柔和。'),
-          step('用灰粉色统一眼唇', '眼影和唇色选择同一冷调家族，氛围会更高级。', '不要眼影偏紫而口红偏橘。', '整体色调是否从眼到唇连贯。'),
-          step('加强颧骨提亮，但控制面积', '只在颧骨最高点和鼻梁中段做反光。', '不要整个苹果肌都闪。', '灯光下有立体感，但不显浮粉。'),
-          step('最后检查边界，避免显脏', '棉棒清理眼尾和唇角边缘，让妆面更“完成”。', '不要继续叠更多颜色。', '远看五官集中，近看边界干净。'),
-        ],
-        commonMistakes: ['夜晚场景容易下手过重', '冷调眼唇一旦不统一会显脏', '高光范围大时会放大毛孔'],
-        selfChecks: ['夜间灯光下是否依然有层次', '唇色是否稳住整体氛围感', '边界是否足够干净利落'],
-        kit: {
-          mustHave: [
-            product('sku-night-shadow', 'Mauve Smoke Palette', '眼影盘', 'Dusty Mauve', '$27', '夜间氛围感主要靠这盘色系。'),
-            product('sku-night-liner', 'Lip Shape Pencil', '唇线笔', 'Cool Rosewood', '$12', '能让唇部更有存在感且不乱。'),
-            product('sku-night-lip', 'Soft Matte Lip', '口红', 'Muted Plum', '$18', '夜间光线里更能稳住妆面重心。'),
-          ],
-          optional: [
-            product('sku-night-contour', 'Micro Sculpt Powder', '修容', 'Soft Taupe', '$18', '适合需要加强骨相的人。'),
-          ],
-          upgrade: [
-            product('sku-night-setting', 'No-Shift Setting Powder', '定妆粉', 'Translucent', '$23', '夜间和室内暖光下更能保持干净边界。'),
-          ],
-        },
-      },
-    ],
-    shareCard: {
-      title: 'My AI Date Night Beauty Plan',
-      subtitle: 'Soft glam that actually fits me.',
-      badge: 'Date-night mood',
-      hashtags: ['#DateNightMakeup', '#SoftGlam', '#AIBeautyStylist'],
-      cta: '先复制分享卡文案，再继续把动作细化到教程里。',
-    },
-  },
-  photo: {
-    diagnosis: {
-      title: 'Neutral undertone · Camera-ready contrast fit',
-      summary: '你适合在镜头前适度增强眉眼与唇部对比，让五官更清晰，但不能过厚。',
-      faceNotes: ['镜头里需要更明确的轮廓', '眉眼和唇部都要有存在感', '底妆仍要避免面具感'],
-    },
-    looks: [
-      {
-        id: 'camera-glow',
-        name: 'Camera Glow',
-        reason: '适合日常拍照和头像场景。',
-        scenario: '拍照 / 社媒',
-        difficulty: 'Beginner',
-        minutes: '9 min',
-        focus: '轮廓提亮、眉眼清晰',
-        finish: '清晰微光',
-        tutorialHeadline: '让镜头里更立体，但现实里仍然自然。',
-        tutorialSteps: [
-          step('统一肤色但保留皮肤纹理', '上镜需要更均匀，但过厚会让镜头更假。', '不要盲目追求全哑光高遮瑕。', '照片里肤色整齐，但近看仍像皮肤。'),
-          step('眉毛增强立体感', '重点加强眉峰和眉尾的结构，让镜头更容易识别轮廓。', '不要画成硬朗方眉。', '照片里眉眼更有框架，但不显僵。'),
-          step('眼尾与唇峰做精修', '镜头最吃这些边界的清晰度，所以把轮廓修整到位。', '不要同时把所有地方都做深。', '只要眼尾和唇峰精致，五官就会更清晰。'),
-          step('颧骨提亮提升上镜感', '小面积高光能增加面部层次和镜头反光。', '不要使用大颗粒闪片。', '自拍里能看到结构提升，而不是油光。'),
-        ],
-        commonMistakes: ['上镜妆最容易因为遮瑕过重而假', '眉形太硬会抢脸', '提亮选错质地会像出油'],
-        selfChecks: ['自拍里五官是否更聚焦', '现实看妆感是否还能接受', '高光是否只提升骨相不放大毛孔'],
-        kit: {
-          mustHave: [
-            product('sku-photo-foundation', 'Second Skin Foundation', '粉底', 'Neutral Beige', '$20', '镜头前需要更整齐的肤色基础。'),
-            product('sku-photo-brow', 'Structure Brow Pencil', '眉笔', 'Neutral Brown', '$13', '照片里眉毛决定整体框架。'),
-            product('sku-photo-highlight', 'Lens Lift Highlighter', '提亮产品', 'Soft Champagne', '$18', '帮助面部在镜头里更有转折。'),
-          ],
-          optional: [
-            product('sku-photo-highlight2', 'Glow Dust Highlighter', '高光', 'Champagne', '$17', '适合自拍或内容图增加精致度。'),
-          ],
-          upgrade: [
-            product('sku-photo-contour', 'Soft Focus Sculpt Palette', '轮廓盘', 'Neutral Sculpt', '$26', '适合拍头像或封面图时加强结构。'),
-          ],
-        },
-      },
-      {
-        id: 'editorial-soft',
-        name: 'Editorial Soft Focus',
-        reason: '更偏品牌感和高级感的拍照路线。',
-        scenario: '写真 / 内容图',
-        difficulty: 'Intermediate',
-        minutes: '15 min',
-        focus: '轮廓、唇部质感',
-        finish: '柔焦高级感',
-        tutorialHeadline: '像品牌图一样的克制精致，不靠大浓妆取胜。',
-        tutorialSteps: [
-          step('眼窝灰棕打底，建立拍摄轮廓', '不要追求彩度，先把结构做对。', '不要让颜色盖过五官本身。', '镜头里眼窝更立体，但没有明显重色。'),
-          step('鼻侧影轻塑形，注意过渡', '修容只做阴影关系，不做明显线条。', '不要把鼻影画成两条深线。', '照片里鼻梁更挺，但现实里也不突兀。'),
-          step('口红边缘精修，增强完成度', '高级感常常来自边界处理，而不是颜色本身。', '不要用高饱和亮色破坏整体。', '唇部轮廓在照片里更明确。'),
-          step('高光点到为止，留下柔焦空间', '只做一点反光，给镜头留出层次。', '不要全脸追光。', '成片里是柔焦感，不是闪亮感。'),
-        ],
-        commonMistakes: ['修容线条太硬会失去高级感', '颜色太多会像商业彩妆海报', '唇边不干净会很影响成片'],
-        selfChecks: ['成片里是否有品牌感而非网感', '轮廓是否成立但不夸张', '嘴唇边缘是否足够利落'],
-        kit: {
-          mustHave: [
-            product('sku-editorial-shadow', 'Studio Taupe Palette', '眼影', 'Neutral Taupe', '$29', '品牌感拍摄最依赖结构色。'),
-            product('sku-editorial-lipliner', 'Velvet Edge Lip Pencil', '唇线笔', 'Beige Mauve', '$14', '让嘴唇在画面里更完整。'),
-            product('sku-editorial-setting', 'Soft Blur Fixer', '定妆产品', 'Photo Finish', '$24', '帮助妆面更稳定、更适合拍摄。'),
-          ],
-          optional: [
-            product('sku-editorial-contour', 'Liquid Sculpt', '液体修容', 'Stone Taupe', '$19', '适合熟练度更高时使用。'),
-          ],
-          upgrade: [
-            product('sku-editorial-highlight', 'Pro Light Balm', '专业高光', 'Silk Pearl', '$28', '更适合内容拍摄或品牌图。'),
-          ],
-        },
-      },
-      {
-        id: 'flash-proof',
-        name: 'Flash-proof Fresh',
-        reason: '更适合有闪光灯或强光的场景。',
-        scenario: '活动 / 强光',
-        difficulty: 'Intermediate',
-        minutes: '11 min',
-        focus: '控油、层次、边界干净',
-        finish: '干净半雾面',
-        tutorialHeadline: '强光下不反白、不浮粉，也不失去五官层次。',
-        tutorialSteps: [
-          step('先控油再轻薄上妆', '强光场景最怕底妆移位，所以顺序先稳住肤表。', '不要上来就厚铺粉底。', '底妆贴合且没有明显干裂或泛油。'),
-          step('重点修饰鼻翼和眼下', '这两个区域最容易在闪光灯下暴露边界和暗沉。', '不要把遮瑕大面积外扩。', '照片里看不到明显分层或卡纹。'),
-          step('避免过量珠光，保持半雾面层次', '让光线自己去塑造面部，而不是靠大面积高光。', '不要额头和面中都打亮。', '正面闪光照里脸部是干净而非发白。'),
-          step('用唇色提升整体完成度', '在强光下，唇部需要一点重量来平衡五官。', '不要选过浅裸色，否则容易被吃掉。', '照片里唇部依然有存在感，且和整体风格统一。'),
-        ],
-        commonMistakes: ['强光场景高光太多会直接翻车', '控油不到位会显脏', '唇色过浅会让整体失焦'],
-        selfChecks: ['闪光灯下是否没有明显反白', '底妆边界是否贴合', '唇部是否稳住整体完成度'],
-        kit: {
-          mustHave: [
-            product('sku-flash-primer', 'Shine Control Primer', '控油妆前', 'Clear', '$16', '先稳住出油，才谈得上强光妆面。'),
-            product('sku-flash-concealer', 'Flex Wear Concealer', '遮瑕', 'Neutral Light', '$15', '用在鼻翼和眼下最有效。'),
-            product('sku-flash-lip', 'Semi Matte Lip Color', '口红', 'Warm Rosewood', '$17', '能在强光场景下保留唇部重心。'),
-          ],
-          optional: [
-            product('sku-flash-mist', 'Lock-in Setting Mist', '定妆喷雾', 'Matte Hold', '$18', '适合活动时长更久的场景。'),
-          ],
-          upgrade: [
-            product('sku-flash-powder', 'Soft Blur Compact', '柔焦粉饼', 'Translucent', '$24', '更适合活动现场或闪光灯连拍。'),
-          ],
-        },
-      },
-    ],
-    shareCard: {
-      title: 'My Camera-ready Makeup Diagnosis',
-      subtitle: 'Sharper on camera, still natural in real life.',
-      badge: 'Photo-ready finish',
-      hashtags: ['#CameraReady', '#MakeupDiagnosis', '#BeautyCreator'],
-      cta: '把这张分享卡文案带走，再继续进教程打磨动作。',
-    },
-  },
 };
 
-export function buildTryOnPlan(scenario: string = 'office'): TryOnPlan {
-  return planMap[scenario] ?? planMap.office;
+// ─── Public API ───────────────────────────────────────────────────────────
+const catalogs: Record<Locale, Record<string, TryOnPlan>> = {
+  en: planMapEn,
+  // 缺失的 zh scenario 自动回退到 en，避免半英半中
+  zh: new Proxy(planMapZh, {
+    get(target, prop: string) {
+      return target[prop] ?? planMapEn[prop] ?? planMapEn.office;
+    },
+  }) as Record<string, TryOnPlan>,
+};
+
+export function buildTryOnPlan(scenario: string = 'office', locale: Locale = 'en'): TryOnPlan {
+  const map = catalogs[locale] ?? catalogs.en;
+  return map[scenario] ?? map.office;
 }
 
-export function getAllLooks(): TryOnLook[] {
-  return Object.values(planMap).flatMap((plan) => [...plan.looks]);
+export function getAllLooks(locale: Locale = 'en'): TryOnLook[] {
+  const map = catalogs[locale] ?? catalogs.en;
+  return Object.values(map).flatMap((plan) => [...plan.looks]);
 }
 
-export function findLookById(id?: string | null): TryOnLook | undefined {
+export function findLookById(id?: string | null, locale: Locale = 'en'): TryOnLook | undefined {
   if (!id) return undefined;
-  return getAllLooks().find((look) => look.id === id);
+  return getAllLooks(locale).find((look) => look.id === id);
 }

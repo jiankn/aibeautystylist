@@ -1,94 +1,95 @@
 /**
- * Gemini 3.5 Flash 多模态诊断 Provider
+ * Gemini Flash 多模态诊断 Provider
  *
  * 通过 HTTPS fetch 直接调用 Google Generative AI REST API，
  * 不引入 SDK 以保持 Cloudflare Worker 兼容性和最小 bundle 体积。
  */
 import { diagnosisResponseSchema, type DiagnosisResponse } from '../../schemas/diagnosisSchema';
-import type { TryOnPlan, TryOnLook } from '../../mockTryOn';
+import type { Locale, TryOnPlan } from '../../mockTryOn';
 import type { TryOnProvider } from './mockTryOnProvider';
 import { buildTryOnPlan, findLookById, getAllLooks } from '../../mockTryOn';
 
 // ─── Gemini API 配置 ───
-const GEMINI_MODEL = 'gemini-3.5-flash';
-const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-const REQUEST_TIMEOUT_MS = 15_000;
+const DEFAULT_GEMINI_MODEL = 'gemini-3.5-flash';
+const DEFAULT_GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+const DEFAULT_REQUEST_TIMEOUT_MS = 45_000;
 
-// ─── 系统提示词：约束 AI 返回精确的美妆诊断 JSON ───
-const SYSTEM_PROMPT = `你是一位专业的 AI 美妆顾问。用户会上传一张素颜自拍照。
+interface GeminiProviderOptions {
+  model?: string;
+  apiBase?: string;
+  timeoutMs?: number;
+  thinkingLevel?: string;
+}
+
+// ─── 系统提示词工厂：按 locale 强制语言一致 ───
+function buildSystemPrompt(locale: Locale): string {
+  if (locale === 'zh') {
+    return `你是一位专业的 AI 美妆顾问。用户会上传一张素颜自拍照。
 
 你的任务：
 1. 分析用户的肤色冷暖调（undertone）、脸型、五官特征
 2. 基于分析结果，为用户量身推荐 3 套不同场景的妆容方案
 3. 每套方案必须包含精确的唇色 HEX 色号（基于用户肤色推荐最适合的颜色）
 
-你必须严格按照以下 JSON Schema 返回结果，不要在 JSON 外添加任何文字：
+返回结构同英文 schema，但所有面向用户的字段（diagnosis.summary、faceNotes、reason、scenario、focus、finish、tutorialSteps、commonMistakes、selfChecks、product.category/shade/why、shareCard.cta）必须使用简体中文；id/difficulty/sku/price 等机器字段保持英文。返回纯 JSON，不要 markdown 代码块标记。`;
+  }
+  // English (default)
+  return `You are a professional AI beauty consultant. The user uploads a bare-face selfie.
+
+Your job:
+1. Analyse undertone, face shape and key features.
+2. Recommend 3 scenario-specific looks based on that analysis.
+3. Each look must include an accurate lip-color HEX value chosen for the user's complexion.
+
+Return STRICT JSON following this schema (no markdown fences, no extra prose):
 
 {
   "diagnosis": {
-    "title": "简洁的肤色/脸型诊断标题（英文）",
-    "summary": "对用户五官和肤色特征的中文概括（2-3 句话）",
-    "faceNotes": ["3-4 条针对性的中文美妆建议"]
+    "title": "concise diagnosis title (English)",
+    "summary": "2-3 sentence English summary of features and undertone",
+    "faceNotes": ["3-4 actionable English notes"]
   },
   "looks": [
     {
-      "id": "方案英文 slug（如 office-glow）",
-      "name": "方案英文名",
-      "reason": "为什么这个方案适合用户（中文）",
-      "scenario": "适用场景（中文）",
-      "difficulty": "Beginner 或 Intermediate",
-      "minutes": "预计耗时（如 8 min）",
-      "focus": "重点提升区域（中文）",
-      "finish": "妆面质感描述（中文）",
-      "lipColor": {
-        "hex": "#xxxxxx（适合用户肤色的唇色 HEX 色号）",
-        "opacity": 0.35,
-        "blendMode": "multiply"
-      },
-      "tutorialHeadline": "教程标题（中文）",
+      "id": "english-slug",
+      "name": "English look name",
+      "reason": "Why this look fits the user (English)",
+      "scenario": "Target scenario (English)",
+      "difficulty": "Beginner | Intermediate",
+      "minutes": "e.g. 8 min",
+      "focus": "Key focus area (English)",
+      "finish": "Finish description (English)",
+      "lipColor": { "hex": "#xxxxxx", "opacity": 0.35, "blendMode": "multiply" },
+      "tutorialHeadline": "English tagline",
       "tutorialSteps": [
-        {
-          "title": "步骤标题（中文）",
-          "detail": "详细操作说明（中文）",
-          "avoid": "常见错误提醒（中文）",
-          "selfCheck": "自检方法（中文）"
-        }
+        { "title": "English step", "detail": "English detail", "avoid": "English mistake to avoid", "selfCheck": "English self-check" }
       ],
-      "commonMistakes": ["常见错误（中文）"],
-      "selfChecks": ["整体自检点（中文）"],
+      "commonMistakes": ["English mistakes"],
+      "selfChecks": ["English self-checks"],
       "kit": {
-        "mustHave": [
-          {
-            "sku": "商品编码",
-            "name": "商品名（英文）",
-            "category": "品类（中文）",
-            "shade": "色号名",
-            "price": "参考价格（$）",
-            "why": "推荐理由（中文）"
-          }
-        ],
+        "mustHave": [ { "sku": "code", "name": "English product name", "category": "English category", "shade": "shade name", "price": "$xx", "why": "English reason" } ],
         "optional": [],
         "upgrade": []
       }
     }
   ],
   "shareCard": {
-    "title": "分享卡标题（英文）",
-    "subtitle": "分享卡副标题（英文）",
-    "badge": "场景标签（英文）",
-    "hashtags": ["#标签1", "#标签2"],
-    "cta": "引导用户分享或进入教程的中文文案"
+    "title": "English share title",
+    "subtitle": "English subtitle",
+    "badge": "English badge",
+    "hashtags": ["#English"],
+    "cta": "English share CTA"
   }
 }
 
-关键要求：
-- 3 套方案必须覆盖不同场景（如通勤、约会、拍照）
-- 唇色 hex 必须是适合用户肤色的真实可用色号，不能随意编造
-- 暖调肤色推荐暖色系唇色（偏橘/珊瑚/暖玫瑰），冷调推荐冷色系（偏莓/玫瑰/裸粉）
-- lipColor.opacity 建议 0.3-0.5 之间，blendMode 使用 "multiply"
-- tutorialSteps 每套方案 4-6 步
-- kit.mustHave 每套方案 3 个商品，optional 1-2 个，upgrade 1-2 个
-- 返回纯 JSON，不要 markdown 代码块标记`;
+Rules:
+- 3 looks must cover distinct scenarios (e.g. commute, date, photo).
+- lipColor.hex must be a real shade flattering the user's undertone (warm undertone → warm-leaning, cool undertone → cool-leaning).
+- lipColor.opacity in 0.3-0.5; blendMode is "multiply".
+- 4-6 tutorialSteps per look. mustHave 3 items, optional 1-2, upgrade 1-2.
+- ALL user-facing copy must be English. Do not mix Chinese.
+- Return JSON only. No markdown.`;
+}
 
 /**
  * 将自拍图片的 Base64 数据和场景信息发送给 Gemini，获取美妆诊断
@@ -98,25 +99,35 @@ async function callGeminiApi(
   photoBase64: string,
   scenario: string,
   experience: string,
+  locale: Locale = 'en',
+  options: GeminiProviderOptions = {},
 ): Promise<DiagnosisResponse> {
-  const url = `${GEMINI_API_BASE}/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+  const model = options.model?.trim() || DEFAULT_GEMINI_MODEL;
+  const apiBase = options.apiBase?.trim() || DEFAULT_GEMINI_API_BASE;
+  const timeoutMs = Number.isFinite(options.timeoutMs)
+    ? Number(options.timeoutMs)
+    : DEFAULT_REQUEST_TIMEOUT_MS;
+  const url = `${apiBase}/${model}:generateContent`;
 
   // 构建请求体：图片 + 文字
-  const userPrompt = `请分析这张素颜自拍照，用户希望获得适合"${scenario}"场景的妆容建议。用户化妆经验水平：${experience}。`;
+  const userPrompt = locale === 'zh'
+    ? `请分析这张素颜自拍照，用户希望获得适合"${scenario}"场景的妆容建议。用户化妆经验：${experience}。`
+    : `Please analyse this bare-face selfie. The user wants makeup guidance for the "${scenario}" scenario. Their experience level is "${experience}".`;
 
-  // 移除可能的 data:image/xxx;base64, 前缀
-  const cleanBase64 = photoBase64.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
+  const imageMatch = photoBase64.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+  const mimeType = imageMatch?.[1] ?? 'image/jpeg';
+  const cleanBase64 = imageMatch?.[2] ?? photoBase64;
 
   const requestBody = {
     system_instruction: {
-      parts: [{ text: SYSTEM_PROMPT }],
+      parts: [{ text: buildSystemPrompt(locale) }],
     },
     contents: [
       {
         parts: [
           {
             inline_data: {
-              mime_type: 'image/jpeg',
+              mime_type: mimeType,
               data: cleanBase64,
             },
           },
@@ -125,20 +136,33 @@ async function callGeminiApi(
       },
     ],
     generationConfig: {
-      response_mime_type: 'application/json',
-      temperature: 0.7,
-      maxOutputTokens: 4096,
+      responseFormat: {
+        text: {
+          mimeType: 'application/json',
+        },
+      },
+      maxOutputTokens: 8192,
+      ...(options.thinkingLevel
+        ? {
+            thinkingConfig: {
+              thinkingLevel: options.thinkingLevel.toUpperCase(),
+            },
+          }
+        : {}),
     },
   };
 
   // 带超时的请求
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
       body: JSON.stringify(requestBody),
       signal: controller.signal,
     });
@@ -217,29 +241,32 @@ function toTryOnPlan(response: DiagnosisResponse): TryOnPlan & { _lipColors: Rec
  * Gemini TryOnProvider —— 实现 TryOnProvider 接口
  * 当 AI_PROVIDER=gemini 时，由 tryOnService 路由到此 Provider
  */
-export function createGeminiProvider(apiKey: string): TryOnProvider & {
-  getPlanWithPhoto: (scenario: string, experience: string, photoBase64: string) => Promise<TryOnPlan & { _lipColors: Record<string, { hex: string; opacity: number; blendMode: string }> }>;
+export function createGeminiProvider(
+  apiKey: string,
+  options: GeminiProviderOptions = {},
+): TryOnProvider & {
+  getPlanWithPhoto: (scenario: string, experience: string, photoBase64: string, locale?: Locale) => Promise<TryOnPlan & { _lipColors: Record<string, { hex: string; opacity: number; blendMode: string }> }>;
 } {
   return {
     name: 'gemini',
 
     // 不带照片时降级到 mock（兼容现有调用方式）
-    async getPlan(scenario = 'office') {
-      return buildTryOnPlan(scenario);
+    async getPlan(scenario = 'office', locale: Locale = 'en') {
+      return buildTryOnPlan(scenario, locale);
     },
 
-    async getLookById(id) {
-      return findLookById(id);
+    async getLookById(id, locale: Locale = 'en') {
+      return findLookById(id, locale);
     },
 
-    async listLooks() {
-      return getAllLooks();
+    async listLooks(locale: Locale = 'en') {
+      return getAllLooks(locale);
     },
 
     // 核心新能力：带照片的 AI 诊断
-    async getPlanWithPhoto(scenario: string, experience: string, photoBase64: string) {
+    async getPlanWithPhoto(scenario: string, experience: string, photoBase64: string, locale: Locale = 'en') {
       return toTryOnPlan(
-        await callGeminiApi(apiKey, photoBase64, scenario, experience),
+        await callGeminiApi(apiKey, photoBase64, scenario, experience, locale, options),
       );
     },
   };

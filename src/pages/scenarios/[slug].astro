@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { scenarioPages, type ScenarioPage } from '../../data/scenarioPages';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return scenarioPages.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props as { page: ScenarioPage };
+---
+
+<BaseLayout title={`${page.title} | AI Beauty Stylist`} description={page.description} ogImage={page.image}>
+  <section class="section">
+    <div class="container hero-grid">
+      <div class="section-copy">
+        <span class="eyebrow">{page.eyebrow}</span>
+        <h1>{page.headline}</h1>
+        <p>{page.intro}</p>
+        <div class="cta-row">
+          <a class="btn" href={`/try-on?scenario=${page.tryOnScenario}`}>Try This Look</a>
+          <a class="btn btn-secondary" href="/tools/shade-finder">Check Lip Shade</a>
+        </div>
+      </div>
+      <div class="hero-visuals">
+        <div class="hero-img-main">
+          <img src={page.image} alt={page.title} loading="eager" />
+          <span class="hero-img-label">{page.eyebrow}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="container grid-cards grid-cards-2 top-gap">
+      <article class="card coach-card">
+        <span class="pill">Step Strategy</span>
+        <h3>What to do first</h3>
+        <ul class="check-list compact">
+          {page.steps.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+      <article class="card coach-card">
+        <span class="pill">Avoid</span>
+        <h3>Common mistakes</h3>
+        <ul class="check-list compact">
+          {page.avoid.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-visuals {
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero-img-main {
+    position: relative;
+    width: min(100%, 460px);
+    aspect-ratio: 3 / 4;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(62, 39, 39, 0.12);
+  }
+
+  .hero-img-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-img-label {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  @media (max-width: 900px) {
+    .hero-img-main {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+    }
+  }
+</style>

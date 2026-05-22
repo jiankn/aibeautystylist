@@ -1,6 +1,8 @@
-import type { TryOnLook, TryOnPlan } from '../mockTryOn';
+import type { Locale, TryOnLook, TryOnPlan } from '../mockTryOn';
 import { mockTryOnProvider } from '../providers/tryOn/mockTryOnProvider';
 import { createGeminiProvider } from '../providers/tryOn/geminiProvider';
+import type { RuntimeEnv } from '../cloudflare/runtime';
+import { getRuntimeValue } from '../cloudflare/runtime';
 
 export interface GenerateTryOnPlanInput {
   scenario?: string;
@@ -8,6 +10,8 @@ export interface GenerateTryOnPlanInput {
   hasPhoto?: boolean;
   /** 前端压缩后的 Base64 自拍照数据 */
   photoBase64?: string;
+  /** P0.1: locale-aware copy. Defaults to 'en'. */
+  locale?: Locale;
 }
 
 export interface GeneratedTryOnPlan extends TryOnPlan {
@@ -18,19 +22,19 @@ export interface GeneratedTryOnPlan extends TryOnPlan {
     hasPhoto: boolean;
     generatedAt: string;
     provider: string;
-    /** 是否因为 AI 调用失败而降级到了 mock 数据 */
     fallback: boolean;
-    /** 降级原因（仅 fallback=true 时有值） */
     fallbackReason?: string;
+    locale: Locale;
   };
 }
 
 /**
  * 根据环境变量 AI_PROVIDER 选择 Provider
- * 当前仅支持 gemini 和 mock，未来可扩展 claude / openai
  */
-function getTryOnProvider(apiKey?: string) {
-  const providerName = import.meta.env.AI_PROVIDER ?? 'mock';
+function getTryOnProvider(runtimeEnv?: RuntimeEnv) {
+  const providerName = getRuntimeValue(runtimeEnv, 'AI_PROVIDER') ?? import.meta.env.AI_PROVIDER ?? 'mock';
+  const apiKey = getRuntimeValue(runtimeEnv, 'GEMINI_API_KEY') ?? import.meta.env.GEMINI_API_KEY;
+  const timeoutValue = getRuntimeValue(runtimeEnv, 'GEMINI_TIMEOUT_MS') ?? import.meta.env.GEMINI_TIMEOUT_MS;
 
   switch (providerName) {
     case 'gemini':
@@ -38,41 +42,47 @@ function getTryOnProvider(apiKey?: string) {
         console.warn('[tryOnService] AI_PROVIDER=gemini 但 GEMINI_API_KEY 未配置，降级到 mock');
         return mockTryOnProvider;
       }
-      return createGeminiProvider(apiKey);
-    // 未来扩展：
-    // case 'claude': return createClaudeProvider(apiKey);
+      return createGeminiProvider(apiKey, {
+        model: getRuntimeValue(runtimeEnv, 'GEMINI_MODEL') ?? import.meta.env.GEMINI_MODEL,
+        apiBase: getRuntimeValue(runtimeEnv, 'GEMINI_API_BASE') ?? import.meta.env.GEMINI_API_BASE,
+        timeoutMs: timeoutValue ? Number(timeoutValue) : undefined,
+        thinkingLevel: getRuntimeValue(runtimeEnv, 'GEMINI_THINKING_LEVEL') ?? import.meta.env.GEMINI_THINKING_LEVEL,
+      });
     default:
       return mockTryOnProvider;
   }
 }
 
-export function getTryOnProviderName() {
-  return (import.meta.env.AI_PROVIDER ?? 'mock') as string;
+export function getTryOnProviderName(runtimeEnv?: RuntimeEnv) {
+  return (getRuntimeValue(runtimeEnv, 'AI_PROVIDER') ?? import.meta.env.AI_PROVIDER ?? 'mock') as string;
 }
+
+const normaliseLocale = (raw?: string): Locale => (raw === 'zh' ? 'zh' : 'en');
 
 /**
  * 生成试妆方案 —— 核心入口
- *
- * 逻辑：
- * 1. 如果有照片 + AI Provider → 调用真实 AI 诊断
- * 2. AI 调用失败 → 优雅降级到 mock 数据，标记 meta.fallback=true
- * 3. 无照片 → 直接使用 mock 数据
  */
 export async function generateTryOnPlan(
   input: GenerateTryOnPlanInput = {},
+  runtimeEnv?: RuntimeEnv,
 ): Promise<GeneratedTryOnPlan> {
   const scenario = input.scenario ?? 'office';
   const experience = input.experience ?? 'beginner';
   const hasPhoto = Boolean(input.hasPhoto);
   const photoBase64 = input.photoBase64;
+  const locale = normaliseLocale(input.locale);
 
-  const apiKey = import.meta.env.GEMINI_API_KEY as string | undefined;
-  const provider = getTryOnProvider(apiKey);
+  const provider = getTryOnProvider(runtimeEnv);
 
   // 有照片 + Gemini Provider → 尝试真实 AI 诊断
   if (hasPhoto && photoBase64 && 'getPlanWithPhoto' in provider) {
     try {
-      const aiPlan = await provider.getPlanWithPhoto(scenario, experience, photoBase64);
+      const aiPlan = await (provider as ReturnType<typeof createGeminiProvider>).getPlanWithPhoto(
+        scenario,
+        experience,
+        photoBase64,
+        locale,
+      );
       return {
         ...aiPlan,
         meta: {
@@ -81,14 +91,14 @@ export async function generateTryOnPlan(
           generatedAt: new Date().toISOString(),
           provider: provider.name,
           fallback: false,
+          locale,
         },
       };
     } catch (error) {
-      // AI 调用失败，优雅降级到 mock
       const reason = error instanceof Error ? error.message : String(error);
       console.error(`[tryOnService] Gemini 调用失败，降级到 mock: ${reason}`);
 
-      const fallbackPlan = await mockTryOnProvider.getPlan(scenario);
+      const fallbackPlan = await mockTryOnProvider.getPlan(scenario, locale);
       return {
         ...fallbackPlan,
         meta: {
@@ -98,13 +108,15 @@ export async function generateTryOnPlan(
           provider: 'mock',
           fallback: true,
           fallbackReason: reason,
+          locale,
         },
       };
     }
   }
 
   // 无照片或非 AI Provider → 直接使用 mock
-  const plan = await provider.getPlan(scenario);
+  const plan = await provider.getPlan(scenario, locale);
+  const configuredProvider = getTryOnProviderName(runtimeEnv);
   return {
     ...plan,
     meta: {
@@ -112,17 +124,20 @@ export async function generateTryOnPlan(
       hasPhoto,
       generatedAt: new Date().toISOString(),
       provider: provider.name,
-      fallback: provider.name === 'mock' && (import.meta.env.AI_PROVIDER ?? 'mock') !== 'mock',
+      fallback: provider.name === 'mock' && configuredProvider !== 'mock',
+      locale,
     },
   };
 }
 
-export async function getTryOnLookById(id?: string | null): Promise<TryOnLook | undefined> {
-  const apiKey = import.meta.env.GEMINI_API_KEY as string | undefined;
-  return getTryOnProvider(apiKey).getLookById(id);
+export async function getTryOnLookById(
+  id?: string | null,
+  locale: Locale = 'en',
+  runtimeEnv?: RuntimeEnv,
+): Promise<TryOnLook | undefined> {
+  return getTryOnProvider(runtimeEnv).getLookById(id, locale);
 }
 
-export async function listTryOnLooks(): Promise<TryOnLook[]> {
-  const apiKey = import.meta.env.GEMINI_API_KEY as string | undefined;
-  return getTryOnProvider(apiKey).listLooks();
+export async function listTryOnLooks(locale: Locale = 'en', runtimeEnv?: RuntimeEnv): Promise<TryOnLook[]> {
+  return getTryOnProvider(runtimeEnv).listLooks(locale);
 }

@@ -5,10 +5,10 @@
   "type": "module",
   "description": "AI beauty stylist MVP built with Astro for Cloudflare.",
   "scripts": {
-    "dev": "node ./node_modules/astro/astro.js dev",
-    "start": "node ./node_modules/astro/astro.js dev",
-    "build": "node ./node_modules/astro/astro.js build",
-    "preview": "node ./node_modules/astro/astro.js preview"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",

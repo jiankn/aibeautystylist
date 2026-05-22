@@ -4,21 +4,49 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
-  title = 'AI Beauty Stylist',
-  description = 'AI 个性化试妆、教程与工具推荐平台。',
+  title = 'AI Beauty Stylist — Find Your Perfect Look',
+  description = 'Upload a bare-face selfie and get AI-powered shade diagnosis, personalized looks, and step-by-step tutorials you can actually follow.',
+  ogImage = '/images/hero/hero-polished-elegant.png',
 } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://aibeautystylist.com');
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f3ef" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💄</text></svg>" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content="AI Beauty Stylist" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div class="site-shell">
@@ -28,12 +56,15 @@ const {
             <span class="brand-mark">AB</span>
             <span>AI Beauty Stylist</span>
           </a>
-          <nav class="nav-links">
+          <nav class="nav-links" id="main-nav">
             <a href="/try-on">Try On</a>
             <a href="/tools/shade-finder">Shade Finder</a>
             <a href="/tutorial">Tutorial</a>
             <a href="/membership">Membership</a>
           </nav>
+          <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
         </div>
       </header>
 
@@ -44,22 +75,81 @@ const {
       <footer class="site-footer">
         <div class="container footer-grid">
           <div>
-            <p class="footer-title">AI Beauty Stylist MVP</p>
+            <p class="footer-title">AI Beauty Stylist</p>
             <p class="footer-copy">
-              用 `Astro + Cloudflare` 搭建的 AI 美妆顾问前端底座，面向内容站、微工具与会员产品的混合形态。
+              Your AI-powered beauty concierge. Upload a bare-face selfie, discover your ideal shades, and get step-by-step tutorials tailored to your unique features.
             </p>
+            <div class="footer-social">
+              <a href="#" aria-label="Instagram" class="social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
+              <a href="#" aria-label="TikTok" class="social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78 2.92 2.92 0 0 1 .88.13V9a6.34 6.34 0 1 0 5.45 6.29V9.41a8.16 8.16 0 0 0 4.77 1.52V7.49a4.85 4.85 0 0 1-1-.8z"/></svg>
+              </a>
+              <a href="#" aria-label="YouTube" class="social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19.13C5.12 19.56 12 19.56 12 19.56s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.43z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+              </a>
+            </div>
           </div>
-          <div>
-            <p class="footer-title">现在可继续接入</p>
-            <ul class="footer-list">
-              <li>Cloudflare Workers API</li>
-              <li>D1 / R2 / Cache</li>
-              <li>Auth / Stripe</li>
-              <li>外部 AI 图像模型</li>
-            </ul>
+          <div class="footer-nav-col">
+            <div>
+              <p class="footer-title">Explore</p>
+              <ul class="footer-list">
+                <li><a href="/try-on">AI Try-On Studio</a></li>
+                <li><a href="/tools/shade-finder">Shade Finder</a></li>
+                <li><a href="/tutorial">Tutorial</a></li>
+                <li><a href="/membership">Membership</a></li>
+              </ul>
+            </div>
+            <div>
+              <p class="footer-title">Company</p>
+              <ul class="footer-list">
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+              </ul>
+            </div>
           </div>
         </div>
+        <p class="footer-legal container">© 2026 AI Beauty Stylist. Your photos are used solely for generating personalized recommendations and can be deleted at any time.</p>
       </footer>
     </div>
+    <script>
+      // 汉堡菜单交互
+      const toggle = document.getElementById('nav-toggle');
+      const nav = document.getElementById('main-nav');
+      toggle?.addEventListener('click', () => {
+        const open = nav?.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', String(!!open));
+        toggle.classList.toggle('is-active', !!open);
+      });
+
+      // 滚动入场动画 (IntersectionObserver)
+      document.addEventListener('DOMContentLoaded', () => {
+        const targets = document.querySelectorAll(
+          '.section-copy, .card, .look-card, .hero-visuals, .hero-copy, .trust-panel, .plans-panel, .pricing-card, .footer-grid'
+        );
+        targets.forEach((el) => {
+          el.setAttribute('data-reveal', '');
+          const parent = el.parentElement;
+          if (parent && (parent.classList.contains('grid-cards') || parent.classList.contains('grid-cards-3') || parent.classList.contains('grid-cards-2') || parent.classList.contains('plan-stack'))) {
+            const siblings = Array.from(parent.children);
+            const idx = siblings.indexOf(el);
+            if (idx > 0) el.setAttribute('data-reveal-delay', String(Math.min(idx, 5)));
+          }
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+      });
+    </script>
   </body>
 </html>
