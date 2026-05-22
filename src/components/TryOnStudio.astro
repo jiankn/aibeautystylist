@@ -31,14 +31,49 @@
         <form class="tryon-form-stack" data-tryon-form>
           <label class="upload-field">
             <span class="sr-only">Upload bare-face selfie</span>
-            <div class="upload-dropzone">
-              <input type="file" name="photo" accept="image/*" data-photo-input />
-              <div>
+            <div class="upload-dropzone" data-upload-dropzone>
+              <input
+                type="file"
+                name="photo"
+                accept="image/jpeg,image/png,image/webp"
+                aria-describedby="tryon-upload-helper tryon-upload-status tryon-upload-error"
+                data-photo-input
+              />
+              <div class="upload-dropzone-copy" data-upload-idle-copy>
                 <strong>Click or drag your selfie here</strong>
-                <p>Best results: well-lit, front-facing, no glasses or heavy bangs.</p>
+                <p id="tryon-upload-helper">JPG, PNG or WebP up to 8 MB. Best results: well-lit, front-facing, no glasses or heavy bangs.</p>
+              </div>
+              <div class="upload-dropzone-copy upload-ready-copy is-hidden" data-upload-ready-copy>
+                <strong>Photo ready</strong>
+                <p>Click or drag another selfie here to replace it.</p>
+              </div>
+              <div class="upload-progress is-hidden" data-upload-progress aria-hidden="true">
+                <div class="upload-progress-head">
+                  <strong data-upload-progress-label>Preparing photo</strong>
+                  <span data-upload-progress-percent>0%</span>
+                </div>
+                <div class="upload-progress-track" aria-hidden="true">
+                  <span data-upload-progress-bar></span>
+                </div>
+                <p data-upload-progress-detail>Reading your image locally.</p>
               </div>
             </div>
           </label>
+
+          <div class="upload-preview-summary is-hidden" data-upload-preview>
+            <img src="" alt="Uploaded selfie thumbnail" data-upload-thumb loading="lazy" />
+            <div class="upload-preview-copy">
+              <strong data-upload-file-name>Selfie uploaded</strong>
+              <span data-upload-file-meta>Ready for AI diagnosis</span>
+              <span id="tryon-upload-status" class="upload-preview-status" data-upload-status>Ready</span>
+            </div>
+            <div class="upload-preview-actions">
+              <button class="btn btn-secondary upload-action-btn" type="button" data-upload-change>Change</button>
+              <button class="btn btn-secondary upload-action-btn" type="button" data-upload-remove>Remove</button>
+            </div>
+          </div>
+
+          <p id="tryon-upload-error" class="upload-error is-hidden" data-upload-error role="alert"></p>
 
           <div class="tryon-cta-row">
             <label>
@@ -56,7 +91,7 @@
                 <option value="intermediate">Intermediate</option>
               </select>
             </label>
-            <button class="btn" type="submit">Generate My Looks</button>
+            <button class="btn" type="submit" data-generate-submit data-default-label="Generate My Looks" disabled>Upload Selfie First</button>
           </div>
 
           <p class="tryon-form-meta">
@@ -328,6 +363,16 @@
     };
   };
 
+  type UploadState = 'idle' | 'reading' | 'compressing' | 'ready' | 'analyzing' | 'rendering' | 'error';
+
+  type PreparedPhoto = {
+    dataUrl: string;
+    previewUrl: string;
+    width: number;
+    height: number;
+    byteSize: number;
+  };
+
   type ShareCardClient = {
     title: string;
     subtitle: string;
@@ -368,6 +413,22 @@
   // ─── DOM 引用 ───
   const form = qs<HTMLFormElement>('[data-tryon-form]');
   const photoInput = qs<HTMLInputElement>('[data-photo-input]');
+  const uploadIdleCopy = qs<HTMLElement>('[data-upload-idle-copy]');
+  const uploadReadyCopy = qs<HTMLElement>('[data-upload-ready-copy]');
+  const uploadProgress = qs<HTMLElement>('[data-upload-progress]');
+  const uploadProgressLabel = qs<HTMLElement>('[data-upload-progress-label]');
+  const uploadProgressPercent = qs<HTMLElement>('[data-upload-progress-percent]');
+  const uploadProgressBar = qs<HTMLElement>('[data-upload-progress-bar]');
+  const uploadProgressDetail = qs<HTMLElement>('[data-upload-progress-detail]');
+  const uploadPreview = qs<HTMLElement>('[data-upload-preview]');
+  const uploadThumb = qs<HTMLImageElement>('[data-upload-thumb]');
+  const uploadFileName = qs<HTMLElement>('[data-upload-file-name]');
+  const uploadFileMeta = qs<HTMLElement>('[data-upload-file-meta]');
+  const uploadStatus = qs<HTMLElement>('[data-upload-status]');
+  const uploadError = qs<HTMLElement>('[data-upload-error]');
+  const uploadChangeButton = qs<HTMLButtonElement>('[data-upload-change]');
+  const uploadRemoveButton = qs<HTMLButtonElement>('[data-upload-remove]');
+  const generateSubmitButton = qs<HTMLButtonElement>('[data-generate-submit]');
   const beforeImage = qs<HTMLImageElement>('[data-before-image]');
   const afterImage = qs<HTMLImageElement>('[data-after-image]');
   const beforePlaceholder = qs<HTMLElement>('[data-before-placeholder]');
@@ -398,9 +459,28 @@
     ['dragenter', 'dragover'].forEach((evt) =>
       dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('is-dragover'); }),
     );
-    ['dragleave', 'drop'].forEach((evt) =>
-      dropzone.addEventListener(evt, () => dropzone.classList.remove('is-dragover')),
-    );
+    dropzone.addEventListener('dragleave', (event) => {
+      const nextTarget = event.relatedTarget;
+      if (!nextTarget || !(nextTarget instanceof Node) || !dropzone.contains(nextTarget)) {
+        dropzone.classList.remove('is-dragover');
+      }
+    });
+    dropzone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      dropzone.classList.remove('is-dragover');
+      const file = event.dataTransfer?.files?.[0];
+      if (!file) return;
+      if (photoInput) {
+        try {
+          const transfer = new DataTransfer();
+          transfer.items.add(file);
+          photoInput.files = transfer.files;
+        } catch (error) {
+          console.warn('[TryOnStudio] Could not sync dropped file to input:', error);
+        }
+      }
+      preparePhoto(file);
+    });
   }
 
   const diagnosisTitle = qs<HTMLElement>('[data-diagnosis-title]');
@@ -442,17 +522,170 @@
   let faceLandmarkerInstance: FaceLandmarkerHandle | null = null;
   let selectedLookId = '';
   let currentUploadKey: string | null = null;
+  let selectedPhotoFile: File | null = null;
+  let preparedPhotoBase64: string | null = null;
+  let uploadState: UploadState = 'idle';
+  let uploadPreparationToken = 0;
 
-  const compressPhoto = (file: File): Promise<string> => {
+  const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+  const ALLOWED_UPLOAD_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    const kb = bytes / 1024;
+    if (kb < 1024) return `${kb.toFixed(kb >= 100 ? 0 : 1)} KB`;
+    const mb = kb / 1024;
+    return `${mb.toFixed(mb >= 10 ? 1 : 2)} MB`;
+  };
+
+  const getDataUrlByteSize = (dataUrl: string) => {
+    const base64 = dataUrl.split(',')[1] || '';
+    return Math.round((base64.length * 3) / 4);
+  };
+
+  const setGenerateButtonState = () => {
+    if (!generateSubmitButton) return;
+    const busy = uploadState === 'reading' || uploadState === 'compressing' || uploadState === 'analyzing' || uploadState === 'rendering';
+    const canSubmit = Boolean(preparedPhotoBase64 && selectedPhotoFile && uploadState === 'ready');
+    generateSubmitButton.disabled = busy || !canSubmit;
+
+    if (uploadState === 'reading' || uploadState === 'compressing') {
+      generateSubmitButton.textContent = 'Preparing Photo...';
+      return;
+    }
+    if (uploadState === 'analyzing') {
+      generateSubmitButton.textContent = 'Analyzing...';
+      return;
+    }
+    if (uploadState === 'rendering') {
+      generateSubmitButton.textContent = 'Rendering Preview...';
+      return;
+    }
+    if (uploadState === 'error') {
+      generateSubmitButton.textContent = 'Fix Upload';
+      return;
+    }
+    generateSubmitButton.textContent = canSubmit
+      ? (generateSubmitButton.dataset.defaultLabel || 'Generate My Looks')
+      : 'Upload Selfie First';
+  };
+
+  const setUploadProgress = (label: string, percent: number, detail: string) => {
+    const safePercent = Math.max(0, Math.min(100, Math.round(percent)));
+    uploadProgress?.classList.remove('is-hidden');
+    uploadProgress?.setAttribute('aria-hidden', 'false');
+    if (uploadProgressLabel) uploadProgressLabel.textContent = label;
+    if (uploadProgressPercent) uploadProgressPercent.textContent = `${safePercent}%`;
+    if (uploadProgressBar) uploadProgressBar.style.width = `${safePercent}%`;
+    if (uploadProgressDetail) uploadProgressDetail.textContent = detail;
+  };
+
+  const clearUploadError = () => {
+    if (!uploadError) return;
+    uploadError.textContent = '';
+    uploadError.classList.add('is-hidden');
+  };
+
+  const setUploadState = (nextState: UploadState, statusText?: string) => {
+    uploadState = nextState;
+    dropzone?.classList.toggle('is-uploading', nextState === 'reading' || nextState === 'compressing');
+    dropzone?.classList.toggle('has-file', Boolean(preparedPhotoBase64 && selectedPhotoFile));
+    dropzone?.classList.toggle('has-error', nextState === 'error');
+    uploadIdleCopy?.classList.toggle('is-hidden', Boolean(preparedPhotoBase64 && selectedPhotoFile) || nextState === 'reading' || nextState === 'compressing');
+    uploadReadyCopy?.classList.toggle('is-hidden', !(preparedPhotoBase64 && selectedPhotoFile) || nextState === 'reading' || nextState === 'compressing');
+    uploadPreview?.classList.toggle('is-hidden', !(preparedPhotoBase64 && selectedPhotoFile));
+
+    if (nextState !== 'reading' && nextState !== 'compressing') {
+      uploadProgress?.classList.add('is-hidden');
+      uploadProgress?.setAttribute('aria-hidden', 'true');
+    }
+
+    if (uploadStatus && statusText) uploadStatus.textContent = statusText;
+    setGenerateButtonState();
+  };
+
+  const showUploadError = (message: string) => {
+    if (uploadError) {
+      uploadError.textContent = message;
+      uploadError.classList.remove('is-hidden');
+    }
+    preparedPhotoBase64 = null;
+    selectedPhotoFile = null;
+    if (photoInput) photoInput.value = '';
+    updatePreviewImage(undefined);
+    setUploadState('error', 'Upload needs attention');
+    setLive(message);
+  };
+
+  const validatePhotoFile = (file: File) => {
+    const hasAllowedType = ALLOWED_UPLOAD_TYPES.includes(file.type);
+    const hasAllowedExtension = /\.(jpe?g|png|webp)$/i.test(file.name);
+    if (!hasAllowedType && !hasAllowedExtension) {
+      return 'Please upload a JPG, PNG, or WebP selfie.';
+    }
+    if (file.size <= 0) {
+      return 'This file looks empty. Please choose another selfie.';
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      return `Your selfie is ${formatFileSize(file.size)}. Please upload an image under 8 MB.`;
+    }
+    return '';
+  };
+
+  const updateUploadPreview = (file: File, prepared: PreparedPhoto) => {
+    if (uploadThumb) {
+      uploadThumb.src = prepared.previewUrl;
+      uploadThumb.alt = `${file.name} thumbnail`;
+    }
+    if (uploadFileName) uploadFileName.textContent = file.name || 'Selfie uploaded';
+    if (uploadFileMeta) {
+      uploadFileMeta.textContent = `${formatFileSize(file.size)} original · ${prepared.width}×${prepared.height} AI-ready · ${formatFileSize(prepared.byteSize)} optimized`;
+    }
+    if (uploadStatus) uploadStatus.textContent = 'Ready for AI diagnosis';
+  };
+
+  const resetUpload = () => {
+    uploadPreparationToken += 1;
+    selectedPhotoFile = null;
+    preparedPhotoBase64 = null;
+    currentPhotoBase64 = null;
+    currentLandmarks = null;
+    currentUploadKey = null;
+    renderedAfterImages.clear();
+    if (photoInput) photoInput.value = '';
+    if (uploadThumb) {
+      uploadThumb.removeAttribute('src');
+      uploadThumb.alt = 'Uploaded selfie thumbnail';
+    }
+    if (uploadFileName) uploadFileName.textContent = 'Selfie uploaded';
+    if (uploadFileMeta) uploadFileMeta.textContent = 'Ready for AI diagnosis';
+    clearUploadError();
+    updatePreviewImage(undefined);
+    setUploadState('idle', 'Upload a selfie to continue');
+  };
+
+  const compressPhoto = (
+    file: File,
+    onProgress?: (stage: UploadState, percent: number, detail: string) => void,
+  ): Promise<PreparedPhoto> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
       const reader = new FileReader();
+      reader.onprogress = (event) => {
+        if (!event.lengthComputable) {
+          onProgress?.('reading', 28, 'Reading your image locally.');
+          return;
+        }
+        const readPercent = 8 + (event.loaded / event.total) * 44;
+        onProgress?.('reading', readPercent, `Reading ${formatFileSize(event.loaded)} of ${formatFileSize(event.total)}.`);
+      };
       reader.onload = () => {
         const source = reader.result;
         if (typeof source !== 'string') {
           reject(new Error('Unable to read uploaded image.'));
           return;
         }
+        onProgress?.('compressing', 58, 'Optimizing image for faster AI analysis.');
         img.onload = () => {
           const MAX_DIM = 768;
           let { width, height } = img;
@@ -466,7 +699,15 @@
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.7));
+          onProgress?.('compressing', 84, 'Creating an AI-ready preview.');
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          resolve({
+            dataUrl,
+            previewUrl: dataUrl,
+            width,
+            height,
+            byteSize: getDataUrlByteSize(dataUrl),
+          });
         };
         img.onerror = () => reject(new Error('Unable to load uploaded image.'));
         img.src = source;
@@ -474,6 +715,47 @@
       reader.onerror = () => reject(new Error('Unable to read uploaded image.'));
       reader.readAsDataURL(file);
     });
+  };
+
+  const preparePhoto = async (file: File) => {
+    clearUploadError();
+    const validationError = validatePhotoFile(file);
+    if (validationError) {
+      showUploadError(validationError);
+      return;
+    }
+
+    const token = ++uploadPreparationToken;
+    selectedPhotoFile = file;
+    preparedPhotoBase64 = null;
+    currentPhotoBase64 = null;
+    currentLandmarks = null;
+    currentUploadKey = null;
+    renderedAfterImages.clear();
+    updatePreviewImage(undefined);
+    setUploadProgress('Reading photo', 6, 'Reading your image locally.');
+    setUploadState('reading', 'Reading photo');
+
+    try {
+      const prepared = await compressPhoto(file, (stage, percent, detail) => {
+        if (token !== uploadPreparationToken) return;
+        setUploadState(stage, stage === 'reading' ? 'Reading photo' : 'Optimizing photo');
+        setUploadProgress(stage === 'reading' ? 'Reading photo' : 'Optimizing photo', percent, detail);
+      });
+      if (token !== uploadPreparationToken) return;
+      preparedPhotoBase64 = prepared.dataUrl;
+      updateUploadPreview(file, prepared);
+      updatePreviewImage(prepared.previewUrl);
+      setUploadProgress('Photo ready', 100, 'Your selfie is ready for AI diagnosis.');
+      window.setTimeout(() => {
+        if (token === uploadPreparationToken) setUploadState('ready', 'Ready for AI diagnosis');
+      }, 180);
+      setLive('Selfie uploaded and ready for AI diagnosis.');
+    } catch (error) {
+      if (token !== uploadPreparationToken) return;
+      console.warn('[TryOnStudio] Photo preparation failed:', error);
+      showUploadError('Unable to prepare this image. Please try a different JPG, PNG, or WebP selfie.');
+    }
   };
 
   const initMediaPipe = async () => {
@@ -661,11 +943,13 @@
     const cached = renderedAfterImages.get(look.id);
     if (cached) {
       showAfterImage(look, cached);
+      setUploadState('ready', 'Ready for AI diagnosis');
       return;
     }
 
     const sequence = ++renderSequence;
     showAfterPlaceholder('Generating realistic full-face makeup preview...');
+    setUploadState('rendering', 'Rendering makeup preview');
 
     try {
       const response = await fetch('/api/try-on-render', {
@@ -692,16 +976,19 @@
       if (response.ok && dataUrl && !data._render?.fallback) {
         renderedAfterImages.set(look.id, dataUrl);
         showAfterImage(look, dataUrl);
+        setUploadState('ready', 'Preview generated');
         setLive('Realistic makeup preview generated.');
         return;
       }
 
       console.warn('[TryOnStudio] Full-face render fallback:', data._render?.fallbackReason);
       fallbackToCanvasPreview(look.id);
+      setUploadState('ready', 'Preview fallback shown');
     } catch (error) {
       if (sequence !== renderSequence || selectedLookId !== look.id) return;
       console.warn('[TryOnStudio] Full-face render request failed:', error);
       fallbackToCanvasPreview(look.id);
+      setUploadState('ready', 'Preview fallback shown');
     }
   };
 
@@ -810,8 +1097,8 @@
     renderRealMakeupPreview(look);
   };
 
-  const updatePreviewImage = (file?: File) => {
-    if (!file) {
+  const updatePreviewImage = (source?: string) => {
+    if (!source) {
       beforeImage?.classList.add('is-hidden');
       beforeImage?.removeAttribute('src');
       beforePlaceholder?.classList.remove('is-hidden');
@@ -822,17 +1109,12 @@
       afterPlaceholder?.classList.remove('is-hidden');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result !== 'string') return;
-      if (beforeImage) {
-        beforeImage.setAttribute('src', reader.result);
-        beforeImage.setAttribute('alt', 'Your selfie');
-        beforeImage.classList.remove('is-hidden');
-      }
-      beforePlaceholder?.classList.add('is-hidden');
-    };
-    reader.readAsDataURL(file);
+    if (beforeImage) {
+      beforeImage.setAttribute('src', source);
+      beforeImage.setAttribute('alt', 'Your selfie');
+      beforeImage.classList.remove('is-hidden');
+    }
+    beforePlaceholder?.classList.add('is-hidden');
   };
 
   const setShareStatus = (message: string) => {
@@ -885,7 +1167,20 @@
   photoInput?.addEventListener('change', (event) => {
     const input = event.currentTarget;
     const file = input instanceof HTMLInputElement ? input.files?.[0] : undefined;
-    updatePreviewImage(file);
+    if (file) {
+      preparePhoto(file);
+    } else {
+      resetUpload();
+    }
+  });
+
+  uploadChangeButton?.addEventListener('click', () => {
+    photoInput?.click();
+  });
+
+  uploadRemoveButton?.addEventListener('click', () => {
+    resetUpload();
+    setLive('Selfie removed.');
   });
 
   // ─── 提交主流程 ───
@@ -894,11 +1189,17 @@
   ) => {
     if (!form) return;
     const formData = new FormData(form);
-    const photo = !forceDemo && photoInput instanceof HTMLInputElement ? photoInput.files?.[0] : undefined;
+    const photo = !forceDemo && selectedPhotoFile && preparedPhotoBase64 ? selectedPhotoFile : undefined;
+
+    if (!forceDemo && !photo) {
+      showUploadError('Upload a selfie first, or choose one of the sample looks.');
+      photoInput?.focus();
+      return;
+    }
 
     let photoBase64: string | undefined;
     if (photo) {
-      photoBase64 = await compressPhoto(photo);
+      photoBase64 = preparedPhotoBase64 ?? undefined;
     }
     currentPhotoBase64 = photoBase64 ?? null;
     renderedAfterImages.clear();
@@ -916,6 +1217,7 @@
     };
 
     setStep('loading');
+    if (photo) setUploadState('analyzing', 'Analyzing face and color profile');
     setLive('Analyzing. Please wait.');
 
     const apiPromise: Promise<TryOnApiResponse> = fetch('/api/try-on-plan', {
@@ -946,6 +1248,7 @@
     } catch (error) {
       console.error('[TryOnStudio] Diagnosis request failed:', error);
       setStep('input');
+      if (photo) setUploadState('ready', 'Ready for AI diagnosis');
       setLive('Sorry, something went wrong. Please try again.');
       alert('Sorry, the diagnosis request failed. Please try again.');
       return;
@@ -953,6 +1256,7 @@
 
     if (result?._rateLimited) {
       setStep('input');
+      if (photo) setUploadState('ready', 'Ready for AI diagnosis');
       setLive('Daily free quota reached.');
       alert(result.message || "You've used all 3 free diagnoses today.");
       return;
@@ -960,6 +1264,7 @@
 
     if (!result.diagnosis || !result.shareCard || !Array.isArray(result.looks)) {
       setStep('input');
+      if (photo) setUploadState('ready', 'Ready for AI diagnosis');
       setLive('Diagnosis response was incomplete.');
       alert('Sorry, the diagnosis response was incomplete. Please try again.');
       return;
@@ -1018,8 +1323,8 @@
 
   // P1.A11: 重新分析（保留照片）
   rerunButton?.addEventListener('click', () => {
-    const photo = photoInput instanceof HTMLInputElement ? photoInput.files?.[0] : undefined;
-    runDiagnosis({ forceDemo: !photo });
+    const hasPhoto = Boolean(selectedPhotoFile && preparedPhotoBase64);
+    runDiagnosis({ forceDemo: !hasPhoto });
   });
 
   // P1.A11: 删除我的照片（兑现 deletable 承诺）
@@ -1038,12 +1343,9 @@
     currentLooks = [];
     currentShareCard = null;
     currentLipColors = null;
-    currentPhotoBase64 = null;
+    resetUpload();
     renderedAfterImages.clear();
-    currentLandmarks = null;
-    currentUploadKey = null;
     selectedLookId = '';
-    updatePreviewImage(undefined);
     setShareStatus('Copy to share');
     remainingBadge?.classList.add('is-hidden');
     setMode(false);

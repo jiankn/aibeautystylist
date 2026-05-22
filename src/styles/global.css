@@ -437,6 +437,23 @@ main {
   box-shadow: 0 8px 16px rgba(176, 127, 134, 0.2);
 }
 
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  filter: saturate(0.72);
+  transform: none;
+  box-shadow: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.btn:disabled::after {
+  display: none;
+}
+
 .btn.btn-secondary {
   background: rgba(255, 255, 255, 0.85);
   color: var(--text);
@@ -1616,6 +1633,7 @@ select {
 .tryon-form-meta strong {
   color: var(--accent-deep);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* dropzone 视觉降阶（已经是大区域，避免再叠 hero 感） */
@@ -1633,6 +1651,162 @@ select {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+.tryon-shell .upload-field {
+  display: grid;
+  gap: 10px;
+}
+
+.tryon-shell .upload-dropzone {
+  overflow: hidden;
+}
+
+.upload-dropzone-copy {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  max-width: 520px;
+  justify-items: center;
+  pointer-events: none;
+}
+
+.upload-progress {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+  width: min(100%, 520px);
+  padding: 4px 0;
+  text-align: left;
+  pointer-events: none;
+}
+
+.upload-progress-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.upload-progress-head strong {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.upload-progress-head span {
+  color: var(--accent-deep);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.upload-progress-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(176, 127, 134, 0.16);
+}
+
+.upload-progress-track span {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-deep));
+  transition: width 0.2s ease;
+}
+
+.upload-progress p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.tryon-shell .upload-dropzone.has-file {
+  border-style: solid;
+  border-color: rgba(176, 127, 134, 0.36);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(242, 229, 230, 0.28));
+}
+
+.tryon-shell .upload-dropzone.is-uploading {
+  border-color: var(--accent-deep);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.tryon-shell .upload-dropzone.has-error {
+  border-color: var(--error);
+  background: rgba(194, 91, 91, 0.06);
+}
+
+.upload-preview-summary {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 10px 24px rgba(62, 39, 39, 0.06);
+}
+
+.upload-preview-summary img {
+  width: 76px;
+  height: 92px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: rgba(242, 229, 230, 0.45);
+}
+
+.upload-preview-copy {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.upload-preview-copy strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 0.95rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-preview-copy span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.upload-preview-status {
+  color: var(--accent-deep) !important;
+  font-weight: 700;
+}
+
+.upload-preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.upload-action-btn {
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 0.82rem;
+  box-shadow: none;
+}
+
+.upload-error {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(194, 91, 91, 0.24);
+  border-radius: var(--radius-sm);
+  background: rgba(194, 91, 91, 0.08);
+  color: var(--error);
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
 /* ── 未上传时的 demo 画廊（取代空粉色矩形） ── */
@@ -1999,6 +2173,24 @@ select {
   .tryon-cta-row .btn {
     grid-column: 1 / -1;
     width: 100%;
+  }
+
+  .upload-preview-summary {
+    grid-template-columns: 70px minmax(0, 1fr);
+  }
+
+  .upload-preview-summary img {
+    width: 70px;
+    height: 84px;
+  }
+
+  .upload-preview-actions {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+
+  .upload-action-btn {
+    flex: 1;
   }
 
   .tryon-compare {
