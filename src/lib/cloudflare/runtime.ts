@@ -37,6 +37,9 @@ export interface RuntimeEnv {
   GEMINI_API_BASE?: string;
   GEMINI_TIMEOUT_MS?: string;
   GEMINI_THINKING_LEVEL?: string;
+  GEMINI_IMAGE_MODEL?: string;
+  GEMINI_IMAGE_API_BASE?: string;
+  GEMINI_IMAGE_TIMEOUT_MS?: string;
   R2_PUBLIC_BASE_URL?: string;
   SESSION?: KVNamespaceLike;
   USAGE_LIMITS?: KVNamespaceLike;

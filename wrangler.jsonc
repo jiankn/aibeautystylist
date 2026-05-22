@@ -35,7 +35,9 @@
     "UPLOAD_PROVIDER": "r2",
     "GEMINI_MODEL": "gemini-3.5-flash",
     "GEMINI_TIMEOUT_MS": "45000",
-    "GEMINI_THINKING_LEVEL": "medium"
+    "GEMINI_THINKING_LEVEL": "medium",
+    "GEMINI_IMAGE_MODEL": "gemini-2.5-flash-image",
+    "GEMINI_IMAGE_TIMEOUT_MS": "75000"
     // 注意：GEMINI_API_KEY 应通过 wrangler secret put 设置，不要写在此文件中
     // 运行命令：npx wrangler secret put GEMINI_API_KEY
   }

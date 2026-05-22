@@ -9,6 +9,9 @@ interface ImportMetaEnv {
   readonly GEMINI_API_BASE?: string;
   readonly GEMINI_TIMEOUT_MS?: string;
   readonly GEMINI_THINKING_LEVEL?: 'minimal' | 'low' | 'medium' | 'high' | 'MINIMAL' | 'LOW' | 'MEDIUM' | 'HIGH';
+  readonly GEMINI_IMAGE_MODEL?: string;
+  readonly GEMINI_IMAGE_API_BASE?: string;
+  readonly GEMINI_IMAGE_TIMEOUT_MS?: string;
   readonly STRIPE_PRICE_PRO_MONTHLY?: string;
   readonly STRIPE_PRICE_PREMIUM_MONTHLY?: string;
   readonly R2_PUBLIC_BASE_URL?: string;

@@ -158,6 +158,7 @@
             <article class="compare-frame compare-frame-after">
               <span class="pill">After</span>
               <div class="compare-image-shell">
+                <img class="compare-image is-hidden" alt="" data-after-image />
                 <canvas class="compare-canvas is-hidden" data-after-canvas></canvas>
                 <div class="lip-color-swatch is-hidden" data-lip-swatch></div>
                 <div class="compare-placeholder" data-after-placeholder>Selected look preview</div>
@@ -313,6 +314,20 @@
     };
   };
 
+  type TryOnRenderResponse = {
+    _render?: {
+      provider?: string;
+      model?: string;
+      fallback?: boolean;
+      fallbackReason?: string;
+      generatedAt?: string;
+      image?: {
+        mimeType?: string;
+        dataUrl?: string;
+      };
+    };
+  };
+
   type ShareCardClient = {
     title: string;
     subtitle: string;
@@ -354,6 +369,7 @@
   const form = qs<HTMLFormElement>('[data-tryon-form]');
   const photoInput = qs<HTMLInputElement>('[data-photo-input]');
   const beforeImage = qs<HTMLImageElement>('[data-before-image]');
+  const afterImage = qs<HTMLImageElement>('[data-after-image]');
   const beforePlaceholder = qs<HTMLElement>('[data-before-placeholder]');
   const afterPlaceholder = qs<HTMLElement>('[data-after-placeholder]');
   const lookList = qs<HTMLElement>('[data-look-list]');
@@ -418,6 +434,10 @@
   let currentLooks: TryOnLookClient[] = [];
   let currentShareCard: ShareCardClient | null = null;
   let currentLipColors: Record<string, LipColorParams> | null = null;
+  let currentPhotoBase64: string | null = null;
+  let currentIsDemo = false;
+  const renderedAfterImages = new Map<string, string>();
+  let renderSequence = 0;
   let currentLandmarks: NormalizedLandmark[] | null = null;
   let faceLandmarkerInstance: FaceLandmarkerHandle | null = null;
   let selectedLookId = '';
@@ -472,6 +492,7 @@
     if (!afterCanvas || !beforeImage || !lipColorData) return;
     const imgEl = beforeImage;
     if (!imgEl.naturalWidth) return;
+    afterImage?.classList.add('is-hidden');
 
     if (currentLandmarks) {
       try {
@@ -601,6 +622,89 @@
   const getSelectedLook = (): TryOnLookClient | undefined =>
     currentLooks.find((item) => item.id === selectedLookId);
 
+  const showAfterPlaceholder = (message = 'Selected look preview') => {
+    afterImage?.classList.add('is-hidden');
+    afterImage?.removeAttribute('src');
+    afterCanvas?.classList.add('is-hidden');
+    lipSwatch?.classList.add('is-hidden');
+    if (afterPlaceholder) {
+      afterPlaceholder.textContent = message;
+      afterPlaceholder.classList.remove('is-hidden');
+    }
+  };
+
+  const showAfterImage = (look: TryOnLookClient, dataUrl: string) => {
+    afterCanvas?.classList.add('is-hidden');
+    lipSwatch?.classList.add('is-hidden');
+    afterPlaceholder?.classList.add('is-hidden');
+    if (afterImage) {
+      afterImage.src = dataUrl;
+      afterImage.alt = `${look.name} realistic makeup preview`;
+      afterImage.classList.remove('is-hidden');
+    }
+  };
+
+  const fallbackToCanvasPreview = (lookId: string) => {
+    if (currentLipColors && currentLipColors[lookId]) {
+      applyLipColorToCanvas(currentLipColors[lookId]);
+      return;
+    }
+    showAfterPlaceholder('Full-face preview is not available for this look yet.');
+  };
+
+  const renderRealMakeupPreview = async (look: TryOnLookClient) => {
+    if (!currentPhotoBase64 || currentIsDemo) {
+      fallbackToCanvasPreview(look.id);
+      return;
+    }
+
+    const cached = renderedAfterImages.get(look.id);
+    if (cached) {
+      showAfterImage(look, cached);
+      return;
+    }
+
+    const sequence = ++renderSequence;
+    showAfterPlaceholder('Generating realistic full-face makeup preview...');
+
+    try {
+      const response = await fetch('/api/try-on-render', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          photoBase64: currentPhotoBase64,
+          locale: (document.documentElement.lang || 'en').toLowerCase().startsWith('zh') ? 'zh' : 'en',
+          look: {
+            id: look.id,
+            name: look.name,
+            reason: look.reason,
+            scenario: look.scenario,
+            focus: look.focus,
+            finish: look.finish,
+            tutorialHeadline: look.tutorialHeadline,
+          },
+        }),
+      });
+      const data = await response.json() as TryOnRenderResponse;
+      const dataUrl = data._render?.image?.dataUrl;
+      if (sequence !== renderSequence || selectedLookId !== look.id) return;
+
+      if (response.ok && dataUrl && !data._render?.fallback) {
+        renderedAfterImages.set(look.id, dataUrl);
+        showAfterImage(look, dataUrl);
+        setLive('Realistic makeup preview generated.');
+        return;
+      }
+
+      console.warn('[TryOnStudio] Full-face render fallback:', data._render?.fallbackReason);
+      fallbackToCanvasPreview(look.id);
+    } catch (error) {
+      if (sequence !== renderSequence || selectedLookId !== look.id) return;
+      console.warn('[TryOnStudio] Full-face render request failed:', error);
+      fallbackToCanvasPreview(look.id);
+    }
+  };
+
   const renderLookCards = () => {
     if (!lookList) return;
     lookList.innerHTML = '';
@@ -703,9 +807,7 @@
     if (shareLook) shareLook.textContent = `${look.name} · ${look.finish}`;
     renderLookCards();
 
-    if (currentLipColors && currentLipColors[lookId]) {
-      applyLipColorToCanvas(currentLipColors[lookId]);
-    }
+    renderRealMakeupPreview(look);
   };
 
   const updatePreviewImage = (file?: File) => {
@@ -713,6 +815,8 @@
       beforeImage?.classList.add('is-hidden');
       beforeImage?.removeAttribute('src');
       beforePlaceholder?.classList.remove('is-hidden');
+      afterImage?.classList.add('is-hidden');
+      afterImage?.removeAttribute('src');
       afterCanvas?.classList.add('is-hidden');
       lipSwatch?.classList.add('is-hidden');
       afterPlaceholder?.classList.remove('is-hidden');
@@ -752,6 +856,7 @@
 
   // P1.A10: Demo 模式独立视觉身份  + P0.2: demo 隐藏 compare + P2.14 banner
   const setMode = (isDemo: boolean) => {
+    currentIsDemo = isDemo;
     if (resultStep) resultStep.setAttribute('data-tryon-mode', isDemo ? 'demo' : 'real');
     if (modeChip) {
       if (isDemo) {
@@ -795,6 +900,8 @@
     if (photo) {
       photoBase64 = await compressPhoto(photo);
     }
+    currentPhotoBase64 = photoBase64 ?? null;
+    renderedAfterImages.clear();
 
     const scenario = presetScenario ?? String(formData.get('scenario') || 'office');
     const experience = String(formData.get('experience') || 'beginner');
@@ -931,6 +1038,8 @@
     currentLooks = [];
     currentShareCard = null;
     currentLipColors = null;
+    currentPhotoBase64 = null;
+    renderedAfterImages.clear();
     currentLandmarks = null;
     currentUploadKey = null;
     selectedLookId = '';
