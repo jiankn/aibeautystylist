@@ -78,7 +78,7 @@ const faqs = [
 
     <div class="container result-grid result-grid-bottom">
       <article class="card membership-hero-card membership-hero-card-accent">
-        <span class="pill">Beauty Pass</span>
+        <span class="membership-kicker">Beauty Pass</span>
         <h3>People don't pay to watch AI paint pretty faces.</h3>
         <p>
           They pay to become more beautiful, more confidently, with less time and less waste. That's what we sell.
@@ -100,7 +100,7 @@ const faqs = [
       </article>
 
       <article class="card membership-hero-card">
-        <span class="pill">When to upgrade</span>
+        <span class="membership-kicker">When to upgrade</span>
         <h3>You'll know when it's time.</h3>
         <ul class="check-list compact">
           <li>When you've seen "it gets me" and want to make this look real</li>
@@ -165,3 +165,14 @@ const faqs = [
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .membership-kicker {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: var(--accent-deep);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+</style>
