@@ -4,13 +4,21 @@
   Inherits BaseLayout's luxury beauty design system
 -->
 <section class="tool-shell card shade-finder-shell">
-  <div class="tool-header">
-    <div>
+  <div class="tool-header sf-tool-header">
+    <div class="sf-tool-heading">
       <span class="eyebrow">Free AI Diagnosis</span>
       <h2>Shade Finder</h2>
       <p>Answer 3 questions. Find your perfect lip shade in 30 seconds.</p>
+      <p class="sf-privacy-note">
+        <span class="sf-lock-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+          </svg>
+        </span>
+        No selfie upload needed · private 3-question quiz
+      </p>
     </div>
-    <div class="trust-badge">🔒 No Face Data Saved · Processed & Deleted Instantly</div>
   </div>
 
   <div class="tool-steps">
@@ -222,6 +230,54 @@
   .shade-finder-shell {
     max-width: 680px;
     margin: 0 auto;
+  }
+
+  .sf-tool-header {
+    display: block;
+    margin-bottom: 26px;
+  }
+
+  .sf-tool-heading {
+    max-width: 560px;
+  }
+
+  .sf-privacy-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    max-width: 100%;
+    margin: 12px 0 0;
+    padding: 7px 11px;
+    border: 1px solid rgba(144, 104, 111, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.68);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .sf-lock-icon {
+    display: inline-flex;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: var(--accent-deep);
+    background: var(--accent-soft);
+  }
+
+  .sf-lock-icon svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .sf-hint {
