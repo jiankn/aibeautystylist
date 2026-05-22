@@ -1,4 +1,27 @@
-export const scenarioPages = [
+export interface ScenarioPage {
+  slug: string;
+  title: string;
+  description: string;
+  eyebrow: string;
+  headline: string;
+  intro: string;
+  image: string;
+  tryOnScenario: 'office' | 'date' | 'photo';
+  steps: string[];
+  avoid: string[];
+  bestFor: string[];
+  decisionGuide: Array<{
+    label: string;
+    detail: string;
+  }>;
+  productPriorities: string[];
+  relatedLinks: Array<{
+    label: string;
+    href: string;
+  }>;
+}
+
+export const scenarioPages: ScenarioPage[] = [
   {
     slug: 'office-makeup',
     title: 'Office Makeup Try-On Guide',
@@ -15,6 +38,18 @@ export const scenarioPages = [
       'Check the result under window light or video-call light before adding more.',
     ],
     avoid: ['Full-coverage base that flattens the face', 'Hard black liner for daytime meetings', 'Lip and cheek colors from different families'],
+    bestFor: ['Video calls', 'Daily office light', 'Low-maintenance routines', 'Beginners who want polish without heavy color'],
+    decisionGuide: [
+      { label: 'If your face reads tired', detail: 'Start with under-eye, nose-wing, and mouth-corner correction before adding color.' },
+      { label: 'If you look flat on camera', detail: 'Add brow structure and lash-root definition before contour.' },
+      { label: 'If the lip feels too visible', detail: 'Move toward muted rose, rose-brown, or soft nude rather than beige.' },
+    ],
+    productPriorities: ['Sheer base', 'Precision brow pencil', 'Brown lash-root liner', 'Muted rose-nude lip', 'Small cream highlight'],
+    relatedLinks: [
+      { label: 'Office Glow tutorial', href: '/tutorials/office-glow' },
+      { label: 'Warm undertone lipstick shades', href: '/lipstick-shades/warm-undertone-lipstick-shades' },
+      { label: 'Try your office look', href: '/try-on?scenario=office' },
+    ],
   },
   {
     slug: 'interview-makeup',
@@ -32,6 +67,18 @@ export const scenarioPages = [
       'Use a muted nude or rose-brown lip with clean edges.',
     ],
     avoid: ['Over-contouring', 'Heavy shimmer', 'Bright lip color that becomes the whole look'],
+    bestFor: ['Job interviews', 'Client presentations', 'Professional headshots', 'People who need structure without glamour'],
+    decisionGuide: [
+      { label: 'If the interview is on camera', detail: 'Use slightly more brow and lash definition than you would in person.' },
+      { label: 'If your face gets shiny fast', detail: 'Set only the center of the face and leave the perimeter natural.' },
+      { label: 'If you are unsure about color', detail: 'Choose taupe, soft brown, rose-brown, or muted nude families.' },
+    ],
+    productPriorities: ['Skin tint', 'Under-eye corrector', 'Taupe shadow', 'Soft brown mascara', 'Rose-brown lipstick'],
+    relatedLinks: [
+      { label: 'Quiet Luxury Taupe tutorial', href: '/tutorials/quiet-luxury' },
+      { label: 'Neutral undertone lipstick shades', href: '/lipstick-shades/neutral-undertone-lipstick-shades' },
+      { label: 'Office makeup guide', href: '/scenarios/office-makeup' },
+    ],
   },
   {
     slug: 'date-night-makeup',
@@ -49,6 +96,18 @@ export const scenarioPages = [
       'Use small highlights only where light should naturally catch.',
     ],
     avoid: ['Blush placed too low', 'Warm orange tones on cool undertones', 'Hard lip lines for a soft-glam look'],
+    bestFor: ['Dinner dates', 'Coffee dates', 'Low-light venues', 'Soft glam without heavy contour'],
+    decisionGuide: [
+      { label: 'If the date is daytime', detail: 'Use balm textures, clean lashes, and a lip-cheek product.' },
+      { label: 'If the date is evening', detail: 'Add outer-corner depth and a lip with more presence.' },
+      { label: 'If your undertone is cool or olive', detail: 'Use berry, mauve, or cool rose instead of coral.' },
+    ],
+    productPriorities: ['Brightening concealer', 'Rose-taupe shadow', 'Cream blush', 'Soft berry lip', 'Fine highlighter'],
+    relatedLinks: [
+      { label: 'Soft Glam Berry tutorial', href: '/tutorials/soft-glam' },
+      { label: 'Cool undertone lipstick shades', href: '/lipstick-shades/cool-undertone-lipstick-shades' },
+      { label: 'Try date-night AI look', href: '/try-on?scenario=date' },
+    ],
   },
   {
     slug: 'bridal-makeup',
@@ -66,7 +125,249 @@ export const scenarioPages = [
       'Run a full try-on before the event and save the final kit.',
     ],
     avoid: ['Untested products on the day', 'Flashback from heavy powder', 'A lip color too pale for photography'],
+    bestFor: ['Brides', 'Bridal trials', 'Engagement photos', 'Long-wear soft glam'],
+    decisionGuide: [
+      { label: 'If photos are the priority', detail: 'Increase lip weight and brow definition while keeping base thin.' },
+      { label: 'If the event is emotional', detail: 'Choose long-wear eye products and avoid untested cream layers.' },
+      { label: 'If the dress is minimal', detail: 'Let skin and lip carry polish rather than heavy eye color.' },
+    ],
+    productPriorities: ['Long-wear primer', 'Flexible concealer', 'Neutral sculpt shade', 'Photo-safe powder', 'Rosewood lip'],
+    relatedLinks: [
+      { label: 'Flash-proof Fresh tutorial', href: '/tutorials/flash-proof' },
+      { label: 'Photo-ready makeup guide', href: '/scenarios/photo-ready-makeup' },
+      { label: 'Try bridal AI look', href: '/try-on?scenario=photo' },
+    ],
   },
-] as const;
-
-export type ScenarioPage = (typeof scenarioPages)[number];
+  {
+    slug: 'wedding-guest-makeup',
+    title: 'Wedding Guest Makeup Guide',
+    description: 'A wedding guest makeup guide for polished photos, comfortable wear, and color that supports your outfit without competing.',
+    eyebrow: 'Wedding Guest Makeup',
+    headline: 'Look polished in photos without looking like you are in the bridal party.',
+    intro: 'Wedding guest makeup should be durable, flattering, and respectful of the event. The right look has more structure than daily makeup but less drama than bridal glam.',
+    image: '/images/hero/look-photogenic.png',
+    tryOnScenario: 'photo',
+    steps: [
+      'Balance outfit color with a lip family that does not fight the fabric.',
+      'Use semi-matte skin so photos stay clean through long indoor light.',
+      'Build eye shape with brown or taupe before adding shimmer.',
+      'Carry one lip product and one powder touch-up for the event.',
+    ],
+    avoid: ['Bridal-level white shimmer', 'A lip color that clashes with the outfit', 'Foundation that has not been flash-tested'],
+    bestFor: ['Wedding guests', 'Evening receptions', 'Family photos', 'Long event days'],
+    decisionGuide: [
+      { label: 'If your outfit is bright', detail: 'Keep the lip muted and let blush connect the face to the outfit.' },
+      { label: 'If your outfit is neutral', detail: 'Use rosewood, berry, or soft red to avoid looking washed out.' },
+      { label: 'If there will be flash', detail: 'Skip heavy shimmer and use a semi-matte anchor lip.' },
+    ],
+    productPriorities: ['Semi-matte base', 'Soft sculpt shade', 'Brown liner', 'Rosewood lipstick', 'Blot powder'],
+    relatedLinks: [
+      { label: 'Flash-proof Fresh tutorial', href: '/tutorials/flash-proof' },
+      { label: 'Deep skin lipstick shades', href: '/lipstick-shades/deep-skin-lipstick-shades' },
+      { label: 'Bridal makeup guide', href: '/scenarios/bridal-makeup' },
+    ],
+  },
+  {
+    slug: 'zoom-meeting-makeup',
+    title: 'Zoom Meeting Makeup Guide',
+    description: 'A video-call makeup routine for clearer features, controlled shine, and natural color under webcam lighting.',
+    eyebrow: 'Zoom Makeup',
+    headline: 'Use less makeup in real life and more structure where the camera needs it.',
+    intro: 'Webcams flatten the face and exaggerate shine. A good Zoom routine puts definition at the brow, lash root, under-eye, and lip while keeping everything else thin.',
+    image: '/images/hero/hero-polished-elegant.png',
+    tryOnScenario: 'office',
+    steps: [
+      'Correct under-eye and mouth-corner shadows first.',
+      'Groom brows and press color into the upper lash root.',
+      'Use a lip shade one step stronger than your bare lip.',
+      'Powder only the center of the forehead, nose, and chin.',
+    ],
+    avoid: ['Pale beige lips', 'Too much shimmer near the camera', 'Skipping brows because they look fine in the mirror'],
+    bestFor: ['Remote meetings', 'Webinars', 'Online interviews', 'Creators recording talking-head videos'],
+    decisionGuide: [
+      { label: 'If you look washed out', detail: 'Raise lip saturation before adding eye makeup.' },
+      { label: 'If the face looks wide', detail: 'Add brow peak and outer lash definition to pull attention upward.' },
+      { label: 'If the forehead shines', detail: 'Use powder only in the center so skin does not look dry.' },
+    ],
+    productPriorities: ['Peach corrector', 'Brow gel', 'Brown mascara', 'Rose-brown lip', 'Transparent powder'],
+    relatedLinks: [
+      { label: 'Office Glow tutorial', href: '/tutorials/office-glow' },
+      { label: 'Interview makeup guide', href: '/scenarios/interview-makeup' },
+      { label: 'Try video-call look', href: '/try-on?scenario=office' },
+    ],
+  },
+  {
+    slug: 'everyday-natural-makeup',
+    title: 'Everyday Natural Makeup Guide',
+    description: 'A natural everyday makeup guide for breathable skin, easy lip-cheek harmony, and repeatable beginner-safe steps.',
+    eyebrow: 'Everyday Natural',
+    headline: 'Look like yourself on a better-skin day.',
+    intro: 'Natural makeup fails when it becomes a full routine pretending to be simple. The best daily version uses fewer products, better placement, and color harmony.',
+    image: '/images/hero/look-beginner.png',
+    tryOnScenario: 'office',
+    steps: [
+      'Spot-conceal instead of covering the whole face.',
+      'Use one lip-cheek color so the face reads calm.',
+      'Choose brown mascara or brow gel if black feels too visible.',
+      'Stop when the first impression is fresh, not finished.',
+    ],
+    avoid: ['Too many small steps', 'Blush dragged low', 'Full matte base for a natural look'],
+    bestFor: ['Daily errands', 'School-safe polish', 'First makeup routines', 'People who dislike heavy base'],
+    decisionGuide: [
+      { label: 'If you are a beginner', detail: 'Start with concealer, lip-cheek tint, brows, and mascara only.' },
+      { label: 'If blush looks obvious', detail: 'Move placement higher and choose a lower-saturation shade.' },
+      { label: 'If the base feels heavy', detail: 'Use less base and more targeted correction.' },
+    ],
+    productPriorities: ['Spot concealer', 'Cream blush', 'Tinted balm', 'Brow mascara', 'Lightweight setting mist'],
+    relatedLinks: [
+      { label: 'Fresh Minimal tutorial', href: '/tutorials/fresh-minimal' },
+      { label: 'Fair skin lipstick shades', href: '/lipstick-shades/fair-skin-lipstick-shades' },
+      { label: 'Beginner makeup guide', href: '/scenarios/beginner-makeup' },
+    ],
+  },
+  {
+    slug: 'beginner-makeup',
+    title: 'Beginner Makeup Guide',
+    description: 'A beginner makeup guide that reduces product confusion and gives a simple order for base, brows, lips, and cheeks.',
+    eyebrow: 'Beginner Makeup',
+    headline: 'Start with the four steps that change the face most.',
+    intro: 'Beginners usually buy too many products and lose control of the result. A better first routine focuses on correction, brow shape, lip-cheek color, and one eye-defining step.',
+    image: '/images/hero/look-beginner.png',
+    tryOnScenario: 'office',
+    steps: [
+      'Pick one problem to correct instead of trying to perfect the whole face.',
+      'Use brow gel or a fine pencil before buying eye palettes.',
+      'Choose a lip color that can also guide blush placement.',
+      'Practice the same routine for one week before adding new products.',
+    ],
+    avoid: ['Buying a full kit at once', 'Using black liner before learning lash-root placement', 'Changing every product after one bad attempt'],
+    bestFor: ['Complete beginners', 'People restarting makeup', 'Minimal product budgets', 'Anyone overwhelmed by tutorials'],
+    decisionGuide: [
+      { label: 'If you only buy three things', detail: 'Buy concealer, lip-cheek color, and brow product first.' },
+      { label: 'If tutorials feel too fast', detail: 'Ignore eyeshadow until base, brow, and lip balance feel repeatable.' },
+      { label: 'If the result looks wrong', detail: 'Check placement before blaming the product color.' },
+    ],
+    productPriorities: ['Concealer', 'Lip-cheek tint', 'Brow pencil', 'Brown mascara', 'Sheer powder'],
+    relatedLinks: [
+      { label: 'Fresh Minimal tutorial', href: '/tutorials/fresh-minimal' },
+      { label: 'Shade Finder tool', href: '/tools/shade-finder' },
+      { label: 'Everyday natural makeup guide', href: '/scenarios/everyday-natural-makeup' },
+    ],
+  },
+  {
+    slug: 'photo-ready-makeup',
+    title: 'Photo-Ready Makeup Guide',
+    description: 'A photo-ready makeup guide for sharper brows, better lip presence, controlled glow, and natural-looking camera definition.',
+    eyebrow: 'Photo Makeup',
+    headline: 'Give the camera structure without making real life look heavy.',
+    intro: 'Cameras reduce detail. Photo-ready makeup needs slightly more brow, lash, lip, and cheekbone structure, while the base stays thin enough to look believable.',
+    image: '/images/hero/look-photogenic.png',
+    tryOnScenario: 'photo',
+    steps: [
+      'Even the skin tone but leave real texture visible.',
+      'Strengthen brow peak and lash root so the face has a frame.',
+      'Use highlight only on structural high points.',
+      'Choose a lip shade that does not disappear under camera exposure.',
+    ],
+    avoid: ['Full-coverage mask base', 'Blocky brows', 'Pale nude lips in photos'],
+    bestFor: ['Profile photos', 'Creator content', 'Family photos', 'Headshots that still feel natural'],
+    decisionGuide: [
+      { label: 'If selfies look flat', detail: 'Add structure at brows, lash root, cheekbone, and lip before adding color.' },
+      { label: 'If pores show too much', detail: 'Use less shimmer and a finer highlight texture.' },
+      { label: 'If lips disappear', detail: 'Move from beige nude to rosewood, berry, or soft brick.' },
+    ],
+    productPriorities: ['Second-skin foundation', 'Brow pencil', 'Fine highlighter', 'Lip pencil', 'Setting mist'],
+    relatedLinks: [
+      { label: 'Camera Glow tutorial', href: '/tutorials/camera-glow' },
+      { label: 'Neutral undertone lipstick shades', href: '/lipstick-shades/neutral-undertone-lipstick-shades' },
+      { label: 'Try photo AI look', href: '/try-on?scenario=photo' },
+    ],
+  },
+  {
+    slug: 'evening-event-makeup',
+    title: 'Evening Event Makeup Guide',
+    description: 'An evening event makeup guide for low-light definition, longer wear, and lip color that anchors the face.',
+    eyebrow: 'Evening Event',
+    headline: 'Add presence for low light while keeping edges controlled.',
+    intro: 'Evening makeup needs more contrast than daytime makeup, but not more product everywhere. The best event look deepens the outer eye, anchors the lip, and controls shine.',
+    image: '/images/hero/look-evening.png',
+    tryOnScenario: 'date',
+    steps: [
+      'Deepen the outer third of the eye instead of darkening the whole lid.',
+      'Use a lip shade with enough weight to hold the face in low light.',
+      'Keep highlight narrow and avoid shimmer on textured areas.',
+      'Set mobile areas such as under-eye, nose, and mouth corners.',
+    ],
+    avoid: ['Dark color around the entire eye', 'Cool eye paired with orange lip', 'Wide highlight across pores'],
+    bestFor: ['Dinners', 'Parties', 'Low-light venues', 'People who want more presence than daily makeup'],
+    decisionGuide: [
+      { label: 'If the venue is dim', detail: 'Increase lip and lash-root contrast before adding shimmer.' },
+      { label: 'If your outfit is dark', detail: 'Use a lip with enough saturation to avoid looking tired.' },
+      { label: 'If your skin has texture', detail: 'Keep glow strategic and avoid highlight on the apple of the cheek.' },
+    ],
+    productPriorities: ['Mauve or brown shadow', 'Lip pencil', 'Soft matte lipstick', 'Setting powder', 'Controlled highlighter'],
+    relatedLinks: [
+      { label: 'Night Mauve Focus tutorial', href: '/tutorials/night-mauve' },
+      { label: 'Date night makeup guide', href: '/scenarios/date-night-makeup' },
+      { label: 'Tan skin lipstick shades', href: '/lipstick-shades/tan-skin-lipstick-shades' },
+    ],
+  },
+  {
+    slug: 'mature-skin-makeup',
+    title: 'Mature Skin Makeup Guide',
+    description: 'A mature skin makeup guide focused on thin layers, lifted placement, softened powder, and color that restores life without heaviness.',
+    eyebrow: 'Mature Skin',
+    headline: 'Use thinner layers, higher placement, and softer edges.',
+    intro: 'Mature skin usually looks best when makeup adds light and structure without collecting in texture. Placement matters more than coverage.',
+    image: '/images/hero/hero-inclusive-glow.png',
+    tryOnScenario: 'office',
+    steps: [
+      'Use hydrating prep and thin base layers instead of full coverage.',
+      'Place blush slightly higher to lift the face visually.',
+      'Use soft brown definition rather than hard black liner.',
+      'Choose lip color with life, but avoid dry formulas that emphasize lines.',
+    ],
+    avoid: ['Matte full-coverage base', 'Powder across the whole face', 'Dark hard lip lines'],
+    bestFor: ['Mature skin', 'Dry texture', 'Soft lifting makeup', 'Professional daily routines'],
+    decisionGuide: [
+      { label: 'If base settles in lines', detail: 'Reduce foundation and correct only uneven zones.' },
+      { label: 'If cheeks look low', detail: 'Move blush higher and keep it soft at the edge.' },
+      { label: 'If lips look smaller', detail: 'Use a creamy rosewood or berry-brown with softened edges.' },
+    ],
+    productPriorities: ['Hydrating primer', 'Flexible concealer', 'Cream blush', 'Soft brown liner', 'Cream lipstick'],
+    relatedLinks: [
+      { label: 'Quiet Luxury Taupe tutorial', href: '/tutorials/quiet-luxury' },
+      { label: 'Medium skin lipstick shades', href: '/lipstick-shades/medium-skin-lipstick-shades' },
+      { label: 'Office makeup guide', href: '/scenarios/office-makeup' },
+    ],
+  },
+  {
+    slug: 'hooded-eyes-makeup',
+    title: 'Hooded Eyes Makeup Guide',
+    description: 'A hooded eyes makeup guide for visible structure, lifted lash definition, and eyeshadow placement that works when eyes are open.',
+    eyebrow: 'Hooded Eyes',
+    headline: 'Place the structure where open eyes can actually see it.',
+    intro: 'Hooded eyes often lose eyeshadow when the eyes open. The solution is not more shadow, but higher placement, lash-root definition, and controlled outer lift.',
+    image: '/images/hero/hero-asian-refined.png',
+    tryOnScenario: 'date',
+    steps: [
+      'Map the socket with eyes open before applying depth.',
+      'Keep dark color on the outer third and close to the lash root.',
+      'Use small upward lift at the outer corner instead of a thick wing.',
+      'Brighten the inner eye carefully without spreading shimmer too wide.',
+    ],
+    avoid: ['Following closed-eye crease tutorials', 'Thick liner that eats lid space', 'Large shimmer blocks above the fold'],
+    bestFor: ['Hooded eyelids', 'Monolid-adjacent eye shapes', 'Soft lifted eye looks', 'People whose shadow disappears'],
+    decisionGuide: [
+      { label: 'If shadow disappears', detail: 'Place transition color slightly above the natural fold with eyes open.' },
+      { label: 'If liner makes eyes smaller', detail: 'Use tight lash-root color and lift the outer third only.' },
+      { label: 'If shimmer transfers', detail: 'Keep shimmer near the inner lid or center, not across the fold.' },
+    ],
+    productPriorities: ['Matte taupe shadow', 'Brown gel liner', 'Lengthening mascara', 'Small detail brush', 'Soft rose lip'],
+    relatedLinks: [
+      { label: 'Night Mauve Focus tutorial', href: '/tutorials/night-mauve' },
+      { label: 'Olive skin lipstick shades', href: '/lipstick-shades/olive-skin-lipstick-shades' },
+      { label: 'Try date AI look', href: '/try-on?scenario=date' },
+    ],
+  },
+];

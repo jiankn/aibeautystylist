@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllLooks, type TryOnLook } from '../../lib/mockTryOn';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return getAllLooks('en').map((look) => ({
+    params: { slug: look.id },
+    props: { look },
+  }));
+}
+
+const { look } = Astro.props as { look: TryOnLook };
+
+const kitGroups = [
+  { title: 'Must-Have', items: look.kit.mustHave },
+  { title: 'Swappable', items: look.kit.optional },
+  { title: 'Upgrade Pick', items: look.kit.upgrade },
+];
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: `${look.name} Makeup Tutorial`,
+  description: look.tutorialHeadline,
+  totalTime: `PT${Number.parseInt(look.minutes, 10) || 10}M`,
+  supply: look.kit.mustHave.map((item) => ({
+    '@type': 'HowToSupply',
+    name: `${item.name} - ${item.shade}`,
+  })),
+  step: look.tutorialSteps.map((step, index) => ({
+    '@type': 'HowToStep',
+    position: index + 1,
+    name: step.title,
+    text: `${step.detail} Avoid: ${step.avoid} Self-check: ${step.selfCheck}`,
+  })),
+};
+---
+
+<BaseLayout
+  title={`${look.name} Makeup Tutorial | AI Beauty Stylist`}
+  description={look.tutorialHeadline}
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">{look.scenario}</span>
+      <h1>{look.name}: A step-by-step coach, not a wall of text.</h1>
+      <p>{look.tutorialHeadline}</p>
+    </div>
+
+    <div class="container tutorial-overview-grid">
+      <article class="card selected-look-detail">
+        <span class="pill">Look Summary</span>
+        <h3>{look.name}</h3>
+        <p>{look.reason}</p>
+        <p class="tutorial-summary-copy">{look.tutorialHeadline}</p>
+        <ul class="check-list compact">
+          <li>Scene: {look.scenario}</li>
+          <li>Difficulty: {look.difficulty}</li>
+          <li>Time: {look.minutes}</li>
+          <li>Focus: {look.focus}</li>
+          <li>Finish: {look.finish}</li>
+        </ul>
+      </article>
+
+      <div class="tutorial-side-grid">
+        <article class="card coach-card">
+          <span class="pill">Avoid These</span>
+          <h3>Top 3 mistakes to watch out for</h3>
+          <ul class="check-list compact">
+            {look.commonMistakes.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+
+        <article class="card coach-card">
+          <span class="pill">Self Check</span>
+          <h3>Quick check when you're done</h3>
+          <ul class="check-list compact">
+            {look.selfChecks.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
+    </div>
+
+    <div class="container tutorial-step-flow top-gap">
+      {look.tutorialSteps.map((step, index) => (
+        <article class="card tutorial-step-card">
+          <div class="tutorial-step-top">
+            <span class="scenario-index">0{index + 1}</span>
+            <div>
+              <h3>{step.title}</h3>
+              <p>{step.detail}</p>
+            </div>
+          </div>
+          <div class="tutorial-step-callouts">
+            <div class="step-callout">
+              <strong>Don't do this</strong>
+              <p>{step.avoid}</p>
+            </div>
+            <div class="step-callout step-callout-accent">
+              <strong>You pass when</strong>
+              <p>{step.selfCheck}</p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="container top-gap">
+      <article class="card selected-kit-detail">
+        <span class="pill">Beauty Kit</span>
+        <h3>The exact tools this look needs, not just a product list</h3>
+        <div class="kit-columns top-gap-sm">
+          {kitGroups.map((group) => (
+            <section>
+              <strong>{group.title}</strong>
+              <div class="product-stack top-gap-sm">
+                {group.items.map((item) => (
+                  <article class="product-card">
+                    <div class="product-card-head">
+                      <p class="product-meta">{item.category} · {item.shade}</p>
+                      <span class="product-price">{item.price}</span>
+                    </div>
+                    <h5>{item.name}</h5>
+                    <p class="product-reason">{item.why}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </article>
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn btn-secondary" href="/tutorial">All Tutorials</a>
+      <a class="btn" href={`/try-on?scenario=${look.scenario.toLowerCase().includes('date') ? 'date' : look.scenario.toLowerCase().includes('photo') || look.scenario.toLowerCase().includes('event') ? 'photo' : 'office'}`}>Try This Look</a>
+    </div>
+  </section>
+</BaseLayout>

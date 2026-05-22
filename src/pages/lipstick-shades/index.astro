@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { lipstickShadePages } from '../../data/lipstickShadePages';
+
+export const prerender = true;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Lipstick Shade Guides',
+  description: 'Lipstick shade guides by undertone and skin depth.',
+  url: 'https://aibeautystylist.com/lipstick-shades/',
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: lipstickShadePages.map((page, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: page.title,
+      url: `https://aibeautystylist.com/lipstick-shades/${page.slug}/`,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title="Lipstick Shade Guides | AI Beauty Stylist"
+  description="Find lipstick shades by undertone and skin depth, with practical color families, avoid lists, and shade testing steps."
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Lipstick Shades</span>
+      <h1>Find the lipstick family that makes your whole face look clearer.</h1>
+      <p>
+        These static guides explain which lip colors work for common undertones and skin depths, then connect you to the Shade Finder and full makeup routines.
+      </p>
+    </div>
+
+    <div class="container grid-cards grid-cards-3">
+      {lipstickShadePages.map((page) => (
+        <a class="card shade-guide-card" href={`/lipstick-shades/${page.slug}`}>
+          <span class="pill">{page.eyebrow}</span>
+          <h3>{page.headline}</h3>
+          <p>{page.description}</p>
+          <div class="shade-chip-row">
+            {page.bestShades.map((shade) => (
+              <span class="shade-chip" style={`--shade:${shade.hex}`}>{shade.name}</span>
+            ))}
+          </div>
+          <span class="text-link">Open shade guide</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .shade-guide-card {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .shade-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .shade-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .shade-chip::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--shade);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+</style>

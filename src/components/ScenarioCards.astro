@@ -1,31 +1,11 @@
 ---
-const scenarios = [
-  {
-    title: '10-min commute glow',
-    copy: 'A fast polished routine for office light, video calls, and everyday structure.',
-    href: '/scenarios/office-makeup',
-  },
-  {
-    title: 'Interview-ready polish',
-    copy: 'Controlled definition, calmer color, and a look that reads capable in person.',
-    href: '/scenarios/interview-makeup',
-  },
-  {
-    title: 'Soft date-night mood',
-    copy: 'Romantic color harmony with close-up friendly skin and softly defined edges.',
-    href: '/scenarios/date-night-makeup',
-  },
-  {
-    title: 'Bridal soft glam',
-    copy: 'Long-wear glow, camera balance, and a tutorial path for high-stakes days.',
-    href: '/scenarios/bridal-makeup',
-  },
-  {
-    title: 'First-timer basics',
-    copy: 'A beginner-safe path that keeps the step count low and the result repeatable.',
-    href: '/try-on?scenario=office',
-  },
-];
+import { scenarioPages } from '../data/scenarioPages';
+
+const scenarios = scenarioPages.slice(0, 6).map((page) => ({
+  title: page.eyebrow,
+  copy: page.description,
+  href: `/scenarios/${page.slug}`,
+}));
 ---
 
 <section class="section" id="scenarios">
@@ -34,6 +14,7 @@ const scenarios = [
       <span class="eyebrow">Start from Your Goal</span>
       <h2>Different scenes need different strategies. Pick yours.</h2>
       <p>Each scenario gets a tailored AI recommendation — low effort, high impact looks that actually work for you.</p>
+      <a class="text-link" href="/makeup-guides">Browse all makeup guides</a>
     </div>
 
     <div class="grid-cards grid-cards-3">

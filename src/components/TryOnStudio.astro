@@ -15,7 +15,7 @@
   <header class="tryon-header">
     <div class="tryon-header-copy">
       <span class="eyebrow">AI Try-On · Step 1</span>
-      <h2 id="tryon-heading">Upload a selfie. Discover the looks made for you.</h2>
+      <h1 id="tryon-heading">Upload a selfie. Discover the looks made for you.</h1>
       <p>No filters. Real analysis of your skin tone and features, matched to looks and tutorials you can actually follow.</p>
     </div>
     <span class="tryon-trust-strip" aria-label="Privacy promise">
@@ -215,7 +215,7 @@
               <p class="selected-look-copy" data-selected-look-headline>An 8-minute commute look that instantly adds polish.</p>
             </div>
             <!-- P2.13: 教程 CTA 上移到 section-head -->
-            <a class="btn" data-final-tutorial-link href="/tutorial?look=office-glow">Continue to Full Tutorial →</a>
+            <a class="btn" data-final-tutorial-link href="/tutorials/office-glow">Continue to Full Tutorial →</a>
           </div>
           <div class="step-preview-list" data-selected-steps></div>
           <ul class="check-list compact" data-selected-selfchecks></ul>
@@ -243,7 +243,7 @@
           </details>
 
           <div class="tool-actions tutorial-cta-row top-gap">
-            <a class="text-link" data-tutorial-link href="/tutorial?look=office-glow">See step details</a>
+            <a class="text-link" data-tutorial-link href="/tutorials/office-glow">See step details</a>
           </div>
         </section>
 
@@ -269,7 +269,7 @@
             <p class="share-card-cta" data-share-cta>Copy your look summary to share with friends, or continue to the full tutorial.</p>
             <div class="share-card-actions">
               <button class="btn btn-secondary" type="button" data-share-export>Copy Share Text</button>
-              <a class="text-link" data-continue-link href="/tutorial?look=office-glow">Continue to Tutorial →</a>
+              <a class="text-link" data-continue-link href="/tutorials/office-glow">Continue to Tutorial →</a>
             </div>
           </article>
         </section>
@@ -662,7 +662,7 @@
     if (selectedLookHeading) selectedLookHeading.textContent = look.name;
     if (selectedLookHeadline) selectedLookHeadline.textContent = look.tutorialHeadline;
 
-    const tutorialHref = `/tutorial?look=${look.id}`;
+    const tutorialHref = `/tutorials/${look.id}`;
     if (tutorialLink) tutorialLink.setAttribute('href', tutorialHref);
     if (finalTutorialLink) finalTutorialLink.setAttribute('href', tutorialHref);
     if (continueLink) continueLink.setAttribute('href', tutorialHref);

@@ -12,9 +12,23 @@ export function getStaticPaths() {
 }
 
 const { page } = Astro.props as { page: ScenarioPage };
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: page.title,
+  description: page.description,
+  image: `https://aibeautystylist.com${page.image}`,
+  step: page.steps.map((item, index) => ({
+    '@type': 'HowToStep',
+    position: index + 1,
+    name: item,
+    text: item,
+  })),
+};
 ---
 
-<BaseLayout title={`${page.title} | AI Beauty Stylist`} description={page.description} ogImage={page.image}>
+<BaseLayout title={`${page.title} | AI Beauty Stylist`} description={page.description} ogImage={page.image} structuredData={structuredData}>
   <section class="section">
     <div class="container hero-grid">
       <div class="section-copy">
@@ -50,6 +64,49 @@ const { page } = Astro.props as { page: ScenarioPage };
         </ul>
       </article>
     </div>
+
+    <div class="container grid-cards grid-cards-3 top-gap">
+      <article class="card coach-card">
+        <span class="pill">Best For</span>
+        <h3>When this guide fits</h3>
+        <ul class="check-list compact">
+          {page.bestFor.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+
+      <article class="card coach-card">
+        <span class="pill">Product Priority</span>
+        <h3>Buy in this order</h3>
+        <ul class="check-list compact">
+          {page.productPriorities.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+
+      <article class="card coach-card">
+        <span class="pill">Decision Rules</span>
+        <h3>Adjust before adding more</h3>
+        <div class="scenario-rule-stack">
+          {page.decisionGuide.map((rule) => (
+            <div class="scenario-rule">
+              <strong>{rule.label}</strong>
+              <p>{rule.detail}</p>
+            </div>
+          ))}
+        </div>
+      </article>
+    </div>
+
+    <div class="container top-gap">
+      <article class="card related-guide-card">
+        <span class="pill">Next Step</span>
+        <h3>Make this advice actionable</h3>
+        <div class="related-guide-links">
+          {page.relatedLinks.map((link) => (
+            <a class="text-link" href={link.href}>{link.label}</a>
+          ))}
+        </div>
+      </article>
+    </div>
   </section>
 </BaseLayout>
 
@@ -57,6 +114,28 @@ const { page } = Astro.props as { page: ScenarioPage };
   .hero-visuals {
     display: flex;
     justify-content: center;
+  }
+
+  .scenario-rule-stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  .scenario-rule p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .related-guide-card {
+    display: grid;
+    gap: 12px;
+  }
+
+  .related-guide-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 20px;
   }
 
   .hero-img-main {

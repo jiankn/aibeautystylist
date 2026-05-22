@@ -5,15 +5,26 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  robots?: string;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
   title = 'AI Beauty Stylist — Find Your Perfect Look',
   description = 'Upload a bare-face selfie and get AI-powered shade diagnosis, personalized looks, and step-by-step tutorials you can actually follow.',
   ogImage = '/images/hero/hero-polished-elegant.png',
+  robots,
+  structuredData,
 } = Astro.props;
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://aibeautystylist.com');
+const canonicalPath = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const canonicalUrl = new URL(canonicalPath, Astro.site ?? 'https://aibeautystylist.com');
+const ogImageUrl = new URL(ogImage, Astro.site ?? 'https://aibeautystylist.com');
+const structuredDataItems = structuredData
+  ? Array.isArray(structuredData)
+    ? structuredData
+    : [structuredData]
+  : [];
 ---
 
 <!doctype html>
@@ -23,6 +34,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://aibeauty
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {robots && <meta name="robots" content={robots} />}
     <meta name="theme-color" content="#f7f3ef" />
     <link rel="canonical" href={canonicalUrl} />
 
@@ -33,7 +45,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://aibeauty
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageUrl} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content="AI Beauty Stylist" />
 
@@ -41,7 +53,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://aibeauty
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    {structuredDataItems.map((item) => (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />
+    ))}
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -59,7 +75,8 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://aibeauty
           <nav class="nav-links" id="main-nav">
             <a href="/try-on">Try On</a>
             <a href="/tools/shade-finder">Shade Finder</a>
-            <a href="/tutorial">Tutorial</a>
+            <a href="/makeup-guides">Guides</a>
+            <a href="/tutorial">Tutorials</a>
             <a href="/membership">Membership</a>
           </nav>
           <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
@@ -97,7 +114,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://aibeauty
               <ul class="footer-list">
                 <li><a href="/try-on">AI Try-On Studio</a></li>
                 <li><a href="/tools/shade-finder">Shade Finder</a></li>
-                <li><a href="/tutorial">Tutorial</a></li>
+                <li><a href="/makeup-guides">Makeup Guides</a></li>
+                <li><a href="/lipstick-shades">Lipstick Shades</a></li>
+                <li><a href="/tutorial">Tutorials</a></li>
                 <li><a href="/membership">Membership</a></li>
               </ul>
             </div>

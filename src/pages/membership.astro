@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+export const prerender = true;
+
 const plans = [
   {
     name: 'Free',
@@ -159,7 +161,7 @@ const faqs = [
 
     <div class="container tutorial-cta-row top-gap">
       <a class="btn btn-secondary" href="/try-on">Continue Try-On</a>
-      <a class="btn" href="/tutorial?look=office-glow">See Full Tutorial</a>
+      <a class="btn" href="/tutorials/office-glow">See Full Tutorial</a>
     </div>
   </section>
 </BaseLayout>

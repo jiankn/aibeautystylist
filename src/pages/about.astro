@@ -1,10 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'About AI Beauty Stylist',
+  url: 'https://aibeautystylist.com/about/',
+  description: 'AI Beauty Stylist helps people understand what makeup suits their face, skin tone, and real-life scenarios.',
+};
 ---
 
 <BaseLayout
   title="About AI Beauty Stylist | Personalized Makeup Guidance"
   description="AI Beauty Stylist helps you understand what makeup suits your face, your skin tone, and your real-life scenarios."
+  structuredData={structuredData}
 >
   <section class="section">
     <div class="container section-copy narrow">

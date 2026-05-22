@@ -1,114 +1,63 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getTryOnLookById } from '../lib/services/tryOnService';
+import { getAllLooks } from '../lib/mockTryOn';
 
-const lookId = Astro.url.searchParams.get('look');
-const selectedLook = (await getTryOnLookById(lookId)) ?? (await getTryOnLookById('office-glow'))!;
+export const prerender = true;
 
-const kitGroups = [
-  { title: 'Must-Have', items: selectedLook.kit.mustHave },
-  { title: 'Swappable', items: selectedLook.kit.optional },
-  { title: 'Upgrade Pick', items: selectedLook.kit.upgrade },
-];
+const looks = getAllLooks('en');
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Makeup Tutorials by AI Beauty Stylist',
+  description: 'Static makeup tutorial hub with step-by-step looks for office, date, photo, and event makeup.',
+  url: 'https://aibeautystylist.com/tutorial/',
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: looks.map((look, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: look.name,
+      url: `https://aibeautystylist.com/tutorials/${look.id}/`,
+    })),
+  },
+};
 ---
 
-<BaseLayout title="Tutorial | AI Beauty Stylist" description="Step-by-step personalized tutorial with error alerts, self-checks, and curated product kits.">
+<BaseLayout
+  title="Makeup Tutorials | Step-by-Step AI Beauty Guides"
+  description="Browse static step-by-step makeup tutorials for office, date-night, photo-ready, and beginner-friendly looks."
+  structuredData={structuredData}
+>
   <section class="section">
     <div class="container section-copy narrow">
-      <span class="eyebrow">Personalized Tutorial</span>
-      <h1>{selectedLook.name}: A step-by-step coach, not a wall of text.</h1>
+      <span class="eyebrow">Tutorial Library</span>
+      <h1>Pick a makeup tutorial that matches the moment, not just the trend.</h1>
       <p>
-        Based on the look you selected, we break down every step — what to do, what to avoid, how to check, and exactly what to buy.
+        Each guide turns one AI beauty look into a repeatable routine: what to do, what to avoid, how to self-check, and which product roles matter.
       </p>
     </div>
 
-    <div class="container tutorial-overview-grid">
-      <article class="card selected-look-detail">
-        <span class="pill">Look Summary</span>
-        <h3>{selectedLook.name}</h3>
-        <p>{selectedLook.reason}</p>
-        <p class="tutorial-summary-copy">{selectedLook.tutorialHeadline}</p>
-        <ul class="check-list compact">
-          <li>Scene: {selectedLook.scenario}</li>
-          <li>Difficulty: {selectedLook.difficulty}</li>
-          <li>Time: {selectedLook.minutes}</li>
-          <li>Focus: {selectedLook.focus}</li>
-          <li>Finish: {selectedLook.finish}</li>
-        </ul>
-      </article>
-
-      <div class="tutorial-side-grid">
-        <article class="card coach-card">
-          <span class="pill">Avoid These</span>
-          <h3>Top 3 mistakes to watch out for</h3>
+    <div class="container grid-cards grid-cards-3">
+      {looks.map((look) => (
+        <a class="card tutorial-index-card" href={`/tutorials/${look.id}`}>
+          <span class="pill">{look.scenario}</span>
+          <h3>{look.name}</h3>
+          <p>{look.reason}</p>
           <ul class="check-list compact">
-            {selectedLook.commonMistakes.map((item) => <li>{item}</li>)}
+            <li>{look.minutes}</li>
+            <li>{look.difficulty}</li>
+            <li>{look.focus}</li>
           </ul>
-        </article>
-
-        <article class="card coach-card">
-          <span class="pill">Self Check</span>
-          <h3>Quick check when you're done</h3>
-          <ul class="check-list compact">
-            {selectedLook.selfChecks.map((item) => <li>{item}</li>)}
-          </ul>
-        </article>
-      </div>
-    </div>
-
-    <div class="container tutorial-step-flow top-gap">
-      {selectedLook.tutorialSteps.map((step, index) => (
-        <article class="card tutorial-step-card">
-          <div class="tutorial-step-top">
-            <span class="scenario-index">0{index + 1}</span>
-            <div>
-              <h3>{step.title}</h3>
-              <p>{step.detail}</p>
-            </div>
-          </div>
-          <div class="tutorial-step-callouts">
-            <div class="step-callout">
-              <strong>Don't do this</strong>
-              <p>{step.avoid}</p>
-            </div>
-            <div class="step-callout step-callout-accent">
-              <strong>You pass when</strong>
-              <p>{step.selfCheck}</p>
-            </div>
-          </div>
-        </article>
+          <span class="text-link">Open tutorial</span>
+        </a>
       ))}
-    </div>
-
-    <div class="container top-gap">
-      <article class="card selected-kit-detail">
-        <span class="pill">Beauty Kit</span>
-        <h3>The exact tools this look needs — not just a product list</h3>
-        <div class="kit-columns top-gap-sm">
-          {kitGroups.map((group) => (
-            <section>
-              <strong>{group.title}</strong>
-              <div class="product-stack top-gap-sm">
-                {group.items.map((item) => (
-                  <article class="product-card">
-                    <div class="product-card-head">
-                      <p class="product-meta">{item.category} · {item.shade}</p>
-                      <span class="product-price">{item.price}</span>
-                    </div>
-                    <h5>{item.name}</h5>
-                    <p class="product-reason">{item.why}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
-      </article>
-    </div>
-
-    <div class="container tutorial-cta-row top-gap">
-      <a class="btn btn-secondary" href="/try-on">Back to Try-On</a>
-      <a class="btn" href="/membership">Unlock Full Membership</a>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .tutorial-index-card {
+    color: inherit;
+    text-decoration: none;
+  }
+</style>

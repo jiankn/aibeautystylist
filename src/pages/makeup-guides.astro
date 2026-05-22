@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { scenarioPages } from '../data/scenarioPages';
+import { lipstickShadePages } from '../data/lipstickShadePages';
+import { getAllLooks } from '../lib/mockTryOn';
+
+export const prerender = true;
+
+const tutorials = getAllLooks('en');
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'AI Beauty Stylist Makeup Guides',
+  description: 'Makeup guides by scenario, lipstick undertone, and step-by-step tutorial.',
+  url: 'https://aibeautystylist.com/makeup-guides/',
+};
+---
+
+<BaseLayout
+  title="Makeup Guides | AI Beauty Stylist"
+  description="Browse static makeup guides by scenario, undertone, lipstick shade, and tutorial style."
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Makeup Guides</span>
+      <h1>Start with the beauty question you actually have.</h1>
+      <p>
+        Use the guide library for search-friendly advice, then move into AI Try-On when you want the recommendation adjusted to your face.
+      </p>
+    </div>
+
+    <div class="container guide-hub-section">
+      <div class="section-copy">
+        <span class="eyebrow">By Scenario</span>
+        <h2>Makeup for real-life moments</h2>
+      </div>
+      <div class="grid-cards grid-cards-3">
+        {scenarioPages.map((page) => (
+          <a class="card guide-hub-card" href={`/scenarios/${page.slug}`}>
+            <span class="pill">{page.eyebrow}</span>
+            <h3>{page.headline}</h3>
+            <p>{page.description}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="container guide-hub-section top-gap">
+      <div class="section-copy">
+        <span class="eyebrow">By Lip Color</span>
+        <h2>Shade families that fit your skin</h2>
+      </div>
+      <div class="grid-cards grid-cards-3">
+        {lipstickShadePages.map((page) => (
+          <a class="card guide-hub-card" href={`/lipstick-shades/${page.slug}`}>
+            <span class="pill">{page.eyebrow}</span>
+            <h3>{page.headline}</h3>
+            <p>{page.description}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="container guide-hub-section top-gap">
+      <div class="section-copy">
+        <span class="eyebrow">By Tutorial</span>
+        <h2>Repeatable routines from the AI look library</h2>
+      </div>
+      <div class="grid-cards grid-cards-3">
+        {tutorials.map((look) => (
+          <a class="card guide-hub-card" href={`/tutorials/${look.id}`}>
+            <span class="pill">{look.scenario}</span>
+            <h3>{look.name}</h3>
+            <p>{look.tutorialHeadline}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .guide-hub-card {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .guide-hub-section .section-copy {
+    margin-bottom: 18px;
+  }
+</style>

@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { lipstickShadePages, type LipstickShadePage } from '../../data/lipstickShadePages';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return lipstickShadePages.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props as { page: LipstickShadePage };
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: page.title,
+  description: page.description,
+  mainEntityOfPage: `https://aibeautystylist.com/lipstick-shades/${page.slug}/`,
+  about: page.bestShades.map((shade) => shade.name),
+};
+---
+
+<BaseLayout title={`${page.title} | AI Beauty Stylist`} description={page.description} structuredData={structuredData}>
+  <section class="section">
+    <div class="container hero-grid">
+      <div class="section-copy">
+        <span class="eyebrow">{page.eyebrow}</span>
+        <h1>{page.headline}</h1>
+        <p>{page.intro}</p>
+        <div class="cta-row">
+          <a class="btn" href="/tools/shade-finder">Take Shade Finder</a>
+          <a class="btn btn-secondary" href="/try-on">Try AI Makeup</a>
+        </div>
+      </div>
+      <div class="shade-swatch-panel">
+        {page.bestShades.map((shade) => (
+          <article class="shade-swatch-card">
+            <span class="shade-swatch" style={`--shade:${shade.hex}`}></span>
+            <div>
+              <h3>{shade.name}</h3>
+              <p>{shade.why}</p>
+              <small>{shade.hex}</small>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <div class="container grid-cards grid-cards-3 top-gap">
+      <article class="card coach-card">
+        <span class="pill">Test Steps</span>
+        <h3>How to check the shade</h3>
+        <ul class="check-list compact">
+          {page.testSteps.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+      <article class="card coach-card">
+        <span class="pill">Avoid</span>
+        <h3>Shades that usually fail</h3>
+        <ul class="check-list compact">
+          {page.avoid.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+      <article class="card coach-card">
+        <span class="pill">Product Logic</span>
+        <h3>How to buy smarter</h3>
+        <ul class="check-list compact">
+          {page.productLogic.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </div>
+
+    <div class="container top-gap">
+      <article class="card related-guide-card">
+        <span class="pill">Next Step</span>
+        <h3>Use the shade in a full look</h3>
+        <div class="related-guide-links">
+          {page.relatedLinks.map((link) => (
+            <a class="text-link" href={link.href}>{link.label}</a>
+          ))}
+        </div>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .shade-swatch-panel {
+    display: grid;
+    gap: 14px;
+  }
+
+  .shade-swatch-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: center;
+    padding: 18px;
+    border: 1px solid rgba(88, 58, 58, 0.12);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  .shade-swatch {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: var(--shade);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08), 0 12px 28px rgba(62, 39, 39, 0.12);
+  }
+
+  .shade-swatch-card h3 {
+    margin: 0 0 4px;
+  }
+
+  .shade-swatch-card p {
+    margin: 0 0 6px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .shade-swatch-card small {
+    color: var(--accent-deep);
+    font-weight: 700;
+  }
+
+  .related-guide-card {
+    display: grid;
+    gap: 12px;
+  }
+
+  .related-guide-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 20px;
+  }
+</style>

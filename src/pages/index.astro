@@ -5,11 +5,32 @@ import InspirationGrid from '../components/InspirationGrid.astro';
 import ScenarioCards from '../components/ScenarioCards.astro';
 import FeatureSteps from '../components/FeatureSteps.astro';
 import TrustAndPlans from '../components/TrustAndPlans.astro';
+
+export const prerender = true;
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'AI Beauty Stylist',
+    url: 'https://aibeautystylist.com/',
+    description: 'AI-powered personalized makeup try-on, shade diagnosis, step-by-step tutorials, and curated product recommendations.',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'AI Beauty Stylist',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    url: 'https://aibeautystylist.com/try-on/',
+  },
+];
 ---
 
 <BaseLayout
   title="AI Beauty Stylist | Personalized Makeup Try-On & Tutorial"
   description="AI-powered personalized makeup try-on, shade diagnosis, step-by-step tutorials, and curated product recommendations."
+  structuredData={structuredData}
 >
   <HeroSection />
   <InspirationGrid />

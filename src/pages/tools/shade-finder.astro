@@ -1,11 +1,24 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ShadeFinderDemo from '../../components/ShadeFinderDemo.astro';
+
+export const prerender = true;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'AI Lipstick Shade Finder',
+  applicationCategory: 'LifestyleApplication',
+  operatingSystem: 'Web',
+  url: 'https://aibeautystylist.com/tools/shade-finder/',
+  description: 'A free lipstick shade finder that helps match lip colors to undertone and skin depth.',
+};
 ---
 
 <BaseLayout
   title="Find Your Perfect Lipstick Shade | AI Undertone Test"
   description="Take our free 3-question AI test to find out what lipstick shade suits you best based on your skin undertone. Stop buying the wrong shade!"
+  structuredData={structuredData}
 >
   <section class="section">
     <div class="container section-copy narrow">

@@ -1,11 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TryOnStudio from '../components/TryOnStudio.astro';
+
+export const prerender = true;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'AI Try-On Studio',
+  applicationCategory: 'LifestyleApplication',
+  operatingSystem: 'Web',
+  url: 'https://aibeautystylist.com/try-on/',
+  description: 'Upload a selfie for AI makeup diagnosis, personalized look recommendations, and step-by-step beauty tutorials.',
+};
 ---
 
 <BaseLayout
   title="AI Try-On Studio | AI Beauty Stylist"
   description="Upload a bare-face selfie, get AI face and color diagnosis, and see 3 personalized makeup looks tailored just for you."
+  structuredData={structuredData}
 >
   <!--
     P0.1: 工具页移除独立 hero。/try-on 是 tool-first 页面，
