@@ -36,6 +36,29 @@
   --space-2xl: 64px;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1f1a1a;
+    --surface: rgba(43, 35, 35, 0.84);
+    --surface-strong: #2f2727;
+    --border: rgba(235, 211, 211, 0.16);
+    --text: #fff7f4;
+    --text-secondary: #ead9d5;
+    --text-tertiary: #c8b7b3;
+    --muted: #d8c6c2;
+    --accent: #d8a2aa;
+    --accent-deep: #f0c0c7;
+    --accent-soft: rgba(216, 162, 170, 0.18);
+    --shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.22);
+    --shadow-lg: 0 32px 72px rgba(0, 0, 0, 0.36);
+  }
+
+  html {
+    background: linear-gradient(180deg, #261f1f 0%, #1f1a1a 100%);
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -460,6 +483,27 @@ main {
    等 display:block 规则覆盖 .is-hidden，避免破图 alt 文本暴露在结果页。 */
 .is-hidden {
   display: none !important;
+}
+
+.tool-step {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.tool-step.is-step-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.tool-step.is-step-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tool-step.is-step-exit {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 
 /* ─── 汉堡菜单按钮 ─── */
@@ -1065,6 +1109,21 @@ main {
   scroll-margin-top: 80px;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ─── P2 #16: 表单控件完整样式 ─── */
 input[type="text"],
 input[type="email"],
@@ -1164,6 +1223,19 @@ select {
 .empty-state-icon {
   font-size: 2rem;
   opacity: 0.5;
+}
+
+.empty-state-mark {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 8px var(--accent-soft);
+}
+
+.look-card-grid .empty-state {
+  grid-column: 1 / -1;
 }
 
 /* ─── P2 #24: Shade Finder 大屏宽度 ─── */

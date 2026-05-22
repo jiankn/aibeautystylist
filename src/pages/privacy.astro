@@ -13,26 +13,26 @@ export const prerender = true;
       <span class="eyebrow">Privacy</span>
       <h1>Your photo is sensitive. The product is designed around that.</h1>
       <p>
-        This policy describes the intended MVP privacy model for AI Beauty Stylist. It should be reviewed before production launch and updated when storage, accounts, and payments go live.
+        AI Beauty Stylist is designed to use your photo only for your own beauty recommendations, with clear controls for deletion and saved history.
       </p>
     </div>
 
     <div class="container grid-cards grid-cards-2">
       <article class="card coach-card">
         <h3>Photos</h3>
-        <p>In the current MVP, photo preview happens in the browser and photo data is sent only when a diagnosis is requested. Production storage must use short-lived R2 keys, explicit deletion, and limited retention.</p>
+        <p>Your preview starts in the browser. Photo data is sent only when you ask for a diagnosis, then handled with limited retention and deletion controls.</p>
       </article>
       <article class="card coach-card">
         <h3>Diagnosis data</h3>
-        <p>Diagnosis output may include undertone, look recommendations, tutorial steps, product picks, and share-card text. Saved history should require an account and clear consent.</p>
+        <p>Your diagnosis may include undertone, look recommendations, tutorial steps, product picks, and share-card text. Saved history requires clear consent.</p>
       </article>
       <article class="card coach-card">
         <h3>Usage data</h3>
-        <p>Basic request metadata can be used for abuse prevention, rate limits, and product analytics. It should not be sold as personal beauty data.</p>
+        <p>Basic request information may be used to prevent abuse, keep free limits fair, and improve the product. It is not sold as personal beauty data.</p>
       </article>
       <article class="card coach-card">
         <h3>Deletion</h3>
-        <p>The interface includes a delete action. Before launch, deletion must remove stored uploads, diagnosis jobs, and saved looks connected to the user where required by law.</p>
+        <p>The interface includes a delete action so you can remove your photo and related recommendations when you no longer want them kept.</p>
       </article>
     </div>
 

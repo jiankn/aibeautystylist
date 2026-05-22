@@ -1,8 +1,3 @@
-<!-- 
-  ShadeFinderDemo.astro
-  SEO micro-tool: 3-step quiz → diagnosis result → CTA to Try-On Studio
-  Inherits BaseLayout's luxury beauty design system
--->
 <section class="tool-shell card shade-finder-shell">
   <div class="tool-header sf-tool-header">
     <div class="sf-tool-heading">
@@ -87,7 +82,7 @@
         <div class="result-card sf-product-card">
           <span class="pill">Your Perfect Match</span>
           <div class="sf-swatch-row">
-            <div class="sf-swatch" data-swatch-color></div>
+            <div class="sf-swatch" role="img" aria-label="Recommended shade swatch: Dirty Blue Pink" data-swatch-color></div>
             <div>
               <h4 data-product-name>MAC Lipstick · Mehr</h4>
               <p class="sf-product-shade" data-product-shade>Dirty Blue Pink</p>
@@ -204,7 +199,10 @@
     if (productNameEl) productNameEl.textContent = data.product.name;
     if (productCopyEl) productCopyEl.textContent = data.product.copy;
     if (productShadeEl) productShadeEl.textContent = data.product.shade;
-    if (swatchEl) swatchEl.style.backgroundColor = data.product.color;
+    if (swatchEl) {
+      swatchEl.style.backgroundColor = data.product.color;
+      swatchEl.setAttribute('aria-label', `Recommended shade swatch: ${data.product.shade}`);
+    }
 
     if (reasonsEl) {
       reasonsEl.innerHTML = '';
@@ -228,7 +226,7 @@
 <style>
   /* ─── Shade Finder 专属样式（继承全局轻奢体系） ─── */
   .shade-finder-shell {
-    max-width: 680px;
+    max-width: 860px;
     margin: 0 auto;
   }
 

@@ -4,6 +4,7 @@ import { scenarioPages } from '../data/scenarioPages';
 const scenarios = scenarioPages.slice(0, 6).map((page) => ({
   title: page.eyebrow,
   copy: page.description,
+  image: page.image,
   href: `/scenarios/${page.slug}`,
 }));
 ---
@@ -19,13 +20,52 @@ const scenarios = scenarioPages.slice(0, 6).map((page) => ({
 
     <div class="grid-cards grid-cards-3">
       {scenarios.map((scenario, index) => (
-        <a class="card scenario-card" href={scenario.href}>
-          <span class="scenario-index">0{index + 1}</span>
-          <h3>{scenario.title}</h3>
-          <p>{scenario.copy}</p>
-          <span class="text-link">Open guide</span>
+        <a class="card scenario-card scenario-card-visual" href={scenario.href}>
+          <div class="scenario-card-image">
+            <img src={scenario.image} alt={`${scenario.title} look preview`} loading="lazy" />
+          </div>
+          <div class="scenario-card-body">
+            <span class="scenario-index">0{index + 1}</span>
+            <h3>{scenario.title}</h3>
+            <p>{scenario.copy}</p>
+            <span class="text-link">Open guide</span>
+          </div>
         </a>
       ))}
     </div>
   </div>
 </section>
+
+<style>
+  .scenario-card-visual {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .scenario-card-image {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--accent-soft);
+  }
+
+  .scenario-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.55s ease;
+  }
+
+  .scenario-card-visual:hover .scenario-card-image img {
+    transform: scale(1.05);
+  }
+
+  .scenario-card-body {
+    display: grid;
+    gap: 8px;
+    padding: 22px 24px 24px;
+  }
+</style>

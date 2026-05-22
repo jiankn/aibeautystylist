@@ -1,16 +1,3 @@
-<!--
-  P0/P1/P2 重构后的 Try-On Studio
-  - 紧凑 header：信任徽章降级为细条 (P1.A3)
-  - 输入态：dropzone 整宽 + 三栏 CTA (P0.A1/A4)
-  - 未上传时右侧 demo 画廊代替空粉色矩形 (P0.A2)
-  - 结果态 IA：mode-chip → diagnosis → before/after → looks → tutorial → share → upgrade (P0.A5)
-  - Demo / 真诊断有独立的视觉身份 (P1.A10)
-  - 删除照片 / 重新分析按钮兑现 deletable 承诺 (P1.A11)
-  - 提交后 scroll + focus 到结果标题 (P0.A6)
-  - 移动端粘性 sub-nav (P2.A12)
-  - 工具包默认折叠 (P2.A12)
-  - Look 横向滑卡（CSS 层完成）
--->
 <section class="tool-shell card tryon-shell" data-tryon-shell>
   <header class="tryon-header">
     <div class="tryon-header-copy">
@@ -100,7 +87,7 @@
               <span class="tryon-demo-thumb-label">Camera Ready</span>
             </button>
           </div>
-          <p class="tryon-demo-foot">Tap a sample to preview a full diagnosis with mock data — no photo needed.</p>
+          <p class="tryon-demo-foot">Tap a sample to preview a full diagnosis with a sample profile — no photo needed.</p>
         </aside>
       </div>
     </section>
@@ -512,7 +499,31 @@
 
   const setStep = (nextStep: 'input' | 'loading' | 'result') => {
     steps.forEach((element) => {
-      element.classList.toggle('is-hidden', element.dataset.tryonStep !== nextStep);
+      const isNext = element.dataset.tryonStep === nextStep;
+      if (isNext) {
+        element.classList.remove('is-hidden', 'is-step-exit');
+        element.classList.add('is-step-enter');
+        window.requestAnimationFrame(() => {
+          element.classList.add('is-step-active');
+          window.setTimeout(() => element.classList.remove('is-step-enter'), 220);
+        });
+        return;
+      }
+
+      if (!element.classList.contains('is-hidden')) {
+        element.classList.remove('is-step-active', 'is-step-enter');
+        element.classList.add('is-step-exit');
+        window.setTimeout(() => {
+          if (element.dataset.tryonStep !== nextStep) {
+            element.classList.add('is-hidden');
+            element.classList.remove('is-step-exit');
+          }
+        }, 180);
+        return;
+      }
+
+      element.classList.remove('is-step-active', 'is-step-enter', 'is-step-exit');
+      element.classList.add('is-hidden');
     });
   };
 
@@ -593,10 +604,26 @@
   const renderLookCards = () => {
     if (!lookList) return;
     lookList.innerHTML = '';
+    if (!currentLooks.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.innerHTML = `
+        <span class="empty-state-mark" aria-hidden="true"></span>
+        <strong>No looks available yet</strong>
+        <p>Upload a selfie or choose a sample look to generate personalized recommendations.</p>
+      `;
+      lookList.appendChild(empty);
+      if (looksProgressTotal) looksProgressTotal.textContent = '0';
+      if (looksProgressCurrent) looksProgressCurrent.textContent = '0';
+      return;
+    }
+
     currentLooks.forEach((look) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = `look-option-card${look.id === selectedLookId ? ' is-active' : ''}`;
+      button.setAttribute('aria-label', `Select ${look.name}. ${look.minutes} look focused on ${look.focus}.`);
+      button.setAttribute('aria-pressed', String(look.id === selectedLookId));
       const pill = document.createElement('span');
       pill.className = 'pill';
       pill.textContent = look.scenario;
