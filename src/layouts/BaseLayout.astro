@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import UserAvatar from '../components/UserAvatar.astro';
 
 interface Props {
   title?: string;
@@ -38,6 +39,10 @@ const structuredDataItems = structuredData
     <meta name="theme-color" content="#f7f3ef" />
     <link rel="canonical" href={canonicalUrl} />
 
+    <!-- i18n: hreflang (Phase 2 will add additional languages here) -->
+    <link rel="alternate" hreflang="en" href={canonicalUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
+
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💄</text></svg>" />
 
@@ -73,12 +78,13 @@ const structuredDataItems = structuredData
             <span>AI Beauty Stylist</span>
           </a>
           <nav class="nav-links" id="main-nav">
+            <a href="/makeup-guides">Discover</a>
             <a href="/try-on">Try On</a>
-            <a href="/tools/shade-finder">Shade Finder</a>
-            <a href="/makeup-guides">Guides</a>
             <a href="/tutorial">Tutorials</a>
+            <a href="/tools/shade-finder">Beauty Kit</a>
             <a href="/membership">Membership</a>
           </nav>
+          <UserAvatar />
           <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
             <span></span><span></span><span></span>
           </button>

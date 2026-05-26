@@ -7,6 +7,7 @@ export interface ScenarioPage {
   intro: string;
   image: string;
   tryOnScenario: 'office' | 'date' | 'photo';
+  tryOnLook: string;
   steps: string[];
   avoid: string[];
   bestFor: string[];
@@ -29,8 +30,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Office Makeup',
     headline: 'Look awake, polished, and still like yourself in office light.',
     intro: 'The office version of good makeup is not more makeup. It is controlled skin, sharper brows, clean lash roots, and a lip color that adds energy without stealing focus.',
-    image: '/images/hero/look-commute.png',
+    image: '/images/hero/look-client-meeting-nude.webp',
     tryOnScenario: 'office',
+    tryOnLook: 'client-meeting-nude',
     steps: [
       'Keep base thin and correct only the shadows that make you look tired.',
       'Use brow and lash-root definition before adding visible eyeshadow.',
@@ -48,7 +50,7 @@ export const scenarioPages: ScenarioPage[] = [
     relatedLinks: [
       { label: 'Office Glow tutorial', href: '/tutorials/office-glow' },
       { label: 'Warm undertone lipstick shades', href: '/lipstick-shades/warm-undertone-lipstick-shades' },
-      { label: 'Try your office look', href: '/try-on?scenario=office' },
+      { label: 'Try your office look', href: '/try-on?scenario=office&look=client-meeting-nude' },
     ],
   },
   {
@@ -58,8 +60,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Interview Makeup',
     headline: 'Build a composed look that reads capable, not overdone.',
     intro: 'Interview makeup needs restraint. The goal is clarity: refined skin, focused eyes, controlled shine, and a lip that supports your presence.',
-    image: '/images/hero/look-refined.png',
+    image: '/images/hero/look-interview-ready.webp',
     tryOnScenario: 'office',
+    tryOnLook: 'interview-ready',
     steps: [
       'Start with skin correction and avoid visible layers around the mouth and nose.',
       'Use taupe or soft brown to shape the socket without creating a smoky eye.',
@@ -87,8 +90,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Date Night Makeup',
     headline: 'Create softness up close without losing definition.',
     intro: 'Date-night makeup works best when the skin still looks real and the color story feels intentional. Lip and cheek harmony matters more than dramatic color.',
-    image: '/images/hero/look-date.png',
+    image: '/images/hero/look-candlelight-mauve.webp',
     tryOnScenario: 'date',
+    tryOnLook: 'candlelight-mauve',
     steps: [
       'Keep the base breathable and focus correction around the under-eye area.',
       'Use low-saturation rose, mauve, or berry tones based on undertone.',
@@ -106,7 +110,7 @@ export const scenarioPages: ScenarioPage[] = [
     relatedLinks: [
       { label: 'Soft Glam Berry tutorial', href: '/tutorials/soft-glam' },
       { label: 'Cool undertone lipstick shades', href: '/lipstick-shades/cool-undertone-lipstick-shades' },
-      { label: 'Try date-night AI look', href: '/try-on?scenario=date' },
+      { label: 'Try date-night AI look', href: '/try-on?scenario=date&look=candlelight-mauve' },
     ],
   },
   {
@@ -116,8 +120,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Bridal Makeup',
     headline: 'Plan a camera-ready glow that still feels personal.',
     intro: 'Bridal makeup has to survive emotion, lighting, photos, and close-up moments. The safest path is structured softness: long-wear skin, defined eyes, and a lip that will not disappear on camera.',
-    image: '/images/hero/look-evening.png',
+    image: '/images/hero/look-champagne-gala.webp',
     tryOnScenario: 'photo',
+    tryOnLook: 'champagne-gala',
     steps: [
       'Use thin layers and set only the areas that crease or shine quickly.',
       'Add eye depth gradually, keeping the center of the lid clean and bright.',
@@ -135,7 +140,7 @@ export const scenarioPages: ScenarioPage[] = [
     relatedLinks: [
       { label: 'Flash-proof Fresh tutorial', href: '/tutorials/flash-proof' },
       { label: 'Photo-ready makeup guide', href: '/scenarios/photo-ready-makeup' },
-      { label: 'Try bridal AI look', href: '/try-on?scenario=photo' },
+      { label: 'Try bridal AI look', href: '/try-on?scenario=photo&look=champagne-gala' },
     ],
   },
   {
@@ -145,8 +150,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Wedding Guest Makeup',
     headline: 'Look polished in photos without looking like you are in the bridal party.',
     intro: 'Wedding guest makeup should be durable, flattering, and respectful of the event. The right look has more structure than daily makeup but less drama than bridal glam.',
-    image: '/images/hero/look-photogenic.png',
+    image: '/images/hero/look-wedding-guest.webp',
     tryOnScenario: 'photo',
+    tryOnLook: 'wedding-guest',
     steps: [
       'Balance outfit color with a lip family that does not fight the fabric.',
       'Use semi-matte skin so photos stay clean through long indoor light.',
@@ -174,8 +180,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Zoom Makeup',
     headline: 'Use less makeup in real life and more structure where the camera needs it.',
     intro: 'Webcams flatten the face and exaggerate shine. A good Zoom routine puts definition at the brow, lash root, under-eye, and lip while keeping everything else thin.',
-    image: '/images/hero/hero-polished-elegant.png',
-    tryOnScenario: 'office',
+    image: '/images/hero/look-creator-camera-glow.webp',
+    tryOnScenario: 'photo',
+    tryOnLook: 'creator-camera-glow',
     steps: [
       'Correct under-eye and mouth-corner shadows first.',
       'Groom brows and press color into the upper lash root.',
@@ -193,7 +200,7 @@ export const scenarioPages: ScenarioPage[] = [
     relatedLinks: [
       { label: 'Office Glow tutorial', href: '/tutorials/office-glow' },
       { label: 'Interview makeup guide', href: '/scenarios/interview-makeup' },
-      { label: 'Try video-call look', href: '/try-on?scenario=office' },
+      { label: 'Try video-call look', href: '/try-on?scenario=photo&look=creator-camera-glow' },
     ],
   },
   {
@@ -203,8 +210,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Everyday Natural',
     headline: 'Look like yourself on a better-skin day.',
     intro: 'Natural makeup fails when it becomes a full routine pretending to be simple. The best daily version uses fewer products, better placement, and color harmony.',
-    image: '/images/hero/look-beginner.png',
+    image: '/images/hero/look-soft-matte-everyday.webp',
     tryOnScenario: 'office',
+    tryOnLook: 'soft-matte-everyday',
     steps: [
       'Spot-conceal instead of covering the whole face.',
       'Use one lip-cheek color so the face reads calm.',
@@ -232,8 +240,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Beginner Makeup',
     headline: 'Start with the four steps that change the face most.',
     intro: 'Beginners usually buy too many products and lose control of the result. A better first routine focuses on correction, brow shape, lip-cheek color, and one eye-defining step.',
-    image: '/images/hero/look-beginner.png',
+    image: '/images/hero/look-five-minute-beginner.webp',
     tryOnScenario: 'office',
+    tryOnLook: 'five-minute-beginner',
     steps: [
       'Pick one problem to correct instead of trying to perfect the whole face.',
       'Use brow gel or a fine pencil before buying eye palettes.',
@@ -261,8 +270,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Photo Makeup',
     headline: 'Give the camera structure without making real life look heavy.',
     intro: 'Cameras reduce detail. Photo-ready makeup needs slightly more brow, lash, lip, and cheekbone structure, while the base stays thin enough to look believable.',
-    image: '/images/hero/look-photogenic.png',
+    image: '/images/hero/look-flash-proof-satin.webp',
     tryOnScenario: 'photo',
+    tryOnLook: 'flash-proof-satin',
     steps: [
       'Even the skin tone but leave real texture visible.',
       'Strengthen brow peak and lash root so the face has a frame.',
@@ -280,7 +290,7 @@ export const scenarioPages: ScenarioPage[] = [
     relatedLinks: [
       { label: 'Camera Glow tutorial', href: '/tutorials/camera-glow' },
       { label: 'Neutral undertone lipstick shades', href: '/lipstick-shades/neutral-undertone-lipstick-shades' },
-      { label: 'Try photo AI look', href: '/try-on?scenario=photo' },
+      { label: 'Try photo AI look', href: '/try-on?scenario=photo&look=flash-proof-satin' },
     ],
   },
   {
@@ -290,8 +300,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Evening Event',
     headline: 'Add presence for low light while keeping edges controlled.',
     intro: 'Evening makeup needs more contrast than daytime makeup, but not more product everywhere. The best event look deepens the outer eye, anchors the lip, and controls shine.',
-    image: '/images/hero/look-evening.png',
-    tryOnScenario: 'date',
+    image: '/images/hero/look-burgundy-velvet.webp',
+    tryOnScenario: 'photo',
+    tryOnLook: 'burgundy-velvet',
     steps: [
       'Deepen the outer third of the eye instead of darkening the whole lid.',
       'Use a lip shade with enough weight to hold the face in low light.',
@@ -319,8 +330,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Mature Skin',
     headline: 'Use thinner layers, higher placement, and softer edges.',
     intro: 'Mature skin usually looks best when makeup adds light and structure without collecting in texture. Placement matters more than coverage.',
-    image: '/images/hero/hero-inclusive-glow.png',
+    image: '/images/hero/look-mature-skin-radiance.webp',
     tryOnScenario: 'office',
+    tryOnLook: 'mature-skin-radiance',
     steps: [
       'Use hydrating prep and thin base layers instead of full coverage.',
       'Place blush slightly higher to lift the face visually.',
@@ -348,8 +360,9 @@ export const scenarioPages: ScenarioPage[] = [
     eyebrow: 'Hooded Eyes',
     headline: 'Place the structure where open eyes can actually see it.',
     intro: 'Hooded eyes often lose eyeshadow when the eyes open. The solution is not more shadow, but higher placement, lash-root definition, and controlled outer lift.',
-    image: '/images/hero/hero-asian-refined.png',
-    tryOnScenario: 'date',
+    image: '/images/hero/look-hooded-eyes-lift.webp',
+    tryOnScenario: 'office',
+    tryOnLook: 'hooded-eyes-lift',
     steps: [
       'Map the socket with eyes open before applying depth.',
       'Keep dark color on the outer third and close to the lash root.',
@@ -367,7 +380,7 @@ export const scenarioPages: ScenarioPage[] = [
     relatedLinks: [
       { label: 'Night Mauve Focus tutorial', href: '/tutorials/night-mauve' },
       { label: 'Olive skin lipstick shades', href: '/lipstick-shades/olive-skin-lipstick-shades' },
-      { label: 'Try date AI look', href: '/try-on?scenario=date' },
+      { label: 'Try hooded eyes look', href: '/try-on?scenario=office&look=hooded-eyes-lift' },
     ],
   },
 ];

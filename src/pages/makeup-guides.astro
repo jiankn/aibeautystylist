@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { scenarioPages } from '../data/scenarioPages';
 import { lipstickShadePages } from '../data/lipstickShadePages';
+import { stylePages } from '../data/stylePages';
 import { getAllLooks } from '../lib/mockTryOn';
 
 export const prerender = true;
@@ -38,6 +39,22 @@ const structuredData = {
       <div class="grid-cards grid-cards-3">
         {scenarioPages.map((page) => (
           <a class="card guide-hub-card" href={`/scenarios/${page.slug}`}>
+            <span class="pill">{page.eyebrow}</span>
+            <h3>{page.headline}</h3>
+            <p>{page.description}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="container guide-hub-section top-gap">
+      <div class="section-copy">
+        <span class="eyebrow">By Style</span>
+        <h2>Aesthetic looks decoded step-by-step</h2>
+      </div>
+      <div class="grid-cards grid-cards-3">
+        {stylePages.map((page) => (
+          <a class="card guide-hub-card" href={`/styles/${page.slug}`}>
             <span class="pill">{page.eyebrow}</span>
             <h3>{page.headline}</h3>
             <p>{page.description}</p>

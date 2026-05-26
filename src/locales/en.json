@@ -1,0 +1,97 @@
+{
+  "site": {
+    "name": "AI Beauty Stylist",
+    "tagline": "Your AI Beauty Concierge",
+    "description": "AI-powered personalized makeup diagnosis, tutorials, and product recommendations."
+  },
+  "nav": {
+    "discover": "Discover",
+    "tryOn": "Try On",
+    "tutorials": "Tutorials",
+    "beautyKit": "Beauty Kit",
+    "membership": "Membership",
+    "shadeGuide": "Shade Guide"
+  },
+  "hero": {
+    "eyebrow": "Your AI Beauty Concierge",
+    "headline": "Find the look that's truly yours — not someone else's tutorial.",
+    "lead": "Upload a bare-face selfie. Get AI-powered shade diagnosis, personalized looks, and step-by-step tutorials you can actually follow.",
+    "ctaPrimary": "Start Your Try-On",
+    "ctaSecondary": "Explore Styles",
+    "metric1Title": "3 Steps",
+    "metric1Detail": "Upload · Diagnose · Tutorial",
+    "metric2Title": "Any Scene",
+    "metric2Detail": "Commute · Date · Photo · Interview",
+    "metric3Title": "Privacy First",
+    "metric3Detail": "Your photo, your control"
+  },
+  "howItWorks": {
+    "eyebrow": "How It Works",
+    "headline": "Three steps to your perfect look — and how to create it.",
+    "subheadline": "Upload a selfie → Get your AI diagnosis and looks → Follow the tutorial and shop the kit.",
+    "step1Title": "Upload a Selfie",
+    "step1Desc": "Take a front-facing, bare-face photo. It's used only for generating your personalized plan — deletable anytime.",
+    "step2Title": "See What Suits You",
+    "step2Desc": "AI analyzes your skin tone and facial features, then recommends the best matching looks with clear reasoning.",
+    "step3Title": "Get Tutorials & Product Picks",
+    "step3Desc": "Every look comes with step-by-step instructions and real product recommendations so you can actually do it."
+  },
+  "inspiration": {
+    "eyebrow": "Inspiration Gallery",
+    "headline": "Find the vibe first, then learn how to recreate it.",
+    "subheadline": "Every look is designed for a real scenario. Tap into the one that speaks to you and start your try-on.",
+    "hoverCta": "Try this look →"
+  },
+  "scenarios": {
+    "eyebrow": "Real-Life Scenarios",
+    "headline": "Makeup advice that fits your next event, not just a color wheel."
+  },
+  "trust": {
+    "eyebrow": "Built for Everyone",
+    "headline": "Works across all skin tones, face shapes, ages, and makeup intensity levels."
+  },
+  "tryOn": {
+    "heading": "Upload a selfie. Discover the looks made for you.",
+    "subheading": "No filters. Real analysis of your skin tone and features, matched to looks and tutorials you can actually follow.",
+    "privacyStrip": "Used only for your recommendations · Deletable anytime",
+    "privacyNote1": "Your photo is used only to generate your diagnosis — never shared with third parties.",
+    "privacyNote2": "It's never used to train AI models.",
+    "privacyNote3": "You can delete it anytime, and it auto-deletes within 24 hours.",
+    "uploadLabel": "Upload a front-facing selfie",
+    "uploadHint": "Drag & drop or click to select — JPEG or PNG, max 10 MB",
+    "analyzing": "Analyzing your features…",
+    "resultsReady": "Your personalized looks are ready"
+  },
+  "tutorial": {
+    "dontDoThis": "Don't do this",
+    "youPassWhen": "You pass when",
+    "done": "Done",
+    "needHelp": "Need help",
+    "simplerVersion": "Simpler version",
+    "allTutorials": "All Tutorials",
+    "tryThisLook": "Try This Look"
+  },
+  "membership": {
+    "eyebrow": "Beauty Pass",
+    "headline": "Your shortcut to looking exactly like you want — without the guesswork.",
+    "freeLabel": "Free",
+    "proLabel": "Pro",
+    "premiumLabel": "Premium",
+    "upgradeCtaPro": "Start Pro — $19.99/mo",
+    "upgradeCtaPremium": "Get Premium — $39.99/mo",
+    "manageSubscription": "Manage Subscription"
+  },
+  "footer": {
+    "description": "AI Beauty Stylist is your personal AI beauty concierge — helping you find the right look, learn how to create it, and buy only what works for you.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "about": "About"
+  },
+  "common": {
+    "tryThisLook": "Try This Look",
+    "findMyShade": "Find My Shade",
+    "learnMore": "Learn More",
+    "upgradeNow": "Upgrade Now",
+    "aiDisclaimer": "Results are AI-generated suggestions for reference only."
+  }
+}

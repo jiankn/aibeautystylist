@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAllLooks, type TryOnLook } from '../../lib/mockTryOn';
+import { inferStepVisual, ZONE_ICONS, TOOL_ICONS } from '../../lib/tutorialVisuals';
 
 export const prerender = true;
 
@@ -85,27 +86,45 @@ const structuredData = {
     </div>
 
     <div class="container tutorial-step-flow top-gap">
-      {look.tutorialSteps.map((step, index) => (
-        <article class="card tutorial-step-card">
-          <div class="tutorial-step-top">
-            <span class="scenario-index">0{index + 1}</span>
-            <div>
-              <h3>{step.title}</h3>
-              <p>{step.detail}</p>
+      {look.tutorialSteps.map((step, index) => {
+        const visual = inferStepVisual(step.title, step.detail);
+        return (
+          <article class="card tutorial-step-card">
+            <div class="tutorial-step-top">
+              <span class="scenario-index">0{index + 1}</span>
+              <div class="tutorial-step-content">
+                <div class="tutorial-step-badges">
+                  <span class="step-badge step-badge-zone" title={`Face zone: ${visual.zoneLabel}`}>
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={ZONE_ICONS[visual.zone]} />
+                    <span>{visual.zoneLabel}</span>
+                  </span>
+                  <span class="step-badge step-badge-tool" title={`Tool: ${visual.toolLabel}`}>
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={TOOL_ICONS[visual.tool]} />
+                    <span>{visual.toolLabel}</span>
+                  </span>
+                </div>
+                <h3>{step.title}</h3>
+                <p>{step.detail}</p>
+              </div>
             </div>
-          </div>
-          <div class="tutorial-step-callouts">
-            <div class="step-callout">
-              <strong>Don't do this</strong>
-              <p>{step.avoid}</p>
+            <div class="tutorial-step-callouts">
+              <div class="step-callout">
+                <strong>Don't do this</strong>
+                <p>{step.avoid}</p>
+              </div>
+              <div class="step-callout step-callout-accent">
+                <strong>You pass when</strong>
+                <p>{step.selfCheck}</p>
+              </div>
             </div>
-            <div class="step-callout step-callout-accent">
-              <strong>You pass when</strong>
-              <p>{step.selfCheck}</p>
+            <div class="tutorial-step-actions">
+              <button class="step-action-btn step-action-done" type="button" data-step-done={index}>Done</button>
+              <button class="step-action-btn step-action-help" type="button" data-step-help={index}>Need help</button>
+              <button class="step-action-btn step-action-simpler" type="button" data-step-simpler={index}>Simpler version</button>
             </div>
-          </div>
-        </article>
-      ))}
+          </article>
+        );
+      })}
     </div>
 
     <div class="container top-gap">

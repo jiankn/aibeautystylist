@@ -12,6 +12,7 @@ export function getStaticPaths() {
 }
 
 const { page } = Astro.props as { page: ScenarioPage };
+const tryOnHref = `/try-on?scenario=${page.tryOnScenario}&look=${page.tryOnLook}`;
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -36,7 +37,7 @@ const structuredData = {
         <h1>{page.headline}</h1>
         <p>{page.intro}</p>
         <div class="cta-row">
-          <a class="btn" href={`/try-on?scenario=${page.tryOnScenario}`}>Try This Look</a>
+          <a class="btn" href={tryOnHref}>Try This Look</a>
           <a class="btn btn-secondary" href="/tools/shade-finder">Check Lip Shade</a>
         </div>
       </div>

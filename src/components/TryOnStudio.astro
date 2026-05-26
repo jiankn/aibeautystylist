@@ -1,16 +1,18 @@
-<section class="tool-shell card tryon-shell" data-tryon-shell>
-  <header class="tryon-header">
-    <div class="tryon-header-copy">
-      <span class="eyebrow">AI Try-On · Step 1</span>
-      <h1 id="tryon-heading">Upload a selfie. Discover the looks made for you.</h1>
-      <p>No filters. Real analysis of your skin tone and features, matched to looks and tutorials you can actually follow.</p>
-    </div>
-    <span class="tryon-trust-strip" aria-label="Privacy promise">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-      Used only for your recommendations · Deletable anytime
-    </span>
-  </header>
+---
+import { buildLookTryOnHref, lookCatalogItems, lookFilters, quickTryOnLooks } from '../data/lookCatalog';
+import { homeStyleItems } from '../data/stylePages';
 
+const quickLookItems = quickTryOnLooks;
+
+const styleShortcutItems = homeStyleItems.map((style) => ({
+  label: style.label,
+  href: `/try-on?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}`,
+}));
+
+const allLookItems = lookCatalogItems;
+---
+
+<section class="tool-shell card tryon-shell" data-tryon-shell>
   <!-- 移动端粘性 sub-nav (在结果态内 IntersectionObserver 高亮) -->
   <nav class="tryon-subnav" data-tryon-subnav aria-label="Result sections">
     <div class="tryon-subnav-track">
@@ -28,6 +30,18 @@
     <!-- ─────────── 输入态 ─────────── -->
     <section class="tool-step" data-tryon-step="input">
       <div class="tryon-intro-grid">
+        <div class="tryon-intro-left">
+          <header class="tryon-header">
+            <div class="tryon-header-copy">
+              <span class="eyebrow">AI Try-On · Step 1</span>
+              <h1 id="tryon-heading">Upload a selfie. Discover the looks made for you.</h1>
+              <p>No filters. Real analysis of your skin tone and features, matched to looks and tutorials you can actually follow.</p>
+            </div>
+            <span class="tryon-trust-strip" aria-label="Privacy promise">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+              Used only for your recommendations · Deletable anytime
+            </span>
+          </header>
         <form class="tryon-form-stack" data-tryon-form>
           <label class="upload-field">
             <span class="sr-only">Upload bare-face selfie</span>
@@ -40,8 +54,15 @@
                 data-photo-input
               />
               <div class="upload-dropzone-copy" data-upload-idle-copy>
+                <span class="upload-dropzone-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                </span>
                 <strong>Click or drag your selfie here</strong>
-                <p id="tryon-upload-helper">JPG, PNG or WebP up to 8 MB. Best results: well-lit, front-facing, no glasses or heavy bangs.</p>
+                <p id="tryon-upload-helper">JPG, PNG or WebP up to 8 MB · Best results: well-lit, front-facing</p>
               </div>
               <div class="upload-dropzone-copy upload-ready-copy is-hidden" data-upload-ready-copy>
                 <strong>Photo ready</strong>
@@ -95,34 +116,30 @@
           </div>
 
           <p class="tryon-form-meta">
-            <strong>3 free</strong> AI diagnoses per day · No selfie? Try a sample look on the right.
+            <strong>3 free</strong> diagnoses/day · No selfie? Try a sample look on the right.
           </p>
         </form>
+        </div>
 
-        <!-- P0.A2: 未上传时右侧 demo 画廊 -->
-        <aside class="tryon-demo-card" aria-label="Sample looks">
-          <div class="tryon-demo-card-head">
-            <h3>See it in action</h3>
-            <span class="pill">Demo</span>
+        <!-- P0.A2: 未上传时右侧灵感/风格选择 -->
+        <aside class="tryon-demo-card" aria-label="Makeup inspiration choices">
+          <span class="tryon-demo-eyebrow">No selfie? Preview a sample</span>
+          <div class="tryon-demo-hero" data-tryon-demo-hero>
+            <img
+              src={quickLookItems[0].image}
+              alt={quickLookItems[0].imageAlt}
+              data-tryon-demo-hero-img
+              loading="eager"
+            />
+            <div class="tryon-demo-hero-caption" data-tryon-demo-hero-caption>
+              <strong data-tryon-demo-hero-title>{quickLookItems[0].title}</strong>
+              <small data-tryon-demo-hero-tone>{quickLookItems[0].tone}</small>
+            </div>
           </div>
-          <div class="tryon-demo-thumbs" role="group" aria-label="Try a sample look without uploading">
-            <button type="button" class="tryon-demo-thumb" data-tryon-demo="office"
-                    style="background-image:url('/images/hero/look-commute.png');"
-                    aria-label="Try the Commute / Office Glow demo look">
-              <span class="tryon-demo-thumb-label">Office Glow</span>
-            </button>
-            <button type="button" class="tryon-demo-thumb" data-tryon-demo="date"
-                    style="background-image:url('/images/hero/look-date.png');"
-                    aria-label="Try the Date Night Soft Glam demo look">
-              <span class="tryon-demo-thumb-label">Soft Glam</span>
-            </button>
-            <button type="button" class="tryon-demo-thumb" data-tryon-demo="photo"
-                    style="background-image:url('/images/hero/look-photogenic.png');"
-                    aria-label="Try the Camera Ready demo look">
-              <span class="tryon-demo-thumb-label">Camera Ready</span>
-            </button>
+          <div class="tryon-demo-actions">
+            <button class="btn btn-secondary tryon-demo-action-btn" type="button" data-look-drawer-open>Get More Inspired</button>
+            <button class="btn btn-secondary tryon-demo-action-btn" type="button" data-style-drawer-open>Try More Styles</button>
           </div>
-          <p class="tryon-demo-foot">Tap a sample to preview a full diagnosis with a sample profile — no photo needed.</p>
         </aside>
       </div>
     </section>
@@ -153,13 +170,26 @@
           </div>
         </div>
 
+        <!-- AI 免责声明 (PRD §15) -->
+        <p class="tryon-ai-disclaimer" role="note">Results are AI-generated suggestions for reference only. Individual results may vary.</p>
+
         <!-- P2.A14: Demo 模式整宽提示横幅（chip 之外的明确入口） -->
         <aside class="tryon-demo-banner is-hidden" data-tryon-demo-banner role="note">
           <div class="tryon-demo-banner-copy">
-            <strong>You're previewing a sample profile.</strong>
-            <span>Upload a selfie above to get a real AI diagnosis with custom shades.</span>
+            <strong data-tryon-demo-banner-title>You're previewing a sample profile.</strong>
+            <span data-tryon-demo-banner-copy>Upload a selfie above to get a real AI diagnosis with custom shades.</span>
           </div>
           <button class="btn" type="button" data-tryon-demo-banner-cta>Upload my photo</button>
+        </aside>
+
+        <!-- P0 — 会员门控横幅：当后端返回 _gated.isFreeTier=true 时显示 -->
+        <aside class="tryon-gated-banner is-hidden" data-tryon-gated-banner role="note">
+          <div class="tryon-gated-banner-copy">
+            <span class="pill tryon-gated-pill">Free Preview</span>
+            <strong data-tryon-gated-message>Unlock full tutorials, HD previews, and curated beauty kits with Pro</strong>
+            <span data-tryon-gated-detail>You're seeing 2 of 3 looks and the first 3 tutorial steps. Upgrade to see everything.</span>
+          </div>
+          <a class="btn" data-tryon-gated-cta href="/membership">Upgrade to Pro — $9.99/mo</a>
         </aside>
 
         <!-- 1. Diagnosis 顶置整宽 -->
@@ -243,6 +273,16 @@
           <div class="step-preview-list" data-selected-steps></div>
           <ul class="check-list compact" data-selected-selfchecks></ul>
 
+          <!-- P0 — 教程被裁断的解锁卡（仅免费用户教程被裁时显示） -->
+          <aside class="tryon-tutorial-lock is-hidden" data-tryon-tutorial-lock role="note">
+            <div class="tryon-tutorial-lock-icon" aria-hidden="true">🔒</div>
+            <div class="tryon-tutorial-lock-copy">
+              <strong>The full tutorial is more steps</strong>
+              <p>Pro unlocks every step with error alerts, self-check points, and curated product picks for each.</p>
+            </div>
+            <a class="btn" href="/membership">Unlock Full Tutorial</a>
+          </aside>
+
           <details class="tryon-kit-details" data-tryon-kit>
             <!-- P2.12: summary-hint 独立类，不再借用 trust-strip -->
             <summary>
@@ -270,7 +310,7 @@
           </div>
         </section>
 
-        <!-- 5. Share Card 后置 -->
+        <!-- 5. Share Card -->
         <section id="tryon-section-share">
           <div class="result-section-head">
             <div>
@@ -291,8 +331,12 @@
             <div class="share-card-tags" data-share-tags></div>
             <p class="share-card-cta" data-share-cta>Copy your look summary to share with friends, or continue to the full tutorial.</p>
             <div class="share-card-actions">
+              <button class="btn" type="button" data-share-download>📸 Download Share Card</button>
               <button class="btn btn-secondary" type="button" data-share-export>Copy Share Text</button>
               <a class="text-link" data-continue-link href="/tutorials/office-glow">Continue to Tutorial →</a>
+            </div>
+            <div class="share-card-preview is-hidden" data-share-card-preview>
+              <img data-share-card-image alt="Your share card preview" />
             </div>
           </article>
         </section>
@@ -300,6 +344,83 @@
     </section>
   </div>
 </section>
+
+<div class="look-drawer is-hidden" data-look-drawer role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="look-drawer-title">
+  <button class="look-drawer-backdrop" type="button" data-look-drawer-close aria-label="Close all looks"></button>
+  <div class="look-drawer-panel">
+    <div class="look-drawer-head">
+      <div>
+        <span class="eyebrow">All Looks</span>
+        <h3 id="look-drawer-title">Find the makeup mood you want to try.</h3>
+      </div>
+      <button class="look-drawer-close" type="button" data-look-drawer-close aria-label="Close all looks">&times;</button>
+    </div>
+    <div class="look-filter-tabs" aria-label="Filter makeup looks">
+      {lookFilters.map((filter, index) => (
+        <button type="button" class:list={['look-filter-chip', { 'is-active': index === 0 }]} data-look-filter={filter.value}>
+          {filter.label}
+        </button>
+      ))}
+    </div>
+    <div class="look-drawer-grid" aria-label="All makeup looks">
+      {allLookItems.map((look) => (
+        <button
+          type="button"
+          class="look-drawer-item"
+          data-look-item
+          data-look-slug={look.slug}
+          data-look-title={look.title}
+          data-look-tone={look.tone}
+          data-look-category={look.category}
+          data-tryon-demo={look.scenario}
+          data-look-href={buildLookTryOnHref(look)}
+          data-look-image={look.image}
+          data-look-image-alt={look.imageAlt}
+          style={`background-image:url('${look.image}');`}
+          aria-label={`Try ${look.title}`}
+        >
+          <span><strong>{look.title}</strong><small>{look.tone}</small></span>
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<!-- 妆效预览浮层 -->
+<div class="makeup-preview-modal is-hidden" id="makeup-preview-modal" role="dialog" aria-modal="true" aria-label="Makeup Preview">
+  <div class="makeup-preview-backdrop" data-makeup-close></div>
+  <div class="makeup-preview-content">
+    <button class="makeup-preview-close" data-makeup-close aria-label="Close preview">&times;</button>
+    <div class="makeup-preview-loading" id="makeup-preview-loading">
+      <div class="spinner" aria-hidden="true"></div>
+      <h3>Generating your makeup look...</h3>
+      <p id="makeup-preview-look-name"></p>
+      <p class="makeup-preview-hint">This usually takes 30-60 seconds</p>
+    </div>
+    <div class="makeup-preview-result is-hidden" id="makeup-preview-result">
+      <h3 id="makeup-preview-title"></h3>
+      <div class="makeup-preview-images">
+        <div class="makeup-preview-frame">
+          <span class="pill">Before</span>
+          <img id="makeup-preview-before" src="" alt="Before makeup" />
+        </div>
+        <div class="makeup-preview-frame">
+          <span class="pill">After (AI Generated)</span>
+          <img id="makeup-preview-after" src="" alt="AI generated makeup preview" />
+        </div>
+      </div>
+      <div class="makeup-preview-actions">
+        <button class="btn" id="makeup-preview-download">Download After Image</button>
+        <button class="btn btn-secondary" data-makeup-close>Close</button>
+      </div>
+      <p class="makeup-preview-elapsed" id="makeup-preview-elapsed"></p>
+    </div>
+    <div class="makeup-preview-error is-hidden" id="makeup-preview-error">
+      <p id="makeup-preview-error-msg"></p>
+      <button class="btn btn-secondary" data-makeup-close>Close</button>
+    </div>
+  </div>
+</div>
 
 <script>
   type LipColorParams = {
@@ -342,6 +463,7 @@
     tutorialSteps?: TryOnStepClient[];
     commonMistakes?: string[];
     selfChecks?: string[];
+    _tutorialGated?: boolean;
     kit?: {
       mustHave?: TryOnProductClient[];
       optional?: TryOnProductClient[];
@@ -381,6 +503,15 @@
     cta: string;
   };
 
+  type GatedInfo = {
+    tier: 'free' | 'pro' | 'premium';
+    isFreeTier: boolean;
+    lockedFeatures: string[];
+    upgradeMessage: string;
+    upgradeCta: string;
+    upgradeUrl: string;
+  };
+
   type TryOnApiResponse = {
     diagnosis?: {
       title: string;
@@ -392,6 +523,7 @@
     _lipColors?: Record<string, LipColorParams>;
     _remaining?: number;
     _rateLimited?: boolean;
+    _gated?: GatedInfo;
     _upload?: {
       provider?: string;
       stored?: boolean;
@@ -448,10 +580,196 @@
   const compareSection = qs<HTMLElement>('[data-tryon-compare-section]');
   const subnavCompareLink = subnav?.querySelector<HTMLAnchorElement>('a[href="#tryon-section-compare"]') ?? null;
   const demoBanner = qs<HTMLElement>('[data-tryon-demo-banner]');
+  const demoBannerTitle = qs<HTMLElement>('[data-tryon-demo-banner-title]');
+  const demoBannerCopy = qs<HTMLElement>('[data-tryon-demo-banner-copy]');
   const demoBannerCta = qs<HTMLButtonElement>('[data-tryon-demo-banner-cta]');
+  const lookDrawer = qs<HTMLElement>('[data-look-drawer]');
+  const lookDrawerOpenButtons = qsa<HTMLButtonElement>('[data-look-drawer-open]');
+  const lookDrawerCloseButtons = qsa<HTMLButtonElement>('[data-look-drawer-close]');
+  const lookFilterButtons = qsa<HTMLButtonElement>('[data-look-filter]');
+  const lookDrawerItems = qsa<HTMLElement>('[data-look-item]');
+  const selectedInspiration = qs<HTMLElement>('[data-selected-inspiration]');
+  const selectedInspirationTitle = qs<HTMLElement>('[data-selected-inspiration-title]');
+  const selectedInspirationTone = qs<HTMLElement>('[data-selected-inspiration-tone]');
+  const demoHeroImg = qs<HTMLImageElement>('[data-tryon-demo-hero-img]');
+  const demoHeroTitle = qs<HTMLElement>('[data-tryon-demo-hero-title]');
+  const demoHeroTone = qs<HTMLElement>('[data-tryon-demo-hero-tone]');
+  // P0 — 会员门控 UI 引用
+  const gatedBanner = qs<HTMLElement>('[data-tryon-gated-banner]');
+  const gatedMessage = qs<HTMLElement>('[data-tryon-gated-message]');
+  const gatedDetail = qs<HTMLElement>('[data-tryon-gated-detail]');
+  const gatedCta = qs<HTMLAnchorElement>('[data-tryon-gated-cta]');
+  const tutorialLock = qs<HTMLElement>('[data-tryon-tutorial-lock]');
   const looksProgressEl = qs<HTMLElement>('[data-tryon-looks-progress]');
   const looksProgressCurrent = qs<HTMLElement>('[data-tryon-looks-current]');
   const looksProgressTotal = qs<HTMLElement>('[data-tryon-looks-total]');
+  const scenarioSelect = qs<HTMLSelectElement>('select[name="scenario"]');
+
+  const initialParams = new URLSearchParams(window.location.search);
+  const scenarioAliases: Record<string, 'office' | 'date' | 'photo'> = {
+    office: 'office',
+    commute: 'office',
+    refined: 'office',
+    beginner: 'office',
+    date: 'date',
+    romantic: 'date',
+    photo: 'photo',
+    photogenic: 'photo',
+    evening: 'photo',
+  };
+  const styleScenarioMap: Record<string, 'office' | 'date' | 'photo'> = {
+    'clean-girl-makeup': 'office',
+    'soft-glam-makeup': 'date',
+    'glass-skin-makeup': 'office',
+    'no-makeup-makeup': 'office',
+    'office-polished-makeup': 'office',
+    'romantic-date-makeup': 'date',
+    'latte-makeup': 'office',
+    'peach-glow-makeup': 'office',
+    'rose-milk-makeup': 'date',
+    'quiet-luxury-makeup': 'office',
+    'camera-ready-makeup': 'photo',
+    'flash-proof-makeup': 'photo',
+    'wedding-guest-makeup': 'photo',
+    'champagne-glow-makeup': 'photo',
+    'bronze-glam-makeup': 'photo',
+    'burgundy-velvet-makeup': 'photo',
+    'mature-radiance-makeup': 'office',
+    'hooded-eye-lift-makeup': 'office',
+  };
+  const styleLookMap: Record<string, string> = {
+    'clean-girl-makeup': 'clean-girl',
+    'soft-glam-makeup': 'soft-glam',
+    'glass-skin-makeup': 'glass-skin',
+    'no-makeup-makeup': 'no-makeup',
+    'office-polished-makeup': 'client-meeting-nude',
+    'romantic-date-makeup': 'romantic-pink',
+    'latte-makeup': 'warm-nude-daily',
+    'peach-glow-makeup': 'peach-morning-glow',
+    'rose-milk-makeup': 'rose-milk-date',
+    'quiet-luxury-makeup': 'quiet-taupe',
+    'camera-ready-makeup': 'photo-ready',
+    'flash-proof-makeup': 'flash-proof-satin',
+    'wedding-guest-makeup': 'wedding-guest',
+    'champagne-glow-makeup': 'champagne-gala',
+    'bronze-glam-makeup': 'bronze-evening',
+    'burgundy-velvet-makeup': 'burgundy-velvet',
+    'mature-radiance-makeup': 'mature-skin-radiance',
+    'hooded-eye-lift-makeup': 'hooded-eyes-lift',
+  };
+  const scenarioParam = initialParams.get('scenario') || '';
+  const styleParam = initialParams.get('style') || '';
+  const lookParam = initialParams.get('look') || styleLookMap[styleParam] || '';
+  const initialScenario = scenarioAliases[scenarioParam] ?? styleScenarioMap[styleParam];
+  if (scenarioSelect && initialScenario) {
+    scenarioSelect.value = initialScenario;
+  }
+
+  type SelectedInspirationLook = {
+    slug: string;
+    title: string;
+    tone: string;
+    scenario: string;
+  };
+
+  let selectedInspirationLook: SelectedInspirationLook | null = null;
+
+  const readLookFromTrigger = (trigger: HTMLElement): SelectedInspirationLook | null => {
+    const slug = trigger.getAttribute('data-look-slug') || '';
+    const title = trigger.getAttribute('data-look-title') || '';
+    const tone = trigger.getAttribute('data-look-tone') || '';
+    const scenario = trigger.getAttribute('data-tryon-demo') || 'office';
+    if (!slug || !title) return null;
+    return { slug, title, tone, scenario };
+  };
+
+  const syncSelectedLookUrl = (look: SelectedInspirationLook) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('scenario', look.scenario);
+    params.set('look', look.slug);
+    params.delete('style');
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}${window.location.hash}`);
+  };
+
+  const updateSelectedInspirationUi = () => {
+    if (selectedInspiration) {
+      selectedInspiration.classList.toggle('is-hidden', !selectedInspirationLook);
+      if (selectedInspirationTitle) selectedInspirationTitle.textContent = selectedInspirationLook?.title || '';
+      if (selectedInspirationTone) selectedInspirationTone.textContent = selectedInspirationLook?.tone || '';
+    }
+    qsa<HTMLElement>('[data-look-slug]').forEach((trigger) => {
+      trigger.classList.toggle('is-selected', trigger.getAttribute('data-look-slug') === selectedInspirationLook?.slug);
+    });
+    // Update hero image from the selected pill's data attributes
+    if (selectedInspirationLook) {
+      const activePill = qsa<HTMLElement>('[data-look-slug]').find(
+        (el) => el.getAttribute('data-look-slug') === selectedInspirationLook!.slug,
+      );
+      if (activePill && demoHeroImg) {
+        const newImage = activePill.getAttribute('data-look-image') || '';
+        const newAlt = activePill.getAttribute('data-look-image-alt') || '';
+        if (newImage) {
+          demoHeroImg.src = newImage;
+          demoHeroImg.alt = newAlt;
+        }
+      }
+      if (demoHeroTitle) demoHeroTitle.textContent = selectedInspirationLook.title;
+      if (demoHeroTone) demoHeroTone.textContent = selectedInspirationLook.tone;
+    }
+  };
+
+  const setSelectedInspirationFromTrigger = (trigger: HTMLElement, syncUrl = false) => {
+    const look = readLookFromTrigger(trigger);
+    if (!look) return null;
+    selectedInspirationLook = look;
+    updateSelectedInspirationUi();
+    if (syncUrl) syncSelectedLookUrl(look);
+    return look;
+  };
+
+  if (lookParam) {
+    const initialLookTrigger = qsa<HTMLElement>('[data-look-slug]').find(
+      (trigger) => trigger.getAttribute('data-look-slug') === lookParam,
+    );
+    if (initialLookTrigger) setSelectedInspirationFromTrigger(initialLookTrigger);
+  }
+
+  const openLookDrawer = () => {
+    if (!lookDrawer) return;
+    lookDrawer.classList.remove('is-hidden');
+    lookDrawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('is-look-drawer-open');
+    lookDrawer.querySelector<HTMLElement>('[data-look-filter]')?.focus();
+  };
+
+  const closeLookDrawer = () => {
+    if (!lookDrawer) return;
+    lookDrawer.classList.add('is-hidden');
+    lookDrawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('is-look-drawer-open');
+  };
+
+  const applyLookFilter = (filter: string) => {
+    lookFilterButtons.forEach((button) => {
+      button.classList.toggle('is-active', button.getAttribute('data-look-filter') === filter);
+    });
+    lookDrawerItems.forEach((item) => {
+      const category = item.getAttribute('data-look-category') || '';
+      item.hidden = filter !== 'all' && category !== filter;
+    });
+  };
+
+  lookDrawerOpenButtons.forEach((button) => button.addEventListener('click', openLookDrawer));
+  qsa<HTMLButtonElement>('[data-style-drawer-open]').forEach((button) => button.addEventListener('click', openLookDrawer));
+  lookDrawerCloseButtons.forEach((button) => button.addEventListener('click', closeLookDrawer));
+  lookFilterButtons.forEach((button) => {
+    button.addEventListener('click', () => applyLookFilter(button.getAttribute('data-look-filter') || 'all'));
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && lookDrawer && !lookDrawer.classList.contains('is-hidden')) {
+      closeLookDrawer();
+    }
+  });
 
   // P2.A12: 拖拽视觉反馈
   const dropzone = qs<HTMLElement>('.upload-dropzone');
@@ -1029,7 +1347,25 @@
         s.textContent = text;
         meta.appendChild(s);
       });
-      button.append(pill, h4, p, meta);
+      // 唇色色块（如果有唇色数据）
+      const lipSwatchContainer = document.createElement('div');
+      lipSwatchContainer.className = 'look-card-lip-swatch';
+      if (currentLipColors && currentLipColors[look.id]) {
+        import('../lib/faceColorEngine').then(({ renderInlineSwatch }) => {
+          renderInlineSwatch(lipSwatchContainer, currentLipColors![look.id]);
+        }).catch(() => {});
+      }
+      // 妆效预览按钮
+      const previewBtn = document.createElement('button');
+      previewBtn.type = 'button';
+      previewBtn.className = 'btn btn-secondary look-preview-btn';
+      previewBtn.innerHTML = '✨ Preview Makeup';
+      previewBtn.dataset.lookId = look.id;
+      previewBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        triggerMakeupPreview(look);
+      });
+      button.append(pill, h4, p, meta, lipSwatchContainer, previewBtn);
       button.addEventListener('click', () => selectLook(look.id));
       lookList.appendChild(button);
     });
@@ -1094,6 +1430,9 @@
     if (shareLook) shareLook.textContent = `${look.name} · ${look.finish}`;
     renderLookCards();
 
+    // P0 — 同步教程锁卡显示状态
+    syncTutorialLock(look);
+
     renderRealMakeupPreview(look);
   };
 
@@ -1136,6 +1475,46 @@
     });
   };
 
+  // P0 — 应用会员门控信息：显示/隐藏升级横幅 + 教程被裁锁卡
+  const applyGatedInfo = (gated?: GatedInfo) => {
+    if (!gated || !gated.isFreeTier) {
+      gatedBanner?.classList.add('is-hidden');
+      tutorialLock?.classList.add('is-hidden');
+      return;
+    }
+
+    // 顶部升级横幅（仅免费用户）
+    if (gatedBanner) {
+      gatedBanner.classList.remove('is-hidden');
+      if (gatedMessage && gated.upgradeMessage) gatedMessage.textContent = gated.upgradeMessage;
+      if (gatedCta) {
+        gatedCta.textContent = gated.upgradeCta || 'Upgrade to Pro';
+        gatedCta.setAttribute('href', gated.upgradeUrl || '/membership');
+      }
+      // 根据 looks 实际数量动态生成详情文案
+      const lookCount = currentLooks.length;
+      const hasGatedTutorial = currentLooks.some((l) => l._tutorialGated);
+      const detailParts: string[] = [];
+      if (lookCount > 0) detailParts.push(`You're seeing ${lookCount} of 3 looks`);
+      if (hasGatedTutorial) detailParts.push('the first 3 tutorial steps');
+      if (gatedDetail) {
+        gatedDetail.textContent = detailParts.length
+          ? `${detailParts.join(' and ')}. Upgrade to see everything.`
+          : 'Sign in and upgrade to unlock the full experience.';
+      }
+    }
+  };
+
+  // 在切换 look 时同步更新教程锁卡（必须依赖 selectLook 已更新 currentLook 的 _tutorialGated 状态）
+  const syncTutorialLock = (look: TryOnLookClient | undefined) => {
+    if (!tutorialLock) return;
+    if (look?._tutorialGated) {
+      tutorialLock.classList.remove('is-hidden');
+    } else {
+      tutorialLock.classList.add('is-hidden');
+    }
+  };
+
   // P1.A10: Demo 模式独立视觉身份  + P0.2: demo 隐藏 compare + P2.14 banner
   const setMode = (isDemo: boolean) => {
     currentIsDemo = isDemo;
@@ -1158,6 +1537,15 @@
 
     // P2.14: demo banner 显示
     demoBanner?.classList.toggle('is-hidden', !isDemo);
+    if (demoBannerTitle && demoBannerCopy) {
+      if (isDemo && selectedInspirationLook) {
+        demoBannerTitle.textContent = `Sample preview: ${selectedInspirationLook.title}`;
+        demoBannerCopy.textContent = `Upload a selfie to adapt this ${selectedInspirationLook.tone.toLowerCase()} look to your face, undertone, and features.`;
+      } else {
+        demoBannerTitle.textContent = "You're previewing a sample profile.";
+        demoBannerCopy.textContent = 'Upload a selfie above to get a real AI diagnosis with custom shades.';
+      }
+    }
 
     // P2.11: Re-analyze 按钮文案随模式切换
     if (rerunButton) rerunButton.textContent = isDemo ? 'Try another sample' : 'Re-analyze';
@@ -1185,7 +1573,7 @@
 
   // ─── 提交主流程 ───
   const runDiagnosis = async (
-    { presetScenario, forceDemo }: { presetScenario?: string; forceDemo?: boolean } = {},
+    { presetScenario, presetLookSlug, forceDemo }: { presetScenario?: string; presetLookSlug?: string; forceDemo?: boolean } = {},
   ) => {
     if (!form) return;
     const formData = new FormData(form);
@@ -1206,10 +1594,12 @@
 
     const scenario = presetScenario ?? String(formData.get('scenario') || 'office');
     const experience = String(formData.get('experience') || 'beginner');
+    const lookSlug = presetLookSlug ?? selectedInspirationLook?.slug ?? lookParam;
 
     const payload = {
       scenario,
       experience,
+      lookSlug: lookSlug || undefined,
       hasPhoto: Boolean(photo),
       photoBase64,
       // P0.1: send locale so service & AI prompt return matching language
@@ -1279,6 +1669,9 @@
     const isDemo = Boolean(forceDemo) || Boolean(result?.meta?.fallback) || !photo;
     setMode(isDemo);
 
+    // P0 — 渲染会员门控信息
+    applyGatedInfo(result._gated);
+
     if (typeof result._remaining === 'number' && photo) {
       remainingBadge?.classList.remove('is-hidden');
       if (remainingCount) remainingCount.textContent = String(result._remaining);
@@ -1314,10 +1707,12 @@
   qsa<HTMLElement>('[data-tryon-demo]').forEach((thumb) => {
     thumb.addEventListener('click', () => {
       const scenario = thumb.getAttribute('data-tryon-demo') || 'office';
+      const look = setSelectedInspirationFromTrigger(thumb, true);
       // 同步 select 值，方便用户后续微调
       const scenarioSelect = qs<HTMLSelectElement>('select[name="scenario"]');
       if (scenarioSelect) scenarioSelect.value = scenario;
-      runDiagnosis({ presetScenario: scenario, forceDemo: true });
+      closeLookDrawer();
+      runDiagnosis({ presetScenario: scenario, presetLookSlug: look?.slug, forceDemo: true });
     });
   });
 
@@ -1409,4 +1804,167 @@
     );
     sections.forEach((s) => observer.observe(s));
   }
+
+  // ─── 妆效预览功能 ─────────────────────────────────────────
+  const makeupModal = document.getElementById('makeup-preview-modal');
+  const makeupLoading = document.getElementById('makeup-preview-loading');
+  const makeupResult = document.getElementById('makeup-preview-result');
+  const makeupError = document.getElementById('makeup-preview-error');
+  const makeupErrorMsg = document.getElementById('makeup-preview-error-msg');
+  const makeupLookName = document.getElementById('makeup-preview-look-name');
+  const makeupTitle = document.getElementById('makeup-preview-title');
+  const makeupBefore = document.getElementById('makeup-preview-before') as HTMLImageElement | null;
+  const makeupAfter = document.getElementById('makeup-preview-after') as HTMLImageElement | null;
+  const makeupElapsed = document.getElementById('makeup-preview-elapsed');
+  const makeupDownload = document.getElementById('makeup-preview-download');
+
+  const showMakeupModal = () => {
+    makeupModal?.classList.remove('is-hidden');
+    document.body.style.overflow = 'hidden';
+  };
+  const hideMakeupModal = () => {
+    makeupModal?.classList.add('is-hidden');
+    document.body.style.overflow = '';
+  };
+
+  // 关闭按钮
+  document.querySelectorAll('[data-makeup-close]').forEach((btn) => {
+    btn.addEventListener('click', hideMakeupModal);
+  });
+  // ESC 关闭
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !makeupModal?.classList.contains('is-hidden')) {
+      hideMakeupModal();
+    }
+  });
+
+  const triggerMakeupPreview = async (look: TryOnLookClient) => {
+    if (!currentPhotoBase64 && !preparedPhotoBase64) {
+      alert('Please upload a selfie first to generate a makeup preview.');
+      return;
+    }
+
+    // 显示 modal loading
+    makeupLoading?.classList.remove('is-hidden');
+    makeupResult?.classList.add('is-hidden');
+    makeupError?.classList.add('is-hidden');
+    if (makeupLookName) makeupLookName.textContent = look.name;
+    showMakeupModal();
+
+    const photoData = currentPhotoBase64 || preparedPhotoBase64;
+
+    try {
+      const startTime = Date.now();
+      const resp = await fetch('/api/makeup-preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          photoBase64: photoData,
+          look: {
+            id: look.id,
+            name: look.name,
+            reason: look.reason,
+            scenario: look.scenario,
+            focus: look.focus,
+            finish: look.finish,
+            tutorialHeadline: look.tutorialHeadline,
+          },
+          locale: document.documentElement.lang === 'zh' ? 'zh' : 'en',
+        }),
+      });
+
+      const data = await resp.json();
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+
+      if (data.error === 'upgrade_required') {
+        makeupLoading?.classList.add('is-hidden');
+        makeupError?.classList.remove('is-hidden');
+        if (makeupErrorMsg) {
+          makeupErrorMsg.innerHTML = `✨ <strong>Makeup Preview is a Pro feature.</strong><br>
+            <a href="/membership" class="text-link">Upgrade to Pro</a> to see AI-generated makeup looks on your face.`;
+        }
+        return;
+      }
+
+      if (!resp.ok || data.error) {
+        throw new Error(data.message || 'Generation failed');
+      }
+
+      // 显示结果
+      makeupLoading?.classList.add('is-hidden');
+      makeupResult?.classList.remove('is-hidden');
+      if (makeupTitle) makeupTitle.textContent = `${look.name} — AI Makeup Preview`;
+      if (makeupBefore && photoData) makeupBefore.src = photoData;
+      if (makeupAfter && data.image?.dataUrl) makeupAfter.src = data.image.dataUrl;
+      if (makeupElapsed) makeupElapsed.textContent = `Generated in ${elapsed}s using ${data.model || 'Gemini'}`;
+
+      // 下载按钮
+      makeupDownload?.addEventListener('click', () => {
+        if (!data.image?.dataUrl) return;
+        const a = document.createElement('a');
+        a.href = data.image.dataUrl;
+        a.download = `makeup-preview-${look.id}.png`;
+        a.click();
+      }, { once: true });
+
+    } catch (err) {
+      makeupLoading?.classList.add('is-hidden');
+      makeupError?.classList.remove('is-hidden');
+      if (makeupErrorMsg) {
+        makeupErrorMsg.textContent = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      }
+    }
+  };
+
+  // ─── 分享卡下载功能 ─────────────────────────────────────────
+  const shareDownloadBtn = qs<HTMLButtonElement>('[data-share-download]');
+  const shareCardPreview = qs<HTMLElement>('[data-share-card-preview]');
+  const shareCardImage = qs<HTMLImageElement>('[data-share-card-image]');
+
+  shareDownloadBtn?.addEventListener('click', async () => {
+    const look = getSelectedLook();
+    if (!look) return;
+
+    shareDownloadBtn.disabled = true;
+    shareDownloadBtn.textContent = '⏳ Generating...';
+
+    try {
+      const { generateShareCard, downloadShareCard } = await import('../lib/shareCardGenerator');
+
+      const diagTitle = diagnosisTitle?.textContent || 'Your Personalized Beauty Profile';
+      const lipHex = currentLipColors?.[look.id]?.hex;
+
+      const dataUrl = await generateShareCard({
+        diagnosisTitle: diagTitle,
+        lookName: look.name,
+        lookFinish: look.finish,
+        scenario: look.scenario,
+        lipColorHex: lipHex,
+        hashtags: currentShareCard?.hashtags,
+      });
+
+      // 显示预览
+      if (shareCardImage && shareCardPreview) {
+        shareCardImage.src = dataUrl;
+        shareCardPreview.classList.remove('is-hidden');
+      }
+
+      // 触发下载
+      downloadShareCard(dataUrl, look.name);
+
+      shareDownloadBtn.textContent = '✅ Downloaded!';
+      setTimeout(() => {
+        shareDownloadBtn.textContent = '📸 Download Share Card';
+        shareDownloadBtn.disabled = false;
+      }, 2000);
+
+    } catch (err) {
+      console.error('[ShareCard] Generation failed:', err);
+      shareDownloadBtn.textContent = '❌ Failed — Try again';
+      setTimeout(() => {
+        shareDownloadBtn.textContent = '📸 Download Share Card';
+        shareDownloadBtn.disabled = false;
+      }, 2000);
+    }
+  });
 </script>

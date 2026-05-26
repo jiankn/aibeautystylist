@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const nextParam = Astro.url.searchParams.get('next');
+const safeNext = nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/dashboard';
+const googleHref = `/api/auth/login?next=${encodeURIComponent(safeNext)}`;
+---
+
+<BaseLayout
+  title="Sign in — AI Beauty Stylist"
+  description="Sign in or create your AI Beauty Stylist account with email or Google."
+  robots="noindex,nofollow"
+>
+  <section class="auth-page-shell">
+    <div class="auth-card">
+      <div class="auth-copy">
+        <p class="auth-eyebrow">My Account</p>
+        <h1>Sign in to your beauty dashboard</h1>
+        <p>
+          Save your try-on history, manage your membership, and keep your recommendations private.
+        </p>
+      </div>
+
+      <a class="auth-google-btn" href={googleHref}>
+        <span aria-hidden="true">G</span>
+        Continue with Google
+      </a>
+
+      <div class="auth-divider"><span>or use email</span></div>
+
+      <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+        <button type="button" class="auth-tab is-active" data-auth-tab="login">Sign in</button>
+        <button type="button" class="auth-tab" data-auth-tab="register">Create account</button>
+      </div>
+
+      <form class="auth-form" data-auth-form data-mode="login">
+        <input type="hidden" name="next" value={safeNext} />
+
+        <label class="auth-field" data-name-field hidden>
+          <span>Name</span>
+          <input name="name" type="text" autocomplete="name" placeholder="Jane Doe" />
+        </label>
+
+        <label class="auth-field">
+          <span>Email</span>
+          <input name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+        </label>
+
+        <label class="auth-field">
+          <span>Password</span>
+          <input name="password" type="password" autocomplete="current-password" placeholder="••••••••" required minlength="8" />
+        </label>
+
+        <button class="btn auth-submit" type="submit" data-auth-submit>Sign in</button>
+        <p class="auth-message" data-auth-message hidden></p>
+      </form>
+
+      <p class="auth-footnote">
+        <a href="/forgot-password">Forgot password?</a>
+        <span>·</span>
+        <a href="/privacy">Privacy Policy</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll('[data-auth-tab]');
+  const form = document.querySelector('[data-auth-form]') as HTMLFormElement | null;
+  const nameField = document.querySelector('[data-name-field]') as HTMLElement | null;
+  const submit = document.querySelector('[data-auth-submit]') as HTMLButtonElement | null;
+  const message = document.querySelector('[data-auth-message]') as HTMLElement | null;
+  const passwordInput = form?.querySelector('input[name="password"]') as HTMLInputElement | null;
+
+  function setMode(mode: 'login' | 'register') {
+    form?.setAttribute('data-mode', mode);
+    tabs.forEach((tab) => tab.classList.toggle('is-active', tab.getAttribute('data-auth-tab') === mode));
+    if (nameField) nameField.hidden = mode !== 'register';
+    if (submit) submit.textContent = mode === 'register' ? 'Create account' : 'Sign in';
+    if (passwordInput) passwordInput.autocomplete = mode === 'register' ? 'new-password' : 'current-password';
+    message?.setAttribute('hidden', '');
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => setMode(tab.getAttribute('data-auth-tab') === 'register' ? 'register' : 'login'));
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!submit || !message) return;
+
+    const mode = form.getAttribute('data-mode') === 'register' ? 'register' : 'login';
+    const endpoint = mode === 'register' ? '/api/auth/register' : '/api/auth/email-login';
+    const formData = new FormData(form);
+
+    submit.disabled = true;
+    submit.textContent = mode === 'register' ? 'Creating…' : 'Signing in…';
+    message.hidden = true;
+    message.classList.remove('is-error', 'is-success');
+
+    try {
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: String(formData.get('name') ?? ''),
+          email: String(formData.get('email') ?? ''),
+          password: String(formData.get('password') ?? ''),
+          next: String(formData.get('next') ?? '/dashboard'),
+        }),
+      });
+
+      const data = (await resp.json().catch(() => ({}))) as { message?: string; next?: string };
+      if (!resp.ok) throw new Error(data.message ?? 'Authentication failed.');
+
+      message.textContent = 'Success. Redirecting…';
+      message.classList.add('is-success');
+      message.hidden = false;
+      window.location.href = data.next ?? '/dashboard';
+    } catch (error) {
+      message.textContent = error instanceof Error ? error.message : 'Authentication failed.';
+      message.classList.add('is-error');
+      message.hidden = false;
+      submit.disabled = false;
+      submit.textContent = mode === 'register' ? 'Create account' : 'Sign in';
+    }
+  });
+</script>

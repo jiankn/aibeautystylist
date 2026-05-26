@@ -1,11 +1,65 @@
+# ════════════════════════════════════════════════════════════════
+# 本地开发环境变量（wrangler / astro dev 启动时会读取此文件）
+# ⚠️  请复制为 .dev.vars 后填入真实值（已加入 .gitignore，不会提交）
+# ════════════════════════════════════════════════════════════════
+
+# ─── 应用基础配置 ───────────────────────────────────────────
 APP_ENV=development
-AI_PROVIDER=mock
+AI_PROVIDER=gemini
 UPLOAD_PROVIDER=mock
+
+# ─── Gemini AI 诊断 ─────────────────────────────────────────
+# 获取密钥: https://aistudio.google.com/apikey
+GEMINI_API_KEY=
 GEMINI_MODEL=gemini-3.5-flash
-GEMINI_TIMEOUT_MS=45000
-GEMINI_THINKING_LEVEL=medium
+# Free 用户用的便宜模型（成本-67% vs flash），可省略，默认 gemini-2.5-flash-lite
+GEMINI_MODEL_FREE=gemini-2.5-flash-lite
+GEMINI_TIMEOUT_MS=120000
+GEMINI_THINKING_LEVEL=none
+
+# ─── Gemini 图像生成（妆效预览）─────────────────────────────
 GEMINI_IMAGE_MODEL=gemini-2.5-flash-image
 GEMINI_IMAGE_TIMEOUT_MS=75000
-STRIPE_PRICE_PRO_MONTHLY=price_pro_placeholder
-STRIPE_PRICE_PREMIUM_MONTHLY=price_premium_placeholder
-R2_PUBLIC_BASE_URL=https://example.r2.dev/public
+
+# ════════════════════════════════════════════════════════════════
+# Google OAuth 2.0 登录
+# 控制台: https://console.cloud.google.com/apis/credentials
+# 重定向 URI 必须包含：
+#   http://localhost:4321/api/auth/callback
+#   https://aibeautystylist.com/api/auth/callback
+# ════════════════════════════════════════════════════════════════
+GOOGLE_OAUTH_CLIENT_ID=
+GOOGLE_OAUTH_CLIENT_SECRET=
+
+# ════════════════════════════════════════════════════════════════
+# Stripe 订阅支付（aibeautystylist 沙盒）
+# ────────────────────────────────────────────────────────────────
+# 1. test mode secret key: https://dashboard.stripe.com/test/apikeys
+# 2. webhook secret（本地）: 跑 `stripe listen --forward-to localhost:4321/api/stripe/webhook`
+# 3. webhook secret（生产）: Dashboard → Webhooks → 选择对应 endpoint → Signing secret
+# 4. price IDs: 通过 stripe CLI / Dashboard 创建产品后复制
+# ════════════════════════════════════════════════════════════════
+STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# 本地用 stripe listen 输出的 secret，每次重启都会变
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Stripe Price IDs（subscription + 一次性）
+STRIPE_PRICE_PRO_MONTHLY=price_xxxxxxxxxxxxxxxxxxxx
+STRIPE_PRICE_PRO_YEARLY=price_xxxxxxxxxxxxxxxxxxxx
+STRIPE_PRICE_PREMIUM_MONTHLY=price_xxxxxxxxxxxxxxxxxxxx
+STRIPE_PRICE_PREMIUM_YEARLY=price_xxxxxxxxxxxxxxxxxxxx
+STRIPE_PRICE_SINGLE_OCCASION=price_xxxxxxxxxxxxxxxxxxxx
+
+# ─── R2 存储（私有）─────────────────────────────────────────
+# Bucket 通过 wrangler.jsonc 中的 USER_UPLOADS 绑定提供，仅 Worker 内可读
+# 不暴露公开 URL。无需在此设置任何变量。
+
+# ─── 邮件发送（Postal HTTP API）──────────────────────────────
+POSTAL_API_URL=
+POSTAL_API_KEY=
+SMTP_FROM=noreply@aibeautystylist.com
+POSTAL_API_FROM_NAME=AI Beauty Stylist
+ 
+# ─── 应用对外 URL（用于邮件链接）────────────────────────────
+APP_PUBLIC_URL=http://localhost:4321

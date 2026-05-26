@@ -15,3 +15,8 @@ dist/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+tmp-*.log
+tmp-screenshots/
+test-makeup-*.png
+test-makeup-*.mjs

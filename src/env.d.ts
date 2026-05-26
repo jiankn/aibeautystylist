@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly UPLOAD_PROVIDER?: 'mock' | 'r2';
   readonly GEMINI_API_KEY?: string;
   readonly GEMINI_MODEL?: string;
+  readonly GEMINI_MODEL_FREE?: string;
   readonly GEMINI_API_BASE?: string;
   readonly GEMINI_TIMEOUT_MS?: string;
   readonly GEMINI_THINKING_LEVEL?: 'minimal' | 'low' | 'medium' | 'high' | 'MINIMAL' | 'LOW' | 'MEDIUM' | 'HIGH';
@@ -13,8 +14,14 @@ interface ImportMetaEnv {
   readonly GEMINI_IMAGE_API_BASE?: string;
   readonly GEMINI_IMAGE_TIMEOUT_MS?: string;
   readonly STRIPE_PRICE_PRO_MONTHLY?: string;
+  readonly STRIPE_PRICE_PRO_YEARLY?: string;
   readonly STRIPE_PRICE_PREMIUM_MONTHLY?: string;
-  readonly R2_PUBLIC_BASE_URL?: string;
+  readonly STRIPE_PRICE_PREMIUM_YEARLY?: string;
+  readonly STRIPE_PRICE_SINGLE_OCCASION?: string;
+  readonly STRIPE_SECRET_KEY?: string;
+  readonly STRIPE_WEBHOOK_SECRET?: string;
+  readonly GOOGLE_OAUTH_CLIENT_ID?: string;
+  readonly GOOGLE_OAUTH_CLIENT_SECRET?: string;
   readonly NANO_BANANA_PRO_API_KEY?: string;
   readonly EVOLINK_API_KEY?: string;
   readonly EVOLINK_API_BASE?: string;

@@ -2,9 +2,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroSection from '../components/HeroSection.astro';
 import InspirationGrid from '../components/InspirationGrid.astro';
+import StylePicker from '../components/StylePicker.astro';
 import ScenarioCards from '../components/ScenarioCards.astro';
 import FeatureSteps from '../components/FeatureSteps.astro';
 import TrustAndPlans from '../components/TrustAndPlans.astro';
+import { homeStyleItems } from '../data/stylePages';
+import { scenarioPages } from '../data/scenarioPages';
 
 export const prerender = true;
 
@@ -24,6 +27,28 @@ const structuredData = [
     operatingSystem: 'Web',
     url: 'https://aibeautystylist.com/try-on/',
   },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Makeup styles to try',
+    itemListElement: homeStyleItems.map((style, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: style.label,
+      url: `https://aibeautystylist.com/try-on/?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Makeup guides by goal',
+    itemListElement: scenarioPages.slice(0, 6).map((page, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: page.title,
+      url: `https://aibeautystylist.com/scenarios/${page.slug}/`,
+    })),
+  },
 ];
 ---
 
@@ -34,6 +59,7 @@ const structuredData = [
 >
   <HeroSection />
   <InspirationGrid />
+  <StylePicker />
   <ScenarioCards />
   <FeatureSteps />
   <TrustAndPlans />

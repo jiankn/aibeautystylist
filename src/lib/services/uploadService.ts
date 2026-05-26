@@ -60,12 +60,16 @@ async function storeInR2(
   const { bytes, mimeType } = parseBase64Image(photoBase64);
   const key = makePhotoKey(now);
 
+  // 隐私原则：不把可识别用户身份的 IP 写进对象元数据
+  // 仅做粗粒度桶分类（用于配额核对，不可逆向到具体用户）
+  const ipBucket = ipAddress ? hashIpToBucket(ipAddress) : 'anonymous';
+
   await bucket.put(key, bytes, {
     httpMetadata: { contentType: mimeType },
     customMetadata: {
       purpose: 'tryon_source_photo',
       uploadedAt: now.toISOString(),
-      ipHint: ipAddress ? ipAddress.slice(0, 64) : 'unknown',
+      ipBucket,
     },
   });
 
@@ -76,6 +80,18 @@ async function storeInR2(
     mimeType,
     byteLength: bytes.byteLength,
   };
+}
+
+/**
+ * 把 IP 哈希到 256 个桶之一，仅用于聚合统计/防滥用
+ * 不可逆向到原始 IP
+ */
+function hashIpToBucket(ip: string): string {
+  let h = 0;
+  for (let i = 0; i < ip.length; i++) {
+    h = ((h << 5) - h + ip.charCodeAt(i)) | 0;
+  }
+  return `b${(h & 0xff).toString(16).padStart(2, '0')}`;
 }
 
 export async function storeTryOnPhoto(input: StoreTryOnPhotoInput): Promise<StoredUploadRef> {

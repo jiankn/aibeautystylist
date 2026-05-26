@@ -136,13 +136,9 @@ async function callGeminiApi(
       },
     ],
     generationConfig: {
-      responseFormat: {
-        text: {
-          mimeType: 'application/json',
-        },
-      },
+      responseMimeType: 'application/json',
       maxOutputTokens: 8192,
-      ...(options.thinkingLevel
+      ...(options.thinkingLevel && options.thinkingLevel.toLowerCase() !== 'none'
         ? {
             thinkingConfig: {
               thinkingLevel: options.thinkingLevel.toUpperCase(),
@@ -157,15 +153,32 @@ async function callGeminiApi(
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const response = await fetch(url, {
+    const bodyStr = JSON.stringify(requestBody);
+
+    // 开发环境：workerd 沙盒的 outbound HTTPS fetch 在 Windows 上会挂起。
+    // 通过 Vite server proxy（/dev-proxy/gemini）转发请求，代理在 Node.js 中运行。
+    let fetchUrl = url;
+    if (import.meta.env.DEV) {
+      // workerd fetch 要求绝对 URL，用 Vite 开发服务器的 localhost 地址
+      const devOrigin = 'http://localhost:4322';
+      fetchUrl = url.replace(
+        'https://generativelanguage.googleapis.com',
+        `${devOrigin}/dev-proxy/gemini`,
+      );
+    }
+    console.log(`[GeminiProvider] Sending ${(bodyStr.length / 1024).toFixed(0)}KB to ${fetchUrl} (timeout: ${timeoutMs}ms)`);
+
+    const response = await fetch(fetchUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-goog-api-key': apiKey,
       },
-      body: JSON.stringify(requestBody),
+      body: bodyStr,
       signal: controller.signal,
     });
+
+    console.log(`[GeminiProvider] Response received: ${response.status}`);
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => 'unknown');

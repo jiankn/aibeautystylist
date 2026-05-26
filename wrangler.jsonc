@@ -34,11 +34,23 @@
     "AI_PROVIDER": "gemini",
     "UPLOAD_PROVIDER": "r2",
     "GEMINI_MODEL": "gemini-3.5-flash",
-    "GEMINI_TIMEOUT_MS": "45000",
-    "GEMINI_THINKING_LEVEL": "medium",
+    "GEMINI_MODEL_FREE": "gemini-2.5-flash-lite",
+    "GEMINI_TIMEOUT_MS": "120000",
+    "GEMINI_THINKING_LEVEL": "none",
     "GEMINI_IMAGE_MODEL": "gemini-2.5-flash-image",
-    "GEMINI_IMAGE_TIMEOUT_MS": "75000"
-    // 注意：GEMINI_API_KEY 应通过 wrangler secret put 设置，不要写在此文件中
-    // 运行命令：npx wrangler secret put GEMINI_API_KEY
+    "GEMINI_IMAGE_TIMEOUT_MS": "75000",
+    // ─── 邮件发送（Postal HTTP API） ─────────────────────────
+    "POSTAL_API_URL": "https://mail.removexif.com/api/v1/send/message",
+    "SMTP_FROM": "noreply@aibeautystylist.com",
+    "POSTAL_API_FROM_NAME": "AI Beauty Stylist",
+    // ─── 应用对外 URL（用于邮件链接，登录回跳等） ───────────
+    "APP_PUBLIC_URL": "https://aibeautystylist.com"
+    // 通过 wrangler secret put 设置（不要写在此文件中）：
+    //   - GEMINI_API_KEY
+    //   - GOOGLE_OAUTH_CLIENT_ID
+    //   - GOOGLE_OAUTH_CLIENT_SECRET
+    //   - STRIPE_SECRET_KEY
+    //   - STRIPE_WEBHOOK_SECRET
+    //   - POSTAL_API_KEY
   }
 }

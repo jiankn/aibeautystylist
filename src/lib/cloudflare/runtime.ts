@@ -7,6 +7,7 @@ export interface KVNamespaceLike {
 export interface D1PreparedStatementLike {
   bind(...values: unknown[]): D1PreparedStatementLike;
   first<T = Record<string, unknown>>(): Promise<T | null>;
+  all<T = Record<string, unknown>>(): Promise<{ results?: T[]; success?: boolean; error?: string }>;
   run(): Promise<{ success?: boolean; error?: string }>;
 }
 
@@ -30,17 +31,31 @@ export interface R2BucketLike {
 
 export interface RuntimeEnv {
   APP_ENV?: string;
+  APP_PUBLIC_URL?: string;
   AI_PROVIDER?: string;
   UPLOAD_PROVIDER?: string;
   GEMINI_API_KEY?: string;
   GEMINI_MODEL?: string;
+  /** 免费用户用的便宜模型，默认 gemini-2.5-flash-lite */
+  GEMINI_MODEL_FREE?: string;
   GEMINI_API_BASE?: string;
   GEMINI_TIMEOUT_MS?: string;
   GEMINI_THINKING_LEVEL?: string;
   GEMINI_IMAGE_MODEL?: string;
   GEMINI_IMAGE_API_BASE?: string;
   GEMINI_IMAGE_TIMEOUT_MS?: string;
-  R2_PUBLIC_BASE_URL?: string;
+  // Auth
+  GOOGLE_OAUTH_CLIENT_ID?: string;
+  GOOGLE_OAUTH_CLIENT_SECRET?: string;
+  // Stripe
+  STRIPE_SECRET_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
+  // Email (Postal HTTP API)
+  POSTAL_API_URL?: string;
+  POSTAL_API_KEY?: string;
+  SMTP_FROM?: string;
+  POSTAL_API_FROM_NAME?: string;
+  // Bindings
   SESSION?: KVNamespaceLike;
   USAGE_LIMITS?: KVNamespaceLike;
   DB?: D1DatabaseLike;

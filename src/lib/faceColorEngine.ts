@@ -139,21 +139,75 @@ export async function initFaceLandmarker(): Promise<{
 
 /**
  * 在不使用 MediaPipe 时的降级方案：
- * 显示色号预览色块而非 Canvas 着色
+ * 显示精美色号预览卡而非 Canvas 着色
  */
 export function renderColorSwatch(
   container: HTMLElement,
   lipColor: LipColorParams,
 ): void {
+  const colorName = getColorName(lipColor.hex);
   container.innerHTML = `
-    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;
-                background:rgba(255,255,255,0.06);border-radius:8px;">
-      <div style="width:28px;height:28px;border-radius:50%;
-                  background-color:${lipColor.hex};
-                  border:2px solid rgba(255,255,255,0.15);"></div>
-      <span style="font-size:0.85rem;opacity:0.8;">
-        推荐唇色：${lipColor.hex}
-      </span>
+    <div class="lip-swatch-card">
+      <div class="lip-swatch-ring" style="--swatch-color: ${lipColor.hex};">
+        <div class="lip-swatch-dot" style="background: ${lipColor.hex};"></div>
+      </div>
+      <div class="lip-swatch-info">
+        <span class="lip-swatch-label">Recommended Lip</span>
+        <strong class="lip-swatch-name">${colorName}</strong>
+        <code class="lip-swatch-hex">${lipColor.hex}</code>
+      </div>
     </div>
   `;
+}
+
+/**
+ * 在 Look 卡片内嵌迷你唇色色块
+ * 支持 CSS transition 过渡
+ */
+export function renderInlineSwatch(
+  container: HTMLElement,
+  lipColor: LipColorParams,
+): void {
+  const colorName = getColorName(lipColor.hex);
+  container.innerHTML = `
+    <div class="lip-inline-swatch" style="--swatch-color: ${lipColor.hex};">
+      <span class="lip-inline-dot" style="background: ${lipColor.hex};"></span>
+      <span class="lip-inline-label">${colorName}</span>
+    </div>
+  `;
+}
+
+/**
+ * 根据 HEX 推算近似颜色名称
+ * 基于 HSL 色相分区的简化映射
+ */
+function getColorName(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  const d = max - min;
+
+  if (d < 0.05) return l > 0.7 ? 'Nude Pink' : 'Dusty Mauve';
+
+  let h = 0;
+  if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) * 60;
+  else if (max === g) h = ((b - r) / d + 2) * 60;
+  else h = ((r - g) / d + 4) * 60;
+
+  const s = d / (1 - Math.abs(2 * l - 1));
+
+  // 色相 → 唇色名称映射
+  if (h < 15 || h >= 345) return s > 0.6 ? 'Classic Red' : 'Dusty Rose';
+  if (h < 30) return l > 0.5 ? 'Coral Peach' : 'Terracotta';
+  if (h < 45) return 'Warm Nude';
+  if (h < 60) return 'Honey Nude';
+  if (h < 160) return 'Unexpected Hue';
+  if (h < 200) return 'Cool Mauve';
+  if (h < 280) return l < 0.35 ? 'Deep Plum' : 'Berry Violet';
+  if (h < 320) return s > 0.5 ? 'Magenta Berry' : 'Muted Mauve';
+  return l > 0.5 ? 'Rose Pink' : 'Wine Berry';
 }

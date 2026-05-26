@@ -1,0 +1,146 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout
+  pageKey="subscription"
+  pageHeading="Subscription & Billing"
+  pageDescription="Manage your plan, payment method, and invoices."
+>
+  <article class="dashboard-card" data-subscription-card>
+    <p class="dashboard-card-eyebrow">Current plan</p>
+    <h2 class="dashboard-card-title" data-subscription-plan>—</h2>
+    <p class="dashboard-card-meta" data-subscription-meta>Loading…</p>
+
+    <ul class="subscription-status-list" data-subscription-status hidden>
+      <li>
+        <span class="status-label">Status</span>
+        <strong data-subscription-status-value></strong>
+      </li>
+      <li>
+        <span class="status-label">Current period</span>
+        <strong data-subscription-period></strong>
+      </li>
+      <li data-subscription-cancel-row hidden>
+        <span class="status-label">Cancellation</span>
+        <strong data-subscription-cancel></strong>
+      </li>
+    </ul>
+
+    <div class="dashboard-card-actions" data-subscription-actions>
+      <button class="btn" type="button" data-action="portal">
+        Manage on Stripe
+      </button>
+      <a class="btn btn-secondary" href="/membership">
+        Compare plans
+      </a>
+    </div>
+    <p class="dashboard-card-note">
+      Manage cards, invoices, cancel or change plans on Stripe's secure portal.
+    </p>
+  </article>
+
+  <article class="dashboard-card dashboard-card-info" data-subscription-free hidden>
+    <p class="dashboard-card-eyebrow">Free Explorer</p>
+    <h2 class="dashboard-card-title">Upgrade to unlock more</h2>
+    <p>
+      Get unlimited diagnoses, HD makeup previews, saved looks, and full tutorials.
+    </p>
+    <div class="dashboard-card-actions">
+      <a class="btn" href="/membership">View plans</a>
+    </div>
+  </article>
+</DashboardLayout>
+
+<script>
+  type OverviewResponse = {
+    user: { tier: string };
+    subscription: null | {
+      planName: string;
+      status: string;
+      currentPeriodStart: string | null;
+      currentPeriodEnd: string | null;
+      cancelAtPeriodEnd: boolean;
+    };
+  };
+
+  function formatDate(iso: string | null): string {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return iso;
+    }
+  }
+
+  function statusLabel(status: string): string {
+    if (status === 'active') return 'Active';
+    if (status === 'trialing') return 'Trialing';
+    if (status === 'past_due') return 'Payment overdue';
+    if (status === 'canceled') return 'Canceled';
+    return status;
+  }
+
+  async function load() {
+    const resp = await fetch('/api/account/overview');
+    if (!resp.ok) return;
+    const data = (await resp.json()) as OverviewResponse;
+
+    const planEl = document.querySelector('[data-subscription-plan]');
+    const metaEl = document.querySelector('[data-subscription-meta]');
+    const statusList = document.querySelector('[data-subscription-status]');
+    const statusValue = document.querySelector('[data-subscription-status-value]');
+    const periodEl = document.querySelector('[data-subscription-period]');
+    const cancelRow = document.querySelector('[data-subscription-cancel-row]');
+    const cancelEl = document.querySelector('[data-subscription-cancel]');
+    const freeCard = document.querySelector('[data-subscription-free]');
+    const portalBtn = document.querySelector('[data-action="portal"]') as HTMLButtonElement | null;
+
+    if (data.subscription) {
+      if (planEl) planEl.textContent = data.subscription.planName;
+      if (metaEl) {
+        metaEl.textContent = data.subscription.cancelAtPeriodEnd
+          ? 'Your subscription will end at the period close.'
+          : 'Active subscription — auto-renews each period.';
+      }
+      if (statusList) statusList.removeAttribute('hidden');
+      if (statusValue) statusValue.textContent = statusLabel(data.subscription.status);
+      if (periodEl) {
+        periodEl.textContent = `${formatDate(data.subscription.currentPeriodStart)} → ${formatDate(data.subscription.currentPeriodEnd)}`;
+      }
+      if (data.subscription.cancelAtPeriodEnd) {
+        cancelRow?.removeAttribute('hidden');
+        if (cancelEl) cancelEl.textContent = `Cancels on ${formatDate(data.subscription.currentPeriodEnd)}`;
+      }
+    } else {
+      if (planEl) planEl.textContent = 'Free Explorer';
+      if (metaEl) metaEl.textContent = 'You are on the free plan.';
+      if (portalBtn) portalBtn.disabled = true;
+      freeCard?.removeAttribute('hidden');
+    }
+
+    portalBtn?.addEventListener('click', async () => {
+      portalBtn.disabled = true;
+      portalBtn.textContent = 'Opening…';
+      try {
+        const r = await fetch('/api/stripe/portal', { method: 'POST' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const result = (await r.json()) as { url?: string; error?: string };
+        if (result.url) {
+          window.location.href = result.url;
+        } else {
+          portalBtn.disabled = false;
+          portalBtn.textContent = 'Manage on Stripe';
+          alert(result.error ?? 'Unable to open Stripe portal.');
+        }
+      } catch (err) {
+        portalBtn.disabled = false;
+        portalBtn.textContent = 'Manage on Stripe';
+        alert('Unable to open Stripe portal. Please try again.');
+        console.error(err);
+      }
+    });
+  }
+
+  load();
+</script>

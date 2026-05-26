@@ -1,0 +1,163 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout
+  pageKey="overview"
+  pageHeading="Welcome back"
+  pageDescription="Your AI Beauty Stylist account at a glance."
+>
+  <div class="dashboard-overview" data-dashboard-overview>
+    <!-- 顶部 plan + usage 双卡 -->
+    <div class="dashboard-card-grid">
+      <article class="dashboard-card" data-card="plan">
+        <p class="dashboard-card-eyebrow">Your plan</p>
+        <h2 class="dashboard-card-title" data-overview-plan-name>—</h2>
+        <p class="dashboard-card-meta" data-overview-plan-meta>Loading…</p>
+        <div class="dashboard-card-actions">
+          <a href="/dashboard/subscription" class="btn btn-secondary">Manage subscription</a>
+        </div>
+      </article>
+
+      <article class="dashboard-card" data-card="usage">
+        <p class="dashboard-card-eyebrow">Diagnoses left</p>
+        <h2 class="dashboard-card-title">
+          <span data-overview-usage-remaining>—</span>
+          <small data-overview-usage-window></small>
+        </h2>
+        <div class="usage-bar" aria-hidden="true">
+          <span data-overview-usage-bar></span>
+        </div>
+        <p class="dashboard-card-meta" data-overview-usage-meta></p>
+      </article>
+    </div>
+
+    <!-- 最近试妆 -->
+    <section class="dashboard-recent" aria-labelledby="recent-heading">
+      <header class="dashboard-section-head">
+        <h2 id="recent-heading">Recent try-ons</h2>
+        <a href="/dashboard/history" class="dashboard-link">View all →</a>
+      </header>
+      <div class="dashboard-recent-grid" data-overview-recent>
+        <!-- 卡片由 JS 渲染 -->
+        <p class="dashboard-empty" data-overview-empty hidden>
+          No try-ons yet. <a href="/try-on">Try your first look →</a>
+        </p>
+      </div>
+    </section>
+  </div>
+</DashboardLayout>
+
+<script>
+  type RecentJob = {
+    id: string;
+    scenario: string;
+    experience: string;
+    status: string;
+    createdAt: string;
+    primaryLookTitle: string | null;
+    primaryLookImage: string | null;
+  };
+
+  type OverviewResponse = {
+    user: { id: string; email: string | null; name: string | null; tier: string };
+    subscription: null | {
+      planName: string;
+      status: string;
+      currentPeriodEnd: string | null;
+      cancelAtPeriodEnd: boolean;
+    };
+    usage: {
+      diagnosis: { limit: number; used: number; remaining: number; window: string };
+    };
+    history: { total: number; recent: RecentJob[] };
+  };
+
+  function formatDate(iso: string | null): string {
+    if (!iso) return '—';
+    try {
+      const d = new Date(iso);
+      return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return iso;
+    }
+  }
+
+  function tierDisplayName(tier: string): string {
+    if (tier === 'pro') return 'Beauty Pass Pro';
+    if (tier === 'premium') return 'Premium';
+    return 'Free Explorer';
+  }
+
+  async function loadOverview() {
+    const resp = await fetch('/api/account/overview');
+    if (!resp.ok) return;
+    const data = (await resp.json()) as OverviewResponse;
+
+    // ── Plan 卡 ──
+    const planName = document.querySelector('[data-overview-plan-name]');
+    const planMeta = document.querySelector('[data-overview-plan-meta]');
+    if (planName) {
+      planName.textContent = data.subscription?.planName ?? tierDisplayName(data.user.tier);
+    }
+    if (planMeta) {
+      if (data.subscription) {
+        const renews = formatDate(data.subscription.currentPeriodEnd);
+        planMeta.textContent = data.subscription.cancelAtPeriodEnd
+          ? `Cancels on ${renews}`
+          : `Renews on ${renews}`;
+      } else {
+        planMeta.textContent = 'No paid subscription. Upgrade for more.';
+      }
+    }
+
+    // ── Usage 卡 ──
+    const usage = data.usage.diagnosis;
+    const remainingEl = document.querySelector('[data-overview-usage-remaining]');
+    const windowEl = document.querySelector('[data-overview-usage-window]');
+    const barEl = document.querySelector('[data-overview-usage-bar]') as HTMLElement | null;
+    const metaEl = document.querySelector('[data-overview-usage-meta]');
+    if (remainingEl) remainingEl.textContent = String(usage.remaining);
+    if (windowEl) windowEl.textContent = ` / ${usage.limit} this ${usage.window === 'monthly' ? 'month' : 'day'}`;
+    if (barEl) {
+      const pct = usage.limit > 0 ? Math.min(100, Math.round((usage.used / usage.limit) * 100)) : 0;
+      barEl.style.width = `${pct}%`;
+    }
+    if (metaEl) {
+      metaEl.textContent = `${usage.used} used / ${usage.limit} total · resets ${usage.window === 'monthly' ? 'monthly' : 'daily'}`;
+    }
+
+    // ── Recent grid ──
+    const grid = document.querySelector('[data-overview-recent]');
+    const empty = document.querySelector('[data-overview-empty]');
+    if (!grid) return;
+
+    if (data.history.recent.length === 0) {
+      empty?.removeAttribute('hidden');
+      return;
+    }
+
+    const html = data.history.recent
+      .map((job) => {
+        const date = formatDate(job.createdAt);
+        const title = job.primaryLookTitle ?? 'Untitled look';
+        const img = job.primaryLookImage
+          ? `<img src="${job.primaryLookImage}" alt="${title}" loading="lazy" />`
+          : '<span class="recent-card-placeholder">No preview</span>';
+        return `
+          <article class="dashboard-recent-card">
+            <div class="recent-card-media">${img}</div>
+            <div class="recent-card-body">
+              <strong>${title}</strong>
+              <small>${job.scenario} · ${date}</small>
+            </div>
+          </article>
+        `;
+      })
+      .join('');
+
+    grid.insertAdjacentHTML('afterbegin', html);
+  }
+
+  loadOverview();
+</script>

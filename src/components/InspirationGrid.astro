@@ -1,78 +1,32 @@
 ---
-const looks = [
-  {
-    title: 'Everyday Commute',
-    tone: 'Rose Nude',
-    description: 'Sheer base, soft taupe eyes, and a nude-pink lip — polished in 10 minutes.',
-    image: '/images/hero/look-commute.png',
-    brands: 'Laura Mercier · Charlotte Tilbury · Rare Beauty',
-    scenario: 'commute',
-  },
-  {
-    title: 'Soft Date Night',
-    tone: 'Muted Berry',
-    description: 'Dewy glass skin with gradient berry lips — romantic without trying too hard.',
-    image: '/images/hero/look-date.png',
-    brands: 'Laneige · Sulwhasoo · Dior',
-    scenario: 'date',
-  },
-  {
-    title: 'Refined Elegance',
-    tone: 'Champagne Taupe',
-    description: 'Structured bone definition with warm bronze accents — quiet luxury.',
-    image: '/images/hero/look-refined.png',
-    brands: 'Charlotte Tilbury · Hourglass · Tom Ford',
-    scenario: 'refined',
-  },
-  {
-    title: 'Camera Ready',
-    tone: 'Contrast Boost',
-    description: 'Enhanced dimension with copper smoky eyes — stunning on camera.',
-    image: '/images/hero/look-photogenic.png',
-    brands: 'Pat McGrath · MAC · Fenty Beauty',
-    scenario: 'photogenic',
-  },
-  {
-    title: 'Beginner Basics',
-    tone: 'Easy Routine',
-    description: 'Nearly bare-faced with just the essentials — impossible to get wrong.',
-    image: '/images/hero/look-beginner.png',
-    brands: 'Glossier · e.l.f. · Maybelline',
-    scenario: 'beginner',
-  },
-  {
-    title: 'Evening Gala',
-    tone: 'Deep Glow',
-    description: 'Dramatic burgundy smoky eye with plum lips — commanding and opulent.',
-    image: '/images/hero/look-evening.png',
-    brands: 'Tom Ford · Charlotte Tilbury · NARS',
-    scenario: 'evening',
-  },
-];
+import { buildLookTryOnHref, homeInspirationLooks } from '../data/lookCatalog';
+
+const looks = homeInspirationLooks.map((look) => ({
+  ...look,
+  tryOnHref: buildLookTryOnHref(look),
+}));
+
+const galleryLooks = looks;
 ---
 
-<section class="section section-soft" id="inspiration">
+<section class="section section-soft home-inspiration" id="get-inspired">
   <div class="container">
-    <div class="section-copy">
-      <span class="eyebrow">Inspiration Gallery</span>
-      <h2>Find the vibe first, then learn how to recreate it.</h2>
+    <div class="section-copy inspiration-head">
+      <h2>Get Inspired</h2>
       <p>
-        Every look is designed for a real scenario. Tap into the one that speaks to you and start your try-on.
+        Browse beauty looks visually first. Pick one to try it on your own photo.
       </p>
     </div>
 
-    <div class="grid-cards grid-cards-3">
-      {looks.map((look) => (
-        <a class="card look-card has-image" href={`/try-on?scenario=${look.scenario}`}>
-          <div class="look-card-img">
-            <img src={look.image} alt={look.title} loading="lazy" />
-          </div>
-          <div class="look-card-body">
-            <span class="pill">{look.tone}</span>
+    <div class="inspiration-grid" aria-label="Makeup inspiration looks">
+      {galleryLooks.map((look, index) => (
+        <a class="look-tile" href={look.tryOnHref} aria-label={`Try ${look.title}`} style={`--look-focus: ${look.focus};`}>
+          <img src={look.image} alt={look.imageAlt} loading={index < 4 ? 'eager' : 'lazy'} />
+          <span class="look-tile-shade" aria-hidden="true"></span>
+          <span class="look-tile-caption">
+            <span>{look.tone}</span>
             <h3>{look.title}</h3>
-            <p>{look.description}</p>
-            <span class="look-card-brands">{look.brands}</span>
-          </div>
+          </span>
         </a>
       ))}
     </div>
@@ -80,67 +34,141 @@ const looks = [
 </section>
 
 <style>
-  .look-card.has-image {
-    padding: 0;
+  .home-inspiration {
+    scroll-margin-top: 88px;
+    background: linear-gradient(180deg, #fcf8f5 0%, #f7f2ee 100%);
+    color: #2a2323;
+    padding-block: 76px;
+  }
+
+  .home-inspiration .container {
+    max-width: 1100px;
+  }
+
+  .inspiration-head {
+    max-width: 620px;
+    margin: 0 auto 42px;
+    text-align: center;
+  }
+
+  .inspiration-head h2 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.05;
+  }
+
+  .inspiration-head p {
+    max-width: 520px;
+    margin: 14px auto 0;
+    font-size: 0.98rem;
+  }
+
+  .inspiration-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .look-tile {
+    position: relative;
+    display: block;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
+    aspect-ratio: 2 / 3;
+    border-radius: 8px;
     color: inherit;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: rgba(255, 248, 241, 0.08);
+    text-decoration: none;
+    transition: transform 0.24s ease, filter 0.24s ease;
   }
 
-  .look-card.has-image:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 50px rgba(62, 39, 39, 0.12);
-  }
-
-  .look-card-img {
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-  }
-
-  .look-card-img img {
+  .look-tile img {
+    position: relative;
+    z-index: 0;
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s ease;
+    object-position: var(--look-focus, center);
+    transform: scale(1.001);
+    transition: transform 0.45s ease;
   }
 
-  .look-card.has-image:hover .look-card-img img {
-    transform: scale(1.06);
+  .look-tile-shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(20, 14, 14, 0) 38%, rgba(20, 14, 14, 0.72) 100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.24s ease;
   }
 
-  .look-card-body {
-    padding: 20px 22px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  .look-tile-caption {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    z-index: 2;
+    display: grid;
+    gap: 4px;
+    color: white;
+    opacity: 0;
+    pointer-events: none;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.38);
+    transform: translateY(10px);
+    transition: opacity 0.24s ease, transform 0.24s ease;
   }
 
-  .look-card-body h3 {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    font-weight: 600;
-  }
-
-  .look-card-body p {
-    margin: 0;
-    font-size: 0.88rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  .look-card-brands {
-    margin-top: 4px;
+  .look-tile-caption span {
     font-size: 0.72rem;
-    color: var(--accent-deep);
-    letter-spacing: 0.03em;
-    opacity: 0.7;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
-  .look-card-body .pill {
-    align-self: flex-start;
+  .look-tile-caption h3 {
+    margin: 0;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.05rem, 1.45vw, 1.4rem);
+    line-height: 1.05;
+  }
+
+  .look-tile:hover,
+  .look-tile:focus-visible {
+    filter: brightness(1.06);
+    transform: translateY(-3px);
+  }
+
+  .look-tile:hover img,
+  .look-tile:focus-visible img {
+    transform: scale(1.045);
+  }
+
+  .look-tile:hover .look-tile-shade,
+  .look-tile:focus-visible .look-tile-shade,
+  .look-tile:hover .look-tile-caption,
+  .look-tile:focus-visible .look-tile-caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    .inspiration-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: 720px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .home-inspiration {
+      padding-block: 56px;
+    }
+
+    .inspiration-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
   }
 </style>

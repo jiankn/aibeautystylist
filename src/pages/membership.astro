@@ -7,6 +7,7 @@ const plans = [
   {
     name: 'Free',
     price: '$0',
+    planId: 'free',
     value: 'Discover what suits you',
     description: 'Perfect for first-timers who want to explore before committing.',
     features: ['1–2 basic look previews', 'Quick shade analysis', 'First 3 tutorial steps'],
@@ -14,19 +15,27 @@ const plans = [
   },
   {
     name: 'Pro',
-    price: '$4.99 / mo',
-    value: 'Master the look that fits',
-    description: 'Full tutorials, HD try-on, more looks, and product-matched kits.',
+    price: '$19.99',
+    priceAnnual: '$149',
+    priceAnnualMonthly: '$12.42', // 年付等效月价：149/12
+    planId: 'pro_monthly',
+    planIdAnnual: 'pro_yearly',
+    value: 'Your AI Beauty Stylist',
+    description: 'Full tutorials, HD try-on, curated product kits. Replaces a $150 in-person color analysis.',
     features: ['Full step-by-step tutorials with error alerts', 'HD before/after and more scenarios', 'Curated beauty kit with budget tiers'],
     trigger: 'When you know "this suits me" and want to make it happen.',
     highlight: true,
   },
   {
     name: 'Premium',
-    price: '$9.99 / mo',
-    value: 'Let AI decide for you, always',
-    description: 'Ongoing style guidance, history tracking, and seasonal updates.',
-    features: ['Look history and saved favorites', 'Evolving style profile and problem-area tracking', 'Seasonal scene and budget-aware suggestions'],
+    price: '$39.99',
+    priceAnnual: '$299',
+    priceAnnualMonthly: '$24.92', // 年付等效月价：299/12
+    planId: 'premium_monthly',
+    planIdAnnual: 'premium_yearly',
+    value: 'Your full-year style concierge',
+    description: 'Unlimited diagnoses, seasonal updates, history archive, and priority generation.',
+    features: ['Unlimited AI diagnoses', 'Seasonal style updates + look history', 'Priority generation + evolving style profile'],
     trigger: 'When you never want to second-guess your beauty decisions again.',
   },
 ];
@@ -110,23 +119,75 @@ const faqs = [
       </article>
     </div>
 
-    <div class="container grid-cards grid-cards-3 top-gap">
+    <!-- 月付 / 年付 滑块式药丸开关 -->
+    <div class="container pricing-toggle-wrap top-gap">
+      <div class="pricing-toggle" role="group" aria-label="Billing period">
+        <!-- 滑动背景药丸 -->
+        <span class="pricing-toggle-slider" aria-hidden="true"></span>
+        <button class="pricing-toggle-btn is-active" data-billing="monthly" type="button">
+          Monthly
+        </button>
+        <button class="pricing-toggle-btn" data-billing="yearly" type="button">
+          Annual
+          <em class="pricing-toggle-tag">Save 38%</em>
+        </button>
+      </div>
+      <!-- Save 38% 独立一行，年付激活时才显示 -->
+      <p class="pricing-toggle-hint is-hidden" id="pricing-save-hint">
+        🎉 You save 38% with annual billing
+      </p>
+    </div>
+
+    <div class="container grid-cards grid-cards-3">
       {plans.map((plan) => (
         <article class={`card pricing-card${plan.highlight ? ' pricing-card-accent' : ''}`}>
           {plan.highlight && <span class="pricing-badge">Most Popular</span>}
           <span class="pill">{plan.name}</span>
           <h3>{plan.value}</h3>
+
           <p class="price-line">
-            <strong>{plan.price}</strong>
+            {/* 月付价格（默认显示） */}
+            <span class="price-amount" data-monthly>
+              <strong>{plan.price}</strong>
+              {plan.planId !== 'free' && <span class="price-period">/ mo</span>}
+            </span>
+            {/* 年付价格（默认隐藏） */}
+            {plan.priceAnnual && (
+              <span class="price-amount is-hidden" data-yearly>
+                <strong>{plan.priceAnnual}</strong>
+                <span class="price-period">/ yr</span>
+              </span>
+            )}
           </p>
+          {/* B 方案：月付状态下显示年付等效月价，年付状态下隐藏 */}
+          {plan.priceAnnualMonthly && (
+            <p class="price-annual-hint" data-monthly>
+              or <strong>{plan.priceAnnualMonthly}/mo</strong> billed annually
+            </p>
+          )}
+
           <p>{plan.description}</p>
           <ul class="check-list compact">
             {plan.features.map((feature) => <li>{feature}</li>)}
           </ul>
           <p class="pricing-trigger">{plan.trigger}</p>
-          <a class={`btn${plan.highlight ? '' : ' btn-secondary'}`} href="/try-on">
-            {plan.highlight ? 'Start Pro Trial' : plan.price === '$0' ? 'Try Free' : 'Learn More'}
-          </a>
+
+          {plan.planId === 'free' ? (
+            <a class="btn btn-secondary" href="/try-on">Try Free</a>
+          ) : (
+            <a
+              class={`btn${plan.highlight ? '' : ' btn-secondary'}`}
+              href="#"
+              data-plan-id={plan.planId}
+              data-plan-id-monthly={plan.planId}
+              data-plan-id-yearly={plan.planIdAnnual}
+              data-label-monthly={plan.highlight ? 'Start Pro — $19.99/mo' : 'Get Premium — $39.99/mo'}
+              data-label-yearly={plan.highlight ? 'Start Pro — $149/yr' : 'Get Premium — $299/yr'}
+              data-checkout="true"
+            >
+              {plan.highlight ? 'Start Pro — $19.99/mo' : 'Get Premium — $39.99/mo'}
+            </a>
+          )}
         </article>
       ))}
     </div>
@@ -161,8 +222,128 @@ const faqs = [
 
     <div class="container tutorial-cta-row top-gap">
       <a class="btn btn-secondary" href="/try-on">Continue Try-On</a>
-      <a class="btn" href="/tutorials/office-glow">See Full Tutorial</a>
+      <button class="btn btn-secondary" id="manage-subscription-btn" style="display:none;">Manage Subscription</button>
     </div>
+
+    <script>
+      // ─── 月付 / 年付 开关 ───────────────────────────────────
+      const toggleBtns = document.querySelectorAll<HTMLButtonElement>('[data-billing]');
+      const saveHint = document.getElementById('pricing-save-hint');
+      const slider = document.querySelector<HTMLElement>('.pricing-toggle-slider');
+      let currentBilling: 'monthly' | 'yearly' = 'monthly';
+
+      function applyBilling(billing: 'monthly' | 'yearly') {
+        currentBilling = billing;
+
+        // 切换开关激活态
+        toggleBtns.forEach((btn) => {
+          btn.classList.toggle('is-active', btn.dataset.billing === billing);
+        });
+
+        // 滑块位置
+        if (slider) {
+          slider.style.transform = billing === 'yearly' ? 'translateX(100%)' : 'translateX(0)';
+        }
+
+        // Save hint
+        saveHint?.classList.toggle('is-hidden', billing === 'monthly');
+
+        // 切换价格显示
+        document.querySelectorAll<HTMLElement>('[data-monthly]').forEach((el) => {
+          el.classList.toggle('is-hidden', billing === 'yearly');
+        });
+        document.querySelectorAll<HTMLElement>('[data-yearly]').forEach((el) => {
+          el.classList.toggle('is-hidden', billing === 'monthly');
+        });
+
+        // 切换 CTA 按钮的 plan-id 和文案
+        document.querySelectorAll<HTMLElement>('[data-plan-id-monthly]').forEach((btn) => {
+          const planId = billing === 'yearly'
+            ? btn.dataset.planIdYearly ?? btn.dataset.planIdMonthly
+            : btn.dataset.planIdMonthly;
+          const label = billing === 'yearly'
+            ? btn.dataset.labelYearly ?? btn.textContent
+            : btn.dataset.labelMonthly ?? btn.textContent;
+          if (planId) btn.dataset.planId = planId;
+          if (label) btn.textContent = label;
+        });
+      }
+
+      toggleBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          applyBilling(btn.dataset.billing as 'monthly' | 'yearly');
+        });
+      });
+
+      // ─── Stripe Checkout ────────────────────────────────────
+      document.querySelectorAll('[data-checkout="true"]').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const planId = (btn as HTMLElement).dataset.planId;
+          if (!planId) return;
+
+          const originalText = btn.textContent ?? '';
+          btn.textContent = 'Loading...';
+          (btn as HTMLElement).style.pointerEvents = 'none';
+
+          try {
+            const resp = await fetch('/api/stripe/create-checkout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ planId }),
+            });
+            const data = await resp.json();
+
+            if (data.error === 'unauthorized') {
+              window.location.href = '/login?next=/membership';
+              return;
+            }
+            if (data.url) {
+              window.location.href = data.url;
+            } else {
+              alert(data.message || 'Something went wrong');
+            }
+          } catch {
+            alert('Network error. Please try again.');
+          } finally {
+            btn.textContent = originalText;
+            (btn as HTMLElement).style.pointerEvents = '';
+          }
+        });
+      });
+
+      // Manage Subscription 按钮
+      const manageBtn = document.getElementById('manage-subscription-btn');
+      fetch('/api/auth/me').then(r => r.json()).then(data => {
+        if (data.authenticated && data.user?.tier !== 'free' && manageBtn) {
+          manageBtn.style.display = 'inline-block';
+        }
+      }).catch(() => {});
+
+      manageBtn?.addEventListener('click', async () => {
+        manageBtn.textContent = 'Loading...';
+        try {
+          const resp = await fetch('/api/stripe/portal', { method: 'POST' });
+          const data = await resp.json();
+          if (data.url) window.location.href = data.url;
+          else alert(data.message || 'Could not open portal');
+        } catch {
+          alert('Network error');
+        } finally {
+          manageBtn.textContent = 'Manage Subscription';
+        }
+      });
+
+      // 支付成功提示
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('payment') === 'success') {
+        const banner = document.createElement('div');
+        banner.className = 'payment-success-banner';
+        banner.innerHTML = '🎉 <strong>Welcome to your Beauty Pass!</strong> Your subscription is now active.';
+        document.querySelector('.plans-hero')?.after(banner);
+        history.replaceState({}, '', '/membership');
+      }
+    </script>
   </section>
 </BaseLayout>
 
@@ -174,5 +355,129 @@ const faqs = [
     color: var(--accent-deep);
     font-size: 0.82rem;
     font-weight: 700;
+  }
+
+  /* ─── 开关容器：增大与卡片的间距 ─── */
+  .pricing-toggle-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding-top: 8px;
+    padding-bottom: 40px; /* 与卡片的间距 */
+  }
+
+  /* ─── 滑块式药丸开关 ─── */
+  .pricing-toggle {
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 4px;
+    border-radius: 100px;
+    background: var(--bg-muted, #f0eae8);
+    border: 1px solid rgba(176, 127, 134, 0.18);
+    width: 260px;
+  }
+
+  /* 滑动背景药丸 */
+  .pricing-toggle-slider {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    border-radius: 100px;
+    background: linear-gradient(135deg, var(--accent, #b07f86), var(--accent-deep, #9a6b72));
+    box-shadow: 0 2px 10px rgba(176, 127, 134, 0.35);
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .pricing-toggle-btn {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    border-radius: 100px;
+    border: none;
+    background: transparent;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--muted, #999);
+    cursor: pointer;
+    transition: color 0.2s;
+    user-select: none;
+  }
+
+  .pricing-toggle-btn.is-active {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* Save hint：年付激活时淡入 */
+  .pricing-toggle-hint {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent-deep, #9a6b72);
+    letter-spacing: 0.01em;
+    animation: fadeSlideIn 0.25s ease;
+  }
+
+  .pricing-toggle-hint.is-hidden {
+    display: none;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── 价格金额切换 ─── */
+  .price-period {
+    font-size: 0.9rem;
+    color: var(--muted, #888);
+    font-weight: 400;
+  }
+
+  /* A 方案：开关 Annual 按钮常驻标签 */
+  .pricing-toggle-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 100px;
+    background: rgba(176, 127, 134, 0.15);
+    color: var(--accent-deep, #9a6b72);
+    font-style: normal;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+
+  /* Annual 激活时标签变实心白字 */
+  .pricing-toggle-btn.is-active .pricing-toggle-tag {
+    background: rgba(255, 255, 255, 0.28);
+    color: #fff;
+  }
+
+  /* B 方案：卡片内等效月价提示 */
+  .price-annual-hint {
+    margin: -6px 0 0;
+    font-size: 0.78rem;
+    color: var(--muted, #999);
+    text-align: center;
+  }
+
+  .price-annual-hint strong {
+    color: var(--accent-deep, #9a6b72);
+    font-weight: 600;
+  }
+
+  .price-annual-hint.is-hidden {
+    display: none;
   }
 </style>
