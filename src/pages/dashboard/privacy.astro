@@ -1,60 +1,136 @@
 ---
-import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import DashboardShell from '../../layouts/DashboardShell.astro';
 ---
 
-<DashboardLayout
+<DashboardShell
   pageKey="privacy"
   pageHeading="Privacy & Data"
-  pageDescription="Your photo, your control. Delete data anytime."
+  pageDescription="Your photo, your control. Delete or export your data anytime — no questions asked."
 >
-  <div class="dashboard-privacy">
+  <!-- ── Hero 右侧：数据安全声明卡 ──────────────────────── -->
+  <div slot="hero-aside" class="db-hero-card">
+    <p class="db-hero-card-eyebrow">Our promise</p>
+    <div class="db-hero-card-row">
+      <div class="db-hero-card-thumb" aria-hidden="true">
+        <span>🛡</span>
+      </div>
+      <div class="db-hero-card-meta">
+        <strong>Owner-only data</strong>
+        <small>Never trained on. Never shared. Auto-deleted within 24h.</small>
+      </div>
+    </div>
+    <div class="db-hero-card-actions">
+      <a class="btn btn-secondary" href="/privacy">Read full policy</a>
+    </div>
+  </div>
+
+  <!-- ── Stat strip ──────────────────────────────────────── -->
+  <div slot="strip" style="display:contents">
+    <article class="db-stat">
+      <p class="db-stat-label">Photo retention</p>
+      <p class="db-stat-value">≤ 24 h</p>
+      <p class="db-stat-meta">Inactive photos auto-deleted</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">AI training</p>
+      <p class="db-stat-value">Never</p>
+      <p class="db-stat-meta">Your photos are never used</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">Data ownership</p>
+      <p class="db-stat-value">You</p>
+      <p class="db-stat-meta">Delete or export anytime</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">Account status</p>
+      <p class="db-stat-value" data-privacy-status>Active</p>
+      <p class="db-stat-meta" data-privacy-status-meta>Loading…</p>
+    </article>
+  </div>
+
+  <!-- ── 主列：数据控制 ─────────────────────────────────── -->
+  <div slot="main">
     <!-- 隐私承诺 -->
-    <article class="dashboard-card">
-      <p class="dashboard-card-eyebrow">Our promise</p>
+    <section class="db-section" aria-labelledby="promise-heading">
+      <header class="db-section-head">
+        <h2 id="promise-heading">What we promise</h2>
+        <a href="/privacy">Full policy →</a>
+      </header>
       <ul class="privacy-promise-list">
         <li>Your photos are used <strong>only</strong> to generate your diagnoses.</li>
         <li>We <strong>never</strong> train AI models on your photos.</li>
         <li>You can delete your data at any time, and inactive photos auto-delete within 24 hours.</li>
       </ul>
-      <p class="dashboard-card-note">
-        Read our full <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms of Service</a>.
-      </p>
-    </article>
+    </section>
 
     <!-- Action 1: 删除试妆历史 -->
-    <article class="dashboard-card">
-      <p class="dashboard-card-eyebrow">Try-on history</p>
-      <h2 class="dashboard-card-title">Delete all try-on records</h2>
-      <p>
+    <section class="db-section" aria-labelledby="delete-history-heading">
+      <header class="db-section-head">
+        <h2 id="delete-history-heading">Delete try-on history</h2>
+      </header>
+      <p style="margin:0;color:var(--muted);font-size:0.92rem;">
         Removes every diagnosis, look, and tutorial linked to your account.
         Your account, subscription, and saved preferences are kept.
       </p>
-      <div class="dashboard-card-actions">
+      <div class="db-hero-card-actions">
         <button class="btn btn-secondary" type="button" data-action="delete-history">
           Delete try-on history
         </button>
       </div>
-      <p class="dashboard-card-note" data-history-status hidden></p>
-    </article>
+      <p style="margin:0;font-size:0.82rem;color:var(--muted);" data-history-status hidden></p>
+    </section>
 
     <!-- Action 2: 删除账号（危险区） -->
-    <article class="dashboard-card dashboard-card-danger">
-      <p class="dashboard-card-eyebrow danger-eyebrow">Danger zone</p>
-      <h2 class="dashboard-card-title">Delete account permanently</h2>
-      <p>
+    <section class="db-section dashboard-card-danger" aria-labelledby="delete-account-heading">
+      <header class="db-section-head">
+        <h2 id="delete-account-heading" style="color:#9b2c3a">Danger zone — Delete account</h2>
+      </header>
+      <p style="margin:0;font-size:0.92rem;">
         This removes <strong>everything</strong>: profile, sessions, try-on history,
-        subscriptions records, and login credentials. <strong>This cannot be undone.</strong>
+        subscription records, and login credentials. <strong>This cannot be undone.</strong>
       </p>
-      <p class="dashboard-card-note">
+      <p style="margin:0;font-size:0.82rem;color:var(--muted);">
         If you have an active paid subscription, cancel it on
         <a href="/dashboard/subscription">Subscription page</a> first to avoid surprise charges.
       </p>
-      <div class="dashboard-card-actions">
+      <div class="db-hero-card-actions">
         <button class="btn btn-danger" type="button" data-action="delete-account">
           Delete my account
         </button>
       </div>
+    </section>
+  </div>
+
+  <!-- ── 副列：Trust + Quick actions ─────────────────────── -->
+  <div slot="aside">
+    <article class="db-suggest" aria-label="Trust">
+      <p class="db-suggest-eyebrow">Transparency</p>
+      <h3 class="db-suggest-title">Built for owner-only data</h3>
+      <p>We process your photos to give you stylist results — and that's it. No training, no sharing, no surprises.</p>
+      <div class="db-hero-card-actions">
+        <a class="btn btn-secondary" href="/terms">Terms of Service</a>
+      </div>
     </article>
+
+    <section class="db-section" aria-label="Quick actions">
+      <header class="db-section-head">
+        <h2>Quick actions</h2>
+      </header>
+      <nav class="db-quick">
+        <a class="db-quick-item" href="/dashboard">
+          Back to overview
+          <span>Plan, usage, history</span>
+        </a>
+        <a class="db-quick-item" href="/dashboard/subscription">
+          Cancel subscription
+          <span>Manage on Stripe portal</span>
+        </a>
+        <a class="db-quick-item" href="/dashboard/history">
+          Try-On history
+          <span>Review before deleting</span>
+        </a>
+      </nav>
+    </section>
   </div>
 
   <!-- 删除账号确认对话框 -->
@@ -85,9 +161,41 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
       </div>
     </div>
   </div>
-</DashboardLayout>
+</DashboardShell>
 
 <script>
+  // ── Account status stat ────────────────────────────────
+  function setText(selector: string, text: string): void {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
+  }
+
+  function tierName(tier: string): string {
+    if (tier === 'pro') return 'Beauty Pass Pro';
+    if (tier === 'premium') return 'Premium';
+    return 'Free Explorer';
+  }
+
+  (async () => {
+    try {
+      const resp = await fetch('/api/account/overview');
+      if (!resp.ok) return;
+      const data = (await resp.json()) as {
+        user: { tier: string; email: string | null };
+        subscription: null | { status: string; cancelAtPeriodEnd: boolean };
+      };
+      setText('[data-privacy-status]', data.subscription ? 'Subscribed' : 'Active');
+      setText(
+        '[data-privacy-status-meta]',
+        data.subscription
+          ? (data.subscription.cancelAtPeriodEnd ? 'Cancellation pending' : `${tierName(data.user.tier)} member`)
+          : `${tierName(data.user.tier)} — free plan`,
+      );
+    } catch {
+      setText('[data-privacy-status-meta]', 'Active member');
+    }
+  })();
+
   // ── 删除试妆历史 ────────────────────────────────────────
   const historyBtn = document.querySelector('[data-action="delete-history"]') as HTMLButtonElement | null;
   const historyStatus = document.querySelector('[data-history-status]') as HTMLElement | null;

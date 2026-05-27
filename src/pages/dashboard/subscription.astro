@@ -1,56 +1,143 @@
 ---
-import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import DashboardShell from '../../layouts/DashboardShell.astro';
 ---
 
-<DashboardLayout
+<DashboardShell
   pageKey="subscription"
   pageHeading="Subscription & Billing"
-  pageDescription="Manage your plan, payment method, and invoices."
+  pageDescription="Manage your plan, payment method, and invoices on Stripe's secure portal."
 >
-  <article class="dashboard-card" data-subscription-card>
-    <p class="dashboard-card-eyebrow">Current plan</p>
-    <h2 class="dashboard-card-title" data-subscription-plan>—</h2>
-    <p class="dashboard-card-meta" data-subscription-meta>Loading…</p>
-
-    <ul class="subscription-status-list" data-subscription-status hidden>
-      <li>
-        <span class="status-label">Status</span>
-        <strong data-subscription-status-value></strong>
-      </li>
-      <li>
-        <span class="status-label">Current period</span>
-        <strong data-subscription-period></strong>
-      </li>
-      <li data-subscription-cancel-row hidden>
-        <span class="status-label">Cancellation</span>
-        <strong data-subscription-cancel></strong>
-      </li>
-    </ul>
-
-    <div class="dashboard-card-actions" data-subscription-actions>
-      <button class="btn" type="button" data-action="portal">
-        Manage on Stripe
-      </button>
-      <a class="btn btn-secondary" href="/membership">
-        Compare plans
-      </a>
+  <!-- ── Hero 右侧：订阅 ribbon 预览 ──────────────────────── -->
+  <div slot="hero-aside" class="db-hero-card" data-subscription-card>
+    <p class="db-hero-card-eyebrow">Current plan</p>
+    <div class="db-hero-card-row">
+      <div class="db-hero-card-thumb" aria-hidden="true">
+        <span>★</span>
+      </div>
+      <div class="db-hero-card-meta">
+        <strong data-subscription-plan>—</strong>
+        <small data-subscription-meta>Loading…</small>
+      </div>
     </div>
-    <p class="dashboard-card-note">
-      Manage cards, invoices, cancel or change plans on Stripe's secure portal.
-    </p>
-  </article>
-
-  <article class="dashboard-card dashboard-card-info" data-subscription-free hidden>
-    <p class="dashboard-card-eyebrow">Free Explorer</p>
-    <h2 class="dashboard-card-title">Upgrade to unlock more</h2>
-    <p>
-      Get unlimited diagnoses, HD makeup previews, saved looks, and full tutorials.
-    </p>
-    <div class="dashboard-card-actions">
-      <a class="btn" href="/membership">View plans</a>
+    <div class="db-hero-card-actions" data-subscription-actions>
+      <button class="btn" type="button" data-action="portal">Manage on Stripe</button>
+      <a class="btn btn-secondary" href="/membership">Compare plans</a>
     </div>
-  </article>
-</DashboardLayout>
+  </div>
+
+  <!-- ── Stat strip ──────────────────────────────────────── -->
+  <div slot="strip" style="display:contents">
+    <article class="db-stat">
+      <p class="db-stat-label">Plan</p>
+      <p class="db-stat-value" data-subscription-stat-plan>—</p>
+      <p class="db-stat-meta" data-subscription-stat-tier>Loading…</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">Status</p>
+      <p class="db-stat-value" data-subscription-status-value>—</p>
+      <p class="db-stat-meta" data-subscription-stat-status-meta>Loading…</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">Current period</p>
+      <p class="db-stat-value" data-subscription-period>—</p>
+      <p class="db-stat-meta">Auto-renews each period</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">Cancellation</p>
+      <p class="db-stat-value" data-subscription-cancel>—</p>
+      <p class="db-stat-meta" data-subscription-cancel-meta>No cancellation scheduled</p>
+    </article>
+  </div>
+
+  <!-- ── 主列：订阅详情 + Free 升级 CTA ──────────────────── -->
+  <div slot="main">
+    <section class="db-section" aria-labelledby="sub-detail-heading">
+      <header class="db-section-head">
+        <h2 id="sub-detail-heading">Subscription details</h2>
+        <a href="/membership">Compare plans →</a>
+      </header>
+
+      <ul class="subscription-status-list" data-subscription-status hidden>
+        <li>
+          <span class="status-label">Status</span>
+          <strong data-subscription-status-detail></strong>
+        </li>
+        <li>
+          <span class="status-label">Current period</span>
+          <strong data-subscription-period-detail></strong>
+        </li>
+        <li data-subscription-cancel-row hidden>
+          <span class="status-label">Cancellation</span>
+          <strong data-subscription-cancel-detail></strong>
+        </li>
+      </ul>
+
+      <p class="db-empty" data-subscription-free-note hidden>
+        You are on the <strong>Free Explorer</strong> plan. Upgrade to unlock unlimited diagnoses, saved looks and HD previews.
+      </p>
+
+      <p style="margin:0;color:var(--muted);font-size:0.86rem;">
+        Cards, invoices, plan changes and cancellation are all managed on Stripe's secure portal.
+      </p>
+    </section>
+
+    <article class="db-suggest" data-subscription-free hidden>
+      <p class="db-suggest-eyebrow">Upgrade</p>
+      <h3 class="db-suggest-title">Unlock the full Beauty Pass</h3>
+      <p>Unlimited diagnoses · HD makeup previews · Saved looks library · Full step-by-step tutorials.</p>
+      <div class="db-hero-card-actions">
+        <a class="btn" href="/membership">View plans</a>
+      </div>
+    </article>
+  </div>
+
+  <!-- ── 副列：Why upgrade + Quick actions ───────────────── -->
+  <div slot="aside">
+    <article class="db-section" aria-label="Plan benefits">
+      <header class="db-section-head">
+        <h2>Why upgrade?</h2>
+      </header>
+      <nav class="db-quick">
+        <span class="db-quick-item">
+          Unlimited diagnoses
+          <span>vs. 1 / day on Free</span>
+        </span>
+        <span class="db-quick-item">
+          HD makeup previews
+          <span>Sharper, true-color renders</span>
+        </span>
+        <span class="db-quick-item">
+          Saved looks library
+          <span>Revisit any past style</span>
+        </span>
+        <span class="db-quick-item">
+          Full step-by-step tutorials
+          <span>3+ steps unlocked</span>
+        </span>
+      </nav>
+    </article>
+
+    <article class="db-section" aria-label="Quick actions">
+      <header class="db-section-head">
+        <h2>Quick actions</h2>
+      </header>
+      <nav class="db-quick">
+        <a class="db-quick-item" href="/dashboard">
+          Back to overview
+          <span>Plan, usage, history</span>
+        </a>
+        <a class="db-quick-item" href="/dashboard/history">
+          Try-On history
+          <span>All your past sessions</span>
+        </a>
+        <a class="db-quick-item" href="/dashboard/privacy">
+          Privacy &amp; data
+          <span>Delete or export data</span>
+        </a>
+      </nav>
+    </article>
+  </div>
+</DashboardShell>
 
 <script>
   type OverviewResponse = {
@@ -81,42 +168,77 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     return status;
   }
 
+  function setText(selector: string, text: string): void {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
+  }
+
+  function tierName(tier: string): string {
+    if (tier === 'pro') return 'Beauty Pass Pro';
+    if (tier === 'premium') return 'Premium';
+    return 'Free Explorer';
+  }
+
   async function load() {
     const resp = await fetch('/api/account/overview');
     if (!resp.ok) return;
-    const data = (await resp.json()) as OverviewResponse;
+    const data = (await resp.json()) as OverviewResponse & { user: { tier: string } };
 
-    const planEl = document.querySelector('[data-subscription-plan]');
-    const metaEl = document.querySelector('[data-subscription-meta]');
-    const statusList = document.querySelector('[data-subscription-status]');
-    const statusValue = document.querySelector('[data-subscription-status-value]');
-    const periodEl = document.querySelector('[data-subscription-period]');
-    const cancelRow = document.querySelector('[data-subscription-cancel-row]');
-    const cancelEl = document.querySelector('[data-subscription-cancel]');
-    const freeCard = document.querySelector('[data-subscription-free]');
     const portalBtn = document.querySelector('[data-action="portal"]') as HTMLButtonElement | null;
+    const statusList = document.querySelector('[data-subscription-status]');
+    const cancelRow = document.querySelector('[data-subscription-cancel-row]');
+    const freeCard = document.querySelector('[data-subscription-free]');
+    const freeNote = document.querySelector('[data-subscription-free-note]');
 
     if (data.subscription) {
-      if (planEl) planEl.textContent = data.subscription.planName;
-      if (metaEl) {
-        metaEl.textContent = data.subscription.cancelAtPeriodEnd
-          ? 'Your subscription will end at the period close.'
-          : 'Active subscription — auto-renews each period.';
-      }
-      if (statusList) statusList.removeAttribute('hidden');
-      if (statusValue) statusValue.textContent = statusLabel(data.subscription.status);
-      if (periodEl) {
-        periodEl.textContent = `${formatDate(data.subscription.currentPeriodStart)} → ${formatDate(data.subscription.currentPeriodEnd)}`;
-      }
-      if (data.subscription.cancelAtPeriodEnd) {
+      const sub = data.subscription;
+      const periodStr = `${formatDate(sub.currentPeriodStart)} → ${formatDate(sub.currentPeriodEnd)}`;
+      const periodEnd = formatDate(sub.currentPeriodEnd);
+
+      // ── Hero card ──
+      setText('[data-subscription-plan]', sub.planName);
+      setText(
+        '[data-subscription-meta]',
+        sub.cancelAtPeriodEnd ? 'Will end at period close' : 'Auto-renews each period',
+      );
+
+      // ── Stat strip ──
+      setText('[data-subscription-stat-plan]', sub.planName);
+      setText('[data-subscription-stat-tier]', tierName(data.user.tier));
+      setText('[data-subscription-status-value]', statusLabel(sub.status));
+      setText(
+        '[data-subscription-stat-status-meta]',
+        sub.status === 'past_due' ? 'Action required' : 'In good standing',
+      );
+      setText('[data-subscription-period]', periodEnd);
+      setText('[data-subscription-cancel]', sub.cancelAtPeriodEnd ? periodEnd : '—');
+      setText(
+        '[data-subscription-cancel-meta]',
+        sub.cancelAtPeriodEnd ? 'Cancels at this date' : 'No cancellation scheduled',
+      );
+
+      // ── Detail list ──
+      statusList?.removeAttribute('hidden');
+      setText('[data-subscription-status-detail]', statusLabel(sub.status));
+      setText('[data-subscription-period-detail]', periodStr);
+      if (sub.cancelAtPeriodEnd) {
         cancelRow?.removeAttribute('hidden');
-        if (cancelEl) cancelEl.textContent = `Cancels on ${formatDate(data.subscription.currentPeriodEnd)}`;
+        setText('[data-subscription-cancel-detail]', `Cancels on ${periodEnd}`);
       }
     } else {
-      if (planEl) planEl.textContent = 'Free Explorer';
-      if (metaEl) metaEl.textContent = 'You are on the free plan.';
+      // ── Free 状态 ──
+      setText('[data-subscription-plan]', 'Free Explorer');
+      setText('[data-subscription-meta]', 'You are on the free plan');
+      setText('[data-subscription-stat-plan]', 'Free Explorer');
+      setText('[data-subscription-stat-tier]', tierName(data.user.tier));
+      setText('[data-subscription-status-value]', 'Free');
+      setText('[data-subscription-stat-status-meta]', 'No paid subscription');
+      setText('[data-subscription-period]', '—');
+      setText('[data-subscription-cancel]', '—');
+      setText('[data-subscription-cancel-meta]', 'Free plan');
       if (portalBtn) portalBtn.disabled = true;
       freeCard?.removeAttribute('hidden');
+      freeNote?.removeAttribute('hidden');
     }
 
     portalBtn?.addEventListener('click', async () => {

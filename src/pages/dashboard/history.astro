@@ -1,24 +1,101 @@
 ---
-import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import DashboardShell from '../../layouts/DashboardShell.astro';
 ---
 
-<DashboardLayout
+<DashboardShell
   pageKey="history"
   pageHeading="Try-On History"
-  pageDescription="Revisit your AI diagnoses, looks, and tutorials."
+  pageDescription="Revisit your AI diagnoses, looks, and tutorials. Tap any session to re-run with the same scenario."
 >
-  <div class="dashboard-history">
+  <!-- ── Hero 右侧：streak 预览 ─────────────────────────── -->
+  <div slot="hero-aside" class="db-hero-card">
+    <p class="db-hero-card-eyebrow">Your streak</p>
+    <div class="db-hero-card-row">
+      <div class="db-hero-card-thumb" aria-hidden="true">
+        <span data-history-hero-total>—</span>
+      </div>
+      <div class="db-hero-card-meta">
+        <strong data-history-hero-title>Total try-ons</strong>
+        <small data-history-hero-sub>Loading your activity…</small>
+      </div>
+    </div>
+    <div class="db-hero-card-actions">
+      <a class="btn" href="/try-on">Try another look</a>
+    </div>
+  </div>
+
+  <!-- ── Stat strip ──────────────────────────────────────── -->
+  <div slot="strip" style="display:contents">
+    <article class="db-stat">
+      <p class="db-stat-label">Total try-ons</p>
+      <p class="db-stat-value" data-history-stat-total>—</p>
+      <p class="db-stat-meta">All time</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">This month</p>
+      <p class="db-stat-value" data-history-stat-month>—</p>
+      <p class="db-stat-meta">Sessions started</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">Latest session</p>
+      <p class="db-stat-value" data-history-stat-latest>—</p>
+      <p class="db-stat-meta" data-history-stat-latest-meta>—</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">Top scenario</p>
+      <p class="db-stat-value" data-history-stat-scenario>—</p>
+      <p class="db-stat-meta">Most-used context</p>
+    </article>
+  </div>
+
+  <!-- ── 主列：history grid ────────────────────────────── -->
+  <section slot="main" class="db-section" aria-labelledby="history-heading">
+    <header class="db-section-head">
+      <h2 id="history-heading">All sessions</h2>
+      <a href="/try-on">Start new →</a>
+    </header>
     <div class="dashboard-history-grid" data-history-grid>
-      <p class="dashboard-empty" data-history-empty hidden>
+      <p class="db-empty" data-history-empty hidden>
         No try-ons yet. <a href="/try-on">Start your first session →</a>
       </p>
     </div>
-
     <div class="dashboard-history-footer" data-history-footer hidden>
       <button class="btn btn-secondary" type="button" data-history-more>Load more</button>
     </div>
+  </section>
+
+  <!-- ── 副列：Suggested + Quick actions ───────────────── -->
+  <div slot="aside">
+    <article class="db-suggest" aria-label="Suggested next">
+      <p class="db-suggest-eyebrow">Tip</p>
+      <h3 class="db-suggest-title">Replay any past session</h3>
+      <p>Want to redo a look but tweak the scenario? Open Try-On and pick a different occasion to compare side-by-side.</p>
+      <div class="db-hero-card-actions">
+        <a class="btn" href="/try-on">Open Try-On Studio</a>
+      </div>
+    </article>
+
+    <section class="db-section" aria-label="Quick actions">
+      <header class="db-section-head">
+        <h2>Quick actions</h2>
+      </header>
+      <nav class="db-quick">
+        <a class="db-quick-item" href="/dashboard">
+          Back to overview
+          <span>Plan, usage, history</span>
+        </a>
+        <a class="db-quick-item" href="/dashboard/subscription">
+          Subscription &amp; billing
+          <span>Manage your plan</span>
+        </a>
+        <a class="db-quick-item" href="/dashboard/privacy">
+          Delete history
+          <span>Privacy &amp; data controls</span>
+        </a>
+      </nav>
+    </section>
   </div>
-</DashboardLayout>
+</DashboardShell>
 
 <script>
   type HistoryItem = {
@@ -65,6 +142,50 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     `;
   }
 
+  function setText(selector: string, text: string): void {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
+  }
+
+  function fillStats(items: HistoryItem[], totalCount: number): void {
+    // ── Hero card ──
+    setText('[data-history-hero-total]', String(totalCount));
+    setText('[data-history-hero-title]', totalCount > 0 ? `${totalCount} try-on${totalCount === 1 ? '' : 's'}` : 'No try-ons yet');
+    if (items[0]) {
+      setText('[data-history-hero-sub]', `Last on ${formatDate(items[0].createdAt)}`);
+    } else {
+      setText('[data-history-hero-sub]', 'Start your first session to build a streak');
+    }
+
+    // ── Stat strip ──
+    setText('[data-history-stat-total]', String(totalCount));
+
+    // This month
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const monthCount = items.filter((it) => it.createdAt >= monthStart).length;
+    setText('[data-history-stat-month]', String(monthCount));
+
+    // Latest
+    if (items[0]) {
+      setText('[data-history-stat-latest]', formatDate(items[0].createdAt));
+      setText('[data-history-stat-latest-meta]', items[0].primaryLookTitle ?? items[0].scenario);
+    } else {
+      setText('[data-history-stat-latest]', '—');
+      setText('[data-history-stat-latest-meta]', 'No sessions yet');
+    }
+
+    // Top scenario (mode of first page items)
+    const counts = new Map<string, number>();
+    for (const it of items) counts.set(it.scenario, (counts.get(it.scenario) ?? 0) + 1);
+    let top: string | null = null;
+    let topN = 0;
+    for (const [k, v] of counts) {
+      if (v > topN) { top = k; topN = v; }
+    }
+    setText('[data-history-stat-scenario]', top ?? '—');
+  }
+
   async function loadMore() {
     const resp = await fetch(`/api/account/history?limit=${pageSize}&offset=${offset}`);
     if (!resp.ok) return;
@@ -77,6 +198,11 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     if (!grid) return;
 
     total = data.total;
+
+    // 第一页加载后填 hero + stat
+    if (offset === 0) {
+      fillStats(data.items, data.total);
+    }
 
     if (offset === 0 && data.items.length === 0) {
       emptyEl?.removeAttribute('hidden');
