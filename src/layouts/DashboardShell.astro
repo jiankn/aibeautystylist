@@ -1,13 +1,13 @@
 ---
 /**
- * DashboardShell — 账户中心 V2 骨架（Editorial Concierge × Operational Strip）
+ * DashboardShell — 账户中心 V3 骨架（Vogue Editorial Magazine）
  *
- * 三层结构：
- *   1) Hero        左 identity + 右 hero-aside slot（每页不同）
- *   2) Strip       4 个紧凑指标 chip（slot="strip"）
- *   3) Split       主列 slot="main" + 副列 slot="aside"（桌面 ≥ 1024px 双列）
+ * 结构：
+ *   1) Hero        横排 portrait + identity + hero-aside slot（杀手锁）
+ *   2) Sub-nav     一行 editorial 下划线 nav（Overview/Subscription/History/Privacy）+ 右侧 Sign out
+ *   3) Strip       slot="strip" 細线分隔 serif 数字
+ *   4) Split       slot="main" + slot="aside"
  *
- * 左侧 floating glass nav：桌面 ≥ 1024px 显示；移动端收为 hero 下方横向 chip nav。
  * 客户端守卫：未登录跳 /login？next=...
  */
 import BaseLayout from './BaseLayout.astro';
@@ -25,109 +25,61 @@ const navItems: Array<{
   key: Props['pageKey'];
   href: string;
   label: string;
-  icon: string;
-  description: string;
+  shortLabel: string;
 }> = [
-  {
-    key: 'overview',
-    href: '/dashboard',
-    label: 'Overview',
-    icon: 'M3 12h2v8H3zM9 8h2v12H9zM15 4h2v16h-2zM21 14h-2v6h2z',
-    description: 'Plan, usage, recent try-ons',
-  },
-  {
-    key: 'subscription',
-    href: '/dashboard/subscription',
-    label: 'Subscription',
-    icon: 'M21 4H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM1 10h22',
-    description: 'Plan, billing, invoices',
-  },
-  {
-    key: 'history',
-    href: '/dashboard/history',
-    label: 'Try-On History',
-    icon: 'M12 8v4l3 3M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
-    description: 'All your past sessions',
-  },
-  {
-    key: 'privacy',
-    href: '/dashboard/privacy',
-    label: 'Privacy & Data',
-    icon: 'M12 2L3 7v6c0 5 3.5 9 9 11 5.5-2 9-6 9-11V7l-9-5z',
-    description: 'Delete data, account',
-  },
+  { key: 'overview', href: '/dashboard', label: 'Overview', shortLabel: 'Overview' },
+  { key: 'subscription', href: '/dashboard/subscription', label: 'Subscription', shortLabel: 'Plan' },
+  { key: 'history', href: '/dashboard/history', label: 'Try-On History', shortLabel: 'History' },
+  { key: 'privacy', href: '/dashboard/privacy', label: 'Privacy & Data', shortLabel: 'Privacy' },
 ];
 ---
 
 <BaseLayout title={title ?? `${pageHeading} — Dashboard`} robots="noindex,nofollow">
   <section class="db-shell">
-    <div class="container db-grid">
-      <!-- ── Sidebar (desktop floating glass rail) ────────────────────── -->
-      <aside class="db-sidebar" aria-label="Account navigation">
-        <div class="db-sidebar-card">
-          <p class="db-sidebar-eyebrow">My Account</p>
-          <nav class="db-nav">
+    <div class="container">
+      <main class="db-main" aria-labelledby="db-heading">
+        <h1 id="db-heading" class="sr-only">{pageHeading}</h1>
+
+        <!-- ── Nameplate + Sub-nav (一行集成) ──────────────────── -->
+        <nav class="db-subnav" aria-label="Account navigation">
+          <div class="db-nameplate">
+            <span class="db-nameplate-portrait" aria-hidden="true" data-db-portrait>A</span>
+            <span class="db-nameplate-text">
+              <strong data-db-greeting>Welcome back</strong>
+              <small data-db-eyebrow>Beauty Pass</small>
+            </span>
+          </div>
+          <div class="db-subnav-inner">
             {navItems.map((item) => (
               <a
                 href={item.href}
-                class:list={['db-nav-item', { 'is-active': item.key === pageKey }]}
+                class:list={['db-subnav-item', { 'is-active': item.key === pageKey }]}
                 aria-current={item.key === pageKey ? 'page' : undefined}
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d={item.icon} />
-                </svg>
-                <span class="db-nav-text">
-                  <strong>{item.label}</strong>
-                  <small>{item.description}</small>
-                </span>
+                <span class="db-subnav-full">{item.label}</span>
+                <span class="db-subnav-short">{item.shortLabel}</span>
               </a>
             ))}
-          </nav>
-          <form action="/api/auth/logout" method="POST" class="db-signout-form">
-            <button type="submit" class="db-signout">Sign out</button>
-          </form>
-        </div>
-      </aside>
-
-      <!-- ── Main column ──────────────────────────────────────────────── -->
-      <main class="db-main" aria-labelledby="db-heading">
-        <!-- Hero -->
-        <header class="db-hero">
-          <div class="db-hero-identity">
-            <p class="db-hero-eyebrow" data-db-eyebrow>My account</p>
-            <h1 id="db-heading" class="db-hero-title">{pageHeading}</h1>
-            {pageDescription && <p class="db-hero-description">{pageDescription}</p>}
-            <slot name="hero-actions" />
           </div>
-          <div class="db-hero-aside">
-            <slot name="hero-aside">
-              <div class="db-hero-aside-placeholder" aria-hidden="true" />
-            </slot>
-          </div>
-        </header>
-
-        <!-- Mobile chip nav (≤ 1023px) -->
-        <nav class="db-mobile-nav" aria-label="Account navigation (mobile)">
-          {navItems.map((item) => (
-            <a
-              href={item.href}
-              class:list={['db-mobile-chip', { 'is-active': item.key === pageKey }]}
-              aria-current={item.key === pageKey ? 'page' : undefined}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d={item.icon} />
-              </svg>
-              <span>{item.label}</span>
-            </a>
-          ))}
         </nav>
 
-        <!-- Stat strip -->
+        <!-- ── Page intro (description + 主 CTA) ──────────────────── -->
+        {pageDescription && (
+          <p class="db-page-description">{pageDescription}</p>
+        )}
+        <slot name="hero-actions" />
+
+        <!-- ── Feature block (原 hero-aside 升级为主块) ──────────── -->
+        <section class="db-feature" aria-label="Featured">
+          <slot name="hero-aside" />
+        </section>
+
+        <!-- ── Stat strip ─────────────────────────────────────────── -->
         <section class="db-strip" aria-label="At a glance">
           <slot name="strip" />
         </section>
 
-        <!-- Split: main + aside -->
+        <!-- ── Split: main + aside ────────────────────────────────── -->
         <div class="db-split">
           <div class="db-main-col">
             <slot name="main" />
@@ -154,6 +106,45 @@ const navItems: Array<{
       }
     } catch {
       // 网络故障时不强制跳转，避免死循环
+    }
+  })();
+
+  // Nameplate 填充（portrait 首字母 + 问候 + plan）
+  type NameplateUser = { name: string | null; email: string | null; tier: string };
+  type NameplateOverview = {
+    user: NameplateUser;
+    subscription: null | { planName: string };
+  };
+
+  function tierLabel(tier: string): string {
+    if (tier === 'pro') return 'Beauty Pass Pro';
+    if (tier === 'premium') return 'Premium';
+    return 'Free Explorer';
+  }
+
+  function firstNameOf(user: NameplateUser): string {
+    if (user.name && user.name.trim().length > 0) return user.name.trim().split(/\s+/)[0];
+    if (user.email) return user.email.split('@')[0];
+    return 'there';
+  }
+
+  (async () => {
+    try {
+      const resp = await fetch('/api/account/overview');
+      if (!resp.ok) return;
+      const data = (await resp.json()) as NameplateOverview;
+      const name = firstNameOf(data.user);
+      const plan = data.subscription?.planName ?? tierLabel(data.user.tier);
+      const initial = (name.charAt(0) || 'A').toUpperCase();
+
+      const portrait = document.querySelector<HTMLElement>('[data-db-portrait]');
+      if (portrait) portrait.textContent = initial;
+      const greeting = document.querySelector<HTMLElement>('[data-db-greeting]');
+      if (greeting) greeting.textContent = `Hi, ${name}`;
+      const eyebrow = document.querySelector<HTMLElement>('[data-db-eyebrow]');
+      if (eyebrow) eyebrow.textContent = plan;
+    } catch {
+      // 静默失败：保持默认占位
     }
   })();
 </script>

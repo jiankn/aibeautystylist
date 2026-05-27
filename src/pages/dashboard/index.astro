@@ -175,14 +175,7 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
     if (!resp.ok) return;
     const data = (await resp.json()) as OverviewResponse;
 
-    // ── Hero identity ──
-    setText('.db-hero-title', `Hi, ${firstName(data.user)}`);
-    setText(
-      '[data-db-eyebrow]',
-      data.subscription
-        ? `${data.subscription.planName} · Welcome back`
-        : `${tierDisplayName(data.user.tier)} · Welcome back`,
-    );
+    // Hero identity 由 DashboardShell 公共脚本统一处理（nameplate）
 
     // ── Stat: Plan ──
     setText('[data-stat-plan]', data.subscription?.planName ?? tierDisplayName(data.user.tier));
