@@ -131,12 +131,14 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
     const media = item.primaryLookImage
       ? `<img src="${escapeHtml(item.primaryLookImage)}" alt="${title}" loading="lazy" />`
       : '<span class="recent-card-placeholder">No preview</span>';
+    const rerunHref = `/try-on?scenario=${encodeURIComponent(item.scenario)}`;
     return `
       <article class="dashboard-recent-card">
         <div class="recent-card-media">${media}</div>
         <div class="recent-card-body">
           <strong>${title}</strong>
           <small>${scenario} · ${date}</small>
+          <a class="recent-card-rerun" href="${rerunHref}">Re-run →</a>
         </div>
       </article>
     `;

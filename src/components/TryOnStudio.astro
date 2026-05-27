@@ -188,8 +188,9 @@ const allLookItems = lookCatalogItems;
             <span class="pill tryon-gated-pill">Free Preview</span>
             <strong data-tryon-gated-message>Unlock full tutorials, HD previews, and curated beauty kits with Pro</strong>
             <span data-tryon-gated-detail>You're seeing 2 of 3 looks and the first 3 tutorial steps. Upgrade to see everything.</span>
+            <ul class="tryon-gated-features is-hidden" data-tryon-gated-features aria-label="Locked features"></ul>
           </div>
-          <a class="btn" data-tryon-gated-cta href="/membership">Upgrade to Pro — $9.99/mo</a>
+          <a class="btn" data-tryon-gated-cta href="/membership">Upgrade to Pro</a>
         </aside>
 
         <!-- 1. Diagnosis 顶置整宽 -->
@@ -277,10 +278,10 @@ const allLookItems = lookCatalogItems;
           <aside class="tryon-tutorial-lock is-hidden" data-tryon-tutorial-lock role="note">
             <div class="tryon-tutorial-lock-icon" aria-hidden="true">🔒</div>
             <div class="tryon-tutorial-lock-copy">
-              <strong>The full tutorial is more steps</strong>
-              <p>Pro unlocks every step with error alerts, self-check points, and curated product picks for each.</p>
+              <strong data-tutorial-lock-title>The full tutorial is more steps</strong>
+              <p data-tutorial-lock-detail>Pro unlocks every step with error alerts, self-check points, and curated product picks for each.</p>
             </div>
-            <a class="btn" href="/membership">Unlock Full Tutorial</a>
+            <a class="btn" data-tutorial-lock-cta href="/membership">Unlock Full Tutorial</a>
           </aside>
 
           <details class="tryon-kit-details" data-tryon-kit>
@@ -333,8 +334,10 @@ const allLookItems = lookCatalogItems;
             <div class="share-card-actions">
               <button class="btn" type="button" data-share-download>📸 Download Share Card</button>
               <button class="btn btn-secondary" type="button" data-share-export>Copy Share Text</button>
+              <button class="btn btn-secondary" type="button" data-save-look>💾 Save my look plan</button>
               <a class="text-link" data-continue-link href="/tutorials/office-glow">Continue to Tutorial →</a>
             </div>
+            <p class="share-save-status is-hidden" data-save-status role="status" aria-live="polite"></p>
             <div class="share-card-preview is-hidden" data-share-card-preview>
               <img data-share-card-image alt="Your share card preview" />
             </div>
@@ -468,6 +471,8 @@ const allLookItems = lookCatalogItems;
     commonMistakes?: string[];
     selfChecks?: string[];
     _tutorialGated?: boolean;
+    _totalSteps?: number;
+    _nextStepTitle?: string;
     kit?: {
       mustHave?: TryOnProductClient[];
       optional?: TryOnProductClient[];
@@ -604,7 +609,12 @@ const allLookItems = lookCatalogItems;
   const gatedMessage = qs<HTMLElement>('[data-tryon-gated-message]');
   const gatedDetail = qs<HTMLElement>('[data-tryon-gated-detail]');
   const gatedCta = qs<HTMLAnchorElement>('[data-tryon-gated-cta]');
+  const gatedFeaturesList = qs<HTMLUListElement>('[data-tryon-gated-features]');
   const tutorialLock = qs<HTMLElement>('[data-tryon-tutorial-lock]');
+  const tutorialLockTitle = qs<HTMLElement>('[data-tutorial-lock-title]');
+  const tutorialLockDetail = qs<HTMLElement>('[data-tutorial-lock-detail]');
+  const tutorialLockCta = qs<HTMLAnchorElement>('[data-tutorial-lock-cta]');
+  let currentGatedInfo: GatedInfo | undefined;
   const looksProgressEl = qs<HTMLElement>('[data-tryon-looks-progress]');
   const looksProgressCurrent = qs<HTMLElement>('[data-tryon-looks-current]');
   const looksProgressTotal = qs<HTMLElement>('[data-tryon-looks-total]');
@@ -1405,11 +1415,14 @@ const allLookItems = lookCatalogItems;
           renderInlineSwatch(lipSwatchContainer, currentLipColors![look.id]);
         }).catch(() => {});
       }
-      // 妆效预览按钮
       const previewBtn = document.createElement('button');
       previewBtn.type = 'button';
-      previewBtn.className = 'btn btn-secondary look-preview-btn';
-      previewBtn.innerHTML = '✨ Preview Makeup';
+      const isFreeTier = currentGatedInfo?.isFreeTier ?? false;
+      const previewLocked = isFreeTier && currentGatedInfo?.lockedFeatures.includes('makeup_preview');
+      previewBtn.className = `btn btn-secondary look-preview-btn${previewLocked ? ' is-locked' : ''}`;
+      previewBtn.innerHTML = previewLocked
+        ? '🔒 Preview Makeup <span class="look-preview-pro-badge">Pro</span>'
+        : '✨ Preview Makeup';
       previewBtn.dataset.lookId = look.id;
       previewBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1419,6 +1432,24 @@ const allLookItems = lookCatalogItems;
       button.addEventListener('click', () => selectLook(look.id));
       lookList.appendChild(button);
     });
+
+    if (currentGatedInfo?.isFreeTier && currentLooks.length < 3) {
+      const remaining = 3 - currentLooks.length;
+      const ghost = document.createElement('a');
+      ghost.className = 'look-option-card look-option-ghost';
+      ghost.href = '/membership?from=tryon_ghost_card';
+      ghost.setAttribute('aria-label', `Unlock ${remaining} more look${remaining === 1 ? '' : 's'} with Pro`);
+      ghost.innerHTML = `
+        <span class="look-ghost-icon" aria-hidden="true">🔒</span>
+        <h4>${remaining} more look${remaining === 1 ? '' : 's'} await</h4>
+        <p>Pro unlocks the full set of personalized looks for your face profile.</p>
+        <span class="look-ghost-cta">Upgrade to Pro →</span>
+      `;
+      ghost.addEventListener('click', () => {
+        trackLookEvent('upgrade_click', { source: 'tryon_ghost_card' });
+      });
+      lookList.appendChild(ghost);
+    }
 
     // P2.10: refresh progress total + observe new cards for current chip
     if (looksProgressTotal) looksProgressTotal.textContent = String(currentLooks.length);
@@ -1430,7 +1461,7 @@ const allLookItems = lookCatalogItems;
   const setupLooksProgress = () => {
     if (!lookList || !looksProgressEl) return;
     looksProgressObserver?.disconnect();
-    const cards = Array.from(lookList.querySelectorAll<HTMLElement>('.look-option-card'));
+    const cards = Array.from(lookList.querySelectorAll<HTMLElement>('.look-option-card:not(.look-option-ghost)'));
     if (!cards.length) return;
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) => {
@@ -1526,7 +1557,16 @@ const allLookItems = lookCatalogItems;
   };
 
   // P0 — 应用会员门控信息：显示/隐藏升级横幅 + 教程被裁锁卡
+  const featureLabelMap: Record<string, string> = {
+    makeup_preview: 'HD Makeup Preview on your face',
+    full_tutorial: 'Full step-by-step tutorial (all steps)',
+    product_recommendations: 'Curated product recommendations',
+    saved_looks: 'Save & revisit your look plans',
+    look_history: 'Unlimited look history',
+  };
+
   const applyGatedInfo = (gated?: GatedInfo) => {
+    currentGatedInfo = gated;
     if (!gated || !gated.isFreeTier) {
       gatedBanner?.classList.add('is-hidden');
       tutorialLock?.classList.add('is-hidden');
@@ -1537,9 +1577,13 @@ const allLookItems = lookCatalogItems;
     if (gatedBanner) {
       gatedBanner.classList.remove('is-hidden');
       if (gatedMessage && gated.upgradeMessage) gatedMessage.textContent = gated.upgradeMessage;
+      const upgradeHref = `${gated.upgradeUrl || '/membership'}?from=tryon_result`;
       if (gatedCta) {
         gatedCta.textContent = gated.upgradeCta || 'Upgrade to Pro';
-        gatedCta.setAttribute('href', gated.upgradeUrl || '/membership');
+        gatedCta.setAttribute('href', upgradeHref);
+        gatedCta.addEventListener('click', () => {
+          trackLookEvent('upgrade_click', { source: 'tryon_gated_banner' });
+        }, { once: true });
       }
       // 根据 looks 实际数量动态生成详情文案
       const lookCount = currentLooks.length;
@@ -1552,6 +1596,12 @@ const allLookItems = lookCatalogItems;
           ? `${detailParts.join(' and ')}. Upgrade to see everything.`
           : 'Sign in and upgrade to unlock the full experience.';
       }
+      if (gatedFeaturesList && gated.lockedFeatures.length > 0) {
+        gatedFeaturesList.innerHTML = gated.lockedFeatures
+          .map((f) => `<li>${featureLabelMap[f] || f}</li>`)
+          .join('');
+        gatedFeaturesList.classList.remove('is-hidden');
+      }
     }
   };
 
@@ -1560,6 +1610,23 @@ const allLookItems = lookCatalogItems;
     if (!tutorialLock) return;
     if (look?._tutorialGated) {
       tutorialLock.classList.remove('is-hidden');
+      const visibleSteps = look.tutorialSteps?.length ?? 3;
+      const totalSteps = look._totalSteps ?? visibleSteps + 5;
+      if (tutorialLockTitle) {
+        tutorialLockTitle.textContent = `You're seeing steps 1–${visibleSteps} of ${totalSteps}`;
+      }
+      if (tutorialLockDetail) {
+        const nextTitle = look._nextStepTitle;
+        tutorialLockDetail.textContent = nextTitle
+          ? `Next up: "${nextTitle}" — upgrade to Pro to unlock every step with tips and product picks.`
+          : `Pro unlocks all ${totalSteps} steps with error alerts, self-checks, and curated product picks.`;
+      }
+      if (tutorialLockCta) {
+        tutorialLockCta.setAttribute('href', '/membership?from=tutorial_lock');
+        tutorialLockCta.addEventListener('click', () => {
+          trackLookEvent('upgrade_click', { source: 'tutorial_lock' });
+        }, { once: true });
+      }
     } else {
       tutorialLock.classList.add('is-hidden');
     }
@@ -1900,6 +1967,26 @@ const allLookItems = lookCatalogItems;
   });
 
   const triggerMakeupPreview = async (look: TryOnLookClient) => {
+    if (currentGatedInfo?.isFreeTier && currentGatedInfo.lockedFeatures.includes('makeup_preview')) {
+      makeupLoading?.classList.add('is-hidden');
+      makeupResult?.classList.add('is-hidden');
+      makeupError?.classList.remove('is-hidden');
+      if (makeupErrorMsg) {
+        makeupErrorMsg.innerHTML = `<div class="makeup-upsell">
+          <span class="makeup-upsell-icon" aria-hidden="true">✨</span>
+          <strong>HD Makeup Preview is a Pro feature</strong>
+          <p>Upgrade to Pro to see "${look.name}" rendered on your own face — generated by AI in seconds.</p>
+          <a class="btn" href="/membership?from=makeup_preview" data-makeup-upsell-cta>Upgrade to Pro</a>
+        </div>`;
+        makeupErrorMsg.querySelector<HTMLAnchorElement>('[data-makeup-upsell-cta]')?.addEventListener('click', () => {
+          trackLookEvent('upgrade_click', { source: 'makeup_preview_upsell' });
+        }, { once: true });
+      }
+      if (makeupLookName) makeupLookName.textContent = look.name;
+      showMakeupModal();
+      return;
+    }
+
     if (!currentPhotoBase64 && !preparedPhotoBase64) {
       alert('Please upload a selfie first to generate a makeup preview.');
       return;
@@ -1976,6 +2063,48 @@ const allLookItems = lookCatalogItems;
       }
     }
   };
+
+  const saveLookBtn = qs<HTMLButtonElement>('[data-save-look]');
+  const saveLookStatus = qs<HTMLElement>('[data-save-status]');
+
+  const showSaveStatus = (msg: string, isError = false) => {
+    if (!saveLookStatus) return;
+    saveLookStatus.textContent = msg;
+    saveLookStatus.classList.remove('is-hidden');
+    saveLookStatus.classList.toggle('is-error', isError);
+  };
+
+  saveLookBtn?.addEventListener('click', async () => {
+    const look = getSelectedLook();
+    if (!look) return;
+    saveLookBtn.disabled = true;
+    const originalText = saveLookBtn.textContent ?? '💾 Save my look plan';
+    saveLookBtn.textContent = '⏳ Checking…';
+    try {
+      const meResp = await fetch('/api/auth/me');
+      const meData = (await meResp.json()) as { authenticated?: boolean };
+      if (!meData.authenticated) {
+        // 未登录 → 引导注册/登录
+        trackLookEvent('save_click', { metadata: { result: 'redirect_login', selectedLookId: look.id } });
+        const next = encodeURIComponent(`/try-on?look=${look.id}`);
+        window.location.href = `/login?next=${next}&intent=save_look`;
+        return;
+      }
+      // 已登录：诊断结果由 try-on-plan 自动写入 tryon_jobs，提示用户去 history 查看
+      trackLookEvent('save_click', { metadata: { result: 'already_saved', selectedLookId: look.id } });
+      showSaveStatus('✓ Saved automatically. View in your dashboard history.');
+      saveLookBtn.textContent = '✓ Saved to history';
+      // 转换成 history 链接
+      saveLookBtn.disabled = false;
+      saveLookBtn.addEventListener('click', () => {
+        window.location.href = '/dashboard/history';
+      }, { once: true });
+    } catch {
+      saveLookBtn.disabled = false;
+      saveLookBtn.textContent = originalText;
+      showSaveStatus('Could not check sign-in status. Try again.', true);
+    }
+  });
 
   // ─── 分享卡下载功能 ─────────────────────────────────────────
   const shareDownloadBtn = qs<HTMLButtonElement>('[data-share-download]');

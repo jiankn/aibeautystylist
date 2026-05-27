@@ -275,6 +275,9 @@ const faqs = [
         });
       });
 
+      const params = new URLSearchParams(window.location.search);
+      const sourceFrom = params.get('from') || 'membership_page';
+
       // ─── Stripe Checkout ────────────────────────────────────
       document.querySelectorAll('[data-checkout="true"]').forEach((btn) => {
         btn.addEventListener('click', async (e) => {
@@ -283,10 +286,10 @@ const faqs = [
           if (!planId) return;
           (window as typeof window & {
             aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void };
-          }).aiBeautyAnalytics?.track?.('membership_click', { metadata: { planId } });
+          }).aiBeautyAnalytics?.track?.('membership_click', { metadata: { planId, source: sourceFrom } });
           (window as typeof window & {
             aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void };
-          }).aiBeautyAnalytics?.track?.('checkout_started', { metadata: { planId, billing: currentBilling } });
+          }).aiBeautyAnalytics?.track?.('checkout_started', { metadata: { planId, billing: currentBilling, source: sourceFrom } });
 
           const originalText = btn.textContent ?? '';
           btn.textContent = 'Loading...';
@@ -301,7 +304,8 @@ const faqs = [
             const data = await resp.json();
 
             if (data.error === 'unauthorized') {
-              window.location.href = '/login?next=/membership';
+              const next = encodeURIComponent(`${window.location.pathname}${window.location.search}`);
+              window.location.href = `/login?next=${next}`;
               return;
             }
             if (data.url) {
@@ -341,7 +345,6 @@ const faqs = [
       });
 
       // 支付成功提示
-      const params = new URLSearchParams(window.location.search);
       if (params.get('payment') === 'success') {
         const banner = document.createElement('div');
         banner.className = 'payment-success-banner';

@@ -8,6 +8,7 @@ export const LOOK_ANALYTICS_EVENTS = [
   'tutorial_continue',
   'register_success',
   'membership_click',
+  'upgrade_click',
   'checkout_started',
   'checkout_success',
   'share_click',
@@ -214,7 +215,7 @@ function buildAggregateSql(extraWhere: string) {
       COUNT(DISTINCT CASE WHEN event_name = 'selfie_upload_success' THEN session_id END) AS uploads,
       COUNT(DISTINCT CASE WHEN event_name = 'tryon_result_view' THEN session_id END) AS result_views,
       COUNT(DISTINCT CASE WHEN event_name = 'tutorial_continue' THEN session_id END) AS tutorial_continues,
-      COUNT(DISTINCT CASE WHEN event_name IN ('register_success', 'membership_click', 'checkout_started', 'checkout_success') THEN session_id END) AS account_actions,
+      COUNT(DISTINCT CASE WHEN event_name IN ('register_success', 'membership_click', 'upgrade_click', 'checkout_started', 'checkout_success') THEN session_id END) AS account_actions,
       COUNT(DISTINCT CASE WHEN event_name IN ('share_click', 'save_click') THEN session_id END) AS share_saves
     FROM look_analytics_events
     WHERE created_at >= ?

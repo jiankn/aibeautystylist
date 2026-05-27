@@ -117,8 +117,18 @@ export function trimResultByTier<T extends {
       const mutableLook = look as Record<string, unknown>;
       const steps = mutableLook.tutorialSteps as Array<Record<string, unknown>> | undefined;
       if (steps && steps.length > 3) {
+        const totalSteps = steps.length;
+        const nextStep = steps[3];
+        const nextStepTitle =
+          nextStep && typeof nextStep === 'object'
+            ? (nextStep as { title?: unknown; name?: unknown }).title ?? (nextStep as { name?: unknown }).name
+            : undefined;
         mutableLook.tutorialSteps = steps.slice(0, 3);
         mutableLook._tutorialGated = true;
+        mutableLook._totalSteps = totalSteps;
+        if (typeof nextStepTitle === 'string' && nextStepTitle.length > 0) {
+          mutableLook._nextStepTitle = nextStepTitle;
+        }
       }
     }
   }

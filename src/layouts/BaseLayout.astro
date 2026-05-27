@@ -297,7 +297,7 @@ const structuredDataItems = structuredData
 
         function trackLookEvent(eventName: string, input: AnalyticsPayload = {}) {
           const payload = normalizePayload(input);
-          if (!payload.lookSlug && !payload.styleSlug && !['membership_click', 'register_success', 'checkout_started', 'checkout_success'].includes(eventName)) return;
+          if (!payload.lookSlug && !payload.styleSlug && !['membership_click', 'upgrade_click', 'register_success', 'checkout_started', 'checkout_success', 'share_click', 'save_click'].includes(eventName)) return;
           const body = JSON.stringify({ eventName, ...payload });
           const url = '/api/analytics/look-event';
           if (navigator.sendBeacon) {
