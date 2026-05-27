@@ -363,11 +363,15 @@ const allLookItems = lookCatalogItems;
       ))}
     </div>
     <div class="look-drawer-grid" aria-label="All makeup looks">
-      {allLookItems.map((look) => (
+      {allLookItems.map((look, index) => (
         <button
           type="button"
           class="look-drawer-item"
           data-look-item
+          data-analytics-look
+          data-analytics-source="tryon-drawer"
+          data-analytics-position={index + 1}
+          data-analytics-look-slug={look.slug}
           data-look-slug={look.slug}
           data-look-title={look.title}
           data-look-tone={look.tone}
@@ -604,6 +608,14 @@ const allLookItems = lookCatalogItems;
   const looksProgressCurrent = qs<HTMLElement>('[data-tryon-looks-current]');
   const looksProgressTotal = qs<HTMLElement>('[data-tryon-looks-total]');
   const scenarioSelect = qs<HTMLSelectElement>('select[name="scenario"]');
+  const trackLookEvent = (eventName: string, payload: Record<string, unknown> = {}) => {
+    const analyticsWindow = window as typeof window & {
+      aiBeautyAnalytics?: {
+        track?: (name: string, data?: Record<string, unknown>) => void;
+      };
+    };
+    analyticsWindow.aiBeautyAnalytics?.track?.(eventName, payload);
+  };
 
   const initialParams = new URLSearchParams(window.location.search);
   const scenarioAliases: Record<string, 'office' | 'date' | 'photo'> = {
@@ -636,6 +648,24 @@ const allLookItems = lookCatalogItems;
     'burgundy-velvet-makeup': 'photo',
     'mature-radiance-makeup': 'office',
     'hooded-eye-lift-makeup': 'office',
+    'korean-dewy-glow-makeup': 'office',
+    'french-natural-chic-makeup': 'office',
+    'douyin-soft-focus-makeup': 'photo',
+    'latina-bronze-glam-makeup': 'photo',
+    'monochrome-rose-makeup': 'office',
+    'olive-rose-balance-makeup': 'office',
+    'sunburn-blush-makeup': 'office',
+    'watercolor-blush-makeup': 'date',
+    'jelly-lip-makeup': 'date',
+    'reflective-lid-makeup': 'photo',
+    'vacation-bronze-makeup': 'photo',
+    'cloud-skin-makeup': 'office',
+    'interview-ready-makeup': 'office',
+    'passport-photo-makeup': 'photo',
+    'creator-glow-makeup': 'photo',
+    'five-minute-makeup': 'office',
+    'asian-soft-definition-makeup': 'office',
+    'soft-berry-stain-makeup': 'date',
   };
   const styleLookMap: Record<string, string> = {
     'clean-girl-makeup': 'clean-girl',
@@ -656,6 +686,24 @@ const allLookItems = lookCatalogItems;
     'burgundy-velvet-makeup': 'burgundy-velvet',
     'mature-radiance-makeup': 'mature-skin-radiance',
     'hooded-eye-lift-makeup': 'hooded-eyes-lift',
+    'korean-dewy-glow-makeup': 'korean-dewy-glow',
+    'french-natural-chic-makeup': 'french-natural-chic',
+    'douyin-soft-focus-makeup': 'douyin-soft-focus',
+    'latina-bronze-glam-makeup': 'latina-bronze-glam',
+    'monochrome-rose-makeup': 'executive-rose',
+    'olive-rose-balance-makeup': 'olive-undertone-rose',
+    'sunburn-blush-makeup': 'sunburn-satin-glow',
+    'watercolor-blush-makeup': 'watercolor-blush',
+    'jelly-lip-makeup': 'jelly-lip-tint',
+    'reflective-lid-makeup': 'reflective-lid-glow',
+    'vacation-bronze-makeup': 'vacation-bronze',
+    'cloud-skin-makeup': 'cloud-skin-matte',
+    'interview-ready-makeup': 'interview-ready',
+    'passport-photo-makeup': 'passport-photo-clean',
+    'creator-glow-makeup': 'creator-camera-glow',
+    'five-minute-makeup': 'five-minute-beginner',
+    'asian-soft-definition-makeup': 'asian-refined',
+    'soft-berry-stain-makeup': 'soft-berry-stain',
   };
   const scenarioParam = initialParams.get('scenario') || '';
   const styleParam = initialParams.get('style') || '';
@@ -1660,6 +1708,11 @@ const allLookItems = lookCatalogItems;
       return;
     }
 
+    if (photo) {
+      trackLookEvent('selfie_upload_success', { lookSlug: lookSlug || undefined });
+    }
+    trackLookEvent('tryon_result_view', { lookSlug: lookSlug || undefined, metadata: { demo: !photo } });
+
     currentLooks = result.looks;
     currentShareCard = result.shareCard;
     currentLipColors = result._lipColors ?? null;
@@ -1752,6 +1805,7 @@ const allLookItems = lookCatalogItems;
   shareExportButton?.addEventListener('click', async () => {
     const look = getSelectedLook();
     if (!look || !currentShareCard) return;
+    trackLookEvent('share_click', { metadata: { action: 'copy_text', selectedLookId: look.id } });
 
     const shareText = [
       currentShareCard.title,
@@ -1773,6 +1827,11 @@ const allLookItems = lookCatalogItems;
       setShareStatus('Copy failed — please copy manually');
     }
     window.setTimeout(() => setShareStatus('Copy to share'), 1800);
+  });
+
+  continueLink?.addEventListener('click', () => {
+    const look = getSelectedLook();
+    trackLookEvent('tutorial_continue', { metadata: { selectedLookId: look?.id } });
   });
 
   // P2.14: demo banner Upload CTA → 滚回 dropzone
@@ -1924,6 +1983,7 @@ const allLookItems = lookCatalogItems;
   shareDownloadBtn?.addEventListener('click', async () => {
     const look = getSelectedLook();
     if (!look) return;
+    trackLookEvent('share_click', { metadata: { action: 'download_card', selectedLookId: look.id } });
 
     shareDownloadBtn.disabled = true;
     shareDownloadBtn.textContent = '⏳ Generating...';

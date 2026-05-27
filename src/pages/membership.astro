@@ -281,6 +281,9 @@ const faqs = [
           e.preventDefault();
           const planId = (btn as HTMLElement).dataset.planId;
           if (!planId) return;
+          (window as typeof window & {
+            aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void };
+          }).aiBeautyAnalytics?.track?.('membership_click', { metadata: { planId } });
 
           const originalText = btn.textContent ?? '';
           btn.textContent = 'Loading...';

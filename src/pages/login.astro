@@ -116,6 +116,11 @@ const googleHref = `/api/auth/login?next=${encodeURIComponent(safeNext)}`;
       message.textContent = 'Success. Redirecting…';
       message.classList.add('is-success');
       message.hidden = false;
+      if (mode === 'register') {
+        (window as typeof window & {
+          aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void };
+        }).aiBeautyAnalytics?.track?.('register_success');
+      }
       window.location.href = data.next ?? '/dashboard';
     } catch (error) {
       message.textContent = error instanceof Error ? error.message : 'Authentication failed.';

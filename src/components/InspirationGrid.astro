@@ -1,9 +1,10 @@
 ---
-import { buildLookTryOnHref, homeInspirationLooks } from '../data/lookCatalog';
+import { buildLookTryOnHref, homeInspirationLooks, LOOK_LIBRARY_TARGET_COUNT } from '../data/lookCatalog';
 
-const looks = homeInspirationLooks.map((look) => ({
+const looks = homeInspirationLooks.map((look, index) => ({
   ...look,
-  tryOnHref: buildLookTryOnHref(look),
+  tryOnHref: `${buildLookTryOnHref(look)}&source=get-inspired&position=${index + 1}`,
+  position: index + 1,
 }));
 
 const galleryLooks = looks;
@@ -11,16 +12,28 @@ const galleryLooks = looks;
 
 <section class="section section-soft home-inspiration" id="get-inspired">
   <div class="container">
-    <div class="section-copy inspiration-head">
-      <h2>Get Inspired</h2>
-      <p>
-        Browse beauty looks visually first. Pick one to try it on your own photo.
-      </p>
+    <div class="inspiration-head">
+      <div class="section-copy inspiration-head-copy">
+        <h2>Get Inspired</h2>
+        <p>
+          Browse a curated edit first. Open the full library when you want all {LOOK_LIBRARY_TARGET_COUNT} looks.
+        </p>
+      </div>
+      <a class="btn btn-secondary inspiration-head-action" href="/discover#look-library">View all looks</a>
     </div>
 
     <div class="inspiration-grid" aria-label="Makeup inspiration looks">
       {galleryLooks.map((look, index) => (
-        <a class="look-tile" href={look.tryOnHref} aria-label={`Try ${look.title}`} style={`--look-focus: ${look.focus};`}>
+        <a
+          class="look-tile"
+          href={look.tryOnHref}
+          aria-label={`Try ${look.title}`}
+          style={`--look-focus: ${look.focus};`}
+          data-analytics-look
+          data-analytics-source="get-inspired"
+          data-analytics-look-slug={look.slug}
+          data-analytics-position={look.position}
+        >
           <img src={look.image} alt={look.imageAlt} loading={index < 4 ? 'eager' : 'lazy'} />
           <span class="look-tile-shade" aria-hidden="true"></span>
           <span class="look-tile-caption">
@@ -46,9 +59,17 @@ const galleryLooks = looks;
   }
 
   .inspiration-head {
-    max-width: 620px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: 960px;
     margin: 0 auto 42px;
-    text-align: center;
+  }
+
+  .inspiration-head-copy {
+    max-width: 620px;
+    margin: 0;
   }
 
   .inspiration-head h2 {
@@ -59,8 +80,12 @@ const galleryLooks = looks;
 
   .inspiration-head p {
     max-width: 520px;
-    margin: 14px auto 0;
+    margin: 14px 0 0;
     font-size: 0.98rem;
+  }
+
+  .inspiration-head-action {
+    flex-shrink: 0;
   }
 
   .inspiration-grid {
@@ -164,6 +189,12 @@ const galleryLooks = looks;
   @media (max-width: 640px) {
     .home-inspiration {
       padding-block: 56px;
+    }
+
+    .inspiration-head {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 18px;
     }
 
     .inspiration-grid {

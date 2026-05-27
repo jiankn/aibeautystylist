@@ -27,6 +27,8 @@ export interface HomeStyleItem {
   lookSlug: string;
 }
 
+export const STYLE_NAV_TARGET_COUNT = 36;
+
 export const stylePages: StylePage[] = [
   {
     slug: 'clean-girl-makeup',
@@ -203,7 +205,7 @@ export const homeStylePages = getStylePagesBySlugs([
   'romantic-date-makeup',
 ]);
 
-export const homeStyleItems: HomeStyleItem[] = [
+export const styleNavigationItems: HomeStyleItem[] = [
   {
     slug: 'clean-girl-makeup',
     label: 'Clean Girl',
@@ -279,7 +281,7 @@ export const homeStyleItems: HomeStyleItem[] = [
   {
     slug: 'quiet-luxury-makeup',
     label: 'Quiet Luxury',
-    image: '/images/hero/look-refined.png',
+    image: '/images/hero/look-refined.webp',
     imageAlt: 'Quiet luxury makeup style with taupe eyes and satin nude lip',
     tryOnScenario: 'office',
     lookSlug: 'quiet-taupe',
@@ -287,7 +289,7 @@ export const homeStyleItems: HomeStyleItem[] = [
   {
     slug: 'camera-ready-makeup',
     label: 'Camera Ready',
-    image: '/images/hero/look-photogenic.png',
+    image: '/images/hero/look-photogenic.webp',
     imageAlt: 'Camera ready makeup style with balanced photo definition',
     tryOnScenario: 'photo',
     lookSlug: 'photo-ready',
@@ -348,4 +350,150 @@ export const homeStyleItems: HomeStyleItem[] = [
     tryOnScenario: 'office',
     lookSlug: 'hooded-eyes-lift',
   },
+  {
+    slug: 'korean-dewy-glow-makeup',
+    label: 'Korean Dewy Glow',
+    image: '/images/hero/look-korean-dewy-glow.webp',
+    imageAlt: 'Korean dewy glow makeup style with clear luminous skin',
+    tryOnScenario: 'office',
+    lookSlug: 'korean-dewy-glow',
+  },
+  {
+    slug: 'french-natural-chic-makeup',
+    label: 'French Natural',
+    image: '/images/hero/look-french-natural-chic.webp',
+    imageAlt: 'French natural chic makeup style with effortless polish',
+    tryOnScenario: 'office',
+    lookSlug: 'french-natural-chic',
+  },
+  {
+    slug: 'douyin-soft-focus-makeup',
+    label: 'Douyin Soft Focus',
+    image: '/images/hero/look-douyin-soft-focus.webp',
+    imageAlt: 'Douyin soft focus makeup style with bright camera-friendly features',
+    tryOnScenario: 'photo',
+    lookSlug: 'douyin-soft-focus',
+  },
+  {
+    slug: 'latina-bronze-glam-makeup',
+    label: 'Latina Bronze',
+    image: '/images/hero/look-latina-bronze-glam.webp',
+    imageAlt: 'Latina bronze glam makeup style with sculpted warmth',
+    tryOnScenario: 'photo',
+    lookSlug: 'latina-bronze-glam',
+  },
+  {
+    slug: 'monochrome-rose-makeup',
+    label: 'Monochrome Rose',
+    image: '/images/hero/look-executive-rose.webp',
+    imageAlt: 'Monochrome rose makeup style with coordinated rose tones',
+    tryOnScenario: 'office',
+    lookSlug: 'executive-rose',
+  },
+  {
+    slug: 'olive-rose-balance-makeup',
+    label: 'Olive Rose Balance',
+    image: '/images/hero/look-olive-undertone-rose.webp',
+    imageAlt: 'Olive rose balance makeup style for green-neutral undertones',
+    tryOnScenario: 'office',
+    lookSlug: 'olive-undertone-rose',
+  },
+  {
+    slug: 'sunburn-blush-makeup',
+    label: 'Sunburn Blush',
+    image: '/images/hero/look-sunburn-satin-glow.webp',
+    imageAlt: 'Sunburn blush makeup style with warm lifted cheek color',
+    tryOnScenario: 'office',
+    lookSlug: 'sunburn-satin-glow',
+  },
+  {
+    slug: 'watercolor-blush-makeup',
+    label: 'Watercolor Blush',
+    image: '/images/hero/look-watercolor-blush.webp',
+    imageAlt: 'Watercolor blush makeup style with diffused pink cheeks',
+    tryOnScenario: 'date',
+    lookSlug: 'watercolor-blush',
+  },
+  {
+    slug: 'jelly-lip-makeup',
+    label: 'Jelly Lip',
+    image: '/images/hero/look-jelly-lip-tint.webp',
+    imageAlt: 'Jelly lip makeup style with sheer glossy lip tint',
+    tryOnScenario: 'date',
+    lookSlug: 'jelly-lip-tint',
+  },
+  {
+    slug: 'reflective-lid-makeup',
+    label: 'Reflective Lid',
+    image: '/images/hero/look-reflective-lid-glow.webp',
+    imageAlt: 'Reflective lid makeup style with light-catching eye sheen',
+    tryOnScenario: 'photo',
+    lookSlug: 'reflective-lid-glow',
+  },
+  {
+    slug: 'vacation-bronze-makeup',
+    label: 'Vacation Bronze',
+    image: '/images/hero/look-vacation-bronze.webp',
+    imageAlt: 'Vacation bronze makeup style with sunlit sculpt',
+    tryOnScenario: 'photo',
+    lookSlug: 'vacation-bronze',
+  },
+  {
+    slug: 'cloud-skin-makeup',
+    label: 'Cloud Skin',
+    image: '/images/hero/look-cloud-skin-matte.webp',
+    imageAlt: 'Cloud skin makeup style with soft-focus matte complexion',
+    tryOnScenario: 'office',
+    lookSlug: 'cloud-skin-matte',
+  },
+  {
+    slug: 'interview-ready-makeup',
+    label: 'Interview Ready',
+    image: '/images/hero/look-interview-ready.webp',
+    imageAlt: 'Interview ready makeup style with calm structure',
+    tryOnScenario: 'office',
+    lookSlug: 'interview-ready',
+  },
+  {
+    slug: 'passport-photo-makeup',
+    label: 'Passport Photo',
+    image: '/images/hero/look-passport-photo-clean.webp',
+    imageAlt: 'Passport photo makeup style with ID-safe definition',
+    tryOnScenario: 'photo',
+    lookSlug: 'passport-photo-clean',
+  },
+  {
+    slug: 'creator-glow-makeup',
+    label: 'Creator Glow',
+    image: '/images/hero/look-creator-camera-glow.webp',
+    imageAlt: 'Creator glow makeup style with studio-friendly radiance',
+    tryOnScenario: 'photo',
+    lookSlug: 'creator-camera-glow',
+  },
+  {
+    slug: 'five-minute-makeup',
+    label: 'Five-Minute',
+    image: '/images/hero/look-five-minute-beginner.webp',
+    imageAlt: 'Five-minute makeup style with fast beginner-friendly polish',
+    tryOnScenario: 'office',
+    lookSlug: 'five-minute-beginner',
+  },
+  {
+    slug: 'asian-soft-definition-makeup',
+    label: 'Asian Soft Definition',
+    image: '/images/hero/hero-asian-refined.webp',
+    imageAlt: 'Asian soft definition makeup style with clean eye structure',
+    tryOnScenario: 'office',
+    lookSlug: 'asian-refined',
+  },
+  {
+    slug: 'soft-berry-stain-makeup',
+    label: 'Soft Berry Stain',
+    image: '/images/hero/look-soft-berry-stain.webp',
+    imageAlt: 'Soft berry stain makeup style with blurred berry lips',
+    tryOnScenario: 'date',
+    lookSlug: 'soft-berry-stain',
+  },
 ];
+
+export const homeStyleItems = styleNavigationItems.slice(0, 18);

@@ -1,11 +1,14 @@
 ---
-import { homeStyleItems } from '../data/stylePages';
+import { homeStyleItems, STYLE_NAV_TARGET_COUNT } from '../data/stylePages';
 
-const styles = homeStyleItems.map((style) => ({
+const styles = homeStyleItems.map((style, index) => ({
   title: style.label,
   image: style.image,
   imageAlt: style.imageAlt,
-  tryOnHref: `/try-on?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}`,
+  slug: style.slug,
+  lookSlug: style.lookSlug,
+  tryOnHref: `/try-on?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}&source=try-a-style&position=${index + 1}`,
+  position: index + 1,
 }));
 ---
 
@@ -16,10 +19,11 @@ const styles = homeStyleItems.map((style) => ({
         <span class="eyebrow">Try a style</span>
         <h2>Choose a style direction and try it on your face.</h2>
         <p>
-          Scan the finish first, then tap the style that feels closest to your occasion, features, or mood.
+          Scan the featured edit first, or open all {STYLE_NAV_TARGET_COUNT} style directions in Discover.
         </p>
       </div>
       <div class="style-picker-nav">
+        <a class="style-picker-all-link" href="/discover#style-directions">View all styles</a>
         <button class="style-nav-btn" data-dir="prev" aria-label="Previous styles">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
@@ -31,7 +35,16 @@ const styles = homeStyleItems.map((style) => ({
 
     <div class="style-picker-grid">
       {styles.map((style) => (
-        <a class="style-card" href={style.tryOnHref} aria-label={`Try ${style.title}`}>
+        <a
+          class="style-card"
+          href={style.tryOnHref}
+          aria-label={`Try ${style.title}`}
+          data-analytics-look
+          data-analytics-source="try-a-style"
+          data-analytics-look-slug={style.lookSlug}
+          data-analytics-style-slug={style.slug}
+          data-analytics-position={style.position}
+        >
           <span class="style-card-image">
             <img src={style.image} alt={style.imageAlt} loading="lazy" />
           </span>
@@ -92,8 +105,17 @@ const styles = homeStyleItems.map((style) => ({
 
   .style-picker-nav {
     display: flex;
+    align-items: center;
     gap: 8px;
     flex-shrink: 0;
+  }
+
+  .style-picker-all-link {
+    color: var(--accent-deep);
+    font-size: 0.84rem;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
   }
 
   .style-nav-btn {

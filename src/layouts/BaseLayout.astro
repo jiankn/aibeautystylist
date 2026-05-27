@@ -13,7 +13,7 @@ interface Props {
 const {
   title = 'AI Beauty Stylist — Find Your Perfect Look',
   description = 'Upload a bare-face selfie and get AI-powered shade diagnosis, personalized looks, and step-by-step tutorials you can actually follow.',
-  ogImage = '/images/hero/hero-polished-elegant.png',
+  ogImage = '/images/hero/hero-polished-elegant.webp',
   robots,
   structuredData,
 } = Astro.props;
@@ -78,7 +78,7 @@ const structuredDataItems = structuredData
             <span>AI Beauty Stylist</span>
           </a>
           <nav class="nav-links" id="main-nav">
-            <a href="/makeup-guides">Discover</a>
+            <a href="/discover">Discover</a>
             <a href="/try-on">Try On</a>
             <a href="/tutorial">Tutorials</a>
             <a href="/tools/shade-finder">Beauty Kit</a>
@@ -118,6 +118,7 @@ const structuredDataItems = structuredData
             <div>
               <p class="footer-title">Explore</p>
               <ul class="footer-list">
+                <li><a href="/discover">Discover Looks</a></li>
                 <li><a href="/try-on">AI Try-On Studio</a></li>
                 <li><a href="/tools/shade-finder">Shade Finder</a></li>
                 <li><a href="/makeup-guides">Makeup Guides</a></li>
@@ -175,6 +176,170 @@ const structuredDataItems = structuredData
 
         document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
       });
+
+      // Look conversion analytics: collect once, score server-side.
+      (() => {
+        const sessionKey = 'aibeauty_analytics_session_id';
+        const anonymousKey = 'aibeauty_analytics_anonymous_id';
+        const attributionKey = 'aibeauty_look_attribution';
+
+        function createId(prefix) {
+          const random = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+          return `${prefix}_${random}`;
+        }
+
+        function readStorage(storage, key) {
+          try {
+            return storage.getItem(key);
+          } catch {
+            return null;
+          }
+        }
+
+        function writeStorage(storage, key, value) {
+          try {
+            storage.setItem(key, value);
+          } catch {
+            // Storage can be blocked in privacy modes; analytics should never break UX.
+          }
+        }
+
+        function getStableId(storage, key, prefix) {
+          const existing = readStorage(storage, key);
+          if (existing) return existing;
+          const next = createId(prefix);
+          writeStorage(storage, key, next);
+          return next;
+        }
+
+        function cleanAttr(value) {
+          return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+        }
+
+        function readAttributionFromUrl() {
+          const params = new URLSearchParams(window.location.search);
+          return {
+            lookSlug: cleanAttr(params.get('look') || undefined),
+            styleSlug: cleanAttr(params.get('style') || undefined),
+            source: cleanAttr(params.get('source') || undefined),
+            position: cleanAttr(params.get('position') || undefined),
+          };
+        }
+
+        function readAttributionFromElement(element) {
+          const dataset = element instanceof HTMLElement ? element.dataset : {};
+          return {
+            lookSlug: cleanAttr(dataset.analyticsLookSlug),
+            styleSlug: cleanAttr(dataset.analyticsStyleSlug),
+            source: cleanAttr(dataset.analyticsSource),
+            position: cleanAttr(dataset.analyticsPosition),
+          };
+        }
+
+        function getStoredAttribution() {
+          try {
+            return JSON.parse(readStorage(sessionStorage, attributionKey) || '{}') || {};
+          } catch {
+            return {};
+          }
+        }
+
+        function storeAttribution(input) {
+          const previous = getStoredAttribution();
+          const next = {
+            ...previous,
+            ...Object.fromEntries(Object.entries(input).filter(([, value]) => value !== undefined && value !== null && value !== '')),
+          };
+          if (next.lookSlug || next.styleSlug) {
+            writeStorage(sessionStorage, attributionKey, JSON.stringify(next));
+          }
+          return next;
+        }
+
+        function normalizePayload(input = {}) {
+          const stored = getStoredAttribution();
+          const url = readAttributionFromUrl();
+          const merged = {
+            ...stored,
+            ...Object.fromEntries(Object.entries(url).filter(([, value]) => value)),
+            ...Object.fromEntries(Object.entries(input).filter(([, value]) => value !== undefined && value !== null && value !== '')),
+          };
+          return {
+            ...merged,
+            position: merged.position ? Number(merged.position) : undefined,
+            sessionId: getStableId(sessionStorage, sessionKey, 'session'),
+            anonymousId: getStableId(localStorage, anonymousKey, 'anon'),
+            route: window.location.pathname + window.location.search,
+            referrer: document.referrer || undefined,
+          };
+        }
+
+        function trackLookEvent(eventName, input = {}) {
+          const payload = normalizePayload(input);
+          if (!payload.lookSlug && !payload.styleSlug && eventName !== 'membership_click' && eventName !== 'register_success') return;
+          const body = JSON.stringify({ eventName, ...payload });
+          const url = '/api/analytics/look-event';
+          if (navigator.sendBeacon) {
+            const sent = navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
+            if (sent) return;
+          }
+          fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            keepalive: true,
+          }).catch(() => {});
+        }
+
+        window.aiBeautyAnalytics = {
+          track: trackLookEvent,
+          getAttribution: getStoredAttribution,
+          setAttribution: storeAttribution,
+        };
+
+        storeAttribution(readAttributionFromUrl());
+
+        document.addEventListener('click', (event) => {
+          const target = event.target instanceof Element ? event.target : null;
+          if (!target) return;
+
+          const lookElement = target.closest('[data-analytics-look]');
+          if (lookElement instanceof HTMLElement) {
+            const attribution = storeAttribution(readAttributionFromElement(lookElement));
+            trackLookEvent('look_click', attribution);
+          }
+
+          const eventElement = target.closest('[data-analytics-event]');
+          if (eventElement instanceof HTMLElement) {
+            trackLookEvent(eventElement.dataset.analyticsEvent || '', readAttributionFromElement(eventElement));
+          }
+
+          const link = target.closest('a[href]');
+          if (link instanceof HTMLAnchorElement) {
+            const href = link.getAttribute('href') || '';
+            if (href.startsWith('/membership') || href.includes('/membership?')) {
+              trackLookEvent('membership_click');
+            }
+          }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const elements = Array.from(document.querySelectorAll('[data-analytics-look]'));
+          if (!elements.length) return;
+          const seen = new WeakSet();
+          const impressionObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting || seen.has(entry.target)) return;
+              seen.add(entry.target);
+              if (entry.target instanceof HTMLElement) {
+                trackLookEvent('look_impression', readAttributionFromElement(entry.target));
+              }
+              impressionObserver.unobserve(entry.target);
+            });
+          }, { threshold: 0.5 });
+          elements.forEach((element) => impressionObserver.observe(element));
+        });
+      })();
     </script>
   </body>
 </html>
