@@ -1317,6 +1317,10 @@ const allLookItems = lookCatalogItems;
       fallbackToCanvasPreview(look.id);
       return;
     }
+    if (currentGatedInfo?.isFreeTier && currentGatedInfo.lockedFeatures.includes('makeup_preview')) {
+      fallbackToCanvasPreview(look.id);
+      return;
+    }
 
     const cached = renderedAfterImages.get(look.id);
     if (cached) {
@@ -1514,7 +1518,7 @@ const allLookItems = lookCatalogItems;
     // P0 — 同步教程锁卡显示状态
     syncTutorialLock(look);
 
-    renderRealMakeupPreview(look);
+    fallbackToCanvasPreview(look.id);
   };
 
   const updatePreviewImage = (source?: string) => {

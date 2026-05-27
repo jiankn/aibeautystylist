@@ -143,11 +143,27 @@ export async function getUsageState(input: UsageInput): Promise<UsageState> {
   const limit = resolveEffectiveLimit(input);
   const kv = getKv(input.env);
   const key = getKey(input);
+  const ttl = window === 'monthly' ? TTL_MONTH_SECONDS : TTL_DAY_SECONDS;
 
   if (kv) {
     try {
       const raw = await kv.get(key);
-      return toState(Number(raw ?? 0), limit, 'kv', window);
+      const kvCount = Number(raw ?? 0);
+      if (input.env?.DB) {
+        try {
+          const d1Count = await countFromD1(input.env.DB, input);
+          const effectiveCount = Math.max(kvCount, d1Count);
+          if (effectiveCount > kvCount) {
+            await kv.put(key, String(effectiveCount), { expirationTtl: ttl }).catch((error) => {
+              console.warn('[usageLimit] KV count sync failed:', error);
+            });
+          }
+          return toState(effectiveCount, limit, 'kv', window);
+        } catch (error) {
+          console.warn('[usageLimit] D1 count check failed after KV read:', error);
+        }
+      }
+      return toState(kvCount, limit, 'kv', window);
     } catch (error) {
       console.warn('[usageLimit] KV read failed; falling back to D1/memory:', error);
     }
@@ -174,10 +190,20 @@ export async function consumeUsage(input: UsageInput): Promise<UsageState> {
 
   let nextCount: number | undefined;
   let source: UsageState['source'] | undefined;
+  let d1Count: number | undefined;
+
+  if (input.env?.DB) {
+    try {
+      d1Count = await countFromD1(input.env.DB, { ...input, now });
+    } catch (error) {
+      console.warn('[usageLimit] D1 pre-count failed:', error);
+    }
+  }
+
   if (kv) {
     try {
       const current = Number((await kv.get(key)) ?? 0);
-      const kvNextCount = current + 1;
+      const kvNextCount = Math.max(current, d1Count ?? 0) + 1;
       await kv.put(key, String(kvNextCount), { expirationTtl: ttl });
       nextCount = kvNextCount;
       source = 'kv';
@@ -188,7 +214,7 @@ export async function consumeUsage(input: UsageInput): Promise<UsageState> {
 
   if (nextCount === undefined && input.env?.DB) {
     try {
-      nextCount = (await countFromD1(input.env.DB, { ...input, now })) + 1;
+      nextCount = (d1Count ?? await countFromD1(input.env.DB, { ...input, now })) + 1;
       await insertUsageRecord(input.env.DB, input, now);
       return toState(nextCount, limit, 'd1', window);
     } catch (error) {
