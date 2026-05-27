@@ -2,6 +2,7 @@
  * 用户 Repository — D1 CRUD 操作
  */
 import type { RuntimeEnv, D1DatabaseLike } from '../cloudflare/runtime';
+import { deleteJobsByUserId } from './tryOnJobRepository';
 
 // ─── 类型定义 ───────────────────────────────────────────────
 export interface UserRecord {
@@ -241,8 +242,8 @@ export async function deleteUser(
 
   // 1. usage_records
   await db.prepare('DELETE FROM usage_records WHERE user_id = ?').bind(userId).run();
-  // 2. tryon_jobs
-  await db.prepare('DELETE FROM tryon_jobs WHERE user_id = ?').bind(userId).run();
+  // 2. tryon_jobs + stored R2 source photos
+  await deleteJobsByUserId(env, userId);
   // 3. saved_looks (若表不存在则忽略错误)
   try {
     await db.prepare('DELETE FROM saved_looks WHERE user_id = ?').bind(userId).run();

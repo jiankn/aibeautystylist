@@ -1,6 +1,6 @@
 import type { RuntimeEnv } from '../cloudflare/runtime';
 import type { GeneratedTryOnPlan } from '../services/tryOnService';
-import type { StoredUploadRef } from '../services/uploadService';
+import { deleteTryOnPhoto, type StoredUploadRef } from '../services/uploadService';
 
 interface SaveTryOnJobInput {
   env?: RuntimeEnv;
@@ -46,6 +46,7 @@ export async function saveTryOnJob(input: SaveTryOnJobInput): Promise<string | n
 
   const id = crypto.randomUUID();
   const now = input.now ?? new Date();
+  const storedPhotoKey = input.result.meta.fallback ? null : input.upload.key ?? null;
 
   await db
     .prepare(
@@ -72,7 +73,7 @@ export async function saveTryOnJob(input: SaveTryOnJobInput): Promise<string | n
       input.experience,
       input.result.meta.provider,
       input.upload.provider,
-      input.upload.key ?? null,
+      storedPhotoKey,
       JSON.stringify(input.result.diagnosis),
       JSON.stringify(input.result.looks),
       JSON.stringify(input.result.shareCard),
@@ -161,12 +162,104 @@ export async function countJobsByUserId(
 export async function deleteJobsByUserId(
   env: RuntimeEnv | undefined,
   userId: string,
-): Promise<void> {
+): Promise<{ deletedPhotoKeys: string[] }> {
   const db = env?.DB;
-  if (!db) return;
+  if (!db) return { deletedPhotoKeys: [] };
+
+  const photoKeys = await listPhotoKeysByUserId(env, userId);
+  if (photoKeys.length > 0 && !env?.USER_UPLOADS) {
+    throw new Error('USER_UPLOADS binding is required before deleting stored try-on photos.');
+  }
+
+  const deletedPhotoKeys: string[] = [];
+  for (const key of photoKeys) {
+    const deleted = await deleteTryOnPhoto(env, key);
+    if (!deleted) {
+      throw new Error(`Could not delete stored try-on photo: ${key}`);
+    }
+    deletedPhotoKeys.push(key);
+  }
 
   await db
     .prepare('DELETE FROM tryon_jobs WHERE user_id = ?')
     .bind(userId)
     .run();
+
+  return { deletedPhotoKeys };
+}
+
+export async function listPhotoKeysByUserId(
+  env: RuntimeEnv | undefined,
+  userId: string,
+): Promise<string[]> {
+  const db = env?.DB;
+  if (!db) return [];
+
+  const result = await db
+    .prepare(
+      `SELECT photo_r2_key
+       FROM tryon_jobs
+       WHERE user_id = ?
+         AND photo_r2_key IS NOT NULL
+         AND photo_r2_key != ''`,
+    )
+    .bind(userId)
+    .all<{ photo_r2_key: string }>();
+
+  return Array.from(new Set(
+    (result.results ?? [])
+      .map((row) => row.photo_r2_key)
+      .filter((key) => typeof key === 'string' && key.startsWith('tryon/')),
+  ));
+}
+
+export async function cleanupStoredPhotosOlderThan(
+  env: RuntimeEnv | undefined,
+  options: { olderThanHours?: number; limit?: number; dryRun?: boolean } = {},
+): Promise<{ cutoff: string; keys: string[]; deletedPhotoKeys: string[]; dryRun: boolean }> {
+  const db = env?.DB;
+  const olderThanHours = Math.max(options.olderThanHours ?? 24, 1);
+  const limit = Math.min(Math.max(options.limit ?? 100, 1), 500);
+  const cutoff = new Date(Date.now() - olderThanHours * 60 * 60 * 1000).toISOString();
+  const dryRun = options.dryRun === true;
+  if (!db) return { cutoff, keys: [], deletedPhotoKeys: [], dryRun };
+
+  const result = await db
+    .prepare(
+      `SELECT photo_r2_key
+       FROM tryon_jobs
+       WHERE photo_r2_key IS NOT NULL
+         AND photo_r2_key != ''
+         AND created_at <= ?
+       ORDER BY created_at ASC
+       LIMIT ?`,
+    )
+    .bind(cutoff, limit)
+    .all<{ photo_r2_key: string }>();
+
+  const keys = Array.from(new Set(
+    (result.results ?? [])
+      .map((row) => row.photo_r2_key)
+      .filter((key) => typeof key === 'string' && key.startsWith('tryon/')),
+  ));
+
+  if (dryRun || keys.length === 0) {
+    return { cutoff, keys, deletedPhotoKeys: [], dryRun };
+  }
+
+  if (!env?.USER_UPLOADS) {
+    throw new Error('USER_UPLOADS binding is required before deleting stored try-on photos.');
+  }
+
+  const deletedPhotoKeys: string[] = [];
+  for (const key of keys) {
+    const deleted = await deleteTryOnPhoto(env, key);
+    if (!deleted) {
+      throw new Error(`Could not delete stored try-on photo: ${key}`);
+    }
+    await db.prepare('UPDATE tryon_jobs SET photo_r2_key = NULL WHERE photo_r2_key = ?').bind(key).run();
+    deletedPhotoKeys.push(key);
+  }
+
+  return { cutoff, keys, deletedPhotoKeys, dryRun };
 }

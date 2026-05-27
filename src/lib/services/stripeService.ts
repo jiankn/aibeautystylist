@@ -237,7 +237,7 @@ async function handleSubscriptionUpdated(
   const status = data.status as string;
   const metadata = data.metadata as Record<string, string> | undefined;
   const userId = metadata?.user_id;
-  const planId = metadata?.plan_id;
+  let planId = metadata?.plan_id;
   const currentPeriod = data.current_period_start as number | undefined;
   const currentPeriodEnd = data.current_period_end as number | undefined;
   const cancelAtPeriodEnd = data.cancel_at_period_end as boolean;
@@ -246,6 +246,7 @@ async function handleSubscriptionUpdated(
 
   // 查找已有 subscription 或创建新的
   const existing = await findSubscriptionByStripeId(env, stripeSubId);
+  planId = planId ?? existing?.plan_id;
 
   if (existing) {
     await updateSubscriptionStatus(env, stripeSubId, {
@@ -267,10 +268,12 @@ async function handleSubscriptionUpdated(
   }
 
   // 同步用户 tier
-  if (userId) {
+  const effectiveUserId = userId ?? existing?.user_id;
+  if (effectiveUserId) {
     const plan = planId ? await findPlanById(env, planId) : null;
-    const tier = plan?.tier ?? (status === 'active' ? 'pro' : 'free');
-    await updateUserTier(env, userId, tier as 'free' | 'pro' | 'premium');
+    const hasEntitlement = status === 'active' || status === 'trialing';
+    const tier = hasEntitlement && plan ? plan.tier : 'free';
+    await updateUserTier(env, effectiveUserId, tier as 'free' | 'pro' | 'premium');
   }
 }
 
