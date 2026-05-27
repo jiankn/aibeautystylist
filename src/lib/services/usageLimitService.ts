@@ -92,6 +92,21 @@ async function countFromD1(db: D1DatabaseLike, input: UsageInput): Promise<numbe
   return Number(result?.count ?? 0);
 }
 
+async function insertUsageRecord(db: D1DatabaseLike, input: UsageInput, now: Date): Promise<void> {
+  await db
+    .prepare(
+      'INSERT INTO usage_records (id, user_id, ip_address, action_type, created_at) VALUES (?, ?, ?, ?, ?)',
+    )
+    .bind(
+      crypto.randomUUID(),
+      input.userId ?? null,
+      input.ipAddress,
+      input.actionType ?? DEFAULT_ACTION,
+      now.toISOString(),
+    )
+    .run();
+}
+
 /**
  * 解析有效配额：
  * - limit > 0: 直接使用
@@ -130,12 +145,20 @@ export async function getUsageState(input: UsageInput): Promise<UsageState> {
   const key = getKey(input);
 
   if (kv) {
-    const raw = await kv.get(key);
-    return toState(Number(raw ?? 0), limit, 'kv', window);
+    try {
+      const raw = await kv.get(key);
+      return toState(Number(raw ?? 0), limit, 'kv', window);
+    } catch (error) {
+      console.warn('[usageLimit] KV read failed; falling back to D1/memory:', error);
+    }
   }
 
   if (input.env?.DB) {
-    return toState(await countFromD1(input.env.DB, input), limit, 'd1', window);
+    try {
+      return toState(await countFromD1(input.env.DB, input), limit, 'd1', window);
+    } catch (error) {
+      console.warn('[usageLimit] D1 read failed; falling back to memory:', error);
+    }
   }
 
   return toState(memoryUsage.get(key) ?? 0, limit, 'memory', window);
@@ -149,32 +172,41 @@ export async function consumeUsage(input: UsageInput): Promise<UsageState> {
   const key = getKey({ ...input, now });
   const ttl = window === 'monthly' ? TTL_MONTH_SECONDS : TTL_DAY_SECONDS;
 
-  let nextCount: number;
+  let nextCount: number | undefined;
+  let source: UsageState['source'] | undefined;
   if (kv) {
-    const current = Number((await kv.get(key)) ?? 0);
-    nextCount = current + 1;
-    await kv.put(key, String(nextCount), { expirationTtl: ttl });
-  } else if (input.env?.DB) {
-    nextCount = (await countFromD1(input.env.DB, { ...input, now })) + 1;
-  } else {
+    try {
+      const current = Number((await kv.get(key)) ?? 0);
+      const kvNextCount = current + 1;
+      await kv.put(key, String(kvNextCount), { expirationTtl: ttl });
+      nextCount = kvNextCount;
+      source = 'kv';
+    } catch (error) {
+      console.warn('[usageLimit] KV write failed; falling back to D1/memory:', error);
+    }
+  }
+
+  if (nextCount === undefined && input.env?.DB) {
+    try {
+      nextCount = (await countFromD1(input.env.DB, { ...input, now })) + 1;
+      await insertUsageRecord(input.env.DB, input, now);
+      return toState(nextCount, limit, 'd1', window);
+    } catch (error) {
+      console.warn('[usageLimit] D1 write failed; falling back to memory:', error);
+    }
+  }
+
+  if (nextCount === undefined) {
     nextCount = (memoryUsage.get(key) ?? 0) + 1;
     memoryUsage.set(key, nextCount);
+    return toState(nextCount, limit, 'memory', window);
   }
 
   if (input.env?.DB) {
-    await input.env.DB
-      .prepare(
-        'INSERT INTO usage_records (id, user_id, ip_address, action_type, created_at) VALUES (?, ?, ?, ?, ?)',
-      )
-      .bind(
-        crypto.randomUUID(),
-        input.userId ?? null,
-        input.ipAddress,
-        input.actionType ?? DEFAULT_ACTION,
-        now.toISOString(),
-      )
-      .run();
+    await insertUsageRecord(input.env.DB, input, now).catch((error) => {
+      console.warn('[usageLimit] D1 side-record failed after KV write:', error);
+    });
   }
 
-  return toState(nextCount, limit, kv ? 'kv' : input.env?.DB ? 'd1' : 'memory', window);
+  return toState(nextCount, limit, source ?? 'memory', window);
 }
