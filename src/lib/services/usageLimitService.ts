@@ -80,11 +80,13 @@ function getKey(input: UsageInput): string {
 
 async function countFromD1(db: D1DatabaseLike, input: UsageInput): Promise<number> {
   const window = input.window ?? 'daily';
+  const subjectColumn = input.userId ? 'user_id' : 'ip_address';
+  const subjectValue = input.userId ?? input.ipAddress;
   const result = await db
     .prepare(
-      'SELECT COUNT(*) AS count FROM usage_records WHERE ip_address = ? AND action_type = ? AND created_at >= ?',
+      `SELECT COUNT(*) AS count FROM usage_records WHERE ${subjectColumn} = ? AND action_type = ? AND created_at >= ?`,
     )
-    .bind(input.ipAddress, input.actionType ?? DEFAULT_ACTION, periodStartIso(input.now ?? new Date(), window))
+    .bind(subjectValue, input.actionType ?? DEFAULT_ACTION, periodStartIso(input.now ?? new Date(), window))
     .first<{ count: number }>();
 
   return Number(result?.count ?? 0);

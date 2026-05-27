@@ -104,8 +104,8 @@ function getQuota(features: PlanFeatures, feature: 'diagnosis' | 'looks' | 'save
  * Premium: 返回 5 套方案 + 完整教程 + 视频指引
  */
 export function trimResultByTier<T extends {
-  looks?: Array<Record<string, unknown>>;
-  diagnosis?: Record<string, unknown>;
+  looks?: Array<unknown>;
+  diagnosis?: unknown;
 }>(result: T, membership: MembershipInfo): T & { _gated?: GatedInfo } {
   const looksLimit = membership.features.looksLimit;
   const trimmedLooks = result.looks?.slice(0, looksLimit);
@@ -113,10 +113,12 @@ export function trimResultByTier<T extends {
   // 免费用户：教程步骤限制前 3 步
   if (membership.tier === 'free' && trimmedLooks) {
     for (const look of trimmedLooks) {
-      const steps = look.tutorialSteps as Array<Record<string, unknown>> | undefined;
+      if (!look || typeof look !== 'object') continue;
+      const mutableLook = look as Record<string, unknown>;
+      const steps = mutableLook.tutorialSteps as Array<Record<string, unknown>> | undefined;
       if (steps && steps.length > 3) {
-        look.tutorialSteps = steps.slice(0, 3);
-        look._tutorialGated = true;
+        mutableLook.tutorialSteps = steps.slice(0, 3);
+        mutableLook._tutorialGated = true;
       }
     }
   }

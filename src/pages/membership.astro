@@ -58,7 +58,7 @@ const moments = [
 const faqs = [
   {
     question: 'Can I pay right now?',
-    answer: 'Payments are coming very soon. For now, enjoy the full experience for free — we\'ll notify you when billing goes live.',
+    answer: 'Yes. Pro and Premium checkout is available through Stripe. Sign in first, then choose monthly or annual billing to upgrade.',
   },
   {
     question: 'What about my photos and privacy?',
@@ -284,6 +284,9 @@ const faqs = [
           (window as typeof window & {
             aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void };
           }).aiBeautyAnalytics?.track?.('membership_click', { metadata: { planId } });
+          (window as typeof window & {
+            aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void };
+          }).aiBeautyAnalytics?.track?.('checkout_started', { metadata: { planId, billing: currentBilling } });
 
           const originalText = btn.textContent ?? '';
           btn.textContent = 'Loading...';
@@ -343,7 +346,10 @@ const faqs = [
         const banner = document.createElement('div');
         banner.className = 'payment-success-banner';
         banner.innerHTML = '🎉 <strong>Welcome to your Beauty Pass!</strong> Your subscription is now active.';
-        document.querySelector('.plans-hero')?.after(banner);
+        document.querySelector('.pricing-toggle-wrap')?.before(banner);
+        (window as typeof window & {
+          aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void };
+        }).aiBeautyAnalytics?.track?.('checkout_success');
         history.replaceState({}, '', '/membership');
       }
     </script>

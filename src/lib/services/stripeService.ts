@@ -78,14 +78,17 @@ export async function createCheckoutSession(
   // 让本地开发只需填 .dev.vars 即可跑通，无需先 seed D1
   const priceIdFromEnv = (() => {
     if (input.planId === 'pro_monthly') return getRuntimeValue(env, 'STRIPE_PRICE_PRO_MONTHLY');
+    if (input.planId === 'pro_yearly') return getRuntimeValue(env, 'STRIPE_PRICE_PRO_YEARLY');
     if (input.planId === 'premium_monthly') return getRuntimeValue(env, 'STRIPE_PRICE_PREMIUM_MONTHLY');
+    if (input.planId === 'premium_yearly') return getRuntimeValue(env, 'STRIPE_PRICE_PREMIUM_YEARLY');
+    if (input.planId === 'single_occasion') return getRuntimeValue(env, 'STRIPE_PRICE_SINGLE_OCCASION');
     return undefined;
   })();
   const priceId = plan.stripe_price_id || priceIdFromEnv;
   if (!priceId) {
     throw new Error(
       `Missing Stripe price ID for plan "${input.planId}". ` +
-      `Set STRIPE_PRICE_PRO_MONTHLY / STRIPE_PRICE_PREMIUM_MONTHLY in .dev.vars, ` +
+      `Set STRIPE_PRICE_* in .dev.vars, ` +
       `or seed D1 plans.stripe_price_id.`,
     );
   }

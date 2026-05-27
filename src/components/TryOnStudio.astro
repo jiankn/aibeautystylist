@@ -116,7 +116,7 @@ const allLookItems = lookCatalogItems;
           </div>
 
           <p class="tryon-form-meta">
-            <strong>3 free</strong> diagnoses/day · No selfie? Try a sample look on the right.
+            <strong>1 free</strong> diagnosis/day · No selfie? Try a sample look on the right.
           </p>
         </form>
         </div>
@@ -161,7 +161,7 @@ const allLookItems = lookCatalogItems;
           <div class="tryon-result-controls-meta">
             <span class="tryon-result-mode-chip is-real" data-tryon-mode-chip>AI Diagnosis</span>
             <span class="is-hidden" data-remaining-badge>
-              Free diagnoses left today: <strong data-remaining-count>3</strong>/3
+              Free diagnoses left today: <strong data-remaining-count>1</strong>/1
             </span>
           </div>
           <div class="tryon-result-controls-actions">
@@ -1698,7 +1698,7 @@ const allLookItems = lookCatalogItems;
       setStep('input');
       if (photo) setUploadState('ready', 'Ready for AI diagnosis');
       setLive('Daily free quota reached.');
-      alert(result.message || "You've used all 3 free diagnoses today.");
+      alert(result.message || "You've used your free diagnosis today.");
       return;
     }
 

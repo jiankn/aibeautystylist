@@ -93,15 +93,6 @@ export const POST: APIRoute = async (context) => {
     );
   }
 
-  // ─── 上传照片到 R2（如配置）───
-  const upload = hasPhoto && photoBase64
-    ? await storeTryOnPhoto({
-        env: runtimeEnv,
-        photoBase64,
-        ipAddress: ip,
-      })
-    : { provider: 'mock' as const, stored: false };
-
   // ─── 24h 缓存查询（仅对真实 AI 调用，重复点 Re-analyze 不浪费 token）───
   let result;
   let cacheHit = false;
@@ -123,6 +114,15 @@ export const POST: APIRoute = async (context) => {
       cacheHit = true;
     }
   }
+
+  // ─── 上传照片到 R2（如配置）───
+  const upload = hasPhoto && photoBase64 && !cacheHit
+    ? await storeTryOnPhoto({
+        env: runtimeEnv,
+        photoBase64,
+        ipAddress: ip,
+      })
+    : { provider: 'mock' as const, stored: false };
 
   // ─── 缓存未命中 → 调用 AI 服务层 ───
   if (!result) {

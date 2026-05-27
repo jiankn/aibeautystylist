@@ -50,6 +50,11 @@ export interface RuntimeEnv {
   // Stripe
   STRIPE_SECRET_KEY?: string;
   STRIPE_WEBHOOK_SECRET?: string;
+  STRIPE_PRICE_PRO_MONTHLY?: string;
+  STRIPE_PRICE_PRO_YEARLY?: string;
+  STRIPE_PRICE_PREMIUM_MONTHLY?: string;
+  STRIPE_PRICE_PREMIUM_YEARLY?: string;
+  STRIPE_PRICE_SINGLE_OCCASION?: string;
   // Email (Postal HTTP API)
   POSTAL_API_URL?: string;
   POSTAL_API_KEY?: string;

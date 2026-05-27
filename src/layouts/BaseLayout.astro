@@ -183,12 +183,33 @@ const structuredDataItems = structuredData
         const anonymousKey = 'aibeauty_analytics_anonymous_id';
         const attributionKey = 'aibeauty_look_attribution';
 
-        function createId(prefix) {
+        type AnalyticsPayload = {
+          lookSlug?: string;
+          styleSlug?: string;
+          source?: string;
+          position?: string | number;
+          route?: string;
+          referrer?: string;
+          metadata?: Record<string, unknown>;
+          [key: string]: unknown;
+        };
+
+        type AnalyticsWindow = Window & typeof globalThis & {
+          aiBeautyAnalytics?: {
+            track: (name: string, data?: AnalyticsPayload) => void;
+            getAttribution: () => AnalyticsPayload;
+            setAttribution: (input: AnalyticsPayload) => AnalyticsPayload;
+          };
+        };
+
+        const analyticsWindow = window as AnalyticsWindow;
+
+        function createId(prefix: string) {
           const random = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
           return `${prefix}_${random}`;
         }
 
-        function readStorage(storage, key) {
+        function readStorage(storage: Storage, key: string) {
           try {
             return storage.getItem(key);
           } catch {
@@ -196,7 +217,7 @@ const structuredDataItems = structuredData
           }
         }
 
-        function writeStorage(storage, key, value) {
+        function writeStorage(storage: Storage, key: string, value: string) {
           try {
             storage.setItem(key, value);
           } catch {
@@ -204,7 +225,7 @@ const structuredDataItems = structuredData
           }
         }
 
-        function getStableId(storage, key, prefix) {
+        function getStableId(storage: Storage, key: string, prefix: string) {
           const existing = readStorage(storage, key);
           if (existing) return existing;
           const next = createId(prefix);
@@ -212,7 +233,7 @@ const structuredDataItems = structuredData
           return next;
         }
 
-        function cleanAttr(value) {
+        function cleanAttr(value: unknown) {
           return typeof value === 'string' && value.trim() ? value.trim() : undefined;
         }
 
@@ -226,7 +247,7 @@ const structuredDataItems = structuredData
           };
         }
 
-        function readAttributionFromElement(element) {
+        function readAttributionFromElement(element: Element | null) {
           const dataset = element instanceof HTMLElement ? element.dataset : {};
           return {
             lookSlug: cleanAttr(dataset.analyticsLookSlug),
@@ -236,7 +257,7 @@ const structuredDataItems = structuredData
           };
         }
 
-        function getStoredAttribution() {
+        function getStoredAttribution(): AnalyticsPayload {
           try {
             return JSON.parse(readStorage(sessionStorage, attributionKey) || '{}') || {};
           } catch {
@@ -244,7 +265,7 @@ const structuredDataItems = structuredData
           }
         }
 
-        function storeAttribution(input) {
+        function storeAttribution(input: AnalyticsPayload) {
           const previous = getStoredAttribution();
           const next = {
             ...previous,
@@ -256,7 +277,7 @@ const structuredDataItems = structuredData
           return next;
         }
 
-        function normalizePayload(input = {}) {
+        function normalizePayload(input: AnalyticsPayload = {}) {
           const stored = getStoredAttribution();
           const url = readAttributionFromUrl();
           const merged = {
@@ -274,9 +295,9 @@ const structuredDataItems = structuredData
           };
         }
 
-        function trackLookEvent(eventName, input = {}) {
+        function trackLookEvent(eventName: string, input: AnalyticsPayload = {}) {
           const payload = normalizePayload(input);
-          if (!payload.lookSlug && !payload.styleSlug && eventName !== 'membership_click' && eventName !== 'register_success') return;
+          if (!payload.lookSlug && !payload.styleSlug && !['membership_click', 'register_success', 'checkout_started', 'checkout_success'].includes(eventName)) return;
           const body = JSON.stringify({ eventName, ...payload });
           const url = '/api/analytics/look-event';
           if (navigator.sendBeacon) {
@@ -291,7 +312,7 @@ const structuredDataItems = structuredData
           }).catch(() => {});
         }
 
-        window.aiBeautyAnalytics = {
+        analyticsWindow.aiBeautyAnalytics = {
           track: trackLookEvent,
           getAttribution: getStoredAttribution,
           setAttribution: storeAttribution,
