@@ -1,9 +1,13 @@
 import type { APIRoute } from 'astro';
-import { getRuntimeEnv } from '../../../lib/cloudflare/runtime';
 import { getLookScoreReport } from '../../../lib/repositories/lookAnalyticsRepository';
+import { adminForbiddenResponse, requireAdminUser } from '../../../lib/services/adminAccess';
 
 export const GET: APIRoute = async (context) => {
-  const env = getRuntimeEnv(context);
+  const { env, user, ok } = await requireAdminUser(context);
+  if (!ok) {
+    return adminForbiddenResponse(user ? 'forbidden' : 'unauthenticated');
+  }
+
   const url = new URL(context.request.url);
   const days = Number(url.searchParams.get('days') ?? '28');
   const source = url.searchParams.get('source');

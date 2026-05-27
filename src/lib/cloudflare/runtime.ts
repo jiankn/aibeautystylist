@@ -55,6 +55,8 @@ export interface RuntimeEnv {
   STRIPE_PRICE_PREMIUM_MONTHLY?: string;
   STRIPE_PRICE_PREMIUM_YEARLY?: string;
   STRIPE_PRICE_SINGLE_OCCASION?: string;
+  // Admin allowlist: 逗号分隔的管理员邮箱，用于 /admin 与 /api/analytics/look-scores 鉴权
+  ADMIN_EMAILS?: string;
   // Email (Postal HTTP API)
   POSTAL_API_URL?: string;
   POSTAL_API_KEY?: string;

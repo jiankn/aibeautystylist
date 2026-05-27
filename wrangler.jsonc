@@ -44,7 +44,10 @@
     "SMTP_FROM": "noreply@aibeautystylist.com",
     "POSTAL_API_FROM_NAME": "AI Beauty Stylist",
     // ─── 应用对外 URL（用于邮件链接，登录回跳等） ───────────
-    "APP_PUBLIC_URL": "https://aibeautystylist.com"
+    "APP_PUBLIC_URL": "https://aibeautystylist.com",
+    // ─── 管理员白名单（/admin 与 /api/analytics/look-scores） ───
+    // 逗号分隔，多个邮箱：填运营/owner 的 Google 登录邮箱
+    "ADMIN_EMAILS": "jiankn@gmail.com"
     // 通过 wrangler secret put 设置（不要写在此文件中）：
     //   - GEMINI_API_KEY
     //   - GOOGLE_OAUTH_CLIENT_ID

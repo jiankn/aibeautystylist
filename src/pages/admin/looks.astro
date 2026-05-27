@@ -1,0 +1,310 @@
+---
+/**
+ * /admin/looks — Look 转化监控页（仅管理员）
+ *
+ * 鉴权策略：
+ *  - 服务端强校验在 /api/analytics/look-scores（基于 ADMIN_EMAILS）
+ *  - 此页为 noindex，未登录跳 /login，非管理员显示 403 视图
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getRuntimeEnv } from '../../lib/cloudflare/runtime';
+import { getAuthUser } from '../../lib/services/authService';
+import { isAdminUser, getAdminEmails } from '../../lib/services/adminAccess';
+
+const env = getRuntimeEnv(Astro);
+const user = await getAuthUser(env, Astro.request.headers.get('cookie')).catch(() => null);
+const isAdmin = isAdminUser(env, user);
+const adminConfigured = getAdminEmails(env).length > 0;
+---
+
+<BaseLayout title="Look Analytics — Admin" robots="noindex,nofollow">
+  <section class="admin-shell">
+    <div class="container admin-container">
+      <header class="admin-header">
+        <p class="admin-eyebrow">Internal · Admin only</p>
+        <h1>Look Conversion Monitor</h1>
+        <p class="admin-description">
+          Tracks look-level impressions, clicks, uploads, tutorial completion, account actions, and share/saves.
+          Powered by <code>look_analytics_events</code> in D1.
+        </p>
+      </header>
+
+      {!user && (
+        <div class="admin-gate">
+          <h2>Sign in required</h2>
+          <p>This page is restricted to administrators. Please sign in first.</p>
+          <a class="btn" href="/login?next=/admin/looks">Sign in</a>
+        </div>
+      )}
+
+      {user && !isAdmin && (
+        <div class="admin-gate">
+          <h2>403 — Not authorized</h2>
+          <p>
+            You're signed in as <strong>{user.email ?? user.name ?? user.id}</strong>, but your email is not on the
+            admin allowlist.
+          </p>
+          {!adminConfigured && (
+            <p class="admin-note">
+              <strong>Heads up:</strong> <code>ADMIN_EMAILS</code> is not configured in this environment, so no one
+              can access this page. Set it via <code>wrangler.jsonc</code> vars or <code>wrangler secret put</code>.
+            </p>
+          )}
+        </div>
+      )}
+
+      {user && isAdmin && (
+        <div class="admin-content">
+          <form class="admin-filters" data-admin-filters>
+            <label>
+              <span>Window</span>
+              <select name="days">
+                <option value="7">Last 7 days</option>
+                <option value="14">Last 14 days</option>
+                <option value="28" selected>Last 28 days</option>
+                <option value="60">Last 60 days</option>
+                <option value="90">Last 90 days</option>
+              </select>
+            </label>
+            <label>
+              <span>Source</span>
+              <select name="source">
+                <option value="all" selected>All sources</option>
+                <option value="home">home</option>
+                <option value="try-on">try-on</option>
+                <option value="scenario">scenario</option>
+                <option value="style">style</option>
+                <option value="lipstick-shade">lipstick-shade</option>
+                <option value="discover">discover</option>
+              </select>
+            </label>
+            <button type="submit" class="btn btn-secondary">Refresh</button>
+            <span class="admin-status" data-admin-status></span>
+          </form>
+
+          <section class="admin-summary" data-admin-summary aria-live="polite">
+            <article class="admin-stat">
+              <span>Window</span>
+              <strong data-summary-window>—</strong>
+            </article>
+            <article class="admin-stat">
+              <span>Looks tracked</span>
+              <strong data-summary-looks>—</strong>
+            </article>
+            <article class="admin-stat">
+              <span>Total impressions</span>
+              <strong data-summary-impressions>—</strong>
+            </article>
+            <article class="admin-stat">
+              <span>Total clicks</span>
+              <strong data-summary-clicks>—</strong>
+            </article>
+            <article class="admin-stat">
+              <span>Baseline upload rate</span>
+              <strong data-summary-upload>—</strong>
+            </article>
+            <article class="admin-stat">
+              <span>Both candidates</span>
+              <strong data-summary-both>—</strong>
+            </article>
+          </section>
+
+          <section class="admin-table-wrap" aria-labelledby="admin-table-heading">
+            <h2 id="admin-table-heading">Per-look breakdown</h2>
+            <div class="admin-table-scroll">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Look</th>
+                    <th>Source</th>
+                    <th>Reco</th>
+                    <th class="num">Impr.</th>
+                    <th class="num">Clicks</th>
+                    <th class="num">Click %</th>
+                    <th class="num">Uploads</th>
+                    <th class="num">Upload %</th>
+                    <th class="num">Tut. cont %</th>
+                    <th class="num">Acct %</th>
+                    <th class="num">Share/Save %</th>
+                    <th class="num">Score</th>
+                  </tr>
+                </thead>
+                <tbody data-admin-rows>
+                  <tr><td colspan="12" class="admin-empty">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .admin-shell { padding: 2.5rem 0 4rem; }
+  .admin-container { max-width: 1200px; }
+  .admin-eyebrow { letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem; }
+  .admin-header h1 { font-size: 1.9rem; margin: 0 0 0.5rem; }
+  .admin-description { color: #4b5563; max-width: 680px; }
+  .admin-description code { background: #f3f4f6; padding: 0.1rem 0.35rem; border-radius: 0.25rem; font-size: 0.85em; }
+
+  .admin-gate { margin-top: 2rem; padding: 1.5rem; border: 1px solid #fde68a; background: #fffbeb; border-radius: 0.75rem; }
+  .admin-gate h2 { margin: 0 0 0.5rem; font-size: 1.1rem; }
+  .admin-gate .btn { margin-top: 0.75rem; }
+  .admin-note { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed #fcd34d; font-size: 0.9rem; color: #92400e; }
+  .admin-note code { background: rgba(255,255,255,0.6); padding: 0.05rem 0.3rem; border-radius: 0.2rem; }
+
+  .admin-content { margin-top: 1.5rem; }
+
+  .admin-filters {
+    display: flex; flex-wrap: wrap; gap: 1rem; align-items: end;
+    padding: 1rem; border: 1px solid #e5e7eb; background: #f9fafb; border-radius: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .admin-filters label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; color: #374151; }
+  .admin-filters select {
+    padding: 0.45rem 0.65rem; border: 1px solid #d1d5db; border-radius: 0.5rem;
+    background: #fff; font-size: 0.9rem; min-width: 160px;
+  }
+  .admin-status { font-size: 0.85rem; color: #6b7280; }
+
+  .admin-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+  .admin-stat {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 0.65rem; padding: 0.85rem 1rem;
+    display: flex; flex-direction: column; gap: 0.25rem;
+  }
+  .admin-stat span { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; }
+  .admin-stat strong { font-size: 1.25rem; color: #111827; }
+
+  .admin-table-wrap h2 { font-size: 1rem; margin: 0 0 0.6rem; color: #111827; }
+  .admin-table-scroll { overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 0.65rem; }
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 1080px; }
+  .admin-table th, .admin-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #f3f4f6; text-align: left; vertical-align: middle; }
+  .admin-table th { background: #f9fafb; font-weight: 600; color: #374151; position: sticky; top: 0; z-index: 1; }
+  .admin-table td.num, .admin-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .admin-table tbody tr:hover { background: #f9fafb; }
+  .admin-empty { text-align: center; padding: 1.25rem; color: #6b7280; }
+
+  .admin-reco { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .admin-reco.both { background: #dcfce7; color: #166534; }
+  .admin-reco.get-inspired { background: #dbeafe; color: #1d4ed8; }
+  .admin-reco.try-a-style { background: #fef3c7; color: #92400e; }
+  .admin-reco.collect-more-data { background: #f3f4f6; color: #4b5563; }
+</style>
+
+<script>
+  type Metrics = {
+    impressions: number; clicks: number; uploads: number;
+    resultViews: number; tutorialContinues: number;
+    accountActions: number; shareSaves: number;
+    clickRate: number; uploadRate: number;
+    tutorialContinueRate: number; accountActionRate: number;
+    shareSaveRate: number; conversionScore: number;
+  };
+  type Score = Metrics & {
+    lookSlug: string; source: string;
+    eligibleForBoth: boolean;
+    recommendation: 'both' | 'get-inspired' | 'try-a-style' | 'collect-more-data';
+    reasons: string[];
+  };
+  type Report = {
+    days: number; generatedAt: string;
+    baseline: Metrics;
+    minimums: { impressions: number; clicks: number };
+    scores: Score[];
+    bothCandidates: Score[];
+  };
+
+  const filtersForm = document.querySelector<HTMLFormElement>('[data-admin-filters]');
+  const statusEl = document.querySelector<HTMLElement>('[data-admin-status]');
+  const rowsEl = document.querySelector<HTMLElement>('[data-admin-rows]');
+
+  if (filtersForm && rowsEl) {
+    const summary = {
+      window: document.querySelector<HTMLElement>('[data-summary-window]'),
+      looks: document.querySelector<HTMLElement>('[data-summary-looks]'),
+      impressions: document.querySelector<HTMLElement>('[data-summary-impressions]'),
+      clicks: document.querySelector<HTMLElement>('[data-summary-clicks]'),
+      upload: document.querySelector<HTMLElement>('[data-summary-upload]'),
+      both: document.querySelector<HTMLElement>('[data-summary-both]'),
+    };
+
+    const fmtPct = (value: number) => `${(value * 100).toFixed(1)}%`;
+    const fmtInt = (value: number) => value.toLocaleString();
+    const fmtScore = (value: number) => value.toFixed(3);
+    const escapeHtml = (input: string) =>
+      input.replace(/[&<>"']/g, (ch) => {
+        const map: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+        return map[ch] ?? ch;
+      });
+
+    async function load() {
+      const formData = new FormData(filtersForm!);
+      const days = formData.get('days') ?? '28';
+      const source = formData.get('source') ?? 'all';
+      if (statusEl) statusEl.textContent = 'Loading…';
+
+      const url = `/api/analytics/look-scores?days=${encodeURIComponent(String(days))}&source=${encodeURIComponent(String(source))}`;
+      const resp = await fetch(url, { credentials: 'same-origin' });
+
+      if (resp.status === 401) {
+        if (statusEl) statusEl.textContent = 'Session expired. Redirecting to sign-in…';
+        window.location.replace('/login?next=/admin/looks');
+        return;
+      }
+      if (resp.status === 403) {
+        if (statusEl) statusEl.textContent = 'Forbidden. Your account is not on the admin allowlist.';
+        return;
+      }
+      if (!resp.ok) {
+        if (statusEl) statusEl.textContent = `Failed to load (${resp.status}).`;
+        return;
+      }
+
+      const data = (await resp.json()) as Report;
+
+      if (summary.window) summary.window.textContent = `${data.days}d · updated ${new Date(data.generatedAt).toLocaleString()}`;
+      if (summary.looks) summary.looks.textContent = fmtInt(data.scores.length);
+      if (summary.impressions) summary.impressions.textContent = fmtInt(data.baseline.impressions);
+      if (summary.clicks) summary.clicks.textContent = fmtInt(data.baseline.clicks);
+      if (summary.upload) summary.upload.textContent = fmtPct(data.baseline.uploadRate);
+      if (summary.both) summary.both.textContent = fmtInt(data.bothCandidates.length);
+
+      if (data.scores.length === 0) {
+        rowsEl!.innerHTML = '<tr><td colspan="12" class="admin-empty">No events yet in this window.</td></tr>';
+        if (statusEl) statusEl.textContent = '';
+        return;
+      }
+
+      rowsEl!.innerHTML = data.scores.map((score) => {
+        const recoClass = `admin-reco ${score.recommendation}`;
+        return `
+          <tr>
+            <td><strong>${escapeHtml(score.lookSlug)}</strong></td>
+            <td>${escapeHtml(score.source)}</td>
+            <td><span class="${recoClass}">${escapeHtml(score.recommendation)}</span></td>
+            <td class="num">${fmtInt(score.impressions)}</td>
+            <td class="num">${fmtInt(score.clicks)}</td>
+            <td class="num">${fmtPct(score.clickRate)}</td>
+            <td class="num">${fmtInt(score.uploads)}</td>
+            <td class="num">${fmtPct(score.uploadRate)}</td>
+            <td class="num">${fmtPct(score.tutorialContinueRate)}</td>
+            <td class="num">${fmtPct(score.accountActionRate)}</td>
+            <td class="num">${fmtPct(score.shareSaveRate)}</td>
+            <td class="num">${fmtScore(score.conversionScore)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      if (statusEl) statusEl.textContent = `Loaded ${data.scores.length} look(s).`;
+    }
+
+    filtersForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      load();
+    });
+
+    load();
+  }
+</script>
