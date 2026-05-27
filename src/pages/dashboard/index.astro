@@ -1,52 +1,118 @@
 ---
-import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import DashboardShell from '../../layouts/DashboardShell.astro';
 ---
 
-<DashboardLayout
+<DashboardShell
   pageKey="overview"
   pageHeading="Welcome back"
-  pageDescription="Your AI Beauty Stylist account at a glance."
+  pageDescription="Your AI Beauty Stylist account at a glance. Pick up where you left off, or start a new look."
 >
-  <div class="dashboard-overview" data-dashboard-overview>
-    <!-- 顶部 plan + usage 双卡 -->
-    <div class="dashboard-card-grid">
-      <article class="dashboard-card" data-card="plan">
-        <p class="dashboard-card-eyebrow">Your plan</p>
-        <h2 class="dashboard-card-title" data-overview-plan-name>—</h2>
-        <p class="dashboard-card-meta" data-overview-plan-meta>Loading…</p>
-        <div class="dashboard-card-actions">
-          <a href="/dashboard/subscription" class="btn btn-secondary">Manage subscription</a>
-        </div>
-      </article>
-
-      <article class="dashboard-card" data-card="usage">
-        <p class="dashboard-card-eyebrow">Diagnoses left</p>
-        <h2 class="dashboard-card-title">
-          <span data-overview-usage-remaining>—</span>
-          <small data-overview-usage-window></small>
-        </h2>
-        <div class="usage-bar" aria-hidden="true">
-          <span data-overview-usage-bar></span>
-        </div>
-        <p class="dashboard-card-meta" data-overview-usage-meta></p>
-      </article>
-    </div>
-
-    <!-- 最近试妆 -->
-    <section class="dashboard-recent" aria-labelledby="recent-heading">
-      <header class="dashboard-section-head">
-        <h2 id="recent-heading">Recent try-ons</h2>
-        <a href="/dashboard/history" class="dashboard-link">View all →</a>
-      </header>
-      <div class="dashboard-recent-grid" data-overview-recent>
-        <!-- 卡片由 JS 渲染 -->
-        <p class="dashboard-empty" data-overview-empty hidden>
-          No try-ons yet. <a href="/try-on">Try your first look →</a>
-        </p>
+  <!-- ── Hero 右侧：上次诊断预览 + Continue CTA ───────────── -->
+  <div slot="hero-aside" class="db-hero-card" data-hero-card>
+    <p class="db-hero-card-eyebrow" data-hero-card-eyebrow>Pick up where you left off</p>
+    <div class="db-hero-card-row">
+      <div class="db-hero-card-thumb" data-hero-card-thumb>
+        <span>No preview</span>
       </div>
+      <div class="db-hero-card-meta">
+        <strong data-hero-card-title>Start your first session</strong>
+        <small data-hero-card-sub>Try a sample look in under 30 seconds</small>
+      </div>
+    </div>
+    <div class="db-hero-card-actions">
+      <a class="btn" href="/try-on" data-hero-card-cta>Start a try-on</a>
+      <a class="btn btn-secondary" href="/dashboard/history" data-hero-card-link hidden>View history</a>
+    </div>
+  </div>
+
+  <!-- ── Hero actions（标题下方主 CTA）────────────────────── -->
+  <div slot="hero-actions" class="db-hero-actions">
+    <a class="btn" href="/try-on">Try another look</a>
+    <a class="btn btn-secondary" href="/membership">Compare plans</a>
+  </div>
+
+  <!-- ── Stat strip: 4 个指标 ────────────────────────────── -->
+  <div slot="strip" style="display:contents">
+    <article class="db-stat">
+      <p class="db-stat-label">Your plan</p>
+      <p class="db-stat-value" data-stat-plan>—</p>
+      <p class="db-stat-meta" data-stat-plan-meta>Loading…</p>
+    </article>
+
+    <article class="db-stat">
+      <p class="db-stat-label">Diagnoses left</p>
+      <p class="db-stat-value">
+        <span data-stat-usage-remaining>—</span>
+        <small data-stat-usage-window></small>
+      </p>
+      <span class="db-stat-progress" aria-hidden="true">
+        <span class="db-stat-progress-bar" data-stat-usage-bar></span>
+      </span>
+      <p class="db-stat-meta" data-stat-usage-meta></p>
+    </article>
+
+    <article class="db-stat">
+      <p class="db-stat-label">Try-ons total</p>
+      <p class="db-stat-value" data-stat-history-total>—</p>
+      <p class="db-stat-meta" data-stat-history-meta>All time</p>
+    </article>
+
+    <article class="db-stat">
+      <p class="db-stat-label">Next renewal</p>
+      <p class="db-stat-value" data-stat-renewal>—</p>
+      <p class="db-stat-meta" data-stat-renewal-meta>Manage on Stripe portal</p>
+    </article>
+  </div>
+
+  <!-- ── 主列：Recent activity 时间轴 ─────────────────────── -->
+  <section slot="main" class="db-section" aria-labelledby="recent-heading">
+    <header class="db-section-head">
+      <h2 id="recent-heading">Recent activity</h2>
+      <a href="/dashboard/history">View all →</a>
+    </header>
+    <div class="db-timeline" data-recent-timeline>
+      <p class="db-empty" data-recent-empty hidden>
+        No try-ons yet. <a href="/try-on">Try your first look →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── 副列：Suggested next look + Quick actions ────────── -->
+  <div slot="aside">
+    <article class="db-suggest" aria-label="Suggested next look">
+      <p class="db-suggest-eyebrow">Suggested for you</p>
+      <h3 class="db-suggest-title" data-suggest-title>Try a fresh evening look</h3>
+      <p data-suggest-meta>Continue with a new occasion or revisit a saved style. Your AI stylist is ready.</p>
+      <div class="db-hero-card-actions">
+        <a class="btn" href="/try-on">Open Try-On Studio</a>
+      </div>
+    </article>
+
+    <section class="db-section" aria-label="Quick actions">
+      <header class="db-section-head">
+        <h2>Quick actions</h2>
+      </header>
+      <nav class="db-quick">
+        <a class="db-quick-item" href="/dashboard/subscription">
+          Manage subscription
+          <span>Plan · billing · invoices</span>
+        </a>
+        <a class="db-quick-item" href="/dashboard/history">
+          Try-On history
+          <span>All your past sessions</span>
+        </a>
+        <a class="db-quick-item" href="/membership">
+          Upgrade or compare plans
+          <span>Pro · Premium · Single occasion</span>
+        </a>
+        <a class="db-quick-item" href="/dashboard/privacy">
+          Privacy &amp; data controls
+          <span>Delete photos or account</span>
+        </a>
+      </nav>
     </section>
   </div>
-</DashboardLayout>
+</DashboardShell>
 
 <script>
   type RecentJob = {
@@ -83,10 +149,25 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     }
   }
 
+  function escapeHtml(str: string): string {
+    return str.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] ?? c));
+  }
+
   function tierDisplayName(tier: string): string {
     if (tier === 'pro') return 'Beauty Pass Pro';
     if (tier === 'premium') return 'Premium';
     return 'Free Explorer';
+  }
+
+  function firstName(user: OverviewResponse['user']): string {
+    if (user.name && user.name.trim().length > 0) return user.name.trim().split(/\s+/)[0];
+    if (user.email) return user.email.split('@')[0];
+    return 'there';
+  }
+
+  function setText(selector: string, text: string): void {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
   }
 
   async function loadOverview() {
@@ -94,43 +175,76 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     if (!resp.ok) return;
     const data = (await resp.json()) as OverviewResponse;
 
-    // ── Plan 卡 ──
-    const planName = document.querySelector('[data-overview-plan-name]');
-    const planMeta = document.querySelector('[data-overview-plan-meta]');
-    if (planName) {
-      planName.textContent = data.subscription?.planName ?? tierDisplayName(data.user.tier);
-    }
-    if (planMeta) {
-      if (data.subscription) {
-        const renews = formatDate(data.subscription.currentPeriodEnd);
-        planMeta.textContent = data.subscription.cancelAtPeriodEnd
-          ? `Cancels on ${renews}`
-          : `Renews on ${renews}`;
-      } else {
-        planMeta.textContent = 'No paid subscription. Upgrade for more.';
-      }
-    }
+    // ── Hero identity ──
+    setText('.db-hero-title', `Hi, ${firstName(data.user)}`);
+    setText(
+      '[data-db-eyebrow]',
+      data.subscription
+        ? `${data.subscription.planName} · Welcome back`
+        : `${tierDisplayName(data.user.tier)} · Welcome back`,
+    );
 
-    // ── Usage 卡 ──
+    // ── Stat: Plan ──
+    setText('[data-stat-plan]', data.subscription?.planName ?? tierDisplayName(data.user.tier));
+    setText(
+      '[data-stat-plan-meta]',
+      data.subscription
+        ? (data.subscription.cancelAtPeriodEnd ? 'Cancels at period end' : 'Active subscription')
+        : 'Upgrade to unlock more',
+    );
+
+    // ── Stat: Usage ──
     const usage = data.usage.diagnosis;
-    const remainingEl = document.querySelector('[data-overview-usage-remaining]');
-    const windowEl = document.querySelector('[data-overview-usage-window]');
-    const barEl = document.querySelector('[data-overview-usage-bar]') as HTMLElement | null;
-    const metaEl = document.querySelector('[data-overview-usage-meta]');
-    if (remainingEl) remainingEl.textContent = String(usage.remaining);
-    if (windowEl) windowEl.textContent = ` / ${usage.limit} this ${usage.window === 'monthly' ? 'month' : 'day'}`;
+    setText('[data-stat-usage-remaining]', String(usage.remaining));
+    setText('[data-stat-usage-window]', `/ ${usage.limit} this ${usage.window === 'monthly' ? 'month' : 'day'}`);
+    const barEl = document.querySelector('[data-stat-usage-bar]') as HTMLElement | null;
     if (barEl) {
       const pct = usage.limit > 0 ? Math.min(100, Math.round((usage.used / usage.limit) * 100)) : 0;
       barEl.style.width = `${pct}%`;
     }
-    if (metaEl) {
-      metaEl.textContent = `${usage.used} used / ${usage.limit} total · resets ${usage.window === 'monthly' ? 'monthly' : 'daily'}`;
+    setText('[data-stat-usage-meta]', `${usage.used} used · resets ${usage.window === 'monthly' ? 'monthly' : 'daily'}`);
+
+    // ── Stat: Try-ons total ──
+    setText('[data-stat-history-total]', String(data.history.total));
+
+    // ── Stat: Next renewal ──
+    setText(
+      '[data-stat-renewal]',
+      data.subscription?.currentPeriodEnd ? formatDate(data.subscription.currentPeriodEnd) : '—',
+    );
+    setText(
+      '[data-stat-renewal-meta]',
+      data.subscription
+        ? (data.subscription.cancelAtPeriodEnd ? 'Will not renew' : 'Auto-renews on this date')
+        : 'No active subscription',
+    );
+
+    // ── Hero aside: 上次诊断预览 ──
+    const lastJob = data.history.recent[0] ?? null;
+    const thumb = document.querySelector('[data-hero-card-thumb]');
+    const cta = document.querySelector('[data-hero-card-cta]') as HTMLAnchorElement | null;
+    const link = document.querySelector('[data-hero-card-link]');
+    if (lastJob) {
+      setText('[data-hero-card-eyebrow]', 'Pick up where you left off');
+      setText('[data-hero-card-title]', lastJob.primaryLookTitle ?? 'Untitled look');
+      setText('[data-hero-card-sub]', `${lastJob.scenario} · ${formatDate(lastJob.createdAt)}`);
+      if (thumb && lastJob.primaryLookImage) {
+        const t = escapeHtml(lastJob.primaryLookTitle ?? 'Last look');
+        thumb.innerHTML = `<img src="${escapeHtml(lastJob.primaryLookImage)}" alt="${t}" loading="lazy" />`;
+      }
+      if (cta) {
+        cta.textContent = 'Re-run with same scenario';
+        cta.href = `/try-on?scenario=${encodeURIComponent(lastJob.scenario)}`;
+      }
+      link?.removeAttribute('hidden');
+    } else {
+      setText('[data-hero-card-eyebrow]', 'Start your style journey');
     }
 
-    // ── Recent grid ──
-    const grid = document.querySelector('[data-overview-recent]');
-    const empty = document.querySelector('[data-overview-empty]');
-    if (!grid) return;
+    // ── Recent activity timeline ──
+    const timeline = document.querySelector('[data-recent-timeline]');
+    const empty = document.querySelector('[data-recent-empty]');
+    if (!timeline) return;
 
     if (data.history.recent.length === 0) {
       empty?.removeAttribute('hidden');
@@ -140,23 +254,25 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     const html = data.history.recent
       .map((job) => {
         const date = formatDate(job.createdAt);
-        const title = job.primaryLookTitle ?? 'Untitled look';
+        const title = escapeHtml(job.primaryLookTitle ?? 'Untitled look');
+        const scenario = escapeHtml(job.scenario);
         const img = job.primaryLookImage
-          ? `<img src="${job.primaryLookImage}" alt="${title}" loading="lazy" />`
-          : '<span class="recent-card-placeholder">No preview</span>';
+          ? `<img src="${escapeHtml(job.primaryLookImage)}" alt="${title}" loading="lazy" />`
+          : '<span>No preview</span>';
         return `
-          <article class="dashboard-recent-card">
-            <div class="recent-card-media">${img}</div>
-            <div class="recent-card-body">
+          <a class="db-timeline-item" href="/dashboard/history">
+            <div class="db-timeline-thumb">${img}</div>
+            <div class="db-timeline-body">
               <strong>${title}</strong>
-              <small>${job.scenario} · ${date}</small>
+              <small>${scenario} · ${date}</small>
             </div>
-          </article>
+            <span class="db-timeline-arrow" aria-hidden="true">→</span>
+          </a>
         `;
       })
       .join('');
 
-    grid.insertAdjacentHTML('afterbegin', html);
+    timeline.insertAdjacentHTML('afterbegin', html);
   }
 
   loadOverview();
