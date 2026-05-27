@@ -12,7 +12,7 @@ const styleShortcutItems = homeStyleItems.map((style) => ({
 const allLookItems = lookCatalogItems;
 ---
 
-<section class="tool-shell card tryon-shell" data-tryon-shell>
+<section class="tool-shell card tryon-shell" data-tryon-shell data-tryon-current-step="input">
   <!-- 移动端粘性 sub-nav (在结果态内 IntersectionObserver 高亮) -->
   <nav class="tryon-subnav" data-tryon-subnav aria-label="Result sections">
     <div class="tryon-subnav-track">
@@ -548,6 +548,7 @@ const allLookItems = lookCatalogItems;
 
   // ─── DOM 引用 ───
   const form = qs<HTMLFormElement>('[data-tryon-form]');
+  const tryonShell = qs<HTMLElement>('[data-tryon-shell]');
   const photoInput = qs<HTMLInputElement>('[data-photo-input]');
   const uploadIdleCopy = qs<HTMLElement>('[data-upload-idle-copy]');
   const uploadReadyCopy = qs<HTMLElement>('[data-upload-ready-copy]');
@@ -1167,6 +1168,7 @@ const allLookItems = lookCatalogItems;
   };
 
   const setStep = (nextStep: 'input' | 'loading' | 'result') => {
+    tryonShell?.setAttribute('data-tryon-current-step', nextStep);
     steps.forEach((element) => {
       const isNext = element.dataset.tryonStep === nextStep;
       if (isNext) {
@@ -1879,11 +1881,11 @@ const allLookItems = lookCatalogItems;
 
   const showMakeupModal = () => {
     makeupModal?.classList.remove('is-hidden');
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('is-makeup-modal-open');
   };
   const hideMakeupModal = () => {
     makeupModal?.classList.add('is-hidden');
-    document.body.style.overflow = '';
+    document.body.classList.remove('is-makeup-modal-open');
   };
 
   // 关闭按钮
