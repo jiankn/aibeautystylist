@@ -162,22 +162,33 @@ export async function countJobsByUserId(
 export async function deleteJobsByUserId(
   env: RuntimeEnv | undefined,
   userId: string,
-): Promise<{ deletedPhotoKeys: string[] }> {
+): Promise<{ deletedPhotoKeys: string[]; failedPhotoKeys: string[] }> {
   const db = env?.DB;
-  if (!db) return { deletedPhotoKeys: [] };
+  if (!db) return { deletedPhotoKeys: [], failedPhotoKeys: [] };
 
   const photoKeys = await listPhotoKeysByUserId(env, userId);
-  if (photoKeys.length > 0 && !env?.USER_UPLOADS) {
-    throw new Error('USER_UPLOADS binding is required before deleting stored try-on photos.');
-  }
-
   const deletedPhotoKeys: string[] = [];
-  for (const key of photoKeys) {
-    const deleted = await deleteTryOnPhoto(env, key);
-    if (!deleted) {
-      throw new Error(`Could not delete stored try-on photo: ${key}`);
+  const failedPhotoKeys: string[] = [];
+
+  if (photoKeys.length > 0) {
+    if (!env?.USER_UPLOADS) {
+      console.warn('[tryOnJobRepository] USER_UPLOADS binding missing while deleting stored try-on photos.');
+      failedPhotoKeys.push(...photoKeys);
+    } else {
+      for (const key of photoKeys) {
+        try {
+          const deleted = await deleteTryOnPhoto(env, key);
+          if (deleted) {
+            deletedPhotoKeys.push(key);
+          } else {
+            failedPhotoKeys.push(key);
+          }
+        } catch (error) {
+          console.warn('[tryOnJobRepository] R2 delete failed for', key, error);
+          failedPhotoKeys.push(key);
+        }
+      }
     }
-    deletedPhotoKeys.push(key);
   }
 
   await db
@@ -185,7 +196,7 @@ export async function deleteJobsByUserId(
     .bind(userId)
     .run();
 
-  return { deletedPhotoKeys };
+  return { deletedPhotoKeys, failedPhotoKeys };
 }
 
 export async function listPhotoKeysByUserId(

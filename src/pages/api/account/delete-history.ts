@@ -23,9 +23,13 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    const { deletedPhotoKeys } = await deleteJobsByUserId(env, authUser.id);
+    const { deletedPhotoKeys, failedPhotoKeys } = await deleteJobsByUserId(env, authUser.id);
     return new Response(
-      JSON.stringify({ success: true, deletedPhotos: deletedPhotoKeys.length }),
+      JSON.stringify({
+        success: true,
+        deletedPhotos: deletedPhotoKeys.length,
+        failedPhotos: failedPhotoKeys.length,
+      }),
       { status: 200, headers: { 'Content-Type': 'application/json' } },
     );
   } catch (error) {
