@@ -21,7 +21,7 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
     </div>
     <div class="db-hero-card-actions" data-subscription-actions>
       <button class="btn" type="button" data-action="portal">Manage on Stripe</button>
-      <a class="btn btn-secondary" href="/membership">Compare plans</a>
+      <a class="btn btn-secondary" href="/membership?from=dashboard_subscription_hero">Compare plans</a>
     </div>
   </div>
 
@@ -54,7 +54,7 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
     <section class="db-section" aria-labelledby="sub-detail-heading">
       <header class="db-section-head">
         <h2 id="sub-detail-heading">Subscription details</h2>
-        <a href="/membership">Compare plans →</a>
+        <a href="/membership?from=dashboard_subscription_detail">Compare plans →</a>
       </header>
 
       <ul class="subscription-status-list" data-subscription-status hidden>
@@ -86,7 +86,7 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
       <h3 class="db-suggest-title">Unlock the full Beauty Pass</h3>
       <p>Unlimited diagnoses · HD makeup previews · Saved looks library · Full step-by-step tutorials.</p>
       <div class="db-hero-card-actions">
-        <a class="btn" href="/membership">View plans</a>
+        <a class="btn" href="/membership?from=dashboard_subscription_upsell">View plans</a>
       </div>
     </article>
   </div>

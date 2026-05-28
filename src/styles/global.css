@@ -3101,6 +3101,142 @@ body.is-makeup-modal-open {
   }
 }
 
+/* P1 — 结果页底部升级对比卡（仅免费用户显示） */
+.tryon-upgrade-compare {
+  margin-top: 32px;
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #fffaf7 0%, #ffeef1 100%);
+  border: 1px solid rgba(176, 127, 134, 0.18);
+}
+
+.tryon-upgrade-compare-head {
+  display: grid;
+  gap: 6px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.tryon-upgrade-compare-head h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tryon-upgrade-compare-sub {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.tryon-upgrade-compare-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tryon-upgrade-tier {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  border: 1px solid rgba(176, 127, 134, 0.16);
+  position: relative;
+}
+
+.tryon-upgrade-tier.is-recommended {
+  border-color: var(--accent);
+  box-shadow: 0 12px 32px rgba(176, 127, 134, 0.18);
+  transform: translateY(-4px);
+}
+
+.tryon-upgrade-tier header {
+  display: grid;
+  gap: 8px;
+}
+
+.tryon-upgrade-tier header strong {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tryon-upgrade-tier header strong span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-left: 2px;
+}
+
+.tryon-upgrade-pill-pro {
+  background: var(--accent);
+  color: #fff;
+  width: fit-content;
+}
+
+.tryon-upgrade-pill-premium {
+  background: #2c2c2c;
+  color: #fff;
+  width: fit-content;
+}
+
+.tryon-upgrade-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  flex: 1;
+}
+
+.tryon-upgrade-list li {
+  position: relative;
+  padding-left: 24px;
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.tryon-upgrade-list li::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 700;
+}
+
+.tryon-upgrade-list li.is-included::before {
+  content: "✓";
+  color: #2a9d6f;
+}
+
+.tryon-upgrade-list li.is-locked::before {
+  content: "✕";
+  color: #c66;
+}
+
+.tryon-upgrade-list li.is-locked {
+  color: var(--muted);
+}
+
+.tryon-upgrade-cta {
+  width: 100%;
+  text-align: center;
+  margin-top: auto;
+}
+
+@media (max-width: 720px) {
+  .tryon-upgrade-compare-grid {
+    grid-template-columns: 1fr;
+  }
+  .tryon-upgrade-tier.is-recommended {
+    transform: none;
+    order: -1;
+  }
+}
+
 /* P0 — 教程被裁锁卡（免费用户教程被裁到 3 步时显示） */
 .tryon-tutorial-lock {
   display: flex;

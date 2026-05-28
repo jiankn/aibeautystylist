@@ -82,7 +82,7 @@ const structuredDataItems = structuredData
             <a href="/try-on">Try On</a>
             <a href="/tutorial">Tutorials</a>
             <a href="/tools/shade-finder">Beauty Kit</a>
-            <a href="/membership">Membership</a>
+            <a href="/membership?from=nav_top">Membership</a>
           </nav>
           <UserAvatar />
           <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
@@ -124,7 +124,7 @@ const structuredDataItems = structuredData
                 <li><a href="/makeup-guides">Makeup Guides</a></li>
                 <li><a href="/lipstick-shades">Lipstick Shades</a></li>
                 <li><a href="/tutorial">Tutorials</a></li>
-                <li><a href="/membership">Membership</a></li>
+                <li><a href="/membership?from=nav_footer">Membership</a></li>
               </ul>
             </div>
             <div>
@@ -339,7 +339,15 @@ const structuredDataItems = structuredData
           if (link instanceof HTMLAnchorElement) {
             const href = link.getAttribute('href') || '';
             if (href.startsWith('/membership') || href.includes('/membership?')) {
-              trackLookEvent('membership_click');
+              // P1 — 透传 ?from= 作为 source 便于 analytics 区分入口
+              let source: string | undefined;
+              try {
+                const url = new URL(href, window.location.origin);
+                source = url.searchParams.get('from') || undefined;
+              } catch {
+                source = undefined;
+              }
+              trackLookEvent('membership_click', source ? { source } : {});
             }
           }
         });

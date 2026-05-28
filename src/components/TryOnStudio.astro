@@ -190,7 +190,7 @@ const allLookItems = lookCatalogItems;
             <span data-tryon-gated-detail>You're seeing 2 of 3 looks and the first 3 tutorial steps. Upgrade to see everything.</span>
             <ul class="tryon-gated-features is-hidden" data-tryon-gated-features aria-label="Locked features"></ul>
           </div>
-          <a class="btn" data-tryon-gated-cta href="/membership">Upgrade to Pro</a>
+          <a class="btn" data-tryon-gated-cta href="/membership?from=tryon_gated_banner">Upgrade to Pro</a>
         </aside>
 
         <!-- 1. Diagnosis 顶置整宽 -->
@@ -250,7 +250,7 @@ const allLookItems = lookCatalogItems;
               <span class="eyebrow">Choose your look</span>
               <h3>Pick the look you want to try first</h3>
             </div>
-            <a class="btn btn-secondary" href="/membership">Unlock Full HD Try-On</a>
+            <a class="btn btn-secondary" href="/membership?from=tryon_looks_cta">Unlock Full HD Try-On</a>
           </div>
           <div class="tryon-looks look-card-grid" data-look-list></div>
           <!-- P2.10: 横滑进度指示（移动端） -->
@@ -281,7 +281,7 @@ const allLookItems = lookCatalogItems;
               <strong data-tutorial-lock-title>The full tutorial is more steps</strong>
               <p data-tutorial-lock-detail>Pro unlocks every step with error alerts, self-check points, and curated product picks for each.</p>
             </div>
-            <a class="btn" data-tutorial-lock-cta href="/membership">Unlock Full Tutorial</a>
+            <a class="btn" data-tutorial-lock-cta href="/membership?from=tutorial_lock">Unlock Full Tutorial</a>
           </aside>
 
           <details class="tryon-kit-details" data-tryon-kit>
@@ -342,6 +342,60 @@ const allLookItems = lookCatalogItems;
               <img data-share-card-image alt="Your share card preview" />
             </div>
           </article>
+        </section>
+
+        <!-- P1 — 结果页底部升级对比卡（仅免费用户显示）：
+             用户已经看完结果，这里给出"你现在 vs Pro vs Premium"明确对比，
+             降低升级决策摩擦，是 free → pro 的主转化点。 -->
+        <section class="tryon-upgrade-compare is-hidden" data-tryon-upgrade-compare aria-labelledby="tryon-upgrade-compare-title">
+          <div class="tryon-upgrade-compare-head">
+            <span class="eyebrow">See what you're missing</span>
+            <h3 id="tryon-upgrade-compare-title">Your free preview vs full plan</h3>
+            <p class="tryon-upgrade-compare-sub">Upgrade once and unlock every look, every tutorial step, and AI makeup previews on your own face.</p>
+          </div>
+          <div class="tryon-upgrade-compare-grid">
+            <article class="tryon-upgrade-tier tryon-upgrade-tier-free" aria-label="Your current free preview">
+              <header>
+                <span class="pill">You now · Free</span>
+                <strong>$0</strong>
+              </header>
+              <ul class="tryon-upgrade-list">
+                <li class="is-included"><span data-tryon-compare-free-looks>2 looks</span></li>
+                <li class="is-included">First 3 tutorial steps</li>
+                <li class="is-locked">No HD makeup preview</li>
+                <li class="is-locked">No saved looks</li>
+                <li class="is-locked">No history</li>
+              </ul>
+            </article>
+            <article class="tryon-upgrade-tier tryon-upgrade-tier-pro is-recommended" aria-label="Pro plan benefits">
+              <header>
+                <span class="pill tryon-upgrade-pill-pro">Recommended · Pro</span>
+                <strong>$19.99<span>/mo</span></strong>
+              </header>
+              <ul class="tryon-upgrade-list">
+                <li class="is-included">3 looks per diagnosis</li>
+                <li class="is-included">Full tutorial — every step</li>
+                <li class="is-included">30 AI makeup previews / month</li>
+                <li class="is-included">10 saved looks · 30-day history</li>
+                <li class="is-included">Curated beauty kit picks</li>
+              </ul>
+              <a class="btn tryon-upgrade-cta" data-tryon-upgrade-cta-pro href="/membership?from=tryon_compare_pro">Upgrade to Pro</a>
+            </article>
+            <article class="tryon-upgrade-tier tryon-upgrade-tier-premium" aria-label="Premium plan benefits">
+              <header>
+                <span class="pill tryon-upgrade-pill-premium">Premium</span>
+                <strong>$39.99<span>/mo</span></strong>
+              </header>
+              <ul class="tryon-upgrade-list">
+                <li class="is-included">5 looks per diagnosis</li>
+                <li class="is-included">Unlimited diagnoses</li>
+                <li class="is-included">HD makeup previews</li>
+                <li class="is-included">Unlimited saved looks · forever history</li>
+                <li class="is-included">Budget kit picks + seasonal updates</li>
+              </ul>
+              <a class="btn btn-secondary tryon-upgrade-cta" data-tryon-upgrade-cta-premium href="/membership?from=tryon_compare_premium">See Premium</a>
+            </article>
+          </div>
         </section>
       </div>
     </section>
@@ -610,6 +664,11 @@ const allLookItems = lookCatalogItems;
   const gatedDetail = qs<HTMLElement>('[data-tryon-gated-detail]');
   const gatedCta = qs<HTMLAnchorElement>('[data-tryon-gated-cta]');
   const gatedFeaturesList = qs<HTMLUListElement>('[data-tryon-gated-features]');
+  // P1 — 升级对比卡（结果页底部，仅免费用户）
+  const upgradeCompare = qs<HTMLElement>('[data-tryon-upgrade-compare]');
+  const upgradeCompareFreeLooks = qs<HTMLElement>('[data-tryon-compare-free-looks]');
+  const upgradeCompareCtaPro = qs<HTMLAnchorElement>('[data-tryon-upgrade-cta-pro]');
+  const upgradeCompareCtaPremium = qs<HTMLAnchorElement>('[data-tryon-upgrade-cta-premium]');
   const tutorialLock = qs<HTMLElement>('[data-tryon-tutorial-lock]');
   const tutorialLockTitle = qs<HTMLElement>('[data-tutorial-lock-title]');
   const tutorialLockDetail = qs<HTMLElement>('[data-tutorial-lock-detail]');
@@ -1574,7 +1633,29 @@ const allLookItems = lookCatalogItems;
     if (!gated || !gated.isFreeTier) {
       gatedBanner?.classList.add('is-hidden');
       tutorialLock?.classList.add('is-hidden');
+      upgradeCompare?.classList.add('is-hidden');
       return;
+    }
+
+    // P1 — 结果页底部升级对比卡（仅免费用户）
+    if (upgradeCompare) {
+      upgradeCompare.classList.remove('is-hidden');
+      const lookCount = currentLooks.length;
+      if (upgradeCompareFreeLooks) {
+        upgradeCompareFreeLooks.textContent = `${lookCount || 2} look${(lookCount || 2) > 1 ? 's' : ''}`;
+      }
+      if (upgradeCompareCtaPro && !upgradeCompareCtaPro.dataset.bound) {
+        upgradeCompareCtaPro.dataset.bound = '1';
+        upgradeCompareCtaPro.addEventListener('click', () => {
+          trackLookEvent('upgrade_click', { source: 'tryon_compare_pro' });
+        });
+      }
+      if (upgradeCompareCtaPremium && !upgradeCompareCtaPremium.dataset.bound) {
+        upgradeCompareCtaPremium.dataset.bound = '1';
+        upgradeCompareCtaPremium.addEventListener('click', () => {
+          trackLookEvent('upgrade_click', { source: 'tryon_compare_premium' });
+        });
+      }
     }
 
     // 顶部升级横幅（仅免费用户）

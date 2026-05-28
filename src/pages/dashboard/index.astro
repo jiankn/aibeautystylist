@@ -28,7 +28,7 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
   <!-- ── Hero actions（标题下方主 CTA）────────────────────── -->
   <div slot="hero-actions" class="db-hero-actions">
     <a class="btn" href="/try-on">Try another look</a>
-    <a class="btn btn-secondary" href="/membership">Compare plans</a>
+    <a class="btn btn-secondary" href="/membership?from=dashboard_hero">Compare plans</a>
   </div>
 
   <!-- ── Stat strip: 4 个指标 ────────────────────────────── -->
@@ -101,7 +101,7 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
           Try-On history
           <span>All your past sessions</span>
         </a>
-        <a class="db-quick-item" href="/membership">
+        <a class="db-quick-item" href="/membership?from=dashboard_quick_action">
           Upgrade or compare plans
           <span>Pro · Premium · Single occasion</span>
         </a>
