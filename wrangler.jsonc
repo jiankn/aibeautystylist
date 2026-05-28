@@ -3,8 +3,13 @@
   "name": "aibeautystylist",
   "compatibility_date": "2026-04-20",
   "compatibility_flags": ["nodejs_compat"],
+  "main": "./src/worker.ts",
   "assets": {
     "directory": "./dist"
+  },
+  // Cron Triggers：每小时运行一次 R2 过期照片清理（>24h）
+  "triggers": {
+    "crons": ["0 * * * *"]
   },
   "kv_namespaces": [
     {

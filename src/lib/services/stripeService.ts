@@ -192,13 +192,47 @@ export async function verifyWebhookSignature(
 }
 
 // ─── Webhook 事件处理 ───────────────────────────────────────
+/**
+ * 记录已处理的 Stripe event id，幂等防重放。
+ * 返回 true 表示首次处理，false 表示已处理过应跳过。
+ */
+async function reserveStripeEvent(
+  env: RuntimeEnv | undefined,
+  eventId: string,
+  type: string,
+): Promise<boolean> {
+  const db = env?.DB;
+  if (!db || !eventId) return true;
+  try {
+    const result = await db
+      .prepare('INSERT OR IGNORE INTO stripe_events (event_id, type) VALUES (?, ?)')
+      .bind(eventId, type)
+      .run();
+    const meta = (result as { meta?: { changes?: number } }).meta;
+    if (meta && typeof meta.changes === 'number' && meta.changes === 0) {
+      console.log(`[Stripe Webhook] Skipping duplicate event: ${eventId}`);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.warn('[Stripe Webhook] reserveStripeEvent failed; processing without idempotency guard:', error);
+    return true;
+  }
+}
+
 export async function handleWebhookEvent(
   env: RuntimeEnv | undefined,
   event: Record<string, unknown>,
 ): Promise<void> {
+  const eventId = event.id as string | undefined;
   const type = event.type as string;
   const data = (event.data as Record<string, unknown>)?.object as Record<string, unknown>;
   if (!data) return;
+
+  if (eventId) {
+    const fresh = await reserveStripeEvent(env, eventId, type);
+    if (!fresh) return;
+  }
 
   console.log(`[Stripe Webhook] Processing: ${type}`);
 
