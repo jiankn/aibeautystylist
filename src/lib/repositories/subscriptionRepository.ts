@@ -110,14 +110,17 @@ export async function findActiveSubscription(
 ): Promise<SubscriptionRecord | null> {
   const db = getDb(env);
   if (!db) return null;
+  const now = new Date().toISOString();
 
   return db
     .prepare(
       `SELECT * FROM subscriptions
-       WHERE user_id = ? AND status IN ('active', 'trialing')
+       WHERE user_id = ?
+         AND status IN ('active', 'trialing')
+         AND (current_period_end IS NULL OR current_period_end > ?)
        ORDER BY created_at DESC`,
     )
-    .bind(userId)
+    .bind(userId, now)
     .first<SubscriptionRecord>();
 }
 

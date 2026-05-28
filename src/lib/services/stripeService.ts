@@ -12,6 +12,7 @@ import {
   updateSubscriptionStatus,
   findSubscriptionByStripeId,
   findPlanById,
+  parsePlanFeatures,
 } from '../repositories/subscriptionRepository';
 
 // ─── Stripe API 配置 ────────────────────────────────────────
@@ -106,17 +107,28 @@ export async function createCheckoutSession(
   }
 
   // 创建 Checkout Session
-  const session = await stripeRequest(apiKey, '/checkout/sessions', {
+  const checkoutMode = plan.interval ? 'subscription' : 'payment';
+  const checkoutParams: Record<string, string> = {
     customer: customerId,
     'line_items[0][price]': priceId,
     'line_items[0][quantity]': '1',
-    mode: 'subscription',
+    mode: checkoutMode,
     success_url: input.successUrl,
     cancel_url: input.cancelUrl,
-    'subscription_data[metadata][user_id]': input.userId,
-    'subscription_data[metadata][plan_id]': input.planId,
+    'metadata[user_id]': input.userId,
+    'metadata[plan_id]': input.planId,
     allow_promotion_codes: 'true',
-  });
+  };
+
+  if (checkoutMode === 'subscription') {
+    checkoutParams['subscription_data[metadata][user_id]'] = input.userId;
+    checkoutParams['subscription_data[metadata][plan_id]'] = input.planId;
+  } else {
+    checkoutParams['payment_intent_data[metadata][user_id]'] = input.userId;
+    checkoutParams['payment_intent_data[metadata][plan_id]'] = input.planId;
+  }
+
+  const session = await stripeRequest(apiKey, '/checkout/sessions', checkoutParams);
 
   return { checkoutUrl: session.url as string };
 }
@@ -197,6 +209,8 @@ export async function handleWebhookEvent(
       // metadata 在 subscription_data 中，需要从 subscription 获取
       if (subscriptionId) {
         await handleSubscriptionCreated(env, subscriptionId);
+      } else {
+        await handleOneTimeCheckoutCompleted(env, data);
       }
       break;
     }
@@ -227,6 +241,41 @@ async function handleSubscriptionCreated(
   // 从 Stripe 获取完整 subscription 信息
   const sub = await stripeRequest(apiKey, `/subscriptions/${stripeSubscriptionId}`, undefined, 'GET');
   await handleSubscriptionUpdated(env, sub);
+}
+
+async function handleOneTimeCheckoutCompleted(
+  env: RuntimeEnv | undefined,
+  data: Record<string, unknown>,
+): Promise<void> {
+  const sessionId = data.id as string;
+  const mode = data.mode as string | undefined;
+  const paymentStatus = data.payment_status as string | undefined;
+  const metadata = data.metadata as Record<string, string> | undefined;
+  const userId = metadata?.user_id;
+  const planId = metadata?.plan_id;
+  if (!sessionId || mode !== 'payment' || !userId || !planId) return;
+  if (paymentStatus && paymentStatus !== 'paid' && paymentStatus !== 'no_payment_required') return;
+
+  const existing = await findSubscriptionByStripeId(env, sessionId);
+  if (existing) return;
+
+  const plan = await findPlanById(env, planId);
+  if (!plan || plan.interval) return;
+
+  const features = parsePlanFeatures(plan);
+  const periodDays = features.historyDays > 0 ? features.historyDays : 30;
+  const periodStart = new Date();
+  const periodEnd = new Date(periodStart.getTime() + periodDays * 24 * 60 * 60 * 1000);
+
+  await createSubscription(env, {
+    userId,
+    planId,
+    stripeSubscriptionId: sessionId,
+    status: 'active',
+    periodStart: periodStart.toISOString(),
+    periodEnd: periodEnd.toISOString(),
+  });
+  await updateUserTier(env, userId, plan.tier);
 }
 
 async function handleSubscriptionUpdated(
