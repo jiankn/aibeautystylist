@@ -16,13 +16,32 @@ export interface ScenarioPage {
     detail: string;
   }>;
   productPriorities: string[];
+  timeRequired: {
+    quick: string;
+    full: string;
+    touchUp: string;
+  };
+  commonMistakes: Array<{
+    mistake: string;
+    fix: string;
+  }>;
+  routine: Array<{
+    label: string;
+    items: string[];
+  }>;
+  faqs: Array<{
+    question: string;
+    answer: string;
+  }>;
   relatedLinks: Array<{
     label: string;
     href: string;
   }>;
 }
 
-export const scenarioPages: ScenarioPage[] = [
+type ScenarioPageBase = Omit<ScenarioPage, 'timeRequired' | 'commonMistakes' | 'routine' | 'faqs'>;
+
+const baseScenarioPages: ScenarioPageBase[] = [
   {
     slug: 'office-makeup',
     title: 'Office Makeup Try-On Guide',
@@ -384,3 +403,261 @@ export const scenarioPages: ScenarioPage[] = [
     ],
   },
 ];
+
+type ScenarioPageEnrichment = Pick<ScenarioPage, 'timeRequired' | 'commonMistakes' | 'routine' | 'faqs'>;
+
+const scenarioEnrichmentBySlug: Record<string, ScenarioPageEnrichment> = {
+  'office-makeup': {
+    timeRequired: {
+      quick: '5-7 minutes for concealer, brows, lashes, cheek color, and lip.',
+      full: '12-15 minutes when you include skin prep, base correction, and light setting.',
+      touchUp: '60 seconds: blot the center of the face, refresh lip, and brush brows back into place.',
+    },
+    commonMistakes: [
+      { mistake: 'Using a full glam base to look more professional.', fix: 'Keep coverage thin and correct only tired-looking shadows so skin still moves in daylight.' },
+      { mistake: 'Choosing beige nude lipstick that erases the mouth on video calls.', fix: 'Use muted rose, rose-brown, or soft brick one step deeper than your bare lip.' },
+      { mistake: 'Skipping brows because the eye makeup is minimal.', fix: 'Add brow structure first; it frames the face more quietly than extra eyeshadow.' },
+    ],
+    routine: [
+      { label: 'Before work', items: ['Moisturize and let sunscreen settle before base.', 'Spot-correct under-eye, nose wings, and mouth corners.', 'Choose one lip-cheek color family before applying blush.'] },
+      { label: 'Day-of touch-up', items: ['Blot before powder so the base does not cake.', 'Reapply lip from the center outward for a softer office edge.', 'Check the face under the same light used for calls.'] },
+    ],
+    faqs: [
+      { question: 'What is the safest office makeup color family?', answer: 'Muted rose, rose-brown, taupe, and soft brown usually look polished without becoming distracting in workplace light.' },
+      { question: 'Should office makeup be matte or dewy?', answer: 'Use a satin finish: controlled shine through the T-zone with a little freshness on the cheeks so the face does not look flat.' },
+    ],
+  },
+  'interview-makeup': {
+    timeRequired: {
+      quick: '7-10 minutes if you focus on under-eye correction, brows, lashes, blush, and lip.',
+      full: '18-22 minutes for skin prep, balanced base, soft eye structure, and camera checks.',
+      touchUp: '2 minutes before the interview: powder shine, clean lip edges, and comb brows.',
+    },
+    commonMistakes: [
+      { mistake: 'Trying a new statement look on the interview day.', fix: 'Use familiar formulas and add confidence through cleaner placement, not stronger color.' },
+      { mistake: 'Applying too much shimmer near the eyes.', fix: 'Use matte taupe or soft brown to create definition that reads calm on camera.' },
+      { mistake: 'Leaving the lip too pale under webcam exposure.', fix: 'Choose rose-brown or muted nude with enough depth to define the mouth while speaking.' },
+    ],
+    routine: [
+      { label: 'Night before', items: ['Lay out only the products you know wear well.', 'Avoid new exfoliants or masks that may cause redness.', 'Test the lip color in the lighting where the interview will happen.'] },
+      { label: 'Interview day', items: ['Start earlier than usual so base layers can settle.', 'Take one phone photo or camera preview before adding more product.', 'Keep blotting paper and lip color nearby for the final check.'] },
+    ],
+    faqs: [
+      { question: 'Is red lipstick okay for an interview?', answer: 'A red can work in creative settings, but muted rose, rose-brown, or soft nude is safer when you want the conversation to stay on your answers.' },
+      { question: 'How much eye makeup is best for an interview?', answer: 'Use enough brow, lash-root, and socket definition for clarity, but avoid smoky depth that changes your expression.' },
+    ],
+  },
+  'date-night-makeup': {
+    timeRequired: {
+      quick: '8-10 minutes for breathable base, blush, lashes, soft lip, and highlight.',
+      full: '20-25 minutes when adding outer-corner depth, perfected skin, and longer-wear lip prep.',
+      touchUp: '90 seconds: soften lip edges, tap blush back high on the cheek, and remove excess shine.',
+    },
+    commonMistakes: [
+      { mistake: 'Making the lip and cheek unrelated.', fix: 'Pick the lip first, then choose blush from the same rose, berry, peach, or mauve family.' },
+      { mistake: 'Over-highlighting for candlelight.', fix: 'Keep glow small and smooth on cheekbones rather than across texture or pores.' },
+      { mistake: 'Using a hard lip line for a soft date look.', fix: 'Blur the outer edge with a fingertip or brush while keeping color concentrated at the center.' },
+    ],
+    routine: [
+      { label: 'Before the date', items: ['Prep lips early with balm, then blot before color.', 'Apply base in thin layers so skin looks close-up friendly.', 'Check blush placement from conversational distance, not just close mirror distance.'] },
+      { label: 'During the date', items: ['Carry the lip product rather than the whole kit.', 'Press, do not rub, when blotting around the mouth.', 'Refresh only the lip center if you want the look to stay soft.'] },
+    ],
+    faqs: [
+      { question: 'What makeup looks best for a dinner date?', answer: 'Soft skin, lifted blush, clean lashes, and a lip-cheek color family with slightly more depth than daytime makeup usually works best.' },
+      { question: 'Should date-night makeup be glossy?', answer: 'Gloss can look fresh, but satin or balm textures are easier to maintain if you want the lip to survive food and drinks.' },
+    ],
+  },
+  'bridal-makeup': {
+    timeRequired: {
+      quick: '25-30 minutes only for a simplified civil ceremony or trial refresh.',
+      full: '60-90 minutes including skin prep, layered base, eye definition, lashes, lip, and photography checks.',
+      touchUp: '3-5 minutes between ceremony and photos for tears, lip, powder, and cheek balance.',
+    },
+    commonMistakes: [
+      { mistake: 'Choosing a lip that looks pretty in person but disappears in photos.', fix: 'Test the shade under camera exposure and choose rosewood, soft berry, or deeper nude if needed.' },
+      { mistake: 'Adding powder everywhere for longevity.', fix: 'Set only mobile or shiny zones and keep the perimeter flexible so skin still looks alive.' },
+      { mistake: 'Skipping a full wear test.', fix: 'Run a trial with similar lighting, tears, food, and several hours of wear before the event.' },
+    ],
+    routine: [
+      { label: 'Before the wedding', items: ['Do a full trial and photograph it in daylight, indoor light, and flash.', 'Avoid new skincare actives during the final week.', 'Create a touch-up kit with lip, powder, cotton swabs, and lash glue if needed.'] },
+      { label: 'Wedding day', items: ['Give each cream layer time to set before powder.', 'Use waterproof eye products where tears are likely.', 'Touch up lips before portraits, speeches, and evening photos.'] },
+    ],
+    faqs: [
+      { question: 'How do I make bridal makeup last all day?', answer: 'Use thin layers, targeted setting, long-wear eye products, and a planned touch-up kit instead of relying on one heavy layer.' },
+      { question: 'What bridal lip color photographs best?', answer: 'Rosewood, muted berry, balanced rose, and deeper nude shades usually photograph better than very pale beige or clear gloss alone.' },
+    ],
+  },
+  'wedding-guest-makeup': {
+    timeRequired: {
+      quick: '12-15 minutes for base balance, brows, lashes, blush, and a photo-safe lip.',
+      full: '30-40 minutes for long-wear skin, eye shape, outfit color matching, and flash checks.',
+      touchUp: '2 minutes after dinner: blot, refresh lip, and soften any creasing around the nose.',
+    },
+    commonMistakes: [
+      { mistake: 'Matching makeup too literally to the outfit.', fix: 'Echo the outfit temperature while keeping lip and cheek wearable on your skin tone.' },
+      { mistake: 'Using bridal-level shimmer.', fix: 'Choose satin glow or fine highlight so you look polished without competing with the bride.' },
+      { mistake: 'Forgetting flash photography.', fix: 'Avoid SPF-heavy white cast, chunky shimmer, and untested powder before the event.' },
+    ],
+    routine: [
+      { label: 'Before the event', items: ['Test the lip next to the outfit color.', 'Photograph the base with flash if evening photos are likely.', 'Pack blot powder and the exact lip product used.'] },
+      { label: 'At the reception', items: ['Blot before reapplying powder.', 'Refresh lipstick before group photos.', 'Clean under-eye fallout gently instead of layering concealer.'] },
+    ],
+    faqs: [
+      { question: 'Can a wedding guest wear bold lipstick?', answer: 'Yes, if the rest of the look stays polished and the shade supports your outfit rather than becoming the entire focus.' },
+      { question: 'What makeup should wedding guests avoid?', answer: 'Avoid bridal-white shimmer, untested base products, and lip colors that clash strongly with the outfit in photos.' },
+    ],
+  },
+  'zoom-meeting-makeup': {
+    timeRequired: {
+      quick: '4-6 minutes for under-eye correction, brows, lashes, lip, and center-face powder.',
+      full: '10-14 minutes when you add base balance, blush placement, and camera lighting checks.',
+      touchUp: '30-45 seconds before joining: powder shine, deepen lip if needed, and lift brows.',
+    },
+    commonMistakes: [
+      { mistake: 'Applying makeup based only on the mirror.', fix: 'Check the actual webcam preview because cameras flatten color and exaggerate shine.' },
+      { mistake: 'Using pale nude lip color.', fix: 'Choose a lip one step stronger than your bare lip so your mouth stays clear while speaking.' },
+      { mistake: 'Putting shimmer close to the camera.', fix: 'Keep highlight minimal and powder only the center of the face.' },
+    ],
+    routine: [
+      { label: 'Before the call', items: ['Turn on the same light you will use during the meeting.', 'Correct shadows around eyes and mouth before adding blush.', 'Check whether brows and lips are visible in the preview window.'] },
+      { label: 'Between calls', items: ['Blot forehead and nose rather than adding layers.', 'Refresh lip if the camera washes you out.', 'Move closer to soft front light before changing the makeup.'] },
+    ],
+    faqs: [
+      { question: 'Why do I look washed out on Zoom?', answer: 'Webcam exposure reduces contrast, so brows, lash roots, cheeks, and lips often need slightly more structure than they do in person.' },
+      { question: 'Do I need foundation for video calls?', answer: 'Usually no. Targeted concealer, controlled shine, and stronger facial framing matter more than full foundation.' },
+    ],
+  },
+  'everyday-natural-makeup': {
+    timeRequired: {
+      quick: '3-5 minutes with concealer, lip-cheek tint, brows, and mascara.',
+      full: '8-12 minutes when you add skin prep, light setting, and refined placement.',
+      touchUp: '30 seconds: tap balm or tint on lips, blend cheek edges, and brush brows.',
+    },
+    commonMistakes: [
+      { mistake: 'Using too many products for a natural look.', fix: 'Keep the routine to a few high-impact steps and repeat the same placement daily.' },
+      { mistake: 'Covering the whole face because one area is uneven.', fix: 'Spot-correct only the area that needs help and leave good skin bare.' },
+      { mistake: 'Dragging blush too low.', fix: 'Place color higher and softer so the face looks fresh instead of heavy.' },
+    ],
+    routine: [
+      { label: 'Morning', items: ['Start with hydrated skin so sheer products blend quickly.', 'Use one tint to connect lips and cheeks.', 'Stop before the makeup looks finished; natural makeup should still show skin.'] },
+      { label: 'Later in the day', items: ['Refresh tinted balm instead of rebuilding the base.', 'Mist or tap moisturizer on dry patches before adding concealer.', 'Remove mascara smudges before adding more eye product.'] },
+    ],
+    faqs: [
+      { question: 'What are the only products I need for everyday natural makeup?', answer: 'Most people can start with concealer, lip-cheek tint, brow gel or pencil, mascara, and a light powder or mist.' },
+      { question: 'How do I keep natural makeup from looking dull?', answer: 'Use a coordinated lip-cheek color and avoid over-powdering the cheeks so the face keeps dimension.' },
+    ],
+  },
+  'beginner-makeup': {
+    timeRequired: {
+      quick: '5 minutes for a starter routine: concealer, brows, lip-cheek tint, and mascara.',
+      full: '15-20 minutes while learning placement and correcting mistakes slowly.',
+      touchUp: '1 minute: blend edges, clean mascara, and reapply lip-cheek color lightly.',
+    },
+    commonMistakes: [
+      { mistake: 'Buying every product before understanding placement.', fix: 'Master concealer, brows, lip-cheek color, and lashes before adding palettes or contour.' },
+      { mistake: 'Changing the whole routine after one bad try.', fix: 'Repeat the same simple routine for a week and adjust one variable at a time.' },
+      { mistake: 'Using black liner too early.', fix: 'Start with brown mascara or tight lash-root color because it is easier to control.' },
+    ],
+    routine: [
+      { label: 'Practice routine', items: ['Apply makeup when you are not rushed so you can learn your face.', 'Take one photo in daylight to see placement objectively.', 'Write down the product order that gave the cleanest result.'] },
+      { label: 'Day-of routine', items: ['Use only products you have practiced with.', 'Keep cotton swabs nearby for mascara or lip cleanup.', 'Stop at four steps if the result already looks fresher.'] },
+    ],
+    faqs: [
+      { question: 'What makeup should a beginner buy first?', answer: 'Start with concealer, a lip-cheek tint, brow product, mascara, and a sheer powder if you get shiny.' },
+      { question: 'Should beginners learn contour?', answer: 'Not first. Brow shape, base correction, blush placement, and lip balance change the face more predictably.' },
+    ],
+  },
+  'photo-ready-makeup': {
+    timeRequired: {
+      quick: '10-12 minutes for brows, lip, cheek structure, under-eye correction, and powder control.',
+      full: '25-35 minutes including base testing, eye definition, controlled highlight, and camera checks.',
+      touchUp: '2 minutes before photos: blot, re-edge lips, fix under-eye creasing, and check symmetry.',
+    },
+    commonMistakes: [
+      { mistake: 'Using heavy coverage to look better in photos.', fix: 'Keep base thin and add structure with brows, lashes, cheeks, and lip instead.' },
+      { mistake: 'Choosing a lip that disappears under exposure.', fix: 'Pick a shade with enough rosewood, berry, brick, or brown depth for the camera.' },
+      { mistake: 'Highlighting textured areas.', fix: 'Keep highlight fine and narrow on structural high points only.' },
+    ],
+    routine: [
+      { label: 'Before photos', items: ['Test the look with the same camera or phone if possible.', 'Check whether the lip and brows remain visible from a few feet away.', 'Use powder only where shine becomes distracting.'] },
+      { label: 'On set or before shooting', items: ['Blot before every powder touch-up.', 'Reapply lip pencil if the edge fades.', 'Look at a test shot before adding more shimmer or coverage.'] },
+    ],
+    faqs: [
+      { question: 'What makeup makes photos look better?', answer: 'Visible brows, clean lash roots, balanced cheeks, a defined lip, and controlled shine usually matter more than heavy foundation.' },
+      { question: 'How do I avoid flashback?', answer: 'Avoid untested SPF-heavy base, excessive pale powder, and chunky highlight; test with flash before the event if possible.' },
+    ],
+  },
+  'evening-event-makeup': {
+    timeRequired: {
+      quick: '12-15 minutes for outer-eye depth, lip anchor, blush, and shine control.',
+      full: '30-45 minutes for long-wear base, layered eye shape, lip lining, and event lighting checks.',
+      touchUp: '2 minutes: reapply lip, blot center-face shine, and blend any crease near the outer eye.',
+    },
+    commonMistakes: [
+      { mistake: 'Darkening the whole eye for evening impact.', fix: 'Keep depth on the outer third and lash root so the eyes stay lifted.' },
+      { mistake: 'Pairing a cool eye with an orange lip by accident.', fix: 'Choose one color temperature and keep eye, cheek, and lip families connected.' },
+      { mistake: 'Using wide highlight in low light.', fix: 'Use narrow glow and let lip depth create the main event presence.' },
+    ],
+    routine: [
+      { label: 'Before the event', items: ['Decide whether the lip or eye will be the anchor.', 'Prime areas that crease or shine rather than the entire face heavily.', 'Check the look in lower light before adding more dark shadow.'] },
+      { label: 'During the event', items: ['Touch up lipstick before photos and after food.', 'Blot the nose and chin without flattening cheek glow.', 'Use a clean fingertip to soften outer-eye creasing if needed.'] },
+    ],
+    faqs: [
+      { question: 'How do I make evening makeup look elegant, not heavy?', answer: 'Add contrast selectively: outer eye, lash root, lip, and cheekbone. Leave the base thinner than you think.' },
+      { question: 'What lipstick works for evening events?', answer: 'Rosewood, muted berry, soft brick, plum-brown, and satin deep nude shades hold the face well in dim light.' },
+    ],
+  },
+  'mature-skin-makeup': {
+    timeRequired: {
+      quick: '7-10 minutes for hydration, targeted concealer, lifted blush, soft liner, and creamy lip.',
+      full: '20-30 minutes when you include skin prep, thin base layers, brow refinement, and careful setting.',
+      touchUp: '1-2 minutes: press away creasing, add lip moisture, and refresh blush high on the cheek.',
+    },
+    commonMistakes: [
+      { mistake: 'Using matte full coverage to hide texture.', fix: 'Use flexible thin layers and correct only uneven areas so skin looks smoother in motion.' },
+      { mistake: 'Powdering the whole face.', fix: 'Set only crease-prone or shiny zones and leave cheeks softly radiant.' },
+      { mistake: 'Keeping blush too low.', fix: 'Place blush slightly higher and blend upward for a more lifted effect.' },
+    ],
+    routine: [
+      { label: 'Before makeup', items: ['Give moisturizer time to settle before base.', 'Use less foundation than usual and add concealer only where needed.', 'Choose cream or satin textures for cheeks and lips.'] },
+      { label: 'During wear', items: ['Press creasing smooth before adding more product.', 'Refresh lips with creamy color rather than dry matte layers.', 'Use a small brush for powder only where shine distracts.'] },
+    ],
+    faqs: [
+      { question: 'What foundation finish is best for mature skin?', answer: 'Flexible satin or natural finishes usually look smoother than flat matte or very shiny textures.' },
+      { question: 'Should mature skin avoid shimmer?', answer: 'Not completely. Use fine glow on smooth high points and avoid chunky shimmer on textured areas.' },
+    ],
+  },
+  'hooded-eyes-makeup': {
+    timeRequired: {
+      quick: '6-8 minutes for eyes-open mapping, lash-root liner, mascara, blush, and lip.',
+      full: '18-25 minutes for primer, socket placement, outer-corner lift, detail blending, and transfer checks.',
+      touchUp: '1 minute: clean transfer, reinforce the outer third, and curl lashes if needed.',
+    },
+    commonMistakes: [
+      { mistake: 'Following crease placement with eyes closed.', fix: 'Map shadow with eyes open so the structure remains visible.' },
+      { mistake: 'Using thick liner across the whole lid.', fix: 'Keep liner tight at the lash root and lift only the outer third.' },
+      { mistake: 'Putting shimmer across the fold.', fix: 'Concentrate shimmer on the inner or center lid where it will not transfer as easily.' },
+    ],
+    routine: [
+      { label: 'Before applying shadow', items: ['Prime the lid lightly and set only where transfer happens.', 'Look straight ahead and mark the visible socket zone.', 'Use small brushes so color stays controlled.'] },
+      { label: 'After a few hours', items: ['Check for transfer above the fold.', 'Clean smudges before adding more liner.', 'Refresh mascara at the outer lashes only if the eye needs lift.'] },
+    ],
+    faqs: [
+      { question: 'Where should eyeshadow go on hooded eyes?', answer: 'Place transition and depth slightly above the natural fold while looking straight ahead, then keep darker color near the outer lash root.' },
+      { question: 'Is winged liner good for hooded eyes?', answer: 'A small outer lift or tightline is usually easier than a thick wing because it preserves visible lid space.' },
+    ],
+  },
+};
+
+export const scenarioPages: ScenarioPage[] = baseScenarioPages.map((page) => {
+  const enrichment = scenarioEnrichmentBySlug[page.slug];
+
+  if (!enrichment) {
+    throw new Error(`Missing scenario enrichment for ${page.slug}`);
+  }
+
+  return {
+    ...page,
+    ...enrichment,
+  };
+});

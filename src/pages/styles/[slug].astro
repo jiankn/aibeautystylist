@@ -13,7 +13,26 @@ export function getStaticPaths() {
 
 const { page } = Astro.props as { page: StylePage };
 
-const structuredData = {
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Makeup Guides',
+        item: 'https://aibeautystylist.com/makeup-guides/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: page.title,
+        item: `https://aibeautystylist.com/styles/${page.slug}/`,
+      },
+    ],
+  },
+  {
   '@context': 'https://schema.org',
   '@type': 'HowTo',
   name: page.title,
@@ -25,7 +44,24 @@ const structuredData = {
     name: item,
     text: item,
   })),
-};
+  },
+  ...(page.faqs?.length
+    ? [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: page.faqs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: faq.answer,
+            },
+          })),
+        },
+      ]
+    : []),
+];
 ---
 
 <BaseLayout title={`${page.title} | AI Beauty Stylist`} description={page.description} ogImage={page.image} structuredData={structuredData}>
@@ -47,6 +83,18 @@ const structuredData = {
         </div>
       </div>
     </div>
+
+    {(page.longIntro?.length ?? 0) > 0 && (
+      <div class="container top-gap">
+        <article class="card coach-card seo-depth-card">
+          <span class="pill">Guide Notes</span>
+          <h2>How to think about {page.eyebrow.toLowerCase()} makeup</h2>
+          <div class="prose-stack">
+            {page.longIntro.map((item) => <p>{item}</p>)}
+          </div>
+        </article>
+      </div>
+    )}
 
     <div class="container top-gap">
       <article class="card coach-card style-traits-card">
@@ -92,6 +140,65 @@ const structuredData = {
         </ul>
       </article>
     </div>
+
+    {(page.techniqueSections?.length ?? 0) > 0 && (
+      <div class="container grid-cards grid-cards-2 top-gap">
+        {page.techniqueSections.map((section) => (
+          <article class="card coach-card">
+            <span class="pill">Technique</span>
+            <h3>{section.heading}</h3>
+            <p>{section.body}</p>
+          </article>
+        ))}
+      </div>
+    )}
+
+    {(page.productGrades?.length ?? 0) > 0 && (
+      <div class="container top-gap">
+        <article class="card coach-card">
+          <span class="pill">Product Grading</span>
+          <h2>What to buy, skip, or upgrade</h2>
+          <div class="product-grade-grid">
+            {page.productGrades.map((grade) => (
+              <div class="product-grade">
+                <strong>{grade.grade}</strong>
+                <h3>{grade.item}</h3>
+                <p>{grade.why}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      </div>
+    )}
+
+    {(page.personalizationTips?.length ?? 0) > 0 && (
+      <div class="container top-gap">
+        <article class="card coach-card">
+          <span class="pill">Personalize</span>
+          <h2>Adjust it to your own face</h2>
+          <div class="scenario-rule-stack">
+            {page.personalizationTips.map((tip) => (
+              <div class="scenario-rule">
+                <strong>{tip.label}</strong>
+                <p>{tip.detail}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      </div>
+    )}
+
+    {(page.faqs?.length ?? 0) > 0 && (
+      <div class="container grid-cards grid-cards-2 top-gap">
+        {page.faqs.map((faq) => (
+          <article class="card coach-card">
+            <span class="pill">FAQ</span>
+            <h3>{faq.question}</h3>
+            <p>{faq.answer}</p>
+          </article>
+        ))}
+      </div>
+    )}
 
     <div class="container top-gap">
       <article class="card related-guide-card">
@@ -151,6 +258,46 @@ const structuredData = {
   .step-list li::marker {
     color: var(--accent);
     font-weight: 600;
+  }
+
+  .prose-stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  .prose-stack p,
+  .coach-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .product-grade-grid,
+  .scenario-rule-stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  .product-grade {
+    border: 1px solid rgba(62, 39, 39, 0.1);
+    border-radius: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.58);
+  }
+
+  .product-grade strong,
+  .scenario-rule strong {
+    color: var(--accent);
+  }
+
+  .product-grade h3 {
+    margin: 6px 0 8px;
+  }
+
+  .scenario-rule p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    line-height: 1.55;
   }
 
   .related-guide-card {

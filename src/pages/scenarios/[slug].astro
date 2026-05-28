@@ -14,19 +14,51 @@ export function getStaticPaths() {
 const { page } = Astro.props as { page: ScenarioPage };
 const tryOnHref = `/try-on?scenario=${page.tryOnScenario}&look=${page.tryOnLook}`;
 
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: page.title,
-  description: page.description,
-  image: `https://aibeautystylist.com${page.image}`,
-  step: page.steps.map((item, index) => ({
-    '@type': 'HowToStep',
-    position: index + 1,
-    name: item,
-    text: item,
-  })),
-};
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Makeup Guides',
+        item: 'https://aibeautystylist.com/makeup-guides/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: page.title,
+        item: `https://aibeautystylist.com/scenarios/${page.slug}/`,
+      },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: page.title,
+    description: page.description,
+    image: `https://aibeautystylist.com${page.image}`,
+    step: page.steps.map((item, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: item,
+      text: item,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: page.faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  },
+];
 ---
 
 <BaseLayout title={`${page.title} | AI Beauty Stylist`} description={page.description} ogImage={page.image} structuredData={structuredData}>
@@ -47,6 +79,27 @@ const structuredData = {
           <span class="hero-img-label">{page.eyebrow}</span>
         </div>
       </div>
+    </div>
+
+    <div class="container top-gap">
+      <article class="card coach-card">
+        <span class="pill">Time Required</span>
+        <h2>Plan the routine by the time you actually have</h2>
+        <div class="time-grid">
+          <div>
+            <strong>Quick version</strong>
+            <p>{page.timeRequired.quick}</p>
+          </div>
+          <div>
+            <strong>Full routine</strong>
+            <p>{page.timeRequired.full}</p>
+          </div>
+          <div>
+            <strong>Touch-up</strong>
+            <p>{page.timeRequired.touchUp}</p>
+          </div>
+        </div>
+      </article>
     </div>
 
     <div class="container grid-cards grid-cards-2 top-gap">
@@ -97,6 +150,46 @@ const structuredData = {
       </article>
     </div>
 
+    <div class="container grid-cards grid-cards-2 top-gap">
+      <article class="card coach-card">
+        <span class="pill">Fixes</span>
+        <h2>Common mistakes and how to correct them</h2>
+        <div class="scenario-rule-stack">
+          {page.commonMistakes.map((item) => (
+            <div class="scenario-rule">
+              <strong>{item.mistake}</strong>
+              <p>{item.fix}</p>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      <article class="card coach-card">
+        <span class="pill">Routine</span>
+        <h2>Before and day-of routine</h2>
+        <div class="scenario-rule-stack">
+          {page.routine.map((group) => (
+            <div class="scenario-rule">
+              <strong>{group.label}</strong>
+              <ul class="check-list compact">
+                {group.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </article>
+    </div>
+
+    <div class="container grid-cards grid-cards-2 top-gap">
+      {page.faqs.map((faq) => (
+        <article class="card coach-card">
+          <span class="pill">FAQ</span>
+          <h3>{faq.question}</h3>
+          <p>{faq.answer}</p>
+        </article>
+      ))}
+    </div>
+
     <div class="container top-gap">
       <article class="card related-guide-card">
         <span class="pill">Next Step</span>
@@ -120,6 +213,26 @@ const structuredData = {
   .scenario-rule-stack {
     display: grid;
     gap: 14px;
+  }
+
+  .time-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .time-grid div {
+    border: 1px solid rgba(62, 39, 39, 0.1);
+    border-radius: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.58);
+  }
+
+  .time-grid p,
+  .coach-card p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    line-height: 1.6;
   }
 
   .scenario-rule p {
@@ -172,6 +285,10 @@ const structuredData = {
       width: 100%;
       aspect-ratio: 4 / 3;
       border-radius: 16px;
+    }
+
+    .time-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
