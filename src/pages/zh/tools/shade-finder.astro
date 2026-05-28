@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const faqEntities = [
+  { q: '怎么知道自己适合什么口红色号？', a: '先判断肤色冷暖调和肤色深浅，再结合原生唇色和妆容场景。暖皮通常适合蜜桃、砖红、焦糖裸色；冷皮更适合玫瑰、莓果、冷调豆沙；橄榄皮更适合低饱和玫瑰棕和梅子色。' },
+  { q: '粉底色号和口红色号有关吗？', a: '有关。两者都受肤色冷暖调影响。如果粉底偏黄而口红偏冷，或者粉底偏粉而口红偏橘，整体妆容容易显得割裂。' },
+  { q: '这个色号测试需要上传照片吗？', a: '本页面先用问题帮你缩小方向；如果想获得更完整的 AI 妆容诊断，可以再进入 AI 试妆工具上传自拍。' },
+  { q: '亚洲肤色一定是暖皮吗？', a: '不是。亚洲肤色可能是暖调、冷调、中性调或橄榄调，也可能从很浅到很深。不能只因为是亚洲肤色就默认适合同一类口红。' },
+];
+
+const shadeGroups = [
+  { label: '暖调肤色', foundation: '黄调、金调、蜜桃调粉底', lipstick: '蜜桃玫瑰、暖砖红、焦糖裸色', avoid: '蓝调粉、灰紫调裸色' },
+  { label: '冷调肤色', foundation: '粉调、玫瑰调、冷米色粉底', lipstick: '玫瑰粉、莓果色、冷调豆沙', avoid: '过橘珊瑚、黄棕裸色' },
+  { label: '中性肤色', foundation: '中性米色、平衡调粉底', lipstick: '玫瑰棕、柔和红、平衡豆沙', avoid: '过冷或过暖的极端色' },
+  { label: '橄榄肤色', foundation: '低饱和中性、橄榄调或绿金调粉底', lipstick: '灰调玫瑰、梅子色、棕调豆沙', avoid: '荧光粉、奶白粉、纯橘色' },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'AI 口红和粉底色号测试',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    url: 'https://aibeautystylist.com/zh/tools/shade-finder/',
+    description: '中文 AI 色号测试，帮助判断适合你的口红和粉底色号方向。',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntities.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="AI 口红和粉底色号测试｜按冷暖皮找到适合你的颜色"
+  description="免费中文 AI 色号测试。根据冷暖皮、肤色深浅和妆容目标，判断适合你的口红色号和粉底色号方向，减少买错色号。"
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">AI 色号测试</span>
+      <h1>找到适合你的口红和粉底色号，不再只看热门色。</h1>
+      <p>买错口红和粉底，通常不是因为产品差，而是色号方向和你的肤色冷暖调不匹配。先判断你更适合暖调、冷调、中性调还是橄榄调，再选择口红和粉底，会比盲买热门色更可靠。</p>
+      <div class="cta-row">
+        <a class="btn" href="/zh/tools/undertone-quiz/">先判断我的冷暖皮</a>
+        <a class="btn btn-secondary" href="/try-on?locale=zh-CN&from=zh_shade_finder">上传自拍做完整诊断</a>
+      </div>
+    </div>
+
+    <div class="container grid-cards grid-cards-2 top-gap">
+      {shadeGroups.map((group) => (
+        <article class="card coach-card">
+          <span class="pill">{group.label}</span>
+          <h2>{group.lipstick}</h2>
+          <ul class="check-list compact">
+            <li>粉底方向：{group.foundation}</li>
+            <li>口红方向：{group.lipstick}</li>
+            <li>尽量避开：{group.avoid}</li>
+          </ul>
+        </article>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <h2>为什么色号测试要同时看口红和粉底？</h2>
+      <p>粉底决定整张脸的底色，口红决定面部气色。如果粉底和口红分别属于冲突的色调，妆容就容易显脏、显灰或显得脸和脖子分离。冷暖调一致，整体会更自然。</p>
+      <h2>常见问题</h2>
+      <dl class="seo-faq">
+        {faqEntities.map((item) => (
+          <>
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </>
+        ))}
+      </dl>
+      <h2>继续查看</h2>
+      <ul class="seo-link-list">
+        <li><a href="/zh/lipstick-shades/">中文口红色号指南</a></li>
+        <li><a href="/zh/tools/foundation-shade-finder-by-undertone/">按冷暖调找粉底方向</a></li>
+        <li><a href="/zh/makeup-guides/">中文美妆指南</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

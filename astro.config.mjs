@@ -8,7 +8,17 @@ export default defineConfig({
   adapter: cloudflare(),
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/api/'),
+      filter: (page) => {
+        const url = new URL(page);
+        return ![
+          '/api/',
+          '/admin/',
+          '/dashboard/',
+          '/login/',
+          '/forgot-password/',
+          '/reset-password/',
+        ].some((path) => url.pathname.startsWith(path));
+      },
     }),
   ],
   vite: {

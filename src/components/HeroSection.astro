@@ -2,14 +2,18 @@
   <div class="container hero-grid">
     <div class="hero-copy">
       <span class="eyebrow">Your AI Beauty Concierge</span>
-      <h1>Find the look that's truly yours — not someone else's tutorial.</h1>
-      <p class="lead">
+      <h1 data-hero-title>Find the look that's truly yours — not someone else's tutorial.</h1>
+      <p class="lead" data-hero-lead>
         Upload a bare-face selfie. Get AI-powered shade diagnosis, personalized looks, and step-by-step tutorials you can actually follow.
       </p>
       <div class="cta-row">
-        <a class="btn" href="/try-on">Start Your Try-On</a>
+        <a class="btn" href="/try-on" data-hero-primary-cta>Start Your Try-On</a>
         <a class="btn btn-secondary" href="#try-a-style">Explore Styles</a>
       </div>
+      <a class="hero-pro-hook" href="/membership?from=hero_weekly_drop" data-hero-pro-hook hidden>
+        <span>Pro drop</span>
+        <strong>Unlock weekly drop based on your style profile</strong>
+      </a>
       <ul class="hero-trust" aria-label="What you get">
         <li class="hero-trust-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -58,6 +62,30 @@
     </div>
   </div>
 </section>
+
+<script>
+  import { getMyStyle } from '../lib/personalization';
+
+  const myStyle = getMyStyle();
+  if (myStyle) {
+    const title = document.querySelector<HTMLElement>('[data-hero-title]');
+    const lead = document.querySelector<HTMLElement>('[data-hero-lead]');
+    const primaryCta = document.querySelector<HTMLAnchorElement>('[data-hero-primary-cta]');
+    const proHook = document.querySelector<HTMLAnchorElement>('[data-hero-pro-hook]');
+    const tryOnHref = `/try-on?scenario=${encodeURIComponent(myStyle.scenario)}&style=${encodeURIComponent(myStyle.slug)}&look=${encodeURIComponent(myStyle.lookSlug)}&source=hero-my-style`;
+
+    if (title) title.textContent = `Welcome back, ready to try ${myStyle.label} again?`;
+    if (lead) lead.textContent = 'Your saved style profile is ready. Upload a selfie or preview the look direction you already picked.';
+    if (primaryCta) {
+      primaryCta.href = tryOnHref;
+      primaryCta.textContent = `Try ${myStyle.label}`;
+    }
+    if (proHook) {
+      proHook.href = `/membership?from=hero_weekly_drop&style=${encodeURIComponent(myStyle.slug)}`;
+      proHook.hidden = false;
+    }
+  }
+</script>
 
 <style>
   .hero-copy {
@@ -152,6 +180,35 @@
     font-weight: 600;
     color: var(--text);
     letter-spacing: 0.02em;
+  }
+
+  .hero-pro-hook {
+    display: inline-grid;
+    gap: 3px;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border: 1px solid rgba(168, 102, 102, 0.24);
+    border-radius: 16px;
+    background: rgba(255, 248, 241, 0.78);
+    color: var(--text);
+    text-decoration: none;
+    box-shadow: 0 10px 30px rgba(62, 39, 39, 0.06);
+  }
+
+  .hero-pro-hook[hidden] {
+    display: none;
+  }
+
+  .hero-pro-hook span {
+    color: var(--accent-deep);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero-pro-hook strong {
+    font-size: 0.94rem;
   }
 
   @media (max-width: 900px) {

@@ -166,6 +166,32 @@ main {
   background: var(--accent-soft);
 }
 
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 44px;
+  margin-left: 6px;
+  padding: 3px;
+  border: 1px solid rgba(176, 127, 134, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.language-switcher a {
+  min-height: 34px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.language-switcher a.is-active {
+  color: #fff;
+  background: var(--accent);
+}
+
 .section {
   padding: 72px 0;
 }
@@ -1218,6 +1244,12 @@ main {
 
   .nav-links a:hover {
     background: var(--accent-soft);
+  }
+
+  .language-switcher {
+    width: 100%;
+    margin: 8px 0 0;
+    justify-content: flex-start;
   }
 
   .hero-grid,
@@ -2343,6 +2375,30 @@ body.is-makeup-modal-open {
   font-size: 0.72rem;
 }
 
+/* ── Style Drawer 独有样式 ── */
+.style-drawer-filter-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 24px 14px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.style-drawer-filter-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.style-drawer-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-rows: clamp(180px, 20vw, 240px);
+}
+
+.style-drawer-item strong {
+  font-size: 0.85rem;
+  line-height: 1.15;
+}
+
 /* ── 结果态：诊断顶置整宽，Before/After 居中并排，Share Card 后置 ── */
 .tryon-result-controls {
   display: flex;
@@ -2815,6 +2871,15 @@ body.is-makeup-modal-open {
     grid-auto-rows: clamp(210px, 58vw, 260px);
     gap: 10px;
     padding: 0 16px 18px;
+  }
+
+  .style-drawer-filter-tabs {
+    padding: 0 16px 12px;
+  }
+
+  .style-drawer-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: clamp(160px, 42vw, 220px);
   }
 }
 
@@ -4580,6 +4645,14 @@ body.is-makeup-modal-open {
    ============================================================ */
 .db-shell {
   padding: 40px 0 96px;
+  /* Editorial dashboard typography baseline — favour readability over decoration. */
+  --db-ink: #1f140f;
+  --db-ink-soft: #3a2a22;
+  --db-muted: #6b554a;
+  --db-muted-strong: #4f3d33;
+  color: var(--db-ink);
+  font-size: 16px;
+  line-height: 1.55;
   background:
     radial-gradient(1200px 600px at -10% -20%, rgba(255, 230, 218, 0.55), transparent 60%),
     radial-gradient(900px 500px at 110% 0%, rgba(247, 213, 220, 0.45), transparent 60%),
@@ -4694,12 +4767,10 @@ body.is-makeup-modal-open {
 /* ── Page intro ─────────────────────────────────────────── */
 .db-page-description {
   margin: 4px 0 0;
-  max-width: 56ch;
-  font-family: 'Playfair Display', Georgia, serif;
-  font-style: italic;
-  font-size: 1.02rem;
-  line-height: 1.4;
-  color: rgba(60, 36, 26, 0.7);
+  max-width: 60ch;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--db-muted-strong);
 }
 
 .db-hero-actions {
@@ -4733,7 +4804,7 @@ body.is-makeup-modal-open {
 
 .db-hero-card-eyebrow {
   margin: 0;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -4767,8 +4838,8 @@ body.is-makeup-modal-open {
 
 .db-hero-card-meta strong {
   display: block;
-  font-size: 0.96rem;
-  font-weight: 600;
+  font-size: 1.02rem;
+  font-weight: 700;
   line-height: 1.2;
   color: #2a1a14;
 }
@@ -4776,8 +4847,8 @@ body.is-makeup-modal-open {
 .db-hero-card-meta small {
   display: block;
   margin-top: 2px;
-  font-size: 0.78rem;
-  color: rgba(60, 36, 26, 0.65);
+  font-size: 0.88rem;
+  color: var(--db-muted);
 }
 
 .db-hero-card-actions {
@@ -4807,33 +4878,33 @@ body.is-makeup-modal-open {
 
 .db-stat-label {
   margin: 0;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--db-muted-strong);
 }
 
 .db-stat-value {
   margin: 0;
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.5rem;
+  font-size: 1.65rem;
   line-height: 1.1;
   color: #2a1a14;
 }
 
 .db-stat-value small {
   font-family: inherit;
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--db-muted-strong);
   margin-left: 4px;
 }
 
 .db-stat-meta {
   margin: 2px 0 0;
-  font-size: 0.78rem;
-  color: var(--muted);
+  font-size: 0.86rem;
+  color: var(--db-muted);
 }
 
 .db-stat-progress {
@@ -4889,14 +4960,15 @@ body.is-makeup-modal-open {
 .db-section-head h2 {
   margin: 0;
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.2rem;
-  color: #2a1a14;
+  font-size: 1.35rem;
+  color: var(--db-ink);
+  letter-spacing: 0.01em;
 }
 
 .db-section-head a {
   color: var(--accent-deep);
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.92rem;
+  font-weight: 700;
   text-decoration: none;
 }
 
@@ -4947,8 +5019,8 @@ body.is-makeup-modal-open {
 
 .db-timeline-body strong {
   display: block;
-  font-size: 0.94rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   line-height: 1.25;
   color: #2a1a14;
 }
@@ -4956,12 +5028,12 @@ body.is-makeup-modal-open {
 .db-timeline-body small {
   display: block;
   margin-top: 2px;
-  font-size: 0.78rem;
-  color: var(--muted);
+  font-size: 0.88rem;
+  color: var(--db-muted);
 }
 
 .db-timeline-arrow {
-  color: var(--muted);
+  color: var(--db-muted);
   font-size: 1.1rem;
   transition: color 0.18s, transform 0.18s;
 }
@@ -4977,8 +5049,9 @@ body.is-makeup-modal-open {
   border-radius: 14px;
   background: rgba(176, 127, 134, 0.06);
   border: 1px dashed rgba(176, 127, 134, 0.25);
-  color: var(--muted);
-  font-size: 0.9rem;
+  color: var(--db-muted-strong);
+  font-size: 0.95rem;
+  line-height: 1.55;
 }
 
 .db-empty a {
@@ -5000,7 +5073,7 @@ body.is-makeup-modal-open {
 
 .db-suggest-eyebrow {
   margin: 0;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -5010,14 +5083,15 @@ body.is-makeup-modal-open {
 .db-suggest-title {
   margin: 0;
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.1rem;
-  color: #2a1a14;
+  font-size: 1.22rem;
+  color: var(--db-ink);
 }
 
 .db-suggest p {
   margin: 0;
-  color: rgba(60, 36, 26, 0.78);
-  font-size: 0.88rem;
+  color: var(--db-muted-strong);
+  font-size: 0.95rem;
+  line-height: 1.55;
 }
 
 /* ── Quick actions 列表 ───────────────────────────────────── */
@@ -5030,11 +5104,12 @@ body.is-makeup-modal-open {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 12px 12px;
   border-radius: 10px;
   text-decoration: none;
-  color: var(--ink);
-  font-size: 0.92rem;
+  color: var(--db-ink);
+  font-size: 1rem;
+  font-weight: 600;
   transition: background 0.18s, color 0.18s;
 }
 
@@ -5044,8 +5119,9 @@ body.is-makeup-modal-open {
 }
 
 .db-quick-item span {
-  color: var(--muted);
-  font-size: 0.78rem;
+  color: var(--db-muted);
+  font-size: 0.86rem;
+  font-weight: 400;
 }
 
 /* ── 响应式 ───────────────────────────────────────────────── */

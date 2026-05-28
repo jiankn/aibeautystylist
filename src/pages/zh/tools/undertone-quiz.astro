@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const checklist = [
+  { label: '看血管颜色', detail: '自然光下，手腕内侧血管偏绿常见于暖调；偏蓝紫更接近冷调；蓝绿都有可能是中性调。' },
+  { label: '看金银首饰', detail: '金色更衬肤色通常偏暖；银色更干净通常偏冷；两者都自然可能是中性调。' },
+  { label: '看口红反馈', detail: '珊瑚、蜜桃、砖红更适合暖调；玫瑰、莓果、蓝调红更适合冷调；玫瑰棕通常适合中性调。' },
+  { label: '看粉底氧化', detail: '粉底发橘可能太暖，发粉可能太冷，发灰可能深浅或饱和度不对。' },
+];
+
+const faqEntities = [
+  { q: '冷皮、暖皮和中性皮是什么意思？', a: '它们指的是皮肤表层颜色下面的底色方向。暖调偏黄、金、蜜桃；冷调偏粉、玫瑰、红；中性调介于两者之间。' },
+  { q: '肤色冷暖调会改变吗？', a: '晒黑、泛红和肤况会影响表面颜色，但底层冷暖调通常比较稳定。选口红和粉底时应优先看底色方向。' },
+  { q: '橄榄皮算冷皮还是暖皮？', a: '橄榄皮可能偏暖、偏冷或中性，但共同特点是带灰绿或绿金底色。它经常不适合过亮、过白或过橘的颜色。' },
+  { q: '判断不出来怎么办？', a: '如果多个测试结果不一致，可以先按中性调选色，再通过 AI 试妆或实际上脸对比缩小范围。' },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Quiz',
+    name: '冷暖皮判断测试',
+    description: '通过血管颜色、首饰对比、日晒反应和口红反馈，判断肤色更接近冷调、暖调还是中性调。',
+    url: 'https://aibeautystylist.com/zh/tools/undertone-quiz/',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntities.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="冷暖皮判断测试｜怎么知道自己是冷皮暖皮还是中性皮"
+  description="中文冷暖皮判断指南。通过血管颜色、金银首饰、日晒反应和口红反馈，判断你更适合冷调、暖调还是中性调色号。"
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">冷暖皮判断</span>
+      <h1>怎么知道自己是冷皮、暖皮还是中性皮？</h1>
+      <p>冷暖皮不是看你白不白，而是看皮肤底色偏黄、偏粉、偏中性还是带橄榄调。判断冷暖调后，口红、粉底、腮红和眼影选择都会更稳定。</p>
+      <div class="cta-row">
+        <a class="btn" href="/zh/tools/shade-finder/">根据结果测试色号</a>
+        <a class="btn btn-secondary" href="/zh/tools/foundation-shade-finder-by-undertone/">查看粉底方向</a>
+      </div>
+    </div>
+
+    <div class="container grid-cards grid-cards-2 top-gap">
+      {checklist.map((item) => (
+        <article class="card coach-card">
+          <span class="pill">测试方法</span>
+          <h2>{item.label}</h2>
+          <p>{item.detail}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <h2>为什么很多人判断冷暖皮会失败？</h2>
+      <p>因为只看一个信号容易误判。比如手腕血管受光线影响很大，日晒反应也和防晒习惯有关。更可靠的方法是把血管、首饰、白纸对比、口红反馈和粉底氧化放在一起看。</p>
+      <h2>常见问题</h2>
+      <dl class="seo-faq">
+        {faqEntities.map((item) => (
+          <>
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </>
+        ))}
+      </dl>
+    </div>
+  </section>
+</BaseLayout>

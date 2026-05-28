@@ -83,9 +83,19 @@
   },
   "footer": {
     "description": "AI Beauty Stylist is your personal AI beauty concierge — helping you find the right look, learn how to create it, and buy only what works for you.",
+    "explore": "Explore",
+    "company": "Company",
+    "discoverLooks": "Discover Looks",
+    "aiTryOnStudio": "AI Try-On Studio",
+    "shadeFinder": "Shade Finder",
+    "makeupGuides": "Makeup Guides",
+    "lipstickShades": "Lipstick Shades",
+    "tutorials": "Tutorials",
+    "membership": "Membership",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
-    "about": "About"
+    "about": "About Us",
+    "legal": "© 2026 AI Beauty Stylist. Your photos are used solely for generating personalized recommendations and can be deleted at any time."
   },
   "common": {
     "tryThisLook": "Try This Look",

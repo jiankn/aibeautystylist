@@ -1,0 +1,266 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const undertoneRows = [
+  {
+    undertone: 'Warm undertone',
+    foundationDirection: 'Yellow, golden, peach, or warm beige base',
+    avoid: 'Pink beige, grey beige, or cool rose foundations that make the face look separate from the neck',
+    lipstickPairing: 'Peach rose, soft brick, caramel nude, terracotta rose',
+    href: '/lipstick-shades/warm-undertone-lipstick-shades',
+  },
+  {
+    undertone: 'Cool undertone',
+    foundationDirection: 'Pink, rosy, red, or cool beige base',
+    avoid: 'Yellow-heavy foundation that turns sallow or orange after a few minutes',
+    lipstickPairing: 'Blue rose, soft berry, cool mauve, blue-red',
+    href: '/lipstick-shades/cool-undertone-lipstick-shades',
+  },
+  {
+    undertone: 'Neutral undertone',
+    foundationDirection: 'Balanced beige or neutral base without obvious yellow or pink pull',
+    avoid: 'Extreme warm or cool shades that look acceptable in-store but wrong in daylight',
+    lipstickPairing: 'Balanced rose, rose-brown, soft red, muted berry',
+    href: '/lipstick-shades/neutral-undertone-lipstick-shades',
+  },
+  {
+    undertone: 'Olive undertone',
+    foundationDirection: 'Muted neutral, olive, green-gold, or beige with less peach saturation',
+    avoid: 'Orange bronzing foundations and milky pink bases that make olive skin look grey or green',
+    lipstickPairing: 'Muted rose, mauve-brown, soft plum, berry-brown',
+    href: '/lipstick-shades/olive-skin-lipstick-shades',
+  },
+  {
+    undertone: 'Deep skin undertone',
+    foundationDirection: 'Depth first, then undertone: golden, red-brown, neutral-brown, olive-brown, or blue-red depth',
+    avoid: 'Ashy beige, flat grey-brown, or shades that match depth but not undertone',
+    lipstickPairing: 'Cocoa rose, brown red, deep berry, plum, rich nude',
+    href: '/lipstick-shades/deep-skin-lipstick-shades',
+  },
+];
+
+const faqEntities = [
+  {
+    q: 'How do I find my foundation shade by undertone?',
+    a: 'First identify whether your undertone is warm, cool, neutral, olive, or a deeper red-brown or golden-brown direction. Then test foundation on the lower cheek and jaw in daylight, checking whether it turns orange, pink, grey, or separate from the neck after a few minutes.',
+  },
+  {
+    q: 'Is foundation shade the same as skin depth?',
+    a: 'No. Skin depth tells you how light or deep the foundation should be. Undertone tells you which color direction the shade should lean: yellow, pink, neutral, olive, golden, red-brown, or another balanced base.',
+  },
+  {
+    q: 'Why does foundation look right in store but wrong outside?',
+    a: 'Store lighting often hides undertone mismatch. A shade can look close under warm bulbs but turn orange, pink, or grey in daylight. Always check foundation near a window and in a phone photo before buying.',
+  },
+  {
+    q: 'Can AI find my exact foundation shade?',
+    a: 'AI can narrow the undertone, depth family, and product direction from a selfie. Exact brand shade names still need real-world testing, but AI helps you avoid the wrong undertone family before you buy.',
+  },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'Foundation Shade Finder by Undertone',
+    description: 'A practical foundation shade finder by undertone: warm, cool, neutral, olive, and deep skin shade directions with lipstick pairings.',
+    mainEntityOfPage: 'https://aibeautystylist.com/tools/foundation-shade-finder-by-undertone/',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntities.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://aibeautystylist.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Tools', item: 'https://aibeautystylist.com/tools/shade-finder/' },
+      { '@type': 'ListItem', position: 3, name: 'Foundation Shade Finder by Undertone', item: 'https://aibeautystylist.com/tools/foundation-shade-finder-by-undertone/' },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Foundation Shade Finder by Undertone | AI Beauty Stylist"
+  description="Find your foundation shade by undertone. Learn warm, cool, neutral, olive, and deep skin foundation directions, avoid mismatches, and pair with lipstick shades."
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Foundation Shade Finder</span>
+      <h1>Find your foundation shade by <em>undertone</em>, not just skin depth.</h1>
+      <p>
+        Foundation mismatch usually happens when the depth is close but the undertone is wrong. A shade can be light enough or deep enough and still look orange, pink, grey, or disconnected from your neck. Use this undertone guide to narrow the right foundation family before you buy.
+      </p>
+      <div class="cta-row">
+        <a class="btn" href="/tools/undertone-quiz?from=foundation_undertone">Take the undertone quiz</a>
+        <a class="btn btn-secondary" href="/try-on?from=foundation_undertone">Upload a selfie for AI try-on</a>
+      </div>
+    </div>
+
+    <div class="container top-gap">
+      <div class="foundation-table" role="table" aria-label="Foundation shade directions by undertone">
+        <div class="foundation-row foundation-row-head" role="row">
+          <span role="columnheader">Undertone</span>
+          <span role="columnheader">Foundation direction</span>
+          <span role="columnheader">Avoid</span>
+          <span role="columnheader">Lip color that usually pairs well</span>
+        </div>
+        {undertoneRows.map((row) => (
+          <a class="foundation-row" href={row.href} role="row">
+            <strong role="cell">{row.undertone}</strong>
+            <span role="cell">{row.foundationDirection}</span>
+            <span role="cell">{row.avoid}</span>
+            <span role="cell">{row.lipstickPairing}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <h2>Step 1: separate skin depth from undertone</h2>
+      <p>
+        Skin depth is the light-to-deep value of your complexion. Undertone is the color temperature underneath it. Two people can both be medium depth, but one needs a golden foundation, one needs a cool rose-beige, and one needs a muted olive-neutral shade. If you only shop by depth, the foundation may look close in the bottle and wrong on the face.
+      </p>
+
+      <h2>Step 2: test foundation where mismatch is visible</h2>
+      <p>
+        Swatching on the wrist is unreliable because the arm often has different color and sun exposure than the face. Test along the lower cheek, jaw, and side of the neck. Let the foundation sit for a few minutes because oxidation can reveal orange, pink, or grey shifts after it dries.
+      </p>
+
+      <h2>Step 3: check undertone in real light</h2>
+      <p>
+        A foundation shade should disappear in daylight, not just under store bulbs. Look near a window, then take a phone photo. If your face looks warmer than your neck, the shade is too yellow or orange. If your face looks flushed or separated, it may be too pink. If your face looks dull or dusty, the base may be too grey or too light.
+      </p>
+
+      <h2>Step 4: use lipstick as a cross-check</h2>
+      <p>
+        Lipstick can reveal undertone mismatch quickly. Warm foundations usually pair well with peach rose, caramel nude, and soft brick. Cool foundations pair with rose, berry, mauve, and blue-red. Olive skin often needs muted rose, mauve-brown, or plum depth. If your foundation and lip color fight each other, one of them is probably in the wrong undertone family.
+      </p>
+
+      <h2>Frequently asked questions</h2>
+      <dl class="seo-faq">
+        {faqEntities.map((item) => (
+          <>
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </>
+        ))}
+      </dl>
+
+      <h2>Next steps</h2>
+      <ul class="seo-link-list">
+        <li><a href="/tools/shade-finder">Use the free lipstick & foundation shade finder</a></li>
+        <li><a href="/tools/undertone-quiz">Find your undertone with the 5-question quiz</a></li>
+        <li><a href="/lipstick-shades/asian-skin-lipstick-shades">Lipstick shades for Asian skin</a></li>
+        <li><a href="/lipstick-shades/olive-skin-lipstick-shades">Lipstick shades for olive skin</a></li>
+        <li><a href="/lipstick-shades/deep-skin-lipstick-shades">Lipstick shades for deep skin</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .foundation-table {
+    display: grid;
+    overflow: hidden;
+    border: 1px solid rgba(176, 127, 134, 0.18);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.82);
+  }
+
+  .foundation-row {
+    display: grid;
+    grid-template-columns: 0.75fr 1.2fr 1.2fr 1fr;
+    gap: 0;
+    color: inherit;
+    text-decoration: none;
+    border-top: 1px solid rgba(176, 127, 134, 0.14);
+  }
+
+  .foundation-row:first-child {
+    border-top: 0;
+  }
+
+  .foundation-row > * {
+    padding: 16px;
+    border-left: 1px solid rgba(176, 127, 134, 0.12);
+    line-height: 1.55;
+  }
+
+  .foundation-row > *:first-child {
+    border-left: 0;
+  }
+
+  .foundation-row-head {
+    background: #fff4ee;
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .foundation-row:not(.foundation-row-head):hover {
+    background: rgba(176, 127, 134, 0.07);
+  }
+
+  .foundation-row strong {
+    color: var(--accent-deep);
+  }
+
+  .seo-faq {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+  }
+
+  .seo-faq dt {
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .seo-faq dd {
+    margin: 0 0 6px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .seo-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 16px;
+  }
+
+  @media (max-width: 800px) {
+    .foundation-row,
+    .foundation-row-head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .foundation-row-head {
+      display: none;
+    }
+
+    .foundation-row > * {
+      border-left: 0;
+      border-top: 1px solid rgba(176, 127, 134, 0.1);
+    }
+
+    .foundation-row > *:first-child {
+      border-top: 0;
+    }
+  }
+</style>

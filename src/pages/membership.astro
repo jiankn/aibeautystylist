@@ -119,6 +119,12 @@ const faqs = [
       </article>
     </div>
 
+    <div class="container membership-style-drop is-hidden" data-membership-style-drop>
+      <span>Personalized Pro drop</span>
+      <strong data-membership-style-title>Unlock weekly drop based on your style profile</strong>
+      <p data-membership-style-copy>Pro turns your saved style direction into a weekly look, tutorial, and kit plan.</p>
+    </div>
+
     <!-- 月付 / 年付 滑块式药丸开关 -->
     <div class="container pricing-toggle-wrap top-gap">
       <div class="pricing-toggle" role="group" aria-label="Billing period">
@@ -226,6 +232,8 @@ const faqs = [
     </div>
 
     <script>
+      import { getMyStyle } from '../lib/personalization';
+
       // ─── 月付 / 年付 开关 ───────────────────────────────────
       const toggleBtns = document.querySelectorAll<HTMLButtonElement>('[data-billing]');
       const saveHint = document.getElementById('pricing-save-hint');
@@ -277,6 +285,17 @@ const faqs = [
 
       const params = new URLSearchParams(window.location.search);
       const sourceFrom = params.get('from') || 'membership_page';
+      const myStyle = getMyStyle();
+      const styleDrop = document.querySelector<HTMLElement>('[data-membership-style-drop]');
+      if (myStyle && styleDrop) {
+        styleDrop.classList.remove('is-hidden');
+        const styleTitle = document.querySelector<HTMLElement>('[data-membership-style-title]');
+        const styleCopy = document.querySelector<HTMLElement>('[data-membership-style-copy]');
+        if (styleTitle) styleTitle.textContent = `Unlock weekly ${myStyle.label} drops based on your style profile`;
+        if (styleCopy) {
+          styleCopy.textContent = `Your pinned ${myStyle.label} direction can drive Pro-only weekly looks, tutorials, and kit picks.`;
+        }
+      }
 
       // ─── Stripe Checkout ────────────────────────────────────
       document.querySelectorAll('[data-checkout="true"]').forEach((btn) => {
@@ -367,6 +386,42 @@ const faqs = [
     color: var(--accent-deep);
     font-size: 0.82rem;
     font-weight: 700;
+  }
+
+  .membership-style-drop {
+    display: grid;
+    gap: 6px;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    padding: 16px 18px;
+    border: 1px solid rgba(176, 127, 134, 0.22);
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(255, 248, 241, 0.92), rgba(255, 255, 255, 0.82));
+    box-shadow: 0 14px 40px rgba(62, 39, 39, 0.08);
+  }
+
+  .membership-style-drop.is-hidden {
+    display: none;
+  }
+
+  .membership-style-drop span {
+    color: var(--accent-deep);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .membership-style-drop strong {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+    line-height: 1.08;
+  }
+
+  .membership-style-drop p {
+    max-width: 680px;
+    margin: 0;
+    color: var(--muted);
   }
 
   /* ─── 开关容器：增大与卡片的间距 ─── */

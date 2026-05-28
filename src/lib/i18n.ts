@@ -6,13 +6,20 @@
  */
 
 import en from '../locales/en.json';
+import zhCN from '../locales/zh-CN.json';
 
-export type Locale = 'en';
+export type Locale = 'en' | 'zh-CN';
 
-// Phase 2 将扩展为动态加载
-const locales: Record<Locale, typeof en> = { en };
+const locales: Record<Locale, typeof en> = { en, 'zh-CN': zhCN };
 
 const DEFAULT_LOCALE: Locale = 'en';
+const LOCALE_PREFIXES: Record<string, Locale> = {
+  zh: 'zh-CN',
+};
+const LOCALE_PATH_PREFIXES: Record<Locale, string> = {
+  en: '',
+  'zh-CN': '/zh',
+};
 
 /**
  * 获取翻译文本
@@ -47,9 +54,8 @@ export function t(key: string, locale: Locale = DEFAULT_LOCALE): string {
  * Phase 2: 从 /{locale}/ 前缀解析
  */
 export function getLocaleFromUrl(_url: URL): Locale {
-  // Phase 2: const segment = url.pathname.split('/')[1];
-  // if (segment in locales) return segment as Locale;
-  return DEFAULT_LOCALE;
+  const segment = _url.pathname.split('/').filter(Boolean)[0];
+  return segment && segment in LOCALE_PREFIXES ? LOCALE_PREFIXES[segment] : DEFAULT_LOCALE;
 }
 
 /**
@@ -58,8 +64,9 @@ export function getLocaleFromUrl(_url: URL): Locale {
  * Phase 2: 根据 locale 添加前缀
  */
 export function localePath(path: string, _locale: Locale = DEFAULT_LOCALE): string {
-  // Phase 2: return `/${locale}${path}`;
-  return path;
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const prefix = LOCALE_PATH_PREFIXES[_locale] ?? '';
+  return `${prefix}${normalizedPath}`.replace(/\/{2,}/g, '/');
 }
 
 /**
@@ -67,4 +74,21 @@ export function localePath(path: string, _locale: Locale = DEFAULT_LOCALE): stri
  */
 export function getSupportedLocales(): Locale[] {
   return Object.keys(locales) as Locale[];
+}
+
+export function getLocalePrefix(locale: Locale): string {
+  return LOCALE_PATH_PREFIXES[locale] ?? '';
+}
+
+export function getHreflang(locale: Locale): string {
+  return locale === 'zh-CN' ? 'zh-CN' : locale;
+}
+
+export function withoutLocalePrefix(pathname: string): string {
+  const pathWithSlash = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  for (const prefix of Object.values(LOCALE_PATH_PREFIXES).filter(Boolean)) {
+    if (pathWithSlash === `${prefix}/`) return '/';
+    if (pathWithSlash.startsWith(`${prefix}/`)) return pathWithSlash.slice(prefix.length) || '/';
+  }
+  return pathWithSlash;
 }

@@ -598,3 +598,93 @@ export const quickTryOnLooks = getLooksBySlugs([
   'client-meeting-nude',
   'champagne-gala',
 ]);
+
+// ──────────────────────────────────────────────────────────────────────────
+// Weekly trending — used by Trending This Week (Get Inspired) on the home page.
+// `weeklyInspirationGroups` rotates editorial themes — keeps the home page
+// feeling fresh week over week so users come back to scan.
+// ──────────────────────────────────────────────────────────────────────────
+
+export interface WeeklyInspirationGroup {
+  id: string;
+  label: string;
+  blurb: string;
+  lookSlugs: string[];
+}
+
+export const weeklyInspirationUpdatedAt = '2026-05-26';
+
+export const weeklyInspirationGroups: WeeklyInspirationGroup[] = [
+  {
+    id: 'trending',
+    label: 'Trending this week',
+    blurb: 'The looks the community keeps coming back to right now.',
+    lookSlugs: ['clean-girl', 'office-glow', 'soft-glam', 'korean-dewy-glow'],
+  },
+  {
+    id: 'editor-office',
+    label: "Editor's pick: Quiet office mornings",
+    blurb: 'A polished but invisible edit our team rotates through Monday to Wednesday.',
+    lookSlugs: ['interview-ready', 'soft-matte-everyday', 'executive-rose', 'client-meeting-nude'],
+  },
+  {
+    id: 'date-drop',
+    label: 'Date night drop',
+    blurb: 'Close-up friendly looks that hold up under candlelight and phone flash.',
+    lookSlugs: ['berry-date', 'romantic-pink', 'rose-milk-date', 'candlelight-mauve'],
+  },
+  {
+    id: 'camera-safe',
+    label: 'Camera-safe edit',
+    blurb: 'For Zoom, photos, ID shots, and any time the lens is the audience.',
+    lookSlugs: ['photo-ready', 'flash-proof-satin', 'creator-camera-glow', 'passport-photo-clean'],
+  },
+];
+
+function fallbackTries(): number {
+  return 0;
+}
+
+export function getWeeklyTries(slug: string, weeklyTriesBySlug: Record<string, number> = {}): number {
+  return weeklyTriesBySlug[slug] ?? fallbackTries();
+}
+
+export interface WeeklyInspirationCard extends LookCatalogItem {
+  weeklyTries: number;
+  trendingRank: number; // 0 = no rank badge, 1+ = top N badge
+}
+
+export interface ResolvedWeeklyInspirationGroup {
+  id: string;
+  label: string;
+  blurb: string;
+  cards: WeeklyInspirationCard[];
+}
+
+export function getWeeklyInspirationLookSlugs(): string[] {
+  return Array.from(new Set(weeklyInspirationGroups.flatMap((group) => group.lookSlugs)));
+}
+
+export function getWeeklyInspirationGroups(weeklyTriesBySlug: Record<string, number> = {}): ResolvedWeeklyInspirationGroup[] {
+  // Build a flat list once so we can compute trending rank by tries.
+  const allCards: WeeklyInspirationCard[] = weeklyInspirationGroups
+    .flatMap((group) => group.lookSlugs)
+    .map((slug) => lookBySlug.get(slug))
+    .filter((look): look is LookCatalogItem => Boolean(look))
+    .map((look) => ({ ...look, weeklyTries: getWeeklyTries(look.slug, weeklyTriesBySlug), trendingRank: 0 }));
+
+  const ranked = [...allCards].filter((card) => card.weeklyTries > 0).sort((a, b) => b.weeklyTries - a.weeklyTries).slice(0, 3);
+  ranked.forEach((card, idx) => {
+    const target = allCards.find((c) => c.slug === card.slug);
+    if (target) target.trendingRank = idx + 1;
+  });
+
+  return weeklyInspirationGroups.map((group) => ({
+    id: group.id,
+    label: group.label,
+    blurb: group.blurb,
+    cards: group.lookSlugs
+      .map((slug) => allCards.find((c) => c.slug === slug))
+      .filter((card): card is WeeklyInspirationCard => Boolean(card)),
+  }));
+}

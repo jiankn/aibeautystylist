@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'AI Beauty Stylist 中文版',
+  description: 'AI 美妆试妆、肤色诊断、口红和粉底色号测试工具。',
+  url: 'https://aibeautystylist.com/zh/',
+};
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="AI Beauty Stylist 中文版｜AI 试妆、口红和粉底色号测试"
+  description="AI Beauty Stylist 中文版。上传自拍，获得 AI 妆容建议、肤色冷暖调判断、口红和粉底色号方向，并查看适合你的美妆指南。"
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container hero-grid">
+      <div class="section-copy">
+        <span class="eyebrow">AI 美妆顾问</span>
+        <h1>用 AI 找到真正适合你的妆容和色号。</h1>
+        <p>不用照搬别人的教程。AI Beauty Stylist 帮你根据肤色、冷暖调、五官和使用场景，找到更适合自己的妆容方向、口红色号和粉底色号。</p>
+        <div class="cta-row">
+          <a class="btn" href="/zh/tools/shade-finder/">测试口红和粉底色号</a>
+          <a class="btn btn-secondary" href="/zh/try-on/">了解 AI 试妆</a>
+        </div>
+      </div>
+      <div class="card coach-card">
+        <span class="pill">P0 中文版</span>
+        <h2>先解决最常见的美妆选择问题</h2>
+        <ul class="check-list compact">
+          <li>我适合什么妆容？</li>
+          <li>我是冷皮、暖皮还是中性皮？</li>
+          <li>什么口红色号显白、不显脏？</li>
+          <li>粉底应该选黄调、粉调还是中性调？</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container grid-cards grid-cards-3 top-gap">
+      <a class="card guide-hub-card" href="/zh/tools/shade-finder/">
+        <span class="pill">色号测试</span>
+        <h2>AI 口红和粉底色号测试</h2>
+        <p>从肤色冷暖调、肤色深浅和妆容目标出发，缩小适合你的口红和粉底色号范围。</p>
+      </a>
+      <a class="card guide-hub-card" href="/zh/tools/undertone-quiz/">
+        <span class="pill">冷暖皮判断</span>
+        <h2>判断你的肤色冷暖调</h2>
+        <p>用自然光、血管颜色、首饰对比和口红反馈，判断你更接近冷调、暖调还是中性调。</p>
+      </a>
+      <a class="card guide-hub-card" href="/zh/makeup-guides/">
+        <span class="pill">美妆指南</span>
+        <h2>按问题选择美妆指南</h2>
+        <p>从通勤、约会、成熟肌、肿眼泡、橄榄皮和亚洲肤色等高频问题开始。</p>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

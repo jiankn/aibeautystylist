@@ -13,6 +13,13 @@ export const LOOK_ANALYTICS_EVENTS = [
   'checkout_success',
   'share_click',
   'save_click',
+  'save_look',
+  'save_look_remove',
+  'set_my_style',
+  'clear_my_style',
+  'find_style_filter',
+  'find_style_view_all',
+  'find_style_view_guide',
 ] as const;
 
 export type LookAnalyticsEventName = typeof LOOK_ANALYTICS_EVENTS[number];
@@ -67,6 +74,11 @@ export interface LookScoreReport {
   };
   scores: LookConversionScore[];
   bothCandidates: LookConversionScore[];
+}
+
+export interface WeeklyTryCount {
+  lookSlug: string;
+  tries: number;
 }
 
 interface AggregatedEventRow {
@@ -138,6 +150,47 @@ export async function recordLookAnalyticsEvent(input: RecordLookAnalyticsEventIn
     .run();
 
   return true;
+}
+
+export async function getWeeklyTryCounts(
+  env: RuntimeEnv | undefined,
+  options: { days?: number; lookSlugs?: string[] } = {},
+): Promise<Record<string, number>> {
+  const db = env?.DB;
+  if (!db) return {};
+
+  const days = Math.min(Math.max(Math.trunc(options.days ?? 7), 1), 30);
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+  const slugs = Array.from(new Set((options.lookSlugs ?? []).filter((slug) => cleanOptionalSlug(slug))));
+  const placeholders = slugs.map(() => '?').join(', ');
+  const slugWhere = slugs.length > 0 ? `AND look_slug IN (${placeholders})` : '';
+
+  const rows = await db
+    .prepare(
+      `
+        SELECT
+          look_slug,
+          COUNT(DISTINCT session_id) AS tries
+        FROM look_analytics_events
+        WHERE created_at >= ?
+          AND look_slug IS NOT NULL
+          AND event_name IN ('selfie_upload_success', 'tryon_result_view')
+          ${slugWhere}
+        GROUP BY look_slug
+      `,
+    )
+    .bind(since, ...slugs)
+    .all<{ look_slug: string | null; tries: number }>()
+    .catch((error) => {
+      console.warn('[lookAnalytics] weekly tries query failed:', error);
+      return { results: [] as Array<{ look_slug: string | null; tries: number }> };
+    });
+
+  return Object.fromEntries(
+    (rows.results ?? [])
+      .filter((row) => Boolean(row.look_slug))
+      .map((row) => [row.look_slug ?? '', Number(row.tries ?? 0)]),
+  );
 }
 
 export async function getLookScoreReport(
@@ -216,7 +269,7 @@ function buildAggregateSql(extraWhere: string) {
       COUNT(DISTINCT CASE WHEN event_name = 'tryon_result_view' THEN session_id END) AS result_views,
       COUNT(DISTINCT CASE WHEN event_name = 'tutorial_continue' THEN session_id END) AS tutorial_continues,
       COUNT(DISTINCT CASE WHEN event_name IN ('register_success', 'membership_click', 'upgrade_click', 'checkout_started', 'checkout_success') THEN session_id END) AS account_actions,
-      COUNT(DISTINCT CASE WHEN event_name IN ('share_click', 'save_click') THEN session_id END) AS share_saves
+      COUNT(DISTINCT CASE WHEN event_name IN ('share_click', 'save_click', 'save_look') THEN session_id END) AS share_saves
     FROM look_analytics_events
     WHERE created_at >= ?
       AND look_slug IS NOT NULL

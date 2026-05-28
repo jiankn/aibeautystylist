@@ -1,6 +1,6 @@
 ---
 import { buildLookTryOnHref, lookCatalogItems, lookFilters, quickTryOnLooks } from '../data/lookCatalog';
-import { homeStyleItems } from '../data/stylePages';
+import { homeStyleItems, styleNavigationItems } from '../data/stylePages';
 
 const quickLookItems = quickTryOnLooks;
 
@@ -10,6 +10,7 @@ const styleShortcutItems = homeStyleItems.map((style) => ({
 }));
 
 const allLookItems = lookCatalogItems;
+const allStyleItems = styleNavigationItems;
 ---
 
 <section class="tool-shell card tryon-shell" data-tryon-shell data-tryon-current-step="input">
@@ -437,10 +438,56 @@ const allLookItems = lookCatalogItems;
           data-look-href={buildLookTryOnHref(look)}
           data-look-image={look.image}
           data-look-image-alt={look.imageAlt}
+          data-look-focus={look.focus}
           style={`background-image:url('${look.image}');`}
           aria-label={`Try ${look.title}`}
         >
           <span><strong>{look.title}</strong><small>{look.tone}</small></span>
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<!-- Style 选择器弹窗（区别于 Look Drawer） -->
+<div class="look-drawer style-drawer is-hidden" data-style-drawer role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="style-drawer-title">
+  <button class="look-drawer-backdrop" type="button" data-style-drawer-close aria-label="Close style directions"></button>
+  <div class="look-drawer-panel">
+    <div class="look-drawer-head">
+      <div>
+        <span class="eyebrow">Style Directions</span>
+        <h3 id="style-drawer-title">Choose a style direction, then try it on.</h3>
+      </div>
+      <button class="look-drawer-close" type="button" data-style-drawer-close aria-label="Close style directions">&times;</button>
+    </div>
+    <div class="style-drawer-filter-tabs" aria-label="Filter style directions">
+      <button type="button" class="look-filter-chip is-active" data-style-filter="all">All</button>
+      <button type="button" class="look-filter-chip" data-style-filter="office">Everyday</button>
+      <button type="button" class="look-filter-chip" data-style-filter="date">Date</button>
+      <button type="button" class="look-filter-chip" data-style-filter="photo">Camera</button>
+    </div>
+    <div class="look-drawer-grid style-drawer-grid" aria-label="All style directions">
+      {allStyleItems.map((style, index) => (
+        <button
+          type="button"
+          class="look-drawer-item style-drawer-item"
+          data-style-item
+          data-analytics-look
+          data-analytics-source="tryon-style-drawer"
+          data-analytics-position={index + 1}
+          data-analytics-style-slug={style.slug}
+          data-analytics-look-slug={style.lookSlug}
+          data-style-slug={style.slug}
+          data-style-label={style.label}
+          data-style-scenario={style.tryOnScenario}
+          data-style-look-slug={style.lookSlug}
+          data-style-image={style.image}
+          data-style-image-alt={style.imageAlt}
+          data-style-focus={style.focus ?? ''}
+          style={`background-image:url('${style.image}');${style.focus ? `background-position:${style.focus};` : ''}`}
+          aria-label={`Try ${style.label} style`}
+        >
+          <span><strong>{style.label}</strong></span>
         </button>
       ))}
     </div>
@@ -652,6 +699,11 @@ const allLookItems = lookCatalogItems;
   const lookDrawerCloseButtons = qsa<HTMLButtonElement>('[data-look-drawer-close]');
   const lookFilterButtons = qsa<HTMLButtonElement>('[data-look-filter]');
   const lookDrawerItems = qsa<HTMLElement>('[data-look-item]');
+  // Style Drawer DOM 引用
+  const styleDrawer = qs<HTMLElement>('[data-style-drawer]');
+  const styleDrawerCloseButtons = qsa<HTMLButtonElement>('[data-style-drawer-close]');
+  const styleFilterButtons = qsa<HTMLButtonElement>('[data-style-filter]');
+  const styleDrawerItems = qsa<HTMLElement>('[data-style-item]');
   const selectedInspiration = qs<HTMLElement>('[data-selected-inspiration]');
   const selectedInspirationTitle = qs<HTMLElement>('[data-selected-inspiration-title]');
   const selectedInspirationTone = qs<HTMLElement>('[data-selected-inspiration-tone]');
@@ -788,6 +840,9 @@ const allLookItems = lookCatalogItems;
     title: string;
     tone: string;
     scenario: string;
+    image?: string;
+    imageAlt?: string;
+    focus?: string;
   };
 
   let selectedInspirationLook: SelectedInspirationLook | null = null;
@@ -797,8 +852,26 @@ const allLookItems = lookCatalogItems;
     const title = trigger.getAttribute('data-look-title') || '';
     const tone = trigger.getAttribute('data-look-tone') || '';
     const scenario = trigger.getAttribute('data-tryon-demo') || 'office';
+    const image = trigger.getAttribute('data-look-image') || '';
+    const imageAlt = trigger.getAttribute('data-look-image-alt') || '';
+    const focus = trigger.getAttribute('data-look-focus') || '';
     if (!slug || !title) return null;
-    return { slug, title, tone, scenario };
+    return { slug, title, tone, scenario, image, imageAlt, focus };
+  };
+
+  const readStyleFromTrigger = (trigger: HTMLElement): SelectedInspirationLook | null => {
+    const slug = trigger.getAttribute('data-style-look-slug') || '';
+    const title = trigger.getAttribute('data-style-label') || '';
+    const scenario = trigger.getAttribute('data-style-scenario') || 'office';
+    const image = trigger.getAttribute('data-style-image') || '';
+    const imageAlt = trigger.getAttribute('data-style-image-alt') || '';
+    const focus = trigger.getAttribute('data-style-focus') || '';
+    const matchingLookTrigger = qsa<HTMLElement>('[data-look-slug]').find(
+      (el) => el.getAttribute('data-look-slug') === slug,
+    );
+    const tone = matchingLookTrigger?.getAttribute('data-look-tone') || 'Style direction';
+    if (!slug || !title) return null;
+    return { slug, title, tone, scenario, image, imageAlt, focus };
   };
 
   const syncSelectedLookUrl = (look: SelectedInspirationLook) => {
@@ -823,12 +896,18 @@ const allLookItems = lookCatalogItems;
       const activePill = qsa<HTMLElement>('[data-look-slug]').find(
         (el) => el.getAttribute('data-look-slug') === selectedInspirationLook!.slug,
       );
-      if (activePill && demoHeroImg) {
-        const newImage = activePill.getAttribute('data-look-image') || '';
-        const newAlt = activePill.getAttribute('data-look-image-alt') || '';
+      if (demoHeroImg) {
+        const newImage = selectedInspirationLook.image || activePill?.getAttribute('data-look-image') || '';
+        const newAlt = selectedInspirationLook.imageAlt || activePill?.getAttribute('data-look-image-alt') || '';
+        const newFocus = selectedInspirationLook.focus || activePill?.getAttribute('data-look-focus') || '';
         if (newImage) {
           demoHeroImg.src = newImage;
-          demoHeroImg.alt = newAlt;
+        }
+        if (newAlt) demoHeroImg.alt = newAlt;
+        if (newFocus) {
+          demoHeroImg.style.objectPosition = newFocus;
+        } else {
+          demoHeroImg.style.removeProperty('object-position');
         }
       }
       if (demoHeroTitle) demoHeroTitle.textContent = selectedInspirationLook.title;
@@ -845,7 +924,22 @@ const allLookItems = lookCatalogItems;
     return look;
   };
 
-  if (lookParam) {
+  const setSelectedInspirationFromStyleTrigger = (trigger: HTMLElement) => {
+    const look = readStyleFromTrigger(trigger);
+    if (!look) return null;
+    selectedInspirationLook = look;
+    updateSelectedInspirationUi();
+    return look;
+  };
+
+  if (styleParam) {
+    const initialStyleTrigger = styleDrawerItems.find(
+      (trigger) => trigger.getAttribute('data-style-slug') === styleParam,
+    );
+    if (initialStyleTrigger) setSelectedInspirationFromStyleTrigger(initialStyleTrigger);
+  }
+
+  if (!selectedInspirationLook && lookParam) {
     const initialLookTrigger = qsa<HTMLElement>('[data-look-slug]').find(
       (trigger) => trigger.getAttribute('data-look-slug') === lookParam,
     );
@@ -878,14 +972,74 @@ const allLookItems = lookCatalogItems;
   };
 
   lookDrawerOpenButtons.forEach((button) => button.addEventListener('click', openLookDrawer));
-  qsa<HTMLButtonElement>('[data-style-drawer-open]').forEach((button) => button.addEventListener('click', openLookDrawer));
+  // ── Style Drawer open / close / filter / click ──
+  const openStyleDrawer = () => {
+    if (!styleDrawer) return;
+    styleDrawer.classList.remove('is-hidden');
+    styleDrawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('is-look-drawer-open');
+    styleDrawer.querySelector<HTMLElement>('[data-style-filter]')?.focus();
+  };
+
+  const closeStyleDrawer = () => {
+    if (!styleDrawer) return;
+    styleDrawer.classList.add('is-hidden');
+    styleDrawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('is-look-drawer-open');
+  };
+
+  const applyStyleFilter = (filter: string) => {
+    styleFilterButtons.forEach((button) => {
+      button.classList.toggle('is-active', button.getAttribute('data-style-filter') === filter);
+    });
+    styleDrawerItems.forEach((item) => {
+      const scenario = item.getAttribute('data-style-scenario') || '';
+      item.hidden = filter !== 'all' && scenario !== filter;
+    });
+  };
+
+  qsa<HTMLButtonElement>('[data-style-drawer-open]').forEach((button) => button.addEventListener('click', openStyleDrawer));
+  styleDrawerCloseButtons.forEach((button) => button.addEventListener('click', closeStyleDrawer));
+  styleFilterButtons.forEach((button) => {
+    button.addEventListener('click', () => applyStyleFilter(button.getAttribute('data-style-filter') || 'all'));
+  });
+
+  // Style 卡片点击：设置 scenario + 灵感 look + 关闭 drawer
+  styleDrawerItems.forEach((item) => {
+    item.addEventListener('click', () => {
+      const lookSlug = item.getAttribute('data-style-look-slug') || '';
+      const scenario = item.getAttribute('data-style-scenario') || 'office';
+      const label = item.getAttribute('data-style-label') || '';
+
+      // 设置场景下拉
+      if (scenarioSelect) {
+        const resolved = scenarioAliases[scenario] ?? scenario;
+        if (['office', 'date', 'photo'].includes(resolved)) {
+          scenarioSelect.value = resolved as 'office' | 'date' | 'photo';
+        }
+      }
+
+      // 查找对应的 look-drawer-item 并选中，以复用灵感预览逻辑
+      setSelectedInspirationFromStyleTrigger(item);
+
+      trackLookEvent('style_drawer_select', {
+        styleSlug: item.getAttribute('data-style-slug'),
+        lookSlug,
+        label,
+      });
+
+      closeStyleDrawer();
+    });
+  });
+
   lookDrawerCloseButtons.forEach((button) => button.addEventListener('click', closeLookDrawer));
   lookFilterButtons.forEach((button) => {
     button.addEventListener('click', () => applyLookFilter(button.getAttribute('data-look-filter') || 'all'));
   });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && lookDrawer && !lookDrawer.classList.contains('is-hidden')) {
-      closeLookDrawer();
+    if (event.key === 'Escape') {
+      if (lookDrawer && !lookDrawer.classList.contains('is-hidden')) closeLookDrawer();
+      if (styleDrawer && !styleDrawer.classList.contains('is-hidden')) closeStyleDrawer();
     }
   });
 

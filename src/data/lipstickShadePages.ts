@@ -188,4 +188,33 @@ export const lipstickShadePages: LipstickShadePage[] = [
       { label: 'Find your shade', href: '/tools/shade-finder' },
     ],
   },
+  {
+    slug: 'asian-skin-lipstick-shades',
+    title: 'Best Lipstick Shades for Asian Skin',
+    description: 'A practical lipstick shade guide for Asian skin tones, covering warm, cool, neutral, olive, fair, medium, and deep Asian complexions.',
+    eyebrow: 'Asian Skin',
+    headline: 'Rose-brown, muted coral, soft berry, and tea rose usually look cleaner than chalky nude.',
+    intro: 'Asian skin is not one undertone. It can be fair and cool, medium and olive, tan and golden, or deep and neutral. The most reliable lipstick shades respect both undertone and contrast level instead of assuming every Asian complexion needs the same peach or red.',
+    bestShades: [
+      { name: 'Tea Rose', hex: '#B76A68', why: 'Adds natural brightness without looking too pink or too orange.' },
+      { name: 'Rose Brown', hex: '#8F554D', why: 'Grounds the lip on olive, neutral, and medium Asian skin tones.' },
+      { name: 'Soft Berry', hex: '#8A3D58', why: 'Gives visible color for cool, fair, or evening looks without becoming harsh.' },
+    ],
+    avoid: ['Concealer beige nude', 'Milky pink with a white base', 'Neon coral that turns orange on olive skin'],
+    testSteps: [
+      'Check the shade against your lower face and natural lip edge, not only on the wrist.',
+      'Take one daylight photo and one indoor photo because Asian undertones often shift under warm bulbs.',
+      'If your face looks grey, choose more rose or brown depth; if it looks orange, lower the coral and add berry or mauve.',
+    ],
+    productLogic: [
+      'Fair Asian skin often needs soft rose, tea rose, or clear berry rather than beige nude.',
+      'Medium and olive Asian skin usually handles rose-brown, muted coral, mauve-brown, and terracotta rose better than pale pink.',
+      'Tan and deep Asian skin needs enough brown, red, berry, or cocoa depth so the mouth stays visible in photos.',
+    ],
+    relatedLinks: [
+      { label: 'Monolid makeup guide', href: '/styles/monolid-makeup' },
+      { label: 'Korean dewy makeup guide', href: '/styles/korean-dewy-makeup' },
+      { label: 'Find your undertone first', href: '/tools/undertone-quiz' },
+    ],
+  },
 ];

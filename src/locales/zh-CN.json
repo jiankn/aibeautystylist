@@ -1,0 +1,108 @@
+{
+  "site": {
+    "name": "AI Beauty Stylist",
+    "tagline": "你的 AI 美妆顾问",
+    "description": "AI 个性化妆容诊断、试妆、教程和色号建议。"
+  },
+  "nav": {
+    "discover": "发现妆容",
+    "tryOn": "AI 试妆",
+    "tutorials": "教程",
+    "beautyKit": "美妆工具",
+    "membership": "会员",
+    "shadeGuide": "色号指南"
+  },
+  "hero": {
+    "eyebrow": "你的 AI 美妆顾问",
+    "headline": "找到真正适合你的妆容，而不是照搬别人的教程。",
+    "lead": "上传一张素颜自拍，获得 AI 肤色诊断、个性化妆容建议和可以照着做的步骤教程。",
+    "ctaPrimary": "开始 AI 试妆",
+    "ctaSecondary": "探索妆容风格",
+    "metric1Title": "3 步完成",
+    "metric1Detail": "上传 · 诊断 · 教程",
+    "metric2Title": "覆盖多场景",
+    "metric2Detail": "通勤 · 约会 · 拍照 · 面试",
+    "metric3Title": "隐私优先",
+    "metric3Detail": "你的照片由你控制"
+  },
+  "howItWorks": {
+    "eyebrow": "使用方式",
+    "headline": "三步找到适合你的妆容，并学会怎么画。",
+    "subheadline": "上传自拍 → 获得 AI 诊断和妆容建议 → 按步骤完成妆容。",
+    "step1Title": "上传自拍",
+    "step1Desc": "使用正面素颜照片，系统仅用于生成你的个性化建议，可按需删除。",
+    "step2Title": "查看适合你的妆容",
+    "step2Desc": "AI 会分析肤色、五官和场景需求，推荐更适合你的妆容方向。",
+    "step3Title": "获得教程和产品建议",
+    "step3Desc": "每个妆容都包含步骤说明和产品方向，帮助你真正画出来。"
+  },
+  "inspiration": {
+    "eyebrow": "妆容灵感",
+    "headline": "先找到喜欢的氛围，再学习如何复刻。",
+    "subheadline": "每个妆容都对应真实场景。选择你喜欢的风格，然后开始试妆。",
+    "hoverCta": "试试这个妆容 →"
+  },
+  "scenarios": {
+    "eyebrow": "真实场景",
+    "headline": "美妆建议应该适合你的下一次出门，而不只是色轮理论。"
+  },
+  "trust": {
+    "eyebrow": "适合更多人",
+    "headline": "覆盖不同肤色、脸型、年龄和妆感强度。"
+  },
+  "tryOn": {
+    "heading": "上传自拍，发现真正适合你的妆容。",
+    "subheading": "不是滤镜，而是基于肤色和五官特征的真实分析。",
+    "privacyStrip": "仅用于生成建议 · 可随时删除",
+    "privacyNote1": "你的照片仅用于生成诊断，不会分享给第三方。",
+    "privacyNote2": "不会用于训练 AI 模型。",
+    "privacyNote3": "你可以随时删除，系统也会按策略清理。",
+    "uploadLabel": "上传正面素颜自拍",
+    "uploadHint": "拖拽或点击选择图片，支持 JPEG 或 PNG",
+    "analyzing": "正在分析你的特征…",
+    "resultsReady": "你的个性化妆容已生成"
+  },
+  "tutorial": {
+    "dontDoThis": "不要这样做",
+    "youPassWhen": "完成标准",
+    "done": "完成",
+    "needHelp": "需要帮助",
+    "simplerVersion": "简化版本",
+    "allTutorials": "全部教程",
+    "tryThisLook": "试试这个妆容"
+  },
+  "membership": {
+    "eyebrow": "Beauty Pass",
+    "headline": "减少试错，更快找到你想要的妆容。",
+    "freeLabel": "免费版",
+    "proLabel": "Pro",
+    "premiumLabel": "Premium",
+    "upgradeCtaPro": "开通 Pro",
+    "upgradeCtaPremium": "开通 Premium",
+    "manageSubscription": "管理订阅"
+  },
+  "footer": {
+    "description": "AI Beauty Stylist 是你的 AI 美妆顾问：帮你找到适合自己的妆容、色号和可执行教程，少踩雷，少买错。",
+    "explore": "探索",
+    "company": "网站信息",
+    "discoverLooks": "发现妆容",
+    "aiTryOnStudio": "AI 试妆工作台",
+    "shadeFinder": "色号测试",
+    "makeupGuides": "美妆指南",
+    "lipstickShades": "口红色号",
+    "tutorials": "教程",
+    "membership": "会员",
+    "about": "关于我们",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "legal": "© 2026 AI Beauty Stylist。你的照片仅用于生成个性化建议，可按需删除。"
+  },
+  "common": {
+    "tryThisLook": "试试这个妆容",
+    "findMyShade": "测试我的色号",
+    "learnMore": "了解更多",
+    "upgradeNow": "立即升级",
+    "aiDisclaimer": "结果为 AI 生成建议，仅供参考。",
+    "languageName": "简体中文"
+  }
+}

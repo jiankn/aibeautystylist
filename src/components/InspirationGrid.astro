@@ -1,50 +1,193 @@
 ---
-import { buildLookTryOnHref, homeInspirationLooks, LOOK_LIBRARY_TARGET_COUNT } from '../data/lookCatalog';
+import {
+  buildLookTryOnHref,
+  getWeeklyInspirationGroups,
+  LOOK_LIBRARY_TARGET_COUNT,
+  weeklyInspirationUpdatedAt,
+} from '../data/lookCatalog';
 
-const looks = homeInspirationLooks.map((look, index) => ({
-  ...look,
-  tryOnHref: `${buildLookTryOnHref(look)}&source=get-inspired&position=${index + 1}`,
-  position: index + 1,
-}));
+interface Props {
+  weeklyTriesBySlug?: Record<string, number>;
+}
 
-const galleryLooks = looks;
+const { weeklyTriesBySlug = {} } = Astro.props;
+const groups = getWeeklyInspirationGroups(weeklyTriesBySlug);
+
+const galleryLooks = groups.flatMap((group, groupIdx) =>
+  group.cards.map((card, cardIdx) => ({
+    ...card,
+    groupId: group.id,
+    groupLabel: group.label,
+    position: groupIdx * 4 + cardIdx + 1,
+    tryOnHref: `${buildLookTryOnHref(card)}&source=trending-this-week&position=${groupIdx * 4 + cardIdx + 1}`,
+  })),
+);
+
+const updatedDate = new Date(weeklyInspirationUpdatedAt);
+const updatedLabel = Number.isNaN(updatedDate.getTime())
+  ? weeklyInspirationUpdatedAt
+  : updatedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+function compactCount(value: number): string {
+  if (value >= 1000) {
+    return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}k`;
+  }
+  return value.toString();
+}
 ---
 
 <section class="section section-soft home-inspiration" id="get-inspired">
   <div class="container">
     <div class="inspiration-head">
       <div class="section-copy inspiration-head-copy">
-        <h2>Get Inspired</h2>
+        <span class="inspiration-eyebrow">
+          <span class="inspiration-pulse" aria-hidden="true"></span>
+          Trending this week · Updated {updatedLabel}
+        </span>
+        <h2>Looks the community keeps coming back to.</h2>
         <p>
-          Browse a curated edit first. Open the full library when you want all {LOOK_LIBRARY_TARGET_COUNT} looks.
+          A curated edit of {galleryLooks.length} most-tried looks this week — refreshed every Monday. See all {LOOK_LIBRARY_TARGET_COUNT} in the full library.
         </p>
       </div>
       <a class="btn btn-secondary inspiration-head-action" href="/discover#look-library">View all looks</a>
     </div>
 
-    <div class="inspiration-grid" aria-label="Makeup inspiration looks">
+    <div class="inspiration-grid" aria-label="Trending makeup looks this week">
       {galleryLooks.map((look, index) => (
-        <a
+        <article
           class="look-tile"
-          href={look.tryOnHref}
-          aria-label={`Try ${look.title}`}
+          data-look-tile
+          data-look-slug={look.slug}
+          data-group-id={look.groupId}
           style={`--look-focus: ${look.focus};`}
-          data-analytics-look
-          data-analytics-source="get-inspired"
-          data-analytics-look-slug={look.slug}
-          data-analytics-position={look.position}
         >
-          <img src={look.image} alt={look.imageAlt} loading={index < 4 ? 'eager' : 'lazy'} />
-          <span class="look-tile-shade" aria-hidden="true"></span>
-          <span class="look-tile-caption">
-            <span>{look.tone}</span>
-            <h3>{look.title}</h3>
-          </span>
-        </a>
+          <a
+            class="look-tile-link"
+            href={look.tryOnHref}
+            aria-label={`Try ${look.title} · ${compactCount(look.weeklyTries)} tries this week`}
+            data-analytics-look
+            data-analytics-source="trending-this-week"
+            data-analytics-look-slug={look.slug}
+            data-analytics-position={look.position}
+          >
+            <img src={look.image} alt={look.imageAlt} loading={index < 4 ? 'eager' : 'lazy'} />
+            <span class="look-tile-shade" aria-hidden="true"></span>
+            {look.trendingRank > 0 && (
+              <span class="look-tile-rank" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true">
+                  <path d="M13.5 2.5c.3 1.6-.2 3-1.4 4.4-.7.8-1.5 1.5-2 2.4a4.7 4.7 0 0 0-.7 3.7 5 5 0 0 0 3.4 3.6c1.4.4 2.9 0 3.9-.9-.2 2-1.4 3.7-3.2 4.6a6.4 6.4 0 0 1-7.7-1.4 6.6 6.6 0 0 1-1.2-7c.7-1.6 2-2.7 3-4 .9-1.2 1.5-2.6 1.5-4 1 .4 1.7 1.1 2.2 2 .4-.5.6-1 .8-1.5.4 1.1.5 2.3 1.4 3.1z"/>
+                </svg>
+                #{look.trendingRank}
+              </span>
+            )}
+            <span class="look-tile-caption">
+              <span class="look-tile-meta">
+                <span class="look-tile-tone">{look.tone}</span>
+                <span class="look-tile-tries" aria-label={`${look.weeklyTries} tries this week`}>
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden="true">
+                    <path d="M13.5 2.5c.3 1.6-.2 3-1.4 4.4-.7.8-1.5 1.5-2 2.4a4.7 4.7 0 0 0-.7 3.7 5 5 0 0 0 3.4 3.6c1.4.4 2.9 0 3.9-.9-.2 2-1.4 3.7-3.2 4.6a6.4 6.4 0 0 1-7.7-1.4 6.6 6.6 0 0 1-1.2-7c.7-1.6 2-2.7 3-4 .9-1.2 1.5-2.6 1.5-4 1 .4 1.7 1.1 2.2 2 .4-.5.6-1 .8-1.5.4 1.1.5 2.3 1.4 3.1z"/>
+                  </svg>
+                  {compactCount(look.weeklyTries)} tries
+                </span>
+              </span>
+              <h3>{look.title}</h3>
+              <span class="look-tile-theme">{look.groupLabel}</span>
+            </span>
+          </a>
+          <button
+            type="button"
+            class="look-tile-save"
+            data-look-save
+            data-look-slug={look.slug}
+            data-look-title={look.title}
+            aria-label={`Save ${look.title}`}
+            aria-pressed="false"
+            title="Save look"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </article>
       ))}
     </div>
+
+    <p class="inspiration-saved-toast" data-saved-toast hidden role="status" aria-live="polite"></p>
   </div>
 </section>
+
+<script>
+  import { toggleSavedLook, getSavedLooks } from '../lib/personalization';
+
+  type AnalyticsWindow = Window & typeof globalThis & {
+    aiBeautyAnalytics?: {
+      track?: (name: string, data?: Record<string, unknown>) => void;
+    };
+  };
+
+  function track(eventName: string, lookSlug: string, metadata: Record<string, unknown> = {}) {
+    (window as AnalyticsWindow).aiBeautyAnalytics?.track?.(eventName, {
+      lookSlug,
+      source: 'trending-this-week',
+      metadata,
+    });
+  }
+
+  function initInspirationSave() {
+    const saveButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-look-save]'));
+    if (!saveButtons.length) return;
+    const toast = document.querySelector<HTMLElement>('[data-saved-toast]');
+    let toastTimer: number | undefined;
+
+    function showToast(message: string) {
+      if (!toast) return;
+      toast.textContent = message;
+      toast.hidden = false;
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toast.hidden = true;
+      }, 3200);
+    }
+
+    function paint(slug: string, isSaved: boolean) {
+      saveButtons
+        .filter((btn) => btn.dataset.lookSlug === slug)
+        .forEach((btn) => {
+          btn.classList.toggle('is-saved', isSaved);
+          btn.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
+          btn.setAttribute('aria-label', `${isSaved ? 'Unsave' : 'Save'} ${btn.dataset.lookTitle ?? 'look'}`);
+        });
+    }
+
+    // Hydrate from localStorage
+    const initialSaved = new Set(getSavedLooks());
+    saveButtons.forEach((btn) => {
+      const slug = btn.dataset.lookSlug ?? '';
+      if (initialSaved.has(slug)) paint(slug, true);
+    });
+
+    saveButtons.forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const slug = btn.dataset.lookSlug ?? '';
+        const title = btn.dataset.lookTitle ?? 'look';
+        if (!slug) return;
+        const { saved, total } = toggleSavedLook(slug);
+        paint(slug, saved);
+        if (saved) {
+          showToast(total === 1 ? `Saved "${title}" · Sign in to sync your collection.` : `Saved "${title}" · ${total} looks saved.`);
+          track('save_look', slug, { total });
+        } else {
+          showToast(`Removed "${title}".`);
+          track('save_look_remove', slug, { total });
+        }
+      });
+    });
+  }
+
+  initInspirationSave();
+</script>
 
 <style>
   .home-inspiration {
@@ -64,12 +207,40 @@ const galleryLooks = looks;
     justify-content: space-between;
     gap: 24px;
     max-width: 960px;
-    margin: 0 auto 42px;
+    margin: 0 auto 36px;
   }
 
   .inspiration-head-copy {
     max-width: 620px;
     margin: 0;
+  }
+
+  .inspiration-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: var(--accent-deep);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .inspiration-pulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 rgba(168, 102, 102, 0.6);
+    animation: inspirationPulse 2.4s ease-out infinite;
+  }
+
+  @keyframes inspirationPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(168, 102, 102, 0.6); }
+    70%  { box-shadow: 0 0 0 8px rgba(168, 102, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(168, 102, 102, 0); }
   }
 
   .inspiration-head h2 {
@@ -108,6 +279,14 @@ const galleryLooks = looks;
     transition: transform 0.24s ease, filter 0.24s ease;
   }
 
+  .look-tile-link {
+    position: absolute;
+    inset: 0;
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
   .look-tile img {
     position: relative;
     z-index: 0;
@@ -130,6 +309,25 @@ const galleryLooks = looks;
     transition: opacity 0.24s ease;
   }
 
+  .look-tile-rank {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
+    color: #c0392b;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    backdrop-filter: blur(4px);
+    text-shadow: none;
+  }
+
   .look-tile-caption {
     position: absolute;
     left: 14px;
@@ -137,7 +335,7 @@ const galleryLooks = looks;
     bottom: 14px;
     z-index: 2;
     display: grid;
-    gap: 4px;
+    gap: 5px;
     color: white;
     opacity: 0;
     pointer-events: none;
@@ -146,37 +344,125 @@ const galleryLooks = looks;
     transition: opacity 0.24s ease, transform 0.24s ease;
   }
 
-  .look-tile-caption span {
-    font-size: 0.72rem;
+  .look-tile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .look-tile-tone {
+    font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
 
+  .look-tile-tries {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-shadow: none;
+  }
+
   .look-tile-caption h3 {
     margin: 0;
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(1.05rem, 1.45vw, 1.4rem);
-    line-height: 1.05;
+    font-size: clamp(1rem, 1.4vw, 1.32rem);
+    line-height: 1.1;
+  }
+
+  .look-tile-theme {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.82;
+  }
+
+  .look-tile-save {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 3;
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(20, 14, 14, 0.32);
+    color: white;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: background 0.18s ease, color 0.18s ease, opacity 0.2s ease, transform 0.2s ease, border-color 0.18s ease;
+  }
+
+  .look-tile-save:hover {
+    background: white;
+    color: #c0392b;
+    border-color: white;
+  }
+
+  .look-tile-save.is-saved {
+    background: white;
+    color: #c0392b;
+    border-color: white;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .look-tile-save.is-saved svg {
+    fill: currentColor;
   }
 
   .look-tile:hover,
-  .look-tile:focus-visible {
+  .look-tile:focus-within {
     filter: brightness(1.06);
     transform: translateY(-3px);
   }
 
   .look-tile:hover img,
-  .look-tile:focus-visible img {
+  .look-tile:focus-within img {
     transform: scale(1.045);
   }
 
   .look-tile:hover .look-tile-shade,
-  .look-tile:focus-visible .look-tile-shade,
+  .look-tile:focus-within .look-tile-shade,
   .look-tile:hover .look-tile-caption,
-  .look-tile:focus-visible .look-tile-caption {
+  .look-tile:focus-within .look-tile-caption,
+  .look-tile:hover .look-tile-save,
+  .look-tile:focus-within .look-tile-save {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .inspiration-saved-toast {
+    margin: 24px auto 0;
+    max-width: 480px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(20, 14, 14, 0.88);
+    color: #fff8f1;
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  @media (hover: none) {
+    /* Touch devices: keep save button visible at low opacity since hover is unavailable */
+    .look-tile-save {
+      opacity: 0.85;
+      transform: translateY(0);
+    }
   }
 
   @media (max-width: 900px) {
@@ -200,6 +486,12 @@ const galleryLooks = looks;
     .inspiration-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
+    }
+
+    .look-tile-rank,
+    .look-tile-save {
+      width: 26px;
+      height: 26px;
     }
   }
 </style>

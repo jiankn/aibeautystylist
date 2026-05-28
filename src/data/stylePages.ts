@@ -43,9 +43,10 @@ export interface HomeStyleItem {
   imageAlt: string;
   tryOnScenario: 'office' | 'date' | 'photo';
   lookSlug: string;
+  focus?: string;
 }
 
-export const STYLE_NAV_TARGET_COUNT = 36;
+
 
 export const stylePages: StylePage[] = [
   {
@@ -211,7 +212,7 @@ export const stylePages: StylePage[] = [
     eyebrow: 'Monolid Makeup',
     headline: 'Build visible eye shape where open eyes can actually see it.',
     intro: 'Monolid makeup works best when it respects the eye structure instead of trying to copy crease-based tutorials. The goal is lift, brightness, and definition that remain visible when the eyes are open.',
-    image: '/images/hero/hero-asian-refined.webp',
+    image: '/images/hero/look-monolid-makeup.webp',
     tryOnScenario: 'office',
     keyTraits: [
       'Eyes-open shadow mapping instead of closed-eye crease placement',
@@ -699,7 +700,7 @@ export const stylePages: StylePage[] = [
     eyebrow: 'Korean Dewy Makeup',
     headline: 'Make the glow look hydrated, clear, and intentional.',
     intro: 'Korean dewy makeup is not the same as putting highlighter everywhere. The look depends on hydrated skin prep, thin luminous base, soft eye definition, watercolor blush, and a blurred lip that makes the face look fresh rather than oily.',
-    image: '/images/hero/look-korean-dewy-glow.webp',
+    image: '/images/hero/look-korean-dewy-makeup.webp',
     tryOnScenario: 'office',
     keyTraits: [
       'Layered hydration before makeup',
@@ -1156,6 +1157,7 @@ export const styleNavigationItems: HomeStyleItem[] = [
     imageAlt: 'Asian soft definition makeup style with clean eye structure',
     tryOnScenario: 'office',
     lookSlug: 'asian-refined',
+    focus: 'center 24%',
   },
   {
     slug: 'soft-berry-stain-makeup',
@@ -1168,10 +1170,11 @@ export const styleNavigationItems: HomeStyleItem[] = [
   {
     slug: 'monolid-makeup',
     label: 'Monolid Makeup',
-    image: '/images/hero/hero-asian-refined.webp',
+    image: '/images/hero/look-monolid-makeup.webp',
     imageAlt: 'Monolid makeup style with visible soft eye definition',
     tryOnScenario: 'office',
     lookSlug: 'asian-refined',
+    focus: 'center 24%',
   },
   {
     slug: 'olive-skin-makeup',
@@ -1188,11 +1191,12 @@ export const styleNavigationItems: HomeStyleItem[] = [
     imageAlt: 'Deep skin makeup style with rich complexion glow',
     tryOnScenario: 'photo',
     lookSlug: 'wedding-guest',
+    focus: '20% 24%',
   },
   {
     slug: 'korean-dewy-makeup',
     label: 'Korean Dewy',
-    image: '/images/hero/look-korean-dewy-glow.webp',
+    image: '/images/hero/look-korean-dewy-makeup.webp',
     imageAlt: 'Korean dewy makeup style with hydrated luminous skin',
     tryOnScenario: 'office',
     lookSlug: 'korean-dewy-glow',
@@ -1200,3 +1204,110 @@ export const styleNavigationItems: HomeStyleItem[] = [
 ];
 
 export const homeStyleItems = styleNavigationItems.slice(0, 18);
+export const STYLE_NAV_TARGET_COUNT = styleNavigationItems.length;
+
+// ──────────────────────────────────────────────────────────────────────────
+// Style facets — multi-dimensional metadata used by Find Your Style picker.
+// Kept separate from styleNavigationItems so SEO/data integrity stays intact.
+// ──────────────────────────────────────────────────────────────────────────
+
+export type StyleAesthetic = 'clean' | 'glow' | 'glam' | 'editorial' | 'camera' | 'event';
+export type StyleEyeShape = 'monolid' | 'hooded' | 'mature';
+export type StyleSkinTone = 'olive' | 'deep';
+export type StyleDifficulty = '5min' | 'daily' | 'full';
+
+export interface StyleFacet {
+  aesthetic: StyleAesthetic;
+  eyeShape?: StyleEyeShape;
+  skinTone?: StyleSkinTone;
+  difficulty: StyleDifficulty;
+  personaTag?: string;
+  hasGuide?: boolean;
+  relatedLookSlugs?: string[];
+}
+
+export const aestheticOptions: Array<{ value: StyleAesthetic | 'all'; label: string; hint: string }> = [
+  { value: 'all', label: 'All styles', hint: 'Browse every style direction' },
+  { value: 'clean', label: 'Clean', hint: 'Skin-first, low-effort, fresh' },
+  { value: 'glow', label: 'Glow', hint: 'K-beauty dewy, peach, juicy' },
+  { value: 'glam', label: 'Glam', hint: 'Soft glam, bronze, evening' },
+  { value: 'editorial', label: 'Editorial', hint: 'Quiet luxury, refined neutrals' },
+  { value: 'camera', label: 'Camera', hint: 'Photo, video, ID-friendly' },
+  { value: 'event', label: 'Event', hint: 'Wedding guest, gala, vacation' },
+];
+
+export const featureOptions: Array<{ value: string; label: string; kind: 'eyeShape' | 'skinTone' | 'difficulty' }> = [
+  { value: '5min', label: '5-min', kind: 'difficulty' },
+  { value: 'daily', label: 'Daily', kind: 'difficulty' },
+  { value: 'full', label: 'Full look', kind: 'difficulty' },
+  { value: 'monolid', label: 'Monolid', kind: 'eyeShape' },
+  { value: 'hooded', label: 'Hooded eyes', kind: 'eyeShape' },
+  { value: 'mature', label: 'Mature skin', kind: 'eyeShape' },
+  { value: 'olive', label: 'Olive', kind: 'skinTone' },
+  { value: 'deep', label: 'Deep', kind: 'skinTone' },
+];
+
+export const styleFacets: Record<string, StyleFacet> = {
+  'clean-girl-makeup':         { aesthetic: 'clean',     difficulty: '5min',  personaTag: '5-min friendly',  hasGuide: true,  relatedLookSlugs: ['clean-girl', 'glass-skin', 'fresh-minimal', 'no-makeup', 'weekend-glow', 'soft-matte-everyday'] },
+  'soft-glam-makeup':          { aesthetic: 'glam',      difficulty: 'full',  personaTag: 'Soft definition', hasGuide: true,  relatedLookSlugs: ['soft-glam', 'romantic-pink', 'berry-date', 'champagne-gala', 'wedding-guest'] },
+  'glass-skin-makeup':         { aesthetic: 'glow',      difficulty: 'daily', personaTag: 'K-beauty',        hasGuide: true,  relatedLookSlugs: ['glass-skin', 'korean-dewy-glow', 'clean-girl', 'fresh-minimal'] },
+  'no-makeup-makeup':          { aesthetic: 'clean',     difficulty: '5min',  personaTag: 'Invisible polish', hasGuide: true, relatedLookSlugs: ['no-makeup', 'fresh-minimal', 'soft-matte-everyday', 'cloud-skin-matte'] },
+  'office-polished-makeup':    { aesthetic: 'editorial', difficulty: 'daily', personaTag: 'Quiet authority', hasGuide: true,  relatedLookSlugs: ['office-glow', 'client-meeting-nude', 'interview-ready', 'executive-rose', 'quiet-taupe'] },
+  'romantic-date-makeup':      { aesthetic: 'glam',      difficulty: 'daily', personaTag: 'Warm flush',      hasGuide: true,  relatedLookSlugs: ['romantic-pink', 'berry-date', 'rose-milk-date', 'candlelight-mauve', 'peach-beige-date'] },
+  'latte-makeup':              { aesthetic: 'editorial', difficulty: 'daily', personaTag: 'Warm neutral',                    relatedLookSlugs: ['warm-nude-daily', 'office-glow', 'soft-matte-everyday'] },
+  'peach-glow-makeup':         { aesthetic: 'glow',      difficulty: '5min',  personaTag: 'Fresh peach',                     relatedLookSlugs: ['peach-morning-glow', 'sunburn-satin-glow', 'weekend-glow'] },
+  'rose-milk-makeup':          { aesthetic: 'glow',      difficulty: 'daily', personaTag: 'Milky rose',                      relatedLookSlugs: ['rose-milk-date', 'romantic-pink', 'watercolor-blush'] },
+  'quiet-luxury-makeup':       { aesthetic: 'editorial', difficulty: 'daily', personaTag: 'Quiet luxury',                    relatedLookSlugs: ['quiet-taupe', 'client-meeting-nude', 'executive-rose', 'office-glow'] },
+  'camera-ready-makeup':       { aesthetic: 'camera',    difficulty: 'full',  personaTag: 'Photo balanced',                  relatedLookSlugs: ['photo-ready', 'flash-proof-satin', 'creator-camera-glow', 'zoom-polish'] },
+  'flash-proof-makeup':        { aesthetic: 'camera',    difficulty: 'full',  personaTag: 'No flashback',                    relatedLookSlugs: ['flash-proof-satin', 'photo-ready', 'wedding-guest'] },
+  'wedding-guest-makeup':      { aesthetic: 'event',     difficulty: 'full',  personaTag: 'Heat-safe polish',                relatedLookSlugs: ['wedding-guest', 'summer-wedding-guest', 'champagne-gala', 'soft-glam'] },
+  'champagne-glow-makeup':     { aesthetic: 'event',     difficulty: 'full',  personaTag: 'Soft shimmer',                    relatedLookSlugs: ['champagne-gala', 'soft-editorial', 'reflective-lid-glow', 'wedding-guest'] },
+  'bronze-glam-makeup':        { aesthetic: 'glam',      difficulty: 'full',  personaTag: 'Warm sculpt',                     relatedLookSlugs: ['bronze-evening', 'vacation-bronze', 'latina-bronze-glam', 'evening-gala'] },
+  'burgundy-velvet-makeup':    { aesthetic: 'glam',      difficulty: 'full',  personaTag: 'Deep velvet',                     relatedLookSlugs: ['burgundy-velvet', 'evening-gala', 'soft-editorial'] },
+  'mature-radiance-makeup':    { aesthetic: 'editorial', difficulty: 'daily', eyeShape: 'mature', personaTag: 'Mature skin', relatedLookSlugs: ['mature-skin-radiance', 'quiet-taupe', 'office-glow'] },
+  'hooded-eye-lift-makeup':    { aesthetic: 'editorial', difficulty: 'daily', eyeShape: 'hooded', personaTag: 'Hooded lift', relatedLookSlugs: ['hooded-eyes-lift', 'office-glow', 'interview-ready'] },
+  'korean-dewy-glow-makeup':   { aesthetic: 'glow',      difficulty: 'daily', personaTag: 'K-beauty',                        relatedLookSlugs: ['korean-dewy-glow', 'glass-skin', 'clean-girl'] },
+  'french-natural-chic-makeup':{ aesthetic: 'clean',     difficulty: 'daily', personaTag: 'French chic',                     relatedLookSlugs: ['french-natural-chic', 'no-makeup', 'soft-matte-everyday', 'fresh-minimal'] },
+  'douyin-soft-focus-makeup':  { aesthetic: 'camera',    difficulty: 'full',  personaTag: 'Camera sweet',                    relatedLookSlugs: ['douyin-soft-focus', 'creator-camera-glow', 'photo-ready'] },
+  'latina-bronze-glam-makeup': { aesthetic: 'glam',      difficulty: 'full',  personaTag: 'Defined warmth',                  relatedLookSlugs: ['latina-bronze-glam', 'bronze-evening', 'vacation-bronze'] },
+  'monochrome-rose-makeup':    { aesthetic: 'editorial', difficulty: 'daily', personaTag: 'Monochrome',                      relatedLookSlugs: ['executive-rose', 'romantic-pink', 'olive-undertone-rose'] },
+  'olive-rose-balance-makeup': { aesthetic: 'editorial', difficulty: 'daily', skinTone: 'olive', personaTag: 'Olive balance', relatedLookSlugs: ['olive-undertone-rose', 'quiet-taupe', 'office-glow'] },
+  'sunburn-blush-makeup':      { aesthetic: 'glow',      difficulty: '5min',  personaTag: 'Lifted blush',                    relatedLookSlugs: ['sunburn-satin-glow', 'peach-morning-glow', 'watercolor-blush'] },
+  'watercolor-blush-makeup':   { aesthetic: 'glow',      difficulty: 'daily', personaTag: 'Diffused color',                  relatedLookSlugs: ['watercolor-blush', 'rose-milk-date', 'soft-berry-stain'] },
+  'jelly-lip-makeup':          { aesthetic: 'glow',      difficulty: '5min',  personaTag: 'Sheer juicy lip',                 relatedLookSlugs: ['jelly-lip-tint', 'rose-milk-date', 'peach-beige-date'] },
+  'reflective-lid-makeup':     { aesthetic: 'camera',    difficulty: 'full',  personaTag: 'Light-catching eyes',             relatedLookSlugs: ['reflective-lid-glow', 'champagne-gala', 'soft-editorial'] },
+  'vacation-bronze-makeup':    { aesthetic: 'glam',      difficulty: 'full',  personaTag: 'Sunlit sculpt',                   relatedLookSlugs: ['vacation-bronze', 'bronze-evening', 'latina-bronze-glam'] },
+  'cloud-skin-makeup':         { aesthetic: 'clean',     difficulty: 'daily', personaTag: 'Soft-focus base',                 relatedLookSlugs: ['cloud-skin-matte', 'soft-matte-everyday', 'no-makeup'] },
+  'interview-ready-makeup':    { aesthetic: 'editorial', difficulty: 'daily', personaTag: 'Interview safe',                  relatedLookSlugs: ['interview-ready', 'office-glow', 'client-meeting-nude'] },
+  'passport-photo-makeup':     { aesthetic: 'camera',    difficulty: 'daily', personaTag: 'ID-safe polish',                  relatedLookSlugs: ['passport-photo-clean', 'photo-ready', 'flash-proof-satin'] },
+  'creator-glow-makeup':       { aesthetic: 'camera',    difficulty: 'full',  personaTag: 'Studio friendly',                 relatedLookSlugs: ['creator-camera-glow', 'photo-ready', 'douyin-soft-focus'] },
+  'five-minute-makeup':        { aesthetic: 'clean',     difficulty: '5min',  personaTag: '5-min routine',                   relatedLookSlugs: ['five-minute-beginner', 'fresh-minimal', 'no-makeup', 'weekend-glow'] },
+  'asian-soft-definition-makeup': { aesthetic: 'clean',  difficulty: 'daily', eyeShape: 'monolid', personaTag: 'Soft definition', relatedLookSlugs: ['asian-refined', 'clean-girl', 'glass-skin'] },
+  'soft-berry-stain-makeup':   { aesthetic: 'glow',      difficulty: '5min',  personaTag: 'Blurred berry',                   relatedLookSlugs: ['soft-berry-stain', 'berry-date', 'watercolor-blush'] },
+  'monolid-makeup':            { aesthetic: 'clean',     difficulty: 'daily', eyeShape: 'monolid', personaTag: 'Monolid friendly', hasGuide: true, relatedLookSlugs: ['asian-refined', 'clean-girl', 'glass-skin', 'office-glow'] },
+  'olive-skin-makeup':         { aesthetic: 'editorial', difficulty: 'daily', skinTone: 'olive', personaTag: 'Olive undertone', hasGuide: true, relatedLookSlugs: ['olive-undertone-rose', 'quiet-taupe', 'soft-matte-everyday'] },
+  'deep-skin-makeup':          { aesthetic: 'glam',      difficulty: 'full',  skinTone: 'deep',  personaTag: 'Deep skin glow', hasGuide: true, relatedLookSlugs: ['radiant-glow', 'wedding-guest', 'evening-gala', 'champagne-gala'] },
+  'korean-dewy-makeup':        { aesthetic: 'glow',      difficulty: 'daily', personaTag: 'K-beauty dewy',  hasGuide: true,  relatedLookSlugs: ['korean-dewy-glow', 'glass-skin', 'clean-girl', 'jelly-lip-tint'] },
+};
+
+export interface StyleNavItemWithFacet extends HomeStyleItem, StyleFacet {
+  guideHref?: string;
+  lookCount: number;
+}
+
+export function getStyleFacet(slug: string): StyleFacet | undefined {
+  return styleFacets[slug];
+}
+
+export function getStyleNavWithFacets(): StyleNavItemWithFacet[] {
+  return styleNavigationItems.map((item) => {
+    const facet = styleFacets[item.slug] ?? { aesthetic: 'editorial' as StyleAesthetic, difficulty: 'daily' as StyleDifficulty };
+    const lookCount = facet.relatedLookSlugs?.length ?? 0;
+    return {
+      ...item,
+      ...facet,
+      guideHref: facet.hasGuide ? `/styles/${item.slug}` : undefined,
+      lookCount,
+    };
+  });
+}

@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="服务条款｜AI Beauty Stylist"
+  description="AI Beauty Stylist 的使用条款，涵盖 AI 妆容诊断、试妆结果、教程、产品建议和付费功能。"
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">服务条款</span>
+      <h1>请把 AI Beauty Stylist 作为美妆建议，而不是绝对保证。</h1>
+      <p>这些条款说明你应如何理解 AI 试妆结果、产品建议、保存记录和付费功能。</p>
+    </div>
+
+    <div class="container grid-cards grid-cards-2">
+      <article class="card coach-card">
+        <h2>AI 建议</h2>
+        <p>结果基于你提供的信息和照片生成，可能受到光线、相机质量、肤况和产品可得性的影响。</p>
+      </article>
+      <article class="card coach-card">
+        <h2>产品建议</h2>
+        <p>产品推荐属于美妆参考，不构成适配、安全性或库存保证。购买前请自行查看成分和商家信息。</p>
+      </article>
+      <article class="card coach-card">
+        <h2>付费功能</h2>
+        <p>会员功能可能包括更多试妆次数、保存历史和高级指导。购买前页面会展示价格、续费和取消信息。</p>
+      </article>
+      <article class="card coach-card">
+        <h2>合理使用</h2>
+        <p>请不要上传未经授权的他人照片，也不要将服务用于骚扰、冒充或敏感画像。</p>
+      </article>
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn" href="/zh/try-on/">开始 AI 试妆</a>
+      <a class="btn btn-secondary" href="/zh/privacy/">隐私政策</a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="隐私政策｜AI Beauty Stylist"
+  description="了解 AI Beauty Stylist 如何处理照片、诊断数据、使用数据和删除控制。"
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">隐私政策</span>
+      <h1>你的照片很敏感，所以产品必须围绕隐私设计。</h1>
+      <p>AI Beauty Stylist 的原则是：照片只用于生成你自己的美妆建议，并提供清晰的删除和控制方式。</p>
+    </div>
+
+    <div class="container grid-cards grid-cards-2">
+      <article class="card coach-card">
+        <h2>照片</h2>
+        <p>照片只在你主动请求诊断时用于分析和生成建议。我们会尽量限制保留时间，并提供删除控制。</p>
+      </article>
+      <article class="card coach-card">
+        <h2>诊断数据</h2>
+        <p>诊断可能包括肤色冷暖调、妆容建议、教程步骤、产品方向和保存记录。保存历史需要明确授权。</p>
+      </article>
+      <article class="card coach-card">
+        <h2>使用数据</h2>
+        <p>基础请求信息可能用于防滥用、维护免费额度和改进产品，不会作为个人美妆数据出售。</p>
+      </article>
+      <article class="card coach-card">
+        <h2>删除</h2>
+        <p>你可以删除照片和相关建议记录。我们也会按产品策略清理不再需要的数据。</p>
+      </article>
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn" href="/zh/try-on/">返回 AI 试妆</a>
+      <a class="btn btn-secondary" href="/zh/terms/">服务条款</a>
+    </div>
+  </section>
+</BaseLayout>

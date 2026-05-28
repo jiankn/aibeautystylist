@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const featuredGuides = [
+  { label: 'AI 试妆', href: '/zh/try-on/', detail: '上传自拍前先了解 AI 会如何判断肤色、五官和妆容方向。' },
+  { label: '口红和粉底色号测试', href: '/zh/tools/shade-finder/', detail: '从冷暖调、肤色深浅和妆容目标开始缩小色号范围。' },
+  { label: '冷暖皮判断', href: '/zh/tools/undertone-quiz/', detail: '用 5 个问题判断你更接近冷调、暖调还是中性调。' },
+  { label: '按肤色冷暖调找粉底', href: '/zh/tools/foundation-shade-finder-by-undertone/', detail: '理解黄调、粉调、中性调、橄榄调和深肤色底妆方向。' },
+  { label: '口红色号指南', href: '/zh/lipstick-shades/', detail: '从暖皮、冷皮、橄榄皮、深肤色和亚洲肤色选择口红色系。' },
+];
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'AI Beauty Stylist 中文美妆指南',
+  description: '中文美妆指南，覆盖 AI 试妆、冷暖皮判断、口红色号、粉底色号和场景妆容。',
+  url: 'https://aibeautystylist.com/zh/makeup-guides/',
+};
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="美妆指南｜AI 试妆、冷暖皮、口红和粉底色号"
+  description="AI Beauty Stylist 中文美妆指南。按问题查找 AI 试妆、冷暖皮判断、口红色号、粉底色号和适合不同场景的妆容建议。"
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">美妆指南</span>
+      <h1>从你真正关心的问题开始，而不是从复杂教程开始。</h1>
+      <p>这里整理中文用户最常见的美妆问题：适合我的妆容、冷暖皮判断、口红显白、粉底不发灰、日常和重要场景妆容。</p>
+    </div>
+
+    <div class="container grid-cards grid-cards-3 top-gap">
+      {featuredGuides.map((guide) => (
+        <a class="card guide-hub-card" href={guide.href}>
+          <span class="pill">中文 P0 指南</span>
+          <h2>{guide.label}</h2>
+          <p>{guide.detail}</p>
+        </a>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <h2>后续会扩展的中文专题</h2>
+      <p>下一批适合继续做成独立中文 SEO 页的主题包括：单眼皮妆容、橄榄皮妆容、深肤色妆容、韩系水光妆、肿眼泡眼妆、成熟肌妆容和婚礼宾客妆容。</p>
+    </div>
+  </section>
+</BaseLayout>

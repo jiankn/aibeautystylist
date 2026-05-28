@@ -8,6 +8,17 @@ import { getAllLooks } from '../lib/mockTryOn';
 export const prerender = true;
 
 const tutorials = getAllLooks('en');
+const featuredSeoGuides = [
+  { label: 'Deep skin makeup guide', href: '/styles/deep-skin-makeup', detail: 'Pigment, nude lips, blush depth, and non-ashy glow.' },
+  { label: 'Monolid makeup guide', href: '/styles/monolid-makeup', detail: 'Eyes-open mapping, lash-root definition, and visible lift.' },
+  { label: 'Olive skin makeup guide', href: '/styles/olive-skin-makeup', detail: 'Muted undertone, base matching, blush, bronzer, and lipstick.' },
+  { label: 'Korean dewy makeup guide', href: '/styles/korean-dewy-makeup', detail: 'Hydrated skin, sheer color, soft brows, and controlled shine.' },
+  { label: 'Makeup for hooded eyes', href: '/scenarios/hooded-eyes-makeup', detail: 'Open-eye placement and liner that still shows.' },
+  { label: 'Makeup for mature skin', href: '/scenarios/mature-skin-makeup', detail: 'Thin layers, lift, softened powder, and fresh color.' },
+  { label: 'AI makeup try on for wedding guest', href: '/scenarios/wedding-guest-makeup', detail: 'Photo-safe wedding guest makeup you can preview first.' },
+  { label: 'Lipstick shades for Asian skin', href: '/lipstick-shades/asian-skin-lipstick-shades', detail: 'Tea rose, rose-brown, berry, and undertone-safe shades.' },
+  { label: 'Foundation shade finder by undertone', href: '/tools/foundation-shade-finder-by-undertone', detail: 'Warm, cool, neutral, olive, and deep foundation directions.' },
+];
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -29,6 +40,22 @@ const structuredData = {
       <p>
         Use the guide library for search-friendly advice, then move into AI Try-On when you want the recommendation adjusted to your face.
       </p>
+    </div>
+
+    <div class="container guide-hub-section top-gap">
+      <div class="section-copy">
+        <span class="eyebrow">Popular Questions</span>
+        <h2>High-intent makeup guides</h2>
+      </div>
+      <div class="grid-cards grid-cards-3">
+        {featuredSeoGuides.map((guide) => (
+          <a class="card guide-hub-card" href={guide.href}>
+            <span class="pill">SEO Guide</span>
+            <h3>{guide.label}</h3>
+            <p>{guide.detail}</p>
+          </a>
+        ))}
+      </div>
     </div>
 
     <div class="container guide-hub-section">

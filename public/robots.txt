@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aibeautystylist.com/sitemap.xml
+Sitemap: https://aibeautystylist.com/sitemap-index.xml

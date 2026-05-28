@@ -53,7 +53,7 @@ const structuredData = [
 
 <BaseLayout
   title="Discover Makeup Looks | AI Beauty Stylist"
-  description="Explore 48 makeup looks and 36 style directions, then try the right one on your own face with AI Beauty Stylist."
+  description={`Explore ${lookItems.length} makeup looks and ${styleItems.length} style directions, then try the right one on your own face with AI Beauty Stylist.`}
   structuredData={structuredData}
 >
   <section class="section discover-hero">
@@ -93,7 +93,7 @@ const structuredData = [
   <section class="section section-soft discover-library" id="look-library">
     <div class="container discover-section-head">
       <div class="section-copy">
-        <span class="eyebrow">Get Inspired</span>
+        <span class="eyebrow">Full Library</span>
         <h2>48 makeup looks for moments, moods, and features.</h2>
         <p>These are concrete looks: visual-first, scenario-aware, and ready to pass into AI Try-On as inspiration.</p>
       </div>
@@ -139,8 +139,8 @@ const structuredData = [
   <section class="section discover-styles" id="style-directions">
     <div class="container discover-section-head">
       <div class="section-copy">
-        <span class="eyebrow">Try a style</span>
-        <h2>36 style directions for stable navigation.</h2>
+        <span class="eyebrow">All Styles</span>
+        <h2>{styleItems.length} style directions for stable navigation.</h2>
         <p>These are broader aesthetic routes, not one-off pictures. Each style points to a representative look and try-on intent.</p>
       </div>
       <div class="discover-filter-tabs" aria-label="Filter style directions">
@@ -162,6 +162,7 @@ const structuredData = [
         <a
           class="discover-style-card"
           href={style.tryOnHref}
+          style={`--look-focus:${style.focus ?? 'center'};`}
           data-discover-style
           data-filter-group={style.tryOnScenario}
           data-analytics-look

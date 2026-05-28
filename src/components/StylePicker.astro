@@ -1,88 +1,307 @@
 ---
-import { homeStyleItems, STYLE_NAV_TARGET_COUNT } from '../data/stylePages';
+import {
+  aestheticOptions,
+  featureOptions,
+  getStyleNavWithFacets,
+  STYLE_NAV_TARGET_COUNT,
+} from '../data/stylePages';
 
-const styles = homeStyleItems.map((style, index) => ({
-  title: style.label,
-  image: style.image,
-  imageAlt: style.imageAlt,
-  slug: style.slug,
-  lookSlug: style.lookSlug,
-  tryOnHref: `/try-on?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}&source=try-a-style&position=${index + 1}`,
+const styles = getStyleNavWithFacets().map((style, index) => ({
+  ...style,
   position: index + 1,
+  tryOnHref: `/try-on?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}&source=find-your-style&position=${index + 1}`,
 }));
+
+const difficultyLabels: Record<string, string> = {
+  '5min': '5-min',
+  daily: 'Daily',
+  full: 'Full look',
+};
 ---
 
 <section class="section home-style-picker" id="try-a-style">
   <div class="container">
     <div class="style-picker-header">
       <div class="section-copy style-picker-head">
-        <span class="eyebrow">Try a style</span>
-        <h2>Choose a style direction and try it on your face.</h2>
+        <span class="eyebrow">Find your style</span>
+        <h2>What's your makeup identity?</h2>
         <p>
-          Scan the featured edit first, or open all {STYLE_NAV_TARGET_COUNT} style directions in Discover.
+          Pick a direction that fits how <em>you</em> want to look — by aesthetic, by feature, or by how much time you have. Set one as your default and we'll remember it next time.
         </p>
       </div>
-      <div class="style-picker-nav">
-        <a class="style-picker-all-link" href="/discover#style-directions">View all styles</a>
-        <button class="style-nav-btn" data-dir="prev" aria-label="Previous styles">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button class="style-nav-btn" data-dir="next" aria-label="Next styles">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-        </button>
+      <a class="style-picker-all-link" href="/discover#style-directions" data-analytics-event="find_style_view_all">View all {STYLE_NAV_TARGET_COUNT} styles →</a>
+    </div>
+
+    <div class="my-style-banner" data-my-style-banner hidden>
+      <div class="my-style-banner-text">
+        <span class="my-style-banner-eyebrow">Welcome back</span>
+        <strong>Your saved style: <span data-my-style-label></span></strong>
+      </div>
+      <div class="my-style-banner-actions">
+        <a class="btn btn-secondary my-style-banner-btn" data-my-style-tryon href="/try-on">Continue with this style</a>
+        <button type="button" class="my-style-banner-clear" data-my-style-clear>Clear</button>
       </div>
     </div>
 
-    <div class="style-picker-grid">
+    <div class="style-filters" aria-label="Filter style directions">
+      <div class="style-filter-row" role="radiogroup" aria-label="Filter by aesthetic">
+        {aestheticOptions.map((opt, idx) => (
+          <button
+            class:list={['style-chip', 'style-chip-aesthetic', { 'is-active': idx === 0 }]}
+            type="button"
+            role="radio"
+            aria-checked={idx === 0 ? 'true' : 'false'}
+            data-style-aesthetic={opt.value}
+            data-analytics-event="find_style_filter"
+            data-analytics-filter-kind="aesthetic"
+            data-analytics-filter-value={opt.value}
+            title={opt.hint}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+      <div class="style-filter-row" aria-label="Filter by feature">
+        <span class="style-filter-label">Filter:</span>
+        {featureOptions.map((opt) => (
+          <button
+            class="style-chip style-chip-feature"
+            type="button"
+            aria-pressed="false"
+            data-style-feature-kind={opt.kind}
+            data-style-feature-value={opt.value}
+            data-analytics-event="find_style_filter"
+            data-analytics-filter-kind={opt.kind}
+            data-analytics-filter-value={opt.value}
+          >
+            {opt.label}
+          </button>
+        ))}
+        <button class="style-chip-reset" type="button" data-style-reset hidden>Reset</button>
+      </div>
+    </div>
+
+    <div class="style-picker-grid" data-style-grid>
       {styles.map((style) => (
-        <a
+        <article
           class="style-card"
-          href={style.tryOnHref}
-          aria-label={`Try ${style.title}`}
-          data-analytics-look
-          data-analytics-source="try-a-style"
-          data-analytics-look-slug={style.lookSlug}
-          data-analytics-style-slug={style.slug}
-          data-analytics-position={style.position}
+          data-style-card
+          data-style-slug={style.slug}
+          data-aesthetic={style.aesthetic}
+          data-difficulty={style.difficulty}
+          data-eye-shape={style.eyeShape ?? ''}
+          data-skin-tone={style.skinTone ?? ''}
         >
-          <span class="style-card-image">
-            <img src={style.image} alt={style.imageAlt} loading="lazy" />
-          </span>
-          <span class="style-card-title">{style.title}</span>
-        </a>
+          <a
+            class="style-card-link"
+            href={style.tryOnHref}
+            style={`--look-focus:${style.focus ?? 'center'};`}
+            aria-label={`Try ${style.label}`}
+            data-analytics-look
+            data-analytics-source="find-your-style"
+            data-analytics-look-slug={style.lookSlug}
+            data-analytics-style-slug={style.slug}
+            data-analytics-position={style.position}
+          >
+            <span class="style-card-image">
+              <img src={style.image} alt={style.imageAlt} loading="lazy" />
+              <span class="style-card-difficulty">{difficultyLabels[style.difficulty]}</span>
+            </span>
+            <span class="style-card-body">
+              <span class="style-card-title">{style.label}</span>
+              {style.personaTag && <span class="style-card-persona">{style.personaTag}</span>}
+            </span>
+          </a>
+          <button
+            type="button"
+            class="style-card-pin"
+            data-style-pin
+            data-style-slug={style.slug}
+            data-style-label={style.label}
+            data-style-scenario={style.tryOnScenario}
+            data-style-look={style.lookSlug}
+            aria-label={`Set ${style.label} as my style`}
+            title="Set as my style"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="12 2 15.1 8.6 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 8.9 8.6 12 2" />
+            </svg>
+          </button>
+          {style.guideHref && (
+            <a class="style-card-guide" href={style.guideHref} data-analytics-event="find_style_view_guide" data-analytics-style-slug={style.slug}>
+              View {style.lookCount} looks →
+            </a>
+          )}
+        </article>
       ))}
     </div>
+
+    <p class="style-empty" data-style-empty hidden>No styles match those filters yet — try clearing one.</p>
   </div>
 </section>
 
 <script>
-  function initStylePicker() {
-    const grid = document.querySelector('.style-picker-grid') as HTMLElement;
-    const prevBtn = document.querySelector('.style-nav-btn[data-dir="prev"]') as HTMLButtonElement;
-    const nextBtn = document.querySelector('.style-nav-btn[data-dir="next"]') as HTMLButtonElement;
-    if (!grid || !prevBtn || !nextBtn) return;
+  import { getMyStyle, setMyStyle, clearMyStyle, type MyStyle } from '../lib/personalization';
 
-    const getScrollAmount = () => {
-      const card = grid.querySelector('.style-card') as HTMLElement;
-      if (!card) return 300;
-      return (card.offsetWidth + 14) * 3;
+  type AnalyticsWindow = Window & typeof globalThis & {
+    aiBeautyAnalytics?: {
+      track?: (name: string, data?: Record<string, unknown>) => void;
     };
+  };
 
-    prevBtn.addEventListener('click', () => {
-      grid.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
-    });
-    nextBtn.addEventListener('click', () => {
-      grid.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
-    });
-
-    const updateButtons = () => {
-      prevBtn.disabled = grid.scrollLeft <= 4;
-      nextBtn.disabled = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 4;
-    };
-    grid.addEventListener('scroll', updateButtons, { passive: true });
-    updateButtons();
+  function track(eventName: string, metadata: Record<string, unknown> = {}) {
+    (window as AnalyticsWindow).aiBeautyAnalytics?.track?.(eventName, { metadata });
   }
-  initStylePicker();
+
+  function initFindYourStyle() {
+    const grid = document.querySelector<HTMLElement>('[data-style-grid]');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-style-card]'));
+    const aestheticChips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-style-aesthetic]'));
+    const featureChips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-style-feature-value]'));
+    const resetBtn = document.querySelector<HTMLButtonElement>('[data-style-reset]');
+    const emptyMsg = document.querySelector<HTMLElement>('[data-style-empty]');
+
+    const state = {
+      aesthetic: 'all',
+      difficulty: '' as string,
+      eyeShape: '' as string,
+      skinTone: '' as string,
+    };
+
+    function applyFilters() {
+      let visible = 0;
+      cards.forEach((card) => {
+        const aesthetic = card.dataset.aesthetic ?? '';
+        const difficulty = card.dataset.difficulty ?? '';
+        const eyeShape = card.dataset.eyeShape ?? '';
+        const skinTone = card.dataset.skinTone ?? '';
+        const matches =
+          (state.aesthetic === 'all' || aesthetic === state.aesthetic) &&
+          (!state.difficulty || difficulty === state.difficulty) &&
+          (!state.eyeShape || eyeShape === state.eyeShape) &&
+          (!state.skinTone || skinTone === state.skinTone);
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      const hasFeatureFilter = Boolean(state.difficulty || state.eyeShape || state.skinTone);
+      if (resetBtn) resetBtn.hidden = !hasFeatureFilter && state.aesthetic === 'all';
+      if (emptyMsg) emptyMsg.hidden = visible !== 0;
+    }
+
+    aestheticChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const value = chip.dataset.styleAesthetic ?? 'all';
+        state.aesthetic = value;
+        aestheticChips.forEach((c) => {
+          const active = c === chip;
+          c.classList.toggle('is-active', active);
+          c.setAttribute('aria-checked', active ? 'true' : 'false');
+        });
+        applyFilters();
+        track('find_style_filter', { kind: 'aesthetic', value });
+      });
+    });
+
+    featureChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const kind = (chip.dataset.styleFeatureKind ?? '') as 'difficulty' | 'eyeShape' | 'skinTone';
+        const value = chip.dataset.styleFeatureValue ?? '';
+        if (!kind) return;
+        const isActive = chip.getAttribute('aria-pressed') === 'true';
+        // Single-select within each kind (radio-like): clear other chips of same kind first.
+        featureChips
+          .filter((c) => c.dataset.styleFeatureKind === kind)
+          .forEach((c) => {
+            c.classList.remove('is-active');
+            c.setAttribute('aria-pressed', 'false');
+          });
+        if (isActive) {
+          state[kind] = '';
+        } else {
+          state[kind] = value;
+          chip.classList.add('is-active');
+          chip.setAttribute('aria-pressed', 'true');
+        }
+        applyFilters();
+        track('find_style_filter', { kind, value: state[kind] });
+      });
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      state.aesthetic = 'all';
+      state.difficulty = '';
+      state.eyeShape = '';
+      state.skinTone = '';
+      aestheticChips.forEach((c, i) => {
+        c.classList.toggle('is-active', i === 0);
+        c.setAttribute('aria-checked', i === 0 ? 'true' : 'false');
+      });
+      featureChips.forEach((c) => {
+        c.classList.remove('is-active');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      applyFilters();
+      track('find_style_filter', { kind: 'reset', value: 'all' });
+    });
+  }
+
+  function initMyStyle() {
+    const banner = document.querySelector<HTMLElement>('[data-my-style-banner]');
+    const labelEl = document.querySelector<HTMLElement>('[data-my-style-label]');
+    const tryOnLink = document.querySelector<HTMLAnchorElement>('[data-my-style-tryon]');
+    const clearBtn = document.querySelector<HTMLButtonElement>('[data-my-style-clear]');
+    const pinButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-style-pin]'));
+
+    function renderBanner(myStyle: MyStyle | null) {
+      if (!banner || !labelEl || !tryOnLink) return;
+      if (!myStyle) {
+        banner.hidden = true;
+        pinButtons.forEach((btn) => btn.classList.remove('is-pinned'));
+        return;
+      }
+      banner.hidden = false;
+      labelEl.textContent = myStyle.label;
+      tryOnLink.href = `/try-on?scenario=${encodeURIComponent(myStyle.scenario)}&style=${encodeURIComponent(myStyle.slug)}&look=${encodeURIComponent(myStyle.lookSlug)}&source=my-style-banner`;
+      pinButtons.forEach((btn) => {
+        btn.classList.toggle('is-pinned', btn.dataset.styleSlug === myStyle.slug);
+      });
+    }
+
+    renderBanner(getMyStyle());
+
+    pinButtons.forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const slug = btn.dataset.styleSlug ?? '';
+        const label = btn.dataset.styleLabel ?? '';
+        const scenario = btn.dataset.styleScenario ?? 'office';
+        const lookSlug = btn.dataset.styleLook ?? '';
+        if (!slug) return;
+        const current = getMyStyle();
+        if (current && current.slug === slug) {
+          clearMyStyle();
+          renderBanner(null);
+          track('clear_my_style', { slug, label });
+        } else {
+          const next = setMyStyle({ slug, label, scenario, lookSlug });
+          renderBanner(next);
+          track('set_my_style', { slug, label, scenario });
+        }
+      });
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      const current = getMyStyle();
+      clearMyStyle();
+      renderBanner(null);
+      if (current) track('clear_my_style', { slug: current.slug, source: 'banner' });
+    });
+  }
+
+  initFindYourStyle();
+  initMyStyle();
 </script>
 
 <style>
@@ -94,8 +313,8 @@ const styles = homeStyleItems.map((style, index) => ({
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 28px;
+    gap: 24px;
+    margin-bottom: 20px;
   }
 
   .style-picker-head {
@@ -103,11 +322,9 @@ const styles = homeStyleItems.map((style, index) => ({
     margin-bottom: 0;
   }
 
-  .style-picker-nav {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
+  .style-picker-head h2 em {
+    font-style: italic;
+    color: var(--accent-deep);
   }
 
   .style-picker-all-link {
@@ -116,53 +333,164 @@ const styles = homeStyleItems.map((style, index) => ({
     font-weight: 800;
     text-decoration: none;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  .style-nav-btn {
-    display: inline-grid;
-    place-items: center;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: none;
-    border-radius: 0;
-    background: none;
-    color: var(--text-tertiary);
-    cursor: pointer;
-    transition: color 0.2s ease, opacity 0.2s ease;
+  .style-picker-all-link:hover {
+    text-decoration: underline;
   }
 
-  .style-nav-btn:hover {
+  /* Welcome banner — shown only when user has saved a style */
+  .my-style-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, rgba(168, 102, 102, 0.08), rgba(168, 102, 102, 0.02));
+  }
+
+  /* HTML5 [hidden] is overridden by display: grid/flex above — restore it */
+  .my-style-banner[hidden],
+  .style-card[hidden] {
+    display: none !important;
+  }
+
+  .my-style-banner-text {
+    display: grid;
+    gap: 2px;
+  }
+
+  .my-style-banner-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  .my-style-banner-text strong {
+    font-size: 0.95rem;
     color: var(--text);
   }
 
-  .style-nav-btn:disabled {
-    opacity: 0.25;
-    cursor: default;
-  }
-
-  .style-picker-grid {
+  .my-style-banner-actions {
     display: flex;
-    gap: 14px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+    align-items: center;
+    gap: 12px;
   }
 
-  .style-picker-grid::-webkit-scrollbar {
-    display: none;
+  .my-style-banner-btn {
+    padding-block: 8px;
+    font-size: 0.84rem;
+  }
+
+  .my-style-banner-clear {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .my-style-banner-clear:hover {
+    color: var(--text);
+  }
+
+  /* Filter chips */
+  .style-filters {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .style-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .style-filter-label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  .style-chip {
+    min-height: 36px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .style-chip:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .style-chip-aesthetic.is-active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .style-chip-feature.is-active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent-deep);
+  }
+
+  .style-chip-reset {
+    margin-left: auto;
+    padding: 4px 10px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .style-chip-reset:hover {
+    color: var(--text);
+  }
+
+  /* Card grid */
+  .style-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px;
   }
 
   .style-card {
-    flex: 0 0 calc((100% - 14px * 5) / 6);
-    padding: 0;
+    position: relative;
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .style-card-link {
     display: grid;
     gap: 8px;
     color: inherit;
-    min-width: 0;
-    scroll-snap-align: start;
+    text-decoration: none;
   }
 
   .style-card-image {
@@ -179,51 +507,146 @@ const styles = homeStyleItems.map((style, index) => ({
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: var(--look-focus, center);
     transition: transform 0.55s ease;
   }
 
-  .style-card:hover .style-card-image img,
-  .style-card:focus-visible .style-card-image img {
+  .style-card-link:hover .style-card-image img,
+  .style-card-link:focus-visible .style-card-image img {
     transform: scale(1.05);
   }
 
-  .style-card-title {
-    display: block;
+  .style-card-difficulty {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
     color: var(--text);
-    font-size: 0.84rem;
-    font-weight: 600;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .style-card-link:hover .style-card-difficulty,
+  .style-card-link:focus-visible .style-card-difficulty {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .style-card-body {
+    display: grid;
+    gap: 2px;
+    text-align: left;
+  }
+
+  .style-card-title {
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 700;
     line-height: 1.25;
+  }
+
+  .style-card-persona {
+    color: var(--muted);
+    font-size: 0.74rem;
+    font-weight: 600;
+  }
+
+  .style-card-pin {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--text-secondary);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease, border-color 0.18s ease, opacity 0.2s ease;
+  }
+
+  .style-card:hover .style-card-pin,
+  .style-card:focus-within .style-card-pin,
+  .style-card-pin.is-pinned {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .style-card-pin:hover {
+    background: white;
+    color: var(--accent-deep);
+    transform: scale(1.06);
+  }
+
+  .style-card-pin.is-pinned {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .style-card-pin.is-pinned svg {
+    fill: white;
+  }
+
+  .style-card-guide {
+    align-self: start;
+    padding: 0;
+    color: var(--accent-deep);
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .style-card-guide:hover {
+    text-decoration: underline;
+  }
+
+  .style-empty {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 0.88rem;
     text-align: center;
   }
 
-  @media (max-width: 900px) {
-    .style-card {
-      flex: 0 0 calc((100% - 14px * 3) / 4);
+  @media (max-width: 1100px) {
+    .style-picker-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 720px) {
     .style-picker-header {
       flex-direction: column;
       align-items: flex-start;
     }
 
-    .style-picker-nav {
-      align-self: flex-end;
-      margin-top: -36px;
+    .my-style-banner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .my-style-banner-actions {
+      width: 100%;
+      justify-content: space-between;
     }
 
     .style-picker-grid {
-      margin: 0 -16px;
-      padding: 0 16px 8px;
-    }
-
-    .style-card {
-      flex: 0 0 124px;
-    }
-
-    .style-card-title {
-      font-size: 0.84rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
   }
 </style>

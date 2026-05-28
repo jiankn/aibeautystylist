@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const shadeFamilies = [
+  { label: '暖皮', shades: '蜜桃玫瑰、暖砖红、焦糖裸色', detail: '适合黄调、金调或蜜桃调肤色，避免过冷的蓝调粉。' },
+  { label: '冷皮', shades: '玫瑰粉、莓果色、冷调豆沙', detail: '适合粉调或玫瑰调肤色，避免过橘的珊瑚色。' },
+  { label: '中性皮', shades: '平衡玫瑰、玫瑰棕、柔和红', detail: '冷暖都能尝试，但要根据唇色深浅和场景调整饱和度。' },
+  { label: '橄榄皮', shades: '灰调玫瑰、梅子色、棕调豆沙', detail: '更适合低饱和、有深度的颜色，避免荧光粉和奶白粉。' },
+  { label: '亚洲肤色', shades: '茶玫瑰、玫瑰棕、柔莓色', detail: '亚洲肤色差异很大，应同时看冷暖调、肤色深浅和对比度。' },
+];
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '中文口红色号指南',
+  description: '按肤色冷暖调和肤色深浅选择口红色号，覆盖暖皮、冷皮、中性皮、橄榄皮和亚洲肤色。',
+  url: 'https://aibeautystylist.com/zh/lipstick-shades/',
+};
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="口红色号指南｜暖皮冷皮、橄榄皮和亚洲肤色怎么选"
+  description="中文口红色号指南。按暖皮、冷皮、中性皮、橄榄皮和亚洲肤色选择显白、不显脏的口红色系，并连接 AI 色号测试。"
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">口红色号</span>
+      <h1>别只问哪个色号火，先判断哪个色系适合你。</h1>
+      <p>同一支口红在不同肤色上可能完全不同。真正影响效果的是肤色冷暖调、肤色深浅、原生唇色和妆容场景。</p>
+      <div class="cta-row">
+        <a class="btn" href="/zh/tools/shade-finder/">测试我的口红和粉底色号</a>
+        <a class="btn btn-secondary" href="/zh/tools/undertone-quiz/">先判断冷暖皮</a>
+      </div>
+    </div>
+
+    <div class="container grid-cards grid-cards-3 top-gap">
+      {shadeFamilies.map((family) => (
+        <article class="card coach-card">
+          <span class="pill">{family.label}</span>
+          <h2>{family.shades}</h2>
+          <p>{family.detail}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <h2>为什么口红会显黑或显脏？</h2>
+      <p>常见原因不是颜色“不好看”，而是颜色方向和你的肤色底色冲突。暖皮用太冷的蓝调粉，可能显灰；橄榄皮用太亮的珊瑚色，可能显脏；深唇色用太浅的裸色，可能像没气色。</p>
+      <h2>下一步</h2>
+      <ul class="seo-link-list">
+        <li><a href="/zh/tools/shade-finder/">用 AI 色号测试缩小范围</a></li>
+        <li><a href="/zh/tools/foundation-shade-finder-by-undertone/">按冷暖调找粉底方向</a></li>
+        <li><a href="/zh/try-on/">了解 AI 试妆如何给完整妆容建议</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

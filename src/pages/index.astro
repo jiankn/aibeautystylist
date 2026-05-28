@@ -8,8 +8,17 @@ import FeatureSteps from '../components/FeatureSteps.astro';
 import TrustAndPlans from '../components/TrustAndPlans.astro';
 import { homeStyleItems } from '../data/stylePages';
 import { scenarioPages } from '../data/scenarioPages';
+import { getWeeklyInspirationLookSlugs } from '../data/lookCatalog';
+import { getRuntimeEnv } from '../lib/cloudflare/runtime';
+import { getWeeklyTryCounts } from '../lib/repositories/lookAnalyticsRepository';
 
-export const prerender = true;
+export const prerender = false;
+
+const env = getRuntimeEnv(Astro);
+const weeklyTriesBySlug = await getWeeklyTryCounts(env, {
+  days: 7,
+  lookSlugs: getWeeklyInspirationLookSlugs(),
+});
 
 const structuredData = [
   {
@@ -58,7 +67,7 @@ const structuredData = [
   structuredData={structuredData}
 >
   <HeroSection />
-  <InspirationGrid />
+  <InspirationGrid weeklyTriesBySlug={weeklyTriesBySlug} />
   <StylePicker />
   <ScenarioCards />
   <FeatureSteps />

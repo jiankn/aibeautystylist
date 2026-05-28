@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const faqEntities = [
+  { q: 'AI 试妆适合谁？', a: '适合不知道自己适合什么妆容、想减少试错、准备面试婚礼拍照等重要场景，或想先确认口红和粉底方向的人。' },
+  { q: 'AI 试妆需要上传照片吗？', a: '完整诊断需要一张清晰正面自拍。照片只用于生成你的妆容建议和预览，不应用于无关用途。' },
+  { q: 'AI 会给出哪些建议？', a: '建议通常包括肤色冷暖调、妆容风格、口红和粉底方向、腮红眼影色系，以及分步骤教程。' },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'AI 试妆工具',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    url: 'https://aibeautystylist.com/zh/try-on/',
+    description: '上传自拍，使用 AI 分析肤色和五官，获得适合你的妆容、口红和粉底色号建议。',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntities.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="AI 试妆工具｜上传自拍看适合你的妆容"
+  description="AI 试妆中文版。上传自拍，分析肤色冷暖调、五官和场景需求，获得适合你的妆容、口红、粉底和步骤建议。"
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">AI Makeup Try-On</span>
+      <h1>上传自拍，看看什么妆容真正适合你。</h1>
+      <p>很多妆容教程看起来好看，但不一定适合你的肤色、眼型、脸型和场景。AI 试妆的价值，是先分析你的个人特征，再给出更接近你自己的妆容方向。</p>
+      <div class="cta-row">
+        <a class="btn" href="/try-on?locale=zh-CN&from=zh_try_on">进入 AI 试妆工具</a>
+        <a class="btn btn-secondary" href="/zh/tools/shade-finder/">先测试色号</a>
+      </div>
+    </div>
+
+    <div class="container grid-cards grid-cards-3 top-gap">
+      <article class="card coach-card">
+        <span class="pill">第一步</span>
+        <h2>上传清晰自拍</h2>
+        <p>正面、自然光、无遮挡的照片能帮助 AI 更准确判断肤色、五官比例和妆容强度。</p>
+      </article>
+      <article class="card coach-card">
+        <span class="pill">第二步</span>
+        <h2>获得个性化诊断</h2>
+        <p>系统会综合冷暖调、肤色深浅、眼型、唇形和场景，给出更适合你的妆容方案。</p>
+      </article>
+      <article class="card coach-card">
+        <span class="pill">第三步</span>
+        <h2>按步骤复刻妆容</h2>
+        <p>不是只给图片灵感，而是给出底妆、眼妆、腮红、口红和常见错误提醒。</p>
+      </article>
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <h2>AI 试妆能解决什么问题？</h2>
+      <p>如果你经常遇到口红显黑、粉底发灰、眼妆显肿、教程照搬失败，AI 试妆可以先帮你缩小方向。它不是替代专业化妆师，而是帮你更快知道哪些颜色、妆感和场景更值得尝试。</p>
+      <h2>常见问题</h2>
+      <dl class="seo-faq">
+        {faqEntities.map((item) => (
+          <>
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </>
+        ))}
+      </dl>
+    </div>
+  </section>
+</BaseLayout>

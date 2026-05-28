@@ -64,6 +64,21 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
     </article>
   </div>
 
+  <section slot="main" class="db-section db-style-profile" aria-labelledby="style-profile-heading">
+    <h2 id="style-profile-heading" class="sr-only">Your style profile</h2>
+    <div class="db-style-command">
+      <div class="db-style-command-status">
+        <span class="db-style-command-kicker" data-style-profile-eyebrow>Style profile</span>
+        <strong data-style-profile-title>No style pinned yet</strong>
+        <span data-style-profile-copy>Pick one direction to personalize try-ons and weekly drops.</span>
+      </div>
+      <div class="db-style-profile-actions">
+        <a class="btn" href="/#try-a-style" data-style-profile-primary>Find your style</a>
+        <a class="btn btn-secondary" href="/membership?from=dashboard_style_profile" data-style-profile-pro>Unlock Pro weekly drops</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ── 主列：Recent activity 时间轴 ─────────────────────── -->
   <section slot="main" class="db-section" aria-labelledby="recent-heading">
     <header class="db-section-head">
@@ -73,6 +88,18 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
     <div class="db-timeline" data-recent-timeline>
       <p class="db-empty" data-recent-empty hidden>
         No try-ons yet. <a href="/try-on">Try your first look →</a>
+      </p>
+    </div>
+  </section>
+
+  <section slot="main" class="db-section" aria-labelledby="saved-heading">
+    <header class="db-section-head">
+      <h2 id="saved-heading">My saved looks</h2>
+      <a href="/discover#look-library">Find more →</a>
+    </header>
+    <div class="db-saved-grid" data-saved-looks>
+      <p class="db-empty" data-saved-empty>
+        No saved looks yet. Tap the heart on Trending This Week to build your collection.
       </p>
     </div>
   </section>
@@ -115,6 +142,8 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
 </DashboardShell>
 
 <script>
+  import { getMyStyle, getSavedLooks } from '../../lib/personalization';
+
   type RecentJob = {
     id: string;
     scenario: string;
@@ -137,6 +166,16 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
       diagnosis: { limit: number; used: number; remaining: number; window: string };
     };
     history: { total: number; recent: RecentJob[] };
+  };
+
+  type SavedLook = {
+    id: string;
+    lookSlug: string;
+    lookName: string;
+    scenario: string | null;
+    image: string | null;
+    imageAlt: string | null;
+    createdAt: string;
   };
 
   function formatDate(iso: string | null): string {
@@ -168,6 +207,34 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
   function setText(selector: string, text: string): void {
     const el = document.querySelector(selector);
     if (el) el.textContent = text;
+  }
+
+  function loadStyleProfile() {
+    const myStyle = getMyStyle();
+    if (!myStyle) return;
+
+    const tryOnHref = `/try-on?scenario=${encodeURIComponent(myStyle.scenario)}&style=${encodeURIComponent(myStyle.slug)}&look=${encodeURIComponent(myStyle.lookSlug)}&source=dashboard-style-profile`;
+    const proHref = `/membership?from=dashboard_style_profile&style=${encodeURIComponent(myStyle.slug)}`;
+    const primary = document.querySelector<HTMLAnchorElement>('[data-style-profile-primary]');
+    const pro = document.querySelector<HTMLAnchorElement>('[data-style-profile-pro]');
+
+    setText('[data-style-profile-eyebrow]', 'Pinned style');
+    setText('[data-style-profile-title]', myStyle.label);
+    setText(
+      '[data-style-profile-copy]',
+      'Ready for try-on and weekly drops.',
+    );
+    setText('[data-suggest-title]', `Try a new ${myStyle.label} direction`);
+    setText('[data-suggest-meta]', 'Continue from your pinned style or unlock a weekly Pro drop matched to your profile.');
+
+    if (primary) {
+      primary.href = tryOnHref;
+      primary.textContent = 'Continue this style';
+    }
+    if (pro) {
+      pro.href = proHref;
+      pro.textContent = 'Unlock weekly drops';
+    }
   }
 
   async function loadOverview() {
@@ -268,5 +335,165 @@ import DashboardShell from '../../layouts/DashboardShell.astro';
     timeline.insertAdjacentHTML('afterbegin', html);
   }
 
+  async function loadSavedLooks() {
+    const grid = document.querySelector<HTMLElement>('[data-saved-looks]');
+    const empty = document.querySelector<HTMLElement>('[data-saved-empty]');
+    if (!grid) return;
+
+    const localSlugs = getSavedLooks();
+    const requestOptions: RequestInit = localSlugs.length > 0
+      ? {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lookSlugs: localSlugs }),
+        }
+      : { method: 'GET' };
+
+    const resp = await fetch('/api/account/saved-looks', requestOptions).catch(() => null);
+    if (!resp || !resp.ok) return;
+
+    const data = (await resp.json()) as { savedLooks?: SavedLook[] };
+    const savedLooks = data.savedLooks ?? [];
+    if (savedLooks.length === 0) {
+      empty?.removeAttribute('hidden');
+      return;
+    }
+
+    empty?.setAttribute('hidden', '');
+    grid.innerHTML = savedLooks.slice(0, 6).map((look) => {
+      const title = escapeHtml(look.lookName);
+      const img = look.image
+        ? `<img src="${escapeHtml(look.image)}" alt="${escapeHtml(look.imageAlt ?? look.lookName)}" loading="lazy" />`
+        : '<span>No preview</span>';
+      const scenario = look.scenario ? `${escapeHtml(look.scenario)} · ` : '';
+      return `
+        <a class="db-saved-card" href="/try-on?look=${encodeURIComponent(look.lookSlug)}&source=dashboard-saved">
+          <div class="db-saved-thumb">${img}</div>
+          <div class="db-saved-body">
+            <strong>${title}</strong>
+            <small>${scenario}Saved ${formatDate(look.createdAt)}</small>
+          </div>
+        </a>
+      `;
+    }).join('');
+  }
+
   loadOverview();
+  loadStyleProfile();
+  loadSavedLooks();
 </script>
+
+<style>
+  .db-style-profile {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .db-style-command {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 16px;
+    border-left: 4px solid var(--accent-deep);
+    background: rgba(255, 255, 255, 0.86);
+  }
+
+  .db-style-command-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 12px;
+    min-width: 0;
+  }
+
+  .db-style-command-kicker {
+    flex: 0 0 auto;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(176, 127, 134, 0.12);
+    color: var(--accent-deep);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .db-style-command-status strong {
+    color: var(--db-ink, #1f140f);
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .db-style-command-status > span:last-child {
+    color: var(--db-muted, #6b554a);
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+
+  .db-style-profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .db-saved-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .db-saved-card {
+    display: grid;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .db-saved-thumb {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--surface-soft);
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .db-saved-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .db-saved-body {
+    display: grid;
+    gap: 3px;
+  }
+
+  .db-saved-body strong {
+    color: var(--db-ink, #1f140f);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .db-saved-body small {
+    color: var(--db-muted, #6b554a);
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 700px) {
+    .db-style-command {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .db-style-profile-actions {
+      justify-content: flex-start;
+    }
+  }
+</style>

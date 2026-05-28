@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import UserAvatar from '../components/UserAvatar.astro';
+import type { Locale } from '../lib/i18n';
+import { getLocaleFromUrl, localePath, t, withoutLocalePrefix } from '../lib/i18n';
 
 interface Props {
   title?: string;
@@ -8,6 +10,7 @@ interface Props {
   ogImage?: string;
   robots?: string;
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
+  locale?: Locale;
 }
 
 const {
@@ -16,20 +19,80 @@ const {
   ogImage = '/images/hero/hero-polished-elegant.webp',
   robots,
   structuredData,
+  locale,
 } = Astro.props;
 
+const currentLocale = locale ?? getLocaleFromUrl(Astro.url);
 const canonicalPath = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
 const canonicalUrl = new URL(canonicalPath, Astro.site ?? 'https://aibeautystylist.com');
+const defaultLocalePath = withoutLocalePrefix(canonicalPath);
+const zhAvailablePaths = new Set([
+  '/',
+  '/try-on/',
+  '/tools/shade-finder/',
+  '/tools/undertone-quiz/',
+  '/tools/foundation-shade-finder-by-undertone/',
+  '/makeup-guides/',
+  '/lipstick-shades/',
+  '/privacy/',
+  '/terms/',
+]);
+const hasZhAlternate = zhAvailablePaths.has(defaultLocalePath);
+const englishAlternateUrl = new URL(defaultLocalePath, Astro.site ?? 'https://aibeautystylist.com');
+const zhAlternateUrl = new URL(localePath(defaultLocalePath, 'zh-CN'), Astro.site ?? 'https://aibeautystylist.com');
+const zhSwitchUrl = hasZhAlternate ? zhAlternateUrl : new URL('/zh/', Astro.site ?? 'https://aibeautystylist.com');
 const ogImageUrl = new URL(ogImage, Astro.site ?? 'https://aibeautystylist.com');
 const structuredDataItems = structuredData
   ? Array.isArray(structuredData)
     ? structuredData
     : [structuredData]
   : [];
+const navHrefs = currentLocale === 'zh-CN'
+  ? {
+      brand: '/zh/',
+      discover: '/zh/makeup-guides/',
+      tryOn: '/zh/try-on/',
+      tutorials: '/zh/makeup-guides/',
+      beautyKit: '/zh/tools/shade-finder/',
+      membership: '/membership?from=nav_top',
+    }
+  : {
+      brand: '/',
+      discover: '/discover',
+      tryOn: '/try-on',
+      tutorials: '/tutorial',
+      beautyKit: '/tools/shade-finder',
+      membership: '/membership?from=nav_top',
+    };
+const footerHrefs = currentLocale === 'zh-CN'
+  ? {
+      discoverLooks: '/zh/makeup-guides/',
+      aiTryOnStudio: '/zh/try-on/',
+      shadeFinder: '/zh/tools/shade-finder/',
+      makeupGuides: '/zh/makeup-guides/',
+      lipstickShades: '/zh/lipstick-shades/',
+      tutorials: '/zh/makeup-guides/',
+      membership: '/membership?from=nav_footer',
+      about: '/about',
+      privacy: '/zh/privacy/',
+      terms: '/zh/terms/',
+    }
+  : {
+      discoverLooks: '/discover',
+      aiTryOnStudio: '/try-on',
+      shadeFinder: '/tools/shade-finder',
+      makeupGuides: '/makeup-guides',
+      lipstickShades: '/lipstick-shades',
+      tutorials: '/tutorial',
+      membership: '/membership?from=nav_footer',
+      about: '/about',
+      privacy: '/privacy',
+      terms: '/terms',
+    };
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={currentLocale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -40,8 +103,9 @@ const structuredDataItems = structuredData
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- i18n: hreflang (Phase 2 will add additional languages here) -->
-    <link rel="alternate" hreflang="en" href={canonicalUrl} />
-    <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en" href={englishAlternateUrl} />
+    {hasZhAlternate && <link rel="alternate" hreflang="zh-CN" href={zhAlternateUrl} />}
+    <link rel="alternate" hreflang="x-default" href={englishAlternateUrl} />
 
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💄</text></svg>" />
@@ -73,16 +137,20 @@ const structuredDataItems = structuredData
     <div class="site-shell">
       <header class="site-header">
         <div class="container nav-wrap">
-          <a class="brand" href="/">
+          <a class="brand" href={navHrefs.brand}>
             <span class="brand-mark">AB</span>
             <span>AI Beauty Stylist</span>
           </a>
           <nav class="nav-links" id="main-nav">
-            <a href="/discover">Discover</a>
-            <a href="/try-on">Try On</a>
-            <a href="/tutorial">Tutorials</a>
-            <a href="/tools/shade-finder">Beauty Kit</a>
-            <a href="/membership?from=nav_top">Membership</a>
+            <a href={navHrefs.discover}>{t('nav.discover', currentLocale)}</a>
+            <a href={navHrefs.tryOn}>{t('nav.tryOn', currentLocale)}</a>
+            <a href={navHrefs.tutorials}>{t('nav.tutorials', currentLocale)}</a>
+            <a href={navHrefs.beautyKit}>{t('nav.beautyKit', currentLocale)}</a>
+            <a href={navHrefs.membership}>{t('nav.membership', currentLocale)}</a>
+            <span class="language-switcher" aria-label="Language switcher">
+              <a href={englishAlternateUrl} class={currentLocale === 'en' ? 'is-active' : undefined} aria-current={currentLocale === 'en' ? 'page' : undefined}>EN</a>
+              <a href={zhSwitchUrl} class={currentLocale === 'zh-CN' ? 'is-active' : undefined} aria-current={currentLocale === 'zh-CN' ? 'page' : undefined}>中文</a>
+            </span>
           </nav>
           <UserAvatar />
           <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
@@ -100,7 +168,7 @@ const structuredDataItems = structuredData
           <div>
             <p class="footer-title">AI Beauty Stylist</p>
             <p class="footer-copy">
-              Your AI-powered beauty concierge. Upload a bare-face selfie, discover your ideal shades, and get step-by-step tutorials tailored to your unique features.
+              {t('footer.description', currentLocale)}
             </p>
             <div class="footer-social">
               <a href="#" aria-label="Instagram" class="social-link">
@@ -116,28 +184,28 @@ const structuredDataItems = structuredData
           </div>
           <div class="footer-nav-col">
             <div>
-              <p class="footer-title">Explore</p>
+              <p class="footer-title">{t('footer.explore', currentLocale)}</p>
               <ul class="footer-list">
-                <li><a href="/discover">Discover Looks</a></li>
-                <li><a href="/try-on">AI Try-On Studio</a></li>
-                <li><a href="/tools/shade-finder">Shade Finder</a></li>
-                <li><a href="/makeup-guides">Makeup Guides</a></li>
-                <li><a href="/lipstick-shades">Lipstick Shades</a></li>
-                <li><a href="/tutorial">Tutorials</a></li>
-                <li><a href="/membership?from=nav_footer">Membership</a></li>
+                <li><a href={footerHrefs.discoverLooks}>{t('footer.discoverLooks', currentLocale)}</a></li>
+                <li><a href={footerHrefs.aiTryOnStudio}>{t('footer.aiTryOnStudio', currentLocale)}</a></li>
+                <li><a href={footerHrefs.shadeFinder}>{t('footer.shadeFinder', currentLocale)}</a></li>
+                <li><a href={footerHrefs.makeupGuides}>{t('footer.makeupGuides', currentLocale)}</a></li>
+                <li><a href={footerHrefs.lipstickShades}>{t('footer.lipstickShades', currentLocale)}</a></li>
+                <li><a href={footerHrefs.tutorials}>{t('footer.tutorials', currentLocale)}</a></li>
+                <li><a href={footerHrefs.membership}>{t('footer.membership', currentLocale)}</a></li>
               </ul>
             </div>
             <div>
-              <p class="footer-title">Company</p>
+              <p class="footer-title">{t('footer.company', currentLocale)}</p>
               <ul class="footer-list">
-                <li><a href="/about">About Us</a></li>
-                <li><a href="/privacy">Privacy Policy</a></li>
-                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href={footerHrefs.about}>{t('footer.about', currentLocale)}</a></li>
+                <li><a href={footerHrefs.privacy}>{t('footer.privacy', currentLocale)}</a></li>
+                <li><a href={footerHrefs.terms}>{t('footer.terms', currentLocale)}</a></li>
               </ul>
             </div>
           </div>
         </div>
-        <p class="footer-legal container">© 2026 AI Beauty Stylist. Your photos are used solely for generating personalized recommendations and can be deleted at any time.</p>
+        <p class="footer-legal container">{t('footer.legal', currentLocale)}</p>
       </footer>
     </div>
     <script>
@@ -297,7 +365,22 @@ const structuredDataItems = structuredData
 
         function trackLookEvent(eventName: string, input: AnalyticsPayload = {}) {
           const payload = normalizePayload(input);
-          if (!payload.lookSlug && !payload.styleSlug && !['membership_click', 'upgrade_click', 'register_success', 'checkout_started', 'checkout_success', 'share_click', 'save_click'].includes(eventName)) return;
+          if (!payload.lookSlug && !payload.styleSlug && ![
+            'membership_click',
+            'upgrade_click',
+            'register_success',
+            'checkout_started',
+            'checkout_success',
+            'share_click',
+            'save_click',
+            'save_look',
+            'save_look_remove',
+            'set_my_style',
+            'clear_my_style',
+            'find_style_filter',
+            'find_style_view_all',
+            'find_style_view_guide',
+          ].includes(eventName)) return;
           const body = JSON.stringify({ eventName, ...payload });
           const url = '/api/analytics/look-event';
           if (navigator.sendBeacon) {

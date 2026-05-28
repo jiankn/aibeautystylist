@@ -1,0 +1,162 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const undertoneRows = [
+  { undertone: '暖调', foundation: '黄调、金调、蜜桃调或暖米色粉底', avoid: '粉调、灰米色或让脸和脖子分离的冷调粉底', lipstick: '蜜桃玫瑰、暖砖红、焦糖裸色' },
+  { undertone: '冷调', foundation: '粉调、玫瑰调、冷米色粉底', avoid: '过黄、过橘、氧化后显暗沉的粉底', lipstick: '玫瑰粉、莓果色、冷调豆沙' },
+  { undertone: '中性调', foundation: '中性米色或冷暖平衡的粉底', avoid: '过度偏黄或过度偏粉的极端色号', lipstick: '玫瑰棕、柔和红、平衡豆沙' },
+  { undertone: '橄榄调', foundation: '低饱和中性、橄榄调、绿金调或不太橘的米色粉底', avoid: '橘调修容感粉底、奶白粉调粉底', lipstick: '灰调玫瑰、梅子色、棕调豆沙' },
+  { undertone: '深肤色', foundation: '先匹配深浅，再判断金调、红棕、中性棕或橄榄棕方向', avoid: '发灰的浅米色、深浅对但底色不对的粉底', lipstick: '可可玫瑰、棕红、深莓、浓郁裸色' },
+];
+
+const faqEntities = [
+  { q: '粉底色号应该先看深浅还是冷暖调？', a: '两者都要看，但顺序建议是先确定深浅范围，再判断底色方向。深浅对但冷暖调错，依然会发灰、发橘或显脏。' },
+  { q: '为什么粉底在专柜看着对，出门就不对？', a: '专柜灯光会掩盖冷暖调问题。建议在自然光下看脸、脖子和下颌交界，并等待几分钟观察氧化。' },
+  { q: '橄榄皮为什么很难买粉底？', a: '很多粉底默认黄调或粉调，橄榄皮带灰绿或绿金底色，太橘会显脏，太粉会显灰，因此需要更低饱和或中性偏橄榄的方向。' },
+  { q: 'AI 能直接告诉我准确色号吗？', a: 'AI 可以帮你缩小冷暖调、深浅和色系方向，但具体品牌色号仍建议上脸测试。它最大的价值是避免一开始就选错色系。' },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: '按冷暖调找粉底色号',
+    description: '中文粉底色号指南，按暖调、冷调、中性调、橄榄调和深肤色判断粉底方向。',
+    mainEntityOfPage: 'https://aibeautystylist.com/zh/tools/foundation-shade-finder-by-undertone/',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntities.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="粉底色号怎么选｜按冷暖调找适合你的粉底方向"
+  description="中文粉底色号指南。按暖调、冷调、中性调、橄榄调和深肤色判断粉底方向，避免粉底发灰、发橘、脸和脖子分离。"
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">粉底色号</span>
+      <h1>粉底色号不能只看白不白，还要看冷暖调。</h1>
+      <p>很多粉底“深浅差不多”，但上脸还是不对，原因通常是底色方向错了。按冷暖调选粉底，能减少发灰、发橘、显脏和脸脖子分离的问题。</p>
+      <div class="cta-row">
+        <a class="btn" href="/zh/tools/undertone-quiz/">先判断冷暖皮</a>
+        <a class="btn btn-secondary" href="/zh/tools/shade-finder/">测试口红和粉底色号</a>
+      </div>
+    </div>
+
+    <div class="container top-gap">
+      <div class="foundation-table" role="table" aria-label="按冷暖调选择粉底方向">
+        <div class="foundation-row foundation-row-head" role="row">
+          <span role="columnheader">肤色底调</span>
+          <span role="columnheader">粉底方向</span>
+          <span role="columnheader">尽量避开</span>
+          <span role="columnheader">适合搭配的口红</span>
+        </div>
+        {undertoneRows.map((row) => (
+          <article class="foundation-row" role="row">
+            <strong role="cell">{row.undertone}</strong>
+            <span role="cell">{row.foundation}</span>
+            <span role="cell">{row.avoid}</span>
+            <span role="cell">{row.lipstick}</span>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <h2>怎么测试粉底是否真的适合？</h2>
+      <p>不要只涂在手腕。把粉底试在下颌、脸颊下方和脖子交界处，在自然光下观察。等待几分钟后再看是否发橘、发粉、发灰或和脖子分离。</p>
+      <h2>常见问题</h2>
+      <dl class="seo-faq">
+        {faqEntities.map((item) => (
+          <>
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </>
+        ))}
+      </dl>
+      <h2>下一步</h2>
+      <ul class="seo-link-list">
+        <li><a href="/zh/lipstick-shades/">查看中文口红色号指南</a></li>
+        <li><a href="/zh/try-on/">了解 AI 试妆完整诊断</a></li>
+        <li><a href="/zh/makeup-guides/">返回中文美妆指南</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .foundation-table {
+    display: grid;
+    overflow: hidden;
+    border: 1px solid rgba(176, 127, 134, 0.18);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.82);
+  }
+
+  .foundation-row {
+    display: grid;
+    grid-template-columns: 0.75fr 1.2fr 1.2fr 1fr;
+    gap: 0;
+    color: inherit;
+    text-decoration: none;
+    border-top: 1px solid rgba(176, 127, 134, 0.14);
+  }
+
+  .foundation-row:first-child {
+    border-top: 0;
+  }
+
+  .foundation-row > * {
+    padding: 16px;
+    border-left: 1px solid rgba(176, 127, 134, 0.12);
+    line-height: 1.55;
+  }
+
+  .foundation-row > *:first-child {
+    border-left: 0;
+  }
+
+  .foundation-row-head {
+    background: #fff4ee;
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  .foundation-row strong {
+    color: var(--accent-deep);
+  }
+
+  @media (max-width: 800px) {
+    .foundation-row,
+    .foundation-row-head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .foundation-row-head {
+      display: none;
+    }
+
+    .foundation-row > * {
+      border-left: 0;
+      border-top: 1px solid rgba(176, 127, 134, 0.1);
+    }
+
+    .foundation-row > *:first-child {
+      border-top: 0;
+    }
+  }
+</style>
