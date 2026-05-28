@@ -1,0 +1,607 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+// P2 — Sprint A：高意图工具页 — "what is my undertone" / "find my undertone" 长尾承接
+// 5 题客户端 quiz，结果映射到 warm / cool / neutral，引导到对应 lipstick-shades 页 + /try-on
+
+interface QuizOption {
+  label: string;
+  description?: string;
+  scores: { warm: number; cool: number; neutral: number };
+}
+
+interface QuizQuestion {
+  id: string;
+  title: string;
+  hint?: string;
+  options: QuizOption[];
+}
+
+const quizQuestions: QuizQuestion[] = [
+  {
+    id: 'veins',
+    title: 'Look at the inside of your wrist in natural daylight. What colour are your veins?',
+    hint: 'The single most reliable physical undertone signal.',
+    options: [
+      { label: 'Mostly green', scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: 'Mostly blue or purple', scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: 'A mix of blue and green — hard to tell', scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
+  {
+    id: 'jewelry',
+    title: 'Which jewellery makes your skin look brighter — silver or gold?',
+    hint: 'Try both against your face in daylight if you are not sure.',
+    options: [
+      { label: 'Gold (rose gold also works)', scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: 'Silver / platinum', scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: 'Both look equally good', scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
+  {
+    id: 'sun',
+    title: 'How does your skin react to direct sun?',
+    options: [
+      { label: 'Tans easily, rarely burns — turns golden or olive', scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: 'Burns first, then maybe tans pink or stays fair', scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: 'Burns a little, then tans evenly', scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
+  {
+    id: 'paper',
+    title: 'Hold a sheet of pure white paper next to your bare face. Compared to the paper, your skin looks…',
+    hint: 'Use daylight from a window. No makeup, no filters.',
+    options: [
+      { label: 'Yellow, peach, or golden', scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: 'Pink, rosy, or slightly red', scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: 'Beige or balanced — not clearly warm or cool', scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
+  {
+    id: 'lipstick',
+    title: 'Which lipstick shade has historically looked best on you?',
+    hint: 'Think of compliments, not your favourite tube.',
+    options: [
+      { label: 'Peach, coral, terracotta, warm brick', scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: 'Berry, blue-red, mauve, rose pink', scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: 'Both warm and cool reds work — or I have never been sure', scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
+];
+
+const faqEntities = [
+  {
+    q: 'What does skin undertone mean?',
+    a: 'Undertone is the subtle hue underneath your surface skin colour. It does not change with tan, season, or skincare. The three main directions are warm (yellow / golden / peach), cool (pink / rosy / red), and neutral (a balance of both).',
+  },
+  {
+    q: 'Is undertone the same as skin tone?',
+    a: 'No. Skin tone is how light or deep your skin is on the surface (fair, light, medium, tan, deep). Undertone is the underlying hue. Two people with the same skin depth can have completely opposite undertones.',
+  },
+  {
+    q: 'Can my undertone change?',
+    a: 'No. Surface tan and skin condition (redness, dehydration) can change month to month, but the underlying undertone stays the same for life.',
+  },
+  {
+    q: 'What if my answers are split between warm and cool?',
+    a: 'You are very likely neutral. Neutral undertones can wear shades from both warm and cool families, but should still avoid the most extreme ends of each (neon coral, ice pink).',
+  },
+  {
+    q: 'How accurate is this 5-question quiz?',
+    a: 'For undertone direction (warm / cool / neutral) it is very reliable when you answer in good daylight without makeup. For an even more precise reading including foundation depth, blush, and eye shadow, upload a selfie at our AI Try-On Studio.',
+  },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Quiz',
+    name: 'What is my skin undertone? — 5-question quiz',
+    description: 'A free 5-question quiz that determines whether your skin undertone is warm, cool, or neutral so you can choose flattering lipstick and foundation shades.',
+    educationalLevel: 'Beginner',
+    url: 'https://aibeautystylist.com/tools/undertone-quiz/',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntities.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title="What is My Undertone? Free 5-Question Skin Undertone Quiz"
+  description="Find your skin undertone in 60 seconds. Free 5-question quiz tells you if you're warm, cool, or neutral — then matches you to the right lipstick & foundation shades."
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Free Quiz · 60 seconds</span>
+      <h1>What is my <em>skin undertone</em>?</h1>
+      <p>
+        Five quick questions, one clear answer. Find out whether your skin undertone is <strong>warm, cool, or neutral</strong> — the single most important factor in choosing lipstick and foundation that flatters your face instead of fighting it.
+      </p>
+    </div>
+
+    <div class="container">
+      <div class="undertone-quiz" data-undertone-quiz>
+        <!-- 进度条 -->
+        <div class="undertone-quiz-progress" aria-hidden="true">
+          <div class="undertone-quiz-progress-bar" data-undertone-progress-bar></div>
+        </div>
+        <p class="undertone-quiz-progress-label">
+          Question <span data-undertone-current>1</span> of <span data-undertone-total>{quizQuestions.length}</span>
+        </p>
+
+        {quizQuestions.map((question, index) => (
+          <fieldset
+            class={`undertone-quiz-question${index === 0 ? '' : ' is-hidden'}`}
+            data-undertone-question={question.id}
+            data-undertone-question-index={index}
+          >
+            <legend class="undertone-quiz-question-title">{question.title}</legend>
+            {question.hint && <p class="undertone-quiz-question-hint">{question.hint}</p>}
+            <div class="undertone-quiz-options" role="radiogroup" aria-label={question.title}>
+              {question.options.map((option, optIndex) => (
+                <button
+                  type="button"
+                  class="undertone-quiz-option"
+                  data-undertone-option
+                  data-undertone-warm={option.scores.warm}
+                  data-undertone-cool={option.scores.cool}
+                  data-undertone-neutral={option.scores.neutral}
+                  data-undertone-question-id={question.id}
+                  data-undertone-option-index={optIndex}
+                >
+                  <span class="undertone-quiz-option-label">{option.label}</span>
+                  {option.description && <span class="undertone-quiz-option-desc">{option.description}</span>}
+                </button>
+              ))}
+            </div>
+            <div class="undertone-quiz-nav">
+              {index > 0 && (
+                <button type="button" class="text-link" data-undertone-back>← Back</button>
+              )}
+            </div>
+          </fieldset>
+        ))}
+
+        <!-- 结果区 -->
+        <div class="undertone-quiz-result is-hidden" data-undertone-result aria-live="polite">
+          <span class="pill undertone-quiz-result-pill" data-undertone-result-pill>—</span>
+          <h2 data-undertone-result-title>Your undertone is —</h2>
+          <p class="undertone-quiz-result-summary" data-undertone-result-summary></p>
+
+          <div class="undertone-quiz-result-shades" data-undertone-result-shades>
+            <h3>Lipstick shades that flatter you</h3>
+            <ul class="undertone-quiz-shades-list" data-undertone-result-shades-list></ul>
+          </div>
+
+          <div class="undertone-quiz-result-cta">
+            <a class="btn" data-undertone-result-cta href="/try-on?from=seo_undertone_quiz">See it on your face →</a>
+            <a class="btn btn-secondary" data-undertone-result-shade-link href="/lipstick-shades/warm-undertone-lipstick-shades">Browse all shades</a>
+            <button type="button" class="text-link" data-undertone-restart>Restart quiz</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- P2 — SEO 内容深度 -->
+    <div class="container section-copy narrow top-gap">
+      <h2>What is skin undertone?</h2>
+      <p>
+        Undertone is the subtle hue <em>underneath</em> the surface of your skin. It does not change with tan, season, or which moisturiser you used this week. Most people fall into one of three undertones: <strong>warm</strong> (yellow, peach, golden), <strong>cool</strong> (pink, rosy, red), or <strong>neutral</strong> (a balanced mix of both). Knowing yours is the difference between a lipstick that brightens your whole face and one that makes you look tired or flushed.
+      </p>
+
+      <h2>Warm vs cool vs neutral — what each means for makeup</h2>
+      <p>
+        <strong>Warm undertones</strong> usually look best in gold jewellery, peach blush, terracotta or warm brick lipstick, and yellow-based foundations (think NW lines). <strong>Cool undertones</strong> shine in silver jewellery, rose or berry blush, blue-based reds and mauve lipsticks, and pink-based foundations (NC lines). <strong>Neutral undertones</strong> can borrow from both worlds, but should still avoid the most extreme ends — neon coral on one side, icy pink on the other.
+      </p>
+
+      <h2>How to read your undertone yourself</h2>
+      <p>
+        The three classic checks are vein colour in daylight, jewellery contrast, and how your skin reacts to sun. Take all of them in <em>natural light from a window</em>, with no makeup. If two out of three answers point the same direction, that is your undertone. If they split evenly, you are very likely neutral. The 5-question quiz above runs through these checks for you and gives a clear, weighted result instead of a guess.
+      </p>
+
+      <h2>Want a more precise reading?</h2>
+      <p>
+        The quiz nails undertone direction. For full diagnosis — including foundation depth, blush family, eye shadow direction, and a step-by-step tutorial — upload a selfie at <a href="/try-on?from=seo_undertone_quiz_inline">our AI Try-On Studio</a>. The first diagnosis is free and takes under a minute.
+      </p>
+
+      <h2>Frequently asked questions</h2>
+      <dl class="seo-faq">
+        {faqEntities.map((item) => (
+          <>
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </>
+        ))}
+      </dl>
+
+      <h2>Browse lipstick shades by undertone</h2>
+      <ul class="seo-link-list">
+        <li><a href="/lipstick-shades/warm-undertone-lipstick-shades">Best lipstick shades for warm undertones</a></li>
+        <li><a href="/lipstick-shades/cool-undertone-lipstick-shades">Best lipstick shades for cool undertones</a></li>
+        <li><a href="/lipstick-shades/neutral-undertone-lipstick-shades">Best lipstick shades for neutral undertones</a></li>
+        <li><a href="/lipstick-shades/olive-skin-lipstick-shades">Lipstick shades for olive skin</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // P2 — Sprint A：客户端 quiz 计分逻辑
+  type Undertone = 'warm' | 'cool' | 'neutral';
+
+  interface QuestionState {
+    questionId: string;
+    optionIndex: number;
+    scores: { warm: number; cool: number; neutral: number };
+  }
+
+  const quiz = document.querySelector<HTMLElement>('[data-undertone-quiz]');
+  if (quiz) {
+    const questions = Array.from(quiz.querySelectorAll<HTMLElement>('[data-undertone-question]'));
+    const totalQuestions = questions.length;
+    const progressBar = quiz.querySelector<HTMLElement>('[data-undertone-progress-bar]');
+    const currentLabel = quiz.querySelector<HTMLElement>('[data-undertone-current]');
+    const result = quiz.querySelector<HTMLElement>('[data-undertone-result]');
+    const resultPill = quiz.querySelector<HTMLElement>('[data-undertone-result-pill]');
+    const resultTitle = quiz.querySelector<HTMLElement>('[data-undertone-result-title]');
+    const resultSummary = quiz.querySelector<HTMLElement>('[data-undertone-result-summary]');
+    const resultShadesList = quiz.querySelector<HTMLUListElement>('[data-undertone-result-shades-list]');
+    const resultCta = quiz.querySelector<HTMLAnchorElement>('[data-undertone-result-cta]');
+    const resultShadeLink = quiz.querySelector<HTMLAnchorElement>('[data-undertone-result-shade-link]');
+    const restartBtn = quiz.querySelector<HTMLButtonElement>('[data-undertone-restart]');
+
+    const answers: QuestionState[] = [];
+    let currentIndex = 0;
+
+    const undertoneCopy: Record<Undertone, { title: string; summary: string; shades: string[]; href: string }> = {
+      warm: {
+        title: 'Your undertone is warm',
+        summary: 'Your skin has a yellow, peach, or golden base. Gold jewellery, peach blush, and terracotta or warm brick lipsticks will bring out your natural glow.',
+        shades: ['Peach Rose', 'Soft Brick', 'Caramel Nude', 'Terracotta', 'Warm Coral'],
+        href: '/lipstick-shades/warm-undertone-lipstick-shades',
+      },
+      cool: {
+        title: 'Your undertone is cool',
+        summary: 'Your skin has a pink, rosy, or red base. Silver jewellery, rose or berry blush, and blue-based reds or mauve lipsticks will make your face look brighter and more even.',
+        shades: ['Blue Rose', 'Soft Berry', 'Cool Mauve', 'Blue-Red', 'Plum'],
+        href: '/lipstick-shades/cool-undertone-lipstick-shades',
+      },
+      neutral: {
+        title: 'Your undertone is neutral',
+        summary: 'Your skin balances warm and cool. You can wear shades from both families, but the most flattering picks are balanced rose, rose-brown, soft red, and muted berry.',
+        shades: ['Balanced Rose', 'Rose Brown', 'Soft Red', 'Muted Berry', 'Warm Mauve'],
+        href: '/lipstick-shades/neutral-undertone-lipstick-shades',
+      },
+    };
+
+    const showQuestion = (index: number) => {
+      questions.forEach((q, i) => q.classList.toggle('is-hidden', i !== index));
+      result?.classList.add('is-hidden');
+      currentIndex = index;
+      if (currentLabel) currentLabel.textContent = String(index + 1);
+      if (progressBar) progressBar.style.width = `${((index + 1) / totalQuestions) * 100}%`;
+      // 把 quiz 容器顶部滚到视野
+      quiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    const computeUndertone = (): Undertone => {
+      const totals = { warm: 0, cool: 0, neutral: 0 };
+      for (const a of answers) {
+        totals.warm += a.scores.warm;
+        totals.cool += a.scores.cool;
+        totals.neutral += a.scores.neutral;
+      }
+      // neutral 加权平衡：当 warm/cool 接近时偏向 neutral
+      const dominant = (Object.keys(totals) as Undertone[]).reduce((max, key) =>
+        totals[key] > totals[max] ? key : max,
+      'warm');
+      const close = Math.abs(totals.warm - totals.cool) <= 2 && totals.neutral >= 4;
+      return close ? 'neutral' : dominant;
+    };
+
+    const showResult = () => {
+      const undertone = computeUndertone();
+      const copy = undertoneCopy[undertone];
+      questions.forEach((q) => q.classList.add('is-hidden'));
+      result?.classList.remove('is-hidden');
+      if (resultPill) {
+        resultPill.textContent = undertone.charAt(0).toUpperCase() + undertone.slice(1);
+        resultPill.dataset.undertone = undertone;
+      }
+      if (resultTitle) resultTitle.textContent = copy.title;
+      if (resultSummary) resultSummary.textContent = copy.summary;
+      if (resultShadesList) {
+        resultShadesList.innerHTML = copy.shades.map((s) => `<li>${s}</li>`).join('');
+      }
+      if (resultCta) {
+        resultCta.href = `/try-on?from=seo_undertone_quiz_${undertone}`;
+      }
+      if (resultShadeLink) {
+        resultShadeLink.href = copy.href;
+      }
+      if (progressBar) progressBar.style.width = '100%';
+      // 埋点：记录 undertone 结果
+      const win = window as typeof window & {
+        aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void };
+      };
+      win.aiBeautyAnalytics?.track?.('undertone_quiz_complete', { metadata: { undertone } });
+      result?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    quiz.querySelectorAll<HTMLButtonElement>('[data-undertone-option]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const questionId = btn.dataset.undertoneQuestionId || '';
+        const optionIndex = Number(btn.dataset.undertoneOptionIndex || '0');
+        const scores = {
+          warm: Number(btn.dataset.undertoneWarm || '0'),
+          cool: Number(btn.dataset.undertoneCool || '0'),
+          neutral: Number(btn.dataset.undertoneNeutral || '0'),
+        };
+        // 同问题已答覆盖
+        const existingIdx = answers.findIndex((a) => a.questionId === questionId);
+        if (existingIdx >= 0) {
+          answers[existingIdx] = { questionId, optionIndex, scores };
+        } else {
+          answers.push({ questionId, optionIndex, scores });
+        }
+        // 视觉选中态：同问题下其他按钮取消选中
+        const sibling = btn.closest('.undertone-quiz-options');
+        sibling?.querySelectorAll('.undertone-quiz-option').forEach((b) => b.classList.remove('is-selected'));
+        btn.classList.add('is-selected');
+        // 进入下一题或结果
+        if (currentIndex + 1 >= totalQuestions) {
+          showResult();
+        } else {
+          setTimeout(() => showQuestion(currentIndex + 1), 220);
+        }
+      });
+    });
+
+    quiz.querySelectorAll<HTMLButtonElement>('[data-undertone-back]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (currentIndex > 0) showQuestion(currentIndex - 1);
+      });
+    });
+
+    restartBtn?.addEventListener('click', () => {
+      answers.length = 0;
+      quiz.querySelectorAll('.undertone-quiz-option').forEach((b) => b.classList.remove('is-selected'));
+      showQuestion(0);
+    });
+
+    // 初始化进度条
+    if (progressBar) progressBar.style.width = `${(1 / totalQuestions) * 100}%`;
+  }
+</script>
+
+<style>
+  .undertone-quiz {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, #fffaf7 0%, #ffeef1 100%);
+    border: 1px solid rgba(176, 127, 134, 0.18);
+  }
+
+  .undertone-quiz-progress {
+    height: 6px;
+    background: rgba(176, 127, 134, 0.16);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .undertone-quiz-progress-bar {
+    height: 100%;
+    background: var(--accent);
+    width: 20%;
+    transition: width 0.3s ease;
+    border-radius: 999px;
+  }
+
+  .undertone-quiz-progress-label {
+    margin: 0 0 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .undertone-quiz-question {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .undertone-quiz-question.is-hidden {
+    display: none;
+  }
+
+  .undertone-quiz-question-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    display: block;
+    width: 100%;
+  }
+
+  .undertone-quiz-question-hint {
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  .undertone-quiz-options {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .undertone-quiz-option {
+    width: 100%;
+    text-align: left;
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(176, 127, 134, 0.22);
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text);
+    transition: all 0.18s ease;
+    display: grid;
+    gap: 4px;
+  }
+
+  .undertone-quiz-option:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(176, 127, 134, 0.12);
+  }
+
+  .undertone-quiz-option.is-selected {
+    border-color: var(--accent);
+    background: rgba(176, 127, 134, 0.08);
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+
+  .undertone-quiz-option-label {
+    font-weight: 500;
+  }
+
+  .undertone-quiz-option-desc {
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+
+  .undertone-quiz-nav {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .undertone-quiz-result {
+    text-align: center;
+    padding: 12px 0;
+  }
+
+  .undertone-quiz-result.is-hidden {
+    display: none;
+  }
+
+  .undertone-quiz-result-pill {
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.8rem;
+    padding: 5px 14px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .undertone-quiz-result h2 {
+    margin: 0 0 12px;
+    font-size: 1.6rem;
+  }
+
+  .undertone-quiz-result-summary {
+    color: var(--muted);
+    line-height: 1.65;
+    margin: 0 0 20px;
+    font-size: 1rem;
+  }
+
+  .undertone-quiz-result-shades {
+    margin: 24px auto;
+    max-width: 520px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(176, 127, 134, 0.12);
+  }
+
+  .undertone-quiz-result-shades h3 {
+    margin: 0 0 12px;
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  .undertone-quiz-shades-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .undertone-quiz-shades-list li {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(176, 127, 134, 0.12);
+    color: var(--text);
+    font-size: 0.86rem;
+    font-weight: 500;
+  }
+
+  .undertone-quiz-result-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .undertone-quiz-result-cta .text-link {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 12px 16px;
+    font-size: 0.92rem;
+  }
+
+  .seo-faq {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+  }
+  .seo-faq dt {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .seo-faq dd {
+    margin: 0 0 6px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .seo-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 16px;
+  }
+  .seo-link-list li {
+    padding: 4px 0;
+  }
+
+  @media (max-width: 640px) {
+    .undertone-quiz {
+      padding: 22px;
+    }
+    .undertone-quiz-question-title {
+      font-size: 1.05rem;
+    }
+  }
+</style>

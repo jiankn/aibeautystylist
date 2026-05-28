@@ -4,33 +4,164 @@ import ShadeFinderDemo from '../../components/ShadeFinderDemo.astro';
 
 export const prerender = true;
 
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: 'AI Lipstick Shade Finder',
-  applicationCategory: 'LifestyleApplication',
-  operatingSystem: 'Web',
-  url: 'https://aibeautystylist.com/tools/shade-finder/',
-  description: 'A free lipstick shade finder that helps match lip colors to undertone and skin depth.',
-};
+// P2 — Sprint A：让 shade-finder 同时吃 `lipstick shade finder` 与 `foundation shade finder` 两个高意图工具词
+const faqEntities = [
+  {
+    q: 'How does the AI shade finder work?',
+    a: 'You answer 3 quick questions about your skin undertone, depth, and the lighting you usually wear makeup in. The tool then maps your answers to the closest lipstick shade families (warm peach / cool berry / neutral rose, etc.) and recommends shades you can confidently buy.',
+  },
+  {
+    q: 'Is the lipstick shade finder really free?',
+    a: 'Yes. The 3-question shade finder and the AI Try-On preview are both free — no signup required to take the test or get your shade family.',
+  },
+  {
+    q: 'Can it also help me find my foundation shade?',
+    a: 'Yes — the same undertone result drives both lipstick and foundation matching. Take the quiz once, then upload a selfie at /try-on to see foundation depth options for your specific skin tone.',
+  },
+  {
+    q: 'How accurate is it compared to in-store color matching?',
+    a: 'For undertone direction (warm / cool / neutral) it is very reliable. For exact foundation depth, uploading a selfie at /try-on gives a much more accurate match than a 3-question quiz alone.',
+  },
+  {
+    q: 'I already know my undertone. Can I skip the quiz?',
+    a: 'Yes. Jump straight to /lipstick-shades to browse curated shade lists by undertone, or upload a photo at /try-on for a full personalised diagnosis including foundation, blush, and eye shadow.',
+  },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Free AI Lipstick & Foundation Shade Finder',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    url: 'https://aibeautystylist.com/tools/shade-finder/',
+    description: 'A free AI-powered shade finder that matches lipstick and foundation shades to your skin undertone and depth.',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntities.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
 ---
 
 <BaseLayout
-  title="Find Your Perfect Lipstick Shade | AI Undertone Test"
-  description="Take our free 3-question AI test to find out what lipstick shade suits you best based on your skin undertone. Stop buying the wrong shade!"
+  title="Free AI Lipstick & Foundation Shade Finder — Match by Undertone"
+  description="Free AI shade finder. Answer 3 questions and find the lipstick & foundation shade that actually suits your undertone — no signup, no guesswork."
   structuredData={structuredData}
 >
   <section class="section">
     <div class="container section-copy narrow">
-      <span class="eyebrow">Free AI Diagnosis</span>
-      <h1>Which lipstick shade <em>actually</em> suits you?</h1>
+      <span class="eyebrow">Free AI Tool · No Signup</span>
+      <h1>Find your perfect <em>lipstick &amp; foundation</em> shade</h1>
       <p>
-        Stop wasting money on the wrong shade. Answer 3 quick questions and AI will match you to the perfect lip color based on your skin undertone.
+        Stop buying the wrong shade. Answer 3 quick questions about your undertone and skin depth — our AI matches you to the lipstick and foundation families that actually flatter your skin tone.
       </p>
+      <div class="cta-row">
+        <a class="text-link" href="#shade-finder-tool">Skip to the tool ↓</a>
+      </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="shade-finder-tool">
       <ShadeFinderDemo />
+    </div>
+
+    <!-- P2 — SEO 内容深度：覆盖 "how to find my undertone" / "what lipstick shade suits me" / "ai foundation matcher" 等长尾 -->
+    <div class="container section-copy narrow top-gap">
+      <h2>How the shade finder works</h2>
+      <p>
+        Most foundation and lipstick mismatches come from one place: people guess their undertone instead of testing it. This 3-question finder is built around the same checks professional makeup artists use — vein colour in daylight, jewellery contrast, and how your skin reacts to sun. Together they reliably place you in <strong>warm, cool, or neutral</strong>, which is the single most important factor in finding a shade that flatters rather than fights your face.
+      </p>
+      <p>
+        Once we know your undertone, the tool maps you to a curated shade family. For lipstick that means peach &amp; brick for warm, rose &amp; berry for cool, balanced rose &amp; soft red for neutral. For foundation, the same undertone tells you whether to look at warm-yellow ranges (NW), cool-pink ranges (NC), or neutral ranges in any brand line.
+      </p>
+
+      <h2>Why undertone matters more than skin depth</h2>
+      <p>
+        Two people with the exact same skin depth (light-medium, for example) can need completely different lipstick shades because one is warm and one is cool. A peach nude that flatters one will look orange on the other; a rose nude that brightens one will look ashy on the other. Skin depth tells you <em>how light or deep</em> the shade should be; undertone tells you <em>which direction</em> the shade leans. You need both, and undertone is the part most people get wrong.
+      </p>
+
+      <h2>Want a more precise match? Upload a photo</h2>
+      <p>
+        The 3-question quiz is a great starting point. For foundation depth, freckles, redness, eye colour, and full makeup recommendations, upload a selfie at <a href="/try-on?from=seo_shade_finder">our AI Try-On Studio</a>. You'll get a full diagnosis including foundation shade direction, lipstick shortlist, blush family, and a step-by-step tutorial — all free for your first look.
+      </p>
+
+      <h2>Frequently asked questions</h2>
+      <dl class="seo-faq">
+        {faqEntities.map((item) => (
+          <>
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </>
+        ))}
+      </dl>
+
+      <h2>Browse shades by undertone</h2>
+      <ul class="seo-link-list">
+        <li><a href="/lipstick-shades/warm-undertone-lipstick-shades">Best lipstick shades for warm undertones</a></li>
+        <li><a href="/lipstick-shades/cool-undertone-lipstick-shades">Best lipstick shades for cool undertones</a></li>
+        <li><a href="/lipstick-shades/neutral-undertone-lipstick-shades">Best lipstick shades for neutral undertones</a></li>
+        <li><a href="/lipstick-shades/olive-skin-lipstick-shades">Lipstick shades for olive skin</a></li>
+        <li><a href="/lipstick-shades/fair-skin-lipstick-shades">Lipstick shades for fair skin</a></li>
+        <li><a href="/lipstick-shades/medium-skin-lipstick-shades">Lipstick shades for medium skin</a></li>
+        <li><a href="/lipstick-shades/tan-skin-lipstick-shades">Lipstick shades for tan skin</a></li>
+        <li><a href="/lipstick-shades/deep-skin-lipstick-shades">Lipstick shades for deep skin</a></li>
+      </ul>
+
+      <div class="seo-cta-card">
+        <h3>Ready to see it on your face?</h3>
+        <p>The shade finder gives you a family. The AI Try-On Studio renders the look on your selfie so you know before you buy.</p>
+        <a class="btn" href="/try-on?from=seo_shade_finder_cta">Try a look on your photo →</a>
+      </div>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .seo-faq {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+  }
+  .seo-faq dt {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .seo-faq dd {
+    margin: 0 0 6px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .seo-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 16px;
+  }
+  .seo-link-list li {
+    padding: 4px 0;
+  }
+  .seo-cta-card {
+    margin-top: 24px;
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, #fffaf7 0%, #ffeef1 100%);
+    border: 1px solid rgba(176, 127, 134, 0.18);
+    text-align: center;
+  }
+  .seo-cta-card h3 {
+    margin: 0 0 8px;
+  }
+  .seo-cta-card p {
+    margin: 0 0 16px;
+    color: var(--muted);
+  }
+</style>

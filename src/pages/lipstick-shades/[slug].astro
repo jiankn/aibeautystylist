@@ -12,26 +12,64 @@ export function getStaticPaths() {
 }
 
 const { page } = Astro.props as { page: LipstickShadePage };
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: page.title,
-  description: page.description,
-  mainEntityOfPage: `https://aibeautystylist.com/lipstick-shades/${page.slug}/`,
-  about: page.bestShades.map((shade) => shade.name),
+
+// P2 — Sprint A：从 slug 推断 undertone 标签，用于 try-on CTA 链接 + 内链相关页
+const inferUndertone = (slug: string): 'warm' | 'cool' | 'neutral' | null => {
+  if (slug.startsWith('warm-')) return 'warm';
+  if (slug.startsWith('cool-')) return 'cool';
+  if (slug.startsWith('neutral-')) return 'neutral';
+  return null;
 };
+const undertone = inferUndertone(page.slug);
+const ctaSource = `seo_lipstick_${page.slug}`;
+const tryOnHref = undertone
+  ? `/try-on?from=${ctaSource}&undertone=${undertone}`
+  : `/try-on?from=${ctaSource}`;
+
+// 内链：其他 undertone + 其他 skin tone
+const allPages = lipstickShadePages.filter((p) => p.slug !== page.slug);
+
+// 结构化数据：Article + BreadcrumbList
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: page.title,
+    description: page.description,
+    mainEntityOfPage: `https://aibeautystylist.com/lipstick-shades/${page.slug}/`,
+    about: page.bestShades.map((shade) => shade.name),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://aibeautystylist.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Lipstick Shades', item: 'https://aibeautystylist.com/lipstick-shades/' },
+      { '@type': 'ListItem', position: 3, name: page.eyebrow, item: `https://aibeautystylist.com/lipstick-shades/${page.slug}/` },
+    ],
+  },
+];
 ---
 
 <BaseLayout title={`${page.title} | AI Beauty Stylist`} description={page.description} structuredData={structuredData}>
   <section class="section">
+    <!-- P2 — Breadcrumb 导航 -->
+    <div class="container">
+      <nav class="seo-breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">›</span>
+        <a href="/lipstick-shades/">Lipstick Shades</a> <span aria-hidden="true">›</span>
+        <span>{page.eyebrow}</span>
+      </nav>
+    </div>
+
     <div class="container hero-grid">
       <div class="section-copy">
         <span class="eyebrow">{page.eyebrow}</span>
         <h1>{page.headline}</h1>
         <p>{page.intro}</p>
         <div class="cta-row">
-          <a class="btn" href="/tools/shade-finder">Take Shade Finder</a>
-          <a class="btn btn-secondary" href="/try-on">Try AI Makeup</a>
+          <a class="btn" href={tryOnHref}>Try these shades on your face →</a>
+          <a class="btn btn-secondary" href={`/tools/undertone-quiz?from=${ctaSource}`}>Not sure of your undertone?</a>
         </div>
       </div>
       <div class="shade-swatch-panel">
@@ -72,6 +110,15 @@ const structuredData = {
       </article>
     </div>
 
+    <!-- P2 — 主 CTA：看到 shade 想立即在自己脸上试 -->
+    <div class="container top-gap">
+      <article class="seo-cta-card">
+        <h3>See these shades on your own face</h3>
+        <p>The swatches above are a starting point. Upload a selfie and our AI will render <em>{page.eyebrow.toLowerCase()}</em> shades on your face so you know exactly what suits you before buying.</p>
+        <a class="btn" href={tryOnHref}>Try {page.eyebrow.toLowerCase()} shades in AI Try-On →</a>
+      </article>
+    </div>
+
     <div class="container top-gap">
       <article class="card related-guide-card">
         <span class="pill">Next Step</span>
@@ -82,6 +129,16 @@ const structuredData = {
           ))}
         </div>
       </article>
+    </div>
+
+    <!-- P2 — 同类内链：所有其他 lipstick-shades 页 -->
+    <div class="container top-gap">
+      <h2 class="seo-related-heading">Compare to other shade guides</h2>
+      <ul class="seo-link-list">
+        {allPages.map((p) => (
+          <li><a href={`/lipstick-shades/${p.slug}/`}>{p.title}</a></li>
+        ))}
+      </ul>
     </div>
   </section>
 </BaseLayout>
@@ -135,5 +192,60 @@ const structuredData = {
     display: flex;
     flex-wrap: wrap;
     gap: 14px 20px;
+  }
+
+  /* P2 — Sprint A SEO 强化样式 */
+  .seo-breadcrumb {
+    margin-bottom: 18px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .seo-breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .seo-breadcrumb a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .seo-cta-card {
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, #fffaf7 0%, #ffeef1 100%);
+    border: 1px solid rgba(176, 127, 134, 0.18);
+    text-align: center;
+  }
+  .seo-cta-card h3 {
+    margin: 0 0 8px;
+  }
+  .seo-cta-card p {
+    margin: 0 0 16px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .seo-related-heading {
+    margin: 0 0 14px;
+    font-size: 1.2rem;
+  }
+
+  .seo-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 8px 16px;
+  }
+
+  .seo-link-list li {
+    padding: 4px 0;
   }
 </style>

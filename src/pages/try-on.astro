@@ -4,20 +4,67 @@ import TryOnStudio from '../components/TryOnStudio.astro';
 
 export const prerender = true;
 
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: 'AI Try-On Studio',
-  applicationCategory: 'LifestyleApplication',
-  operatingSystem: 'Web',
-  url: 'https://aibeautystylist.com/try-on/',
-  description: 'Upload a selfie for AI makeup diagnosis, personalized look recommendations, and step-by-step beauty tutorials.',
-};
+// P2 — Sprint A：try-on SEO 强化，承接 "ai makeup try on free" / "what makeup suits my face" / "virtual makeup try on" 等核心词
+const faqEntities = [
+  {
+    q: 'How does AI makeup try-on work?',
+    a: 'Upload a bare-face selfie. Our AI analyses your face shape, skin undertone, eye shape, and lip shape, then generates 3 personalised makeup looks with shade-matched foundation, blush, lipstick, and eye colour suggestions. Each look comes with a step-by-step tutorial you can actually follow.',
+  },
+  {
+    q: 'Is AI makeup try-on free?',
+    a: 'Yes. Your first diagnosis is completely free — you get face analysis, 2 makeup looks, and the first 3 tutorial steps without signing up. Pro unlocks the third look, full step-by-step tutorials, HD makeup preview rendered on your face, and saved looks library.',
+  },
+  {
+    q: 'What makeup suits my face?',
+    a: 'It depends on your face shape, skin undertone, eye shape, lip thickness, and the occasion. Our AI runs through all of these in seconds and recommends looks that flatter your specific combination — instead of generic advice for everyone.',
+  },
+  {
+    q: 'Do I need to install an app?',
+    a: 'No. Everything runs in your browser. Upload a photo from your phone or computer and the AI diagnosis runs in under 30 seconds.',
+  },
+  {
+    q: 'What about my photo privacy?',
+    a: 'Your selfie is processed for the diagnosis and then deleted from our servers within 24 hours. We never share, sell, or use your photo for any purpose other than generating your makeup recommendations.',
+  },
+  {
+    q: 'Can I try a specific look I saw on Instagram or TikTok?',
+    a: 'Yes. Pick a sample look from our /discover library, or upload your selfie and the AI will adapt the popular looks (clean-girl, soft-glam, glass-skin, no-makeup makeup, etc.) to your face, undertone, and features.',
+  },
+];
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'AI Makeup Try-On Studio',
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    url: 'https://aibeautystylist.com/try-on/',
+    description: 'Free AI makeup try-on. Upload a selfie, get face & undertone diagnosis, and see 3 personalised makeup looks with step-by-step tutorials.',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    featureList: [
+      'AI face & undertone analysis',
+      'Personalised makeup look recommendations',
+      'Step-by-step makeup tutorials',
+      'HD makeup preview on your selfie',
+      'Foundation & lipstick shade matching',
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqEntities.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
 ---
 
 <BaseLayout
-  title="AI Try-On Studio | AI Beauty Stylist"
-  description="Upload a bare-face selfie, get AI face and color diagnosis, and see 3 personalized makeup looks tailored just for you."
+  title="Free AI Makeup Try-On — Upload Photo & See What Suits You"
+  description="Free AI makeup try-on. Upload a selfie, get instant face & undertone diagnosis, and see 3 personalised makeup looks with step-by-step tutorials. No app needed."
   structuredData={structuredData}
 >
   <!--
@@ -29,4 +76,181 @@ const structuredData = {
       <TryOnStudio />
     </div>
   </section>
+
+  <!-- P2 — Sprint A SEO 内容深度区（工具下方）：覆盖核心高意图长尾 -->
+  <section class="section seo-tryon-section">
+    <div class="container section-copy narrow">
+      <h2>What makeup suits my face? Let AI tell you in 30 seconds</h2>
+      <p>
+        Most makeup advice online is generic — "warm undertones should wear peach, cool undertones should wear berry" — but the reality depends on your <strong>face shape, eye shape, skin depth, lip thickness, and the lighting you actually wear makeup in</strong>. Our AI Try-On Studio reads all of these from a single bare-face selfie and recommends 3 makeup looks tailored to <em>your</em> features, not a generic skin-tone bucket.
+      </p>
+
+      <h2>How AI makeup try-on works</h2>
+      <ol class="seo-howto-list">
+        <li>
+          <strong>Upload a clear bare-face selfie.</strong>
+          Front-facing, even lighting, no glasses. The AI works best when it can see your full face.
+        </li>
+        <li>
+          <strong>Get your face & colour diagnosis.</strong>
+          We analyse skin undertone (warm / cool / neutral), face shape, eye shape, and lip shape — all in under 30 seconds.
+        </li>
+        <li>
+          <strong>See 3 personalised makeup looks.</strong>
+          Each look is matched to your features and includes shade-matched foundation, lipstick, blush, and eye colour suggestions.
+        </li>
+        <li>
+          <strong>Follow the step-by-step tutorial.</strong>
+          Every look ships with detailed steps, common mistakes to avoid, and product recommendations across drugstore, mid-tier, and luxury price ranges.
+        </li>
+        <li>
+          <strong>Preview the look on your face (Pro).</strong>
+          Pro members can render any recommended look on their actual selfie in HD — see exactly how it will look before buying any product.
+        </li>
+      </ol>
+
+      <h2>What you get with a free AI diagnosis</h2>
+      <ul class="seo-feature-list">
+        <li><strong>Skin undertone reading</strong> — warm, cool, or neutral, with confidence rating.</li>
+        <li><strong>Face & eye shape analysis</strong> — to suggest contouring, eye shadow placement, and brow direction that flatter <em>your</em> structure.</li>
+        <li><strong>2 personalised makeup looks</strong> — each with reasoning for why it suits you.</li>
+        <li><strong>First 3 tutorial steps free</strong> — full step-by-step tutorials available with Pro.</li>
+        <li><strong>Curated lipstick & foundation shade families</strong> — narrow down hundreds of products to a confident shortlist.</li>
+      </ul>
+
+      <h2>Who AI Try-On is for</h2>
+      <p>
+        Beginners who don't know where to start. Experienced makeup wearers who want to validate their instincts. Anyone preparing for a high-stakes day — a job interview, wedding, photo shoot, or first date — and wants to see the look in advance instead of practising blind. The AI is also especially helpful for <a href="/scenarios/hooded-eyes-makeup">hooded eyes</a>, <a href="/scenarios/mature-skin-makeup">mature skin</a>, <a href="/lipstick-shades/olive-skin-lipstick-shades">olive skin</a>, and other features where generic tutorials fall short.
+      </p>
+
+      <h2>Frequently asked questions</h2>
+      <dl class="seo-faq">
+        {faqEntities.map((item) => (
+          <>
+            <dt>{item.q}</dt>
+            <dd>{item.a}</dd>
+          </>
+        ))}
+      </dl>
+
+      <h2>Try-on guides by occasion and style</h2>
+      <ul class="seo-link-list">
+        <li><a href="/scenarios/wedding-guest-makeup">Wedding guest makeup</a></li>
+        <li><a href="/scenarios/bridal-makeup">Bridal makeup at home</a></li>
+        <li><a href="/scenarios/interview-makeup">Job interview makeup</a></li>
+        <li><a href="/scenarios/date-night-makeup">Date night makeup</a></li>
+        <li><a href="/scenarios/zoom-meeting-makeup">Zoom interview makeup</a></li>
+        <li><a href="/scenarios/everyday-natural-makeup">5-minute everyday makeup</a></li>
+        <li><a href="/styles/clean-girl-makeup">Clean-girl makeup look</a></li>
+        <li><a href="/styles/glass-skin-makeup">Glass-skin makeup</a></li>
+        <li><a href="/styles/no-makeup-makeup">No-makeup makeup look</a></li>
+        <li><a href="/styles/soft-glam-makeup">Soft glam makeup</a></li>
+      </ul>
+
+      <h2>Find your shade before you buy</h2>
+      <ul class="seo-link-list">
+        <li><a href="/tools/shade-finder">Free lipstick & foundation shade finder</a></li>
+        <li><a href="/tools/undertone-quiz">What is my undertone? — 5-question quiz</a></li>
+        <li><a href="/lipstick-shades/">Browse lipstick shades by undertone</a></li>
+      </ul>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .seo-tryon-section {
+    padding-top: 24px;
+    padding-bottom: 64px;
+    background: linear-gradient(180deg, transparent 0%, rgba(255, 244, 246, 0.4) 100%);
+  }
+
+  .seo-tryon-section h2 {
+    margin-top: 32px;
+    font-size: 1.4rem;
+    color: var(--text);
+  }
+
+  .seo-tryon-section h2:first-of-type {
+    margin-top: 0;
+  }
+
+  .seo-tryon-section p {
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .seo-howto-list,
+  .seo-feature-list {
+    padding-left: 0;
+    list-style: none;
+    display: grid;
+    gap: 14px;
+    margin: 0 0 16px;
+  }
+
+  .seo-howto-list li,
+  .seo-feature-list li {
+    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(176, 127, 134, 0.12);
+    line-height: 1.6;
+  }
+
+  .seo-howto-list {
+    counter-reset: howto;
+  }
+
+  .seo-howto-list li {
+    position: relative;
+    padding-left: 56px;
+    counter-increment: howto;
+  }
+
+  .seo-howto-list li::before {
+    content: counter(howto);
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .seo-faq {
+    display: grid;
+    gap: 14px;
+    margin: 0 0 24px;
+  }
+
+  .seo-faq dt {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .seo-faq dd {
+    margin: 0 0 6px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .seo-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 16px;
+  }
+
+  .seo-link-list li {
+    padding: 4px 0;
+  }
+</style>
