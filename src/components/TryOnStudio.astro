@@ -162,6 +162,9 @@ const getTranslations = (currentLocale: Locale) => ({
     generatingFullFacePreview: t('tryOnStudio.generatingFullFacePreview', currentLocale),
     previewFallbackShown: t('tryOnStudio.previewFallbackShown', currentLocale),
     previewGenerated: t('tryOnStudio.previewGenerated', currentLocale),
+    previewGeneratedWith: t('tryOnStudio.previewGeneratedWith', currentLocale),
+    previewEngineBasic: t('tryOnStudio.previewEngineBasic', currentLocale),
+    previewEnginePro: t('tryOnStudio.previewEnginePro', currentLocale),
     btnPreparingPhoto: t('tryOnStudio.btnPreparingPhoto', currentLocale),
     btnAnalyzing: t('tryOnStudio.btnAnalyzing', currentLocale),
     btnRenderingPreview: t('tryOnStudio.btnRenderingPreview', currentLocale),
@@ -767,6 +770,15 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
         dataUrl?: string;
       };
     };
+  };
+
+  type MakeupPreviewResponse = {
+    error?: string;
+    message?: string;
+    image?: {
+      dataUrl?: string;
+    };
+    _tier?: 'free' | 'pro' | 'premium';
   };
 
   type UploadState = 'idle' | 'reading' | 'compressing' | 'ready' | 'analyzing' | 'rendering' | 'error';
@@ -2368,6 +2380,14 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     document.body.classList.remove('is-makeup-modal-open');
   };
 
+  const getPreviewEngineLabel = (tier?: string) =>
+    tier === 'pro' || tier === 'premium' ? TX.previewEnginePro : TX.previewEngineBasic;
+
+  const formatPreviewElapsed = (elapsed: string, tier?: string) =>
+    TX.previewGeneratedWith
+      .replace('{elapsed}', elapsed)
+      .replace('{engine}', getPreviewEngineLabel(tier));
+
   // 关闭按钮
   document.querySelectorAll('[data-makeup-close]').forEach((btn) => {
     btn.addEventListener('click', hideMakeupModal);
@@ -2449,7 +2469,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
         }),
       });
 
-      const data = await resp.json();
+      const data = await resp.json() as MakeupPreviewResponse;
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
 
       if (data.error === 'upgrade_required') {
@@ -2472,7 +2492,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
       if (makeupTitle) makeupTitle.textContent = `${look.name} — AI Makeup Preview`;
       if (makeupBefore && photoData) makeupBefore.src = photoData;
       if (makeupAfter && data.image?.dataUrl) makeupAfter.src = data.image.dataUrl;
-      if (makeupElapsed) makeupElapsed.textContent = `Generated in ${elapsed}s using ${data.model || 'Gemini'}`;
+      if (makeupElapsed) makeupElapsed.textContent = formatPreviewElapsed(elapsed, data._tier ?? currentGatedInfo?.tier);
 
       // 下载按钮
       makeupDownload?.addEventListener('click', () => {

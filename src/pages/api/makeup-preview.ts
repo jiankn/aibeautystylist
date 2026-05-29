@@ -122,7 +122,6 @@ export const POST: APIRoute = async (context) => {
     JSON.stringify({
       success: true,
       image: result.image,
-      model: result.model,
       generatedAt: result.generatedAt,
       elapsed: `${elapsed}s`,
       _remaining: quotaAfter.remaining,
