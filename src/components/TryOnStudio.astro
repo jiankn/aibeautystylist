@@ -162,10 +162,24 @@ const getTranslations = (currentLocale: Locale) => ({
     generatingFullFacePreview: t('tryOnStudio.generatingFullFacePreview', currentLocale),
     previewFallbackShown: t('tryOnStudio.previewFallbackShown', currentLocale),
     previewGenerated: t('tryOnStudio.previewGenerated', currentLocale),
+    btnPreparingPhoto: t('tryOnStudio.btnPreparingPhoto', currentLocale),
+    btnAnalyzing: t('tryOnStudio.btnAnalyzing', currentLocale),
+    btnRenderingPreview: t('tryOnStudio.btnRenderingPreview', currentLocale),
+    btnFixUpload: t('tryOnStudio.btnFixUpload', currentLocale),
+    uploadReadyForDiagnosis: t('tryOnStudio.uploadReadyForDiagnosis', currentLocale),
+    uploadContinue: t('tryOnStudio.uploadContinue', currentLocale),
+    uploadErrorType: t('tryOnStudio.uploadErrorType', currentLocale),
+    uploadErrorEmpty: t('tryOnStudio.uploadErrorEmpty', currentLocale),
+    uploadErrorTooLargePrefix: t('tryOnStudio.uploadErrorTooLargePrefix', currentLocale),
+    uploadErrorTooLargeSuffix: t('tryOnStudio.uploadErrorTooLargeSuffix', currentLocale),
+    metaOriginal: t('tryOnStudio.metaOriginal', currentLocale),
+    metaAiReady: t('tryOnStudio.metaAiReady', currentLocale),
+    metaOptimized: t('tryOnStudio.metaOptimized', currentLocale),
   },
 });
 
 const tx = getTranslations(locale);
+const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g, '\\u003c');
 ---
 
 <section class="tool-shell card tryon-shell" data-tryon-shell data-tryon-current-step="input">
@@ -268,7 +282,7 @@ const tx = getTranslations(locale);
                 <option value="intermediate">{tx.tryOnStudio.experienceIntermediate}</option>
               </select>
             </label>
-            <button class="btn" type="submit" data-generate-submit data-default-label="{tx.tryOnStudio.generateSubmitDefault}" disabled>{tx.tryOnStudio.generateSubmitDisabled}</button>
+            <button class="btn" type="submit" data-generate-submit data-default-label={tx.tryOnStudio.generateSubmitDefault} disabled>{tx.tryOnStudio.generateSubmitDisabled}</button>
           </div>
 
           <p class="tryon-form-meta">
@@ -685,7 +699,12 @@ const tx = getTranslations(locale);
   </div>
 </div>
 
-<script define:vars={{ TX: tx.tryOnStudio }}>
+<script id="tryon-studio-translations" type="application/json" set:html={tryOnStudioTranslationsJson}></script>
+
+<script>
+  const translationsElement = document.getElementById('tryon-studio-translations');
+  const TX = translationsElement?.textContent ? JSON.parse(translationsElement.textContent) : {};
+
   type LipColorParams = {
     hex: string;
     opacity: number;
@@ -1478,24 +1497,24 @@ const tx = getTranslations(locale);
     currentUploadKey = null;
     renderedAfterImages.clear();
     updatePreviewImage(undefined);
-    setUploadProgress('Reading photo', 6, 'Reading your image locally.');
-    setUploadState('reading', 'Reading photo');
+    setUploadProgress(TX.uploadProgressLabel, 6, TX.uploadProgressDetail);
+    setUploadState('reading', TX.uploadProgressLabel);
 
     try {
       const prepared = await compressPhoto(file, (stage, percent, detail) => {
         if (token !== uploadPreparationToken) return;
-        setUploadState(stage, stage === 'reading' ? 'Reading photo' : 'Optimizing photo');
-        setUploadProgress(stage === 'reading' ? 'Reading photo' : 'Optimizing photo', percent, detail);
+        setUploadState(stage, TX.uploadProgressLabel);
+        setUploadProgress(TX.uploadProgressLabel, percent, detail);
       });
       if (token !== uploadPreparationToken) return;
       preparedPhotoBase64 = prepared.dataUrl;
       updateUploadPreview(file, prepared);
       updatePreviewImage(prepared.previewUrl);
-      setUploadProgress('Photo ready', 100, 'Your selfie is ready for AI diagnosis.');
+      setUploadProgress(TX.uploadReadyForDiagnosis, 100, TX.uploadReadyForDiagnosis);
       window.setTimeout(() => {
-        if (token === uploadPreparationToken) setUploadState('ready', 'Ready for AI diagnosis');
+        if (token === uploadPreparationToken) setUploadState('ready', TX.uploadReadyForDiagnosis);
       }, 180);
-      setLive('Selfie uploaded and ready for AI diagnosis.');
+      setLive(TX.selfieUploadSuccess);
     } catch (error) {
       if (token !== uploadPreparationToken) return;
       console.warn('[TryOnStudio] Photo preparation failed:', error);
