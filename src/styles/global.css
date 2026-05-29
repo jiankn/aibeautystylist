@@ -225,7 +225,8 @@ main {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 132px;
+  min-width: unset;
+  width: max-content;
   margin: 0;
   padding: 4px;
   list-style: none;
@@ -1333,7 +1334,8 @@ main {
   .language-switcher-menu {
     right: auto;
     left: 0;
-    width: 100%;
+    min-width: 100%;
+    width: max-content;
   }
 
   .hero-grid,
