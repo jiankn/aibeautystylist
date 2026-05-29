@@ -16,6 +16,7 @@ const excludedPrefixes = [
 ];
 const ssrIndexableUrls = new Set([
   `${SITE_ORIGIN}/`,
+  `${SITE_ORIGIN}/zh/`,
 ]);
 
 const errors = [];

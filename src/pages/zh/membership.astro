@@ -1,0 +1,320 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const plans = [
+  {
+    name: '免费版',
+    price: '$0',
+    planId: 'free',
+    value: '发现适合你的妆容',
+    description: '适合想先体验再决定的新用户。',
+    features: ['1-2 个基础妆容预览', '快速色号分析', '前 3 个教程步骤'],
+    trigger: '当你只是想看看这是不是适合你的工具。',
+  },
+  {
+    name: 'Pro',
+    price: '$19.99',
+    priceAnnual: '$149',
+    priceAnnualMonthly: '$12.42',
+    planId: 'pro_monthly',
+    planIdAnnual: 'pro_yearly',
+    value: '你的 AI 美妆顾问',
+    description: '完整教程、高清试妆、精选产品工具包。相当于一次 $150 的线下色彩分析。',
+    features: ['完整分步骤教程（含错误提醒）', '高清前后对比和更多场景', '精选美妆工具包（含预算分级）'],
+    trigger: '当你知道"这适合我"，想真正学会怎么画。',
+    highlight: true,
+  },
+  {
+    name: 'Premium',
+    price: '$39.99',
+    priceAnnual: '$299',
+    priceAnnualMonthly: '$24.92',
+    planId: 'premium_monthly',
+    planIdAnnual: 'premium_yearly',
+    value: '你的全年风格顾问',
+    description: '无限次诊断、季节更新、历史存档和优先生成。',
+    features: ['无限次 AI 诊断', '季节风格更新 + 妆容历史', '优先生成 + 持续进化的风格档案'],
+    trigger: '当你再也不想为美妆决策犹豫。',
+  },
+];
+
+const moments = [
+  {
+    title: '你已经找到了方向',
+    copy: '免费版让你看到什么适合你。Pro 帮你真正执行——一步一步，一个产品一个产品。',
+  },
+  {
+    title: '你厌倦了买错产品',
+    copy: '会员不是为了更多功能，而是为了买得更聪明、少浪费。',
+  },
+  {
+    title: '你想让 AI 替你做决定',
+    copy: 'Premium 不是更多按钮，而是更少纠结、更少浪费时间、更少后悔。',
+  },
+];
+
+const faqs = [
+  {
+    question: '现在可以付款吗？',
+    answer: 'Pro 和 Premium 通过 Stripe 结账。先登录，然后选择月付或年付升级。',
+  },
+  {
+    question: '我的照片和隐私怎么处理？',
+    answer: '照片在本地预览，不会永久存储。完整的隐私控制和一键删除功能将在正式上线时提供。',
+  },
+  {
+    question: 'Pro 和 Premium 有什么区别？',
+    answer: 'Pro 帮你一次掌握一个妆容。Premium 在不同季节、场景和风格演变中持续给你 AI 指导。',
+  },
+  {
+    question: '完全没化过妆的人适合吗？',
+    answer: '完全适合。我们把"什么适合你"拆解成可以跟着做的步骤、可以信赖的产品，以及看得见的进步。',
+  },
+];
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="会员｜AI Beauty Stylist 中文版"
+  description="灵活的会员方案，帮你发现、执行和保持完美美妆习惯——从免费探索到持续 AI 指导。"
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">Beauty Pass</span>
+      <h1>先看到效果，再学会怎么画，最后再也不用犹豫。</h1>
+      <p>免费发现你的理想妆容。Pro 一步步掌握它。Premium 让 AI 永远指引你。</p>
+    </div>
+
+    <div class="container result-grid result-grid-bottom">
+      <article class="card membership-hero-card membership-hero-card-accent">
+        <span class="membership-kicker">Beauty Pass</span>
+        <h3>用户付费不是为了看 AI 画漂亮的脸。</h3>
+        <p>他们付费是为了变得更美、更自信，花更少时间、少买错产品。这才是我们卖的东西。</p>
+        <div class="membership-mini-metrics">
+          <div class="metric"><strong>免费版</strong><span>看看什么适合你</span></div>
+          <div class="metric"><strong>Pro</strong><span>学会怎么画</span></div>
+          <div class="metric"><strong>Premium</strong><span>让 AI 替你决定</span></div>
+        </div>
+      </article>
+
+      <article class="card membership-hero-card">
+        <span class="membership-kicker">什么时候升级</span>
+        <h3>你会知道时机到了。</h3>
+        <ul class="check-list compact">
+          <li>当你看到"它懂我"，想把这个妆容变成现实</li>
+          <li>当你不想再买错口红，需要精选产品推荐</li>
+          <li>当你想要针对每个场景和季节的持续指导</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="container membership-style-drop is-hidden" data-membership-style-drop>
+      <span>个性化 Pro 推送</span>
+      <strong data-membership-style-title>根据你的风格档案解锁每周推送</strong>
+      <p data-membership-style-copy>Pro 把你保存的风格方向变成每周的妆容、教程和工具包计划。</p>
+    </div>
+
+    <div class="container pricing-toggle-wrap top-gap">
+      <div class="pricing-toggle" role="group" aria-label="计费周期">
+        <span class="pricing-toggle-slider" aria-hidden="true"></span>
+        <button class="pricing-toggle-btn is-active" data-billing="monthly" type="button">月付</button>
+        <button class="pricing-toggle-btn" data-billing="yearly" type="button">
+          年付
+          <em class="pricing-toggle-tag">省 38%</em>
+        </button>
+      </div>
+      <p class="pricing-toggle-hint is-hidden" id="pricing-save-hint">🎉 年付可节省 38%</p>
+    </div>
+
+    <div class="container grid-cards grid-cards-3">
+      {plans.map((plan) => (
+        <article class={`card pricing-card${plan.highlight ? ' pricing-card-accent' : ''}`}>
+          {plan.highlight && <span class="pricing-badge">最受欢迎</span>}
+          <span class="pill">{plan.name}</span>
+          <h3>{plan.value}</h3>
+          <p class="price-line">
+            <span class="price-amount" data-monthly>
+              <strong>{plan.price}</strong>
+              {plan.planId !== 'free' && <span class="price-period">/ 月</span>}
+            </span>
+            {plan.priceAnnual && (
+              <span class="price-amount is-hidden" data-yearly>
+                <strong>{plan.priceAnnual}</strong>
+                <span class="price-period">/ 年</span>
+              </span>
+            )}
+          </p>
+          {plan.priceAnnualMonthly && (
+            <p class="price-annual-hint" data-monthly>
+              或 <strong>{plan.priceAnnualMonthly}/月</strong>（年付）
+            </p>
+          )}
+          <p>{plan.description}</p>
+          <ul class="check-list compact">
+            {plan.features.map((feature) => <li>{feature}</li>)}
+          </ul>
+          <p class="pricing-trigger">{plan.trigger}</p>
+          {plan.planId === 'free' ? (
+            <a class="btn btn-secondary" href="/zh/try-on/">免费试用</a>
+          ) : (
+            <a
+              class={`btn${plan.highlight ? '' : ' btn-secondary'}`}
+              href="#"
+              data-plan-id={plan.planId}
+              data-plan-id-monthly={plan.planId}
+              data-plan-id-yearly={plan.planIdAnnual}
+              data-label-monthly={plan.highlight ? '开通 Pro — $19.99/月' : '开通 Premium — $39.99/月'}
+              data-label-yearly={plan.highlight ? '开通 Pro — $149/年' : '开通 Premium — $299/年'}
+              data-checkout="true"
+            >
+              {plan.highlight ? '开通 Pro — $19.99/月' : '开通 Premium — $39.99/月'}
+            </a>
+          )}
+        </article>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <span class="eyebrow">为什么升级</span>
+      <h2>升级不是为了更多功能，而是为了更少纠结。</h2>
+    </div>
+
+    <div class="container grid-cards grid-cards-3">
+      {moments.map((moment) => (
+        <article class="card coach-card">
+          <h3>{moment.title}</h3>
+          <p>{moment.copy}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <span class="eyebrow">常见问题</span>
+      <h2>你真正关心的问题</h2>
+    </div>
+
+    <div class="container grid-cards grid-cards-2">
+      {faqs.map((item) => (
+        <article class="card faq-card">
+          <h3>{item.question}</h3>
+          <p>{item.answer}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn btn-secondary" href="/zh/try-on/">继续试妆</a>
+      <button class="btn btn-secondary" id="manage-subscription-btn" style="display:none;">管理订阅</button>
+    </div>
+
+    <script>
+      import { getMyStyle } from '../../lib/personalization';
+
+      const toggleBtns = document.querySelectorAll<HTMLButtonElement>('[data-billing]');
+      const saveHint = document.getElementById('pricing-save-hint');
+      const slider = document.querySelector<HTMLElement>('.pricing-toggle-slider');
+      let currentBilling: 'monthly' | 'yearly' = 'monthly';
+
+      function applyBilling(billing: 'monthly' | 'yearly') {
+        currentBilling = billing;
+        toggleBtns.forEach((btn) => btn.classList.toggle('is-active', btn.dataset.billing === billing));
+        if (slider) slider.style.transform = billing === 'yearly' ? 'translateX(100%)' : 'translateX(0)';
+        saveHint?.classList.toggle('is-hidden', billing === 'monthly');
+        document.querySelectorAll<HTMLElement>('[data-monthly]').forEach((el) => el.classList.toggle('is-hidden', billing === 'yearly'));
+        document.querySelectorAll<HTMLElement>('[data-yearly]').forEach((el) => el.classList.toggle('is-hidden', billing === 'monthly'));
+        document.querySelectorAll<HTMLElement>('[data-plan-id-monthly]').forEach((btn) => {
+          const planId = billing === 'yearly' ? btn.dataset.planIdYearly ?? btn.dataset.planIdMonthly : btn.dataset.planIdMonthly;
+          const label = billing === 'yearly' ? btn.dataset.labelYearly ?? btn.textContent : btn.dataset.labelMonthly ?? btn.textContent;
+          if (planId) btn.dataset.planId = planId;
+          if (label) btn.textContent = label;
+        });
+      }
+
+      toggleBtns.forEach((btn) => btn.addEventListener('click', () => applyBilling(btn.dataset.billing as 'monthly' | 'yearly')));
+
+      const params = new URLSearchParams(window.location.search);
+      const sourceFrom = params.get('from') || 'zh_membership_page';
+      const myStyle = getMyStyle();
+      const styleDrop = document.querySelector<HTMLElement>('[data-membership-style-drop]');
+      if (myStyle && styleDrop) {
+        styleDrop.classList.remove('is-hidden');
+        const styleTitle = document.querySelector<HTMLElement>('[data-membership-style-title]');
+        const styleCopy = document.querySelector<HTMLElement>('[data-membership-style-copy]');
+        if (styleTitle) styleTitle.textContent = `根据你的 ${myStyle.label} 风格档案解锁每周推送`;
+        if (styleCopy) styleCopy.textContent = `你保存的 ${myStyle.label} 方向可以驱动 Pro 专属的每周妆容、教程和工具包推荐。`;
+      }
+
+      document.querySelectorAll('[data-checkout="true"]').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const planId = (btn as HTMLElement).dataset.planId;
+          if (!planId) return;
+          (window as typeof window & { aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void } }).aiBeautyAnalytics?.track?.('checkout_started', { metadata: { planId, billing: currentBilling, source: sourceFrom } });
+          const originalText = btn.textContent ?? '';
+          btn.textContent = '加载中…';
+          (btn as HTMLElement).style.pointerEvents = 'none';
+          try {
+            const resp = await fetch('/api/stripe/create-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ planId }) });
+            const data = await resp.json();
+            if (data.error === 'unauthorized') {
+              const next = encodeURIComponent(`${window.location.pathname}${window.location.search}`);
+              window.location.href = `/login?next=${next}`;
+              return;
+            }
+            if (data.url) window.location.href = data.url;
+            else alert(data.message || '出现错误，请重试');
+          } catch { alert('网络错误，请重试'); }
+          finally { btn.textContent = originalText; (btn as HTMLElement).style.pointerEvents = ''; }
+        });
+      });
+
+      const manageBtn = document.getElementById('manage-subscription-btn');
+      fetch('/api/auth/me').then(r => r.json()).then(data => {
+        if (data.authenticated && data.user?.tier !== 'free' && manageBtn) manageBtn.style.display = 'inline-block';
+      }).catch(() => {});
+      manageBtn?.addEventListener('click', async () => {
+        manageBtn.textContent = '加载中…';
+        try {
+          const resp = await fetch('/api/stripe/portal', { method: 'POST' });
+          const data = await resp.json();
+          if (data.url) window.location.href = data.url;
+          else alert(data.message || '无法打开管理页面');
+        } catch { alert('网络错误'); }
+        finally { manageBtn.textContent = '管理订阅'; }
+      });
+
+      if (params.get('payment') === 'success') {
+        const banner = document.createElement('div');
+        banner.className = 'payment-success-banner';
+        banner.innerHTML = '🎉 <strong>欢迎加入 Beauty Pass！</strong>你的订阅已激活。';
+        document.querySelector('.pricing-toggle-wrap')?.before(banner);
+        (window as typeof window & { aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void } }).aiBeautyAnalytics?.track?.('checkout_success');
+        history.replaceState({}, '', '/zh/membership/');
+      }
+    </script>
+  </section>
+</BaseLayout>
+
+<style>
+  .membership-kicker { display: inline-flex; align-items: center; width: fit-content; color: var(--accent-deep); font-size: 0.82rem; font-weight: 700; }
+  .membership-style-drop { display: grid; gap: 6px; margin-top: 24px; margin-bottom: 10px; padding: 16px 18px; border: 1px solid rgba(176,127,134,0.22); border-radius: 18px; background: linear-gradient(135deg, rgba(255,248,241,0.92), rgba(255,255,255,0.82)); box-shadow: 0 14px 40px rgba(62,39,39,0.08); }
+  .membership-style-drop.is-hidden { display: none; }
+  .membership-style-drop span { color: var(--accent-deep); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .membership-style-drop strong { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.3rem, 2.4vw, 1.9rem); line-height: 1.08; }
+  .membership-style-drop p { max-width: 680px; margin: 0; color: var(--muted); }
+  .pricing-toggle-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 8px; padding-bottom: 40px; }
+  .pricing-toggle { position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 100px; background: var(--bg-muted, #f0eae8); border: 1px solid rgba(176,127,134,0.18); width: 260px; }
+  .pricing-toggle-slider { position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px); border-radius: 100px; background: linear-gradient(135deg, var(--accent, #b07f86), var(--accent-deep, #9a6b72)); box-shadow: 0 2px 10px rgba(176,127,134,0.35); transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; z-index: 0; }
+  .pricing-toggle-btn { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 10px 0; border-radius: 100px; border: none; background: transparent; font-size: 0.9rem; font-weight: 500; color: var(--muted, #999); cursor: pointer; transition: color 0.2s; user-select: none; }
+  .pricing-toggle-btn.is-active { color: #fff; font-weight: 700; }
+  .pricing-toggle-hint { margin: 0; font-size: 0.82rem; font-weight: 600; color: var(--accent-deep, #9a6b72); }
+  .pricing-toggle-hint.is-hidden { display: none; }
+  .price-period { font-size: 0.9rem; color: var(--muted, #888); font-weight: 400; }
+  .pricing-toggle-tag { display: inline-block; padding: 2px 7px; border-radius: 100px; background: rgba(176,127,134,0.15); color: var(--accent-deep, #9a6b72); font-style: normal; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em; transition: background 0.2s, color 0.2s; white-space: nowrap; }
+  .pricing-toggle-btn.is-active .pricing-toggle-tag { background: rgba(255,255,255,0.28); color: #fff; }
+  .price-annual-hint { margin: -6px 0 0; font-size: 0.78rem; color: var(--muted, #999); text-align: center; }
+  .price-annual-hint strong { color: var(--accent-deep, #9a6b72); font-weight: 600; }
+  .price-annual-hint.is-hidden { display: none; }
+</style>

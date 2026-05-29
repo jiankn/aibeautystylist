@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllLooks } from '../../lib/mockTryOn';
+
+export const prerender = true;
+
+const looks = getAllLooks('en');
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'AI Beauty Stylist 中文教程',
+  description: '分步骤妆容教程，覆盖通勤、约会、拍照和活动场景。',
+  url: 'https://aibeautystylist.com/zh/tutorial/',
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: looks.map((look, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: look.name,
+      url: `https://aibeautystylist.com/zh/tutorials/${look.id}/`,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="妆容教程｜分步骤 AI 美妆指南"
+  description="浏览分步骤妆容教程，覆盖通勤、约会、拍照和新手友好场景。"
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">教程库</span>
+      <h1>选一个符合当下场景的教程，而不只是符合潮流的。</h1>
+      <p>每个指南把一个 AI 美妆妆容变成可重复的流程：该做什么、该避免什么、怎么自检，以及哪些产品角色最重要。</p>
+    </div>
+
+    <div class="container grid-cards grid-cards-3">
+      {looks.map((look) => (
+        <a class="card tutorial-index-card" href={`/zh/tutorials/${look.id}/`}>
+          <span class="pill">{look.scenario}</span>
+          <h3>{look.name}</h3>
+          <p>{look.reason}</p>
+          <ul class="check-list compact">
+            <li>{look.minutes}</li>
+            <li>{look.difficulty}</li>
+            <li>{look.focus}</li>
+          </ul>
+          <span class="text-link">打开教程</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tutorial-index-card { color: inherit; text-decoration: none; }
+</style>

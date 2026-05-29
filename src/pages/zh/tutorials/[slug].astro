@@ -1,0 +1,168 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getAllLooks, type TryOnLook } from '../../../lib/mockTryOn';
+import { inferStepVisual, ZONE_ICONS, TOOL_ICONS } from '../../../lib/tutorialVisuals';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return getAllLooks('en').map((look) => ({
+    params: { slug: look.id },
+    props: { look },
+  }));
+}
+
+const { look } = Astro.props as { look: TryOnLook };
+
+const kitGroups = [
+  { title: '必备', items: look.kit.mustHave },
+  { title: '可替换', items: look.kit.optional },
+  { title: '升级款', items: look.kit.upgrade },
+];
+
+const scenarioMap: Record<string, string> = {
+  office: '通勤 / 日常',
+  date: '约会',
+  photo: '拍照 / 上镜',
+};
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: `${look.name} 妆容教程`,
+  description: look.tutorialHeadline,
+  totalTime: `PT${Number.parseInt(look.minutes, 10) || 10}M`,
+  supply: look.kit.mustHave.map((item) => ({
+    '@type': 'HowToSupply',
+    name: `${item.name} - ${item.shade}`,
+  })),
+  step: look.tutorialSteps.map((step, index) => ({
+    '@type': 'HowToStep',
+    position: index + 1,
+    name: step.title,
+    text: `${step.detail} 避免：${step.avoid} 自检：${step.selfCheck}`,
+  })),
+};
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title={`${look.name} 妆容教程｜AI Beauty Stylist`}
+  description={`中文教程：${look.tutorialHeadline}`}
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">{scenarioMap[look.scenario] ?? look.scenario}</span>
+      <h1>{look.name}：分步骤教程，不是一堆文字。</h1>
+      <p>{look.tutorialHeadline}</p>
+    </div>
+
+    <div class="container tutorial-overview-grid">
+      <article class="card selected-look-detail">
+        <span class="pill">妆容概览</span>
+        <h3>{look.name}</h3>
+        <p>{look.reason}</p>
+        <p class="tutorial-summary-copy">{look.tutorialHeadline}</p>
+        <ul class="check-list compact">
+          <li>场景：{scenarioMap[look.scenario] ?? look.scenario}</li>
+          <li>难度：{look.difficulty}</li>
+          <li>时间：{look.minutes}</li>
+          <li>重点：{look.focus}</li>
+          <li>妆感：{look.finish}</li>
+        </ul>
+      </article>
+
+      <div class="tutorial-side-grid">
+        <article class="card coach-card">
+          <span class="pill">避免这些</span>
+          <h3>最常见的 3 个错误</h3>
+          <ul class="check-list compact">
+            {look.commonMistakes.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+
+        <article class="card coach-card">
+          <span class="pill">自检</span>
+          <h3>完成后快速检查</h3>
+          <ul class="check-list compact">
+            {look.selfChecks.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
+    </div>
+
+    <div class="container tutorial-step-flow top-gap">
+      {look.tutorialSteps.map((step, index) => {
+        const visual = inferStepVisual(step.title, step.detail);
+        return (
+          <article class="card tutorial-step-card">
+            <div class="tutorial-step-top">
+              <span class="scenario-index">0{index + 1}</span>
+              <div class="tutorial-step-content">
+                <div class="tutorial-step-badges">
+                  <span class="step-badge step-badge-zone" title={`面部区域：${visual.zoneLabel}`}>
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={ZONE_ICONS[visual.zone]} />
+                    <span>{visual.zoneLabel}</span>
+                  </span>
+                  <span class="step-badge step-badge-tool" title={`工具：${visual.toolLabel}`}>
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={TOOL_ICONS[visual.tool]} />
+                    <span>{visual.toolLabel}</span>
+                  </span>
+                </div>
+                <h3>{step.title}</h3>
+                <p>{step.detail}</p>
+              </div>
+            </div>
+            <div class="tutorial-step-callouts">
+              <div class="step-callout">
+                <strong>不要这样做</strong>
+                <p>{step.avoid}</p>
+              </div>
+              <div class="step-callout step-callout-accent">
+                <strong>完成标准</strong>
+                <p>{step.selfCheck}</p>
+              </div>
+            </div>
+            <div class="tutorial-step-actions">
+              <button class="step-action-btn step-action-done" type="button" data-step-done={index}>完成</button>
+              <button class="step-action-btn step-action-help" type="button" data-step-help={index}>需要帮助</button>
+              <button class="step-action-btn step-action-simpler" type="button" data-step-simpler={index}>简化版本</button>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <div class="container top-gap">
+      <article class="card selected-kit-detail">
+        <span class="pill">美妆工具包</span>
+        <h3>这个妆容需要的具体工具，不只是产品清单</h3>
+        <div class="kit-columns top-gap-sm">
+          {kitGroups.map((group) => (
+            <section>
+              <strong>{group.title}</strong>
+              <div class="product-stack top-gap-sm">
+                {group.items.map((item) => (
+                  <article class="product-card">
+                    <div class="product-card-head">
+                      <p class="product-meta">{item.category} · {item.shade}</p>
+                      <span class="product-price">{item.price}</span>
+                    </div>
+                    <h5>{item.name}</h5>
+                    <p class="product-reason">{item.why}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </article>
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn btn-secondary" href="/zh/tutorial/">全部教程</a>
+      <a class="btn" href={`/try-on?locale=zh-CN&scenario=${look.scenario.toLowerCase().includes('date') ? 'date' : look.scenario.toLowerCase().includes('photo') || look.scenario.toLowerCase().includes('event') ? 'photo' : 'office'}&from=zh_tutorial_${look.id}`}>试试这个妆容</a>
+    </div>
+  </section>
+</BaseLayout>

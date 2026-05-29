@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'AI Beauty Stylist 关于我们',
+  url: 'https://aibeautystylist.com/zh/about/',
+  description: 'AI Beauty Stylist 帮助用户了解什么妆容适合自己的脸型、肤色和真实生活场景。',
+};
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title="关于我们｜AI Beauty Stylist 中文版"
+  description="AI Beauty Stylist 帮你了解什么妆容适合你的脸型、肤色和真实生活场景。"
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container section-copy narrow">
+      <span class="eyebrow">关于我们</span>
+      <h1>从你的脸开始，而不是从流行趋势开始。</h1>
+      <p>
+        AI Beauty Stylist 为想要清晰美妆方向的人而建：什么适合我、怎么复刻、哪些产品真的值得买。
+      </p>
+    </div>
+
+    <div class="container grid-cards grid-cards-3">
+      <article class="card coach-card">
+        <h3>个人适配优先</h3>
+        <p>推荐从冷暖调、面部结构、使用场景和经验水平出发，而不是从热门色号出发。</p>
+      </article>
+      <article class="card coach-card">
+        <h3>执行优于灵感</h3>
+        <p>每个妆容都连接到步骤、需要避免的错误、自检点和实用工具包。</p>
+      </article>
+      <article class="card coach-card">
+        <h3>隐私优先设计</h3>
+        <p>上传的照片被视为敏感数据，删除和最小化保留是产品的基本要求。</p>
+      </article>
+    </div>
+
+    <div class="container tutorial-cta-row top-gap">
+      <a class="btn" href="/zh/try-on/">开始 AI 试妆</a>
+      <a class="btn btn-secondary" href="/zh/privacy/">查看隐私政策</a>
+    </div>
+  </section>
+</BaseLayout>
