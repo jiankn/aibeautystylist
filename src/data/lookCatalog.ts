@@ -210,7 +210,7 @@ export const lookCatalogItems: LookCatalogItem[] = [
     imageAlt: 'Asian refined makeup with clean eye definition and satin skin',
     scenario: 'office',
     category: 'daily',
-    focus: '100% 24%',
+    focus: 'center 24%',
     intent: 'clean refined makeup for softer eye definition, balanced cheek color, and satin skin',
   },
   {

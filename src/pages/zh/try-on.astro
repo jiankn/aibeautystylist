@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import TryOnStudio from '../../components/TryOnStudio.astro';
 
 export const prerender = true;
 
@@ -38,38 +39,37 @@ const structuredData = [
   description="AI 试妆中文版。上传自拍，分析肤色冷暖调、五官和场景需求，获得适合你的妆容、口红、粉底和步骤建议。"
   structuredData={structuredData}
 >
-  <section class="section">
+  <!-- 工具组件：完整交互式 AI 试妆 -->
+  <section class="section" style="padding-top: 32px; padding-bottom: 56px;">
+    <div class="container">
+      <TryOnStudio locale="zh-CN" />
+    </div>
+  </section>
+
+  <!-- SEO 内容深度区 -->
+  <section class="section seo-tryon-section">
     <div class="container section-copy narrow">
-      <span class="eyebrow">AI Makeup Try-On</span>
-      <h1>上传自拍，看看什么妆容真正适合你。</h1>
-      <p>很多妆容教程看起来好看，但不一定适合你的肤色、眼型、脸型和场景。AI 试妆的价值，是先分析你的个人特征，再给出更接近你自己的妆容方向。</p>
-      <div class="cta-row">
-        <a class="btn" href="/try-on?locale=zh-CN&from=zh_try_on">进入 AI 试妆工具</a>
-        <a class="btn btn-secondary" href="/zh/tools/shade-finder/">先测试色号</a>
-      </div>
-    </div>
-
-    <div class="container grid-cards grid-cards-3 top-gap">
-      <article class="card coach-card">
-        <span class="pill">第一步</span>
-        <h2>上传清晰自拍</h2>
-        <p>正面、自然光、无遮挡的照片能帮助 AI 更准确判断肤色、五官比例和妆容强度。</p>
-      </article>
-      <article class="card coach-card">
-        <span class="pill">第二步</span>
-        <h2>获得个性化诊断</h2>
-        <p>系统会综合冷暖调、肤色深浅、眼型、唇形和场景，给出更适合你的妆容方案。</p>
-      </article>
-      <article class="card coach-card">
-        <span class="pill">第三步</span>
-        <h2>按步骤复刻妆容</h2>
-        <p>不是只给图片灵感，而是给出底妆、眼妆、腮红、口红和常见错误提醒。</p>
-      </article>
-    </div>
-
-    <div class="container section-copy narrow top-gap">
       <h2>AI 试妆能解决什么问题？</h2>
       <p>如果你经常遇到口红显黑、粉底发灰、眼妆显肿、教程照搬失败，AI 试妆可以先帮你缩小方向。它不是替代专业化妆师，而是帮你更快知道哪些颜色、妆感和场景更值得尝试。</p>
+
+      <h2>AI 试妆怎么用</h2>
+      <ol class="seo-howto-list">
+        <li><strong>上传清晰素颜自拍。</strong>正面、光线均匀、不戴眼镜。AI 需要看到完整面部。</li>
+        <li><strong>获得面部和肤色诊断。</strong>系统分析肤色冷暖调、脸型、眼型和唇形，30 秒内完成。</li>
+        <li><strong>查看 3 个个性化妆容。</strong>每个妆容都匹配你的特征，包含粉底、口红、腮红和眼影色号方向。</li>
+        <li><strong>按步骤教程复刻。</strong>每个妆容附带详细步骤、常见错误提醒和产品推荐。</li>
+        <li><strong>在自己脸上预览妆容（Pro）。</strong>Pro 会员可以把推荐妆容渲染到你的自拍上，购买前就知道效果。</li>
+      </ol>
+
+      <h2>免费诊断包含什么</h2>
+      <ul class="seo-feature-list">
+        <li><strong>肤色冷暖调判断</strong> — 暖调、冷调或中性，附置信度。</li>
+        <li><strong>脸型和眼型分析</strong> — 用于建议修容、眼影位置和眉形方向。</li>
+        <li><strong>2 个个性化妆容</strong> — 每个都有为什么适合你的理由。</li>
+        <li><strong>前 3 个教程步骤免费</strong> — 完整步骤需要 Pro。</li>
+        <li><strong>口红和粉底色号方向</strong> — 从几百个产品缩小到可信的短名单。</li>
+      </ul>
+
       <h2>常见问题</h2>
       <dl class="seo-faq">
         {faqEntities.map((item) => (
@@ -79,6 +79,93 @@ const structuredData = [
           </>
         ))}
       </dl>
+
+      <h2>按场景和风格选择试妆指南</h2>
+      <ul class="seo-link-list">
+        <li><a href="/zh/scenarios/wedding-guest-makeup/">婚礼宾客妆</a></li>
+        <li><a href="/zh/scenarios/mature-skin-makeup/">成熟肌妆容</a></li>
+        <li><a href="/zh/scenarios/hooded-eyes-makeup/">肿眼泡眼妆</a></li>
+        <li><a href="/zh/scenarios/everyday-natural-makeup/">日常裸妆</a></li>
+        <li><a href="/zh/styles/monolid-makeup/">单眼皮妆容</a></li>
+        <li><a href="/zh/styles/korean-dewy-makeup/">韩系水光妆</a></li>
+        <li><a href="/zh/styles/olive-skin-makeup/">橄榄皮妆容</a></li>
+        <li><a href="/zh/styles/deep-skin-makeup/">深肤色妆容</a></li>
+      </ul>
+
+      <h2>先找到你的色号</h2>
+      <ul class="seo-link-list">
+        <li><a href="/zh/tools/shade-finder/">AI 口红和粉底色号测试</a></li>
+        <li><a href="/zh/tools/undertone-quiz/">冷暖皮判断测试</a></li>
+        <li><a href="/zh/lipstick-shades/">按肤色浏览口红色号</a></li>
+      </ul>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .seo-tryon-section {
+    padding-top: 24px;
+    padding-bottom: 64px;
+    background: linear-gradient(180deg, transparent 0%, rgba(255, 244, 246, 0.4) 100%);
+  }
+  .seo-tryon-section h2 {
+    margin-top: 32px;
+    font-size: 1.4rem;
+    color: var(--text);
+  }
+  .seo-tryon-section h2:first-of-type {
+    margin-top: 0;
+  }
+  .seo-tryon-section p {
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .seo-howto-list, .seo-feature-list {
+    padding-left: 0;
+    list-style: none;
+    display: grid;
+    gap: 14px;
+    margin: 0 0 16px;
+  }
+  .seo-howto-list li, .seo-feature-list li {
+    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(176, 127, 134, 0.12);
+    line-height: 1.6;
+  }
+  .seo-howto-list { counter-reset: howto; }
+  .seo-howto-list li {
+    position: relative;
+    padding-left: 56px;
+    counter-increment: howto;
+  }
+  .seo-howto-list li::before {
+    content: counter(howto);
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .seo-faq { display: grid; gap: 14px; margin: 0 0 24px; }
+  .seo-faq dt { font-weight: 600; color: var(--text); }
+  .seo-faq dd { margin: 0 0 6px; color: var(--muted); line-height: 1.65; }
+  .seo-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 16px;
+  }
+  .seo-link-list li { padding: 4px 0; }
+</style>

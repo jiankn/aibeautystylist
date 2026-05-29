@@ -1,0 +1,356 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { stylePagesZhCN } from '../../../data/localized/stylePagesZhCN';
+import type { StylePage } from '../../../data/stylePages';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return stylePagesZhCN.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props as { page: StylePage };
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: '美妆指南',
+        item: 'https://aibeautystylist.com/zh/makeup-guides/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: page.title,
+        item: `https://aibeautystylist.com/zh/styles/${page.slug}/`,
+      },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: page.title,
+    description: page.description,
+    image: `https://aibeautystylist.com${page.image}`,
+    step: page.steps.map((item, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: item,
+      text: item,
+    })),
+  },
+  ...(page.faqs?.length
+    ? [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: page.faqs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: faq.answer,
+            },
+          })),
+        },
+      ]
+    : []),
+];
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title={`${page.title}｜AI Beauty Stylist`}
+  description={page.description}
+  ogImage={page.image}
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container hero-grid">
+      <div class="section-copy">
+        <span class="eyebrow">{page.eyebrow}</span>
+        <h1>{page.headline}</h1>
+        <p>{page.intro}</p>
+        <div class="cta-row">
+          <a class="btn" href={`/try-on?locale=zh-CN&scenario=${page.tryOnScenario}&style=${page.slug}&from=zh_style_${page.slug}`}>试试这个妆容</a>
+          <a class="btn btn-secondary" href="/zh/tools/shade-finder/">测试我的色号</a>
+        </div>
+      </div>
+      <div class="hero-visuals">
+        <div class="hero-img-main">
+          <img src={page.image} alt={page.title} loading="eager" />
+          <span class="hero-img-label">{page.eyebrow}</span>
+        </div>
+      </div>
+    </div>
+
+    {(page.longIntro?.length ?? 0) > 0 && (
+      <div class="container top-gap">
+        <article class="card coach-card seo-depth-card">
+          <span class="pill">指南要点</span>
+          <h2>如何理解{page.eyebrow}</h2>
+          <div class="prose-stack">
+            {page.longIntro.map((item) => <p>{item}</p>)}
+          </div>
+        </article>
+      </div>
+    )}
+
+    <div class="container top-gap">
+      <article class="card coach-card style-traits-card">
+        <span class="pill">妆容特征</span>
+        <h3>这个妆容的关键点</h3>
+        <ul class="trait-list">
+          {page.keyTraits.map((trait) => <li>{trait}</li>)}
+        </ul>
+      </article>
+    </div>
+
+    <div class="container grid-cards grid-cards-2 top-gap">
+      <article class="card coach-card">
+        <span class="pill">分步教程</span>
+        <h3>怎么画出这个妆容</h3>
+        <ol class="step-list">
+          {page.steps.map((item) => <li>{item}</li>)}
+        </ol>
+      </article>
+      <article class="card coach-card">
+        <span class="pill">避免</span>
+        <h3>哪些做法会毁掉这个妆容</h3>
+        <ul class="check-list compact">
+          {page.avoid.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </div>
+
+    <div class="container grid-cards grid-cards-2 top-gap">
+      <article class="card coach-card">
+        <span class="pill">适合场景</span>
+        <h3>什么时候适合</h3>
+        <ul class="check-list compact">
+          {page.bestFor.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+
+      <article class="card coach-card">
+        <span class="pill">必备产品</span>
+        <h3>产品清单</h3>
+        <ul class="check-list compact">
+          {page.productEssentials.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </div>
+
+    {(page.techniqueSections?.length ?? 0) > 0 && (
+      <div class="container grid-cards grid-cards-2 top-gap">
+        {page.techniqueSections.map((section) => (
+          <article class="card coach-card">
+            <span class="pill">技巧</span>
+            <h3>{section.heading}</h3>
+            <p>{section.body}</p>
+          </article>
+        ))}
+      </div>
+    )}
+
+    {(page.productGrades?.length ?? 0) > 0 && (
+      <div class="container top-gap">
+        <article class="card coach-card">
+          <span class="pill">产品取舍</span>
+          <h2>该买、该跳过还是该升级</h2>
+          <div class="product-grade-grid">
+            {page.productGrades.map((grade) => (
+              <div class="product-grade">
+                <strong>{grade.grade}</strong>
+                <h3>{grade.item}</h3>
+                <p>{grade.why}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      </div>
+    )}
+
+    {(page.personalizationTips?.length ?? 0) > 0 && (
+      <div class="container top-gap">
+        <article class="card coach-card">
+          <span class="pill">个性化调整</span>
+          <h2>根据你自己的脸来调整</h2>
+          <div class="scenario-rule-stack">
+            {page.personalizationTips.map((tip) => (
+              <div class="scenario-rule">
+                <strong>{tip.label}</strong>
+                <p>{tip.detail}</p>
+              </div>
+            ))}
+          </div>
+        </article>
+      </div>
+    )}
+
+    {(page.faqs?.length ?? 0) > 0 && (
+      <div class="container grid-cards grid-cards-2 top-gap">
+        {page.faqs.map((faq) => (
+          <article class="card coach-card">
+            <span class="pill">常见问题</span>
+            <h3>{faq.question}</h3>
+            <p>{faq.answer}</p>
+          </article>
+        ))}
+      </div>
+    )}
+
+    <div class="container top-gap">
+      <article class="card related-guide-card">
+        <span class="pill">下一步</span>
+        <h3>把这个妆容变成你自己的</h3>
+        <div class="related-guide-links">
+          {page.relatedLinks.map((link) => (
+            <a class="text-link" href={link.href}>{link.label}</a>
+          ))}
+        </div>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-visuals {
+    display: flex;
+    justify-content: center;
+  }
+
+  .style-traits-card .trait-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .style-traits-card .trait-list li {
+    position: relative;
+    padding-left: 24px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  .style-traits-card .trait-list li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.8em;
+  }
+
+  .step-list {
+    padding-left: 20px;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+
+  .step-list li {
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  .step-list li::marker {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .prose-stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  .prose-stack p,
+  .coach-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .product-grade-grid,
+  .scenario-rule-stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  .product-grade {
+    border: 1px solid rgba(62, 39, 39, 0.1);
+    border-radius: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.58);
+  }
+
+  .product-grade strong,
+  .scenario-rule strong {
+    color: var(--accent);
+  }
+
+  .product-grade h3 {
+    margin: 6px 0 8px;
+  }
+
+  .scenario-rule p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .related-guide-card {
+    display: grid;
+    gap: 12px;
+  }
+
+  .related-guide-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 20px;
+  }
+
+  .hero-img-main {
+    position: relative;
+    width: min(100%, 460px);
+    aspect-ratio: 3 / 4;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(62, 39, 39, 0.12);
+  }
+
+  .hero-img-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-img-label {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  @media (max-width: 900px) {
+    .hero-img-main {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+    }
+  }
+</style>

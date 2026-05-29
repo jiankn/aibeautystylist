@@ -1,6 +1,13 @@
 ---
 import { buildLookTryOnHref, lookCatalogItems, lookFilters, quickTryOnLooks } from '../data/lookCatalog';
 import { homeStyleItems, styleNavigationItems } from '../data/stylePages';
+import { t, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
 
 const quickLookItems = quickTryOnLooks;
 
@@ -11,17 +18,156 @@ const styleShortcutItems = homeStyleItems.map((style) => ({
 
 const allLookItems = lookCatalogItems;
 const allStyleItems = styleNavigationItems;
+
+// Helper function for client-side translations
+const getTranslations = (currentLocale: Locale) => ({
+  tryOnStudio: {
+    stepLabel: t('tryOnStudio.stepLabel', currentLocale),
+    heading: t('tryOnStudio.heading', currentLocale),
+    subheading: t('tryOnStudio.subheading', currentLocale),
+    privacyStrip: t('tryOnStudio.privacyStrip', currentLocale),
+    uploadLabel: t('tryOnStudio.uploadLabel', currentLocale),
+    uploadHelper: t('tryOnStudio.uploadHelper', currentLocale),
+    uploadIdle: t('tryOnStudio.uploadIdle', currentLocale),
+    uploadReady: t('tryOnStudio.uploadReady', currentLocale),
+    uploadReadyDetail: t('tryOnStudio.uploadReadyDetail', currentLocale),
+    uploadProgressLabel: t('tryOnStudio.uploadProgressLabel', currentLocale),
+    uploadProgressDetail: t('tryOnStudio.uploadProgressDetail', currentLocale),
+    uploadFileName: t('tryOnStudio.uploadFileName', currentLocale),
+    uploadFileMeta: t('tryOnStudio.uploadFileMeta', currentLocale),
+    uploadStatusReady: t('tryOnStudio.uploadStatusReady', currentLocale),
+    uploadChange: t('tryOnStudio.uploadChange', currentLocale),
+    uploadRemove: t('tryOnStudio.uploadRemove', currentLocale),
+    scenarioLabel: t('tryOnStudio.scenarioLabel', currentLocale),
+    scenarioOffice: t('tryOnStudio.scenarioOffice', currentLocale),
+    scenarioDate: t('tryOnStudio.scenarioDate', currentLocale),
+    scenarioPhoto: t('tryOnStudio.scenarioPhoto', currentLocale),
+    experienceLabel: t('tryOnStudio.experienceLabel', currentLocale),
+    experienceBeginner: t('tryOnStudio.experienceBeginner', currentLocale),
+    experienceIntermediate: t('tryOnStudio.experienceIntermediate', currentLocale),
+    generateSubmitDefault: t('tryOnStudio.generateSubmitDefault', currentLocale),
+    generateSubmitDisabled: t('tryOnStudio.generateSubmitDisabled', currentLocale),
+    formMeta: t('tryOnStudio.formMeta', currentLocale),
+    demoEyebrow: t('tryOnStudio.demoEyebrow', currentLocale),
+    getMoreInspired: t('tryOnStudio.getMoreInspired', currentLocale),
+    tryMoreStyles: t('tryOnStudio.tryMoreStyles', currentLocale),
+    loadingTitle: t('tryOnStudio.loadingTitle', currentLocale),
+    loadingDetail: t('tryOnStudio.loadingDetail', currentLocale),
+    modeChipReal: t('tryOnStudio.modeChipReal', currentLocale),
+    modeChipDemo: t('tryOnStudio.modeChipDemo', currentLocale),
+    remainingBadge: t('tryOnStudio.remainingBadge', currentLocale),
+    rerunButton: t('tryOnStudio.rerunButton', currentLocale),
+    rerunButtonDemo: t('tryOnStudio.rerunButtonDemo', currentLocale),
+    deleteButton: t('tryOnStudio.deleteButton', currentLocale),
+    aiDisclaimer: t('tryOnStudio.aiDisclaimer', currentLocale),
+    demoBannerTitle: t('tryOnStudio.demoBannerTitle', currentLocale),
+    demoBannerCopy: t('tryOnStudio.demoBannerCopy', currentLocale),
+    demoBannerCta: t('tryOnStudio.demoBannerCta', currentLocale),
+    gatedPill: t('tryOnStudio.gatedPill', currentLocale),
+    gatedMessage: t('tryOnStudio.gatedMessage', currentLocale),
+    gatedDetail: t('tryOnStudio.gatedDetail', currentLocale),
+    gatedCta: t('tryOnStudio.gatedCta', currentLocale),
+    diagnosisEyebrow: t('tryOnStudio.diagnosisEyebrow', currentLocale),
+    compareEyebrow: t('tryOnStudio.compareEyebrow', currentLocale),
+    compareHeading: t('tryOnStudio.compareHeading', currentLocale),
+    compareBefore: t('tryOnStudio.compareBefore', currentLocale),
+    compareAfter: t('tryOnStudio.compareAfter', currentLocale),
+    comparePlaceholderBefore: t('tryOnStudio.comparePlaceholderBefore', currentLocale),
+    comparePlaceholderAfter: t('tryOnStudio.comparePlaceholderAfter', currentLocale),
+    looksEyebrow: t('tryOnStudio.looksEyebrow', currentLocale),
+    looksHeading: t('tryOnStudio.looksHeading', currentLocale),
+    looksUnlockCta: t('tryOnStudio.looksUnlockCta', currentLocale),
+    tutorialEyebrow: t('tryOnStudio.tutorialEyebrow', currentLocale),
+    tutorialHeading: t('tryOnStudio.tutorialHeading', currentLocale),
+    tutorialHeadline: t('tryOnStudio.tutorialHeadline', currentLocale),
+    tutorialContinue: t('tryOnStudio.tutorialContinue', currentLocale),
+    tutorialLockTitle: t('tryOnStudio.tutorialLockTitle', currentLocale),
+    tutorialLockDetail: t('tryOnStudio.tutorialLockDetail', currentLocale),
+    tutorialLockCta: t('tryOnStudio.tutorialLockCta', currentLocale),
+    kitSummaryLabel: t('tryOnStudio.kitSummaryLabel', currentLocale),
+    kitSummaryHint: t('tryOnStudio.kitSummaryHint', currentLocale),
+    kitMustHave: t('tryOnStudio.kitMustHave', currentLocale),
+    kitSwappable: t('tryOnStudio.kitSwappable', currentLocale),
+    kitUpgrade: t('tryOnStudio.kitUpgrade', currentLocale),
+    shareEyebrow: t('tryOnStudio.shareEyebrow', currentLocale),
+    shareHeading: t('tryOnStudio.shareHeading', currentLocale),
+    shareBadge: t('tryOnStudio.shareBadge', currentLocale),
+    shareTitle: t('tryOnStudio.shareTitle', currentLocale),
+    shareSubtitle: t('tryOnStudio.shareSubtitle', currentLocale),
+    shareCta: t('tryOnStudio.shareCta', currentLocale),
+    shareDownload: t('tryOnStudio.shareDownload', currentLocale),
+    shareExport: t('tryOnStudio.shareExport', currentLocale),
+    shareSave: t('tryOnStudio.shareSave', currentLocale),
+    shareContinue: t('tryOnStudio.shareContinue', currentLocale),
+    shareStatusCopied: t('tryOnStudio.shareStatusCopied', currentLocale),
+    shareStatusSaved: t('tryOnStudio.shareStatusSaved', currentLocale),
+    upgradeCompareEyebrow: t('tryOnStudio.upgradeCompareEyebrow', currentLocale),
+    upgradeCompareHeading: t('tryOnStudio.upgradeCompareHeading', currentLocale),
+    upgradeCompareSub: t('tryOnStudio.upgradeCompareSub', currentLocale),
+    upgradeFreeLabel: t('tryOnStudio.upgradeFreeLabel', currentLocale),
+    upgradeFreePrice: t('tryOnStudio.upgradeFreePrice', currentLocale),
+    upgradeProLabel: t('tryOnStudio.upgradeProLabel', currentLocale),
+    upgradeProPrice: t('tryOnStudio.upgradeProPrice', currentLocale),
+    upgradePremiumLabel: t('tryOnStudio.upgradePremiumLabel', currentLocale),
+    upgradePremiumPrice: t('tryOnStudio.upgradePremiumPrice', currentLocale),
+    upgradeProCta: t('tryOnStudio.upgradeProCta', currentLocale),
+    upgradePremiumCta: t('tryOnStudio.upgradePremiumCta', currentLocale),
+    lookDrawerTitle: t('tryOnStudio.lookDrawerTitle', currentLocale),
+    lookDrawerSubtitle: t('tryOnStudio.lookDrawerSubtitle', currentLocale),
+    styleDrawerTitle: t('tryOnStudio.styleDrawerTitle', currentLocale),
+    styleDrawerSubtitle: t('tryOnStudio.styleDrawerSubtitle', currentLocale),
+    styleFilterAll: t('tryOnStudio.styleFilterAll', currentLocale),
+    styleFilterOffice: t('tryOnStudio.styleFilterOffice', currentLocale),
+    styleFilterDate: t('tryOnStudio.styleFilterDate', currentLocale),
+    styleFilterPhoto: t('tryOnStudio.styleFilterPhoto', currentLocale),
+    emptyStateTitle: t('tryOnStudio.emptyStateTitle', currentLocale),
+    emptyStateDetail: t('tryOnStudio.emptyStateDetail', currentLocale),
+    ghostCardTitle: t('tryOnStudio.ghostCardTitle', currentLocale),
+    ghostCardDetail: t('tryOnStudio.ghostCardDetail', currentLocale),
+    ghostCardCta: t('tryOnStudio.ghostCardCta', currentLocale),
+    previewMakeup: t('tryOnStudio.previewMakeup', currentLocale),
+    previewMakeupLocked: t('tryOnStudio.previewMakeupLocked', currentLocale),
+    selfieUploadSuccess: t('tryOnStudio.selfieUploadSuccess', currentLocale),
+    diagnosisReady: t('tryOnStudio.diagnosisReady', currentLocale),
+    demoReady: t('tryOnStudio.demoReady', currentLocale),
+    uploadNeedsAttention: t('tryOnStudio.uploadNeedsAttention', currentLocale),
+    uploadSelfieFirst: t('tryOnStudio.uploadSelfieFirst', currentLocale),
+    dailyQuotaReached: t('tryOnStudio.dailyQuotaReached', currentLocale),
+    diagnosisIncomplete: t('tryOnStudio.diagnosisIncomplete', currentLocale),
+    requestFailed: t('tryOnStudio.requestFailed', currentLocale),
+    deletePhotoConfirm: t('tryOnStudio.deletePhotoConfirm', currentLocale),
+    photoRemoved: t('tryOnStudio.photoRemoved', currentLocale),
+    noLooksAvailable: t('tryOnStudio.noLooksAvailable', currentLocale),
+    selfCheckLabel: t('tryOnStudio.selfCheckLabel', currentLocale),
+    generatingPreview: t('tryOnStudio.generatingPreview', currentLocale),
+    previewLookName: t('tryOnStudio.previewLookName', currentLocale),
+    previewHint: t('tryOnStudio.previewHint', currentLocale),
+    previewElapsed: t('tryOnStudio.previewElapsed', currentLocale),
+    previewError: t('tryOnStudio.previewError', currentLocale),
+    previewClose: t('tryOnStudio.previewClose', currentLocale),
+    previewDownload: t('tryOnStudio.previewDownload', currentLocale),
+    beforeLabel: t('tryOnStudio.beforeLabel', currentLocale),
+    afterLabel: t('tryOnStudio.afterLabel', currentLocale),
+    selectedLookPreview: t('tryOnStudio.selectedLookPreview', currentLocale),
+    fullFacePreviewNotAvailable: t('tryOnStudio.fullFacePreviewNotAvailable', currentLocale),
+    generatingFullFacePreview: t('tryOnStudio.generatingFullFacePreview', currentLocale),
+    previewFallbackShown: t('tryOnStudio.previewFallbackShown', currentLocale),
+    previewGenerated: t('tryOnStudio.previewGenerated', currentLocale),
+  },
+});
+
+const tx = getTranslations(locale);
 ---
 
 <section class="tool-shell card tryon-shell" data-tryon-shell data-tryon-current-step="input">
   <!-- 移动端粘性 sub-nav (在结果态内 IntersectionObserver 高亮) -->
   <nav class="tryon-subnav" data-tryon-subnav aria-label="Result sections">
     <div class="tryon-subnav-track">
-      <a href="#tryon-section-diagnosis">Diagnosis</a>
-      <a href="#tryon-section-compare">Before / After</a>
-      <a href="#tryon-section-looks">Looks</a>
-      <a href="#tryon-section-tutorial">Tutorial</a>
-      <a href="#tryon-section-share">Share</a>
+      <a href="#tryon-section-diagnosis">{tx.tryOnStudio.diagnosisEyebrow}</a>
+      <a href="#tryon-section-compare">{tx.tryOnStudio.compareEyebrow}</a>
+      <a href="#tryon-section-looks">{tx.tryOnStudio.looksEyebrow}</a>
+      <a href="#tryon-section-tutorial">{tx.tryOnStudio.tutorialEyebrow}</a>
+      <a href="#tryon-section-share">{tx.tryOnStudio.shareEyebrow}</a>
     </div>
   </nav>
 
@@ -34,18 +180,18 @@ const allStyleItems = styleNavigationItems;
         <div class="tryon-intro-left">
           <header class="tryon-header">
             <div class="tryon-header-copy">
-              <span class="eyebrow">AI Try-On · Step 1</span>
-              <h1 id="tryon-heading">Upload a selfie. Discover the looks made for you.</h1>
-              <p>No filters. Real analysis of your skin tone and features, matched to looks and tutorials you can actually follow.</p>
+              <span class="eyebrow">{tx.tryOnStudio.stepLabel}</span>
+              <h1 id="tryon-heading">{tx.tryOnStudio.heading}</h1>
+              <p>{tx.tryOnStudio.subheading}</p>
             </div>
             <span class="tryon-trust-strip" aria-label="Privacy promise">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-              Used only for your recommendations · Deletable anytime
+              {tx.tryOnStudio.privacyStrip}
             </span>
           </header>
         <form class="tryon-form-stack" data-tryon-form>
           <label class="upload-field">
-            <span class="sr-only">Upload bare-face selfie</span>
+            <span class="sr-only">{tx.tryOnStudio.uploadLabel}</span>
             <div class="upload-dropzone" data-upload-dropzone>
               <input
                 type="file"
@@ -62,22 +208,22 @@ const allStyleItems = styleNavigationItems;
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
                 </span>
-                <strong>Click or drag your selfie here</strong>
-                <p id="tryon-upload-helper">JPG, PNG or WebP up to 8 MB · Best results: well-lit, front-facing</p>
+                <strong>{tx.tryOnStudio.uploadIdle}</strong>
+                <p id="tryon-upload-helper">{tx.tryOnStudio.uploadHelper}</p>
               </div>
               <div class="upload-dropzone-copy upload-ready-copy is-hidden" data-upload-ready-copy>
-                <strong>Photo ready</strong>
-                <p>Click or drag another selfie here to replace it.</p>
+                <strong>{tx.tryOnStudio.uploadReady}</strong>
+                <p>{tx.tryOnStudio.uploadReadyDetail}</p>
               </div>
               <div class="upload-progress is-hidden" data-upload-progress aria-hidden="true">
                 <div class="upload-progress-head">
-                  <strong data-upload-progress-label>Preparing photo</strong>
+                  <strong data-upload-progress-label>{tx.tryOnStudio.uploadProgressLabel}</strong>
                   <span data-upload-progress-percent>0%</span>
                 </div>
                 <div class="upload-progress-track" aria-hidden="true">
                   <span data-upload-progress-bar></span>
                 </div>
-                <p data-upload-progress-detail>Reading your image locally.</p>
+                <p data-upload-progress-detail>{tx.tryOnStudio.uploadProgressDetail}</p>
               </div>
             </div>
           </label>
@@ -85,13 +231,13 @@ const allStyleItems = styleNavigationItems;
           <div class="upload-preview-summary is-hidden" data-upload-preview>
             <img src="" alt="Uploaded selfie thumbnail" data-upload-thumb loading="lazy" />
             <div class="upload-preview-copy">
-              <strong data-upload-file-name>Selfie uploaded</strong>
-              <span data-upload-file-meta>Ready for AI diagnosis</span>
-              <span id="tryon-upload-status" class="upload-preview-status" data-upload-status>Ready</span>
+              <strong data-upload-file-name>{tx.tryOnStudio.uploadFileName}</strong>
+              <span data-upload-file-meta>{tx.tryOnStudio.uploadFileMeta}</span>
+              <span id="tryon-upload-status" class="upload-preview-status" data-upload-status>{tx.tryOnStudio.uploadStatusReady}</span>
             </div>
             <div class="upload-preview-actions">
-              <button class="btn btn-secondary upload-action-btn" type="button" data-upload-change>Change</button>
-              <button class="btn btn-secondary upload-action-btn" type="button" data-upload-remove>Remove</button>
+              <button class="btn btn-secondary upload-action-btn" type="button" data-upload-change>{tx.tryOnStudio.uploadChange}</button>
+              <button class="btn btn-secondary upload-action-btn" type="button" data-upload-remove>{tx.tryOnStudio.uploadRemove}</button>
             </div>
           </div>
 
@@ -99,32 +245,32 @@ const allStyleItems = styleNavigationItems;
 
           <div class="tryon-cta-row">
             <label>
-              <span>Scenario</span>
+              <span>{tx.tryOnStudio.scenarioLabel}</span>
               <select name="scenario">
-                <option value="office">Commute / Interview</option>
-                <option value="date">Date Night</option>
-                <option value="photo">Photo / On Camera</option>
+                <option value="office">{tx.tryOnStudio.scenarioOffice}</option>
+                <option value="date">{tx.tryOnStudio.scenarioDate}</option>
+                <option value="photo">{tx.tryOnStudio.scenarioPhoto}</option>
               </select>
             </label>
             <label>
-              <span>Experience</span>
+              <span>{tx.tryOnStudio.experienceLabel}</span>
               <select name="experience">
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
+                <option value="beginner">{tx.tryOnStudio.experienceBeginner}</option>
+                <option value="intermediate">{tx.tryOnStudio.experienceIntermediate}</option>
               </select>
             </label>
-            <button class="btn" type="submit" data-generate-submit data-default-label="Generate My Looks" disabled>Upload Selfie First</button>
+            <button class="btn" type="submit" data-generate-submit data-default-label="{tx.tryOnStudio.generateSubmitDefault}" disabled>{tx.tryOnStudio.generateSubmitDisabled}</button>
           </div>
 
           <p class="tryon-form-meta">
-            <strong>1 free</strong> diagnosis/day · No selfie? Try a sample look on the right.
+            {tx.tryOnStudio.formMeta}
           </p>
         </form>
         </div>
 
         <!-- P0.A2: 未上传时右侧灵感/风格选择 -->
         <aside class="tryon-demo-card" aria-label="Makeup inspiration choices">
-          <span class="tryon-demo-eyebrow">No selfie? Preview a sample</span>
+          <span class="tryon-demo-eyebrow">{tx.tryOnStudio.demoEyebrow}</span>
           <div class="tryon-demo-hero" data-tryon-demo-hero>
             <img
               src={quickLookItems[0].image}
@@ -138,8 +284,8 @@ const allStyleItems = styleNavigationItems;
             </div>
           </div>
           <div class="tryon-demo-actions">
-            <button class="btn btn-secondary tryon-demo-action-btn" type="button" data-look-drawer-open>Get More Inspired</button>
-            <button class="btn btn-secondary tryon-demo-action-btn" type="button" data-style-drawer-open>Try More Styles</button>
+            <button class="btn btn-secondary tryon-demo-action-btn" type="button" data-look-drawer-open>{tx.tryOnStudio.getMoreInspired}</button>
+            <button class="btn btn-secondary tryon-demo-action-btn" type="button" data-style-drawer-open>{tx.tryOnStudio.tryMoreStyles}</button>
           </div>
         </aside>
       </div>
@@ -149,8 +295,8 @@ const allStyleItems = styleNavigationItems;
     <section class="tool-step is-hidden" data-tryon-step="loading" aria-live="polite">
       <div class="loading-state tryon-loading">
         <div class="spinner" aria-hidden="true"></div>
-        <h3>Analyzing your face & color profile…</h3>
-        <p>Generating your diagnosis and curating 3 personalized looks.</p>
+        <h3>{tx.tryOnStudio.loadingTitle}</h3>
+        <p>{tx.tryOnStudio.loadingDetail}</p>
       </div>
     </section>
 
@@ -160,43 +306,43 @@ const allStyleItems = styleNavigationItems;
         <!-- 控制条：模式 chip + 剩余次数 + 删除/重诊断 -->
         <div class="tryon-result-controls">
           <div class="tryon-result-controls-meta">
-            <span class="tryon-result-mode-chip is-real" data-tryon-mode-chip>AI Diagnosis</span>
+            <span class="tryon-result-mode-chip is-real" data-tryon-mode-chip>{tx.tryOnStudio.modeChipReal}</span>
             <span class="is-hidden" data-remaining-badge>
-              Free diagnoses left today: <strong data-remaining-count>1</strong>/1
+              {tx.tryOnStudio.remainingBadge}<strong data-remaining-count>1</strong>/1
             </span>
           </div>
           <div class="tryon-result-controls-actions">
-            <button class="btn btn-secondary tryon-control-btn" type="button" data-tryon-rerun>Re-analyze</button>
-            <button class="btn btn-secondary tryon-control-btn" type="button" data-tryon-delete>Delete my photo</button>
+            <button class="btn btn-secondary tryon-control-btn" type="button" data-tryon-rerun>{tx.tryOnStudio.rerunButton}</button>
+            <button class="btn btn-secondary tryon-control-btn" type="button" data-tryon-delete>{tx.tryOnStudio.deleteButton}</button>
           </div>
         </div>
 
         <!-- AI 免责声明 (PRD §15) -->
-        <p class="tryon-ai-disclaimer" role="note">Results are AI-generated suggestions for reference only. Individual results may vary.</p>
+        <p class="tryon-ai-disclaimer" role="note">{tx.tryOnStudio.aiDisclaimer}</p>
 
         <!-- P2.A14: Demo 模式整宽提示横幅（chip 之外的明确入口） -->
         <aside class="tryon-demo-banner is-hidden" data-tryon-demo-banner role="note">
           <div class="tryon-demo-banner-copy">
-            <strong data-tryon-demo-banner-title>You're previewing a sample profile.</strong>
-            <span data-tryon-demo-banner-copy>Upload a selfie above to get a real AI diagnosis with custom shades.</span>
+            <strong data-tryon-demo-banner-title>{tx.tryOnStudio.demoBannerTitle}</strong>
+            <span data-tryon-demo-banner-copy>{tx.tryOnStudio.demoBannerCopy}</span>
           </div>
-          <button class="btn" type="button" data-tryon-demo-banner-cta>Upload my photo</button>
+          <button class="btn" type="button" data-tryon-demo-banner-cta>{tx.tryOnStudio.demoBannerCta}</button>
         </aside>
 
         <!-- P0 — 会员门控横幅：当后端返回 _gated.isFreeTier=true 时显示 -->
         <aside class="tryon-gated-banner is-hidden" data-tryon-gated-banner role="note">
           <div class="tryon-gated-banner-copy">
-            <span class="pill tryon-gated-pill">Free Preview</span>
-            <strong data-tryon-gated-message>Unlock full tutorials, HD previews, and curated beauty kits with Pro</strong>
-            <span data-tryon-gated-detail>You're seeing 2 of 3 looks and the first 3 tutorial steps. Upgrade to see everything.</span>
+            <span class="pill tryon-gated-pill">{tx.tryOnStudio.gatedPill}</span>
+            <strong data-tryon-gated-message>{tx.tryOnStudio.gatedMessage}</strong>
+            <span data-tryon-gated-detail>{tx.tryOnStudio.gatedDetail}</span>
             <ul class="tryon-gated-features is-hidden" data-tryon-gated-features aria-label="Locked features"></ul>
           </div>
-          <a class="btn" data-tryon-gated-cta href="/membership?from=tryon_gated_banner">Upgrade to Pro</a>
+          <a class="btn" data-tryon-gated-cta href="/membership?from=tryon_gated_banner">{tx.tryOnStudio.gatedCta}</a>
         </aside>
 
         <!-- 1. Diagnosis 顶置整宽 -->
         <article class="tryon-diagnosis" id="tryon-section-diagnosis" tabindex="-1">
-          <span class="tryon-diagnosis-eyebrow" data-tryon-section-eyebrow>Diagnosis</span>
+          <span class="tryon-diagnosis-eyebrow" data-tryon-section-eyebrow>{tx.tryOnStudio.diagnosisEyebrow}</span>
           <h2 data-diagnosis-title>Warm-neutral undertone · Soft definition fit</h2>
           <p class="tryon-diagnosis-summary" data-diagnosis-summary>Your features suit low-intensity, structured looks. Focus on enhancing complexion and definition.</p>
           <ul class="tryon-diagnosis-notes" data-face-notes>
@@ -210,25 +356,25 @@ const allStyleItems = styleNavigationItems;
         <section id="tryon-section-compare" data-tryon-compare-section>
           <div class="result-section-head">
             <div>
-              <span class="eyebrow">Preview</span>
-              <h3>How this look maps to you</h3>
+              <span class="eyebrow">{tx.tryOnStudio.compareEyebrow}</span>
+              <h3>{tx.tryOnStudio.compareHeading}</h3>
             </div>
           </div>
           <div class="tryon-compare">
             <article class="compare-frame">
-              <span class="pill">Before</span>
+              <span class="pill">{tx.tryOnStudio.compareBefore}</span>
               <div class="compare-image-shell">
                 <img class="compare-image is-hidden" alt="" data-before-image />
-                <div class="compare-placeholder" data-before-placeholder>Your photo will appear here when you upload one.</div>
+                <div class="compare-placeholder" data-before-placeholder>{tx.tryOnStudio.comparePlaceholderBefore}</div>
               </div>
             </article>
             <article class="compare-frame compare-frame-after">
-              <span class="pill">After</span>
+              <span class="pill">{tx.tryOnStudio.compareAfter}</span>
               <div class="compare-image-shell">
                 <img class="compare-image is-hidden" alt="" data-after-image />
                 <canvas class="compare-canvas is-hidden" data-after-canvas></canvas>
                 <div class="lip-color-swatch is-hidden" data-lip-swatch></div>
-                <div class="compare-placeholder" data-after-placeholder>Selected look preview</div>
+                <div class="compare-placeholder" data-after-placeholder>{tx.tryOnStudio.comparePlaceholderAfter}</div>
               </div>
             </article>
           </div>
@@ -248,10 +394,10 @@ const allStyleItems = styleNavigationItems;
         <section id="tryon-section-looks">
           <div class="result-section-head">
             <div>
-              <span class="eyebrow">Choose your look</span>
-              <h3>Pick the look you want to try first</h3>
+              <span class="eyebrow">{tx.tryOnStudio.looksEyebrow}</span>
+              <h3>{tx.tryOnStudio.looksHeading}</h3>
             </div>
-            <a class="btn btn-secondary" href="/membership?from=tryon_looks_cta">Unlock Full HD Try-On</a>
+            <a class="btn btn-secondary" href="/membership?from=tryon_looks_cta">{tx.tryOnStudio.looksUnlockCta}</a>
           </div>
           <div class="tryon-looks look-card-grid" data-look-list></div>
           <!-- P2.10: 横滑进度指示（移动端） -->
@@ -264,13 +410,13 @@ const allStyleItems = styleNavigationItems;
         <section id="tryon-section-tutorial">
           <div class="result-section-head">
             <div>
-              <span class="eyebrow">Tutorial preview</span>
+              <span class="eyebrow">{tx.tryOnStudio.tutorialEyebrow}</span>
               <!-- P1.6: 教程 H3 → result-label，并把当前 look 名作为 data point -->
-              <h3>Walk-through for <span data-selected-look-heading>Office Glow</span></h3>
-              <p class="selected-look-copy" data-selected-look-headline>An 8-minute commute look that instantly adds polish.</p>
+              <h3>{tx.tryOnStudio.tutorialHeading}<span data-selected-look-heading>Office Glow</span></h3>
+              <p class="selected-look-copy" data-selected-look-headline>{tx.tryOnStudio.tutorialHeadline}</p>
             </div>
             <!-- P2.13: 教程 CTA 上移到 section-head -->
-            <a class="btn" data-final-tutorial-link href="/tutorials/office-glow">Continue to Full Tutorial →</a>
+            <a class="btn" data-final-tutorial-link href="/tutorials/office-glow">{tx.tryOnStudio.tutorialContinue}</a>
           </div>
           <div class="step-preview-list" data-selected-steps></div>
           <ul class="check-list compact" data-selected-selfchecks></ul>
@@ -279,36 +425,36 @@ const allStyleItems = styleNavigationItems;
           <aside class="tryon-tutorial-lock is-hidden" data-tryon-tutorial-lock role="note">
             <div class="tryon-tutorial-lock-icon" aria-hidden="true">🔒</div>
             <div class="tryon-tutorial-lock-copy">
-              <strong data-tutorial-lock-title>The full tutorial is more steps</strong>
-              <p data-tutorial-lock-detail>Pro unlocks every step with error alerts, self-check points, and curated product picks for each.</p>
+              <strong data-tutorial-lock-title>{tx.tryOnStudio.tutorialLockTitle}</strong>
+              <p data-tutorial-lock-detail>{tx.tryOnStudio.tutorialLockDetail}</p>
             </div>
-            <a class="btn" data-tutorial-lock-cta href="/membership?from=tutorial_lock">Unlock Full Tutorial</a>
+            <a class="btn" data-tutorial-lock-cta href="/membership?from=tutorial_lock">{tx.tryOnStudio.tutorialLockCta}</a>
           </aside>
 
           <details class="tryon-kit-details" data-tryon-kit>
             <!-- P2.12: summary-hint 独立类，不再借用 trust-strip -->
             <summary>
-              <span class="tryon-kit-summary-label">Beauty kit picks</span>
-              <span class="tryon-kit-summary-hint">Tap to expand</span>
+              <span class="tryon-kit-summary-label">{tx.tryOnStudio.kitSummaryLabel}</span>
+              <span class="tryon-kit-summary-hint">{tx.tryOnStudio.kitSummaryHint}</span>
             </summary>
             <div class="kit-columns">
               <div>
-                <strong>Must-Have</strong>
+                <strong>{tx.tryOnStudio.kitMustHave}</strong>
                 <div class="product-stack" data-kit-must></div>
               </div>
               <div>
-                <strong>Swappable</strong>
+                <strong>{tx.tryOnStudio.kitSwappable}</strong>
                 <div class="product-stack" data-kit-optional></div>
               </div>
               <div>
-                <strong>Upgrade Pick</strong>
+                <strong>{tx.tryOnStudio.kitUpgrade}</strong>
                 <div class="product-stack" data-kit-upgrade></div>
               </div>
             </div>
           </details>
 
           <div class="tool-actions tutorial-cta-row top-gap">
-            <a class="text-link" data-tutorial-link href="/tutorials/office-glow">See step details</a>
+            <a class="text-link" data-tutorial-link href="/tutorials/office-glow">{tx.tryOnStudio.tutorialContinue}</a>
           </div>
         </section>
 
@@ -316,27 +462,27 @@ const allStyleItems = styleNavigationItems;
         <section id="tryon-section-share">
           <div class="result-section-head">
             <div>
-              <span class="eyebrow">Share</span>
-              <h3>Save or share your plan</h3>
+              <span class="eyebrow">{tx.tryOnStudio.shareEyebrow}</span>
+              <h3>{tx.tryOnStudio.shareHeading}</h3>
             </div>
           </div>
           <article class="share-card-mock">
             <div class="share-card-header">
-              <span class="pill">Share Card</span>
-              <span class="share-export-status" data-share-status>Copy to share</span>
+              <span class="pill">{tx.tryOnStudio.shareEyebrow}</span>
+              <span class="share-export-status" data-share-status>{tx.tryOnStudio.shareExport}</span>
             </div>
-            <p class="share-badge" data-share-badge>Work-ready glow</p>
+            <p class="share-badge" data-share-badge>{tx.tryOnStudio.shareBadge}</p>
             <!-- P1.6: share-card 内嵌 H3 → H4 (避免与 section H3 同级) -->
-            <h4 class="share-card-title" data-share-title>My AI Office Makeup Plan</h4>
-            <p data-share-subtitle>Less effort, more polished every day.</p>
+            <h4 class="share-card-title" data-share-title>{tx.tryOnStudio.shareTitle}</h4>
+            <p data-share-subtitle>{tx.tryOnStudio.shareSubtitle}</p>
             <p class="share-card-look" data-share-look>Office Glow · Soft matte nude</p>
             <div class="share-card-tags" data-share-tags></div>
-            <p class="share-card-cta" data-share-cta>Copy your look summary to share with friends, or continue to the full tutorial.</p>
+            <p class="share-card-cta" data-share-cta>{tx.tryOnStudio.shareCta}</p>
             <div class="share-card-actions">
-              <button class="btn" type="button" data-share-download>📸 Download Share Card</button>
-              <button class="btn btn-secondary" type="button" data-share-export>Copy Share Text</button>
-              <button class="btn btn-secondary" type="button" data-save-look>💾 Save my look plan</button>
-              <a class="text-link" data-continue-link href="/tutorials/office-glow">Continue to Tutorial →</a>
+              <button class="btn" type="button" data-share-download>{tx.tryOnStudio.shareDownload}</button>
+              <button class="btn btn-secondary" type="button" data-share-export>{tx.tryOnStudio.shareExport}</button>
+              <button class="btn btn-secondary" type="button" data-save-look>{tx.tryOnStudio.shareSave}</button>
+              <a class="text-link" data-continue-link href="/tutorials/office-glow">{tx.tryOnStudio.shareContinue}</a>
             </div>
             <p class="share-save-status is-hidden" data-save-status role="status" aria-live="polite"></p>
             <div class="share-card-preview is-hidden" data-share-card-preview>
@@ -350,51 +496,51 @@ const allStyleItems = styleNavigationItems;
              降低升级决策摩擦，是 free → pro 的主转化点。 -->
         <section class="tryon-upgrade-compare is-hidden" data-tryon-upgrade-compare aria-labelledby="tryon-upgrade-compare-title">
           <div class="tryon-upgrade-compare-head">
-            <span class="eyebrow">See what you're missing</span>
-            <h3 id="tryon-upgrade-compare-title">Your free preview vs full plan</h3>
-            <p class="tryon-upgrade-compare-sub">Upgrade once and unlock every look, every tutorial step, and AI makeup previews on your own face.</p>
+            <span class="eyebrow">{tx.tryOnStudio.upgradeCompareEyebrow}</span>
+            <h3 id="tryon-upgrade-compare-title">{tx.tryOnStudio.upgradeCompareHeading}</h3>
+            <p class="tryon-upgrade-compare-sub">{tx.tryOnStudio.upgradeCompareSub}</p>
           </div>
           <div class="tryon-upgrade-compare-grid">
             <article class="tryon-upgrade-tier tryon-upgrade-tier-free" aria-label="Your current free preview">
               <header>
-                <span class="pill">You now · Free</span>
-                <strong>$0</strong>
+                <span class="pill">{tx.tryOnStudio.upgradeFreeLabel}</span>
+                <strong>{tx.tryOnStudio.upgradeFreePrice}</strong>
               </header>
               <ul class="tryon-upgrade-list">
-                <li class="is-included"><span data-tryon-compare-free-looks>2 looks</span></li>
-                <li class="is-included">First 3 tutorial steps</li>
-                <li class="is-locked">No HD makeup preview</li>
-                <li class="is-locked">No saved looks</li>
-                <li class="is-locked">No history</li>
+                <li class="is-included"><span data-tryon-compare-free-looks>{tx.tryOnStudio.upgradeFree1}</span></li>
+                <li class="is-included">{tx.tryOnStudio.upgradeFree2}</li>
+                <li class="is-locked">{tx.tryOnStudio.upgradeFree3}</li>
+                <li class="is-locked">{tx.tryOnStudio.upgradeFree4}</li>
+                <li class="is-locked">{tx.tryOnStudio.upgradeFree5}</li>
               </ul>
             </article>
             <article class="tryon-upgrade-tier tryon-upgrade-tier-pro is-recommended" aria-label="Pro plan benefits">
               <header>
-                <span class="pill tryon-upgrade-pill-pro">Recommended · Pro</span>
-                <strong>$19.99<span>/mo</span></strong>
+                <span class="pill tryon-upgrade-pill-pro">{tx.tryOnStudio.upgradeProLabel}</span>
+                <strong set:html={tx.tryOnStudio.upgradeProPrice}></strong>
               </header>
               <ul class="tryon-upgrade-list">
-                <li class="is-included">3 looks per diagnosis</li>
-                <li class="is-included">Full tutorial — every step</li>
-                <li class="is-included">30 AI makeup previews / month</li>
-                <li class="is-included">10 saved looks · 30-day history</li>
-                <li class="is-included">Curated beauty kit picks</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePro1}</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePro2}</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePro3}</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePro4}</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePro5}</li>
               </ul>
-              <a class="btn tryon-upgrade-cta" data-tryon-upgrade-cta-pro href="/membership?from=tryon_compare_pro">Upgrade to Pro</a>
+              <a class="btn tryon-upgrade-cta" data-tryon-upgrade-cta-pro href="/membership?from=tryon_compare_pro">{tx.tryOnStudio.upgradeProCta}</a>
             </article>
             <article class="tryon-upgrade-tier tryon-upgrade-tier-premium" aria-label="Premium plan benefits">
               <header>
-                <span class="pill tryon-upgrade-pill-premium">Premium</span>
-                <strong>$39.99<span>/mo</span></strong>
+                <span class="pill tryon-upgrade-pill-premium">{tx.tryOnStudio.upgradePremiumLabel}</span>
+                <strong set:html={tx.tryOnStudio.upgradePremiumPrice}></strong>
               </header>
               <ul class="tryon-upgrade-list">
-                <li class="is-included">5 looks per diagnosis</li>
-                <li class="is-included">Unlimited diagnoses</li>
-                <li class="is-included">HD makeup previews</li>
-                <li class="is-included">Unlimited saved looks · forever history</li>
-                <li class="is-included">Budget kit picks + seasonal updates</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePremium1}</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePremium2}</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePremium3}</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePremium4}</li>
+                <li class="is-included">{tx.tryOnStudio.upgradePremium5}</li>
               </ul>
-              <a class="btn btn-secondary tryon-upgrade-cta" data-tryon-upgrade-cta-premium href="/membership?from=tryon_compare_premium">See Premium</a>
+              <a class="btn btn-secondary tryon-upgrade-cta" data-tryon-upgrade-cta-premium href="/membership?from=tryon_compare_premium">{tx.tryOnStudio.upgradePremiumCta}</a>
             </article>
           </div>
         </section>
@@ -408,8 +554,8 @@ const allStyleItems = styleNavigationItems;
   <div class="look-drawer-panel">
     <div class="look-drawer-head">
       <div>
-        <span class="eyebrow">All Looks</span>
-        <h3 id="look-drawer-title">Find the makeup mood you want to try.</h3>
+        <span class="eyebrow">{tx.tryOnStudio.lookDrawerTitle}</span>
+        <h3 id="look-drawer-title">{tx.tryOnStudio.lookDrawerSubtitle}</h3>
       </div>
       <button class="look-drawer-close" type="button" data-look-drawer-close aria-label="Close all looks">&times;</button>
     </div>
@@ -455,16 +601,16 @@ const allStyleItems = styleNavigationItems;
   <div class="look-drawer-panel">
     <div class="look-drawer-head">
       <div>
-        <span class="eyebrow">Style Directions</span>
-        <h3 id="style-drawer-title">Choose a style direction, then try it on.</h3>
+        <span class="eyebrow">{tx.tryOnStudio.styleDrawerTitle}</span>
+        <h3 id="style-drawer-title">{tx.tryOnStudio.styleDrawerSubtitle}</h3>
       </div>
       <button class="look-drawer-close" type="button" data-style-drawer-close aria-label="Close style directions">&times;</button>
     </div>
     <div class="style-drawer-filter-tabs" aria-label="Filter style directions">
-      <button type="button" class="look-filter-chip is-active" data-style-filter="all">All</button>
-      <button type="button" class="look-filter-chip" data-style-filter="office">Everyday</button>
-      <button type="button" class="look-filter-chip" data-style-filter="date">Date</button>
-      <button type="button" class="look-filter-chip" data-style-filter="photo">Camera</button>
+      <button type="button" class="look-filter-chip is-active" data-style-filter="all">{tx.tryOnStudio.styleFilterAll}</button>
+      <button type="button" class="look-filter-chip" data-style-filter="office">{tx.tryOnStudio.styleFilterOffice}</button>
+      <button type="button" class="look-filter-chip" data-style-filter="date">{tx.tryOnStudio.styleFilterDate}</button>
+      <button type="button" class="look-filter-chip" data-style-filter="photo">{tx.tryOnStudio.styleFilterPhoto}</button>
     </div>
     <div class="look-drawer-grid style-drawer-grid" aria-label="All style directions">
       {allStyleItems.map((style, index) => (
@@ -501,36 +647,36 @@ const allStyleItems = styleNavigationItems;
     <button class="makeup-preview-close" data-makeup-close aria-label="Close preview">&times;</button>
     <div class="makeup-preview-loading" id="makeup-preview-loading">
       <div class="spinner" aria-hidden="true"></div>
-      <h3>Generating your makeup look...</h3>
+      <h3>{tx.tryOnStudio.generatingPreview}</h3>
       <p id="makeup-preview-look-name"></p>
-      <p class="makeup-preview-hint">This usually takes 30-60 seconds</p>
+      <p class="makeup-preview-hint">{tx.tryOnStudio.previewHint}</p>
     </div>
     <div class="makeup-preview-result is-hidden" id="makeup-preview-result">
       <h3 id="makeup-preview-title"></h3>
       <div class="makeup-preview-images">
         <div class="makeup-preview-frame">
-          <span class="pill">Before</span>
+          <span class="pill">{tx.tryOnStudio.beforeLabel}</span>
           <img id="makeup-preview-before" src="" alt="Before makeup" />
         </div>
         <div class="makeup-preview-frame">
-          <span class="pill">After (AI Generated)</span>
+          <span class="pill">{tx.tryOnStudio.afterLabel}</span>
           <img id="makeup-preview-after" src="" alt="AI generated makeup preview" />
         </div>
       </div>
       <div class="makeup-preview-actions">
-        <button class="btn" id="makeup-preview-download">Download After Image</button>
-        <button class="btn btn-secondary" data-makeup-close>Close</button>
+        <button class="btn" id="makeup-preview-download">{tx.tryOnStudio.previewDownload}</button>
+        <button class="btn btn-secondary" data-makeup-close>{tx.tryOnStudio.previewClose}</button>
       </div>
       <p class="makeup-preview-elapsed" id="makeup-preview-elapsed"></p>
     </div>
     <div class="makeup-preview-error is-hidden" id="makeup-preview-error">
       <p id="makeup-preview-error-msg"></p>
-      <button class="btn btn-secondary" data-makeup-close>Close</button>
+      <button class="btn btn-secondary" data-makeup-close>{tx.tryOnStudio.previewClose}</button>
     </div>
   </div>
 </div>
 
-<script>
+<script define:vars={{ TX: tx.tryOnStudio }}>
   type LipColorParams = {
     hex: string;
     opacity: number;
@@ -1140,24 +1286,24 @@ const allStyleItems = styleNavigationItems;
     generateSubmitButton.disabled = busy || !canSubmit;
 
     if (uploadState === 'reading' || uploadState === 'compressing') {
-      generateSubmitButton.textContent = 'Preparing Photo...';
+      generateSubmitButton.textContent = TX.btnPreparingPhoto;
       return;
     }
     if (uploadState === 'analyzing') {
-      generateSubmitButton.textContent = 'Analyzing...';
+      generateSubmitButton.textContent = TX.btnAnalyzing;
       return;
     }
     if (uploadState === 'rendering') {
-      generateSubmitButton.textContent = 'Rendering Preview...';
+      generateSubmitButton.textContent = TX.btnRenderingPreview;
       return;
     }
     if (uploadState === 'error') {
-      generateSubmitButton.textContent = 'Fix Upload';
+      generateSubmitButton.textContent = TX.btnFixUpload;
       return;
     }
     generateSubmitButton.textContent = canSubmit
-      ? (generateSubmitButton.dataset.defaultLabel || 'Generate My Looks')
-      : 'Upload Selfie First';
+      ? (generateSubmitButton.dataset.defaultLabel || TX.generateSubmitDefault)
+      : TX.generateSubmitDisabled;
   };
 
   const setUploadProgress = (label: string, percent: number, detail: string) => {
@@ -1203,7 +1349,7 @@ const allStyleItems = styleNavigationItems;
     selectedPhotoFile = null;
     if (photoInput) photoInput.value = '';
     updatePreviewImage(undefined);
-    setUploadState('error', 'Upload needs attention');
+    setUploadState('error', TX.uploadNeedsAttention);
     setLive(message);
   };
 
@@ -1211,13 +1357,13 @@ const allStyleItems = styleNavigationItems;
     const hasAllowedType = ALLOWED_UPLOAD_TYPES.includes(file.type);
     const hasAllowedExtension = /\.(jpe?g|png|webp)$/i.test(file.name);
     if (!hasAllowedType && !hasAllowedExtension) {
-      return 'Please upload a JPG, PNG, or WebP selfie.';
+      return TX.uploadErrorType;
     }
     if (file.size <= 0) {
-      return 'This file looks empty. Please choose another selfie.';
+      return TX.uploadErrorEmpty;
     }
     if (file.size > MAX_UPLOAD_BYTES) {
-      return `Your selfie is ${formatFileSize(file.size)}. Please upload an image under 8 MB.`;
+      return `${TX.uploadErrorTooLargePrefix}${formatFileSize(file.size)}${TX.uploadErrorTooLargeSuffix}`;
     }
     return '';
   };
@@ -1227,11 +1373,11 @@ const allStyleItems = styleNavigationItems;
       uploadThumb.src = prepared.previewUrl;
       uploadThumb.alt = `${file.name} thumbnail`;
     }
-    if (uploadFileName) uploadFileName.textContent = file.name || 'Selfie uploaded';
+    if (uploadFileName) uploadFileName.textContent = file.name || TX.uploadFileName;
     if (uploadFileMeta) {
-      uploadFileMeta.textContent = `${formatFileSize(file.size)} original · ${prepared.width}×${prepared.height} AI-ready · ${formatFileSize(prepared.byteSize)} optimized`;
+      uploadFileMeta.textContent = `${formatFileSize(file.size)} ${TX.metaOriginal} · ${prepared.width}×${prepared.height} ${TX.metaAiReady} · ${formatFileSize(prepared.byteSize)} ${TX.metaOptimized}`;
     }
-    if (uploadStatus) uploadStatus.textContent = 'Ready for AI diagnosis';
+    if (uploadStatus) uploadStatus.textContent = TX.uploadReadyForDiagnosis;
   };
 
   const resetUpload = () => {
@@ -1247,11 +1393,11 @@ const allStyleItems = styleNavigationItems;
       uploadThumb.removeAttribute('src');
       uploadThumb.alt = 'Uploaded selfie thumbnail';
     }
-    if (uploadFileName) uploadFileName.textContent = 'Selfie uploaded';
-    if (uploadFileMeta) uploadFileMeta.textContent = 'Ready for AI diagnosis';
+    if (uploadFileName) uploadFileName.textContent = TX.uploadFileName;
+    if (uploadFileMeta) uploadFileMeta.textContent = TX.uploadFileMeta;
     clearUploadError();
     updatePreviewImage(undefined);
-    setUploadState('idle', 'Upload a selfie to continue');
+    setUploadState('idle', TX.uploadContinue);
   };
 
   const compressPhoto = (
@@ -1446,7 +1592,7 @@ const allStyleItems = styleNavigationItems;
     if (!container) return;
     container.innerHTML = '';
     const lang = (document.documentElement.lang || 'en').toLowerCase();
-    const selfLabel = lang.startsWith('zh') ? '自检：' : 'Self-check: ';
+    const selfLabel = TX.selfCheckLabel;
     items.slice(0, 3).forEach((item, index) => {
       const article = document.createElement('article');
       article.className = 'mini-step-card';

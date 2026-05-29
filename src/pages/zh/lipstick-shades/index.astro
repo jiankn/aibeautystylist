@@ -4,11 +4,12 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 export const prerender = true;
 
 const shadeFamilies = [
-  { label: '暖皮', shades: '蜜桃玫瑰、暖砖红、焦糖裸色', detail: '适合黄调、金调或蜜桃调肤色，避免过冷的蓝调粉。' },
-  { label: '冷皮', shades: '玫瑰粉、莓果色、冷调豆沙', detail: '适合粉调或玫瑰调肤色，避免过橘的珊瑚色。' },
-  { label: '中性皮', shades: '平衡玫瑰、玫瑰棕、柔和红', detail: '冷暖都能尝试，但要根据唇色深浅和场景调整饱和度。' },
-  { label: '橄榄皮', shades: '灰调玫瑰、梅子色、棕调豆沙', detail: '更适合低饱和、有深度的颜色，避免荧光粉和奶白粉。' },
-  { label: '亚洲肤色', shades: '茶玫瑰、玫瑰棕、柔莓色', detail: '亚洲肤色差异很大，应同时看冷暖调、肤色深浅和对比度。' },
+  { label: '暖皮', shades: '蜜桃玫瑰、暖砖红、焦糖裸色', detail: '适合黄调、金调或蜜桃调肤色，避免过冷的蓝调粉。', href: '/zh/lipstick-shades/warm-undertone-lipstick-shades/' },
+  { label: '冷皮', shades: '玫瑰粉、莓果色、冷调豆沙', detail: '适合粉调或玫瑰调肤色，避免过橘的珊瑚色。', href: '/zh/lipstick-shades/cool-undertone-lipstick-shades/' },
+  { label: '中性皮', shades: '平衡玫瑰、玫瑰棕、柔和红', detail: '冷暖都能尝试，但要根据唇色深浅和场景调整饱和度。', href: '/zh/lipstick-shades/neutral-undertone-lipstick-shades/' },
+  { label: '橄榄皮', shades: '灰调玫瑰、梅子色、棕调豆沙', detail: '更适合低饱和、有深度的颜色，避免荧光粉和奶白粉。', href: '/zh/lipstick-shades/olive-skin-lipstick-shades/' },
+  { label: '深肤色', shades: '可可玫瑰、棕红、深莓果', detail: '需要足够的棕、红、莓果深度，让嘴巴在镜头下依然清晰。', href: '/zh/lipstick-shades/deep-skin-lipstick-shades/' },
+  { label: '亚洲肤色', shades: '茶玫瑰、玫瑰棕、柔莓色', detail: '亚洲肤色差异很大，应同时看冷暖调、肤色深浅和对比度。', href: '/zh/lipstick-shades/asian-skin-lipstick-shades/' },
 ];
 
 const structuredData = {
@@ -39,11 +40,11 @@ const structuredData = {
 
     <div class="container grid-cards grid-cards-3 top-gap">
       {shadeFamilies.map((family) => (
-        <article class="card coach-card">
+        <a class="card coach-card guide-hub-card" href={family.href}>
           <span class="pill">{family.label}</span>
           <h2>{family.shades}</h2>
           <p>{family.detail}</p>
-        </article>
+        </a>
       ))}
     </div>
 

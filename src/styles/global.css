@@ -166,30 +166,103 @@ main {
   background: var(--accent-soft);
 }
 
+/* 语言切换器：地球图标 + 点击下拉 */
 .language-switcher {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  min-height: 44px;
   margin-left: 6px;
-  padding: 3px;
+}
+
+.language-switcher-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 6px 10px 6px 12px;
   border: 1px solid rgba(176, 127, 134, 0.2);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.64);
-}
-
-.language-switcher a {
-  min-height: 34px;
-  padding: 7px 10px;
-  border-radius: 999px;
-  font-size: 0.82rem;
-  font-weight: 700;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
   line-height: 1;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-.language-switcher a.is-active {
-  color: #fff;
-  background: var(--accent);
+.language-switcher-trigger:hover,
+.language-switcher.is-open .language-switcher-trigger {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--accent);
+  box-shadow: 0 4px 14px rgba(176, 127, 134, 0.14);
+}
+
+.language-switcher-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-deep);
+  flex: 0 0 auto;
+}
+
+.language-switcher-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.language-switcher-caret {
+  width: 14px;
+  height: 14px;
+  color: var(--muted);
+  transition: transform 0.18s ease;
+}
+
+.language-switcher.is-open .language-switcher-caret {
+  transform: rotate(180deg);
+}
+
+.language-switcher-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 132px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: rgba(255, 252, 248, 0.98);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(176, 127, 134, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(62, 39, 39, 0.12);
+  z-index: 80;
+}
+
+.language-switcher-menu li {
+  margin: 0;
+}
+
+.language-switcher-item {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.14s ease, background 0.14s ease;
+}
+
+.language-switcher-item:hover {
+  background: rgba(176, 127, 134, 0.08);
+  color: var(--accent-deep);
+}
+
+.language-switcher-item.is-active {
+  color: var(--accent-deep);
+  font-weight: 700;
+  background: transparent;
 }
 
 .section {
@@ -1250,6 +1323,17 @@ main {
     width: 100%;
     margin: 8px 0 0;
     justify-content: flex-start;
+  }
+
+  .language-switcher-trigger {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .language-switcher-menu {
+    right: auto;
+    left: 0;
+    width: 100%;
   }
 
   .hero-grid,
