@@ -1,9 +1,74 @@
+---
+import { t, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+
+const sf = {
+  eyebrow: t('shadeFinder.eyebrow', locale),
+  heading: t('shadeFinder.heading', locale),
+  subheading: t('shadeFinder.subheading', locale),
+  privacyNote: t('shadeFinder.privacyNote', locale),
+  undertoneLabel: t('shadeFinder.undertoneLabel', locale),
+  undertoneCool: t('shadeFinder.undertoneCool', locale),
+  undertoneWarm: t('shadeFinder.undertoneWarm', locale),
+  undertoneNeutral: t('shadeFinder.undertoneNeutral', locale),
+  undertoneOlive: t('shadeFinder.undertoneOlive', locale),
+  lookGoalLabel: t('shadeFinder.lookGoalLabel', locale),
+  lookGoalSoftGlam: t('shadeFinder.lookGoalSoftGlam', locale),
+  lookGoalOfficeGlow: t('shadeFinder.lookGoalOfficeGlow', locale),
+  lookGoalDateNight: t('shadeFinder.lookGoalDateNight', locale),
+  experienceLabel: t('shadeFinder.experienceLabel', locale),
+  experienceBeginner: t('shadeFinder.experienceBeginner', locale),
+  experienceIntermediate: t('shadeFinder.experienceIntermediate', locale),
+  submitButton: t('shadeFinder.submitButton', locale),
+  hint: t('shadeFinder.hint', locale),
+  loadingTitle: t('shadeFinder.loadingTitle', locale),
+  loadingDetail: t('shadeFinder.loadingDetail', locale),
+  resultLabel: t('shadeFinder.resultLabel', locale),
+  productPill: t('shadeFinder.productPill', locale),
+  productLink: t('shadeFinder.productLink', locale),
+  ctaEyebrow: t('shadeFinder.ctaEyebrow', locale),
+  ctaHeading: t('shadeFinder.ctaHeading', locale),
+  ctaDetail: t('shadeFinder.ctaDetail', locale),
+  ctaButton: t('shadeFinder.ctaButton', locale),
+  resetButton: t('shadeFinder.resetButton', locale),
+  // 诊断结果文案
+  diagnosisCool: t('shadeFinder.diagnosisCool', locale),
+  diagnosisCoolSummary: t('shadeFinder.diagnosisCoolSummary', locale),
+  diagnosisCoolReason1: t('shadeFinder.diagnosisCoolReason1', locale),
+  diagnosisCoolReason2: t('shadeFinder.diagnosisCoolReason2', locale),
+  diagnosisCoolReason3: t('shadeFinder.diagnosisCoolReason3', locale),
+  diagnosisWarm: t('shadeFinder.diagnosisWarm', locale),
+  diagnosisWarmSummary: t('shadeFinder.diagnosisWarmSummary', locale),
+  diagnosisWarmReason1: t('shadeFinder.diagnosisWarmReason1', locale),
+  diagnosisWarmReason2: t('shadeFinder.diagnosisWarmReason2', locale),
+  diagnosisWarmReason3: t('shadeFinder.diagnosisWarmReason3', locale),
+  diagnosisNeutral: t('shadeFinder.diagnosisNeutral', locale),
+  diagnosisNeutralSummary: t('shadeFinder.diagnosisNeutralSummary', locale),
+  diagnosisNeutralReason1: t('shadeFinder.diagnosisNeutralReason1', locale),
+  diagnosisNeutralReason2: t('shadeFinder.diagnosisNeutralReason2', locale),
+  diagnosisNeutralReason3: t('shadeFinder.diagnosisNeutralReason3', locale),
+  diagnosisOlive: t('shadeFinder.diagnosisOlive', locale),
+  diagnosisOliveSummary: t('shadeFinder.diagnosisOliveSummary', locale),
+  diagnosisOliveReason1: t('shadeFinder.diagnosisOliveReason1', locale),
+  diagnosisOliveReason2: t('shadeFinder.diagnosisOliveReason2', locale),
+  diagnosisOliveReason3: t('shadeFinder.diagnosisOliveReason3', locale),
+};
+
+const tryOnHref = locale === 'zh-CN' ? '/zh/try-on/' : '/try-on';
+const tutorialHref = locale === 'zh-CN' ? '/zh/makeup-guides/' : '/tutorials/office-glow';
+---
+
 <section class="tool-shell card shade-finder-shell">
   <div class="tool-header sf-tool-header">
     <div class="sf-tool-heading">
-      <span class="eyebrow">Free AI Diagnosis</span>
-      <h2>Shade Finder</h2>
-      <p>Answer 3 questions. Find your perfect lip shade in 30 seconds.</p>
+      <span class="eyebrow">{sf.eyebrow}</span>
+      <h2>{sf.heading}</h2>
+      <p>{sf.subheading}</p>
       <p class="sf-privacy-note">
         <span class="sf-lock-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" focusable="false">
@@ -11,189 +76,152 @@
             <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
           </svg>
         </span>
-        No selfie upload needed · private 3-question quiz
+        {sf.privacyNote}
       </p>
     </div>
   </div>
 
   <div class="tool-steps">
-    <!-- 步骤 1：问答输入 -->
     <section class="tool-step" data-step="input">
       <form class="tool-form" data-shade-form>
         <label>
-          <span>Your Skin Undertone</span>
+          <span>{sf.undertoneLabel}</span>
           <select name="undertone" id="sf-undertone">
-            <option value="cool">Cool — Wrist veins appear blue-purple</option>
-            <option value="warm">Warm — Wrist veins appear green</option>
-            <option value="neutral">Neutral — Mix of both</option>
-            <option value="olive">Olive — Yellow-green undertone</option>
+            <option value="cool">{sf.undertoneCool}</option>
+            <option value="warm">{sf.undertoneWarm}</option>
+            <option value="neutral">{sf.undertoneNeutral}</option>
+            <option value="olive">{sf.undertoneOlive}</option>
           </select>
         </label>
 
         <label>
-          <span>Desired Look</span>
+          <span>{sf.lookGoalLabel}</span>
           <select name="lookGoal" id="sf-lookgoal">
-            <option value="soft-glam">Soft Glam — Luminous elegance</option>
-            <option value="office-glow">Office Glow — Sheer commute polish</option>
-            <option value="date-night">Date Night — Romantic mood</option>
+            <option value="soft-glam">{sf.lookGoalSoftGlam}</option>
+            <option value="office-glow">{sf.lookGoalOfficeGlow}</option>
+            <option value="date-night">{sf.lookGoalDateNight}</option>
           </select>
         </label>
 
         <label>
-          <span>Experience Level</span>
+          <span>{sf.experienceLabel}</span>
           <select name="experience" id="sf-experience">
-            <option value="beginner">Beginner — Never done makeup</option>
-            <option value="intermediate">Intermediate — Occasional makeup</option>
+            <option value="beginner">{sf.experienceBeginner}</option>
+            <option value="intermediate">{sf.experienceIntermediate}</option>
           </select>
         </label>
 
-        <button class="btn" type="submit">Find My Perfect Shade</button>
-        <p class="sf-hint">30 seconds · 100% free</p>
+        <button class="btn" type="submit">{sf.submitButton}</button>
+        <p class="sf-hint">{sf.hint}</p>
       </form>
     </section>
 
-    <!-- 步骤 2：分析加载动画 -->
     <section class="tool-step is-hidden" data-step="loading">
       <div class="loading-state">
         <div class="spinner"></div>
-        <h3>Analyzing your skin undertone…</h3>
-        <p>Matching your undertone, look preference, and shade library.</p>
+        <h3>{sf.loadingTitle}</h3>
+        <p>{sf.loadingDetail}</p>
       </div>
     </section>
 
-    <!-- 步骤 3：诊断结果 + 商品推荐 + CTA -->
     <section class="tool-step is-hidden" data-step="result">
       <div class="result-grid">
-        <!-- 左侧：诊断结论 -->
         <div>
-          <span class="result-label">Your diagnosis</span>
-          <h3 data-result-title>Cool Olive Undertone</h3>
-          <p class="sf-result-summary" data-result-summary>
-            Cool-toned dusty pinks and soft berries work best for you. Warm oranges may look muddy and dull your complexion.
-          </p>
-          <ul class="check-list compact" data-result-reasons>
-            <li>Cool-toned dusty pinks and soft berries are your ideal shades</li>
-            <li>Prioritize lip and under-eye color for instant radiance</li>
-            <li>Start with low-contrast, everyday looks for natural results</li>
-          </ul>
+          <span class="result-label">{sf.resultLabel}</span>
+          <h3 data-result-title></h3>
+          <p class="sf-result-summary" data-result-summary></p>
+          <ul class="check-list compact" data-result-reasons></ul>
         </div>
 
-        <!-- 右侧：推荐商品卡 -->
         <div class="result-card sf-product-card">
-          <span class="pill">Your Perfect Match</span>
+          <span class="pill">{sf.productPill}</span>
           <div class="sf-swatch-row">
-            <div class="sf-swatch" role="img" aria-label="Recommended shade swatch: Dirty Blue Pink" data-swatch-color></div>
+            <div class="sf-swatch" role="img" aria-label="Recommended shade swatch" data-swatch-color></div>
             <div>
-              <h4 data-product-name>MAC Lipstick · Mehr</h4>
-              <p class="sf-product-shade" data-product-shade>Dirty Blue Pink</p>
+              <h4 data-product-name></h4>
+              <p class="sf-product-shade" data-product-shade></p>
             </div>
           </div>
-          <p class="sf-product-copy" data-product-copy>A safe first choice that instantly lifts your complexion without looking overdone.</p>
-          <a class="text-link" href="/tutorials/office-glow">See Full Tutorial →</a>
+          <p class="sf-product-copy" data-product-copy></p>
+          <a class="text-link" href={tutorialHref}>{sf.productLink}</a>
         </div>
       </div>
 
-      <!-- CTA：引导至 Try-On Studio -->
       <div class="sf-cta-block">
-        <span class="eyebrow">Quick Diagnosis Complete</span>
-        <h3>This is just the starting point.</h3>
-        <p>Upload a selfie for AI-powered analysis of your actual features and skin tone — get 3 personalized looks with step-by-step tutorials.</p>
-        <a class="btn sf-cta-btn" href="/try-on">Upload Selfie for Full Diagnosis →</a>
+        <span class="eyebrow">{sf.ctaEyebrow}</span>
+        <h3>{sf.ctaHeading}</h3>
+        <p>{sf.ctaDetail}</p>
+        <a class="btn sf-cta-btn" href={tryOnHref}>{sf.ctaButton}</a>
       </div>
 
       <div class="tool-actions">
-        <button class="btn btn-secondary" type="button" data-reset-tool>Start Over</button>
+        <button class="btn btn-secondary" type="button" data-reset-tool>{sf.resetButton}</button>
       </div>
     </section>
   </div>
 </section>
 
-<script>
-  type ShadeStep = 'input' | 'loading' | 'result';
-  type Undertone = 'cool' | 'warm' | 'neutral' | 'olive';
-  type ShadeResult = {
-    diagnosis: string;
-    summary: string;
-    reasons: string[];
-    product: {
-      name: string;
-      shade: string;
-      copy: string;
-      color: string;
-    };
-  };
+<script define:vars={{ SF: sf }}>
+  const qs = (selector) => document.querySelector(selector);
 
-  const qs = <T extends Element = HTMLElement>(selector: string) =>
-    document.querySelector(selector) as T | null;
+  const form = qs('[data-shade-form]');
+  const inputStep = qs('[data-step="input"]');
+  const loadingStep = qs('[data-step="loading"]');
+  const resultStep = qs('[data-step="result"]');
+  const resetButton = qs('[data-reset-tool]');
 
-  // ─── DOM 引用 ───
-  const form = qs<HTMLFormElement>('[data-shade-form]');
-  const inputStep = qs<HTMLElement>('[data-step="input"]');
-  const loadingStep = qs<HTMLElement>('[data-step="loading"]');
-  const resultStep = qs<HTMLElement>('[data-step="result"]');
-  const resetButton = qs<HTMLButtonElement>('[data-reset-tool]');
+  const titleEl = qs('[data-result-title]');
+  const summaryEl = qs('[data-result-summary]');
+  const reasonsEl = qs('[data-result-reasons]');
+  const productNameEl = qs('[data-product-name]');
+  const productCopyEl = qs('[data-product-copy]');
+  const productShadeEl = qs('[data-product-shade]');
+  const swatchEl = qs('[data-swatch-color]');
 
-  const titleEl = qs<HTMLElement>('[data-result-title]');
-  const summaryEl = qs<HTMLElement>('[data-result-summary]');
-  const reasonsEl = qs<HTMLElement>('[data-result-reasons]');
-  const productNameEl = qs<HTMLElement>('[data-product-name]');
-  const productCopyEl = qs<HTMLElement>('[data-product-copy]');
-  const productShadeEl = qs<HTMLElement>('[data-product-shade]');
-  const swatchEl = qs<HTMLElement>('[data-swatch-color]');
-
-  // ─── 步骤切换 ───
-  const setStep = (nextStep: ShadeStep) => {
-    [inputStep, loadingStep, resultStep].forEach((element) => {
-      if (!element) return;
-      element.classList.toggle('is-hidden', element.dataset.step !== nextStep);
+  const setStep = (nextStep) => {
+    [inputStep, loadingStep, resultStep].forEach((el) => {
+      if (!el) return;
+      el.classList.toggle('is-hidden', el.dataset.step !== nextStep);
     });
   };
 
-  // ─── 色号映射表：根据冷暖调推荐不同唇色（静态数据，不消耗 AI 配额）───
-  const shadeMap: Record<Undertone, ShadeResult> = {
+  const shadeMap = {
     cool: {
-      diagnosis: 'Cool Undertone · 冷调清透型',
-      summary: '你的肤色属于冷调，适合蓝底粉色、玫瑰色和莓果色系。暖橘色会让你看起来暗沉。',
-      reasons: ['适合玫瑰粉和莓果色系', '避免暖橘色和珊瑚色', '唇颊同色能提升整体精致感'],
-      product: { name: 'MAC Lipstick · Mehr', shade: 'Dirty Blue Pink', copy: '经典蓝调玫瑰色，冷调肤色的安全牌。自然提气色，不挑场合。', color: '#A45A52' },
+      diagnosis: SF.diagnosisCool,
+      summary: SF.diagnosisCoolSummary,
+      reasons: [SF.diagnosisCoolReason1, SF.diagnosisCoolReason2, SF.diagnosisCoolReason3],
+      product: { name: 'MAC Lipstick · Mehr', shade: 'Dirty Blue Pink', copy: SF.diagnosisCoolReason1, color: '#A45A52' },
     },
     warm: {
-      diagnosis: 'Warm Undertone · 暖调活力型',
-      summary: '你的肤色属于暖调，适合珊瑚色、蜜桃色和暖棕色系。冷调蓝粉色会让你看起来苍白。',
-      reasons: ['适合珊瑚色和蜜桃色系', '避免冷调蓝粉色', '暖棕裸色是日常百搭色'],
-      product: { name: 'Charlotte Tilbury · Pillow Talk', shade: 'Warm Nude Pink', copy: '经典暖调裸粉色，柔雾质地自然提亮，适合通勤和约会。', color: '#C4756E' },
+      diagnosis: SF.diagnosisWarm,
+      summary: SF.diagnosisWarmSummary,
+      reasons: [SF.diagnosisWarmReason1, SF.diagnosisWarmReason2, SF.diagnosisWarmReason3],
+      product: { name: 'Charlotte Tilbury · Pillow Talk', shade: 'Warm Nude Pink', copy: SF.diagnosisWarmReason1, color: '#C4756E' },
     },
     neutral: {
-      diagnosis: 'Neutral Undertone · 中性百搭型',
-      summary: '你的肤色属于中性调，大部分色系都能驾驭。可以大胆尝试玫瑰色到珊瑚色的广阔色域。',
-      reasons: ['冷暖色系都能驾驭', '玫瑰色是最安全的选择', '可以根据场景自由切换风格'],
-      product: { name: 'YSL Rouge Pur Couture · N°1', shade: 'Le Rouge', copy: '经典正红色，中性调的标志性色号。提气场但不突兀。', color: '#B83235' },
+      diagnosis: SF.diagnosisNeutral,
+      summary: SF.diagnosisNeutralSummary,
+      reasons: [SF.diagnosisNeutralReason1, SF.diagnosisNeutralReason2, SF.diagnosisNeutralReason3],
+      product: { name: 'YSL Rouge Pur Couture · N°1', shade: 'Le Rouge', copy: SF.diagnosisNeutralReason1, color: '#B83235' },
     },
     olive: {
-      diagnosis: 'Cool Olive Undertone · 橄榄冷调型',
-      summary: '你的肤色有独特的黄绿底色，适合偏灰调的玫瑰色和莓果色。纯暖色会显脏。',
-      reasons: ['适合偏灰的冷调玫瑰色', '避免纯橘色和荧光粉', '莓果色能衬托肤色通透感'],
-      product: { name: 'MAC Lipstick · Mehr', shade: 'Dirty Blue Pink', copy: '冷灰调玫瑰，橄榄肤色的经典推荐。自然高级，第一支必入。', color: '#A45A52' },
+      diagnosis: SF.diagnosisOlive,
+      summary: SF.diagnosisOliveSummary,
+      reasons: [SF.diagnosisOliveReason1, SF.diagnosisOliveReason2, SF.diagnosisOliveReason3],
+      product: { name: 'MAC Lipstick · Mehr', shade: 'Dirty Blue Pink', copy: SF.diagnosisOliveReason1, color: '#A45A52' },
     },
   };
 
-  const isUndertone = (value: string): value is Undertone =>
-    Object.prototype.hasOwnProperty.call(shadeMap, value);
-
-  // ─── 表单提交 ───
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const formData = new FormData(form);
-    const rawUndertone = String(formData.get('undertone') || 'cool');
-    const undertone = isUndertone(rawUndertone) ? rawUndertone : 'cool';
+    const undertone = String(formData.get('undertone') || 'cool');
+    const validUndertone = shadeMap[undertone] ? undertone : 'cool';
 
     setStep('loading');
-
-    // 模拟分析延迟（实际是查表，不消耗 API 配额）
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const data = shadeMap[undertone];
-
+    const data = shadeMap[validUndertone];
     if (titleEl) titleEl.textContent = data.diagnosis;
     if (summaryEl) summaryEl.textContent = data.summary;
     if (productNameEl) productNameEl.textContent = data.product.name;
@@ -203,7 +231,6 @@
       swatchEl.style.backgroundColor = data.product.color;
       swatchEl.setAttribute('aria-label', `Recommended shade swatch: ${data.product.shade}`);
     }
-
     if (reasonsEl) {
       reasonsEl.innerHTML = '';
       data.reasons.forEach((reason) => {
@@ -212,11 +239,9 @@
         reasonsEl.appendChild(item);
       });
     }
-
-    window.setTimeout(() => setStep('result'), 300);
+    setTimeout(() => setStep('result'), 300);
   });
 
-  // ─── 重置 ───
   resetButton?.addEventListener('click', () => {
     form?.reset();
     setStep('input');
@@ -224,144 +249,38 @@
 </script>
 
 <style>
-  /* ─── Shade Finder 专属样式（继承全局轻奢体系） ─── */
-  .shade-finder-shell {
-    max-width: 860px;
-    margin: 0 auto;
-  }
-
-  .sf-tool-header {
-    display: block;
-    margin-bottom: 26px;
-  }
-
-  .sf-tool-heading {
-    max-width: 560px;
-  }
-
+  .shade-finder-shell { max-width: 860px; margin: 0 auto; }
+  .sf-tool-header { display: block; margin-bottom: 26px; }
+  .sf-tool-heading { max-width: 560px; }
   .sf-privacy-note {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    width: auto;
-    max-width: 100%;
-    margin: 12px 0 0;
-    padding: 7px 11px;
-    border: 1px solid rgba(144, 104, 111, 0.16);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.68);
-    color: var(--muted);
-    font-size: 0.82rem;
-    font-weight: 600;
-    line-height: 1.35;
+    display: inline-flex; align-items: center; gap: 8px; width: auto; max-width: 100%;
+    margin: 12px 0 0; padding: 7px 11px;
+    border: 1px solid rgba(144, 104, 111, 0.16); border-radius: 999px;
+    background: rgba(255, 255, 255, 0.68); color: var(--muted);
+    font-size: 0.82rem; font-weight: 600; line-height: 1.35;
   }
-
   .sf-lock-icon {
-    display: inline-flex;
-    width: 18px;
-    height: 18px;
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    color: var(--accent-deep);
-    background: var(--accent-soft);
+    display: inline-flex; width: 18px; height: 18px; flex: 0 0 auto;
+    align-items: center; justify-content: center; border-radius: 999px;
+    color: var(--accent-deep); background: var(--accent-soft);
   }
-
-  .sf-lock-icon svg {
-    width: 12px;
-    height: 12px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .sf-hint {
-    text-align: center;
-    font-size: 0.78rem;
-    opacity: 0.45;
-    margin-top: 8px;
-  }
-
-  /* 诊断结果摘要 */
-  .sf-result-summary {
-    font-size: 0.92rem;
-    line-height: 1.7;
-    opacity: 0.85;
-    margin-bottom: 12px;
-  }
-
-  /* 推荐商品卡 */
-  .sf-product-card {
-    padding: 20px;
-  }
-
-  .sf-swatch-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin: 12px 0 8px;
-  }
-
+  .sf-lock-icon svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .sf-hint { text-align: center; font-size: 0.78rem; opacity: 0.45; margin-top: 8px; }
+  .sf-result-summary { font-size: 0.92rem; line-height: 1.7; opacity: 0.85; margin-bottom: 12px; }
+  .sf-product-card { padding: 20px; }
+  .sf-swatch-row { display: flex; align-items: center; gap: 14px; margin: 12px 0 8px; }
   .sf-swatch {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background-color: #A45A52;
-    border: 3px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    flex-shrink: 0;
+    width: 44px; height: 44px; border-radius: 50%; background-color: #A45A52;
+    border: 3px solid rgba(255, 255, 255, 0.12); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); flex-shrink: 0;
   }
-
-  .sf-product-shade {
-    font-size: 0.78rem;
-    opacity: 0.5;
-    margin-top: 2px;
-  }
-
-  .sf-product-copy {
-    font-size: 0.88rem;
-    line-height: 1.6;
-    opacity: 0.75;
-    margin: 8px 0 12px;
-  }
-
-  /* CTA 区块：引导至 Try-On Studio */
+  .sf-product-shade { font-size: 0.78rem; opacity: 0.5; margin-top: 2px; }
+  .sf-product-copy { font-size: 0.88rem; line-height: 1.6; opacity: 0.75; margin: 8px 0 12px; }
   .sf-cta-block {
-    margin-top: 28px;
-    padding: 28px 24px;
-    background: linear-gradient(
-      135deg,
-      rgba(178, 138, 138, 0.08),
-      rgba(178, 138, 138, 0.03)
-    );
-    border: 1px solid rgba(178, 138, 138, 0.18);
-    border-radius: 16px;
-    text-align: center;
+    margin-top: 28px; padding: 28px 24px;
+    background: linear-gradient(135deg, rgba(178, 138, 138, 0.08), rgba(178, 138, 138, 0.03));
+    border: 1px solid rgba(178, 138, 138, 0.18); border-radius: 16px; text-align: center;
   }
-
-  .sf-cta-block h3 {
-    font-size: 1.15rem;
-    margin-bottom: 8px;
-  }
-
-  .sf-cta-block p {
-    font-size: 0.88rem;
-    opacity: 0.7;
-    line-height: 1.65;
-    margin-bottom: 16px;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .sf-cta-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.95rem;
-    padding: 12px 28px;
-  }
+  .sf-cta-block h3 { font-size: 1.15rem; margin-bottom: 8px; }
+  .sf-cta-block p { font-size: 0.88rem; opacity: 0.7; line-height: 1.65; margin-bottom: 16px; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .sf-cta-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 0.95rem; padding: 12px 28px; }
 </style>

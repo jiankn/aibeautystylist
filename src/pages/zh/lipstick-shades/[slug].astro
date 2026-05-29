@@ -1,0 +1,252 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { lipstickShadePagesZhCN } from '../../../data/localized/lipstickShadePagesZhCN';
+import type { LipstickShadePage } from '../../../data/lipstickShadePages';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return lipstickShadePagesZhCN.map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props as { page: LipstickShadePage };
+
+// 从 slug 推断 undertone 标签，用于 try-on CTA 链接
+const inferUndertone = (slug: string): 'warm' | 'cool' | 'neutral' | null => {
+  if (slug.startsWith('warm-')) return 'warm';
+  if (slug.startsWith('cool-')) return 'cool';
+  if (slug.startsWith('neutral-')) return 'neutral';
+  return null;
+};
+const undertone = inferUndertone(page.slug);
+const ctaSource = `zh_seo_lipstick_${page.slug}`;
+const tryOnHref = undertone
+  ? `/try-on?locale=zh-CN&from=${ctaSource}&undertone=${undertone}`
+  : `/try-on?locale=zh-CN&from=${ctaSource}`;
+
+// 同语言内链：其他 lipstick-shades 页
+const allPages = lipstickShadePagesZhCN.filter((p) => p.slug !== page.slug);
+
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: page.title,
+    description: page.description,
+    mainEntityOfPage: `https://aibeautystylist.com/zh/lipstick-shades/${page.slug}/`,
+    about: page.bestShades.map((shade) => shade.name),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首页', item: 'https://aibeautystylist.com/zh/' },
+      { '@type': 'ListItem', position: 2, name: '口红色号', item: 'https://aibeautystylist.com/zh/lipstick-shades/' },
+      { '@type': 'ListItem', position: 3, name: page.eyebrow, item: `https://aibeautystylist.com/zh/lipstick-shades/${page.slug}/` },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  locale="zh-CN"
+  title={`${page.title}｜AI Beauty Stylist`}
+  description={page.description}
+  structuredData={structuredData}
+>
+  <section class="section">
+    <div class="container">
+      <nav class="seo-breadcrumb" aria-label="Breadcrumb">
+        <a href="/zh/">首页</a> <span aria-hidden="true">›</span>
+        <a href="/zh/lipstick-shades/">口红色号</a> <span aria-hidden="true">›</span>
+        <span>{page.eyebrow}</span>
+      </nav>
+    </div>
+
+    <div class="container hero-grid">
+      <div class="section-copy">
+        <span class="eyebrow">{page.eyebrow}</span>
+        <h1>{page.headline}</h1>
+        <p>{page.intro}</p>
+        <div class="cta-row">
+          <a class="btn" href={tryOnHref}>在自己脸上试这些颜色 →</a>
+          <a class="btn btn-secondary" href={`/zh/tools/undertone-quiz/`}>不确定自己的冷暖皮？</a>
+        </div>
+      </div>
+      <div class="shade-swatch-panel">
+        {page.bestShades.map((shade) => (
+          <article class="shade-swatch-card">
+            <span class="shade-swatch" style={`--shade:${shade.hex}`}></span>
+            <div>
+              <h3>{shade.name}</h3>
+              <p>{shade.why}</p>
+              <small>{shade.hex}</small>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <div class="container grid-cards grid-cards-3 top-gap">
+      <article class="card coach-card">
+        <span class="pill">试色步骤</span>
+        <h3>怎么检查这个颜色</h3>
+        <ul class="check-list compact">
+          {page.testSteps.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+      <article class="card coach-card">
+        <span class="pill">避免</span>
+        <h3>通常会翻车的颜色</h3>
+        <ul class="check-list compact">
+          {page.avoid.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+      <article class="card coach-card">
+        <span class="pill">选购逻辑</span>
+        <h3>怎么买得更聪明</h3>
+        <ul class="check-list compact">
+          {page.productLogic.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    </div>
+
+    <div class="container top-gap">
+      <article class="seo-cta-card">
+        <h3>把这些颜色画到你自己脸上看看</h3>
+        <p>上面的色卡只是起点。上传一张自拍，AI 会把<em>{page.eyebrow}</em>适合的颜色渲染到你脸上，让你在购买前就知道哪个真正适合自己。</p>
+        <a class="btn" href={tryOnHref}>用 AI 试妆试这些颜色 →</a>
+      </article>
+    </div>
+
+    <div class="container top-gap">
+      <article class="card related-guide-card">
+        <span class="pill">下一步</span>
+        <h3>把这个颜色用进完整妆容</h3>
+        <div class="related-guide-links">
+          {page.relatedLinks.map((link) => (
+            <a class="text-link" href={link.href}>{link.label}</a>
+          ))}
+        </div>
+      </article>
+    </div>
+
+    <div class="container top-gap">
+      <h2 class="seo-related-heading">对比其他色号指南</h2>
+      <ul class="seo-link-list">
+        {allPages.map((p) => (
+          <li><a href={`/zh/lipstick-shades/${p.slug}/`}>{p.title}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .shade-swatch-panel {
+    display: grid;
+    gap: 14px;
+  }
+
+  .shade-swatch-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: center;
+    padding: 18px;
+    border: 1px solid rgba(88, 58, 58, 0.12);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  .shade-swatch {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: var(--shade);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08), 0 12px 28px rgba(62, 39, 39, 0.12);
+  }
+
+  .shade-swatch-card h3 {
+    margin: 0 0 4px;
+  }
+
+  .shade-swatch-card p {
+    margin: 0 0 6px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .shade-swatch-card small {
+    color: var(--accent-deep);
+    font-weight: 700;
+  }
+
+  .related-guide-card {
+    display: grid;
+    gap: 12px;
+  }
+
+  .related-guide-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 20px;
+  }
+
+  .seo-breadcrumb {
+    margin-bottom: 18px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .seo-breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .seo-breadcrumb a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .seo-cta-card {
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, #fffaf7 0%, #ffeef1 100%);
+    border: 1px solid rgba(176, 127, 134, 0.18);
+    text-align: center;
+  }
+  .seo-cta-card h3 {
+    margin: 0 0 8px;
+  }
+  .seo-cta-card p {
+    margin: 0 0 16px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .seo-related-heading {
+    margin: 0 0 14px;
+    font-size: 1.2rem;
+  }
+
+  .seo-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 8px 16px;
+  }
+
+  .seo-link-list li {
+    padding: 4px 0;
+  }
+</style>

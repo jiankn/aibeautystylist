@@ -11,6 +11,20 @@ const featuredGuides = [
   { label: '口红色号指南', href: '/zh/lipstick-shades/', detail: '从暖皮、冷皮、橄榄皮、深肤色和亚洲肤色选择口红色系。' },
 ];
 
+const styleGuides = [
+  { label: '单眼皮妆容', href: '/zh/styles/monolid-makeup/', detail: '睁眼也看得到的眼影画法，不用伪造双眼皮褶皱。' },
+  { label: '橄榄皮妆容', href: '/zh/styles/olive-skin-makeup/', detail: '顺着绿金底色选色，避开显灰和发橘。' },
+  { label: '深肤色妆容', href: '/zh/styles/deep-skin-makeup/', detail: '有深度、不发灰的底妆、腮红和裸唇。' },
+  { label: '韩系水光妆', href: '/zh/styles/korean-dewy-makeup/', detail: '清透不油腻的底妆和渐变唇。' },
+];
+
+const scenarioGuides = [
+  { label: '肿眼泡眼妆', href: '/zh/scenarios/hooded-eyes-makeup/', detail: '睁眼也有轮廓、不显肿的眼影位置。' },
+  { label: '成熟肌妆容', href: '/zh/scenarios/mature-skin-makeup/', detail: '薄层、提拉和不卡纹的画法。' },
+  { label: '婚礼宾客妆', href: '/zh/scenarios/wedding-guest-makeup/', detail: '上镜、耐久又不抢新娘风头。' },
+  { label: '日常裸妆', href: '/zh/scenarios/everyday-natural-makeup/', detail: '清透、好上手、可重复的日常妆。' },
+];
+
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -44,8 +58,38 @@ const structuredData = {
     </div>
 
     <div class="container section-copy narrow top-gap">
+      <h2>按妆容风格选择</h2>
+      <p>这些是适合中文用户的高频妆容专题，每个都有完整的步骤、技巧和产品建议。</p>
+    </div>
+
+    <div class="container grid-cards grid-cards-2 top-gap">
+      {styleGuides.map((guide) => (
+        <a class="card guide-hub-card" href={guide.href}>
+          <span class="pill">妆容风格</span>
+          <h2>{guide.label}</h2>
+          <p>{guide.detail}</p>
+        </a>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
+      <h2>按场景和眼型选择</h2>
+      <p>针对具体场景和需求的妆容方案，从日常到重要场合。</p>
+    </div>
+
+    <div class="container grid-cards grid-cards-2 top-gap">
+      {scenarioGuides.map((guide) => (
+        <a class="card guide-hub-card" href={guide.href}>
+          <span class="pill">场景妆容</span>
+          <h2>{guide.label}</h2>
+          <p>{guide.detail}</p>
+        </a>
+      ))}
+    </div>
+
+    <div class="container section-copy narrow top-gap">
       <h2>后续会扩展的中文专题</h2>
-      <p>下一批适合继续做成独立中文 SEO 页的主题包括：单眼皮妆容、橄榄皮妆容、深肤色妆容、韩系水光妆、肿眼泡眼妆、成熟肌妆容和婚礼宾客妆容。</p>
+      <p>下一批适合继续做成独立中文 SEO 页的主题包括：通勤妆、约会妆、面试妆、玻璃肌妆容和成熟肌通勤妆。</p>
     </div>
   </section>
 </BaseLayout>

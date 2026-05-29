@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ShadeFinderDemo from '../../../components/ShadeFinderDemo.astro';
 
 export const prerender = true;
 
@@ -55,6 +56,10 @@ const structuredData = [
         <a class="btn" href="/zh/tools/undertone-quiz/">先判断我的冷暖皮</a>
         <a class="btn btn-secondary" href="/try-on?locale=zh-CN&from=zh_shade_finder">上传自拍做完整诊断</a>
       </div>
+    </div>
+
+    <div class="container top-gap" id="shade-finder-tool">
+      <ShadeFinderDemo locale="zh-CN" />
     </div>
 
     <div class="container grid-cards grid-cards-2 top-gap">

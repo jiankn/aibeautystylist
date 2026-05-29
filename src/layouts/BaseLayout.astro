@@ -36,11 +36,31 @@ const zhAvailablePaths = new Set([
   '/lipstick-shades/',
   '/privacy/',
   '/terms/',
+  // P0 SEO 详情页：style guides
+  '/styles/monolid-makeup/',
+  '/styles/olive-skin-makeup/',
+  '/styles/deep-skin-makeup/',
+  '/styles/korean-dewy-makeup/',
+  // P0 SEO 详情页：scenario guides
+  '/scenarios/hooded-eyes-makeup/',
+  '/scenarios/mature-skin-makeup/',
+  '/scenarios/wedding-guest-makeup/',
+  '/scenarios/everyday-natural-makeup/',
+  // P0 SEO 详情页：lipstick shade guides
+  '/lipstick-shades/warm-undertone-lipstick-shades/',
+  '/lipstick-shades/cool-undertone-lipstick-shades/',
+  '/lipstick-shades/neutral-undertone-lipstick-shades/',
+  '/lipstick-shades/olive-skin-lipstick-shades/',
+  '/lipstick-shades/deep-skin-lipstick-shades/',
+  '/lipstick-shades/asian-skin-lipstick-shades/',
 ]);
 const hasZhAlternate = zhAvailablePaths.has(defaultLocalePath);
 const englishAlternateUrl = new URL(defaultLocalePath, Astro.site ?? 'https://aibeautystylist.com');
 const zhAlternateUrl = new URL(localePath(defaultLocalePath, 'zh-CN'), Astro.site ?? 'https://aibeautystylist.com');
 const zhSwitchUrl = hasZhAlternate ? zhAlternateUrl : new URL('/zh/', Astro.site ?? 'https://aibeautystylist.com');
+// 给可见的语言切换器使用相对路径（保留本地环境可用），hreflang/canonical 仍用绝对 URL
+const englishSwitchPath = defaultLocalePath;
+const zhSwitchPath = hasZhAlternate ? localePath(defaultLocalePath, 'zh-CN') : '/zh/';
 const ogImageUrl = new URL(ogImage, Astro.site ?? 'https://aibeautystylist.com');
 const structuredDataItems = structuredData
   ? Array.isArray(structuredData)
@@ -147,10 +167,34 @@ const footerHrefs = currentLocale === 'zh-CN'
             <a href={navHrefs.tutorials}>{t('nav.tutorials', currentLocale)}</a>
             <a href={navHrefs.beautyKit}>{t('nav.beautyKit', currentLocale)}</a>
             <a href={navHrefs.membership}>{t('nav.membership', currentLocale)}</a>
-            <span class="language-switcher" aria-label="Language switcher">
-              <a href={englishAlternateUrl} class={currentLocale === 'en' ? 'is-active' : undefined} aria-current={currentLocale === 'en' ? 'page' : undefined}>EN</a>
-              <a href={zhSwitchUrl} class={currentLocale === 'zh-CN' ? 'is-active' : undefined} aria-current={currentLocale === 'zh-CN' ? 'page' : undefined}>中文</a>
-            </span>
+            <div class="language-switcher" data-language-switcher>
+              <button
+                type="button"
+                class="language-switcher-trigger"
+                data-language-trigger
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-label="Select language"
+              >
+                <svg class="language-switcher-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+                <span class="language-switcher-label">{currentLocale === 'zh-CN' ? '简体中文' : 'English'}</span>
+                <svg class="language-switcher-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              <ul class="language-switcher-menu" role="listbox" data-language-menu hidden>
+                <li role="option" aria-selected={currentLocale === 'en'}>
+                  <a href={englishSwitchPath} class:list={['language-switcher-item', { 'is-active': currentLocale === 'en' }]}>English</a>
+                </li>
+                <li role="option" aria-selected={currentLocale === 'zh-CN'}>
+                  <a href={zhSwitchPath} class:list={['language-switcher-item', { 'is-active': currentLocale === 'zh-CN' }]}>简体中文</a>
+                </li>
+              </ul>
+            </div>
           </nav>
           <UserAvatar />
           <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
@@ -212,10 +256,57 @@ const footerHrefs = currentLocale === 'zh-CN'
       // 汉堡菜单交互
       const toggle = document.getElementById('nav-toggle');
       const nav = document.getElementById('main-nav');
-      toggle?.addEventListener('click', () => {
+      const closeMobileNav = () => {
+        if (!nav || !toggle) return;
+        nav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.classList.remove('is-active');
+      };
+      toggle?.addEventListener('click', (event) => {
+        event.stopPropagation();
         const open = nav?.classList.toggle('is-open');
         toggle.setAttribute('aria-expanded', String(!!open));
         toggle.classList.toggle('is-active', !!open);
+      });
+      // 点击导航外部 / ESC 自动收起移动端汉堡菜单
+      document.addEventListener('click', (event) => {
+        if (!nav || !toggle) return;
+        if (!nav.classList.contains('is-open')) return;
+        const target = event.target as Node;
+        if (nav.contains(target) || toggle.contains(target)) return;
+        closeMobileNav();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeMobileNav();
+      });
+
+      // 语言切换器下拉
+      const langSwitcher = document.querySelector('[data-language-switcher]');
+      const langTrigger = langSwitcher?.querySelector('[data-language-trigger]') as HTMLButtonElement | null;
+      const langMenu = langSwitcher?.querySelector('[data-language-menu]') as HTMLElement | null;
+      const closeLangMenu = () => {
+        if (!langMenu || !langTrigger) return;
+        langMenu.hidden = true;
+        langSwitcher?.classList.remove('is-open');
+        langTrigger.setAttribute('aria-expanded', 'false');
+      };
+      const openLangMenu = () => {
+        if (!langMenu || !langTrigger) return;
+        langMenu.hidden = false;
+        langSwitcher?.classList.add('is-open');
+        langTrigger.setAttribute('aria-expanded', 'true');
+      };
+      langTrigger?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (langMenu?.hidden) openLangMenu();
+        else closeLangMenu();
+      });
+      document.addEventListener('click', (event) => {
+        if (!langSwitcher) return;
+        if (!langSwitcher.contains(event.target as Node)) closeLangMenu();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeLangMenu();
       });
 
       // 滚动入场动画 (IntersectionObserver)

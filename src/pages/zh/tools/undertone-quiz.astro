@@ -1,20 +1,81 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { t } from '../../../lib/i18n';
 
 export const prerender = true;
 
-const checklist = [
-  { label: '看血管颜色', detail: '自然光下，手腕内侧血管偏绿常见于暖调；偏蓝紫更接近冷调；蓝绿都有可能是中性调。' },
-  { label: '看金银首饰', detail: '金色更衬肤色通常偏暖；银色更干净通常偏冷；两者都自然可能是中性调。' },
-  { label: '看口红反馈', detail: '珊瑚、蜜桃、砖红更适合暖调；玫瑰、莓果、蓝调红更适合冷调；玫瑰棕通常适合中性调。' },
-  { label: '看粉底氧化', detail: '粉底发橘可能太暖，发粉可能太冷，发灰可能深浅或饱和度不对。' },
+const locale = 'zh-CN';
+const uq = {
+  eyebrow: t('undertoneQuiz.eyebrow', locale),
+  heading: t('undertoneQuiz.heading', locale),
+  lead: t('undertoneQuiz.lead', locale),
+  progressLabel: t('undertoneQuiz.progressLabel', locale),
+  ofLabel: t('undertoneQuiz.ofLabel', locale),
+  backButton: t('undertoneQuiz.backButton', locale),
+  resultShadesHeading: t('undertoneQuiz.resultShadesHeading', locale),
+  resultCta: t('undertoneQuiz.resultCta', locale),
+  resultShadeLink: t('undertoneQuiz.resultShadeLink', locale),
+  restartButton: t('undertoneQuiz.restartButton', locale),
+};
+
+const quizQuestions = [
+  {
+    id: 'veins',
+    title: t('undertoneQuiz.veinsQuestion', locale),
+    hint: t('undertoneQuiz.veinsHint', locale),
+    options: [
+      { label: t('undertoneQuiz.veinsOption1', locale), scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: t('undertoneQuiz.veinsOption2', locale), scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: t('undertoneQuiz.veinsOption3', locale), scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
+  {
+    id: 'jewelry',
+    title: t('undertoneQuiz.jewelryQuestion', locale),
+    hint: t('undertoneQuiz.jewelryHint', locale),
+    options: [
+      { label: t('undertoneQuiz.jewelryOption1', locale), scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: t('undertoneQuiz.jewelryOption2', locale), scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: t('undertoneQuiz.jewelryOption3', locale), scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
+  {
+    id: 'sun',
+    title: t('undertoneQuiz.sunQuestion', locale),
+    options: [
+      { label: t('undertoneQuiz.sunOption1', locale), scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: t('undertoneQuiz.sunOption2', locale), scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: t('undertoneQuiz.sunOption3', locale), scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
+  {
+    id: 'paper',
+    title: t('undertoneQuiz.paperQuestion', locale),
+    hint: t('undertoneQuiz.paperHint', locale),
+    options: [
+      { label: t('undertoneQuiz.paperOption1', locale), scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: t('undertoneQuiz.paperOption2', locale), scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: t('undertoneQuiz.paperOption3', locale), scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
+  {
+    id: 'lipstick',
+    title: t('undertoneQuiz.lipstickQuestion', locale),
+    hint: t('undertoneQuiz.lipstickHint', locale),
+    options: [
+      { label: t('undertoneQuiz.lipstickOption1', locale), scores: { warm: 2, cool: 0, neutral: 0 } },
+      { label: t('undertoneQuiz.lipstickOption2', locale), scores: { warm: 0, cool: 2, neutral: 0 } },
+      { label: t('undertoneQuiz.lipstickOption3', locale), scores: { warm: 0, cool: 0, neutral: 2 } },
+    ],
+  },
 ];
 
 const faqEntities = [
-  { q: '冷皮、暖皮和中性皮是什么意思？', a: '它们指的是皮肤表层颜色下面的底色方向。暖调偏黄、金、蜜桃；冷调偏粉、玫瑰、红；中性调介于两者之间。' },
-  { q: '肤色冷暖调会改变吗？', a: '晒黑、泛红和肤况会影响表面颜色，但底层冷暖调通常比较稳定。选口红和粉底时应优先看底色方向。' },
-  { q: '橄榄皮算冷皮还是暖皮？', a: '橄榄皮可能偏暖、偏冷或中性，但共同特点是带灰绿或绿金底色。它经常不适合过亮、过白或过橘的颜色。' },
-  { q: '判断不出来怎么办？', a: '如果多个测试结果不一致，可以先按中性调选色，再通过 AI 试妆或实际上脸对比缩小范围。' },
+  { q: t('undertoneQuiz.seoFaq1', locale), a: t('undertoneQuiz.seoFaq1Answer', locale) },
+  { q: t('undertoneQuiz.seoFaq2', locale), a: t('undertoneQuiz.seoFaq2Answer', locale) },
+  { q: t('undertoneQuiz.seoFaq3', locale), a: t('undertoneQuiz.seoFaq3Answer', locale) },
+  { q: t('undertoneQuiz.seoFaq4', locale), a: t('undertoneQuiz.seoFaq4Answer', locale) },
+  { q: t('undertoneQuiz.seoFaq5', locale), a: t('undertoneQuiz.seoFaq5Answer', locale) },
 ];
 
 const structuredData = [
@@ -35,38 +96,111 @@ const structuredData = [
     })),
   },
 ];
+
+// 结果文案（注入客户端）
+const resultCopy = {
+  warm: {
+    title: t('undertoneQuiz.resultWarmTitle', locale),
+    summary: t('undertoneQuiz.resultWarmSummary', locale),
+    shades: JSON.parse(t('undertoneQuiz.resultWarmShades', locale) !== 'undertoneQuiz.resultWarmShades' ? JSON.stringify(["桃玫瑰", "柔砖红", "焦糖裸色", "砖红色", "暖珊瑚"]) : '[]'),
+    href: '/zh/lipstick-shades/warm-undertone-lipstick-shades/',
+  },
+  cool: {
+    title: t('undertoneQuiz.resultCoolTitle', locale),
+    summary: t('undertoneQuiz.resultCoolSummary', locale),
+    shades: ["蓝玫瑰", "柔莓果", "冷紫红", "蓝红", "李子色"],
+    href: '/zh/lipstick-shades/cool-undertone-lipstick-shades/',
+  },
+  neutral: {
+    title: t('undertoneQuiz.resultNeutralTitle', locale),
+    summary: t('undertoneQuiz.resultNeutralSummary', locale),
+    shades: ["平衡玫瑰", "玫瑰棕", "柔红", "柔和莓果", "暖紫红"],
+    href: '/zh/lipstick-shades/neutral-undertone-lipstick-shades/',
+  },
+};
 ---
 
 <BaseLayout
   locale="zh-CN"
-  title="冷暖皮判断测试｜怎么知道自己是冷皮暖皮还是中性皮"
-  description="中文冷暖皮判断指南。通过血管颜色、金银首饰、日晒反应和口红反馈，判断你更适合冷调、暖调还是中性调色号。"
+  title="冷暖皮判断测试｜5 题判断你是冷皮暖皮还是中性皮"
+  description="免费冷暖皮判断测试。5 个问题 60 秒判断你的肤色底色是暖调、冷调还是中性，然后匹配适合你的口红和粉底色号方向。"
   structuredData={structuredData}
 >
   <section class="section">
     <div class="container section-copy narrow">
-      <span class="eyebrow">冷暖皮判断</span>
-      <h1>怎么知道自己是冷皮、暖皮还是中性皮？</h1>
-      <p>冷暖皮不是看你白不白，而是看皮肤底色偏黄、偏粉、偏中性还是带橄榄调。判断冷暖调后，口红、粉底、腮红和眼影选择都会更稳定。</p>
-      <div class="cta-row">
-        <a class="btn" href="/zh/tools/shade-finder/">根据结果测试色号</a>
-        <a class="btn btn-secondary" href="/zh/tools/foundation-shade-finder-by-undertone/">查看粉底方向</a>
+      <span class="eyebrow">{uq.eyebrow}</span>
+      <h1 set:html={uq.heading}></h1>
+      <p set:html={uq.lead}></p>
+    </div>
+
+    <div class="container">
+      <div class="undertone-quiz" data-undertone-quiz>
+        <div class="undertone-quiz-progress" aria-hidden="true">
+          <div class="undertone-quiz-progress-bar" data-undertone-progress-bar></div>
+        </div>
+        <p class="undertone-quiz-progress-label">
+          {uq.progressLabel} <span data-undertone-current>1</span> {uq.ofLabel} <span data-undertone-total>{quizQuestions.length}</span>
+        </p>
+
+        {quizQuestions.map((question, index) => (
+          <fieldset
+            class={`undertone-quiz-question${index === 0 ? '' : ' is-hidden'}`}
+            data-undertone-question={question.id}
+            data-undertone-question-index={index}
+          >
+            <legend class="undertone-quiz-question-title">{question.title}</legend>
+            {question.hint && <p class="undertone-quiz-question-hint">{question.hint}</p>}
+            <div class="undertone-quiz-options" role="radiogroup" aria-label={question.title}>
+              {question.options.map((option, optIndex) => (
+                <button
+                  type="button"
+                  class="undertone-quiz-option"
+                  data-undertone-option
+                  data-undertone-warm={option.scores.warm}
+                  data-undertone-cool={option.scores.cool}
+                  data-undertone-neutral={option.scores.neutral}
+                  data-undertone-question-id={question.id}
+                  data-undertone-option-index={optIndex}
+                >
+                  <span class="undertone-quiz-option-label">{option.label}</span>
+                </button>
+              ))}
+            </div>
+            <div class="undertone-quiz-nav">
+              {index > 0 && (
+                <button type="button" class="text-link" data-undertone-back>{uq.backButton}</button>
+              )}
+            </div>
+          </fieldset>
+        ))}
+
+        <div class="undertone-quiz-result is-hidden" data-undertone-result aria-live="polite">
+          <span class="pill undertone-quiz-result-pill" data-undertone-result-pill>—</span>
+          <h2 data-undertone-result-title>{t('undertoneQuiz.resultTitle', locale)}</h2>
+          <p class="undertone-quiz-result-summary" data-undertone-result-summary></p>
+          <div class="undertone-quiz-result-shades" data-undertone-result-shades>
+            <h3>{uq.resultShadesHeading}</h3>
+            <ul class="undertone-quiz-shades-list" data-undertone-result-shades-list></ul>
+          </div>
+          <div class="undertone-quiz-result-cta">
+            <a class="btn" data-undertone-result-cta href="/zh/try-on/">{uq.resultCta}</a>
+            <a class="btn btn-secondary" data-undertone-result-shade-link href="/zh/lipstick-shades/warm-undertone-lipstick-shades/">{uq.resultShadeLink}</a>
+            <button type="button" class="text-link" data-undertone-restart>{uq.restartButton}</button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="container grid-cards grid-cards-2 top-gap">
-      {checklist.map((item) => (
-        <article class="card coach-card">
-          <span class="pill">测试方法</span>
-          <h2>{item.label}</h2>
-          <p>{item.detail}</p>
-        </article>
-      ))}
-    </div>
-
     <div class="container section-copy narrow top-gap">
-      <h2>为什么很多人判断冷暖皮会失败？</h2>
-      <p>因为只看一个信号容易误判。比如手腕血管受光线影响很大，日晒反应也和防晒习惯有关。更可靠的方法是把血管、首饰、白纸对比、口红反馈和粉底氧化放在一起看。</p>
+      <h2>{t('undertoneQuiz.seoHeading1', locale)}</h2>
+      <p set:html={t('undertoneQuiz.seoContent1', locale)}></p>
+      <h2>{t('undertoneQuiz.seoHeading2', locale)}</h2>
+      <p set:html={t('undertoneQuiz.seoContent2', locale)}></p>
+      <h2>{t('undertoneQuiz.seoHeading3', locale)}</h2>
+      <p set:html={t('undertoneQuiz.seoContent3', locale)}></p>
+      <h2>{t('undertoneQuiz.seoHeading4', locale)}</h2>
+      <p set:html={t('undertoneQuiz.seoContent4', locale)}></p>
+
       <h2>常见问题</h2>
       <dl class="seo-faq">
         {faqEntities.map((item) => (
@@ -76,6 +210,148 @@ const structuredData = [
           </>
         ))}
       </dl>
+
+      <h2>{t('undertoneQuiz.seoHeading5', locale)}</h2>
+      <ul class="seo-link-list">
+        <li><a href="/zh/lipstick-shades/warm-undertone-lipstick-shades/">{t('undertoneQuiz.seoLink1', locale)}</a></li>
+        <li><a href="/zh/lipstick-shades/cool-undertone-lipstick-shades/">{t('undertoneQuiz.seoLink2', locale)}</a></li>
+        <li><a href="/zh/lipstick-shades/neutral-undertone-lipstick-shades/">{t('undertoneQuiz.seoLink3', locale)}</a></li>
+        <li><a href="/zh/lipstick-shades/olive-skin-lipstick-shades/">{t('undertoneQuiz.seoLink4', locale)}</a></li>
+        <li><a href="/zh/lipstick-shades/asian-skin-lipstick-shades/">{t('undertoneQuiz.seoLink5', locale)}</a></li>
+        <li><a href="/zh/tools/foundation-shade-finder-by-undertone/">{t('undertoneQuiz.seoLink6', locale)}</a></li>
+      </ul>
     </div>
   </section>
 </BaseLayout>
+
+<script define:vars={{ RESULT_COPY: resultCopy }}>
+  const quiz = document.querySelector('[data-undertone-quiz]');
+  if (quiz) {
+    const questions = Array.from(quiz.querySelectorAll('[data-undertone-question]'));
+    const totalQuestions = questions.length;
+    const progressBar = quiz.querySelector('[data-undertone-progress-bar]');
+    const currentLabel = quiz.querySelector('[data-undertone-current]');
+    const result = quiz.querySelector('[data-undertone-result]');
+    const resultPill = quiz.querySelector('[data-undertone-result-pill]');
+    const resultTitle = quiz.querySelector('[data-undertone-result-title]');
+    const resultSummary = quiz.querySelector('[data-undertone-result-summary]');
+    const resultShadesList = quiz.querySelector('[data-undertone-result-shades-list]');
+    const resultCta = quiz.querySelector('[data-undertone-result-cta]');
+    const resultShadeLink = quiz.querySelector('[data-undertone-result-shade-link]');
+    const restartBtn = quiz.querySelector('[data-undertone-restart]');
+
+    const answers = [];
+    let currentIndex = 0;
+
+    const pillLabels = { warm: '暖调', cool: '冷调', neutral: '中性' };
+
+    const showQuestion = (index) => {
+      questions.forEach((q, i) => q.classList.toggle('is-hidden', i !== index));
+      result?.classList.add('is-hidden');
+      currentIndex = index;
+      if (currentLabel) currentLabel.textContent = String(index + 1);
+      if (progressBar) progressBar.style.width = `${((index + 1) / totalQuestions) * 100}%`;
+      quiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    const computeUndertone = () => {
+      const totals = { warm: 0, cool: 0, neutral: 0 };
+      for (const a of answers) {
+        totals.warm += a.scores.warm;
+        totals.cool += a.scores.cool;
+        totals.neutral += a.scores.neutral;
+      }
+      const dominant = Object.keys(totals).reduce((max, key) => totals[key] > totals[max] ? key : max, 'warm');
+      const close = Math.abs(totals.warm - totals.cool) <= 2 && totals.neutral >= 4;
+      return close ? 'neutral' : dominant;
+    };
+
+    const showResult = () => {
+      const undertone = computeUndertone();
+      const copy = RESULT_COPY[undertone];
+      questions.forEach((q) => q.classList.add('is-hidden'));
+      result?.classList.remove('is-hidden');
+      if (resultPill) {
+        resultPill.textContent = pillLabels[undertone] || undertone;
+        resultPill.dataset.undertone = undertone;
+      }
+      if (resultTitle) resultTitle.textContent = copy.title;
+      if (resultSummary) resultSummary.textContent = copy.summary;
+      if (resultShadesList) {
+        resultShadesList.innerHTML = copy.shades.map((s) => `<li>${s}</li>`).join('');
+      }
+      if (resultCta) resultCta.href = `/zh/try-on/?from=undertone_quiz_${undertone}`;
+      if (resultShadeLink) resultShadeLink.href = copy.href;
+      if (progressBar) progressBar.style.width = '100%';
+      result?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    quiz.querySelectorAll('[data-undertone-option]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const questionId = btn.dataset.undertoneQuestionId || '';
+        const optionIndex = Number(btn.dataset.undertoneOptionIndex || '0');
+        const scores = {
+          warm: Number(btn.dataset.undertoneWarm || '0'),
+          cool: Number(btn.dataset.undertoneCool || '0'),
+          neutral: Number(btn.dataset.undertoneNeutral || '0'),
+        };
+        const existingIdx = answers.findIndex((a) => a.questionId === questionId);
+        if (existingIdx >= 0) answers[existingIdx] = { questionId, optionIndex, scores };
+        else answers.push({ questionId, optionIndex, scores });
+
+        const sibling = btn.closest('.undertone-quiz-options');
+        sibling?.querySelectorAll('.undertone-quiz-option').forEach((b) => b.classList.remove('is-selected'));
+        btn.classList.add('is-selected');
+
+        if (currentIndex + 1 >= totalQuestions) showResult();
+        else setTimeout(() => showQuestion(currentIndex + 1), 220);
+      });
+    });
+
+    quiz.querySelectorAll('[data-undertone-back]').forEach((btn) => {
+      btn.addEventListener('click', () => { if (currentIndex > 0) showQuestion(currentIndex - 1); });
+    });
+
+    restartBtn?.addEventListener('click', () => {
+      answers.length = 0;
+      quiz.querySelectorAll('.undertone-quiz-option').forEach((b) => b.classList.remove('is-selected'));
+      showQuestion(0);
+    });
+
+    if (progressBar) progressBar.style.width = `${(1 / totalQuestions) * 100}%`;
+  }
+</script>
+
+<style>
+  .undertone-quiz { max-width: 720px; margin: 0 auto; padding: 32px; border-radius: var(--radius-lg); background: linear-gradient(180deg, #fffaf7 0%, #ffeef1 100%); border: 1px solid rgba(176, 127, 134, 0.18); }
+  .undertone-quiz-progress { height: 6px; background: rgba(176, 127, 134, 0.16); border-radius: 999px; overflow: hidden; margin-bottom: 8px; }
+  .undertone-quiz-progress-bar { height: 100%; background: var(--accent); width: 20%; transition: width 0.3s ease; border-radius: 999px; }
+  .undertone-quiz-progress-label { margin: 0 0 24px; text-align: center; color: var(--muted); font-size: 0.9rem; }
+  .undertone-quiz-question { border: 0; padding: 0; margin: 0; }
+  .undertone-quiz-question.is-hidden { display: none; }
+  .undertone-quiz-question-title { font-size: 1.2rem; font-weight: 600; color: var(--text); margin-bottom: 6px; display: block; width: 100%; }
+  .undertone-quiz-question-hint { margin: 0 0 18px; color: var(--muted); font-size: 0.92rem; }
+  .undertone-quiz-options { display: grid; gap: 10px; margin-bottom: 18px; }
+  .undertone-quiz-option { width: 100%; text-align: left; padding: 16px 20px; border-radius: var(--radius-md); border: 1px solid rgba(176, 127, 134, 0.22); background: #ffffff; cursor: pointer; font-size: 1rem; color: var(--text); transition: all 0.18s ease; display: grid; gap: 4px; }
+  .undertone-quiz-option:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(176, 127, 134, 0.12); }
+  .undertone-quiz-option.is-selected { border-color: var(--accent); background: rgba(176, 127, 134, 0.08); box-shadow: inset 0 0 0 2px var(--accent); }
+  .undertone-quiz-option-label { font-weight: 500; }
+  .undertone-quiz-nav { display: flex; justify-content: flex-start; }
+  .undertone-quiz-result { text-align: center; padding: 12px 0; }
+  .undertone-quiz-result.is-hidden { display: none; }
+  .undertone-quiz-result-pill { background: var(--accent); color: #fff; font-size: 0.8rem; padding: 5px 14px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .undertone-quiz-result h2 { margin: 0 0 12px; font-size: 1.6rem; }
+  .undertone-quiz-result-summary { color: var(--muted); line-height: 1.65; margin: 0 0 20px; font-size: 1rem; }
+  .undertone-quiz-result-shades { margin: 24px auto; max-width: 520px; padding: 20px; background: rgba(255, 255, 255, 0.6); border-radius: var(--radius-md); border: 1px solid rgba(176, 127, 134, 0.12); }
+  .undertone-quiz-result-shades h3 { margin: 0 0 12px; font-size: 1rem; color: var(--text); }
+  .undertone-quiz-shades-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .undertone-quiz-shades-list li { padding: 6px 14px; border-radius: 999px; background: rgba(176, 127, 134, 0.12); color: var(--text); font-size: 0.86rem; font-weight: 500; }
+  .undertone-quiz-result-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 8px; }
+  .undertone-quiz-result-cta .text-link { background: none; border: 0; cursor: pointer; padding: 12px 16px; font-size: 0.92rem; }
+  .seo-faq { display: grid; gap: 14px; margin: 0; }
+  .seo-faq dt { font-weight: 600; color: var(--text); }
+  .seo-faq dd { margin: 0 0 6px; color: var(--muted); line-height: 1.65; }
+  .seo-link-list { list-style: none; padding: 0; margin: 0 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 16px; }
+  .seo-link-list li { padding: 4px 0; }
+  @media (max-width: 640px) { .undertone-quiz { padding: 22px; } .undertone-quiz-question-title { font-size: 1.05rem; } }
+</style>
