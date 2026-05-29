@@ -2,6 +2,7 @@
 import { buildLookTryOnHref, lookCatalogItems, lookFilters, quickTryOnLooks } from '../data/lookCatalog';
 import { homeStyleItems, styleNavigationItems } from '../data/stylePages';
 import { t, type Locale } from '../lib/i18n';
+import { resolveLookTitle, resolveLookTone, resolveStyleLabel } from '../data/localized/lookNamesZhCN';
 
 interface Props {
   locale?: Locale;
@@ -12,12 +13,20 @@ const { locale = 'en' } = Astro.props;
 const quickLookItems = quickTryOnLooks;
 
 const styleShortcutItems = homeStyleItems.map((style) => ({
-  label: style.label,
+  label: resolveStyleLabel(style.slug, style.label, locale),
   href: `/try-on?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}`,
 }));
 
-const allLookItems = lookCatalogItems;
-const allStyleItems = styleNavigationItems;
+const allLookItems = lookCatalogItems.map((look) => ({
+  ...look,
+  title: resolveLookTitle(look.slug, look.title, locale),
+  tone: resolveLookTone(look.slug, look.tone, locale),
+}));
+
+const allStyleItems = styleNavigationItems.map((style) => ({
+  ...style,
+  label: resolveStyleLabel(style.slug, style.label, locale),
+}));
 
 // Helper function for client-side translations
 const getTranslations = (currentLocale: Locale) => ({

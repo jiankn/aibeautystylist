@@ -2,17 +2,23 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { buildLookTryOnHref, lookCatalogItems, lookFilters } from '../../data/lookCatalog';
 import { styleNavigationItems } from '../../data/stylePages';
+import { resolveLookTitle, resolveLookTone, resolveStyleLabel } from '../../data/localized/lookNamesZhCN';
 
 export const prerender = true;
 
+const locale = 'zh-CN';
+
 const lookItems = lookCatalogItems.map((look, index) => ({
   ...look,
+  title: resolveLookTitle(look.slug, look.title, locale),
+  tone: resolveLookTone(look.slug, look.tone, locale),
   position: index + 1,
   tryOnHref: `${buildLookTryOnHref(look)}&source=zh-discover-look-library&position=${index + 1}`,
 }));
 
 const styleItems = styleNavigationItems.map((style, index) => ({
   ...style,
+  label: resolveStyleLabel(style.slug, style.label, locale),
   position: index + 1,
   tryOnHref: `/try-on?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}&source=zh-discover-style-nav&position=${index + 1}`,
 }));

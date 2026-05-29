@@ -5,19 +5,24 @@ import {
   LOOK_LIBRARY_TARGET_COUNT,
   weeklyInspirationUpdatedAt,
 } from '../data/lookCatalog';
+import type { Locale } from '../lib/i18n';
+import { resolveLookTitle, resolveLookTone, resolveGroupLabel } from '../data/localized/lookNamesZhCN';
 
 interface Props {
   weeklyTriesBySlug?: Record<string, number>;
+  locale?: Locale;
 }
 
-const { weeklyTriesBySlug = {} } = Astro.props;
+const { weeklyTriesBySlug = {}, locale = 'en' } = Astro.props;
 const groups = getWeeklyInspirationGroups(weeklyTriesBySlug);
 
 const galleryLooks = groups.flatMap((group, groupIdx) =>
   group.cards.map((card, cardIdx) => ({
     ...card,
+    title: resolveLookTitle(card.slug, card.title, locale),
+    tone: resolveLookTone(card.slug, card.tone, locale),
     groupId: group.id,
-    groupLabel: group.label,
+    groupLabel: resolveGroupLabel(group.label, locale),
     position: groupIdx * 4 + cardIdx + 1,
     tryOnHref: `${buildLookTryOnHref(card)}&source=trending-this-week&position=${groupIdx * 4 + cardIdx + 1}`,
   })),

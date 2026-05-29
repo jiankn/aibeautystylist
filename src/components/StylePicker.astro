@@ -5,9 +5,19 @@ import {
   getStyleNavWithFacets,
   STYLE_NAV_TARGET_COUNT,
 } from '../data/stylePages';
+import type { Locale } from '../lib/i18n';
+import { resolveStyleLabel, resolvePersonaTag } from '../data/localized/lookNamesZhCN';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
 
 const styles = getStyleNavWithFacets().map((style, index) => ({
   ...style,
+  label: resolveStyleLabel(style.slug, style.label, locale),
+  personaTag: resolvePersonaTag(style.personaTag, locale),
   position: index + 1,
   tryOnHref: `/try-on?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}&source=find-your-style&position=${index + 1}`,
 }));
