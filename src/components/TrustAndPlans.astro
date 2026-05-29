@@ -1,30 +1,40 @@
+---
+import { t, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+---
+
 <section class="section">
   <div class="container split-grid">
     <div class="card trust-panel">
-      <span class="eyebrow">Trust & Inclusivity</span>
-      <h2>We earn your trust before making any recommendation.</h2>
+      <span class="eyebrow">{t('trustPlans.trustEyebrow', locale)}</span>
+      <h2>{t('trustPlans.trustHeading', locale)}</h2>
       <ul class="check-list">
-        <li>Works across all skin tones, face shapes, ages, and makeup intensity levels</li>
-        <li>Clear privacy disclosure near every upload — you can delete your data anytime</li>
-        <li>Results read like a beauty stylist consultation, not a tech report</li>
+        <li>{t('trustPlans.trust1', locale)}</li>
+        <li>{t('trustPlans.trust2', locale)}</li>
+        <li>{t('trustPlans.trust3', locale)}</li>
       </ul>
     </div>
 
     <div class="card plans-panel">
-      <span class="eyebrow">Membership</span>
-      <h2>Try free first. Upgrade when you're ready.</h2>
+      <span class="eyebrow">{t('trustPlans.plansEyebrow', locale)}</span>
+      <h2>{t('trustPlans.plansHeading', locale)}</h2>
       <div class="plan-stack">
         <div>
-          <strong>Free</strong>
-          <p>See what suits you and experience your first "aha" moment.</p>
+          <strong>{t('trustPlans.freeLabel', locale)}</strong>
+          <p>{t('trustPlans.freeCopy', locale)}</p>
         </div>
         <div>
-          <strong>Pro</strong>
-          <p>Unlock full tutorials, HD try-on, and budget-tiered product kits.</p>
+          <strong>{t('trustPlans.proLabel', locale)}</strong>
+          <p>{t('trustPlans.proCopy', locale)}</p>
         </div>
         <div>
-          <strong>Premium</strong>
-          <p>Ongoing seasonal, scene-based, and tool recommendations — always current.</p>
+          <strong>{t('trustPlans.premiumLabel', locale)}</strong>
+          <p>{t('trustPlans.premiumCopy', locale)}</p>
         </div>
       </div>
     </div>

@@ -50,6 +50,37 @@
     "eyebrow": "Built for Everyone",
     "headline": "Works across all skin tones, face shapes, ages, and makeup intensity levels."
   },
+  "trustPlans": {
+    "trustEyebrow": "Trust & Inclusivity",
+    "trustHeading": "We earn your trust before making any recommendation.",
+    "trust1": "Works across all skin tones, face shapes, ages, and makeup intensity levels",
+    "trust2": "Clear privacy disclosure near every upload — you can delete your data anytime",
+    "trust3": "Results read like a beauty stylist consultation, not a tech report",
+    "plansEyebrow": "Membership",
+    "plansHeading": "Try free first. Upgrade when you're ready.",
+    "freeLabel": "Free",
+    "freeCopy": "See what suits you and experience your first \"aha\" moment.",
+    "proLabel": "Pro",
+    "proCopy": "Unlock full tutorials, HD try-on, and budget-tiered product kits.",
+    "premiumLabel": "Premium",
+    "premiumCopy": "Ongoing seasonal, scene-based, and tool recommendations — always current."
+  },
+  "stylePicker": {
+    "eyebrow": "Find your style",
+    "heading": "What's your makeup identity?",
+    "lead": "Pick a direction that fits how <em>you</em> want to look — by aesthetic, by feature, or by how much time you have. Set one as your default and we'll remember it next time.",
+    "viewAll": "View all",
+    "stylesUnit": "styles →",
+    "filterLabel": "Filter:",
+    "reset": "Reset",
+    "welcomeBack": "Welcome back",
+    "savedStyle": "Your saved style:",
+    "continueStyle": "Continue with this style",
+    "clear": "Clear",
+    "viewLooks": "View",
+    "looksUnit": "looks →",
+    "emptyState": "No styles match those filters yet — try clearing one."
+  },
   "tryOn": {
     "heading": "Upload a selfie. Discover the looks made for you.",
     "subheading": "No filters. Real analysis of your skin tone and features, matched to looks and tutorials you can actually follow.",

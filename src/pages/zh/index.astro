@@ -9,6 +9,7 @@ import TrustAndPlans from '../../components/TrustAndPlans.astro';
 import { homeStyleItems } from '../../data/stylePages';
 import { scenarioPages } from '../../data/scenarioPages';
 import { getWeeklyInspirationLookSlugs } from '../../data/lookCatalog';
+import { resolveStyleLabel } from '../../data/localized/lookNamesZhCN';
 import { getRuntimeEnv } from '../../lib/cloudflare/runtime';
 import { getWeeklyTryCounts } from '../../lib/repositories/lookAnalyticsRepository';
 
@@ -20,13 +21,22 @@ const weeklyTriesBySlug = await getWeeklyTryCounts(env, {
   lookSlugs: getWeeklyInspirationLookSlugs(),
 });
 
+const homepageScenarioNamesZhCN: Record<string, string> = {
+  'office-makeup': '通勤妆指南',
+  'interview-makeup': '面试妆指南',
+  'date-night-makeup': '约会妆指南',
+  'bridal-makeup': '新娘妆指南',
+  'wedding-guest-makeup': '婚礼宾客妆指南',
+  'zoom-meeting-makeup': '视频会议妆指南',
+};
+
 const structuredData = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'AI Beauty Stylist 中文版',
     url: 'https://aibeautystylist.com/zh/',
-    description: 'AI 个性化妆容试妆、肤色诊断、分步骤教程和精选产品推荐。',
+    description: 'AI 试妆、肤色诊断、分步骤教程和精选产品推荐。',
   },
   {
     '@context': 'https://schema.org',
@@ -43,8 +53,8 @@ const structuredData = [
     itemListElement: homeStyleItems.map((style, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      name: style.label,
-      url: `https://aibeautystylist.com/try-on/?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}`,
+      name: resolveStyleLabel(style.slug, style.label, 'zh-CN'),
+      url: `https://aibeautystylist.com/zh/try-on/?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}`,
     })),
   },
   {
@@ -54,8 +64,8 @@ const structuredData = [
     itemListElement: scenarioPages.slice(0, 6).map((page, index) => ({
       '@type': 'ListItem',
       position: index + 1,
-      name: page.title,
-      url: `https://aibeautystylist.com/scenarios/${page.slug}/`,
+      name: homepageScenarioNamesZhCN[page.slug] ?? page.title,
+      url: 'https://aibeautystylist.com/zh/makeup-guides/',
     })),
   },
 ];
@@ -67,10 +77,10 @@ const structuredData = [
   description="AI Beauty Stylist 中文版。上传自拍，获得 AI 妆容建议、肤色冷暖调判断、口红和粉底色号方向，并查看适合你的美妆指南。"
   structuredData={structuredData}
 >
-  <HeroSection />
+  <HeroSection locale="zh-CN" />
   <InspirationGrid weeklyTriesBySlug={weeklyTriesBySlug} locale="zh-CN" />
   <StylePicker locale="zh-CN" />
-  <ScenarioCards />
-  <FeatureSteps />
-  <TrustAndPlans />
+  <ScenarioCards locale="zh-CN" />
+  <FeatureSteps locale="zh-CN" />
+  <TrustAndPlans locale="zh-CN" />
 </BaseLayout>

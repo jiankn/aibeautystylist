@@ -50,6 +50,37 @@
     "eyebrow": "适合更多人",
     "headline": "覆盖不同肤色、脸型、年龄和妆感强度。"
   },
+  "trustPlans": {
+    "trustEyebrow": "信任与包容",
+    "trustHeading": "推荐妆容之前，先把隐私和适配说清楚。",
+    "trust1": "覆盖不同肤色、脸型、年龄和妆感强度",
+    "trust2": "每个上传入口旁都有清晰隐私说明，数据可按需删除",
+    "trust3": "结果更像美妆顾问面诊，不像技术报告",
+    "plansEyebrow": "会员",
+    "plansHeading": "先免费试，确实有用再升级。",
+    "freeLabel": "免费版",
+    "freeCopy": "看看什么适合你，体验第一个「原来如此」的瞬间。",
+    "proLabel": "Pro",
+    "proCopy": "解锁完整教程、高清试妆和分预算的产品工具包。",
+    "premiumLabel": "Premium",
+    "premiumCopy": "持续获得季节、场景和工具推荐，内容会跟着趋势更新。"
+  },
+  "stylePicker": {
+    "eyebrow": "找到你的风格",
+    "heading": "你的妆容人设是什么？",
+    "lead": "按审美、五官特征或上妆时间，选一个更接近<em>你</em>想要样子的方向。设为默认后，下次会自动记住。",
+    "viewAll": "查看全部",
+    "stylesUnit": "种风格 →",
+    "filterLabel": "筛选：",
+    "reset": "重置",
+    "welcomeBack": "欢迎回来",
+    "savedStyle": "你保存的风格：",
+    "continueStyle": "继续使用这个风格",
+    "clear": "清除",
+    "viewLooks": "查看",
+    "looksUnit": "个妆容 →",
+    "emptyState": "暂时没有符合筛选的风格——试试清除一个条件。"
+  },
   "tryOn": {
     "heading": "上传自拍，发现真正适合你的妆容。",
     "subheading": "不是滤镜，而是基于肤色和五官特征的真实分析。",

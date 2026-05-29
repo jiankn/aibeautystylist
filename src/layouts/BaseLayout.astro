@@ -113,6 +113,15 @@ const footerHrefs = currentLocale === 'zh-CN'
       privacy: '/privacy',
       terms: '/terms',
     };
+const layoutAria = currentLocale === 'zh-CN'
+  ? {
+      language: '选择语言',
+      toggleNavigation: '打开或关闭导航',
+    }
+  : {
+      language: 'Select language',
+      toggleNavigation: 'Toggle navigation',
+    };
 ---
 
 <!doctype html>
@@ -178,7 +187,7 @@ const footerHrefs = currentLocale === 'zh-CN'
                 data-language-trigger
                 aria-haspopup="listbox"
                 aria-expanded="false"
-                aria-label="Select language"
+                aria-label={layoutAria.language}
               >
                 <svg class="language-switcher-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <circle cx="12" cy="12" r="10" />
@@ -200,8 +209,8 @@ const footerHrefs = currentLocale === 'zh-CN'
               </ul>
             </div>
           </nav>
-          <UserAvatar />
-          <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <UserAvatar locale={currentLocale} />
+          <button class="nav-toggle" id="nav-toggle" aria-label={layoutAria.toggleNavigation} aria-expanded="false">
             <span></span><span></span><span></span>
           </button>
         </div>

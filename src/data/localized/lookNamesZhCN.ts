@@ -103,6 +103,37 @@ export const styleLabelZhCN: Record<string, string> = {
 
 // persona 标签的中文（StylePicker 卡片副标题）
 export const personaTagZhCN: Record<string, string> = {
+  '5-min friendly': '五分钟友好',
+  'K-beauty': '韩系水光',
+  'Invisible polish': '像没化但更精致',
+  'Quiet authority': '低调有气场',
+  'Warm flush': '暖调好气色',
+  'Warm neutral': '暖调裸色',
+  'Fresh peach': '清新蜜桃感',
+  'Milky rose': '奶调玫瑰',
+  'Quiet luxury': '静奢高级感',
+  'Photo balanced': '上镜更均衡',
+  'No flashback': '闪光灯不泛白',
+  'Heat-safe polish': '耐热又得体',
+  'Soft shimmer': '细腻微闪',
+  'Warm sculpt': '暖调立体感',
+  'Deep velvet': '深色丝绒感',
+  'Mature skin': '成熟肌友好',
+  'Hooded lift': '肿眼泡提拉',
+  'French chic': '法式松弛感',
+  'Camera sweet': '镜头甜美感',
+  'Defined warmth': '暖调轮廓感',
+  'Monochrome': '同色系妆感',
+  'Olive balance': '橄榄皮不显脏',
+  'Lifted blush': '腮红提拉感',
+  'Diffused color': '柔和晕染色',
+  'Sheer juicy lip': '清透果汁唇',
+  'Light-catching eyes': '眼妆会抓光',
+  'Sunlit sculpt': '阳光立体感',
+  'Soft-focus base': '柔焦底妆',
+  'Interview safe': '面试不出错',
+  'ID-safe polish': '证件照友好',
+  'K-beauty dewy': '韩系水光感',
   'Soft definition':  '柔和定义',
   'Monolid friendly': '单眼皮友好',
   'Olive undertone':  '橄榄底色',
@@ -114,6 +145,10 @@ export const personaTagZhCN: Record<string, string> = {
 
 // 妆容分组标签（InspirationGrid 的 groupLabel）
 export const groupLabelZhCN: Record<string, string> = {
+  'Trending this week': '本周热门',
+  "Editor's pick: Quiet office mornings": '编辑精选：通勤精致感',
+  'Date night drop': '约会妆上新',
+  'Camera-safe edit': '上镜不翻车',
   'Trending Daily':    '日常热门',
   'Date & Romantic':   '约会与恋爱',
   'Photo & Event':     '拍照与活动',
@@ -125,6 +160,25 @@ export const groupLabelZhCN: Record<string, string> = {
   Event:    '活动',
   Beginner: '新手',
   Feature:  '特征',
+};
+
+// StylePicker 筛选标签（aestheticOptions / featureOptions 的 label）
+export const filterLabelZhCN: Record<string, string> = {
+  'All styles': '全部风格',
+  Clean: '清透',
+  Glow: '水光',
+  Glam: '精致',
+  Editorial: '高级感',
+  Camera: '上镜',
+  Event: '活动',
+  '5-min': '5 分钟',
+  Daily: '日常',
+  'Full look': '全妆',
+  Monolid: '单眼皮',
+  'Hooded eyes': '肿眼泡',
+  'Mature skin': '成熟肌',
+  Olive: '橄榄皮',
+  Deep: '深肤色',
 };
 
 type LocaleLike = string | undefined;
@@ -154,4 +208,9 @@ export function resolvePersonaTag(tag: string | undefined, locale: LocaleLike): 
 /** 解析分组标签的中文，缺失则回退英文 */
 export function resolveGroupLabel(label: string, locale: LocaleLike): string {
   return isZh(locale) ? (groupLabelZhCN[label] ?? label) : label;
+}
+
+/** 解析 StylePicker 筛选标签的中文，缺失则回退英文 */
+export function resolveFilterLabel(label: string, locale: LocaleLike): string {
+  return isZh(locale) ? (filterLabelZhCN[label] ?? label) : label;
 }

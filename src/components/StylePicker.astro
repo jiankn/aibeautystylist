@@ -5,56 +5,80 @@ import {
   getStyleNavWithFacets,
   STYLE_NAV_TARGET_COUNT,
 } from '../data/stylePages';
-import type { Locale } from '../lib/i18n';
-import { resolveStyleLabel, resolvePersonaTag } from '../data/localized/lookNamesZhCN';
+import { t, type Locale } from '../lib/i18n';
+import { resolveStyleLabel, resolvePersonaTag, resolveFilterLabel } from '../data/localized/lookNamesZhCN';
 
 interface Props {
   locale?: Locale;
 }
 
 const { locale = 'en' } = Astro.props;
+const isZh = locale === 'zh-CN';
+const tryOnBase = isZh ? '/zh/try-on/' : '/try-on';
+
+function buildStyleTryOnHref(style: { tryOnScenario: string; slug: string; lookSlug: string }, position: number): string {
+  return `${tryOnBase}?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}&source=find-your-style&position=${position}`;
+}
 
 const styles = getStyleNavWithFacets().map((style, index) => ({
   ...style,
   label: resolveStyleLabel(style.slug, style.label, locale),
   personaTag: resolvePersonaTag(style.personaTag, locale),
+  imageAlt: isZh ? `${resolveStyleLabel(style.slug, style.label, locale)}妆容风格示意图` : style.imageAlt,
+  guideHref: isZh && style.guideHref ? `/zh${style.guideHref}` : style.guideHref,
   position: index + 1,
-  tryOnHref: `/try-on?scenario=${style.tryOnScenario}&style=${style.slug}&look=${style.lookSlug}&source=find-your-style&position=${index + 1}`,
+  tryOnHref: buildStyleTryOnHref(style, index + 1),
 }));
 
-const difficultyLabels: Record<string, string> = {
-  '5min': '5-min',
-  daily: 'Daily',
-  full: 'Full look',
-};
+const allStylesHref = isZh ? '/zh/discover/#style-directions' : '/discover#style-directions';
+
+const difficultyLabels: Record<string, string> = isZh
+  ? { '5min': '5 分钟', daily: '日常', full: '全妆' }
+  : { '5min': '5-min', daily: 'Daily', full: 'Full look' };
+
+const ariaCopy = isZh
+  ? {
+      filters: '筛选妆容风格',
+      aesthetic: '按审美筛选',
+      feature: '按特征筛选',
+      tryStyle: (label: string) => `试试${label}`,
+      setStyle: (label: string) => `设为我的风格：${label}`,
+      setStyleTitle: '设为我的风格',
+    }
+  : {
+      filters: 'Filter style directions',
+      aesthetic: 'Filter by aesthetic',
+      feature: 'Filter by feature',
+      tryStyle: (label: string) => `Try ${label}`,
+      setStyle: (label: string) => `Set ${label} as my style`,
+      setStyleTitle: 'Set as my style',
+    };
 ---
 
 <section class="section home-style-picker" id="try-a-style">
   <div class="container">
     <div class="style-picker-header">
       <div class="section-copy style-picker-head">
-        <span class="eyebrow">Find your style</span>
-        <h2>What's your makeup identity?</h2>
-        <p>
-          Pick a direction that fits how <em>you</em> want to look — by aesthetic, by feature, or by how much time you have. Set one as your default and we'll remember it next time.
-        </p>
+        <span class="eyebrow">{t('stylePicker.eyebrow', locale)}</span>
+        <h2 set:html={t('stylePicker.heading', locale)}></h2>
+        <p set:html={t('stylePicker.lead', locale)}></p>
       </div>
-      <a class="style-picker-all-link" href="/discover#style-directions" data-analytics-event="find_style_view_all">View all {STYLE_NAV_TARGET_COUNT} styles →</a>
+      <a class="style-picker-all-link" href={allStylesHref} data-analytics-event="find_style_view_all">{t('stylePicker.viewAll', locale)} {STYLE_NAV_TARGET_COUNT} {t('stylePicker.stylesUnit', locale)}</a>
     </div>
 
     <div class="my-style-banner" data-my-style-banner hidden>
       <div class="my-style-banner-text">
-        <span class="my-style-banner-eyebrow">Welcome back</span>
-        <strong>Your saved style: <span data-my-style-label></span></strong>
+        <span class="my-style-banner-eyebrow">{t('stylePicker.welcomeBack', locale)}</span>
+        <strong>{t('stylePicker.savedStyle', locale)} <span data-my-style-label></span></strong>
       </div>
       <div class="my-style-banner-actions">
-        <a class="btn btn-secondary my-style-banner-btn" data-my-style-tryon href="/try-on">Continue with this style</a>
-        <button type="button" class="my-style-banner-clear" data-my-style-clear>Clear</button>
+        <a class="btn btn-secondary my-style-banner-btn" data-my-style-tryon href={tryOnBase}>{t('stylePicker.continueStyle', locale)}</a>
+        <button type="button" class="my-style-banner-clear" data-my-style-clear>{t('stylePicker.clear', locale)}</button>
       </div>
     </div>
 
-    <div class="style-filters" aria-label="Filter style directions">
-      <div class="style-filter-row" role="radiogroup" aria-label="Filter by aesthetic">
+    <div class="style-filters" aria-label={ariaCopy.filters}>
+      <div class="style-filter-row" role="radiogroup" aria-label={ariaCopy.aesthetic}>
         {aestheticOptions.map((opt, idx) => (
           <button
             class:list={['style-chip', 'style-chip-aesthetic', { 'is-active': idx === 0 }]}
@@ -65,14 +89,14 @@ const difficultyLabels: Record<string, string> = {
             data-analytics-event="find_style_filter"
             data-analytics-filter-kind="aesthetic"
             data-analytics-filter-value={opt.value}
-            title={opt.hint}
+            title={isZh ? resolveFilterLabel(opt.label, locale) : opt.hint}
           >
-            {opt.label}
+            {resolveFilterLabel(opt.label, locale)}
           </button>
         ))}
       </div>
-      <div class="style-filter-row" aria-label="Filter by feature">
-        <span class="style-filter-label">Filter:</span>
+      <div class="style-filter-row" aria-label={ariaCopy.feature}>
+        <span class="style-filter-label">{t('stylePicker.filterLabel', locale)}</span>
         {featureOptions.map((opt) => (
           <button
             class="style-chip style-chip-feature"
@@ -84,10 +108,10 @@ const difficultyLabels: Record<string, string> = {
             data-analytics-filter-kind={opt.kind}
             data-analytics-filter-value={opt.value}
           >
-            {opt.label}
+            {resolveFilterLabel(opt.label, locale)}
           </button>
         ))}
-        <button class="style-chip-reset" type="button" data-style-reset hidden>Reset</button>
+        <button class="style-chip-reset" type="button" data-style-reset hidden>{t('stylePicker.reset', locale)}</button>
       </div>
     </div>
 
@@ -106,7 +130,7 @@ const difficultyLabels: Record<string, string> = {
             class="style-card-link"
             href={style.tryOnHref}
             style={`--look-focus:${style.focus ?? 'center'};`}
-            aria-label={`Try ${style.label}`}
+            aria-label={ariaCopy.tryStyle(style.label)}
             data-analytics-look
             data-analytics-source="find-your-style"
             data-analytics-look-slug={style.lookSlug}
@@ -130,8 +154,8 @@ const difficultyLabels: Record<string, string> = {
             data-style-label={style.label}
             data-style-scenario={style.tryOnScenario}
             data-style-look={style.lookSlug}
-            aria-label={`Set ${style.label} as my style`}
-            title="Set as my style"
+            aria-label={ariaCopy.setStyle(style.label)}
+            title={ariaCopy.setStyleTitle}
           >
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polygon points="12 2 15.1 8.6 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 8.9 8.6 12 2" />
@@ -139,14 +163,14 @@ const difficultyLabels: Record<string, string> = {
           </button>
           {style.guideHref && (
             <a class="style-card-guide" href={style.guideHref} data-analytics-event="find_style_view_guide" data-analytics-style-slug={style.slug}>
-              View {style.lookCount} looks →
+              {t('stylePicker.viewLooks', locale)} {style.lookCount} {t('stylePicker.looksUnit', locale)}
             </a>
           )}
         </article>
       ))}
     </div>
 
-    <p class="style-empty" data-style-empty hidden>No styles match those filters yet — try clearing one.</p>
+    <p class="style-empty" data-style-empty hidden>{t('stylePicker.emptyState', locale)}</p>
   </div>
 </section>
 
@@ -257,6 +281,8 @@ const difficultyLabels: Record<string, string> = {
   }
 
   function initMyStyle() {
+    const isZhPage = document.documentElement.lang === 'zh-CN' || window.location.pathname.startsWith('/zh/');
+    const tryOnBase = isZhPage ? '/zh/try-on/' : '/try-on';
     const banner = document.querySelector<HTMLElement>('[data-my-style-banner]');
     const labelEl = document.querySelector<HTMLElement>('[data-my-style-label]');
     const tryOnLink = document.querySelector<HTMLAnchorElement>('[data-my-style-tryon]');
@@ -272,7 +298,7 @@ const difficultyLabels: Record<string, string> = {
       }
       banner.hidden = false;
       labelEl.textContent = myStyle.label;
-      tryOnLink.href = `/try-on?scenario=${encodeURIComponent(myStyle.scenario)}&style=${encodeURIComponent(myStyle.slug)}&look=${encodeURIComponent(myStyle.lookSlug)}&source=my-style-banner`;
+      tryOnLink.href = `${tryOnBase}?scenario=${encodeURIComponent(myStyle.scenario)}&style=${encodeURIComponent(myStyle.slug)}&look=${encodeURIComponent(myStyle.lookSlug)}&source=my-style-banner`;
       pinButtons.forEach((btn) => {
         btn.classList.toggle('is-pinned', btn.dataset.styleSlug === myStyle.slug);
       });

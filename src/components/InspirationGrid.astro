@@ -14,24 +14,62 @@ interface Props {
 }
 
 const { weeklyTriesBySlug = {}, locale = 'en' } = Astro.props;
+const isZh = locale === 'zh-CN';
 const groups = getWeeklyInspirationGroups(weeklyTriesBySlug);
 
+function localizeTryOnHref(href: string): string {
+  if (!isZh) return href;
+  return href.startsWith('/try-on?') ? href.replace('/try-on?', '/zh/try-on/?') : href.replace('/try-on', '/zh/try-on/');
+}
+
 const galleryLooks = groups.flatMap((group, groupIdx) =>
-  group.cards.map((card, cardIdx) => ({
-    ...card,
-    title: resolveLookTitle(card.slug, card.title, locale),
-    tone: resolveLookTone(card.slug, card.tone, locale),
-    groupId: group.id,
-    groupLabel: resolveGroupLabel(group.label, locale),
-    position: groupIdx * 4 + cardIdx + 1,
-    tryOnHref: `${buildLookTryOnHref(card)}&source=trending-this-week&position=${groupIdx * 4 + cardIdx + 1}`,
-  })),
+  group.cards.map((card, cardIdx) => {
+    const title = resolveLookTitle(card.slug, card.title, locale);
+    const tone = resolveLookTone(card.slug, card.tone, locale);
+    return {
+      ...card,
+      title,
+      tone,
+      imageAlt: isZh ? `${title}妆容示意图` : card.imageAlt,
+      groupId: group.id,
+      groupLabel: resolveGroupLabel(group.label, locale),
+      position: groupIdx * 4 + cardIdx + 1,
+      tryOnHref: `${localizeTryOnHref(buildLookTryOnHref(card))}&source=trending-this-week&position=${groupIdx * 4 + cardIdx + 1}`,
+    };
+  }),
 );
 
 const updatedDate = new Date(weeklyInspirationUpdatedAt);
 const updatedLabel = Number.isNaN(updatedDate.getTime())
   ? weeklyInspirationUpdatedAt
-  : updatedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  : updatedDate.toLocaleDateString(locale === 'zh-CN' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+const copy = isZh
+  ? {
+      trending: '本周热门 · 更新于',
+      heading: '本周大家正在试的妆容。',
+      lead: `精选本周最多人尝试的 ${galleryLooks.length} 个妆容，每周一更新。完整图库共 ${LOOK_LIBRARY_TARGET_COUNT} 个。`,
+      viewAll: '查看全部妆容',
+      triesUnit: '次试妆',
+      gridLabel: '本周热门妆容',
+      tryAria: (title: string, tries: number) => `试试${title} · 本周 ${compactCount(tries)} 次试妆`,
+      triesAria: (tries: number) => `本周 ${compactCount(tries)} 次试妆`,
+      saveAria: (title: string) => `收藏${title}`,
+      saveTitle: '收藏妆容',
+    }
+  : {
+      trending: 'Trending this week · Updated',
+      heading: 'Looks the community keeps coming back to.',
+      lead: `A curated edit of ${galleryLooks.length} most-tried looks this week — refreshed every Monday. See all ${LOOK_LIBRARY_TARGET_COUNT} in the full library.`,
+      viewAll: 'View all looks',
+      triesUnit: 'tries',
+      gridLabel: 'Trending makeup looks this week',
+      tryAria: (title: string, tries: number) => `Try ${title} · ${compactCount(tries)} tries this week`,
+      triesAria: (tries: number) => `${compactCount(tries)} tries this week`,
+      saveAria: (title: string) => `Save ${title}`,
+      saveTitle: 'Save look',
+    };
+const viewAllHref = isZh ? '/zh/discover/#look-library' : '/discover#look-library';
 
 function compactCount(value: number): string {
   if (value >= 1000) {
@@ -47,17 +85,17 @@ function compactCount(value: number): string {
       <div class="section-copy inspiration-head-copy">
         <span class="inspiration-eyebrow">
           <span class="inspiration-pulse" aria-hidden="true"></span>
-          Trending this week · Updated {updatedLabel}
+          {copy.trending} {updatedLabel}
         </span>
-        <h2>Looks the community keeps coming back to.</h2>
+        <h2>{copy.heading}</h2>
         <p>
-          A curated edit of {galleryLooks.length} most-tried looks this week — refreshed every Monday. See all {LOOK_LIBRARY_TARGET_COUNT} in the full library.
+          {copy.lead}
         </p>
       </div>
-      <a class="btn btn-secondary inspiration-head-action" href="/discover#look-library">View all looks</a>
+      <a class="btn btn-secondary inspiration-head-action" href={viewAllHref}>{copy.viewAll}</a>
     </div>
 
-    <div class="inspiration-grid" aria-label="Trending makeup looks this week">
+    <div class="inspiration-grid" aria-label={copy.gridLabel}>
       {galleryLooks.map((look, index) => (
         <article
           class="look-tile"
@@ -69,7 +107,7 @@ function compactCount(value: number): string {
           <a
             class="look-tile-link"
             href={look.tryOnHref}
-            aria-label={`Try ${look.title} · ${compactCount(look.weeklyTries)} tries this week`}
+            aria-label={copy.tryAria(look.title, look.weeklyTries)}
             data-analytics-look
             data-analytics-source="trending-this-week"
             data-analytics-look-slug={look.slug}
@@ -88,11 +126,11 @@ function compactCount(value: number): string {
             <span class="look-tile-caption">
               <span class="look-tile-meta">
                 <span class="look-tile-tone">{look.tone}</span>
-                <span class="look-tile-tries" aria-label={`${look.weeklyTries} tries this week`}>
+                <span class="look-tile-tries" aria-label={copy.triesAria(look.weeklyTries)}>
                   <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor" aria-hidden="true">
                     <path d="M13.5 2.5c.3 1.6-.2 3-1.4 4.4-.7.8-1.5 1.5-2 2.4a4.7 4.7 0 0 0-.7 3.7 5 5 0 0 0 3.4 3.6c1.4.4 2.9 0 3.9-.9-.2 2-1.4 3.7-3.2 4.6a6.4 6.4 0 0 1-7.7-1.4 6.6 6.6 0 0 1-1.2-7c.7-1.6 2-2.7 3-4 .9-1.2 1.5-2.6 1.5-4 1 .4 1.7 1.1 2.2 2 .4-.5.6-1 .8-1.5.4 1.1.5 2.3 1.4 3.1z"/>
                   </svg>
-                  {compactCount(look.weeklyTries)} tries
+                  {compactCount(look.weeklyTries)} {copy.triesUnit}
                 </span>
               </span>
               <h3>{look.title}</h3>
@@ -105,9 +143,9 @@ function compactCount(value: number): string {
             data-look-save
             data-look-slug={look.slug}
             data-look-title={look.title}
-            aria-label={`Save ${look.title}`}
+            aria-label={copy.saveAria(look.title)}
             aria-pressed="false"
-            title="Save look"
+            title={copy.saveTitle}
           >
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -139,6 +177,24 @@ function compactCount(value: number): string {
   }
 
   function initInspirationSave() {
+    const isZhPage = document.documentElement.lang === 'zh-CN' || window.location.pathname.startsWith('/zh/');
+    const copy = isZhPage
+      ? {
+          save: '收藏',
+          unsave: '取消收藏',
+          fallback: '妆容',
+          savedOne: (title: string) => `已收藏「${title}」。登录后可以同步到你的收藏。`,
+          savedMany: (title: string, total: number) => `已收藏「${title}」，当前已保存 ${total} 个妆容。`,
+          removed: (title: string) => `已取消收藏「${title}」。`,
+        }
+      : {
+          save: 'Save',
+          unsave: 'Unsave',
+          fallback: 'look',
+          savedOne: (title: string) => `Saved "${title}" · Sign in to sync your collection.`,
+          savedMany: (title: string, total: number) => `Saved "${title}" · ${total} looks saved.`,
+          removed: (title: string) => `Removed "${title}".`,
+        };
     const saveButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-look-save]'));
     if (!saveButtons.length) return;
     const toast = document.querySelector<HTMLElement>('[data-saved-toast]');
@@ -160,7 +216,7 @@ function compactCount(value: number): string {
         .forEach((btn) => {
           btn.classList.toggle('is-saved', isSaved);
           btn.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
-          btn.setAttribute('aria-label', `${isSaved ? 'Unsave' : 'Save'} ${btn.dataset.lookTitle ?? 'look'}`);
+          btn.setAttribute('aria-label', `${isSaved ? copy.unsave : copy.save}${isZhPage ? '' : ' '}${btn.dataset.lookTitle ?? copy.fallback}`);
         });
     }
 
@@ -176,15 +232,15 @@ function compactCount(value: number): string {
         event.preventDefault();
         event.stopPropagation();
         const slug = btn.dataset.lookSlug ?? '';
-        const title = btn.dataset.lookTitle ?? 'look';
+        const title = btn.dataset.lookTitle ?? copy.fallback;
         if (!slug) return;
         const { saved, total } = toggleSavedLook(slug);
         paint(slug, saved);
         if (saved) {
-          showToast(total === 1 ? `Saved "${title}" · Sign in to sync your collection.` : `Saved "${title}" · ${total} looks saved.`);
+          showToast(total === 1 ? copy.savedOne(title) : copy.savedMany(title, total));
           track('save_look', slug, { total });
         } else {
-          showToast(`Removed "${title}".`);
+          showToast(copy.removed(title));
           track('save_look_remove', slug, { total });
         }
       });

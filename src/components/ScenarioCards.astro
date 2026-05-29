@@ -1,34 +1,71 @@
 ---
 import { scenarioPages } from '../data/scenarioPages';
+import type { Locale } from '../lib/i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+
+// 首页 6 个场景卡片的中文母语化文案（按 slug 映射）
+const scenarioCardZhCN: Record<string, { title: string; copy: string }> = {
+  'office-makeup':       { title: '通勤妆', copy: '在办公室灯光下也显得清醒、精致，又像你自己。' },
+  'interview-makeup':    { title: '面试妆', copy: '画一个看起来沉稳能干、又不过头的妆。' },
+  'date-night-makeup':   { title: '约会妆', copy: '近距离也耐看，唇颊和谐比夸张颜色更重要。' },
+  'bridal-makeup':       { title: '新娘妆', copy: '上镜持妆的气色妆，又保留你自己的特点。' },
+  'wedding-guest-makeup':{ title: '婚礼宾客妆', copy: '照片里得体好看，又不会抢新娘风头。' },
+  'zoom-meeting-makeup': { title: '视频会议妆', copy: '现实里少画一点，在镜头需要的地方加强结构。' },
+};
+
+const isZh = locale === 'zh-CN';
 
 const scenarios = scenarioPages.slice(0, 6).map((page) => ({
-  title: page.eyebrow,
-  copy: page.description,
+  title: isZh ? (scenarioCardZhCN[page.slug]?.title ?? page.eyebrow) : page.eyebrow,
+  copy: isZh ? (scenarioCardZhCN[page.slug]?.copy ?? page.description) : page.description,
   image: page.image,
-  href: `/scenarios/${page.slug}`,
+  href: isZh ? `/zh/makeup-guides/` : `/scenarios/${page.slug}`,
 }));
+
+const sectionCopy = isZh
+  ? {
+      eyebrow: '按目标选择美妆指南',
+      heading: '当场合比潮流更重要时，按场景来选。',
+      lead: '知道要去哪、做什么时用这些指南：通勤精致、面试沉稳、约会柔和、婚礼上镜、出镜清晰。',
+      browse: '浏览全部美妆指南',
+      open: '查看指南',
+    }
+  : {
+      eyebrow: 'Makeup Guides by Goal',
+      heading: 'Choose by occasion when the moment matters more than the trend.',
+      lead: 'Use these guides when you know the job: office polish, interview composure, date-night softness, bridal photos, or camera-ready definition.',
+      browse: 'Browse all makeup guides',
+      open: 'Open guide',
+    };
+
+const guidesHref = isZh ? '/zh/makeup-guides/' : '/makeup-guides';
 ---
 
 <section class="section" id="scenarios">
   <div class="container">
     <div class="section-copy">
-      <span class="eyebrow">Makeup Guides by Goal</span>
-      <h2>Choose by occasion when the moment matters more than the trend.</h2>
-      <p>Use these guides when you know the job: office polish, interview composure, date-night softness, bridal photos, or camera-ready definition.</p>
-      <a class="text-link" href="/makeup-guides">Browse all makeup guides</a>
+      <span class="eyebrow">{sectionCopy.eyebrow}</span>
+      <h2>{sectionCopy.heading}</h2>
+      <p>{sectionCopy.lead}</p>
+      <a class="text-link" href={guidesHref}>{sectionCopy.browse}</a>
     </div>
 
     <div class="grid-cards grid-cards-3">
       {scenarios.map((scenario, index) => (
         <a class="card scenario-card scenario-card-visual" href={scenario.href}>
           <div class="scenario-card-image">
-            <img src={scenario.image} alt={`${scenario.title} look preview`} loading="lazy" />
+            <img src={scenario.image} alt={isZh ? `${scenario.title}示意图` : `${scenario.title} look preview`} loading="lazy" />
           </div>
           <div class="scenario-card-body">
             <span class="scenario-index">0{index + 1}</span>
             <h3>{scenario.title}</h3>
             <p>{scenario.copy}</p>
-            <span class="text-link">Open guide</span>
+            <span class="text-link">{sectionCopy.open}</span>
           </div>
         </a>
       ))}
