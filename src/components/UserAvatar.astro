@@ -38,10 +38,16 @@ const copy = isZh
 
 const authHrefs = isZh
   ? {
+      dashboard: '/zh/dashboard/',
+      subscription: '/zh/dashboard/subscription/',
+      privacy: '/zh/dashboard/privacy/',
       tryOn: '/zh/try-on/',
       membership: '/zh/membership/?from=avatar_menu',
     }
   : {
+      dashboard: '/dashboard',
+      subscription: '/dashboard/subscription',
+      privacy: '/dashboard/privacy',
       tryOn: '/try-on',
       membership: '/membership?from=avatar_menu',
     };
@@ -70,9 +76,9 @@ const authHrefs = isZh
         <span class="dropdown-tier" id="dropdown-tier"></span>
       </div>
       <hr class="dropdown-divider" />
-      <a href="/dashboard" class="dropdown-item">📊 {copy.myAccount}</a>
-      <a href="/dashboard/subscription" class="dropdown-item">💳 {copy.subscription}</a>
-      <a href="/dashboard/privacy" class="dropdown-item">🔒 {copy.privacy}</a>
+      <a href={authHrefs.dashboard} class="dropdown-item">📊 {copy.myAccount}</a>
+      <a href={authHrefs.subscription} class="dropdown-item">💳 {copy.subscription}</a>
+      <a href={authHrefs.privacy} class="dropdown-item">🔒 {copy.privacy}</a>
       <hr class="dropdown-divider" />
       <a href={authHrefs.tryOn} class="dropdown-item">🎨 {copy.tryOn}</a>
       <a href={authHrefs.membership} class="dropdown-item">💎 {copy.membership}</a>

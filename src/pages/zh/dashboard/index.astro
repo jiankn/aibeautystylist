@@ -1,0 +1,488 @@
+---
+import DashboardShell from '../../../layouts/DashboardShell.astro';
+---
+
+<DashboardShell
+  locale="zh-CN"
+  pageKey="overview"
+  pageHeading="欢迎回来"
+  pageDescription="这里汇总你的 AI Beauty Stylist 账户状态。继续上次的试妆，或开始一个新的妆容方向。"
+>
+  <div slot="hero-aside" class="db-hero-card" data-hero-card>
+    <p class="db-hero-card-eyebrow" data-hero-card-eyebrow>继续上次进度</p>
+    <div class="db-hero-card-row">
+      <div class="db-hero-card-thumb" data-hero-card-thumb>
+        <span>暂无预览</span>
+      </div>
+      <div class="db-hero-card-meta">
+        <strong data-hero-card-title>开始你的第一次试妆</strong>
+        <small data-hero-card-sub>30 秒内先看一个示例妆容</small>
+      </div>
+    </div>
+    <div class="db-hero-card-actions">
+      <a class="btn" href="/zh/try-on/" data-hero-card-cta>开始试妆</a>
+      <a class="btn btn-secondary" href="/zh/dashboard/history/" data-hero-card-link hidden>查看历史</a>
+    </div>
+  </div>
+
+  <div slot="hero-actions" class="db-hero-actions">
+    <a class="btn" href="/zh/try-on/">再试一个妆容</a>
+    <a class="btn btn-secondary" href="/zh/membership/?from=dashboard_hero">查看会员方案</a>
+  </div>
+
+  <div slot="strip" style="display:contents">
+    <article class="db-stat">
+      <p class="db-stat-label">当前方案</p>
+      <p class="db-stat-value" data-stat-plan>—</p>
+      <p class="db-stat-meta" data-stat-plan-meta>加载中…</p>
+    </article>
+
+    <article class="db-stat">
+      <p class="db-stat-label">剩余诊断次数</p>
+      <p class="db-stat-value">
+        <span data-stat-usage-remaining>—</span>
+        <small data-stat-usage-window></small>
+      </p>
+      <span class="db-stat-progress" aria-hidden="true">
+        <span class="db-stat-progress-bar" data-stat-usage-bar></span>
+      </span>
+      <p class="db-stat-meta" data-stat-usage-meta></p>
+    </article>
+
+    <article class="db-stat">
+      <p class="db-stat-label">累计试妆</p>
+      <p class="db-stat-value" data-stat-history-total>—</p>
+      <p class="db-stat-meta">全部时间</p>
+    </article>
+
+    <article class="db-stat">
+      <p class="db-stat-label">下次续费</p>
+      <p class="db-stat-value" data-stat-renewal>—</p>
+      <p class="db-stat-meta" data-stat-renewal-meta>在 Stripe 门户管理</p>
+    </article>
+  </div>
+
+  <section slot="main" class="db-section db-style-profile" aria-labelledby="style-profile-heading">
+    <h2 id="style-profile-heading" class="sr-only">你的风格档案</h2>
+    <div class="db-style-command">
+      <div class="db-style-command-status">
+        <span class="db-style-command-kicker" data-style-profile-eyebrow>风格档案</span>
+        <strong data-style-profile-title>还没有固定风格</strong>
+        <span data-style-profile-copy>选择一个方向，用于个性化试妆和每周推荐。</span>
+      </div>
+      <div class="db-style-profile-actions">
+        <a class="btn" href="/zh/#try-a-style" data-style-profile-primary>找到我的风格</a>
+        <a class="btn btn-secondary" href="/zh/membership/?from=dashboard_style_profile" data-style-profile-pro>查看会员灵感</a>
+      </div>
+    </div>
+  </section>
+
+  <section slot="main" class="db-section" aria-labelledby="recent-heading">
+    <header class="db-section-head">
+      <h2 id="recent-heading">最近活动</h2>
+      <a href="/zh/dashboard/history/">查看全部 →</a>
+    </header>
+    <div class="db-timeline" data-recent-timeline>
+      <p class="db-empty" data-recent-empty hidden>
+        还没有试妆记录。<a href="/zh/try-on/">开始第一次试妆 →</a>
+      </p>
+    </div>
+  </section>
+
+  <section slot="main" class="db-section" aria-labelledby="saved-heading">
+    <header class="db-section-head">
+      <h2 id="saved-heading">我保存的妆容</h2>
+      <a href="/zh/discover/#look-library">发现更多 →</a>
+    </header>
+    <div class="db-saved-grid" data-saved-looks>
+      <p class="db-empty" data-saved-empty>
+        还没有保存妆容。点击热门妆容上的收藏按钮，建立你的灵感库。
+      </p>
+    </div>
+  </section>
+
+  <div slot="aside">
+    <article class="db-suggest" aria-label="为你推荐">
+      <p class="db-suggest-eyebrow">为你推荐</p>
+      <h3 class="db-suggest-title" data-suggest-title>试一个清新的晚间妆容</h3>
+      <p data-suggest-meta>换一个场景，或从已保存风格继续。你的 AI 造型师已准备好。</p>
+      <div class="db-hero-card-actions">
+        <a class="btn" href="/zh/try-on/">打开 AI 试妆</a>
+      </div>
+    </article>
+
+    <section class="db-section" aria-label="快捷操作">
+      <header class="db-section-head">
+        <h2>快捷操作</h2>
+      </header>
+      <nav class="db-quick">
+        <a class="db-quick-item" href="/zh/dashboard/subscription/">
+          管理订阅
+          <span>方案 · 账单 · 发票</span>
+        </a>
+        <a class="db-quick-item" href="/zh/dashboard/history/">
+          试妆历史
+          <span>查看过去的所有会话</span>
+        </a>
+        <a class="db-quick-item" href="/zh/membership/?from=dashboard_quick_action">
+          比较会员方案
+          <span>Pro · Premium · 单次场景</span>
+        </a>
+        <a class="db-quick-item" href="/zh/dashboard/privacy/">
+          隐私与数据控制
+          <span>删除照片或账户</span>
+        </a>
+      </nav>
+    </section>
+  </div>
+</DashboardShell>
+
+<script>
+  import { getMyStyle, getSavedLooks } from '../../../lib/personalization';
+
+  type RecentJob = {
+    id: string;
+    scenario: string;
+    experience: string;
+    status: string;
+    createdAt: string;
+    primaryLookTitle: string | null;
+    primaryLookImage: string | null;
+  };
+
+  type OverviewResponse = {
+    user: { id: string; email: string | null; name: string | null; tier: string };
+    subscription: null | {
+      planName: string;
+      status: string;
+      currentPeriodEnd: string | null;
+      cancelAtPeriodEnd: boolean;
+    };
+    usage: {
+      diagnosis: { limit: number; used: number; remaining: number; window: string };
+    };
+    history: { total: number; recent: RecentJob[] };
+  };
+
+  type SavedLook = {
+    id: string;
+    lookSlug: string;
+    lookName: string;
+    scenario: string | null;
+    image: string | null;
+    imageAlt: string | null;
+    createdAt: string;
+  };
+
+  function formatDate(iso: string | null): string {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return iso;
+    }
+  }
+
+  function escapeHtml(str: string): string {
+    return str.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] ?? c));
+  }
+
+  function tierDisplayName(tier: string): string {
+    if (tier === 'pro') return 'Beauty Pass Pro';
+    if (tier === 'premium') return 'Premium';
+    return '免费体验版';
+  }
+
+  function firstName(user: OverviewResponse['user']): string {
+    if (user.name && user.name.trim().length > 0) return user.name.trim().split(/\s+/)[0];
+    if (user.email) return user.email.split('@')[0];
+    return '你';
+  }
+
+  function scenarioLabel(scenario: string | null): string {
+    if (!scenario) return '';
+    const normalized = scenario.toLowerCase();
+    if (normalized.includes('office')) return '通勤';
+    if (normalized.includes('date')) return '约会';
+    if (normalized.includes('photo')) return '拍照';
+    return scenario;
+  }
+
+  function setText(selector: string, text: string): void {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
+  }
+
+  function loadStyleProfile() {
+    const myStyle = getMyStyle();
+    if (!myStyle) return;
+
+    const tryOnHref = `/zh/try-on/?scenario=${encodeURIComponent(myStyle.scenario)}&style=${encodeURIComponent(myStyle.slug)}&look=${encodeURIComponent(myStyle.lookSlug)}&source=dashboard-style-profile`;
+    const proHref = `/zh/membership/?from=dashboard_style_profile&style=${encodeURIComponent(myStyle.slug)}`;
+    const primary = document.querySelector<HTMLAnchorElement>('[data-style-profile-primary]');
+    const pro = document.querySelector<HTMLAnchorElement>('[data-style-profile-pro]');
+
+    setText('[data-style-profile-eyebrow]', '已固定风格');
+    setText('[data-style-profile-title]', myStyle.label);
+    setText('[data-style-profile-copy]', '可以继续试妆，也可以查看匹配这个方向的每周灵感。');
+    setText('[data-suggest-title]', `继续尝试 ${myStyle.label} 方向`);
+    setText('[data-suggest-meta]', '从你固定的风格继续，或查看匹配当前档案的会员灵感。');
+
+    if (primary) {
+      primary.href = tryOnHref;
+      primary.textContent = '继续这个风格';
+    }
+    if (pro) {
+      pro.href = proHref;
+      pro.textContent = '查看每周灵感';
+    }
+  }
+
+  async function loadOverview() {
+    const resp = await fetch('/api/account/overview');
+    if (!resp.ok) return;
+    const data = (await resp.json()) as OverviewResponse;
+
+    setText('[data-stat-plan]', data.subscription?.planName ?? tierDisplayName(data.user.tier));
+    setText(
+      '[data-stat-plan-meta]',
+      data.subscription
+        ? (data.subscription.cancelAtPeriodEnd ? '当前周期结束后取消' : '订阅有效')
+        : '免费方案',
+    );
+
+    const usage = data.usage.diagnosis;
+    setText('[data-stat-usage-remaining]', String(usage.remaining));
+    setText('[data-stat-usage-window]', `/ ${usage.limit} ${usage.window === 'monthly' ? '本月' : '今日'}`);
+    const barEl = document.querySelector('[data-stat-usage-bar]') as HTMLElement | null;
+    if (barEl) {
+      const pct = usage.limit > 0 ? Math.min(100, Math.round((usage.used / usage.limit) * 100)) : 0;
+      barEl.style.width = `${pct}%`;
+    }
+    setText('[data-stat-usage-meta]', `已用 ${usage.used} 次 · ${usage.window === 'monthly' ? '按月' : '每日'}重置`);
+
+    setText('[data-stat-history-total]', String(data.history.total));
+    setText('[data-stat-renewal]', data.subscription?.currentPeriodEnd ? formatDate(data.subscription.currentPeriodEnd) : '—');
+    setText(
+      '[data-stat-renewal-meta]',
+      data.subscription
+        ? (data.subscription.cancelAtPeriodEnd ? '不会自动续费' : '到期自动续费')
+        : '暂无付费订阅',
+    );
+
+    const lastJob = data.history.recent[0] ?? null;
+    const thumb = document.querySelector('[data-hero-card-thumb]');
+    const cta = document.querySelector('[data-hero-card-cta]') as HTMLAnchorElement | null;
+    const link = document.querySelector('[data-hero-card-link]');
+    if (lastJob) {
+      setText('[data-hero-card-eyebrow]', '继续上次进度');
+      setText('[data-hero-card-title]', lastJob.primaryLookTitle ?? '未命名妆容');
+      setText('[data-hero-card-sub]', `${scenarioLabel(lastJob.scenario)} · ${formatDate(lastJob.createdAt)}`);
+      if (thumb && lastJob.primaryLookImage) {
+        const title = escapeHtml(lastJob.primaryLookTitle ?? '上次妆容');
+        thumb.innerHTML = `<img src="${escapeHtml(lastJob.primaryLookImage)}" alt="${title}" loading="lazy" />`;
+      }
+      if (cta) {
+        cta.textContent = '用同一场景重新分析';
+        cta.href = `/zh/try-on/?scenario=${encodeURIComponent(lastJob.scenario)}`;
+      }
+      link?.removeAttribute('hidden');
+    } else {
+      setText('[data-hero-card-eyebrow]', '开始你的风格旅程');
+    }
+
+    const timeline = document.querySelector('[data-recent-timeline]');
+    const empty = document.querySelector('[data-recent-empty]');
+    if (!timeline) return;
+
+    if (data.history.recent.length === 0) {
+      empty?.removeAttribute('hidden');
+      return;
+    }
+
+    const html = data.history.recent
+      .map((job) => {
+        const date = formatDate(job.createdAt);
+        const title = escapeHtml(job.primaryLookTitle ?? '未命名妆容');
+        const scenario = escapeHtml(scenarioLabel(job.scenario));
+        const img = job.primaryLookImage
+          ? `<img src="${escapeHtml(job.primaryLookImage)}" alt="${title}" loading="lazy" />`
+          : '<span>暂无预览</span>';
+        return `
+          <a class="db-timeline-item" href="/zh/dashboard/history/">
+            <div class="db-timeline-thumb">${img}</div>
+            <div class="db-timeline-body">
+              <strong>${title}</strong>
+              <small>${scenario} · ${date}</small>
+            </div>
+            <span class="db-timeline-arrow" aria-hidden="true">→</span>
+          </a>
+        `;
+      })
+      .join('');
+
+    timeline.insertAdjacentHTML('afterbegin', html);
+  }
+
+  async function loadSavedLooks() {
+    const grid = document.querySelector<HTMLElement>('[data-saved-looks]');
+    const empty = document.querySelector<HTMLElement>('[data-saved-empty]');
+    if (!grid) return;
+
+    const localSlugs = getSavedLooks();
+    const requestOptions: RequestInit = localSlugs.length > 0
+      ? {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lookSlugs: localSlugs }),
+        }
+      : { method: 'GET' };
+
+    const resp = await fetch('/api/account/saved-looks', requestOptions).catch(() => null);
+    if (!resp || !resp.ok) return;
+
+    const data = (await resp.json()) as { savedLooks?: SavedLook[] };
+    const savedLooks = data.savedLooks ?? [];
+    if (savedLooks.length === 0) {
+      empty?.removeAttribute('hidden');
+      return;
+    }
+
+    empty?.setAttribute('hidden', '');
+    grid.innerHTML = savedLooks.slice(0, 6).map((look) => {
+      const title = escapeHtml(look.lookName);
+      const img = look.image
+        ? `<img src="${escapeHtml(look.image)}" alt="${escapeHtml(look.imageAlt ?? look.lookName)}" loading="lazy" />`
+        : '<span>暂无预览</span>';
+      const scenario = look.scenario ? `${escapeHtml(scenarioLabel(look.scenario))} · ` : '';
+      return `
+        <a class="db-saved-card" href="/zh/try-on/?look=${encodeURIComponent(look.lookSlug)}&source=dashboard-saved">
+          <div class="db-saved-thumb">${img}</div>
+          <div class="db-saved-body">
+            <strong>${title}</strong>
+            <small>${scenario}保存于 ${formatDate(look.createdAt)}</small>
+          </div>
+        </a>
+      `;
+    }).join('');
+  }
+
+  loadOverview();
+  loadStyleProfile();
+  loadSavedLooks();
+</script>
+
+<style>
+  .db-style-profile {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .db-style-command {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 16px;
+    border-left: 4px solid var(--accent-deep);
+    background: rgba(255, 255, 255, 0.86);
+  }
+
+  .db-style-command-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 12px;
+    min-width: 0;
+  }
+
+  .db-style-command-kicker {
+    flex: 0 0 auto;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(176, 127, 134, 0.12);
+    color: var(--accent-deep);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .db-style-command-status strong {
+    color: var(--db-ink, #1f140f);
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .db-style-command-status > span:last-child {
+    color: var(--db-muted, #6b554a);
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+
+  .db-style-profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .db-saved-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .db-saved-card {
+    display: grid;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .db-saved-thumb {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--surface-soft);
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .db-saved-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .db-saved-body {
+    display: grid;
+    gap: 3px;
+  }
+
+  .db-saved-body strong {
+    color: var(--db-ink, #1f140f);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .db-saved-body small {
+    color: var(--db-muted, #6b554a);
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 700px) {
+    .db-style-command {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .db-style-profile-actions {
+      justify-content: flex-start;
+    }
+  }
+</style>

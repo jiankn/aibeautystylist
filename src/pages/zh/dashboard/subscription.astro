@@ -1,0 +1,261 @@
+---
+import DashboardShell from '../../../layouts/DashboardShell.astro';
+---
+
+<DashboardShell
+  locale="zh-CN"
+  pageKey="subscription"
+  pageHeading="订阅与账单"
+  pageDescription="在 Stripe 安全门户中管理你的方案、付款方式和发票。"
+>
+  <div slot="hero-aside" class="db-hero-card" data-subscription-card>
+    <p class="db-hero-card-eyebrow">当前方案</p>
+    <div class="db-hero-card-row">
+      <div class="db-hero-card-thumb" aria-hidden="true">
+        <span>★</span>
+      </div>
+      <div class="db-hero-card-meta">
+        <strong data-subscription-plan>—</strong>
+        <small data-subscription-meta>加载中…</small>
+      </div>
+    </div>
+    <div class="db-hero-card-actions" data-subscription-actions>
+      <button class="btn" type="button" data-action="portal">在 Stripe 管理</button>
+      <a class="btn btn-secondary" href="/zh/membership/?from=dashboard_subscription_hero">比较方案</a>
+    </div>
+  </div>
+
+  <div slot="strip" style="display:contents">
+    <article class="db-stat">
+      <p class="db-stat-label">方案</p>
+      <p class="db-stat-value" data-subscription-stat-plan>—</p>
+      <p class="db-stat-meta" data-subscription-stat-tier>加载中…</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">状态</p>
+      <p class="db-stat-value" data-subscription-status-value>—</p>
+      <p class="db-stat-meta" data-subscription-stat-status-meta>加载中…</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">当前周期</p>
+      <p class="db-stat-value" data-subscription-period>—</p>
+      <p class="db-stat-meta">每个周期自动续费</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">取消状态</p>
+      <p class="db-stat-value" data-subscription-cancel>—</p>
+      <p class="db-stat-meta" data-subscription-cancel-meta>未安排取消</p>
+    </article>
+  </div>
+
+  <div slot="main">
+    <section class="db-section" aria-labelledby="sub-detail-heading">
+      <header class="db-section-head">
+        <h2 id="sub-detail-heading">订阅详情</h2>
+        <a href="/zh/membership/?from=dashboard_subscription_detail">比较方案 →</a>
+      </header>
+
+      <ul class="subscription-status-list" data-subscription-status hidden>
+        <li>
+          <span class="status-label">状态</span>
+          <strong data-subscription-status-detail></strong>
+        </li>
+        <li>
+          <span class="status-label">当前周期</span>
+          <strong data-subscription-period-detail></strong>
+        </li>
+        <li data-subscription-cancel-row hidden>
+          <span class="status-label">取消状态</span>
+          <strong data-subscription-cancel-detail></strong>
+        </li>
+      </ul>
+
+      <p class="db-empty" data-subscription-free-note hidden>
+        你当前使用 <strong>免费体验版</strong>。升级后可获得更多诊断额度、保存妆容和高清预览。
+      </p>
+
+      <p style="margin:0;color:var(--muted);font-size:0.86rem;">
+        银行卡、发票、方案变更和取消订阅都在 Stripe 安全门户中完成。
+      </p>
+    </section>
+
+    <article class="db-suggest" data-subscription-free hidden>
+      <p class="db-suggest-eyebrow">免费方案</p>
+      <h3 class="db-suggest-title">查看完整 Beauty Pass 权益</h3>
+      <p>更多诊断额度 · 高清妆容预览 · 保存妆容库 · 完整分步骤教程。</p>
+      <div class="db-hero-card-actions">
+        <a class="btn" href="/zh/membership/?from=dashboard_subscription_upsell">查看方案</a>
+      </div>
+    </article>
+  </div>
+
+  <div slot="aside">
+    <article class="db-section" aria-label="会员权益">
+      <header class="db-section-head">
+        <h2>会员权益</h2>
+      </header>
+      <nav class="db-quick">
+        <span class="db-quick-item">
+          更多诊断额度
+          <span>免费版每日 1 次</span>
+        </span>
+        <span class="db-quick-item">
+          高清妆容预览
+          <span>更清晰、更贴近真实色彩</span>
+        </span>
+        <span class="db-quick-item">
+          保存妆容库
+          <span>随时回看过去的风格</span>
+        </span>
+        <span class="db-quick-item">
+          完整分步骤教程
+          <span>查看更多步骤和自检点</span>
+        </span>
+      </nav>
+    </article>
+
+    <article class="db-section" aria-label="快捷操作">
+      <header class="db-section-head">
+        <h2>快捷操作</h2>
+      </header>
+      <nav class="db-quick">
+        <a class="db-quick-item" href="/zh/dashboard/">
+          返回总览
+          <span>方案、用量、历史</span>
+        </a>
+        <a class="db-quick-item" href="/zh/dashboard/history/">
+          试妆历史
+          <span>查看过去的所有会话</span>
+        </a>
+        <a class="db-quick-item" href="/zh/dashboard/privacy/">
+          隐私与数据
+          <span>删除或导出数据</span>
+        </a>
+      </nav>
+    </article>
+  </div>
+</DashboardShell>
+
+<script>
+  type OverviewResponse = {
+    user: { tier: string };
+    subscription: null | {
+      planName: string;
+      status: string;
+      currentPeriodStart: string | null;
+      currentPeriodEnd: string | null;
+      cancelAtPeriodEnd: boolean;
+    };
+  };
+
+  function formatDate(iso: string | null): string {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return iso;
+    }
+  }
+
+  function statusLabel(status: string): string {
+    if (status === 'active') return '有效';
+    if (status === 'trialing') return '试用中';
+    if (status === 'past_due') return '付款逾期';
+    if (status === 'canceled') return '已取消';
+    return status;
+  }
+
+  function setText(selector: string, text: string): void {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
+  }
+
+  function tierName(tier: string): string {
+    if (tier === 'pro') return 'Beauty Pass Pro';
+    if (tier === 'premium') return 'Premium';
+    return '免费体验版';
+  }
+
+  async function load() {
+    const resp = await fetch('/api/account/overview');
+    if (!resp.ok) return;
+    const data = (await resp.json()) as OverviewResponse & { user: { tier: string } };
+
+    const portalBtn = document.querySelector('[data-action="portal"]') as HTMLButtonElement | null;
+    const statusList = document.querySelector('[data-subscription-status]');
+    const cancelRow = document.querySelector('[data-subscription-cancel-row]');
+    const freeCard = document.querySelector('[data-subscription-free]');
+    const freeNote = document.querySelector('[data-subscription-free-note]');
+
+    if (data.subscription) {
+      const sub = data.subscription;
+      const periodStr = `${formatDate(sub.currentPeriodStart)} → ${formatDate(sub.currentPeriodEnd)}`;
+      const periodEnd = formatDate(sub.currentPeriodEnd);
+
+      setText('[data-subscription-plan]', sub.planName);
+      setText(
+        '[data-subscription-meta]',
+        sub.cancelAtPeriodEnd ? '当前周期结束后停止' : '每个周期自动续费',
+      );
+
+      setText('[data-subscription-stat-plan]', sub.planName);
+      setText('[data-subscription-stat-tier]', tierName(data.user.tier));
+      setText('[data-subscription-status-value]', statusLabel(sub.status));
+      setText(
+        '[data-subscription-stat-status-meta]',
+        sub.status === 'past_due' ? '需要处理付款' : '账户状态正常',
+      );
+      setText('[data-subscription-period]', periodEnd);
+      setText('[data-subscription-cancel]', sub.cancelAtPeriodEnd ? periodEnd : '—');
+      setText(
+        '[data-subscription-cancel-meta]',
+        sub.cancelAtPeriodEnd ? '将在此日期取消' : '未安排取消',
+      );
+
+      statusList?.removeAttribute('hidden');
+      setText('[data-subscription-status-detail]', statusLabel(sub.status));
+      setText('[data-subscription-period-detail]', periodStr);
+      if (sub.cancelAtPeriodEnd) {
+        cancelRow?.removeAttribute('hidden');
+        setText('[data-subscription-cancel-detail]', `${periodEnd} 取消`);
+      }
+    } else {
+      setText('[data-subscription-plan]', '免费体验版');
+      setText('[data-subscription-meta]', '你当前使用免费方案');
+      setText('[data-subscription-stat-plan]', '免费体验版');
+      setText('[data-subscription-stat-tier]', tierName(data.user.tier));
+      setText('[data-subscription-status-value]', '免费');
+      setText('[data-subscription-stat-status-meta]', '暂无付费订阅');
+      setText('[data-subscription-period]', '—');
+      setText('[data-subscription-cancel]', '—');
+      setText('[data-subscription-cancel-meta]', '免费方案');
+      if (portalBtn) portalBtn.disabled = true;
+      freeCard?.removeAttribute('hidden');
+      freeNote?.removeAttribute('hidden');
+    }
+
+    portalBtn?.addEventListener('click', async () => {
+      portalBtn.disabled = true;
+      portalBtn.textContent = '正在打开…';
+      try {
+        const r = await fetch('/api/stripe/portal', { method: 'POST' });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const result = (await r.json()) as { url?: string; error?: string };
+        if (result.url) {
+          window.location.href = result.url;
+        } else {
+          portalBtn.disabled = false;
+          portalBtn.textContent = '在 Stripe 管理';
+          alert(result.error ?? '暂时无法打开 Stripe 门户。');
+        }
+      } catch (err) {
+        portalBtn.disabled = false;
+        portalBtn.textContent = '在 Stripe 管理';
+        alert('暂时无法打开 Stripe 门户，请稍后再试。');
+        console.error(err);
+      }
+    });
+  }
+
+  load();
+</script>

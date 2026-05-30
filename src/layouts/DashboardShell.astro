@@ -11,15 +11,52 @@
  * 客户端守卫：未登录跳 /login？next=...
  */
 import BaseLayout from './BaseLayout.astro';
+import type { Locale } from '../lib/i18n';
+import { getLocaleFromUrl, localePath } from '../lib/i18n';
 
 interface Props {
   title?: string;
+  locale?: Locale;
   pageKey: 'overview' | 'subscription' | 'history' | 'privacy';
   pageHeading: string;
   pageDescription?: string;
 }
 
-const { title, pageKey, pageHeading, pageDescription } = Astro.props;
+const { title, locale, pageKey, pageHeading, pageDescription } = Astro.props;
+const currentLocale = locale ?? getLocaleFromUrl(Astro.url);
+const isZh = currentLocale === 'zh-CN';
+
+const shellText = isZh
+  ? {
+      titleSuffix: '账户中心',
+      accountNavLabel: '账户导航',
+      welcomeBack: '欢迎回来',
+      beautyPass: 'Beauty Pass',
+      featured: '重点推荐',
+      atAGlance: '快速概览',
+      suggestions: '建议',
+      nav: {
+        overview: ['总览', '总览'],
+        subscription: ['订阅与账单', '订阅'],
+        history: ['试妆历史', '历史'],
+        privacy: ['隐私与数据', '隐私'],
+      },
+    }
+  : {
+      titleSuffix: 'Dashboard',
+      accountNavLabel: 'Account navigation',
+      welcomeBack: 'Welcome back',
+      beautyPass: 'Beauty Pass',
+      featured: 'Featured',
+      atAGlance: 'At a glance',
+      suggestions: 'Suggestions',
+      nav: {
+        overview: ['Overview', 'Overview'],
+        subscription: ['Subscription', 'Plan'],
+        history: ['Try-On History', 'History'],
+        privacy: ['Privacy & Data', 'Privacy'],
+      },
+    };
 
 const navItems: Array<{
   key: Props['pageKey'];
@@ -27,26 +64,26 @@ const navItems: Array<{
   label: string;
   shortLabel: string;
 }> = [
-  { key: 'overview', href: '/dashboard', label: 'Overview', shortLabel: 'Overview' },
-  { key: 'subscription', href: '/dashboard/subscription', label: 'Subscription', shortLabel: 'Plan' },
-  { key: 'history', href: '/dashboard/history', label: 'Try-On History', shortLabel: 'History' },
-  { key: 'privacy', href: '/dashboard/privacy', label: 'Privacy & Data', shortLabel: 'Privacy' },
+  { key: 'overview', href: localePath('/dashboard', currentLocale), label: shellText.nav.overview[0], shortLabel: shellText.nav.overview[1] },
+  { key: 'subscription', href: localePath('/dashboard/subscription', currentLocale), label: shellText.nav.subscription[0], shortLabel: shellText.nav.subscription[1] },
+  { key: 'history', href: localePath('/dashboard/history', currentLocale), label: shellText.nav.history[0], shortLabel: shellText.nav.history[1] },
+  { key: 'privacy', href: localePath('/dashboard/privacy', currentLocale), label: shellText.nav.privacy[0], shortLabel: shellText.nav.privacy[1] },
 ];
 ---
 
-<BaseLayout title={title ?? `${pageHeading} — Dashboard`} robots="noindex,nofollow">
+<BaseLayout locale={currentLocale} title={title ?? `${pageHeading} — ${shellText.titleSuffix}`} robots="noindex,nofollow">
   <section class="db-shell">
     <div class="container">
       <main class="db-main" aria-labelledby="db-heading">
         <h1 id="db-heading" class="sr-only">{pageHeading}</h1>
 
         <!-- ── Nameplate + Sub-nav (一行集成) ──────────────────── -->
-        <nav class="db-subnav" aria-label="Account navigation">
+        <nav class="db-subnav" aria-label={shellText.accountNavLabel}>
           <div class="db-nameplate">
             <span class="db-nameplate-portrait" aria-hidden="true" data-db-portrait>A</span>
             <span class="db-nameplate-text">
-              <strong data-db-greeting>Welcome back</strong>
-              <small data-db-eyebrow>Beauty Pass</small>
+              <strong data-db-greeting>{shellText.welcomeBack}</strong>
+              <small data-db-eyebrow>{shellText.beautyPass}</small>
             </span>
           </div>
           <div class="db-subnav-inner">
@@ -70,12 +107,12 @@ const navItems: Array<{
         <slot name="hero-actions" />
 
         <!-- ── Feature block (原 hero-aside 升级为主块) ──────────── -->
-        <section class="db-feature" aria-label="Featured">
+        <section class="db-feature" aria-label={shellText.featured}>
           <slot name="hero-aside" />
         </section>
 
         <!-- ── Stat strip ─────────────────────────────────────────── -->
-        <section class="db-strip" aria-label="At a glance">
+        <section class="db-strip" aria-label={shellText.atAGlance}>
           <slot name="strip" />
         </section>
 
@@ -85,7 +122,7 @@ const navItems: Array<{
             <slot name="main" />
             <slot />
           </div>
-          <aside class="db-aside-col" aria-label="Suggestions">
+          <aside class="db-aside-col" aria-label={shellText.suggestions}>
             <slot name="aside" />
           </aside>
         </div>
@@ -110,6 +147,19 @@ const navItems: Array<{
   })();
 
   // Nameplate 填充（portrait 首字母 + 问候 + plan）
+  const DB_LOCALE = document.documentElement.lang;
+  const DB_COPY = DB_LOCALE === 'zh-CN'
+    ? {
+        freeExplorer: '免费体验版',
+        fallbackName: '你',
+        greeting: (name: string) => `${name}，欢迎回来`,
+      }
+    : {
+        freeExplorer: 'Free Explorer',
+        fallbackName: 'there',
+        greeting: (name: string) => `Hi, ${name}`,
+      };
+
   type NameplateUser = { name: string | null; email: string | null; tier: string };
   type NameplateOverview = {
     user: NameplateUser;
@@ -119,13 +169,13 @@ const navItems: Array<{
   function tierLabel(tier: string): string {
     if (tier === 'pro') return 'Beauty Pass Pro';
     if (tier === 'premium') return 'Premium';
-    return 'Free Explorer';
+    return DB_COPY.freeExplorer;
   }
 
   function firstNameOf(user: NameplateUser): string {
     if (user.name && user.name.trim().length > 0) return user.name.trim().split(/\s+/)[0];
     if (user.email) return user.email.split('@')[0];
-    return 'there';
+    return DB_COPY.fallbackName;
   }
 
   (async () => {
@@ -140,7 +190,7 @@ const navItems: Array<{
       const portrait = document.querySelector<HTMLElement>('[data-db-portrait]');
       if (portrait) portrait.textContent = initial;
       const greeting = document.querySelector<HTMLElement>('[data-db-greeting]');
-      if (greeting) greeting.textContent = `Hi, ${name}`;
+      if (greeting) greeting.textContent = DB_COPY.greeting(name);
       const eyebrow = document.querySelector<HTMLElement>('[data-db-eyebrow]');
       if (eyebrow) eyebrow.textContent = plan;
     } catch {

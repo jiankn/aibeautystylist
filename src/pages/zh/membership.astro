@@ -8,6 +8,7 @@ const plans = [
     name: '免费版',
     price: '$0',
     planId: 'free',
+    tier: 'free',
     value: '发现适合你的妆容',
     description: '适合想先体验再决定的新用户。',
     features: ['1-2 个基础妆容预览', '快速色号分析', '前 3 个教程步骤'],
@@ -20,6 +21,7 @@ const plans = [
     priceAnnualMonthly: '$12.42',
     planId: 'pro_monthly',
     planIdAnnual: 'pro_yearly',
+    tier: 'pro',
     value: '你的 AI 美妆顾问',
     description: '完整教程、高清试妆、精选产品工具包。相当于一次 $150 的线下色彩分析。',
     features: ['完整分步骤教程（含错误提醒）', '高清前后对比和更多场景', '精选美妆工具包（含预算分级）'],
@@ -33,6 +35,7 @@ const plans = [
     priceAnnualMonthly: '$24.92',
     planId: 'premium_monthly',
     planIdAnnual: 'premium_yearly',
+    tier: 'premium',
     value: '你的全年风格顾问',
     description: '无限次诊断、季节更新、历史存档和优先生成。',
     features: ['无限次 AI 诊断', '季节风格更新 + 妆容历史', '优先生成 + 持续进化的风格档案'],
@@ -128,6 +131,8 @@ const faqs = [
       <p class="pricing-toggle-hint is-hidden" id="pricing-save-hint">🎉 年付可节省 38%</p>
     </div>
 
+    <p class="container membership-plan-status is-hidden" data-membership-plan-status role="status" aria-live="polite"></p>
+
     <div class="container grid-cards grid-cards-3">
       {plans.map((plan) => (
         <article class={`card pricing-card${plan.highlight ? ' pricing-card-accent' : ''}`}>
@@ -159,18 +164,19 @@ const faqs = [
           {plan.planId === 'free' ? (
             <a class="btn btn-secondary" href="/zh/try-on/">免费试用</a>
           ) : (
-            <a
-              class={`btn${plan.highlight ? '' : ' btn-secondary'}`}
-              href="#"
+            <button
+              class={`btn membership-plan-cta${plan.highlight ? '' : ' btn-secondary'}`}
+              type="button"
               data-plan-id={plan.planId}
               data-plan-id-monthly={plan.planId}
               data-plan-id-yearly={plan.planIdAnnual}
+              data-plan-tier={plan.tier}
               data-label-monthly={plan.highlight ? '开通 Pro — $19.99/月' : '开通 Premium — $39.99/月'}
               data-label-yearly={plan.highlight ? '开通 Pro — $149/年' : '开通 Premium — $299/年'}
               data-checkout="true"
             >
               {plan.highlight ? '开通 Pro — $19.99/月' : '开通 Premium — $39.99/月'}
-            </a>
+            </button>
           )}
         </article>
       ))}
@@ -215,7 +221,11 @@ const faqs = [
       const toggleBtns = document.querySelectorAll<HTMLButtonElement>('[data-billing]');
       const saveHint = document.getElementById('pricing-save-hint');
       const slider = document.querySelector<HTMLElement>('.pricing-toggle-slider');
+      type UserTier = 'free' | 'pro' | 'premium';
+      const PAGE_LOCALE = 'zh-CN';
+      const MEMBERSHIP_PATH = '/zh/membership/';
       let currentBilling: 'monthly' | 'yearly' = 'monthly';
+      let currentUserTier: UserTier | null = null;
 
       function applyBilling(billing: 'monthly' | 'yearly') {
         currentBilling = billing;
@@ -230,6 +240,8 @@ const faqs = [
           if (planId) btn.dataset.planId = planId;
           if (label) btn.textContent = label;
         });
+
+        syncMembershipActions();
       }
 
       toggleBtns.forEach((btn) => btn.addEventListener('click', () => applyBilling(btn.dataset.billing as 'monthly' | 'yearly')));
@@ -246,43 +258,166 @@ const faqs = [
         if (styleCopy) styleCopy.textContent = `你保存的 ${myStyle.label} 方向可以驱动 Pro 专属的每周妆容、教程和工具包推荐。`;
       }
 
-      document.querySelectorAll('[data-checkout="true"]').forEach((btn) => {
+      const membershipCopy = {
+        currentPlan: '当前方案',
+        includedInPremium: 'Premium 已包含 Pro',
+        upgradePremiumMonthly: '升级到 Premium — $39.99/月',
+        upgradePremiumYearly: '升级到 Premium — $299/年',
+        statusPro: '你当前是 Pro。Pro 购买入口已锁定，避免重复扣费；如需调整计费或升级 Premium，请进入管理订阅。',
+        statusPremium: '你当前是 Premium。Pro 权益已包含，计费变更请进入管理订阅。',
+        checkoutLoading: '加载中…',
+        portalLoading: '打开计费管理…',
+        checkoutError: '出现错误，请重试',
+        networkError: '网络错误，请重试',
+        portalError: '无法打开管理页面',
+      } as const;
+
+      function trackMembershipEvent(name: string, metadata?: Record<string, unknown>) {
+        (window as typeof window & {
+          aiBeautyAnalytics?: { track?: (eventName: string, data?: Record<string, unknown>) => void };
+        }).aiBeautyAnalytics?.track?.(name, metadata ? { metadata } : undefined);
+      }
+
+      function baseBillingLabel(btn: HTMLElement): string {
+        return currentBilling === 'yearly'
+          ? btn.dataset.labelYearly ?? btn.textContent ?? ''
+          : btn.dataset.labelMonthly ?? btn.textContent ?? '';
+      }
+
+      function setMembershipButtonDisabled(btn: HTMLButtonElement, disabled: boolean) {
+        btn.disabled = disabled;
+        btn.classList.toggle('is-disabled', disabled);
+        btn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+      }
+
+      function syncMembershipActions() {
+        const status = document.querySelector<HTMLElement>('[data-membership-plan-status]');
+        document.querySelectorAll<HTMLButtonElement>('[data-checkout="true"]').forEach((btn) => {
+          const planTier = btn.dataset.planTier as UserTier | undefined;
+          if (!planTier) return;
+
+          btn.dataset.action = 'checkout';
+          btn.classList.toggle('btn-secondary', planTier === 'premium');
+          setMembershipButtonDisabled(btn, false);
+          btn.textContent = baseBillingLabel(btn);
+
+          if (!currentUserTier || currentUserTier === 'free') return;
+
+          if (planTier === currentUserTier) {
+            btn.textContent = membershipCopy.currentPlan;
+            setMembershipButtonDisabled(btn, true);
+            return;
+          }
+
+          if (currentUserTier === 'premium' && planTier === 'pro') {
+            btn.textContent = membershipCopy.includedInPremium;
+            setMembershipButtonDisabled(btn, true);
+            return;
+          }
+
+          if (currentUserTier === 'pro' && planTier === 'premium') {
+            btn.dataset.action = 'portal-upgrade';
+            btn.classList.remove('btn-secondary');
+            btn.textContent = currentBilling === 'yearly'
+              ? membershipCopy.upgradePremiumYearly
+              : membershipCopy.upgradePremiumMonthly;
+          }
+        });
+
+        if (!status) return;
+        if (currentUserTier === 'pro') {
+          status.textContent = membershipCopy.statusPro;
+          status.classList.remove('is-hidden');
+        } else if (currentUserTier === 'premium') {
+          status.textContent = membershipCopy.statusPremium;
+          status.classList.remove('is-hidden');
+        } else {
+          status.textContent = '';
+          status.classList.add('is-hidden');
+        }
+      }
+
+      async function openBillingPortal(trigger: HTMLElement, loadingText = membershipCopy.portalLoading) {
+        const originalText = trigger.textContent ?? '';
+        trigger.textContent = loadingText;
+        trigger.style.pointerEvents = 'none';
+        try {
+          const resp = await fetch('/api/stripe/portal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ locale: PAGE_LOCALE, returnPath: MEMBERSHIP_PATH }),
+          });
+          const data = await resp.json();
+          if (data.url) window.location.href = data.url;
+          else alert(data.message || membershipCopy.portalError);
+        } catch {
+          alert(membershipCopy.networkError);
+        } finally {
+          trigger.textContent = originalText;
+          trigger.style.pointerEvents = '';
+          syncMembershipActions();
+        }
+      }
+
+      document.querySelectorAll<HTMLButtonElement>('[data-checkout="true"]').forEach((btn) => {
         btn.addEventListener('click', async (e) => {
           e.preventDefault();
-          const planId = (btn as HTMLElement).dataset.planId;
+          if (btn.disabled) return;
+
+          if (btn.dataset.action === 'portal-upgrade') {
+            trackMembershipEvent('membership_upgrade_portal_opened', {
+              targetTier: 'premium',
+              billing: currentBilling,
+              source: sourceFrom,
+            });
+            await openBillingPortal(btn);
+            return;
+          }
+
+          const planId = btn.dataset.planId;
           if (!planId) return;
-          (window as typeof window & { aiBeautyAnalytics?: { track?: (name: string, data?: Record<string, unknown>) => void } }).aiBeautyAnalytics?.track?.('checkout_started', { metadata: { planId, billing: currentBilling, source: sourceFrom } });
+          trackMembershipEvent('checkout_started', { planId, billing: currentBilling, source: sourceFrom });
           const originalText = btn.textContent ?? '';
-          btn.textContent = '加载中…';
-          (btn as HTMLElement).style.pointerEvents = 'none';
+          btn.textContent = membershipCopy.checkoutLoading;
+          btn.style.pointerEvents = 'none';
           try {
-            const resp = await fetch('/api/stripe/create-checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ planId }) });
+            const resp = await fetch('/api/stripe/create-checkout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ planId, locale: PAGE_LOCALE, returnPath: MEMBERSHIP_PATH }),
+            });
             const data = await resp.json();
             if (data.error === 'unauthorized') {
               const next = encodeURIComponent(`${window.location.pathname}${window.location.search}`);
               window.location.href = `/login?next=${next}`;
               return;
             }
+            if (data.error === 'use_portal_for_upgrade') {
+              await openBillingPortal(btn);
+              return;
+            }
             if (data.url) window.location.href = data.url;
-            else alert(data.message || '出现错误，请重试');
-          } catch { alert('网络错误，请重试'); }
-          finally { btn.textContent = originalText; (btn as HTMLElement).style.pointerEvents = ''; }
+            else alert(data.message || membershipCopy.checkoutError);
+          } catch {
+            alert(membershipCopy.networkError);
+          } finally {
+            btn.textContent = originalText;
+            btn.style.pointerEvents = '';
+            syncMembershipActions();
+          }
         });
       });
 
       const manageBtn = document.getElementById('manage-subscription-btn');
       fetch('/api/auth/me').then(r => r.json()).then(data => {
-        if (data.authenticated && data.user?.tier !== 'free' && manageBtn) manageBtn.style.display = 'inline-block';
+        if (data.authenticated) {
+          currentUserTier = (data.user?.tier ?? 'free') as UserTier;
+          if (currentUserTier !== 'free' && manageBtn) manageBtn.style.display = 'inline-block';
+          syncMembershipActions();
+        }
       }).catch(() => {});
       manageBtn?.addEventListener('click', async () => {
-        manageBtn.textContent = '加载中…';
-        try {
-          const resp = await fetch('/api/stripe/portal', { method: 'POST' });
-          const data = await resp.json();
-          if (data.url) window.location.href = data.url;
-          else alert(data.message || '无法打开管理页面');
-        } catch { alert('网络错误'); }
-        finally { manageBtn.textContent = '管理订阅'; }
+        await openBillingPortal(manageBtn, membershipCopy.portalLoading);
       });
 
       if (params.get('payment') === 'success') {

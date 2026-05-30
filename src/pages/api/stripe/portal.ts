@@ -6,6 +6,7 @@ import type { APIRoute } from 'astro';
 import { getRuntimeEnv } from '../../../lib/cloudflare/runtime';
 import { getAuthUser } from '../../../lib/services/authService';
 import { createPortalSession } from '../../../lib/services/stripeService';
+import { membershipReturnPath, resolveStripeReturnLocale } from '../../../lib/services/stripeReturnRoutes';
 
 export const POST: APIRoute = async ({ request }) => {
   const env = getRuntimeEnv();
@@ -20,8 +21,14 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
+    const body = await request.json().catch(() => ({})) as Record<string, unknown>;
     const origin = new URL(request.url).origin;
-    const { portalUrl } = await createPortalSession(env, authUser.id, `${origin}/membership`);
+    const locale = resolveStripeReturnLocale(request, body);
+    const { portalUrl } = await createPortalSession(
+      env,
+      authUser.id,
+      `${origin}${membershipReturnPath(locale)}`,
+    );
 
     return new Response(
       JSON.stringify({ url: portalUrl }),

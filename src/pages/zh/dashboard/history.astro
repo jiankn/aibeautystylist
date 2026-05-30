@@ -1,0 +1,231 @@
+---
+import DashboardShell from '../../../layouts/DashboardShell.astro';
+---
+
+<DashboardShell
+  locale="zh-CN"
+  pageKey="history"
+  pageHeading="试妆历史"
+  pageDescription="回看你的 AI 诊断、妆容和教程。点击任意记录，可用同一场景重新分析。"
+>
+  <div slot="hero-aside" class="db-hero-card">
+    <p class="db-hero-card-eyebrow">你的试妆记录</p>
+    <div class="db-hero-card-row">
+      <div class="db-hero-card-thumb" aria-hidden="true">
+        <span data-history-hero-total>—</span>
+      </div>
+      <div class="db-hero-card-meta">
+        <strong data-history-hero-title>累计试妆</strong>
+        <small data-history-hero-sub>正在加载你的活动…</small>
+      </div>
+    </div>
+    <div class="db-hero-card-actions">
+      <a class="btn" href="/zh/try-on/">再试一个妆容</a>
+    </div>
+  </div>
+
+  <div slot="strip" style="display:contents">
+    <article class="db-stat">
+      <p class="db-stat-label">累计试妆</p>
+      <p class="db-stat-value" data-history-stat-total>—</p>
+      <p class="db-stat-meta">全部时间</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">本月</p>
+      <p class="db-stat-value" data-history-stat-month>—</p>
+      <p class="db-stat-meta">已开始的会话</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">最近一次</p>
+      <p class="db-stat-value" data-history-stat-latest>—</p>
+      <p class="db-stat-meta" data-history-stat-latest-meta>—</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">常用场景</p>
+      <p class="db-stat-value" data-history-stat-scenario>—</p>
+      <p class="db-stat-meta">出现最多的试妆语境</p>
+    </article>
+  </div>
+
+  <section slot="main" class="db-section" aria-labelledby="history-heading">
+    <header class="db-section-head">
+      <h2 id="history-heading">全部会话</h2>
+      <a href="/zh/try-on/">开始新的试妆 →</a>
+    </header>
+    <div class="dashboard-history-grid" data-history-grid>
+      <p class="db-empty" data-history-empty hidden>
+        还没有试妆记录。<a href="/zh/try-on/">开始第一次试妆 →</a>
+      </p>
+    </div>
+    <div class="dashboard-history-footer" data-history-footer hidden>
+      <button class="btn btn-secondary" type="button" data-history-more>加载更多</button>
+    </div>
+  </section>
+
+  <div slot="aside">
+    <article class="db-suggest" aria-label="下一步建议">
+      <p class="db-suggest-eyebrow">提示</p>
+      <h3 class="db-suggest-title">可以重跑过去的会话</h3>
+      <p>想复刻某个妆容，但换一个场景？进入试妆后选择不同场景，方便横向比较。</p>
+      <div class="db-hero-card-actions">
+        <a class="btn" href="/zh/try-on/">打开 AI 试妆</a>
+      </div>
+    </article>
+
+    <section class="db-section" aria-label="快捷操作">
+      <header class="db-section-head">
+        <h2>快捷操作</h2>
+      </header>
+      <nav class="db-quick">
+        <a class="db-quick-item" href="/zh/dashboard/">
+          返回总览
+          <span>方案、用量、历史</span>
+        </a>
+        <a class="db-quick-item" href="/zh/dashboard/subscription/">
+          订阅与账单
+          <span>管理你的方案</span>
+        </a>
+        <a class="db-quick-item" href="/zh/dashboard/privacy/">
+          删除历史
+          <span>隐私与数据控制</span>
+        </a>
+      </nav>
+    </section>
+  </div>
+</DashboardShell>
+
+<script>
+  type HistoryItem = {
+    id: string;
+    scenario: string;
+    experience: string;
+    status: string;
+    createdAt: string;
+    primaryLookTitle: string | null;
+    primaryLookImage: string | null;
+  };
+
+  let offset = 0;
+  const pageSize = 12;
+  let total = 0;
+
+  function formatDate(iso: string): string {
+    try {
+      return new Date(iso).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return iso;
+    }
+  }
+
+  function escapeHtml(str: string): string {
+    return str.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] ?? c));
+  }
+
+  function scenarioLabel(scenario: string): string {
+    const normalized = scenario.toLowerCase();
+    if (normalized.includes('office')) return '通勤';
+    if (normalized.includes('date')) return '约会';
+    if (normalized.includes('photo')) return '拍照';
+    return scenario;
+  }
+
+  function renderCard(item: HistoryItem): string {
+    const title = escapeHtml(item.primaryLookTitle ?? '未命名妆容');
+    const scenario = escapeHtml(scenarioLabel(item.scenario));
+    const date = formatDate(item.createdAt);
+    const media = item.primaryLookImage
+      ? `<img src="${escapeHtml(item.primaryLookImage)}" alt="${title}" loading="lazy" />`
+      : '<span class="recent-card-placeholder">暂无预览</span>';
+    const rerunHref = `/zh/try-on/?scenario=${encodeURIComponent(item.scenario)}`;
+    return `
+      <article class="dashboard-recent-card">
+        <div class="recent-card-media">${media}</div>
+        <div class="recent-card-body">
+          <strong>${title}</strong>
+          <small>${scenario} · ${date}</small>
+          <a class="recent-card-rerun" href="${rerunHref}">重新分析 →</a>
+        </div>
+      </article>
+    `;
+  }
+
+  function setText(selector: string, text: string): void {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
+  }
+
+  function fillStats(items: HistoryItem[], totalCount: number): void {
+    setText('[data-history-hero-total]', String(totalCount));
+    setText('[data-history-hero-title]', totalCount > 0 ? `${totalCount} 次试妆` : '还没有试妆记录');
+    if (items[0]) {
+      setText('[data-history-hero-sub]', `最近一次：${formatDate(items[0].createdAt)}`);
+    } else {
+      setText('[data-history-hero-sub]', '开始第一次试妆，建立你的风格记录');
+    }
+
+    setText('[data-history-stat-total]', String(totalCount));
+
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const monthCount = items.filter((it) => it.createdAt >= monthStart).length;
+    setText('[data-history-stat-month]', String(monthCount));
+
+    if (items[0]) {
+      setText('[data-history-stat-latest]', formatDate(items[0].createdAt));
+      setText('[data-history-stat-latest-meta]', items[0].primaryLookTitle ?? scenarioLabel(items[0].scenario));
+    } else {
+      setText('[data-history-stat-latest]', '—');
+      setText('[data-history-stat-latest-meta]', '暂无会话');
+    }
+
+    const counts = new Map<string, number>();
+    for (const it of items) counts.set(scenarioLabel(it.scenario), (counts.get(scenarioLabel(it.scenario)) ?? 0) + 1);
+    let top: string | null = null;
+    let topN = 0;
+    for (const [k, v] of counts) {
+      if (v > topN) { top = k; topN = v; }
+    }
+    setText('[data-history-stat-scenario]', top ?? '—');
+  }
+
+  async function loadMore() {
+    const resp = await fetch(`/api/account/history?limit=${pageSize}&offset=${offset}`);
+    if (!resp.ok) return;
+    const data = (await resp.json()) as { items: HistoryItem[]; total: number };
+
+    const grid = document.querySelector('[data-history-grid]');
+    const emptyEl = document.querySelector('[data-history-empty]');
+    const footer = document.querySelector('[data-history-footer]');
+    const moreBtn = document.querySelector('[data-history-more]') as HTMLButtonElement | null;
+    if (!grid) return;
+
+    total = data.total;
+
+    if (offset === 0) {
+      fillStats(data.items, data.total);
+    }
+
+    if (offset === 0 && data.items.length === 0) {
+      emptyEl?.removeAttribute('hidden');
+      return;
+    }
+
+    grid.insertAdjacentHTML('beforeend', data.items.map(renderCard).join(''));
+    offset += data.items.length;
+
+    if (offset < total) {
+      footer?.removeAttribute('hidden');
+      if (moreBtn) moreBtn.disabled = false;
+    } else {
+      footer?.setAttribute('hidden', '');
+    }
+  }
+
+  document.querySelector('[data-history-more]')?.addEventListener('click', () => {
+    const btn = document.querySelector('[data-history-more]') as HTMLButtonElement;
+    btn.disabled = true;
+    loadMore();
+  });
+
+  loadMore();
+</script>

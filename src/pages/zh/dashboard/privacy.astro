@@ -1,0 +1,270 @@
+---
+import DashboardShell from '../../../layouts/DashboardShell.astro';
+---
+
+<DashboardShell
+  locale="zh-CN"
+  pageKey="privacy"
+  pageHeading="隐私与数据"
+  pageDescription="你的照片由你控制。你可以随时删除或导出数据。"
+>
+  <div slot="hero-aside" class="db-hero-card">
+    <p class="db-hero-card-eyebrow">我们的承诺</p>
+    <div class="db-hero-card-row">
+      <div class="db-hero-card-thumb" aria-hidden="true">
+        <span>私</span>
+      </div>
+      <div class="db-hero-card-meta">
+        <strong>只属于你的数据</strong>
+        <small>不用于训练，不对外共享，闲置照片 24 小时内自动删除。</small>
+      </div>
+    </div>
+    <div class="db-hero-card-actions">
+      <a class="btn btn-secondary" href="/zh/privacy/">阅读完整隐私政策</a>
+    </div>
+  </div>
+
+  <div slot="strip" style="display:contents">
+    <article class="db-stat">
+      <p class="db-stat-label">照片保留</p>
+      <p class="db-stat-value">≤ 24 小时</p>
+      <p class="db-stat-meta">闲置照片自动删除</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">AI 训练</p>
+      <p class="db-stat-value">不会</p>
+      <p class="db-stat-meta">你的照片不会用于训练</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">数据归属</p>
+      <p class="db-stat-value">你</p>
+      <p class="db-stat-meta">可随时删除或导出</p>
+    </article>
+    <article class="db-stat">
+      <p class="db-stat-label">账户状态</p>
+      <p class="db-stat-value" data-privacy-status>有效</p>
+      <p class="db-stat-meta" data-privacy-status-meta>加载中…</p>
+    </article>
+  </div>
+
+  <div slot="main">
+    <section class="db-section" aria-labelledby="promise-heading">
+      <header class="db-section-head">
+        <h2 id="promise-heading">我们如何处理你的数据</h2>
+        <a href="/zh/privacy/">完整政策 →</a>
+      </header>
+      <ul class="privacy-promise-list">
+        <li>你的照片<strong>只</strong>用于生成本次诊断和妆容建议。</li>
+        <li>我们<strong>不会</strong>用你的照片训练 AI 模型。</li>
+        <li>你可以随时删除数据，闲置照片会在 24 小时内自动删除。</li>
+      </ul>
+    </section>
+
+    <section class="db-section" aria-labelledby="delete-history-heading">
+      <header class="db-section-head">
+        <h2 id="delete-history-heading">删除试妆历史</h2>
+      </header>
+      <p style="margin:0;color:var(--muted);font-size:0.92rem;">
+        删除与你账户关联的所有诊断、妆容和教程记录。
+        你的账户、订阅和已保存偏好会保留。
+      </p>
+      <div class="db-hero-card-actions">
+        <button class="btn btn-secondary" type="button" data-action="delete-history">
+          删除试妆历史
+        </button>
+      </div>
+      <p style="margin:0;font-size:0.82rem;color:var(--muted);" data-history-status hidden></p>
+    </section>
+
+    <section class="db-section dashboard-card-danger" aria-labelledby="delete-account-heading">
+      <header class="db-section-head">
+        <h2 id="delete-account-heading" style="color:#9b2c3a">危险操作：删除账户</h2>
+      </header>
+      <p style="margin:0;font-size:0.92rem;">
+        这会删除<strong>所有内容</strong>：个人资料、会话、试妆历史、订阅记录和登录凭证。
+        <strong>此操作无法撤销。</strong>
+      </p>
+      <p style="margin:0;font-size:0.82rem;color:var(--muted);">
+        如果你有有效付费订阅，请先到
+        <a href="/zh/dashboard/subscription/">订阅页面</a>取消，避免后续扣费。
+      </p>
+      <div class="db-hero-card-actions">
+        <button class="btn btn-danger" type="button" data-action="delete-account">
+          删除我的账户
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div slot="aside">
+    <article class="db-suggest" aria-label="透明度">
+      <p class="db-suggest-eyebrow">透明度</p>
+      <h3 class="db-suggest-title">围绕用户所有权设计</h3>
+      <p>我们处理照片只是为了给你生成造型建议。不会训练模型，不会共享，也不会做隐藏用途。</p>
+      <div class="db-hero-card-actions">
+        <a class="btn btn-secondary" href="/zh/terms/">服务条款</a>
+      </div>
+    </article>
+
+    <section class="db-section" aria-label="快捷操作">
+      <header class="db-section-head">
+        <h2>快捷操作</h2>
+      </header>
+      <nav class="db-quick">
+        <a class="db-quick-item" href="/zh/dashboard/">
+          返回总览
+          <span>方案、用量、历史</span>
+        </a>
+        <a class="db-quick-item" href="/zh/dashboard/subscription/">
+          管理订阅
+          <span>在 Stripe 门户处理</span>
+        </a>
+        <a class="db-quick-item" href="/zh/dashboard/history/">
+          试妆历史
+          <span>删除前先回看记录</span>
+        </a>
+      </nav>
+    </section>
+  </div>
+
+  <div class="dashboard-modal" id="delete-account-modal" hidden>
+    <button class="dashboard-modal-backdrop" type="button" data-modal-close aria-label="关闭"></button>
+    <div class="dashboard-modal-panel" role="dialog" aria-labelledby="delete-modal-title">
+      <h3 id="delete-modal-title">确定永久删除账户？</h3>
+      <p>
+        在下方输入 <code>DELETE</code> 进行确认。确认后你会立即退出登录，
+        所有数据将在 24 小时内删除。
+      </p>
+      <label class="dashboard-modal-input">
+        <span class="sr-only">输入 DELETE 以确认</span>
+        <input
+          type="text"
+          autocomplete="off"
+          autocapitalize="characters"
+          placeholder="输入 DELETE"
+          data-delete-confirm-input
+        />
+      </label>
+      <p class="dashboard-modal-error" data-delete-error hidden></p>
+      <div class="dashboard-modal-actions">
+        <button type="button" class="btn btn-secondary" data-modal-close>取消</button>
+        <button type="button" class="btn btn-danger" data-delete-confirm-submit disabled>
+          删除我的账户
+        </button>
+      </div>
+    </div>
+  </div>
+</DashboardShell>
+
+<script>
+  function setText(selector: string, text: string): void {
+    const el = document.querySelector(selector);
+    if (el) el.textContent = text;
+  }
+
+  function tierName(tier: string): string {
+    if (tier === 'pro') return 'Beauty Pass Pro';
+    if (tier === 'premium') return 'Premium';
+    return '免费体验版';
+  }
+
+  (async () => {
+    try {
+      const resp = await fetch('/api/account/overview');
+      if (!resp.ok) return;
+      const data = (await resp.json()) as {
+        user: { tier: string; email: string | null };
+        subscription: null | { status: string; cancelAtPeriodEnd: boolean };
+      };
+      setText('[data-privacy-status]', data.subscription ? '已订阅' : '有效');
+      setText(
+        '[data-privacy-status-meta]',
+        data.subscription
+          ? (data.subscription.cancelAtPeriodEnd ? '取消已排期' : `${tierName(data.user.tier)} 会员`)
+          : `${tierName(data.user.tier)} · 免费方案`,
+      );
+    } catch {
+      setText('[data-privacy-status-meta]', '账户有效');
+    }
+  })();
+
+  const historyBtn = document.querySelector('[data-action="delete-history"]') as HTMLButtonElement | null;
+  const historyStatus = document.querySelector('[data-history-status]') as HTMLElement | null;
+
+  historyBtn?.addEventListener('click', async () => {
+    const confirmed = window.confirm(
+      '确定删除所有试妆记录？你的账户和订阅会保留。',
+    );
+    if (!confirmed) return;
+    historyBtn.disabled = true;
+    historyBtn.textContent = '正在删除…';
+    try {
+      const resp = await fetch('/api/account/delete-history', { method: 'POST' });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      historyBtn.textContent = '已删除';
+      if (historyStatus) {
+        historyStatus.removeAttribute('hidden');
+        historyStatus.textContent = '所有试妆记录已删除。';
+      }
+    } catch (err) {
+      historyBtn.disabled = false;
+      historyBtn.textContent = '删除试妆历史';
+      if (historyStatus) {
+        historyStatus.removeAttribute('hidden');
+        historyStatus.textContent = '删除失败，请稍后再试。';
+      }
+      console.error(err);
+    }
+  });
+
+  const modal = document.getElementById('delete-account-modal');
+  const accountBtn = document.querySelector('[data-action="delete-account"]') as HTMLButtonElement | null;
+  const confirmInput = document.querySelector('[data-delete-confirm-input]') as HTMLInputElement | null;
+  const confirmBtn = document.querySelector('[data-delete-confirm-submit]') as HTMLButtonElement | null;
+  const errorEl = document.querySelector('[data-delete-error]') as HTMLElement | null;
+
+  function openModal() {
+    modal?.removeAttribute('hidden');
+    setTimeout(() => confirmInput?.focus(), 50);
+  }
+  function closeModal() {
+    modal?.setAttribute('hidden', '');
+    if (confirmInput) confirmInput.value = '';
+    if (confirmBtn) confirmBtn.disabled = true;
+    errorEl?.setAttribute('hidden', '');
+  }
+
+  accountBtn?.addEventListener('click', openModal);
+  document.querySelectorAll('[data-modal-close]').forEach((el) => {
+    el.addEventListener('click', closeModal);
+  });
+
+  confirmInput?.addEventListener('input', () => {
+    if (confirmBtn) confirmBtn.disabled = confirmInput.value.trim() !== 'DELETE';
+  });
+
+  confirmBtn?.addEventListener('click', async () => {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = '正在删除…';
+    errorEl?.setAttribute('hidden', '');
+    try {
+      const resp = await fetch('/api/account/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: 'DELETE' }),
+      });
+      if (!resp.ok) {
+        const data = (await resp.json().catch(() => ({}))) as { error?: string; message?: string };
+        throw new Error(data.message ?? data.error ?? `HTTP ${resp.status}`);
+      }
+      window.location.replace('/zh/');
+    } catch (err) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = '删除我的账户';
+      if (errorEl) {
+        errorEl.removeAttribute('hidden');
+        errorEl.textContent = err instanceof Error ? err.message : '删除失败。';
+      }
+    }
+  });
+</script>
