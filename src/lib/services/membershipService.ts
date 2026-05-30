@@ -166,10 +166,8 @@ function buildGatedInfo(membership: MembershipInfo): GatedInfo {
     lockedFeatures: locked,
     upgradeMessage: isFreeTier
       ? 'Unlock 10 monthly diagnoses, 30 HD makeup previews, and full tutorials with Pro'
-      : membership.tier === 'pro'
-        ? 'Get unlimited diagnoses and seasonal updates with Premium'
-        : '',
-    upgradeCta: isFreeTier ? 'Upgrade to Pro — $19.99/mo' : 'Upgrade to Premium',
+      : '',
+    upgradeCta: isFreeTier ? 'Upgrade to Pro — $19.99/mo' : '',
     upgradeUrl: '/membership',
   };
 }

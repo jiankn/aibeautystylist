@@ -75,7 +75,7 @@ export const POST: APIRoute = async (context) => {
       tier === 'free'
         ? "You've used your free diagnosis for today. Sign in to Pro for 10 monthly diagnoses."
         : tier === 'pro'
-          ? "You've used all 10 monthly diagnoses. Upgrade to Premium for unlimited access."
+          ? "You've used all 10 monthly diagnoses. Your current plan refreshes next month."
           : "You've reached the monthly fair-use limit. Please contact support if you need more.";
 
     return new Response(
@@ -191,6 +191,7 @@ export const POST: APIRoute = async (context) => {
   return new Response(JSON.stringify({
     ...trimmedResult,
     _remaining: hasPhoto ? quotaAfter.remaining : quotaAfter.limit,
+    _quotaLimit: quotaAfter.limit,
     _quotaSource: quotaAfter.source,
     _quotaWindow: quotaAfter.window,
     _tier: tier,

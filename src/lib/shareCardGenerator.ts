@@ -29,13 +29,15 @@ export interface ShareCardData {
   makeupResultUrl?: string;
   /** Hashtags */
   hashtags?: string[];
+  /** 项目网址 */
+  siteUrl?: string;
 }
 
 const CARD_W = 1080;
 const CARD_H = 1350; // 4:5 社交媒体比例
 const PADDING = 72;
 const BRAND_NAME = 'AI Beauty Stylist';
-const BRAND_URL = 'aibeautystylist.com';
+const DEFAULT_BRAND_URL = 'aibeautystylist.com';
 
 /**
  * 生成分享卡并返回 dataUrl (PNG)
@@ -79,10 +81,8 @@ export async function generateShareCard(data: ShareCardData): Promise<string> {
 
   let y = PADDING;
 
-  // ─── Before/After 对比区（如果有两张图） ───
-  if (data.selfieUrl && data.makeupResultUrl) {
-    y = await drawBeforeAfter(ctx, data.selfieUrl, data.makeupResultUrl, y);
-  }
+  // ─── AI 妆后图：分享卡的主视觉 ───
+  if (data.makeupResultUrl) y = await drawMakeupResult(ctx, data.makeupResultUrl, y);
 
   // ─── 品牌标题 ───
   ctx.textAlign = 'center';
@@ -202,12 +202,32 @@ export async function generateShareCard(data: ShareCardData): Promise<string> {
 
   ctx.fillStyle = '#b07f86';
   ctx.font = '700 22px "Inter", "Segoe UI", sans-serif';
-  ctx.fillText(BRAND_URL, CARD_W / 2, CARD_H - 46);
+  ctx.fillText(formatDisplayUrl(data.siteUrl), CARD_W / 2, CARD_H - 46);
 
   return canvas.toDataURL('image/png', 1.0);
 }
 
 // ─── Before/After 对比绘制 ─────────────────────────────────
+
+async function drawMakeupResult(
+  ctx: CanvasRenderingContext2D,
+  afterUrl: string,
+  startY: number,
+): Promise<number> {
+  const R = 150;
+  const centerX = CARD_W / 2;
+  const centerY = startY + R + 12;
+  const afterImg = await loadImage(afterUrl);
+
+  drawCircleImage(ctx, afterImg, centerX, centerY, R);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#b07f86';
+  ctx.font = '600 15px "Inter", "Segoe UI", sans-serif';
+  ctx.fillText('AI MAKEUP RESULT', centerX, centerY + R + 34);
+
+  return centerY + R + 64;
+}
 
 async function drawBeforeAfter(
   ctx: CanvasRenderingContext2D,
@@ -329,6 +349,15 @@ function drawPill(ctx: CanvasRenderingContext2D, cx: number, cy: number, text: s
   ctx.textBaseline = 'middle';
   ctx.fillText(text, cx, cy);
   ctx.restore();
+}
+
+function formatDisplayUrl(siteUrl?: string): string {
+  if (!siteUrl) return DEFAULT_BRAND_URL;
+  try {
+    return new URL(siteUrl).hostname.replace(/^www\./, '');
+  } catch {
+    return siteUrl.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || DEFAULT_BRAND_URL;
+  }
 }
 
 function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, _fontSize: number): string[] {

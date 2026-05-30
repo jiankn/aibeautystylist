@@ -62,9 +62,18 @@ const getTranslations = (currentLocale: Locale) => ({
     tryMoreStyles: t('tryOnStudio.tryMoreStyles', currentLocale),
     loadingTitle: t('tryOnStudio.loadingTitle', currentLocale),
     loadingDetail: t('tryOnStudio.loadingDetail', currentLocale),
+    loadingCountdownLabel: t('tryOnStudio.loadingCountdownLabel', currentLocale),
+    loadingFinalizingLabel: t('tryOnStudio.loadingFinalizingLabel', currentLocale),
+    loadingSecondsUnit: t('tryOnStudio.loadingSecondsUnit', currentLocale),
+    loadingStageScan: t('tryOnStudio.loadingStageScan', currentLocale),
+    loadingStageMatch: t('tryOnStudio.loadingStageMatch', currentLocale),
+    loadingStagePlan: t('tryOnStudio.loadingStagePlan', currentLocale),
+    loadingStageReady: t('tryOnStudio.loadingStageReady', currentLocale),
     modeChipReal: t('tryOnStudio.modeChipReal', currentLocale),
     modeChipDemo: t('tryOnStudio.modeChipDemo', currentLocale),
     remainingBadge: t('tryOnStudio.remainingBadge', currentLocale),
+    remainingBadgeMonthly: t('tryOnStudio.remainingBadgeMonthly', currentLocale),
+    remainingBadgePremium: t('tryOnStudio.remainingBadgePremium', currentLocale),
     rerunButton: t('tryOnStudio.rerunButton', currentLocale),
     rerunButtonDemo: t('tryOnStudio.rerunButtonDemo', currentLocale),
     deleteButton: t('tryOnStudio.deleteButton', currentLocale),
@@ -108,6 +117,13 @@ const getTranslations = (currentLocale: Locale) => ({
     shareExport: t('tryOnStudio.shareExport', currentLocale),
     shareSave: t('tryOnStudio.shareSave', currentLocale),
     shareContinue: t('tryOnStudio.shareContinue', currentLocale),
+    shareSiteLabel: t('tryOnStudio.shareSiteLabel', currentLocale),
+    shareGeneratingAfter: t('tryOnStudio.shareGeneratingAfter', currentLocale),
+    sharePreparingCard: t('tryOnStudio.sharePreparingCard', currentLocale),
+    shareDownloadDone: t('tryOnStudio.shareDownloadDone', currentLocale),
+    shareDownloadFailed: t('tryOnStudio.shareDownloadFailed', currentLocale),
+    shareAfterAlt: t('tryOnStudio.shareAfterAlt', currentLocale),
+    shareUrlLabel: t('tryOnStudio.shareUrlLabel', currentLocale),
     shareStatusCopied: t('tryOnStudio.shareStatusCopied', currentLocale),
     shareStatusSaved: t('tryOnStudio.shareStatusSaved', currentLocale),
     upgradeCompareEyebrow: t('tryOnStudio.upgradeCompareEyebrow', currentLocale),
@@ -323,6 +339,20 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
         <div class="spinner" aria-hidden="true"></div>
         <h3>{tx.tryOnStudio.loadingTitle}</h3>
         <p>{tx.tryOnStudio.loadingDetail}</p>
+        <div class="tryon-loading-timer" data-loading-timer>
+          <span class="tryon-loading-count" data-loading-countdown>45</span>
+          <span class="tryon-loading-unit">{tx.tryOnStudio.loadingSecondsUnit}</span>
+          <small data-loading-countdown-label>{tx.tryOnStudio.loadingCountdownLabel}</small>
+        </div>
+        <div class="tryon-loading-progress" aria-hidden="true">
+          <span data-loading-progress-bar></span>
+        </div>
+        <ol class="tryon-loading-phases" aria-label="AI diagnosis progress">
+          <li class="is-active" data-loading-phase>{tx.tryOnStudio.loadingStageScan}</li>
+          <li data-loading-phase>{tx.tryOnStudio.loadingStageMatch}</li>
+          <li data-loading-phase>{tx.tryOnStudio.loadingStagePlan}</li>
+          <li data-loading-phase>{tx.tryOnStudio.loadingStageReady}</li>
+        </ol>
       </div>
     </section>
 
@@ -334,7 +364,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
           <div class="tryon-result-controls-meta">
             <span class="tryon-result-mode-chip is-real" data-tryon-mode-chip>{tx.tryOnStudio.modeChipReal}</span>
             <span class="is-hidden" data-remaining-badge>
-              {tx.tryOnStudio.remainingBadge}<strong data-remaining-count>1</strong>/1
+              <span data-remaining-label>{tx.tryOnStudio.remainingBadge}</span><strong data-remaining-count>1</strong><span data-remaining-total>/1</span>
             </span>
           </div>
           <div class="tryon-result-controls-actions">
@@ -423,7 +453,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
               <span class="eyebrow">{tx.tryOnStudio.looksEyebrow}</span>
               <h3>{tx.tryOnStudio.looksHeading}</h3>
             </div>
-            <a class="btn btn-secondary" href="/membership?from=tryon_looks_cta">{tx.tryOnStudio.looksUnlockCta}</a>
+            <a class="btn btn-secondary" data-looks-upgrade-cta href="/membership?from=tryon_looks_cta">{tx.tryOnStudio.looksUnlockCta}</a>
           </div>
           <div class="tryon-looks look-card-grid" data-look-list></div>
           <!-- P2.10: 横滑进度指示（移动端） -->
@@ -498,11 +528,16 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
               <span class="share-export-status" data-share-status>{tx.tryOnStudio.shareExport}</span>
             </div>
             <p class="share-badge" data-share-badge>{tx.tryOnStudio.shareBadge}</p>
+            <div class="share-card-result is-hidden" data-share-result-visual>
+              <img data-share-result-image alt={tx.tryOnStudio.shareAfterAlt} />
+              <span>{tx.tryOnStudio.afterLabel}</span>
+            </div>
             <!-- P1.6: share-card 内嵌 H3 → H4 (避免与 section H3 同级) -->
             <h4 class="share-card-title" data-share-title>{tx.tryOnStudio.shareTitle}</h4>
             <p data-share-subtitle>{tx.tryOnStudio.shareSubtitle}</p>
             <p class="share-card-look" data-share-look>Office Glow · Soft matte nude</p>
             <div class="share-card-tags" data-share-tags></div>
+            <p class="share-card-site" data-share-site>{tx.tryOnStudio.shareSiteLabel}</p>
             <p class="share-card-cta" data-share-cta>{tx.tryOnStudio.shareCta}</p>
             <div class="share-card-actions">
               <button class="btn" type="button" data-share-download>{tx.tryOnStudio.shareDownload}</button>
@@ -818,6 +853,9 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     shareCard?: ShareCardClient;
     _lipColors?: Record<string, LipColorParams>;
     _remaining?: number;
+    _quotaLimit?: number;
+    _quotaWindow?: 'daily' | 'monthly';
+    _tier?: 'free' | 'pro' | 'premium';
     _rateLimited?: boolean;
     _gated?: GatedInfo;
     _upload?: {
@@ -866,9 +904,15 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
   const afterCanvas = qs<HTMLCanvasElement>('[data-after-canvas]');
   const lipSwatch = qs<HTMLElement>('[data-lip-swatch]');
   const remainingBadge = qs<HTMLElement>('[data-remaining-badge]');
+  const remainingLabel = qs<HTMLElement>('[data-remaining-label]');
   const remainingCount = qs<HTMLElement>('[data-remaining-count]');
+  const remainingTotal = qs<HTMLElement>('[data-remaining-total]');
   const modeChip = qs<HTMLElement>('[data-tryon-mode-chip]');
   const liveRegion = qs<HTMLElement>('[data-tryon-live]');
+  const loadingCountdown = qs<HTMLElement>('[data-loading-countdown]');
+  const loadingCountdownLabel = qs<HTMLElement>('[data-loading-countdown-label]');
+  const loadingProgressBar = qs<HTMLElement>('[data-loading-progress-bar]');
+  const loadingPhaseItems = qsa<HTMLElement>('[data-loading-phase]');
   const subnav = qs<HTMLElement>('[data-tryon-subnav]');
   const rerunButton = qs<HTMLButtonElement>('[data-tryon-rerun]');
   const deleteButton = qs<HTMLButtonElement>('[data-tryon-delete]');
@@ -907,6 +951,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
   const upgradeCompareFreeLooks = qs<HTMLElement>('[data-tryon-compare-free-looks]');
   const upgradeCompareCtaPro = qs<HTMLAnchorElement>('[data-tryon-upgrade-cta-pro]');
   const upgradeCompareCtaPremium = qs<HTMLAnchorElement>('[data-tryon-upgrade-cta-premium]');
+  const looksUpgradeCta = qs<HTMLAnchorElement>('[data-looks-upgrade-cta]');
   const tutorialLock = qs<HTMLElement>('[data-tryon-tutorial-lock]');
   const tutorialLockTitle = qs<HTMLElement>('[data-tutorial-lock-title]');
   const tutorialLockDetail = qs<HTMLElement>('[data-tutorial-lock-detail]');
@@ -1285,6 +1330,9 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
   const shareTags = qs<HTMLElement>('[data-share-tags]');
   const shareStatus = qs<HTMLElement>('[data-share-status]');
   const shareExportButton = qs<HTMLButtonElement>('[data-share-export]');
+  const shareSite = qs<HTMLElement>('[data-share-site]');
+  const shareResultVisual = qs<HTMLElement>('[data-share-result-visual]');
+  const shareResultImage = qs<HTMLImageElement>('[data-share-result-image]');
 
   const steps = qsa<HTMLElement>('[data-tryon-step]');
   let currentLooks: TryOnLookClient[] = [];
@@ -1302,6 +1350,10 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
   let preparedPhotoBase64: string | null = null;
   let uploadState: UploadState = 'idle';
   let uploadPreparationToken = 0;
+  let currentTier: 'free' | 'pro' | 'premium' = 'free';
+  let loadingTimerId: number | undefined;
+  let loadingStartedAt = 0;
+  let loadingEstimateSeconds = 45;
 
   const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
   const ALLOWED_UPLOAD_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -1312,6 +1364,79 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     if (kb < 1024) return `${kb.toFixed(kb >= 100 ? 0 : 1)} KB`;
     const mb = kb / 1024;
     return `${mb.toFixed(mb >= 10 ? 1 : 2)} MB`;
+  };
+
+  const getDisplaySiteUrl = () => {
+    const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href;
+    const source = canonical || window.location.origin || 'https://aibeautystylist.com';
+    try {
+      const url = new URL(source);
+      if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+        return 'https://aibeautystylist.com';
+      }
+      return url.origin;
+    } catch {
+      return 'https://aibeautystylist.com';
+    }
+  };
+
+  const formatDisplaySite = (siteUrl: string) => {
+    try {
+      return new URL(siteUrl).hostname.replace(/^www\./, '');
+    } catch {
+      return siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    }
+  };
+
+  const updateShareSite = () => {
+    if (!shareSite) return;
+    shareSite.textContent = `${TX.shareSiteLabel} ${formatDisplaySite(getDisplaySiteUrl())}`;
+  };
+
+  updateShareSite();
+
+  const setLoadingProgress = (percent: number) => {
+    if (loadingProgressBar) {
+      loadingProgressBar.style.width = `${Math.max(0, Math.min(100, Math.round(percent)))}%`;
+    }
+  };
+
+  const updateLoadingTimer = () => {
+    const elapsed = Math.floor((Date.now() - loadingStartedAt) / 1000);
+    const remaining = Math.max(0, loadingEstimateSeconds - elapsed);
+    const progress = remaining > 0
+      ? Math.min(94, (elapsed / loadingEstimateSeconds) * 94)
+      : 96;
+    const activeIndex = remaining === 0
+      ? loadingPhaseItems.length - 1
+      : Math.min(loadingPhaseItems.length - 1, Math.floor((elapsed / loadingEstimateSeconds) * loadingPhaseItems.length));
+
+    if (loadingCountdown) loadingCountdown.textContent = String(remaining);
+    if (loadingCountdownLabel) {
+      loadingCountdownLabel.textContent = remaining > 0 ? TX.loadingCountdownLabel : TX.loadingFinalizingLabel;
+    }
+    setLoadingProgress(progress);
+    loadingPhaseItems.forEach((item, index) => {
+      item.classList.toggle('is-active', index === activeIndex);
+      item.classList.toggle('is-complete', index < activeIndex);
+    });
+  };
+
+  const startLoadingTimer = (seconds: number) => {
+    if (loadingTimerId !== undefined) window.clearInterval(loadingTimerId);
+    loadingEstimateSeconds = Math.max(6, seconds);
+    loadingStartedAt = Date.now();
+    setLoadingProgress(0);
+    updateLoadingTimer();
+    loadingTimerId = window.setInterval(updateLoadingTimer, 1000);
+  };
+
+  const stopLoadingTimer = () => {
+    if (loadingTimerId !== undefined) {
+      window.clearInterval(loadingTimerId);
+      loadingTimerId = undefined;
+    }
+    setLoadingProgress(100);
   };
 
   const getDataUrlByteSize = (dataUrl: string) => {
@@ -1703,6 +1828,18 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     }
   };
 
+  const updateShareResultVisual = (dataUrl?: string, look?: TryOnLookClient) => {
+    if (!shareResultVisual || !shareResultImage) return;
+    if (!dataUrl) {
+      shareResultVisual.classList.add('is-hidden');
+      shareResultImage.removeAttribute('src');
+      return;
+    }
+    shareResultImage.src = dataUrl;
+    shareResultImage.alt = look ? `${TX.shareAfterAlt}: ${look.name}` : TX.shareAfterAlt;
+    shareResultVisual.classList.remove('is-hidden');
+  };
+
   const fallbackToCanvasPreview = (lookId: string) => {
     if (currentLipColors && currentLipColors[lookId]) {
       applyLipColorToCanvas(currentLipColors[lookId]);
@@ -1823,9 +1960,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
       const isFreeTier = currentGatedInfo?.isFreeTier ?? false;
       const previewLocked = isFreeTier && currentGatedInfo?.lockedFeatures.includes('makeup_preview');
       previewBtn.className = `btn btn-secondary look-preview-btn${previewLocked ? ' is-locked' : ''}`;
-      previewBtn.innerHTML = previewLocked
-        ? '🔒 Preview Makeup <span class="look-preview-pro-badge">Pro</span>'
-        : '✨ Preview Makeup';
+      previewBtn.innerHTML = previewLocked ? TX.previewMakeupLocked : TX.previewMakeup;
       previewBtn.dataset.lookId = look.id;
       previewBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1841,12 +1976,12 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
       const ghost = document.createElement('a');
       ghost.className = 'look-option-card look-option-ghost';
       ghost.href = '/membership?from=tryon_ghost_card';
-      ghost.setAttribute('aria-label', `Unlock ${remaining} more look${remaining === 1 ? '' : 's'} with Pro`);
+      ghost.setAttribute('aria-label', `${remaining}${TX.ghostCardSuffix}`);
       ghost.innerHTML = `
         <span class="look-ghost-icon" aria-hidden="true">🔒</span>
-        <h4>${remaining} more look${remaining === 1 ? '' : 's'} await</h4>
-        <p>Pro unlocks the full set of personalized looks for your face profile.</p>
-        <span class="look-ghost-cta">Upgrade to Pro →</span>
+        <h4>${remaining}${TX.ghostCardSuffix}</h4>
+        <p>${TX.ghostCardDetail}</p>
+        <span class="look-ghost-cta">${TX.ghostCardCta}</span>
       `;
       ghost.addEventListener('click', () => {
         trackLookEvent('upgrade_click', { source: 'tryon_ghost_card' });
@@ -1912,6 +2047,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     renderProductGroup(kitUpgrade, look.kit?.upgrade ?? []);
 
     if (shareLook) shareLook.textContent = `${look.name} · ${look.finish}`;
+    updateShareResultVisual(renderedAfterImages.get(look.id), look);
     renderLookCards();
 
     // P0 — 同步教程锁卡显示状态
@@ -1968,8 +2104,42 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     look_history: 'Unlimited look history',
   };
 
+  const syncRemainingBadge = (
+    tier: 'free' | 'pro' | 'premium',
+    remaining?: number,
+    limit?: number,
+    windowType?: 'daily' | 'monthly',
+    hasPhoto = false,
+  ) => {
+    if (!remainingBadge || typeof remaining !== 'number' || !hasPhoto) {
+      remainingBadge?.classList.add('is-hidden');
+      return;
+    }
+
+    const label = tier === 'free'
+      ? TX.remainingBadge
+      : tier === 'premium'
+        ? TX.remainingBadgePremium
+        : TX.remainingBadgeMonthly;
+    if (remainingLabel) remainingLabel.textContent = label;
+    if (remainingCount) remainingCount.textContent = String(remaining);
+
+    const resolvedLimit = typeof limit === 'number' && Number.isFinite(limit) ? limit : undefined;
+    if (remainingTotal) {
+      remainingTotal.textContent = resolvedLimit ? `/${resolvedLimit}` : '';
+      remainingTotal.classList.toggle('is-hidden', !resolvedLimit);
+    }
+
+    remainingBadge.dataset.quotaTier = tier;
+    remainingBadge.dataset.quotaWindow = windowType || (tier === 'free' ? 'daily' : 'monthly');
+    remainingBadge.classList.remove('is-hidden');
+  };
+
   const applyGatedInfo = (gated?: GatedInfo) => {
     currentGatedInfo = gated;
+    currentTier = gated?.tier ?? currentTier;
+    const isFreeTier = Boolean(gated?.isFreeTier);
+    looksUpgradeCta?.classList.toggle('is-hidden', !isFreeTier);
     if (!gated || !gated.isFreeTier) {
       gatedBanner?.classList.add('is-hidden');
       tutorialLock?.classList.add('is-hidden');
@@ -2063,11 +2233,11 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     if (resultStep) resultStep.setAttribute('data-tryon-mode', isDemo ? 'demo' : 'real');
     if (modeChip) {
       if (isDemo) {
-        modeChip.textContent = 'Demo Profile';
+        modeChip.textContent = TX.modeChipDemo;
         modeChip.classList.remove('is-real');
         modeChip.classList.add('is-demo');
       } else {
-        modeChip.textContent = 'AI Diagnosis';
+        modeChip.textContent = TX.modeChipReal;
         modeChip.classList.remove('is-demo');
         modeChip.classList.add('is-real');
       }
@@ -2090,7 +2260,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     }
 
     // P2.11: Re-analyze 按钮文案随模式切换
-    if (rerunButton) rerunButton.textContent = isDemo ? 'Try another sample' : 'Re-analyze';
+    if (rerunButton) rerunButton.textContent = isDemo ? TX.rerunButtonDemo : TX.rerunButton;
     if (deleteButton) deleteButton.classList.toggle('is-hidden', isDemo);
   };
 
@@ -2149,6 +2319,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     };
 
     setStep('loading');
+    startLoadingTimer(photo ? 45 : 8);
     if (photo) setUploadState('analyzing', 'Analyzing face and color profile');
     setLive('Analyzing. Please wait.');
 
@@ -2179,6 +2350,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
       result = r;
     } catch (error) {
       console.error('[TryOnStudio] Diagnosis request failed:', error);
+      stopLoadingTimer();
       setStep('input');
       if (photo) setUploadState('ready', 'Ready for AI diagnosis');
       setLive('Sorry, something went wrong. Please try again.');
@@ -2187,6 +2359,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     }
 
     if (result?._rateLimited) {
+      stopLoadingTimer();
       setStep('input');
       if (photo) setUploadState('ready', 'Ready for AI diagnosis');
       setLive('Daily free quota reached.');
@@ -2195,6 +2368,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     }
 
     if (!result.diagnosis || !result.shareCard || !Array.isArray(result.looks)) {
+      stopLoadingTimer();
       setStep('input');
       if (photo) setUploadState('ready', 'Ready for AI diagnosis');
       setLive('Diagnosis response was incomplete.');
@@ -2212,6 +2386,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     currentLipColors = result._lipColors ?? null;
     currentUploadKey = result._upload?.stored && result._upload.key ? result._upload.key : null;
     selectedLookId = currentLooks[0]?.id || '';
+    currentTier = result._tier ?? result._gated?.tier ?? currentTier;
 
     const isDemo = Boolean(forceDemo) || Boolean(result?.meta?.fallback) || !photo;
     setMode(isDemo);
@@ -2219,12 +2394,7 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     // P0 — 渲染会员门控信息
     applyGatedInfo(result._gated);
 
-    if (typeof result._remaining === 'number' && photo) {
-      remainingBadge?.classList.remove('is-hidden');
-      if (remainingCount) remainingCount.textContent = String(result._remaining);
-    } else {
-      remainingBadge?.classList.add('is-hidden');
-    }
+    syncRemainingBadge(currentTier, result._remaining, result._quotaLimit, result._quotaWindow, Boolean(photo));
 
     if (diagnosisTitle) diagnosisTitle.textContent = result.diagnosis.title;
     if (diagnosisSummary) diagnosisSummary.textContent = result.diagnosis.summary;
@@ -2237,8 +2407,9 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
 
     if (selectedLookId) selectLook(selectedLookId);
 
-    setShareStatus('Copy to share');
+    setShareStatus(TX.shareExport);
     window.setTimeout(() => {
+      stopLoadingTimer();
       setStep('result');
       focusResult();
       setLive(isDemo ? 'Demo profile ready.' : 'Diagnosis ready.');
@@ -2285,10 +2456,13 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     currentLooks = [];
     currentShareCard = null;
     currentLipColors = null;
+    currentGatedInfo = undefined;
+    currentTier = 'free';
     resetUpload();
     renderedAfterImages.clear();
+    updateShareResultVisual(undefined);
     selectedLookId = '';
-    setShareStatus('Copy to share');
+    setShareStatus(TX.shareExport);
     remainingBadge?.classList.add('is-hidden');
     setMode(false);
     setStep('input');
@@ -2308,19 +2482,20 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
       `Focus: ${look.focus} · ${look.minutes}`,
       `Why it works: ${look.reason}`,
       (currentShareCard.hashtags || []).join(' '),
+      `${TX.shareUrlLabel} ${getDisplaySiteUrl()}`,
     ].join('\n');
 
     try {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(shareText);
-        setShareStatus('Copied to clipboard');
+        setShareStatus(TX.shareStatusCopied);
       } else {
         setShareStatus('Clipboard not supported');
       }
     } catch (error) {
       setShareStatus('Copy failed — please copy manually');
     }
-    window.setTimeout(() => setShareStatus('Copy to share'), 1800);
+    window.setTimeout(() => setShareStatus(TX.shareExport), 1800);
   });
 
   continueLink?.addEventListener('click', () => {
@@ -2388,6 +2563,67 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
       .replace('{elapsed}', elapsed)
       .replace('{engine}', getPreviewEngineLabel(tier));
 
+  const requestMakeupPreviewImage = async (look: TryOnLookClient) => {
+    const photoData = currentPhotoBase64 || preparedPhotoBase64;
+    if (!photoData) {
+      throw new Error(TX.uploadSelfieFirst);
+    }
+
+    const resp = await fetch('/api/makeup-preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        photoBase64: photoData,
+        look: {
+          id: look.id,
+          name: look.name,
+          reason: look.reason,
+          scenario: look.scenario,
+          focus: look.focus,
+          finish: look.finish,
+          tutorialHeadline: look.tutorialHeadline,
+        },
+        locale: (document.documentElement.lang || 'en').toLowerCase().startsWith('zh') ? 'zh' : 'en',
+      }),
+    });
+
+    const data = await resp.json() as MakeupPreviewResponse;
+    if (!resp.ok || data.error || !data.image?.dataUrl) {
+      throw new Error(data.message || TX.previewError);
+    }
+    return {
+      dataUrl: data.image.dataUrl,
+      tier: data._tier ?? currentTier,
+    };
+  };
+
+  const ensureShareMakeupResult = async (look: TryOnLookClient) => {
+    const cached = renderedAfterImages.get(look.id);
+    if (cached) return cached;
+
+    const visibleAfter = selectedLookId === look.id && afterImage && !afterImage.classList.contains('is-hidden') && afterImage.src
+      ? afterImage.src
+      : '';
+    if (visibleAfter) {
+      renderedAfterImages.set(look.id, visibleAfter);
+      updateShareResultVisual(visibleAfter, look);
+      return visibleAfter;
+    }
+
+    if (currentIsDemo || (!currentPhotoBase64 && !preparedPhotoBase64)) {
+      return undefined;
+    }
+    if (currentGatedInfo?.isFreeTier && currentGatedInfo.lockedFeatures.includes('makeup_preview')) {
+      return undefined;
+    }
+
+    const preview = await requestMakeupPreviewImage(look);
+    renderedAfterImages.set(look.id, preview.dataUrl);
+    updateShareResultVisual(preview.dataUrl, look);
+    if (selectedLookId === look.id) showAfterImage(look, preview.dataUrl);
+    return preview.dataUrl;
+  };
+
   // 关闭按钮
   document.querySelectorAll('[data-makeup-close]').forEach((btn) => {
     btn.addEventListener('click', hideMakeupModal);
@@ -2451,54 +2687,24 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
 
     try {
       const startTime = Date.now();
-      const resp = await fetch('/api/makeup-preview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          photoBase64: photoData,
-          look: {
-            id: look.id,
-            name: look.name,
-            reason: look.reason,
-            scenario: look.scenario,
-            focus: look.focus,
-            finish: look.finish,
-            tutorialHeadline: look.tutorialHeadline,
-          },
-          locale: document.documentElement.lang === 'zh' ? 'zh' : 'en',
-        }),
-      });
-
-      const data = await resp.json() as MakeupPreviewResponse;
+      const preview = await requestMakeupPreviewImage(look);
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-
-      if (data.error === 'upgrade_required') {
-        makeupLoading?.classList.add('is-hidden');
-        makeupError?.classList.remove('is-hidden');
-        if (makeupErrorMsg) {
-          makeupErrorMsg.innerHTML = `✨ <strong>Makeup Preview is a Pro feature.</strong><br>
-            <a href="/membership" class="text-link">Upgrade to Pro</a> to see AI-generated makeup looks on your face.`;
-        }
-        return;
-      }
-
-      if (!resp.ok || data.error) {
-        throw new Error(data.message || 'Generation failed');
-      }
+      renderedAfterImages.set(look.id, preview.dataUrl);
+      updateShareResultVisual(preview.dataUrl, look);
+      if (selectedLookId === look.id) showAfterImage(look, preview.dataUrl);
 
       // 显示结果
       makeupLoading?.classList.add('is-hidden');
       makeupResult?.classList.remove('is-hidden');
       if (makeupTitle) makeupTitle.textContent = `${look.name} — AI Makeup Preview`;
       if (makeupBefore && photoData) makeupBefore.src = photoData;
-      if (makeupAfter && data.image?.dataUrl) makeupAfter.src = data.image.dataUrl;
-      if (makeupElapsed) makeupElapsed.textContent = formatPreviewElapsed(elapsed, data._tier ?? currentGatedInfo?.tier);
+      if (makeupAfter) makeupAfter.src = preview.dataUrl;
+      if (makeupElapsed) makeupElapsed.textContent = formatPreviewElapsed(elapsed, preview.tier);
 
       // 下载按钮
       makeupDownload?.addEventListener('click', () => {
-        if (!data.image?.dataUrl) return;
         const a = document.createElement('a');
-        a.href = data.image.dataUrl;
+        a.href = preview.dataUrl;
         a.download = `makeup-preview-${look.id}.png`;
         a.click();
       }, { once: true });
@@ -2565,13 +2771,17 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
     trackLookEvent('share_click', { metadata: { action: 'download_card', selectedLookId: look.id } });
 
     shareDownloadBtn.disabled = true;
-    shareDownloadBtn.textContent = '⏳ Generating...';
+    shareDownloadBtn.textContent = TX.shareGeneratingAfter;
+    setShareStatus(TX.shareGeneratingAfter);
 
     try {
       const { generateShareCard, downloadShareCard } = await import('../lib/shareCardGenerator');
 
       const diagTitle = diagnosisTitle?.textContent || 'Your Personalized Beauty Profile';
       const lipHex = currentLipColors?.[look.id]?.hex;
+      const makeupResultUrl = await ensureShareMakeupResult(look);
+      shareDownloadBtn.textContent = TX.sharePreparingCard;
+      setShareStatus(TX.sharePreparingCard);
 
       const dataUrl = await generateShareCard({
         diagnosisTitle: diagTitle,
@@ -2579,7 +2789,9 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
         lookFinish: look.finish,
         scenario: look.scenario,
         lipColorHex: lipHex,
+        makeupResultUrl,
         hashtags: currentShareCard?.hashtags,
+        siteUrl: getDisplaySiteUrl(),
       });
 
       // 显示预览
@@ -2591,17 +2803,21 @@ const tryOnStudioTranslationsJson = JSON.stringify(tx.tryOnStudio).replace(/</g,
       // 触发下载
       downloadShareCard(dataUrl, look.name);
 
-      shareDownloadBtn.textContent = '✅ Downloaded!';
+      shareDownloadBtn.textContent = TX.shareDownloadDone;
+      setShareStatus(TX.shareDownloadDone);
       setTimeout(() => {
-        shareDownloadBtn.textContent = '📸 Download Share Card';
+        shareDownloadBtn.textContent = TX.shareDownload;
+        setShareStatus(TX.shareExport);
         shareDownloadBtn.disabled = false;
       }, 2000);
 
     } catch (err) {
       console.error('[ShareCard] Generation failed:', err);
-      shareDownloadBtn.textContent = '❌ Failed — Try again';
+      shareDownloadBtn.textContent = TX.shareDownloadFailed;
+      setShareStatus(err instanceof Error ? err.message : TX.shareDownloadFailed);
       setTimeout(() => {
-        shareDownloadBtn.textContent = '📸 Download Share Card';
+        shareDownloadBtn.textContent = TX.shareDownload;
+        setShareStatus(TX.shareExport);
         shareDownloadBtn.disabled = false;
       }, 2000);
     }

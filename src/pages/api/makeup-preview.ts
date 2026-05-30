@@ -66,7 +66,7 @@ export const POST: APIRoute = async (context) => {
         error: 'rate_limited',
         message:
           membership.tier === 'pro'
-            ? "You've used all 30 monthly makeup previews. Upgrade to Premium for unlimited."
+            ? "You've used all 30 monthly makeup previews. Your current plan refreshes next month."
             : "You've reached this month's fair-use limit on makeup previews.",
         remaining: 0,
         tier: membership.tier,
