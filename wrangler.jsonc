@@ -1,7 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ai-beauty-stylist",
-  "main": "dist/_worker.js",
   "account_id": "62ca98e53f85ec589d9f64e5365055d3",
   "compatibility_date": "2026-06-07",
   "compatibility_flags": ["nodejs_compat"],

@@ -9,6 +9,7 @@ node_modules/
 dist/
 .astro/
 .wrangler/
+wrangler.json
 .cache/
 
 # Local runtime data
