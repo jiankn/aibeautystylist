@@ -1,0 +1,543 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { getCurrentLocale } from "../lib/i18n";
+import { getLocalizedFaqContent } from "../data/supportingPageContent";
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const supportHref = getLocalizedAppHref("/support", currentRoute.language.slug);
+const isEn = !getCurrentLocale().startsWith("zh");
+const fallbackGroups = isEn
+  ? [
+      {
+        id: "getting-started",
+        title: "Using the product",
+        items: [
+          [
+            "What is AI Beauty Stylist for?",
+            "It helps you compare makeup directions on your own photo and understand practical color, finish, and placement suggestions. Results are visual references, not guarantees.",
+          ],
+          [
+            "How should I take a photo?",
+            "Use even front lighting, face the camera, keep major facial features visible, and avoid heavy filters. A clear image gives the system more useful visual information.",
+          ],
+          [
+            "What is the difference between diagnosis and try-on?",
+            "Diagnosis summarizes visible color and structure directions. Try-on creates a visual reference for a selected makeup look. Both use the same monthly generation allowance.",
+          ],
+          [
+            "Why can the result differ from real makeup?",
+            "Camera color, lighting, screen calibration, physical products, and application technique all affect the real result.",
+          ],
+        ],
+      },
+      {
+        id: "privacy",
+        title: "Photos and privacy",
+        items: [
+          [
+            "When is my selfie processed?",
+            "Only after you explicitly confirm the photo processing notice and start an upload.",
+          ],
+          [
+            "Is my photo used for identity recognition or training?",
+            "The product is not designed for identity recognition. We do not use uploaded selfies for model training without separate authorization.",
+          ],
+          [
+            "Can I delete my photo and result?",
+            "Yes. Available delete controls let you remove the original upload and generated result. See the privacy policy for retention and operational details.",
+          ],
+        ],
+      },
+      {
+        id: "billing",
+        title: "Account and billing",
+        items: [
+          [
+            "When is generation allowance used?",
+            "Allowance is used when a diagnosis or try-on task is successfully generated. Browsing looks and reading guides do not use it.",
+          ],
+          [
+            "What happens when a generation fails?",
+            "The service is designed to return allowance for failed tasks. If the balance does not recover, submit the job ID to support.",
+          ],
+          [
+            "How do I manage or cancel a subscription?",
+            "Sign in, open your account, and use Manage subscription to access the hosted billing portal. Cancellation stops the next renewal while current-period access remains.",
+          ],
+        ],
+      },
+      {
+        id: "troubleshooting",
+        title: "Troubleshooting",
+        items: [
+          [
+            "The result does not look like me. What should I do?",
+            "Try a clearer front-facing photo with even light and no beauty filter. If the issue repeats, submit the job ID and a description to support; do not email your selfie.",
+          ],
+          [
+            "A task appears stuck. What should I do?",
+            "Wait briefly, refresh the task status, then retry or cancel if those controls are available. Contact support with the job ID if it remains stuck.",
+          ],
+          [
+            "Where can I report a billing or account issue?",
+            "Use the support form and include your account email plus any relevant order or job ID. Never include passwords, verification codes, or full card details.",
+          ],
+        ],
+      },
+    ]
+  : [
+      {
+        id: "getting-started",
+        title: "使用产品",
+        items: [
+          [
+            "AI Beauty Stylist 适合做什么？",
+            "它适合在上传自拍后比较不同妆容方向，并查看色彩、妆感和上妆位置建议。生成结果是视觉参考，不保证现实上妆完全一致。",
+          ],
+          [
+            "怎样拍照更适合诊断和试妆？",
+            "使用均匀的正面光线，正视镜头，保持主要五官可见，并避免重度滤镜。清晰照片能为系统提供更有用的视觉信息。",
+          ],
+          [
+            "妆容诊断和试妆有什么区别？",
+            "妆容诊断会整理肤色方向、妆容重点和适合先试的风格；试妆则生成所选妆容的上脸参考图。两者使用同一套月度生成额度。",
+          ],
+          [
+            "为什么生成结果可能与现实妆效不同？",
+            "相机色彩、现场光线、屏幕校色、实体产品和上妆手法都会影响现实结果。",
+          ],
+        ],
+      },
+      {
+        id: "privacy",
+        title: "照片与隐私",
+        items: [
+          [
+            "我的自拍会在什么时候进入处理？",
+            "只有在你明确确认照片处理说明并发起上传后，自拍才会进入处理流程。",
+          ],
+          [
+            "自拍会用于人脸识别或训练模型吗？",
+            "产品不是人脸识别工具。未经额外授权，我们不会使用你上传的自拍训练模型。",
+          ],
+          [
+            "我可以删除自拍和生成结果吗？",
+            "可以。产品中的删除入口可用于删除原始上传和生成结果；保留时间及运行细节请查看隐私政策。",
+          ],
+        ],
+      },
+      {
+        id: "billing",
+        title: "账号与账单",
+        items: [
+          [
+            "什么时候会消耗生成额度？",
+            "诊断或试妆任务成功生成时才会使用额度。浏览妆容和阅读教程不会消耗额度。",
+          ],
+          [
+            "生成失败后额度怎么办？",
+            "系统设计为失败任务返还额度。如果额度没有恢复，请将任务编号提交给支持团队。",
+          ],
+          [
+            "如何管理或取消订阅？",
+            "登录后进入账户页，通过“管理订阅”访问托管账单门户。取消会停止下一次续费，当前周期权益仍会保留。",
+          ],
+        ],
+      },
+      {
+        id: "troubleshooting",
+        title: "故障处理",
+        items: [
+          [
+            "生成结果不像本人，应该怎么办？",
+            "换用光线均匀、正脸、无美颜滤镜的清晰照片重试。如果问题持续，请向支持团队提供任务编号和现象描述，不要通过邮件发送自拍。",
+          ],
+          [
+            "任务长时间没有完成，应该怎么办？",
+            "稍等片刻后刷新任务状态；如页面提供重试或取消入口，可先使用这些操作。问题持续时，请携带任务编号联系支持。",
+          ],
+          [
+            "账单或账号问题去哪里反馈？",
+            "使用支持工单，并填写账号邮箱及相关订单或任务编号。请勿提交密码、验证码或完整银行卡信息。",
+          ],
+        ],
+      },
+    ];
+
+const fallbackCopy = isEn
+  ? {
+      metaTitle: "AI Beauty Stylist FAQ | AI Beauty Stylist",
+      title: "Find the answer, then get back to your task",
+      description:
+        "Clear answers about try-on, diagnosis, photos, billing, and troubleshooting.",
+      eyebrow: "Help center",
+      search: "Search help",
+      searchPlaceholder: "Search photos, billing, generation...",
+      noResults: "No matching answers. Try another keyword or contact support.",
+      supportTitle: "Still blocked?",
+      supportBody:
+        "Create a support ticket with the page, steps, expected result, and any relevant job or order ID.",
+      supportCta: "Contact support",
+    }
+  : {
+      metaTitle: "AI 试妆常见问题 | AI Beauty Stylist",
+      title: "先找到答案，再继续完成任务",
+      description: "集中解答 AI 试妆、妆容诊断、照片处理、账单和故障处理问题。",
+      eyebrow: "帮助中心",
+      search: "搜索帮助内容",
+      searchPlaceholder: "搜索照片、账单、生成任务……",
+      noResults: "没有匹配的答案，请换个关键词或联系支持团队。",
+      supportTitle: "问题仍未解决？",
+      supportBody:
+        "创建支持工单，并写清页面、操作步骤、期待结果和相关任务或订单编号。",
+      supportCta: "联系支持",
+    };
+const localizedFaq = getLocalizedFaqContent(getCurrentLocale());
+const groups = localizedFaq?.groups ?? fallbackGroups;
+const copy = localizedFaq?.copy ?? fallbackCopy;
+
+const faqJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: groups.flatMap((group) =>
+    group.items.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  ),
+});
+---
+
+<BaseLayout
+  title={copy.metaTitle}
+  description={copy.description}
+  jsonLd={faqJsonLd}
+>
+  <SiteHeader />
+  <main class="faq-main">
+    <header class="faq-hero shell">
+      <span class="section-kicker">{copy.eyebrow}</span>
+      <h1>{copy.title}</h1>
+      <p>{copy.description}</p>
+      <label class="faq-search">
+        <span class="sr-only">{copy.search}</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"
+          ></path></svg
+        >
+        <input
+          type="search"
+          data-faq-search
+          placeholder={copy.searchPlaceholder}
+          autocomplete="off"
+        />
+      </label>
+    </header>
+
+    <div class="faq-layout shell">
+      <aside class="faq-nav">
+        <nav aria-label={copy.eyebrow}>
+          {
+            groups.map((group, index) => (
+              <a class:list={{ active: index === 0 }} href={`#${group.id}`}>
+                {group.title}
+              </a>
+            ))
+          }
+        </nav>
+        <div class="support-prompt">
+          <strong>{copy.supportTitle}</strong>
+          <p>{copy.supportBody}</p>
+          <a class="btn btn-primary" href={supportHref}>{copy.supportCta}</a>
+        </div>
+      </aside>
+
+      <div class="faq-groups" data-faq-groups>
+        {
+          groups.map((group) => (
+            <section id={group.id} data-faq-group>
+              <h2>{group.title}</h2>
+              <div class="faq-list">
+                {group.items.map(([question, answer]) => (
+                  <details data-faq-item data-search={`${question} ${answer}`}>
+                    <summary>
+                      <span>{question}</span>
+                      <i aria-hidden="true" />
+                    </summary>
+                    <p>{answer}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+          ))
+        }
+        <p class="no-results" data-no-results hidden>{copy.noResults}</p>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script is:inline>
+  (() => {
+    const input = document.querySelector("[data-faq-search]");
+    const groups = [...document.querySelectorAll("[data-faq-group]")];
+    const noResults = document.querySelector("[data-no-results]");
+    if (!input || !noResults) return;
+    input.addEventListener("input", () => {
+      const query = input.value.trim().toLocaleLowerCase();
+      let visibleCount = 0;
+      groups.forEach((group) => {
+        let groupCount = 0;
+        group.querySelectorAll("[data-faq-item]").forEach((item) => {
+          const match =
+            !query || item.dataset.search.toLocaleLowerCase().includes(query);
+          item.hidden = !match;
+          if (match) groupCount += 1;
+        });
+        group.hidden = groupCount === 0;
+        visibleCount += groupCount;
+      });
+      noResults.hidden = visibleCount > 0;
+    });
+  })();
+</script>
+
+<style>
+  .faq-main {
+    padding: 54px 0 88px;
+    background: var(--page-surface);
+  }
+  .faq-hero {
+    display: grid;
+    justify-items: center;
+    padding-bottom: 38px;
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+  }
+  .section-kicker {
+    display: block;
+    margin-bottom: 13px;
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+  .faq-hero h1 {
+    max-width: 860px;
+    margin: 0 auto;
+    color: var(--heading);
+    font-family: var(--font-display);
+    font-size: var(--content-hero-size);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+  .faq-hero p {
+    max-width: 620px;
+    margin: 18px auto 0;
+    color: var(--body-secondary);
+    font-size: var(--content-body-size);
+    line-height: 1.75;
+  }
+  .faq-search {
+    display: flex;
+    width: min(100%, 620px);
+    min-height: 50px;
+    align-items: center;
+    gap: 10px;
+    margin: 30px auto 0;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg-elevated);
+  }
+  .faq-search:focus-within {
+    border-color: var(--rose);
+    outline: 3px solid var(--rose-soft);
+    outline-offset: 2px;
+  }
+  .faq-search svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 2;
+  }
+  .faq-search input {
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+  }
+  .faq-layout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 62px;
+    padding-top: 40px;
+    align-items: start;
+  }
+  .faq-nav {
+    position: sticky;
+    top: 84px;
+  }
+  .faq-nav nav {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+  .faq-nav nav a {
+    display: flex;
+    min-height: 46px;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    color: var(--body-secondary);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .faq-nav nav a.active,
+  .faq-nav nav a:hover {
+    color: var(--rose);
+  }
+  .support-prompt {
+    margin-top: 28px;
+    padding: 19px;
+    border-left: 3px solid var(--rose);
+    background: var(--surface-rose);
+  }
+  .support-prompt strong {
+    color: var(--heading);
+    font-size: 14px;
+  }
+  .support-prompt p {
+    margin: 8px 0 15px;
+    color: var(--body-secondary);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .support-prompt .btn {
+    width: 100%;
+  }
+  .faq-groups {
+    display: grid;
+    gap: 48px;
+  }
+  .faq-groups section {
+    scroll-margin-top: 84px;
+  }
+  .faq-groups h2 {
+    margin: 0 0 14px;
+    color: var(--heading);
+    font-size: var(--content-subsection-title-size);
+  }
+  .faq-list {
+    border-top: 1px solid var(--line);
+  }
+  .faq-list details {
+    border-bottom: 1px solid var(--line);
+  }
+  .faq-list summary {
+    display: flex;
+    min-height: 66px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    cursor: pointer;
+    list-style: none;
+    color: var(--heading);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  .faq-list summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-list i {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+  }
+  .faq-list i::before,
+  .faq-list i::after {
+    position: absolute;
+    top: 8px;
+    left: 2px;
+    width: 14px;
+    height: 2px;
+    background: var(--rose);
+    content: "";
+  }
+  .faq-list i::after {
+    transform: rotate(90deg);
+    transition: transform 0.18s;
+  }
+  .faq-list details[open] i::after {
+    transform: rotate(0);
+  }
+  .faq-list details p {
+    max-width: 760px;
+    margin: -3px 42px 22px 0;
+    color: var(--body-secondary);
+    font-size: var(--content-supporting-size);
+    line-height: 1.75;
+  }
+  .no-results {
+    padding: 30px 0;
+    color: var(--muted);
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  @media (max-width: 900px) {
+    .faq-layout {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .faq-nav {
+      position: static;
+    }
+    .faq-nav nav {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .faq-nav nav a {
+      padding-right: 12px;
+    }
+  }
+  @media (max-width: 700px) {
+    .faq-main {
+      padding-top: 34px;
+    }
+    .faq-hero h1 {
+      font-size: var(--content-hero-size-mobile);
+    }
+    .faq-layout {
+      padding-top: 28px;
+    }
+    .faq-nav nav {
+      grid-template-columns: 1fr;
+    }
+    .faq-list summary {
+      min-height: 60px;
+      font-size: 14px;
+    }
+    .faq-list details p {
+      margin-right: 0;
+    }
+  }
+</style>

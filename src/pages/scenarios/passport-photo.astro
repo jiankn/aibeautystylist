@@ -1,0 +1,272 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Passport Photo Makeup: Look Like Yourself, But Your Best Self",
+  description:
+    "Passport photo makeup is a balancing act: look natural but polished, follow strict government guidelines, and avoid anything that could get your application rejected. Learn what makeup is allowed, what gets photos rejected, and a foolproof routine.",
+  heroImage: "/images/look-passport-photo-clean.webp",
+  ogImage: "/images/look-passport-photo-clean.webp",
+  faq: [
+    {
+      q: "Can you wear makeup for a passport photo?",
+      a: "Yes, you can wear makeup for a passport photo. Government guidelines in most countries do not prohibit makeup. However, they do require that your photo represent your natural, everyday appearance. Heavy makeup, dramatic transformations, or anything that significantly alters the way your facial features appear can cause your application to be rejected. The safest approach is lightweight, natural-looking makeup that evens out your skin tone and makes you look like the version of yourself that shows up at border control.",
+    },
+    {
+      q: "What makeup is allowed in passport photos?",
+      a: "Acceptable passport photo makeup includes lightweight foundation or concealer for an even skin tone, subtle mascara, natural brow grooming, a tinted lip product close to your natural lip color, and light blush for healthy color. What is not allowed or strongly discouraged: heavy contouring that changes the apparent shape of your face, dramatic false eyelashes, glitter or shimmer that creates reflection in the photo, colored contact lenses that change your eye color, and heavy eyeliner that obscures your natural eye shape.",
+    },
+    {
+      q: "What are the most important passport photo makeup tips?",
+      a: "Use a matte base since glossy or dewy finishes reflect the camera flash and create hot spots on your forehead and cheeks. Skip highlighter entirely. Match your foundation to your neck so there is no visible line. Keep eye makeup minimal: one coat of mascara and groomed brows are enough. Choose a lip color within two shades of your natural lip. Avoid anything with glitter, sparkle, or metallic shimmer since these reflect the passport camera flash. And most importantly, look like yourself. Border agents compare your photo to your face in person, and if the discrepancy is significant, you will face delays.",
+    },
+    {
+      q: "Will heavy makeup cause my passport photo to be rejected?",
+      a: "It depends on the country and the severity, but the general rule is that any makeup that alters your facial landmarks enough to make facial recognition difficult can result in rejection. This includes extreme contouring, heavy eyeliner that changes the apparent eye shape, very dark lipstick that obscures the natural lip line, and anything that creates glare under the camera flash. If you normally wear heavier makeup, tone it down to a lighter version of your everyday look. The goal is to look like someone the border agent can match to your face in three seconds or less.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+  { label: "Natural Makeup", url: "/looks/natural-makeup" },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={page.heroImage}
+  ogImage={page.ogImage}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Passport photos have strict rules: no filters, no heavy alteration, no
+      glare. Learn exactly what makeup is allowed, what causes photo rejection,
+      and a simple routine that makes you look polished while staying fully
+      compliant.
+    </p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>The Passport Photo Rule: Look Like You on Your Best Day</h2>
+    <p>
+      Passport photos are not beauty portraits. They are identification
+      documents. The camera does not care about your contour skills, and the
+      border agent who checks your passport against your face at immigration has
+      one job: confirming that the person standing in front of them matches the
+      photo on file. Anything that makes that comparison harder works against
+      you.
+    </p>
+    <p>
+      This does not mean you have to show up bare-faced. It means your makeup
+      should follow the same principle as the clothing rules: neat, presentable,
+      and representative of how you actually look. A lightweight foundation that
+      evens out redness, a touch of mascara to define your eyes, and a lip balm
+      with a hint of color are all perfectly fine and actually advisable. The
+      goal is to look like yourself after a good night of sleep, not like
+      yourself after a professional makeup session.
+    </p>
+
+    <h2>What Passes and What Fails in Passport Photos</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Allowed</th>
+          <th>Not Allowed / Risky</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lightweight foundation or skin tint matching your natural tone</td
+          >
+          <td
+            >Full-coverage foundation that creates an artificial, uniform
+            appearance</td
+          >
+        </tr>
+        <tr>
+          <td>Concealer on dark circles or blemishes</td>
+          <td
+            >Heavy contouring that alters facial structure (nose, jawline,
+            cheekbones)</td
+          >
+        </tr>
+        <tr>
+          <td>One coat of mascara in black or brown</td>
+          <td>Dramatic false eyelashes that obscure the natural eye shape</td>
+        </tr>
+        <tr>
+          <td>Natural brow grooming with pencil or gel</td>
+          <td
+            >Overly drawn or reshaped brows that differ significantly from your
+            natural shape</td
+          >
+        </tr>
+        <tr>
+          <td
+            >Tinted lip balm or lipstick within two shades of your natural lip</td
+          >
+          <td
+            >Dark or brightly colored lipstick that changes the apparent lip
+            line</td
+          >
+        </tr>
+        <tr>
+          <td>Matte or satin finish products</td>
+          <td
+            >Glitter, shimmer, or highlighter that reflects the camera flash</td
+          >
+        </tr>
+        <tr>
+          <td>Clear or lightly tinted brow gel</td>
+          <td>Colored contact lenses that change your eye color</td>
+        </tr>
+        <tr>
+          <td>Light translucent powder to reduce shine</td>
+          <td
+            >Products with SPF that cause white cast under flash photography</td
+          >
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Why Flash Photography Changes the Rules</h2>
+    <p>
+      Passport photos are taken with a direct flash. This is the single most
+      important factor in choosing your makeup products. Flash creates specular
+      highlights on any reflective surface, which means anything shimmery in
+      your makeup will show up as bright white spots in the final photo.
+      Highlighter on your cheekbones, shimmer on your lids, and even a very dewy
+      foundation finish can all create flash reflections that make your photo
+      look unnatural or overexposed.
+    </p>
+    <p>
+      The solution is to build your entire routine around matte and satin
+      finishes. If you love a dewy look, save it for a different day. For the
+      passport photo, a matte base set with translucent powder will photograph
+      cleanly without creating glare hot spots. Check your photo preview before
+      it is finalized: if you see bright spots on your forehead, nose, or
+      cheekbones that are not natural highlights from your bone structure, you
+      need to reduce shine.
+    </p>
+
+    <h2>The Natural-but-Polished Passport Photo Routine</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Hydrate Without SPF (1 min)</h4>
+          <p>
+            Apply a regular moisturizer with no SPF. Products containing zinc
+            oxide or titanium dioxide leave a white cast under flash that makes
+            your face look chalky in the photo. A simple hydrating cream gives
+            your skin a healthy base without the risk.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Even Skin Tone (2 min)</h4>
+          <p>
+            Use a lightweight, matte-finish foundation or concealer where
+            needed. Focus on areas of redness, under-eye darkness, and any
+            visible blemishes. Blend thoroughly down your neck to avoid any
+            visible line. The camera captures your face and upper neck, so the
+            transition must be seamless.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Set with Translucent Powder (1 min)</h4>
+          <p>
+            Press translucent powder onto the T-zone and any areas that tend to
+            get shiny. This is the most critical step for flash photography.
+            Shine equals glare in the photo, and glare can cause rejection.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Define Eyes Minimally (1 min)</h4>
+          <p>
+            One coat of mascara on top lashes only. Groom your brows with a
+            clear or lightly tinted gel. Do not use eyeliner unless it is a very
+            thin, smudged line that is indistinguishable from natural lash
+            density. Heavy liner can change the apparent eye shape and trigger
+            rejection.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Add Subtle Color (1 min)</h4>
+          <p>
+            A light dusting of matte blush for healthy color and a tinted lip
+            balm in a shade close to your natural lips. Blot your lips to remove
+            any excess that could transfer. Check the overall result: you should
+            look like yourself, just slightly more rested and put-together.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Lighting Tips for ID Photos</h2>
+    <p>
+      If you are taking your passport photo at a professional studio or
+      pharmacy, the photographer will handle lighting. But if you are allowed to
+      submit a self-taken photo (some countries permit this for renewals),
+      follow these guidelines: use even, diffused lighting from the front rather
+      than side lighting that creates shadows. Natural light from a window
+      facing you is ideal. Avoid overhead lighting that casts shadows under your
+      eyes and nose. Stand against a plain white or light-colored wall. Keep
+      your expression neutral with your mouth closed and eyes open. The photo
+      should show your full face from the bottom of your chin to the top of your
+      head, with space above your head as specified by your country's
+      requirements.
+    </p>
+    <p>
+      Before submitting, compare your photo to your everyday appearance in a
+      mirror. If a stranger would look at both and immediately recognize them as
+      the same person, you are in good shape. If the photo looks significantly
+      different from how you actually appear on a normal day, reduce your makeup
+      and retake.
+    </p>
+  </section>
+
+  <Fragment slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Preview Your Passport Photo Look</h2>
+        <p>
+          Test a natural, compliant makeup look on your own face before heading
+          to the photo studio.
+        </p>
+        <a href="/tryon-free" class="cta-btn"
+          >Try Passport Photo Makeup on Your Face — Free</a
+        >
+      </div>
+    </div>
+  </Fragment>
+
+  <Fragment slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {relatedLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+        </ul>
+      </div>
+    </section>
+  </Fragment>
+</SeoLandingLayout>

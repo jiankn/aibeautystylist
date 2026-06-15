@@ -1,0 +1,11 @@
+<div class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-toast]").forEach((el) => {
+    el.addEventListener("click", (event) => {
+      if (el.tagName === "A" && el.getAttribute("href") !== "#") return;
+      event.preventDefault();
+      window.showToast?.(el.dataset.toast);
+    });
+  });
+</script>

@@ -1,0 +1,647 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { getEnglishFooterSeoAssets } from "../i18n/footerSeoDepth";
+
+/**
+ * SEO 落地页通用布局 — 基于 BaseLayout，增加：
+ * - 统一的内容区块结构
+ * - FAQ 区块（自动输出为 FAQPage JSON-LD）
+ * - 统一的 CTA 按钮样式
+ * - 内部链接导航
+ */
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  heroImage?: string;
+  jsonLd?: string;
+  robots?: string;
+  faq?: readonly { q: string; a: string }[];
+  faqHeading?: string;
+  heroCtaHref?: string;
+  heroCtaLabel?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = "/images/og-seo.png",
+  heroImage,
+  jsonLd,
+  robots = "index,follow",
+  faq = [],
+  faqHeading = "Frequently Asked Questions",
+  heroCtaHref,
+  heroCtaLabel,
+} = Astro.props;
+
+// 自动生成 FAQPage JSON-LD
+const faqJsonLd =
+  faq.length > 0
+    ? JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faq.map(({ q, a }) => ({
+          "@type": "Question",
+          name: q,
+          acceptedAnswer: { "@type": "Answer", text: a },
+        })),
+      })
+    : "";
+
+const combinedJsonLd =
+  jsonLd && faqJsonLd
+    ? JSON.stringify([JSON.parse(jsonLd), JSON.parse(faqJsonLd)])
+    : jsonLd || faqJsonLd;
+const englishContentAssets = getEnglishFooterSeoAssets(
+  Astro.url.pathname,
+  title,
+);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={ogImage}
+  jsonLd={combinedJsonLd}
+  robots={robots}
+>
+  <SiteHeader />
+
+  <main class="seo-landing">
+    {/* Hero */}
+    <section class="seo-hero">
+      <div class="seo-hero-shell">
+        <div class="seo-hero-inner">
+          <slot name="hero" />
+          {
+            heroCtaHref && heroCtaLabel && (
+              <div class="seo-hero-actions">
+                <a class="seo-hero-cta" href={heroCtaHref}>
+                  {heroCtaLabel}
+                </a>
+              </div>
+            )
+          }
+        </div>
+        {
+          heroImage && (
+            <figure class="seo-hero-image">
+              <img
+                src={heroImage}
+                alt={title}
+                width="1024"
+                height="1024"
+                loading="eager"
+                fetchpriority="high"
+              />
+            </figure>
+          )
+        }
+      </div>
+    </section>
+
+    {/* 主体内容 */}
+    <slot />
+
+    {
+      englishContentAssets.length > 0 && (
+        <section class="seo-content english-visual-guide">
+          <div class="content-section content-section-wide visual-guide">
+            <h2>Validate the direction in three views</h2>
+            <div class="visual-guide-grid">
+              {englishContentAssets.map((asset) => (
+                <figure class="visual-guide-item">
+                  <img src={asset.src} alt={asset.alt} loading="lazy" />
+                  <figcaption>{asset.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {/* CTA */}
+    <slot name="cta" />
+
+    {/* FAQ */}
+    {
+      faq.length > 0 && (
+        <section class="seo-faq" id="faq">
+          <div class="faq-inner">
+            <h2>{faqHeading}</h2>
+            <div class="faq-list">
+              {faq.map(({ q, a }) => (
+                <details class="faq-item">
+                  <summary>{q}</summary>
+                  <p>{a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {/* 内部链接 */}
+    <slot name="related" />
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .seo-landing {
+    --color-text-primary: var(--heading);
+    --color-text-secondary: var(--body-secondary);
+    --color-border: var(--line);
+    --color-bg-light: var(--surface-warm);
+    --color-bg-cta: var(--surface-rose);
+    --color-accent: var(--rose);
+    --color-accent-hover: var(--rose-dark);
+    min-height: 100vh;
+    padding-bottom: 4rem;
+  }
+
+  .seo-hero {
+    border-bottom: 1px solid var(--warm-border);
+    background: var(--surface-warm);
+  }
+  .seo-hero-shell {
+    display: grid;
+    width: min(calc(100% - 3rem), 1120px);
+    min-height: 470px;
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
+    gap: clamp(2.5rem, 7vw, 6rem);
+    align-items: center;
+    margin: 0 auto;
+    padding: 2.75rem 0;
+  }
+  .seo-hero-inner {
+    max-width: 620px;
+  }
+  .seo-hero h1 {
+    max-width: 14ch;
+    margin: 0 0 1.125rem;
+    color: var(--heading);
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 4.2vw, 3.35rem);
+    font-weight: 700;
+    line-height: 1.18;
+  }
+  .seo-hero p {
+    max-width: 600px;
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .seo-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  .seo-hero-cta {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--rose-dark);
+    border-radius: 8px;
+    background: var(--rose);
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: var(--btn-primary-shadow);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      background 0.15s ease;
+  }
+  .seo-hero-cta:hover {
+    background: var(--rose-dark);
+    box-shadow: var(--btn-primary-shadow-hover);
+    transform: translateY(-1px);
+  }
+  .seo-hero-image {
+    width: 100%;
+    max-width: 430px;
+    aspect-ratio: 1;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--warm-border);
+    border-radius: 8px;
+    background: var(--bg-elevated);
+    box-shadow: 0 22px 54px rgba(26, 49, 84, 0.14);
+  }
+  .seo-hero-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* CTA */
+  .seo-cta {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--color-bg-cta, #fdf0eb);
+  }
+  .seo-cta-inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .seo-cta h2 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #2d2424);
+    margin: 0 0 0.75rem;
+  }
+  .seo-cta p {
+    color: var(--color-text-secondary, #6b5e5e);
+    margin: 0 0 1.5rem;
+    line-height: 1.6;
+  }
+  .seo-cta .cta-btn {
+    display: inline-block;
+    padding: 0.875rem 2rem;
+    background: var(--color-accent, #c4917d);
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition:
+      background 0.2s,
+      transform 0.15s;
+  }
+  .seo-cta .cta-btn:hover {
+    background: var(--color-accent-hover, #b07e6a);
+    transform: translateY(-1px);
+  }
+  .seo-cta .cta-btn-secondary {
+    background: transparent;
+    color: var(--color-accent, #c4917d);
+    border: 1px solid var(--color-accent, #c4917d);
+  }
+
+  /* FAQ */
+  .seo-faq {
+    padding: 3rem 1.5rem;
+  }
+  .faq-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .seo-faq h2 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #2d2424);
+    margin: 0 0 1.5rem;
+    text-align: center;
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .faq-item {
+    border: 1px solid var(--color-border, #e8ddd8);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .faq-item summary {
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #2d2424);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .faq-item summary::after {
+    content: "+";
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--color-accent, #c4917d);
+    transition: transform 0.2s;
+  }
+  .faq-item[open] summary::after {
+    transform: rotate(45deg);
+  }
+  .faq-item p {
+    padding: 0 1.25rem 1rem;
+    color: var(--color-text-secondary, #6b5e5e);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* 内部链接 */
+  .seo-related {
+    padding: 2rem 1.5rem 3rem;
+    background: var(--color-bg-light, #faf5f2);
+  }
+  .related-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .seo-related h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #2d2424);
+    margin: 0 0 1rem;
+  }
+  .related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .related-list a {
+    color: var(--color-accent, #c4917d);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--color-border, #e8ddd8);
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .related-list a:hover {
+    background: var(--color-accent-hover, #b07e6a);
+    color: #fff;
+  }
+
+  /* 通用内容样式 */
+  .seo-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+  }
+  .content-section {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+  .content-section-wide {
+    max-width: 900px;
+  }
+  .content-section:first-child h2 {
+    margin-top: 0;
+  }
+  .english-visual-guide {
+    padding-top: 0;
+  }
+  .english-visual-guide h2 {
+    margin-top: 0;
+  }
+  .seo-content h2 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #2d2424);
+    margin: 2.5rem 0 1rem;
+  }
+  .seo-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #2d2424);
+    margin: 2rem 0 0.75rem;
+  }
+  .seo-content p {
+    color: var(--color-text-secondary, #6b5e5e);
+    line-height: 1.75;
+    margin: 0 0 1rem;
+  }
+  .seo-content ul,
+  .seo-content ol {
+    color: var(--color-text-secondary, #6b5e5e);
+    line-height: 1.75;
+    padding-left: 1.5rem;
+  }
+  .seo-content li {
+    margin-bottom: 0.5rem;
+  }
+
+  /* 步骤卡片 */
+  .step-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .step-card {
+    display: flex;
+    min-width: 0;
+    height: 100%;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background: var(--bg-elevated);
+    border-radius: 10px;
+    border: 1px solid var(--color-border, #e8ddd8);
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent, #c4917d);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 50%;
+  }
+  .step-card h4 {
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #2d2424);
+  }
+  .step-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary, #6b5e5e);
+  }
+
+  /* 特征列表 */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .feature-card {
+    padding: 1.25rem;
+    background: var(--bg-elevated);
+    border-radius: 10px;
+    border: 1px solid var(--color-border, #e8ddd8);
+    text-align: center;
+  }
+  .feature-card .icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .feature-card h4 {
+    margin: 0 0 0.35rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #2d2424);
+  }
+  .feature-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary, #6b5e5e);
+  }
+
+  /* 教程视觉检查点 */
+  .visual-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+  }
+  .visual-guide-item {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg-elevated);
+  }
+  .visual-guide-item img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .visual-guide-item figcaption {
+    padding: 0.875rem 1rem 1rem;
+    color: var(--body-secondary);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  /* 对比表 */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+  .compare-table-scroll {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .compare-table-scroll .compare-table {
+    min-width: 640px;
+    margin: 0;
+  }
+  .compare-table th {
+    background: var(--color-bg-light, #faf5f2);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-primary, #2d2424);
+    border-bottom: 2px solid var(--color-border, #e8ddd8);
+  }
+  .compare-table td {
+    padding: 0.75rem 1rem;
+    color: var(--color-text-secondary, #6b5e5e);
+    border-bottom: 1px solid var(--color-border, #e8ddd8);
+  }
+
+  /* 高亮框 */
+  .highlight-box {
+    background: var(--color-bg-cta, #fdf0eb);
+    border-left: 4px solid var(--color-accent, #c4917d);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+  }
+  .highlight-box p {
+    margin: 0;
+    color: var(--color-text-primary, #2d2424);
+    font-weight: 500;
+  }
+
+  /* 响应式 */
+  @media (max-width: 820px) {
+    .seo-hero-shell {
+      width: min(calc(100% - 2rem), 620px);
+      min-height: 0;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      justify-items: center;
+      padding: 2.5rem 0 2rem;
+      text-align: center;
+    }
+    .seo-hero-inner {
+      max-width: 560px;
+    }
+    .seo-hero h1 {
+      max-width: none;
+      font-size: clamp(2rem, 8vw, 2.75rem);
+    }
+    .seo-hero p {
+      font-size: 1rem;
+    }
+    .seo-hero-actions {
+      justify-content: center;
+      margin-top: 1.25rem;
+    }
+    .seo-hero-image {
+      width: min(100%, 390px);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .seo-hero {
+      padding: 0;
+    }
+    .seo-hero-shell {
+      gap: 1.25rem;
+      padding: 2rem 0 1.5rem;
+    }
+    .seo-hero h1 {
+      margin-bottom: 0.75rem;
+    }
+    .seo-hero p {
+      line-height: 1.6;
+    }
+    .seo-hero-cta {
+      width: 100%;
+    }
+    .seo-content {
+      padding: 2.25rem 1rem;
+    }
+    .seo-faq,
+    .seo-cta {
+      padding: 2rem 1rem;
+    }
+    .feature-grid {
+      grid-template-columns: 1fr;
+    }
+    .visual-guide-grid {
+      grid-template-columns: 1fr;
+    }
+    .compare-table {
+      font-size: 0.8rem;
+    }
+    .compare-table th,
+    .compare-table td {
+      padding: 0.5rem 0.5rem;
+    }
+  }
+</style>

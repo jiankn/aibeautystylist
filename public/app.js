@@ -1,0 +1,1097 @@
+const toast = document.querySelector(".toast") || document.createElement("div");
+if (!toast.isConnected) {
+  toast.className = "toast";
+  toast.setAttribute("role", "status");
+  toast.setAttribute("aria-live", "polite");
+  document.body.appendChild(toast);
+}
+
+const APP_LOCALE = window.__absLocale || document.documentElement.lang || "en";
+const LOCALIZED_MESSAGES = window.__absMessages || {};
+const APP_MESSAGES = {
+  "zh-CN": {
+    loginRequired: "请先登录后再上传自拍",
+    loginToUpload: "登录后上传自拍",
+    uploadButton: "上传自拍试这个妆",
+    chooseFile: "请选择 JPG、PNG、WebP 或 HEIC 自拍",
+    consentRequired: "上传前请先确认照片处理说明",
+    uploadFailed: "上传失败",
+    jobCreateFailed: "任务创建失败",
+    quotaRefresh: "{date}刷新基础额度",
+    loginAfter: "登录后",
+    viewAfter: "查看",
+    loginQuotaNote: "登录后可使用免费额度并查看剩余次数",
+    cookieAllSaved: "Cookie 偏好已保存；当前没有额外分析追踪",
+    cookieNecessarySaved: "仅使用必要 Cookie",
+    filterAll: "全部",
+    filterSummary: "共找到 {count} 个可直接试妆的妆容",
+    filterToast: "已找到 {count} 个妆容",
+    selectedLook: "已选择“{look}”",
+    fallbackLook: "蜜桃气色妆",
+    fallbackLookShort: "蜜桃气色",
+    jobCreated: "任务已创建，正在排队…",
+    uploadValidating: "正在校验照片…",
+    diagnosisRunning: "正在分析面部与色彩…",
+    imageRunning: "正在生成试妆效果…",
+    generationFailedRefunded: "生成失败，额度已自动返还，可重试",
+    taskCancelledRefunded: "任务已取消，额度已自动返还，可重试",
+    timedOutRefunded: "生成超时，额度已自动返还，可重试",
+    referenceEffect: "参考效果",
+    tryonEffect: "试妆效果",
+    referenceAlt: "{look}参考效果",
+    resultDisclaimer: "生成结果仅供参考，实际效果因个人条件而异。",
+    referenceGenerated: "参考效果已生成",
+    tryonGenerated: "试妆效果已生成",
+    referenceGeneratedNote: "参考效果已生成，真实 AI 上脸效果将在服务接入后启用",
+    taskIncomplete: "任务未完成，请稍后重试",
+    cancelGeneration: "取消生成",
+    statusQueryFailed: "任务状态查询失败",
+    uploadingSafely: "正在校验并安全上传…",
+    cancelUpload: "取消上传",
+    confirmingConsent: "正在确认照片处理授权…",
+    validatingUpload: "正在校验图片并安全上传…",
+    generatingReference: "正在生成参考效果…",
+    uploadValidated: "照片校验通过，正在生成参考效果…",
+    uploadCancelled: "上传已取消，可重新选择或重试",
+    processFailed: "处理失败，请稍后重试",
+    loginQuotaRequired: "登录后可使用你的试妆额度",
+    cancelFailed: "取消任务失败",
+    retryCreating: "正在创建重试任务…",
+    retryCreateFailed: "重试任务创建失败",
+    deleteUploadFailed: "删除原始自拍失败",
+    originalDeleted: "原始自拍已删除，试妆结果仍可继续查看",
+    deleteResultFailed: "删除试妆结果与诊断失败",
+    resultDeletedTitle: "试妆结果与诊断已删除",
+    resultDeletedDesc: "你可以重新上传自拍并生成新的试妆结果",
+    openMenu: "打开导航菜单",
+    closeMenu: "关闭导航菜单",
+  },
+  en: {
+    loginRequired: "Please sign in before uploading a selfie",
+    loginToUpload: "Sign in to upload photo",
+    uploadButton: "Upload & Try This Look",
+    chooseFile: "Please choose a JPG, PNG, WebP, or HEIC selfie",
+    consentRequired: "Please confirm the photo processing notice before uploading",
+    uploadFailed: "Upload failed",
+    jobCreateFailed: "Task creation failed",
+    quotaRefresh: "Base quota refreshes on {date}",
+    loginAfter: "Sign in",
+    viewAfter: "to view",
+    loginQuotaNote: "Sign in to use free credits and view remaining quota",
+    cookieAllSaved: "Cookie preferences saved; no extra analytics tracking is currently enabled",
+    cookieNecessarySaved: "Necessary cookies only",
+    filterAll: "All",
+    filterSummary: "{count} try-on-ready looks found",
+    filterToast: "{count} looks found",
+    selectedLook: "Selected “{look}”",
+    fallbackLook: "Peach Fresh Look",
+    fallbackLookShort: "Peach Fresh",
+    jobCreated: "Task created, waiting in queue…",
+    uploadValidating: "Validating photo…",
+    diagnosisRunning: "Analyzing face and color…",
+    imageRunning: "Generating try-on result…",
+    generationFailedRefunded: "Generation failed. Quota was automatically refunded. You can retry.",
+    taskCancelledRefunded: "Task cancelled. Quota was automatically refunded. You can retry.",
+    timedOutRefunded: "Generation timed out. Quota was automatically refunded. You can retry.",
+    referenceEffect: "Reference Result",
+    tryonEffect: "Try-On Result",
+    referenceAlt: "{look} reference result",
+    resultDisclaimer: "Generated results are for reference only. Actual effects may vary by individual conditions.",
+    referenceGenerated: "Reference result generated",
+    tryonGenerated: "Try-on result generated",
+    referenceGeneratedNote: "Reference result generated. Real AI face try-on will be enabled after service integration.",
+    taskIncomplete: "Task is not complete. Please try again later.",
+    cancelGeneration: "Cancel generation",
+    statusQueryFailed: "Failed to query task status",
+    uploadingSafely: "Validating and securely uploading…",
+    cancelUpload: "Cancel upload",
+    confirmingConsent: "Confirming photo processing consent…",
+    validatingUpload: "Validating image and securely uploading…",
+    generatingReference: "Generating reference result…",
+    uploadValidated: "Photo validated. Generating reference result…",
+    uploadCancelled: "Upload cancelled. Choose again or retry.",
+    processFailed: "Processing failed. Please try again later.",
+    loginQuotaRequired: "Sign in to use your try-on quota",
+    cancelFailed: "Failed to cancel task",
+    retryCreating: "Creating retry task…",
+    retryCreateFailed: "Failed to create retry task",
+    deleteUploadFailed: "Failed to delete original selfie",
+    originalDeleted: "Original selfie deleted. Try-on result remains available.",
+    deleteResultFailed: "Failed to delete try-on result and diagnosis",
+    resultDeletedTitle: "Try-on result and diagnosis deleted",
+    resultDeletedDesc: "You can upload a selfie again and generate a new result.",
+    openMenu: "Open navigation menu",
+    closeMenu: "Close navigation menu",
+  },
+};
+
+function msg(key, values = {}) {
+  const template =
+    LOCALIZED_MESSAGES[key] ||
+    APP_MESSAGES[APP_LOCALE]?.[key] ||
+    APP_MESSAGES.en[key] ||
+    key;
+  return Object.entries(values).reduce(
+    (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
+    template,
+  );
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("show");
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+}
+
+const PHOTO_CONSENT_VERSION = "2026-06-07";
+let currentSessionPromise;
+
+function getLoginUrl() {
+  const login = new URL("/login", window.location.origin);
+  login.searchParams.set(
+    "next",
+    `${window.location.pathname}${window.location.search}${window.location.hash}`,
+  );
+  return login.toString();
+}
+
+function isAccountSession(session) {
+  return session?.user?.kind === "account";
+}
+
+async function getCurrentSession({ refresh = false } = {}) {
+  if (!currentSessionPromise || refresh) {
+    currentSessionPromise = fetch("/api/session")
+      .then(async (response) => {
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload?.ok) return undefined;
+        return payload.data;
+      })
+      .catch(() => undefined);
+  }
+  return currentSessionPromise;
+}
+
+function redirectToLogin(message = msg("loginRequired")) {
+  showToast(message);
+  window.setTimeout(() => {
+    window.location.href = getLoginUrl();
+  }, 300);
+}
+
+function syncUploadAuthGate(session) {
+  const authenticated = isAccountSession(session);
+  document.querySelectorAll("[data-upload]").forEach((button) => {
+    const uploadBox = button.closest(".upload-box");
+    const consent = uploadBox?.querySelector("[data-photo-consent]");
+    const consentRow = consent?.closest(".privacy-consent");
+    const lockPanel = uploadBox?.querySelector("[data-upload-auth-lock]");
+    button.dataset.defaultLabel ||= button.textContent.trim();
+
+    if (!authenticated) {
+      button.dataset.loginRequired = "true";
+      button.disabled = false;
+      button.textContent = button.dataset.loginLabel || msg("loginToUpload");
+      if (consent) {
+        consent.checked = false;
+        consent.disabled = true;
+      }
+      if (consentRow) consentRow.hidden = true;
+      if (lockPanel) lockPanel.hidden = false;
+      return;
+    }
+
+    delete button.dataset.loginRequired;
+    button.textContent = button.dataset.defaultLabel || msg("uploadButton");
+    if (consent) {
+      consent.disabled = false;
+      button.disabled = !consent.checked;
+    }
+    if (consentRow) consentRow.hidden = false;
+    if (lockPanel) lockPanel.hidden = true;
+  });
+}
+
+getCurrentSession()
+  .then((session) => syncUploadAuthGate(session))
+  .catch(() => {});
+
+async function readApiPayload(response, fallbackMessage) {
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload.error?.message || fallbackMessage);
+  }
+  return payload.data;
+}
+
+window.__absCreateTryOnJob = async function createTryOnJobFlow({
+  file,
+  lookSlug,
+  requiredPlan = "free",
+  idempotencyKey,
+  signal,
+}) {
+  if (!file) throw new Error(msg("chooseFile"));
+  const session = await getCurrentSession({ refresh: true });
+  if (!isAccountSession(session)) {
+    throw new Error(msg("loginRequired"));
+  }
+
+  await readApiPayload(
+    await fetch("/api/consents/photo", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ accepted: true, version: PHOTO_CONSENT_VERSION }),
+      signal,
+    }),
+    msg("consentRequired"),
+  );
+
+  const formData = new FormData();
+  formData.append("photo", file);
+  formData.append("consentVersion", PHOTO_CONSENT_VERSION);
+  const upload = await readApiPayload(
+    await fetch("/api/uploads", {
+      method: "POST",
+      body: formData,
+      signal,
+    }),
+    msg("uploadFailed"),
+  );
+  const job = await readApiPayload(
+    await fetch("/api/tryon-jobs", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        uploadId: upload.id,
+        lookSlug,
+        idempotencyKey: idempotencyKey || crypto.randomUUID(),
+        requiredPlan,
+      }),
+    }),
+    msg("jobCreateFailed"),
+  );
+
+  return { upload, job };
+};
+
+function updateQuotaDisplay(quota) {
+  const quotaBar = document.querySelector("[data-quota-live]");
+  if (!quotaBar || !quota) return;
+
+  const pct = Math.max(0, Math.min(100, (quota.used / quota.total) * 100));
+  const label = quotaBar.querySelector("[data-quota-label]");
+  const meter = quotaBar.querySelector("[data-quota-meter]");
+  if (label) {
+    label.textContent = quota.remaining + " / " + quota.total + " 次";
+  }
+  if (meter) {
+    meter.style.width = pct + "%";
+  }
+
+  const refresh = quotaBar.querySelector("[data-quota-refresh]");
+  if (refresh && quota.nextRefreshAt) {
+    const refreshDate = new Intl.DateTimeFormat(APP_LOCALE, {
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(quota.nextRefreshAt));
+    refresh.textContent = msg("quotaRefresh", { date: refreshDate });
+  }
+}
+
+window.updateQuotaDisplay = updateQuotaDisplay;
+
+function syncQuotaForSession(session) {
+  const quotaBar = document.querySelector("[data-quota-live]");
+  if (!quotaBar) return;
+
+  if (!isAccountSession(session)) {
+    const meter = quotaBar.querySelector("[data-quota-meter]");
+    if (meter) meter.style.width = "0%";
+    const label = quotaBar.querySelector("[data-quota-label]");
+    if (label) label.textContent = msg("loginAfter") + " / " + msg("viewAfter");
+    const refresh = quotaBar.querySelector("[data-quota-refresh]");
+    if (refresh) refresh.textContent = msg("loginQuotaNote");
+    return;
+  }
+
+  updateQuotaDisplay(session?.quota);
+}
+
+async function refreshQuotaDisplay() {
+  if (!document.querySelector("[data-quota-live]")) return;
+  const session = await getCurrentSession();
+  syncQuotaForSession(session);
+}
+
+refreshQuotaDisplay().catch(() => {});
+
+
+function syncHeroVisualHeight() {
+  document.querySelectorAll("[data-hero-copy-sync]").forEach((hero) => {
+    const copy = hero.querySelector(".home-copy");
+    const compare = hero.querySelector("[data-hero-visual] .home-compare");
+    if (!copy || !compare) return;
+
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      compare.style.height = "";
+      compare.style.minHeight = "";
+      delete compare.dataset.syncedHeight;
+      return;
+    }
+
+    const copyHeight = Math.round(copy.getBoundingClientRect().height);
+    if (copyHeight <= 0) return;
+    compare.style.height = `${copyHeight}px`;
+    compare.style.minHeight = `${copyHeight}px`;
+    compare.dataset.syncedHeight = String(copyHeight);
+  });
+}
+
+const heroSyncSections = document.querySelectorAll("[data-hero-copy-sync]");
+if (heroSyncSections.length) {
+  const scheduleHeroSync = () => window.requestAnimationFrame(syncHeroVisualHeight);
+  const heroResizeObserver =
+    "ResizeObserver" in window ? new ResizeObserver(scheduleHeroSync) : null;
+
+  heroSyncSections.forEach((hero) => {
+    const copy = hero.querySelector(".home-copy");
+    if (copy) heroResizeObserver?.observe(copy);
+  });
+  window.addEventListener("resize", scheduleHeroSync);
+  window.addEventListener("load", scheduleHeroSync);
+  scheduleHeroSync();
+}
+
+document.querySelectorAll("[data-compare-slider]").forEach((slider) => {
+  const knob = slider.querySelector("[data-compare-knob]");
+  if (!knob) return;
+
+  const setPosition = (value) => {
+    const pct = Math.max(5, Math.min(95, value));
+    slider.style.setProperty("--compare-position", `${pct}%`);
+    knob.setAttribute("aria-valuenow", String(Math.round(pct)));
+  };
+
+  let sliderRect = null;
+  let pendingPosition = null;
+  let positionFrame = 0;
+
+  const flushPosition = () => {
+    positionFrame = 0;
+    if (pendingPosition === null) return;
+    setPosition(pendingPosition);
+    pendingPosition = null;
+  };
+
+  const queuePosition = (value) => {
+    pendingPosition = Math.max(5, Math.min(95, value));
+    if (!positionFrame) {
+      positionFrame = window.requestAnimationFrame(flushPosition);
+    }
+  };
+
+  const setFromClientX = (clientX, immediate = false) => {
+    const rect = sliderRect || slider.getBoundingClientRect();
+    if (!rect.width) return;
+    const next = ((clientX - rect.left) / rect.width) * 100;
+    immediate ? setPosition(next) : queuePosition(next);
+  };
+
+  let isDragging = false;
+  const endDrag = (event) => {
+    if (!isDragging) return;
+    isDragging = false;
+    sliderRect = null;
+    slider.classList.remove("is-dragging");
+    if (event?.pointerId !== undefined) {
+      slider.releasePointerCapture?.(event.pointerId);
+    }
+    if (positionFrame) {
+      window.cancelAnimationFrame(positionFrame);
+      flushPosition();
+    }
+  };
+
+  slider.addEventListener("pointerdown", (event) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    isDragging = true;
+    sliderRect = slider.getBoundingClientRect();
+    slider.classList.add("is-dragging");
+    slider.setPointerCapture?.(event.pointerId);
+    knob.focus({ preventScroll: true });
+    setFromClientX(event.clientX, true);
+    event.preventDefault();
+  });
+  slider.addEventListener("pointermove", (event) => {
+    if (!isDragging) return;
+    setFromClientX(event.clientX);
+    event.preventDefault();
+  });
+  slider.addEventListener("pointerup", endDrag);
+  slider.addEventListener("pointercancel", endDrag);
+  slider.addEventListener("lostpointercapture", endDrag);
+
+  knob.addEventListener("keydown", (event) => {
+    const current = Number(knob.getAttribute("aria-valuenow") || 50);
+    const step = event.shiftKey ? 10 : 5;
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      setPosition(current - step);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      setPosition(current + step);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      setPosition(5);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      setPosition(95);
+    }
+  });
+
+  // 自动演示：页面加载后播放一次平滑滑动，暗示可拖拽交互
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    let demoCancelled = false;
+    const cancelDemo = () => { demoCancelled = true; };
+    slider.addEventListener("pointerdown", cancelDemo, { once: true });
+
+    const animate = (from, to, duration) => new Promise((resolve) => {
+      const start = performance.now();
+      const step = (now) => {
+        if (demoCancelled) { resolve(); return; }
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        setPosition(from + (to - from) * eased);
+        progress < 1 ? requestAnimationFrame(step) : resolve();
+      };
+      requestAnimationFrame(step);
+    });
+
+    window.setTimeout(async () => {
+      if (demoCancelled) return;
+      await animate(50, 30, 600);
+      if (demoCancelled) return;
+      await animate(30, 65, 700);
+      if (demoCancelled) return;
+      await animate(65, 50, 500);
+      slider.removeEventListener("pointerdown", cancelDemo);
+    }, 1200);
+  }
+});
+
+function setActiveFilterChip(group, activeChip) {
+  group.querySelectorAll(".filter-chip").forEach((item) => {
+    const isActive = item === activeChip;
+    item.classList.toggle("active", isActive);
+    item.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+const filterPanel = document.querySelector("[data-filter-panel]");
+const filterOpenButton = document.querySelector("[data-filter-open]");
+const filterBackdrop = document.querySelector("[data-filter-backdrop]");
+const filterApplyButton = document.querySelector("[data-filter-apply]");
+const filterSheetMedia = window.matchMedia("(max-width: 700px)");
+let filterLastFocus = null;
+
+function readLookFilterSelections() {
+  return Object.fromEntries(
+    [...document.querySelectorAll("[data-filter-group]")].map((group) => {
+      const activeChip = group.querySelector(".filter-chip.active");
+      const allChip = group.querySelector("[data-filter-all]");
+      const value =
+        activeChip?.dataset.filterValue || allChip?.dataset.filterValue || "";
+      const label = activeChip?.textContent?.trim().replace(/\s+/g, " ") || value;
+      const matchValues = (activeChip?.dataset.filterMatch || value)
+        .split("|")
+        .filter(Boolean);
+      return [
+        group.dataset.filterGroup,
+        {
+          value,
+          label,
+          matchValues,
+          isAll: activeChip === allChip || activeChip?.hasAttribute("data-filter-all"),
+          allLabel: allChip?.textContent?.trim().replace(/\s+/g, " ") || value,
+        },
+      ];
+    }),
+  );
+}
+
+function isMobileFilterSheet() {
+  return Boolean(filterPanel && filterSheetMedia.matches);
+}
+
+function updateFilterSheetA11y() {
+  if (!filterPanel) return;
+  if (!isMobileFilterSheet()) {
+    filterPanel.classList.remove("filter-sheet-open");
+    filterPanel.removeAttribute("aria-hidden");
+    filterOpenButton?.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("filter-sheet-lock");
+    if (filterBackdrop) {
+      filterBackdrop.hidden = true;
+      filterBackdrop.classList.remove("visible");
+    }
+    return;
+  }
+  filterPanel.setAttribute(
+    "aria-hidden",
+    String(!filterPanel.classList.contains("filter-sheet-open")),
+  );
+}
+
+function openFilterSheet() {
+  if (!isMobileFilterSheet()) return;
+  filterLastFocus = document.activeElement;
+  filterPanel.classList.add("filter-sheet-open");
+  filterPanel.setAttribute("aria-hidden", "false");
+  filterOpenButton?.setAttribute("aria-expanded", "true");
+  document.body.classList.add("filter-sheet-lock");
+  if (filterBackdrop) {
+    filterBackdrop.hidden = false;
+    requestAnimationFrame(() => filterBackdrop.classList.add("visible"));
+  }
+  const closeButton = filterPanel.querySelector("[data-filter-close]");
+  closeButton?.focus();
+}
+
+function closeFilterSheet() {
+  if (!filterPanel) return;
+  filterPanel.classList.remove("filter-sheet-open");
+  filterPanel.setAttribute("aria-hidden", "true");
+  filterOpenButton?.setAttribute("aria-expanded", "false");
+  document.body.classList.remove("filter-sheet-lock");
+  if (filterBackdrop) {
+    filterBackdrop.classList.remove("visible");
+    window.setTimeout(() => {
+      if (!filterPanel.classList.contains("filter-sheet-open")) {
+        filterBackdrop.hidden = true;
+      }
+    }, 180);
+  }
+  if (filterLastFocus instanceof HTMLElement) filterLastFocus.focus();
+}
+
+function updateMobileFilterSummary(selections, visibleCount) {
+  const activeLabels = ["scenario", "finish", "experience"]
+    .map((key) => selections[key])
+    .filter((selection) => selection && !selection.isAll)
+    .map((selection) => selection.label);
+  const allLabel =
+    selections.scenario?.allLabel ||
+    selections.finish?.allLabel ||
+    selections.experience?.allLabel ||
+    msg("filterAll");
+  const summaryText = activeLabels.length
+    ? activeLabels.join(" · ")
+    : allLabel;
+  document.querySelectorAll("[data-filter-mobile-summary]").forEach((summary) => {
+    summary.textContent = summaryText;
+  });
+  document.querySelectorAll("[data-filter-mobile-count]").forEach((count) => {
+    count.textContent = `${visibleCount} ${count.dataset.looksLabel || "looks"}`;
+  });
+  document.querySelectorAll("[data-filter-result-count]").forEach((count) => {
+    count.textContent = String(visibleCount);
+  });
+}
+
+filterOpenButton?.addEventListener("click", openFilterSheet);
+document.querySelectorAll("[data-filter-close]").forEach((button) => {
+  button.addEventListener("click", closeFilterSheet);
+});
+filterApplyButton?.addEventListener("click", closeFilterSheet);
+filterSheetMedia.addEventListener("change", updateFilterSheetA11y);
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && filterPanel?.classList.contains("filter-sheet-open")) {
+    closeFilterSheet();
+  }
+});
+if (filterPanel) {
+  document.documentElement.classList.add("filter-sheet-ready");
+  updateFilterSheetA11y();
+}
+
+document.querySelectorAll(".filter-chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    const group = chip.closest(".filter-group");
+    if (!group) return;
+    setActiveFilterChip(group, chip);
+    applyLookFilters({ track: true });
+  });
+});
+
+function includesFilterValue(values, selection) {
+  if (!selection || selection.isAll) return true;
+  return selection.matchValues.some((value) => values.includes(value));
+}
+
+function applyLookFilters({ track = false } = {}) {
+  const selections = readLookFilterSelections();
+
+  let visibleCount = 0;
+  document.querySelectorAll("[data-look-card]").forEach((card) => {
+    const scenarioValues = card.dataset.scenarios?.split("|") || [];
+    const finishValues = card.dataset.finishes?.split("|") || [];
+    const matchesScenario = includesFilterValue(scenarioValues, selections.scenario);
+    const matchesFinish = includesFilterValue(finishValues, selections.finish);
+    const matchesExperience =
+      selections.experience?.isAll ||
+      card.dataset.experience === selections.experience?.value;
+    const visible = matchesScenario && matchesFinish && matchesExperience;
+    card.classList.toggle("hidden", !visible);
+    if (visible) visibleCount += 1;
+  });
+
+  const summary = document.querySelector("[data-filter-summary]");
+  if (summary) {
+    const template =
+      summary.dataset.filterSummaryTemplate || msg("filterSummary");
+    summary.textContent = template.replace("{count}", String(visibleCount));
+  }
+  updateMobileFilterSummary(selections, visibleCount);
+
+  const emptyState = document.getElementById("empty-state");
+  if (emptyState) emptyState.hidden = visibleCount > 0;
+  if (summary) summary.hidden = visibleCount === 0;
+
+  if (track) {
+    window.__track?.("discover_filter_apply", {
+      scenario: selections.scenario?.value,
+      finish: selections.finish?.value,
+      experience: selections.experience?.value,
+      resultCount: visibleCount,
+    });
+    if (visibleCount === 0) {
+      showToast(summary?.textContent || msg("filterToast", { count: visibleCount }));
+    }
+  }
+}
+
+document.querySelectorAll("[data-clear-filters]").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-filter-group]").forEach((group) => {
+      const allChip = group.querySelector("[data-filter-all]");
+      if (allChip) setActiveFilterChip(group, allChip);
+    });
+    applyLookFilters({ track: true });
+  });
+});
+
+applyLookFilters();
+
+const inspirationDialog = document.querySelector("[data-inspiration-dialog]");
+const inspirationSwitch = document.querySelector("[data-switch-inspiration]");
+const inspirationClose = document.querySelector("[data-inspiration-close]");
+const inspirationStatus = document.querySelector("[data-inspiration-status]");
+
+inspirationSwitch?.addEventListener("click", () => {
+  if (typeof inspirationDialog?.showModal === "function") {
+    inspirationDialog.showModal();
+    inspirationDialog.querySelector(".inspiration-option.active")?.focus();
+  }
+});
+
+inspirationClose?.addEventListener("click", () => inspirationDialog?.close());
+inspirationDialog?.addEventListener("click", (event) => {
+  if (event.target === inspirationDialog) inspirationDialog.close();
+});
+
+document.querySelectorAll("[data-inspiration-value]").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const marketProfile = button.dataset.inspirationValue;
+    if (!marketProfile || button.classList.contains("active")) {
+      inspirationDialog?.close();
+      return;
+    }
+    inspirationDialog
+      ?.querySelectorAll("[data-inspiration-value]")
+      .forEach((option) => {
+        option.disabled = true;
+      });
+    if (inspirationStatus) {
+      inspirationStatus.textContent =
+        APP_LOCALE === "en" ? "Applying inspiration…" : "正在应用妆容灵感…";
+    }
+    try {
+      const response = await fetch("/api/content-preferences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ marketProfile }),
+      });
+      if (!response.ok) throw new Error("PREFERENCE_SAVE_FAILED");
+      window.location.reload();
+    } catch {
+      inspirationDialog
+        ?.querySelectorAll("[data-inspiration-value]")
+        .forEach((option) => {
+          option.disabled = false;
+        });
+      if (inspirationStatus) {
+        inspirationStatus.textContent =
+          APP_LOCALE === "en"
+            ? "Could not save the preference. Try again."
+            : "偏好保存失败，请重试。";
+      }
+    }
+  });
+});
+
+document.querySelectorAll("[data-look-select]").forEach((link) => {
+  link.addEventListener("click", () => {
+    window.__track?.("look_selected", {
+      lookSlug: link.dataset.lookSlug,
+      scenario: link.dataset.lookScenario,
+      placement: link.dataset.lookSource || "discover_library",
+    });
+  });
+});
+
+
+
+document.querySelectorAll("[data-photo-consent]").forEach((checkbox) => {
+  const uploadButton = checkbox.closest(".upload-box")?.querySelector("[data-upload]");
+  checkbox.addEventListener("change", () => {
+    if (uploadButton?.dataset.loginRequired === "true") return;
+    if (uploadButton) uploadButton.disabled = !checkbox.checked;
+  });
+});
+
+document.querySelectorAll("[data-upload]").forEach((button) => {
+  const uploadBox = button.closest(".upload-box");
+  const task = uploadBox?.querySelector("[data-upload-task]");
+  const status = task?.querySelector("[data-upload-status]");
+  const percent = task?.querySelector("[data-upload-percent]");
+  const progress = task?.querySelector("[data-upload-progress]");
+  const cancelButton = task?.querySelector("[data-upload-cancel]");
+  const retryButton = task?.querySelector("[data-upload-retry]");
+  const deleteButton = task?.querySelector("[data-upload-delete]");
+  const deleteResultButton = task?.querySelector("[data-result-delete]");
+  const runningJobStates = new Set([
+    "created",
+    "upload_validating",
+    "diagnosis_running",
+    "image_running",
+  ]);
+  const retryableJobStates = new Set(["failed", "cancelled", "timed_out"]);
+  const jobProgress = {
+    created: [msg("jobCreated"), 72],
+    upload_validating: [msg("uploadValidating"), 76],
+    diagnosis_running: [msg("diagnosisRunning"), 84],
+    image_running: [msg("imageRunning"), 92],
+  };
+  const terminalJobMessages = {
+    failed: msg("generationFailedRefunded"),
+    cancelled: msg("taskCancelledRefunded"),
+    timed_out: msg("timedOutRefunded"),
+  };
+  let controller;
+  let lastFile;
+  let idempotencyKey;
+  let activeJob;
+
+  const setUploadState = (
+    message,
+    progressValue,
+    { state = "running", cancellable = false, retryable = false } = {},
+  ) => {
+    if (!task) return;
+    task.hidden = false;
+    task.dataset.state = state;
+    status.textContent = message;
+    percent.textContent = `${progressValue}%`;
+    progress.style.width = `${progressValue}%`;
+    cancelButton.hidden = !cancellable;
+    retryButton.hidden = !retryable;
+  };
+
+  const readApiData = async (response, fallbackMessage) => {
+    const payload = await response.json();
+    if (!response.ok) {
+      throw new Error(payload.error?.message || fallbackMessage);
+    }
+    return payload.data;
+  };
+
+  const renderSuccessfulJob = (job) => {
+    const resultTarget = document.querySelector("[data-result-target]");
+    if (resultTarget && job.resultImage) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "generated-result";
+      const image = document.createElement("img");
+      image.src = job.resultImage;
+      image.alt = msg("referenceAlt", { look: job.lookTitle });
+      const badge = document.createElement("span");
+      badge.className = "pill pill-teal";
+      badge.textContent =
+        job.resultKind === "reference-fallback" ? msg("referenceEffect") : msg("tryonEffect");
+      const message = document.createElement("p");
+      message.textContent = job.disclaimer || msg("resultDisclaimer");
+      wrapper.append(badge, image, message);
+      resultTarget.replaceChildren(wrapper);
+    }
+    deleteResultButton.hidden = false;
+    updateQuotaDisplay(job.quota);
+    window.__absLastSucceededJobId = job.id;
+    document.dispatchEvent(
+      new CustomEvent("abs:tryon-succeeded", {
+        detail: { job },
+      }),
+    );
+    setUploadState(job.resultKind === "reference-fallback" ? msg("referenceGenerated") : msg("tryonGenerated"), 100, {
+      state: "success",
+    });
+    showToast(
+      job.resultKind === "reference-fallback"
+        ? msg("referenceGeneratedNote")
+        : msg("tryonGenerated"),
+    );
+  };
+
+  const presentTerminalJob = (job) => {
+    activeJob = job;
+    updateQuotaDisplay(job.quota);
+    if (job.status === "succeeded") {
+      renderSuccessfulJob(job);
+      return;
+    }
+
+    const message = terminalJobMessages[job.status] || msg("taskIncomplete");
+    setUploadState(message, 0, {
+      state: "error",
+      retryable: retryableJobStates.has(job.status),
+    });
+    showToast(message);
+  };
+
+  const waitForJob = async (initialJob) => {
+    let job = initialJob;
+    activeJob = job;
+    updateQuotaDisplay(job.quota);
+
+    while (runningJobStates.has(job.status)) {
+      activeJob = job;
+      const [message, progressValue] = jobProgress[job.status];
+      cancelButton.textContent = msg("cancelGeneration");
+      setUploadState(message, progressValue, { cancellable: true });
+      await new Promise((resolve) => window.setTimeout(resolve, 1200));
+      job = await readApiData(await fetch(`/api/tryon-jobs/${job.id}`), msg("statusQueryFailed"));
+      updateQuotaDisplay(job.quota);
+    }
+
+    presentTerminalJob(job);
+  };
+
+  const runUpload = async (file) => {
+    if (!file) return;
+    lastFile = file;
+    idempotencyKey ||= crypto.randomUUID();
+    activeJob = undefined;
+    deleteResultButton.hidden = true;
+    const originalLabel = button.textContent;
+    controller = new AbortController();
+    button.disabled = true;
+    button.textContent = msg("uploadingSafely");
+    cancelButton.textContent = msg("cancelUpload");
+    setUploadState(msg("confirmingConsent"), 12, { cancellable: true });
+
+    try {
+      const consentResponse = await fetch("/api/consents/photo", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ accepted: true, version: PHOTO_CONSENT_VERSION }),
+        signal: controller.signal,
+      });
+      if (!consentResponse.ok) throw new Error("CONSENT_FAILED");
+      setUploadState(msg("validatingUpload"), 38, { cancellable: true });
+
+      const formData = new FormData();
+      formData.append("photo", file);
+      formData.append("consentVersion", PHOTO_CONSENT_VERSION);
+      const uploadResponse = await fetch("/api/uploads", {
+        method: "POST",
+        body: formData,
+        signal: controller.signal,
+      });
+      const result = await uploadResponse.json();
+      if (!uploadResponse.ok) throw new Error(result.error?.message || "UPLOAD_FAILED");
+
+      button.dataset.uploadId = result.data.id;
+      deleteButton.hidden = false;
+      button.textContent = msg("generatingReference");
+      controller = undefined;
+      setUploadState(msg("uploadValidated"), 76);
+      const activeLook = document.querySelector("[data-look-slug].active");
+      const job = await readApiData(
+        await fetch("/api/tryon-jobs", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            uploadId: result.data.id,
+            lookSlug: activeLook?.dataset.lookSlug,
+            idempotencyKey,
+          }),
+        }),
+        msg("jobCreateFailed"),
+      );
+      await waitForJob(job);
+    } catch (error) {
+      const aborted = error.name === "AbortError";
+      const errorMessage = aborted
+        ? msg("uploadCancelled")
+        : error.message === "UPLOAD_FAILED" || error.message === "TRYON_FAILED"
+          ? msg("processFailed")
+          : error.message;
+      setUploadState(errorMessage, 0, {
+        state: "error",
+        retryable: true,
+      });
+      showToast(errorMessage);
+    } finally {
+      controller = undefined;
+      button.textContent = originalLabel;
+      button.disabled = !uploadBox?.querySelector("[data-photo-consent]")?.checked;
+    }
+  };
+
+  button.addEventListener("click", async () => {
+    const session = await getCurrentSession({ refresh: true });
+    if (!isAccountSession(session)) {
+      syncUploadAuthGate(session);
+      redirectToLogin(msg("loginQuotaRequired"));
+      return;
+    }
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/jpeg,image/png,image/webp,image/heic,image/heif";
+    input.addEventListener("change", async () => {
+      if (input.files?.length) {
+        idempotencyKey = crypto.randomUUID();
+        activeJob = undefined;
+        deleteResultButton.hidden = true;
+        await runUpload(input.files[0]);
+      }
+    });
+    input.click();
+  });
+
+  cancelButton?.addEventListener("click", async () => {
+    if (controller) {
+      controller.abort();
+      return;
+    }
+    if (!activeJob || !runningJobStates.has(activeJob.status)) return;
+
+    cancelButton.disabled = true;
+    try {
+      const job = await readApiData(
+        await fetch(`/api/tryon-jobs/${activeJob.id}/cancel`, { method: "POST" }),
+        msg("cancelFailed"),
+      );
+      presentTerminalJob(job);
+    } catch (error) {
+      showToast(error.message);
+    } finally {
+      cancelButton.disabled = false;
+    }
+  });
+
+  retryButton?.addEventListener("click", async () => {
+    if (!activeJob || !retryableJobStates.has(activeJob.status)) {
+      idempotencyKey = crypto.randomUUID();
+      await runUpload(lastFile);
+      return;
+    }
+
+    retryButton.disabled = true;
+    setUploadState(msg("retryCreating"), 68);
+    try {
+      const job = await readApiData(
+        await fetch(`/api/tryon-jobs/${activeJob.id}/retry`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ idempotencyKey: crypto.randomUUID() }),
+        }),
+        msg("retryCreateFailed"),
+      );
+      await waitForJob(job);
+    } catch (error) {
+      setUploadState(error.message, 0, { state: "error", retryable: true });
+      showToast(error.message);
+    } finally {
+      retryButton.disabled = false;
+    }
+  });
+
+  deleteButton?.addEventListener("click", async () => {
+    const uploadId = button.dataset.uploadId;
+    if (!uploadId) return;
+
+    deleteButton.disabled = true;
+    try {
+      await readApiData(
+        await fetch(`/api/uploads/${uploadId}`, { method: "DELETE" }),
+        msg("deleteUploadFailed"),
+      );
+      delete button.dataset.uploadId;
+      deleteButton.hidden = true;
+      showToast(msg("originalDeleted"));
+    } catch (error) {
+      showToast(error.message);
+    } finally {
+      deleteButton.disabled = false;
+    }
+  });
+
+  deleteResultButton?.addEventListener("click", async () => {
+    if (!activeJob) return;
+
+    deleteResultButton.disabled = true;
+    try {
+      await readApiData(
+        await fetch(`/api/tryon-jobs/${activeJob.id}`, { method: "DELETE" }),
+        msg("deleteResultFailed"),
+      );
+      const resultTarget = document.querySelector("[data-result-target]");
+      const emptyState = document.createElement("div");
+      emptyState.className = "result-state";
+      const title = document.createElement("h3");
+      title.textContent = msg("resultDeletedTitle");
+      const message = document.createElement("p");
+      message.textContent = msg("resultDeletedDesc");
+      emptyState.append(title, message);
+      resultTarget?.replaceChildren(emptyState);
+      activeJob = undefined;
+      window.__absLastSucceededJobId = undefined;
+      deleteResultButton.hidden = true;
+      setUploadState(msg("resultDeletedTitle"), 0, { state: "success" });
+      showToast(msg("resultDeletedTitle"));
+    } catch (error) {
+      showToast(error.message);
+    } finally {
+      deleteResultButton.disabled = false;
+    }
+  });
+});
+
+document.querySelectorAll("[data-faq]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const answer = document.querySelector(".faq-answer");
+    answer.textContent = button.dataset.answer;
+    answer.classList.add("show");
+  });
+});
+
+document.querySelectorAll("[data-close-dialog]").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.getElementById(button.dataset.closeDialog)?.close();
+  });
+});

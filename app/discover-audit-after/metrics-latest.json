@@ -1,0 +1,183 @@
+{
+  "desktop": {
+    "metrics": {
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "overflow": false,
+      "filterRect": {
+        "x": 86,
+        "y": 193,
+        "width": 248,
+        "height": 738,
+        "top": 193,
+        "bottom": 931
+      },
+      "visibleCards": 3,
+      "summary": "共找到 3 个可直接试妆的妆容",
+      "smallTargets": [
+        {
+          "text": "Cookie 偏好设置",
+          "tag": "BUTTON",
+          "w": 260,
+          "h": 19
+        }
+      ],
+      "chipsWithoutPressed": 0,
+      "firstVisibleCard": {
+        "rect": {
+          "x": 377,
+          "y": 212,
+          "width": 470,
+          "height": 413,
+          "top": 212,
+          "bottom": 625
+        },
+        "text": "晚宴暖调进阶友好鎏金晚宴妆加强轮廓和五官存在感，让脸部结构看起来更清楚。适合晚宴、活动时，适合想要灯光下更有存在感的人；整体妆效偏暖调、立体。重点看轮廓是否更清楚、颜色是否和场合匹配看妆容说明妆容抓手底妆：薄涂，保留皮肤纹理眉眼：加深眼尾，保留轮廓修容：暖调轻扫，别压暗肤色，细节少量叠加慎选情况如果今天是严肃面试或保守通勤，它可能偏强，优先换通勤或面试妆。 上传自拍试妆",
+        "action": {
+          "x": 396,
+          "y": 562,
+          "width": 432,
+          "height": 44,
+          "top": 562,
+          "bottom": 606
+        }
+      }
+    },
+    "analyticsCount": 3,
+    "consoleErrors": []
+  },
+  "tablet": {
+    "metrics": {
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "overflow": false,
+      "filterRect": {
+        "x": 46,
+        "y": 193,
+        "width": 676,
+        "height": 361,
+        "top": 193,
+        "bottom": 554
+      },
+      "visibleCards": 44,
+      "summary": "共 44 个妆容，可选择后上传自拍试妆",
+      "smallTargets": [
+        {
+          "text": "Cookie 偏好设置",
+          "tag": "BUTTON",
+          "w": 326,
+          "h": 19
+        }
+      ],
+      "chipsWithoutPressed": 0,
+      "firstVisibleCard": {
+        "rect": {
+          "x": 65,
+          "y": 597,
+          "width": 310,
+          "height": 421,
+          "top": 597,
+          "bottom": 1019
+        },
+        "text": "日常清透新手友好新手自然妆减少粉感，让皮肤看起来干净、轻薄，适合近距离日常场景。适合日常时，适合想要快速提气色，妆感保持轻的人；整体妆效偏清透、自然。重点看气色是否更精神、粉感是否轻看妆容说明妆容抓手底妆：薄涂，保留皮肤纹理眉眼：贴近睫毛，放大眼神唇颊：同色系轻扫，先提气色慎选情况如果生成后压肤色或显疲惫，新手自然妆就不是最优先选择。 上传自拍试妆",
+        "action": {
+          "x": 84,
+          "y": 956,
+          "width": 272,
+          "height": 44,
+          "top": 956,
+          "bottom": 1000
+        }
+      }
+    },
+    "analyticsCount": 1,
+    "consoleErrors": []
+  },
+  "mobile": {
+    "metrics": {
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "overflow": false,
+      "filterRect": {
+        "x": 12,
+        "y": 197,
+        "width": 366,
+        "height": 361,
+        "top": 197,
+        "bottom": 558
+      },
+      "visibleCards": 3,
+      "summary": "共找到 3 个可直接试妆的妆容",
+      "smallTargets": [],
+      "chipsWithoutPressed": 0,
+      "firstVisibleCard": {
+        "rect": {
+          "x": 25,
+          "y": 593,
+          "width": 340,
+          "height": 598,
+          "top": 593,
+          "bottom": 1191
+        },
+        "text": "通勤自然新手友好客户会议裸妆眉眼线条更干净，唇颊把气色拉起来，看起来稳重但不浓。适合通勤、面试时，适合想要精神、干净，表达更稳的人；整体妆效偏自然、专业。重点看眉眼是否更精神、唇颊是否提气色但不抢戏看妆容说明妆容抓手底妆：薄涂，保留皮肤纹理眉眼：线条干净，眼影不过界唇色：和腮红统一，避免跳色慎选情况如果你想要强晚宴感或高饱和照片效果，它会偏克制。 上传自拍试妆",
+        "action": {
+          "x": 42,
+          "y": 1128,
+          "width": 306,
+          "height": 46,
+          "top": 1128,
+          "bottom": 1174
+        }
+      }
+    },
+    "analyticsCount": 3,
+    "consoleErrors": []
+  },
+  "dark": {
+    "metrics": {
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "overflow": false,
+      "filterRect": {
+        "x": 86,
+        "y": 193,
+        "width": 248,
+        "height": 738,
+        "top": 193,
+        "bottom": 931
+      },
+      "visibleCards": 44,
+      "summary": "共 44 个妆容，可选择后上传自拍试妆",
+      "smallTargets": [
+        {
+          "text": "Cookie 偏好设置",
+          "tag": "BUTTON",
+          "w": 260,
+          "h": 19
+        }
+      ],
+      "chipsWithoutPressed": 0,
+      "firstVisibleCard": {
+        "rect": {
+          "x": 377,
+          "y": 212,
+          "width": 470,
+          "height": 413,
+          "top": 212,
+          "bottom": 625
+        },
+        "text": "日常清透新手友好新手自然妆减少粉感，让皮肤看起来干净、轻薄，适合近距离日常场景。适合日常时，适合想要快速提气色，妆感保持轻的人；整体妆效偏清透、自然。重点看气色是否更精神、粉感是否轻看妆容说明妆容抓手底妆：薄涂，保留皮肤纹理眉眼：贴近睫毛，放大眼神唇颊：同色系轻扫，先提气色慎选情况如果生成后压肤色或显疲惫，新手自然妆就不是最优先选择。 上传自拍试妆",
+        "action": {
+          "x": 396,
+          "y": 541,
+          "width": 432,
+          "height": 66,
+          "top": 541,
+          "bottom": 606
+        }
+      }
+    },
+    "analyticsCount": 1,
+    "consoleErrors": []
+  }
+}

@@ -1,0 +1,313 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Nighttime Makeup: From Day to Night in 10 Minutes",
+  description:
+    "Transform your daytime makeup into an evening look without starting from scratch. Learn what to add, what to remove, how artificial lighting changes everything, and the 10-minute routine for dinner, clubs, and parties.",
+  faq: [
+    {
+      q: "How do I transform my day makeup into night makeup quickly?",
+      a: "The fastest day-to-night transformation focuses on three areas: intensify your eyes, deepen your lip, and refresh your base. Start by blotting away any midday oil or faded product with a tissue. Add a darker eyeshadow to the outer corner of your eyes and blend it into the crease for added depth. Apply a second coat of mascara or add false lashes if you want more drama. Swap your daytime lip for a deeper, more saturated shade. Add a touch of highlighter to the cheekbones since artificial evening lighting responds beautifully to controlled shimmer. A quick spritz of setting spray melds the new layers with your existing base. This entire process takes approximately ten minutes.",
+    },
+    {
+      q: "What is different about nighttime makeup compared to daytime makeup?",
+      a: "Nighttime makeup needs to be more intense because artificial lighting and dim environments soften everything you see. Colors that look bold in daylight look subtle under restaurant pendant lights or club strobes. The skin also reflects light differently at night: candlelight warms your complexion and flatters golden tones, while club lighting can wash you out or create harsh shadows depending on the angle. Nighttime makeup compensates by deepening eye definition, adding dimension with highlighter and bronzer, and choosing lip colors with more pigment and saturation. The structure of the face needs more sculpting at night because flat lighting eliminates natural shadows that define your features during the day.",
+    },
+    {
+      q: "How should nighttime makeup differ for dinner versus a club versus a party?",
+      a: "Dinner calls for refined intensity: deeper eye definition, a polished lip, and elegant highlighter placement that catches candlelight beautifully. Club makeup needs to be bold and resilient: heavier eye makeup that reads under strobe lights, a long-wear lip that survives drinking, and extra setting spray to handle the heat and humidity of a crowded dance floor. Party makeup sits between the two: slightly more playful than dinner (maybe a pop of color or shimmer) but less extreme than club makeup. Think a smoky eye with a glossy lip, or a cat-eye with a nude lip and extra highlighter.",
+    },
+    {
+      q: "What should I remove or tone down when transitioning from day to night?",
+      a: "If your daytime makeup includes heavy blush or bronzer that has built up over the day, blot it before adding evening products. Layering night products over tired day products creates a muddy, overdone appearance. If your daytime concealer has creased under the eyes, gently blend it out with your ring finger before adding anything new. If your daytime lip color is still on, remove it completely before applying your evening shade. The transformation should feel like a refresh, not a cover-up. Clean edges make the difference between a polished nighttime look and a messy one.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+  { label: "Natural Makeup", url: "/looks/natural-makeup" },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      You do not need to wipe everything off and start over. The best nighttime
+      transformations build on your daytime base, adding depth, intensity, and
+      dimension where it matters. Learn the 10-minute routine that takes you
+      from desk to dinner, office to club, or afternoon to party.
+    </p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>The Day-to-Night Philosophy: Add, Do Not Replace</h2>
+    <p>
+      The most common mistake people make when transitioning from day to night
+      makeup is starting from zero. They wipe off their face, remove their base,
+      and reapply everything. This takes twenty to thirty minutes and defeats
+      the entire purpose of a quick transformation. The smarter approach treats
+      your daytime makeup as a foundation, literally and figuratively, and
+      builds on it strategically.
+    </p>
+    <p>
+      Nighttime makeup is not a different look. It is an amplified version of
+      your daytime look. The same products, applied more deeply. The same
+      colors, in richer shades. The same structure, with more definition. Think
+      of it as turning up the volume rather than changing the song.
+    </p>
+    <p>
+      This philosophy matters because it changes your entire approach. Instead
+      of asking "What do I put on for tonight?" you ask "What does my current
+      look need more of?" The answer is almost always: more eye definition, more
+      lip intensity, more cheek dimension, and a fresher base. Everything else
+      stays.
+    </p>
+
+    <h2>Artificial Lighting Changes Everything</h2>
+    <p>
+      Daylight is the most honest lighting. It reveals your makeup exactly as it
+      is. Artificial lighting at night lies, flatters, distorts, and sometimes
+      sabotages, depending on the source. Understanding how different nighttime
+      lighting affects your appearance is the key to choosing the right evening
+      products.
+    </p>
+    <h3>Restaurant Lighting</h3>
+    <p>
+      Restaurants typically use warm, dim pendant lights or candles with a color
+      temperature around 2700 Kelvin. This light is golden and flattering to
+      warm skin tones, but it washes out cool tones and reduces color contrast.
+      Your blush disappears. Your lip color softens to a whisper. Your eye
+      definition flattens. To compensate, deepen everything slightly: a richer
+      blush, a more pigmented lip, and more defined eyes with darker
+      outer-corner depth. The golden light will soften your intensification back
+      to a natural-looking evening glow.
+    </p>
+    <h3>Club or Bar Lighting</h3>
+    <p>
+      Clubs use a mix of colored LEDs, strobes, and dim ambient light. This
+      environment is chaotic for makeup. Colored lights can completely change
+      how your makeup appears: blue light makes warm tones look muddy, red light
+      washes out red-based products, and strobe lighting creates harsh shadows.
+      The solution is to go bolder than you think you need to and to choose
+      products that photograph well under unpredictable lighting. Deeper
+      eyeshadows, strong lash definition, and a bold lip that reads through any
+      color cast are your best friends here.
+    </p>
+    <h3>Party or House Lighting</h3>
+    <p>
+      House parties and social gatherings typically use overhead warm-white
+      bulbs that are brighter than restaurants but dimmer than office lighting.
+      This is the most forgiving nighttime environment. You can add moderate
+      intensity: a slightly deeper eye, a touch of highlighter on the
+      cheekbones, and a more saturated lip. The key is looking polished without
+      looking like you are going to a club. Match the energy of the event.
+    </p>
+
+    <h2>Day Versus Night: What Changes</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Daytime</th>
+          <th>Nighttime</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lightweight, natural base with SPF</td>
+          <td>Same base, but blot and refresh the T-zone; no SPF needed</td>
+        </tr>
+        <tr>
+          <td>Soft, neutral eyeshadow wash</td>
+          <td
+            >Deeper outer-corner shade blended into the crease for added depth</td
+          >
+        </tr>
+        <tr>
+          <td>One coat of mascara, top lashes only</td>
+          <td
+            >Second coat of mascara plus bottom lashes or natural false lashes</td
+          >
+        </tr>
+        <tr>
+          <td>Light cream blush, blended softly</td>
+          <td>Layer powder blush over cream for intensity and longevity</td>
+        </tr>
+        <tr>
+          <td>No highlighter or very subtle</td>
+          <td
+            >Strategic highlighter on cheekbones and brow bone for artificial
+            light</td
+          >
+        </tr>
+        <tr>
+          <td>Nude or tinted balm lip</td>
+          <td>Deeper, more saturated lip color in satin or matte finish</td>
+        </tr>
+        <tr>
+          <td>Minimal or no bronzer</td>
+          <td
+            >Additional bronzer or contour to restore dimension that flat
+            lighting removes</td
+          >
+        </tr>
+        <tr>
+          <td>Light or no setting spray</td>
+          <td
+            >Heavy setting spray to lock in new layers and extend wear for hours</td
+          >
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>What to Remove Before Adding</h2>
+    <p>
+      Before you intensify your look for the evening, there are a few things you
+      should clean up or remove entirely. Daytime makeup that has been on your
+      face for eight hours has settled, creased, and faded in ways that
+      interfere with a clean evening application.
+    </p>
+    <ul>
+      <li>
+        <strong>Creased concealer.</strong> Gently pat under-eye concealer with your
+        ring finger to blend out any lines that have formed. Do not wipe or rub. Just
+        press and blend.
+      </li>
+      <li>
+        <strong>Faded or migrated lip color.</strong> Remove your daytime lip color
+        completely with a tissue or makeup wipe. Applying a deeper evening shade over
+        a faded nude creates a muddy, uneven result.
+      </li>
+      <li>
+        <strong>Excess powder buildup.</strong> If your T-zone has accumulated layers
+        of powder throughout the day, blot with a tissue first, then press a fresh
+        thin layer of powder. Adding evening products over caked powder creates texture
+        and patchiness.
+      </li>
+      <li>
+        <strong>Smudged mascara or liner.</strong> Clean up any under-eye smudges
+        with a cotton swab dipped in makeup remover. Starting with clean edges makes
+        the evening transformation look intentional rather than accumulated.
+      </li>
+    </ul>
+
+    <h2>Your 10-Minute Day-to-Night Transformation</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Refresh the Base (2 min)</h4>
+          <p>
+            Blot your entire face with a tissue to remove oil, sweat, and any
+            product that has separated throughout the day. Gently pat creased
+            concealer smooth with your ring finger. Press a thin layer of
+            translucent powder on the T-zone to create a clean surface for
+            evening products. If your base has worn through in spots, dab a
+            small amount of concealer or foundation only where needed.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Intensify the Eyes (3 min)</h4>
+          <p>
+            Apply a darker eyeshadow to the outer corner of each eye and blend
+            it into the crease. This single move adds the most evening drama in
+            the least amount of time. Add a second coat of mascara to the top
+            lashes and one coat to the bottom lashes. If you carry false lashes,
+            apply natural-style individual or half-lashes now. For extra
+            definition, smudge a dark pencil along the lower lash line.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Deepen Cheek Color and Add Dimension (2 min)</h4>
+          <p>
+            Layer a powder blush over your existing cream blush for added
+            intensity that lasts. Sweep bronzer or a contour shade under your
+            cheekbones to restore the facial dimension that flat evening
+            lighting removes. Apply highlighter to the tops of your cheekbones,
+            the brow bone, and the inner corner of your eyes. Artificial
+            lighting catches these highlights beautifully and gives your face a
+            luminous, evening-ready glow.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Swap to a Deeper Lip (2 min)</h4>
+          <p>
+            Remove your daytime lip color completely. Line your lips with a
+            pencil that matches your chosen evening shade. Apply your lipstick:
+            a deeper rose, berry, or classic red for dinner; a bold matte or
+            long-wear liquid formula for clubs; a glossy, playful shade for
+            parties. Blot once with a tissue. The lip is the fastest way to
+            change the entire energy of your look from day to night.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Lock and Go (1 min)</h4>
+          <p>
+            Spray a generous amount of setting spray to meld all the new layers
+            with your existing base. This prevents the "layered on top" look and
+            ensures your transformation stays put for hours. Check your teeth
+            for lip product, adjust any jewelry or accessories, and step out
+            into the night.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Carry an Evening Touch-Up Kit</h2>
+    <p>
+      Your day-to-night transformation is only as good as your ability to
+      maintain it. Carry a small pouch with: your evening lip color and liner
+      for reapplication after eating or drinking, blotting papers to absorb oil
+      without disturbing your makeup, a pressed powder for shine control, and a
+      travel-size setting spray for a mid-evening refresh. These four items take
+      up almost no space in a clutch and ensure you look as good at the end of
+      the night as you did at the beginning.
+    </p>
+  </section>
+
+  <Fragment slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Preview Your Nighttime Transformation</h2>
+        <p>
+          See how your evening makeup looks on your face before you head out.
+        </p>
+        <a href="/tryon-free" class="cta-btn"
+          >Try Nighttime Makeup on Your Face — Free</a
+        >
+      </div>
+    </div>
+  </Fragment>
+
+  <Fragment slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {relatedLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+        </ul>
+      </div>
+    </section>
+  </Fragment>
+</SeoLandingLayout>

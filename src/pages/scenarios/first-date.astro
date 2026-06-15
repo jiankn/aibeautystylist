@@ -1,0 +1,265 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "First Date Makeup: Romantic, Flattering, and Unforgettable",
+  description:
+    "First date makeup should build confidence without hiding your personality. Learn how to adapt your look for coffee versus dinner dates, use kiss-proof techniques, and choose flattering colors.",
+  heroImage: "/images/look-date.webp",
+  ogImage: "/images/look-date.webp",
+  faq: [
+    {
+      q: "What makeup should I wear on a first date?",
+      a: "The best first-date makeup enhances your features in a way that feels like you, only the most confident version. Start with a glowing, well-blended base using a lightweight foundation or skin tint. Add warmth with bronzer and a flattering blush shade, define your eyes with a soft smoky wash or winged liner in brown or charcoal, and finish with a lip color that makes you feel good when you catch your reflection. The specific shade matters less than your comfort level: if you never wear red lipstick, a first date is not the night to start.",
+    },
+    {
+      q: "How do I make my makeup last through dinner and drinks?",
+      a: "Longevity comes from layering and setting. Apply a gripping primer before your base to help products adhere to the skin. Use a cream blush and set it with a matching powder blush to lock the color in place. For lips, line your entire lip with a lip liner, fill it in, and then apply your lipstick on top. This double-layer technique prevents color from fading or migrating. Finish with a setting spray and carry your lip product for a quick refresh before the check arrives.",
+    },
+    {
+      q: "Should I go natural or glam for a first date?",
+      a: "Go with the version of yourself that makes you feel most confident. If you typically wear minimal makeup, a polished natural look with enhanced lashes and a pretty lip reads as elevated without feeling like a costume. If you love bold makeup and it makes you feel powerful, lean into it. The worst first-date mistake is wearing a look so different from your everyday appearance that you spend the evening worrying about whether it looks right. Your date should be attracted to the real you.",
+    },
+    {
+      q: "What are the most common first-date makeup mistakes?",
+      a: "The most common mistake is trying a brand-new product or technique on the night of the date, which risks allergic reactions, color mismatches, or application disasters. Other frequent errors include wearing foundation that does not match your neck (visible in dim restaurant lighting), applying too much perfume (which can be overwhelming in close quarters), choosing a lip color that transfers heavily onto glasses or drink rims, and skipping a test photo in similar lighting to your date venue. Dim lighting hides a lot of flaws, but it also exaggerates mismatches and texture.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+  { label: "Natural Makeup", url: "/looks/natural-makeup" },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={page.heroImage}
+  ogImage={page.ogImage}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      First dates are about connection, not perfection. The right makeup makes
+      you feel like the best version of yourself and lets your personality shine
+      through. Learn how to match your look to the date, keep it lasting all
+      evening, and avoid the most common mistakes.
+    </p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>The Psychology of First-Impression Makeup</h2>
+    <p>
+      Your first date makeup is doing emotional work before you even sit down at
+      the table. When you look in the mirror and like what you see, it changes
+      your posture, your eye contact, your willingness to be vulnerable. This is
+      not vanity. It is the documented link between self-perception and behavior
+      that psychologists call "enclothed cognition" applied to cosmetics. When
+      you feel put-together, you act more put-together.
+    </p>
+    <p>
+      But there is a tension here. First dates are also about authenticity. Your
+      date wants to meet the real you, not a curated image. The makeup that
+      strikes the right balance enhances your features in a way that your date
+      would recognize if they saw you again on a second date in sweatpants. If
+      your makeup is so heavy or stylized that it creates an alter ego, you set
+      yourself up for a confidence crash when that image cannot be sustained.
+    </p>
+    <p>
+      The guiding principle for first-date makeup is this: choose products and
+      techniques that make you feel attractive and confident while still looking
+      recognizably like you. Your date should remember your smile and your
+      laugh, not wonder if you look different without makeup.
+    </p>
+
+    <h2>Match Your Makeup to the Date Venue</h2>
+    <p>
+      A coffee date, a candlelit dinner, and a hike in the park each demand
+      different approaches. The venue sets the tone, and your makeup should
+      align with it.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">&#x2615;</div>
+        <h4>Coffee Date</h4>
+        <p>
+          Natural daylight, casual setting, close proximity. Go for a fresh,
+          glowing base with minimal eye makeup and a tinted lip balm. This is a
+          low-pressure look that says you made an effort without treating the
+          coffee like a red-carpet event. Keep it light, warm, and approachable.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F377;</div>
+        <h4>Dinner Date</h4>
+        <p>
+          Dimmer lighting, longer duration, more intimate atmosphere. This is
+          where you can add definition: a soft smoky eye, a deeper lip color,
+          and a touch more highlighter. The lower light levels mean your makeup
+          needs more intensity to read. Build your look in layers so you can
+          adjust if the restaurant turns out brighter than expected.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F333;</div>
+        <h4>Outdoor or Activity Date</h4>
+        <p>
+          Wind, sun, movement, and the possibility of actual physical activity.
+          Use waterproof mascara, a long-wear tinted sunscreen instead of
+          foundation, cream blush that will not cake in sweat, and a tinted SPF
+          lip balm. The goal is looking naturally good while being able to
+          actually participate in the activity without worrying about your
+          makeup melting off.
+        </p>
+      </div>
+    </div>
+
+    <h2>Confidence-Boosting Color Choices</h2>
+    <p>
+      Color psychology plays an outsized role in first-date makeup because color
+      communicates emotion. Warm tones like peach, coral, and rose signal
+      warmth, openness, and approachability. These are the colors that make you
+      look like someone who is easy to talk to. Berry and plum tones on the lips
+      signal confidence and a hint of playfulness. A classic red lip can be
+      powerful if it matches your personality, but it also commands attention in
+      a way that might feel performative on a first meeting.
+    </p>
+    <p>
+      If you are unsure which shade to choose, hold the product up to your face
+      in the lighting where you will actually be on the date. A color that looks
+      beautiful in your bathroom under warm bulbs can look completely different
+      under restaurant pendant lighting. When in doubt, choose the shade that
+      makes you smile when you see it in the mirror. That emotional response is
+      the only metric that matters.
+    </p>
+
+    <h2>Your Date-Prep Routine</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Prep and Prime (3 min)</h4>
+          <p>
+            Start with a hydrating moisturizer suited to your skin type. Apply a
+            gripping primer in areas where makeup tends to fade: the T-zone,
+            around the nose, and on the chin. This creates a smooth, sticky
+            canvas for everything that follows.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Build a Glowing Base (4 min)</h4>
+          <p>
+            Apply a skin tint or lightweight foundation with a damp sponge for a
+            natural finish. Conceal under the eyes and on any spots that need
+            extra coverage. Use a cream highlighter on the high points of your
+            face: cheekbones, brow bone, and the tip of your nose. This gives
+            you that lit-from-within glow that photographs beautifully and looks
+            stunning in person.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Define the Eyes (4 min)</h4>
+          <p>
+            Apply a neutral transition shade across the lid and crease. Deepen
+            the outer corner with a slightly darker tone and blend thoroughly.
+            Add a thin line of brown or charcoal eyeliner along the upper lash
+            line, smudging slightly for a soft effect. Curl lashes and apply two
+            coats of mascara. If you want more drama, add individual or
+            natural-style false lashes rather than a full strip for a more
+            organic look.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Add Dimension with Bronzer and Blush (2 min)</h4>
+          <p>
+            Sweep bronzer along the perimeter of your face, under your
+            cheekbones, and lightly across the bridge of your nose. Layer cream
+            blush on the apples of your cheeks and blend upward. The combination
+            of warmth and color gives your face a healthy, vibrant appearance
+            that reads as attractive in any lighting.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Apply and Lock Your Lip (3 min)</h4>
+          <p>
+            Line your lips with a pencil that matches your chosen lipstick
+            shade. Fill in the entire lip with the liner for a long-lasting
+            base. Apply your lipstick, blot with a tissue, and apply a second
+            thin layer. This layering technique ensures the color stays put
+            through eating, drinking, and conversation. Keep the product in your
+            bag for a discreet touch-up before the end of the evening.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Set and Go (1 min)</h4>
+          <p>
+            Mist your face with a setting spray to meld all the layers together
+            and prevent powdery texture. Let it dry for 30 seconds before
+            putting on any jewelry or perfume. Check your teeth for lip product
+            and you are ready.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>The Kiss-Proof Principle</h2>
+    <p>
+      Whether or not the evening ends with a kiss, designing your lip product
+      strategy around transfer resistance is practical. The layering technique
+      described in Step 5 is the gold standard for transfer-proof lips. If you
+      want extra insurance, choose a liquid lipstick formula that dries matte,
+      though these can feel drying over the course of a long evening. A good
+      compromise is a long-wear satin lipstick topped with a very thin layer of
+      clear gloss only in the center of the lower lip, which minimizes visible
+      transfer while giving you dimension.
+    </p>
+  </section>
+
+  <Fragment slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Test Your Date-Night Look Before You Get Ready</h2>
+        <p>
+          Preview different makeup styles on your own face and find the one that
+          makes you feel unstoppable.
+        </p>
+        <a href="/tryon-free" class="cta-btn"
+          >Try First Date Makeup on Your Face — Free</a
+        >
+      </div>
+    </div>
+  </Fragment>
+
+  <Fragment slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {relatedLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+        </ul>
+      </div>
+    </section>
+  </Fragment>
+</SeoLandingLayout>

@@ -1,0 +1,18 @@
+---
+interface Props {
+  title: string;
+  message: string;
+  icon?: string;
+}
+
+const { title, message, icon = "✦" } = Astro.props;
+---
+
+<div class="result-placeholder" role="status">
+  <span
+    class="upload-camera"
+    style="background:var(--surface-neutral);color:var(--muted)">{icon}</span
+  >
+  <h3>{title}</h3>
+  <p>{message}</p>
+</div>

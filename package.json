@@ -1,0 +1,45 @@
+{
+  "name": "ai-beauty-stylist",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "env:check": "node scripts/validate-env.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local --persist-to app/.wrangler/state",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "lint": "npm run check && npm run format:check",
+    "audit:copy": "node scripts/audit-copy.mjs",
+    "audit:blog": "vitest run src/data/blogData.test.ts",
+    "audit:east-asia-market": "node scripts/audit-east-asia-market.mjs",
+    "audit:indexing": "node scripts/audit-indexing.mjs",
+    "audit:launch": "node scripts/audit-launch.mjs && node scripts/audit-footer-seo.mjs",
+    "audit:footer-seo": "node scripts/audit-footer-seo.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "smoke:real-ai": "node scripts/real-ai-smoke.mjs",
+    "verify": "npm run env:check && npm run lint && npm test && npm run build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "13.6.1",
+    "astro": "6.4.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "@cloudflare/workers-types": "4.20260606.1",
+    "playwright-core": "1.60.0",
+    "prettier": "3.8.3",
+    "prettier-plugin-astro": "0.14.1",
+    "typescript": "6.0.3",
+    "vitest": "4.1.8",
+    "wrangler": "4.98.0"
+  },
+  "overrides": {
+    "yaml": "2.8.3"
+  }
+}

@@ -1,0 +1,646 @@
+---
+import LookCard from "../components/LookCard.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
+import { getCurrentLocale } from "../lib/i18n";
+import {
+  getMarketProfileLabel,
+  getMarketProfileOptions,
+} from "../data/makeup/audienceProfiles";
+import {
+  experienceLabels as zhExperienceLabels,
+  scenarioLabels as zhScenarioLabels,
+  finishFilterLabels as zhFinishFilterLabels,
+  uiLabels as zhUiLabels,
+} from "../data/makeup/localizations/zh-CN";
+import {
+  experienceLabels as enExperienceLabels,
+  scenarioLabels as enScenarioLabels,
+  finishFilterLabels as enFinishFilterLabels,
+  uiLabels as enUiLabels,
+} from "../data/makeup/localizations/en";
+import {
+  experienceLabels as esExperienceLabels,
+  scenarioLabels as esScenarioLabels,
+  finishFilterLabels as esFinishFilterLabels,
+  uiLabels as esUiLabels,
+} from "../data/makeup/localizations/es";
+import {
+  experienceLabels as deExperienceLabels,
+  scenarioLabels as deScenarioLabels,
+  finishFilterLabels as deFinishFilterLabels,
+  uiLabels as deUiLabels,
+} from "../data/makeup/localizations/de";
+import {
+  experienceLabels as frExperienceLabels,
+  scenarioLabels as frScenarioLabels,
+  finishFilterLabels as frFinishFilterLabels,
+  uiLabels as frUiLabels,
+} from "../data/makeup/localizations/fr";
+import {
+  experienceLabels as jaExperienceLabels,
+  scenarioLabels as jaScenarioLabels,
+  finishFilterLabels as jaFinishFilterLabels,
+  uiLabels as jaUiLabels,
+} from "../data/makeup/localizations/ja";
+import {
+  experienceLabels as koExperienceLabels,
+  scenarioLabels as koScenarioLabels,
+  finishFilterLabels as koFinishFilterLabels,
+  uiLabels as koUiLabels,
+} from "../data/makeup/localizations/ko";
+import {
+  experienceLabels as ptBRExperienceLabels,
+  scenarioLabels as ptBRScenarioLabels,
+  finishFilterLabels as ptBRFinishFilterLabels,
+  uiLabels as ptBRUiLabels,
+} from "../data/makeup/localizations/pt-BR";
+import {
+  experienceLabels as zhTWExperienceLabels,
+  scenarioLabels as zhTWScenarioLabels,
+  finishFilterLabels as zhTWFinishFilterLabels,
+  uiLabels as zhTWUiLabels,
+} from "../data/makeup/localizations/zh-TW";
+
+// 获取 Audience Context（由中间件注入）
+const audienceContext = Astro.locals.audienceContext;
+const locale = getCurrentLocale();
+const localeValue = String(locale);
+const isKo = locale.startsWith("ko");
+const isDe = locale.startsWith("de");
+const isFr = locale.startsWith("fr");
+const isJa = locale.startsWith("ja");
+const isEs = locale.startsWith("es");
+const isPt = locale.startsWith("pt");
+const isZhTW = localeValue === "zh-TW" || localeValue === "zh-HK";
+const isZh = locale.startsWith("zh") && !isZhTW;
+
+// 选择当前 locale 的 UI 文案
+const ui = isKo
+  ? koUiLabels
+  : isDe
+    ? deUiLabels
+    : isFr
+      ? frUiLabels
+      : isJa
+        ? jaUiLabels
+        : isZhTW
+          ? zhTWUiLabels
+          : isZh
+            ? zhUiLabels
+            : isEs
+              ? esUiLabels
+              : isPt
+                ? ptBRUiLabels
+                : enUiLabels;
+const scenarioL = isKo
+  ? koScenarioLabels
+  : isDe
+    ? deScenarioLabels
+    : isFr
+      ? frScenarioLabels
+      : isJa
+        ? jaScenarioLabels
+        : isZhTW
+          ? zhTWScenarioLabels
+          : isZh
+            ? zhScenarioLabels
+            : isEs
+              ? esScenarioLabels
+              : isPt
+                ? ptBRScenarioLabels
+                : enScenarioLabels;
+const finishL = isKo
+  ? koFinishFilterLabels
+  : isDe
+    ? deFinishFilterLabels
+    : isFr
+      ? frFinishFilterLabels
+      : isJa
+        ? jaFinishFilterLabels
+        : isZhTW
+          ? zhTWFinishFilterLabels
+          : isZh
+            ? zhFinishFilterLabels
+            : isEs
+              ? esFinishFilterLabels
+              : isPt
+                ? ptBRFinishFilterLabels
+                : enFinishFilterLabels;
+const experienceL = isKo
+  ? koExperienceLabels
+  : isDe
+    ? deExperienceLabels
+    : isFr
+      ? frExperienceLabels
+      : isJa
+        ? jaExperienceLabels
+        : isZhTW
+          ? zhTWExperienceLabels
+          : isZh
+            ? zhExperienceLabels
+            : isEs
+              ? esExperienceLabels
+              : isPt
+                ? ptBRExperienceLabels
+                : enExperienceLabels;
+
+// 通过目录解析器获取排序后的妆容列表
+const resolvedLooks = resolveLookCatalog(audienceContext);
+
+// 当前市场画像标签
+const marketLabel = getMarketProfileLabel(
+  audienceContext.marketProfile,
+  locale,
+);
+const marketOptions = getMarketProfileOptions(locale);
+
+const copy = isKo
+  ? {
+      chooseInspiration: "메이크업 영감 선택",
+      inspirationHint:
+        "추천 순서와 참고 이미지만 바꾸며, 사용자의 정체성을 의미하지 않습니다.",
+      close: "닫기",
+      closeFilters: "필터 닫기",
+      currentSelection: "현재 선택",
+      applySitewide: "사이트 전체에 적용",
+      lookGallery: "룩 목록",
+      libraryFooter: `${resolvedLooks.length}개 룩을 선택할 수 있습니다. 하나를 고른 뒤 셀피로 시도해 보세요.`,
+    }
+  : isDe
+    ? {
+        chooseInspiration: "Make-up Inspiration wählen",
+        inspirationHint:
+          "Dies ändert nur die Reihenfolge der Empfehlungen und Referenzbilder, nicht deine Identität.",
+        close: "Schließen",
+        closeFilters: "Filter schließen",
+        currentSelection: "Aktuelle Auswahl",
+        applySitewide: "Auf der gesamten Website anwenden",
+        lookGallery: "Look-Galerie",
+        libraryFooter: `${resolvedLooks.length} Looks verfügbar. Wähle einen Look und teste ihn auf deinem Selfie.`,
+      }
+    : isFr
+      ? {
+          chooseInspiration: "Choisir une inspiration maquillage",
+          inspirationHint:
+            "Cela modifie seulement l’ordre des recommandations et les images de référence, pas votre identité.",
+          close: "Fermer",
+          closeFilters: "Fermer les filtres",
+          currentSelection: "Sélection actuelle",
+          applySitewide: "Appliquer à tout le site",
+          lookGallery: "Galerie de looks",
+          libraryFooter: `${resolvedLooks.length} looks disponibles. Choisissez-en un puis essayez-le sur votre selfie.`,
+        }
+      : isJa
+        ? {
+            chooseInspiration: "メイクの表示基準を選ぶ",
+            inspirationHint:
+              "おすすめ順と参考画像だけが変わり、あなたの属性を示すものではありません。",
+            close: "閉じる",
+            closeFilters: "絞り込みを閉じる",
+            currentSelection: "現在の選択",
+            applySitewide: "サイト全体に適用",
+            lookGallery: "メイク一覧",
+            libraryFooter: `${resolvedLooks.length}件のメイクから選び、セルフィーで試着できます。`,
+          }
+        : isZhTW
+          ? {
+              chooseInspiration: "選擇妝容靈感",
+              inspirationHint: "這只會影響推薦順序和參考圖，不代表你的身份。",
+              close: "關閉",
+              closeFilters: "關閉篩選",
+              currentSelection: "目前選擇",
+              applySitewide: "切換並套用到全站",
+              lookGallery: "妝容列表",
+              libraryFooter: `共 ${resolvedLooks.length} 個妝容，可選擇後上傳自拍試妝`,
+            }
+          : isZh
+            ? {
+                chooseInspiration: "选择妆容灵感",
+                inspirationHint: "这只影响推荐顺序和参考图，不代表你的身份。",
+                close: "关闭",
+                closeFilters: "关闭筛选",
+                currentSelection: "当前选择",
+                applySitewide: "切换并应用到全站",
+                lookGallery: "妆容列表",
+                libraryFooter: `共 ${resolvedLooks.length} 个妆容，可选择后上传自拍试妆`,
+              }
+            : isEs
+              ? {
+                  chooseInspiration: "Elegir inspiración de maquillaje",
+                  inspirationHint:
+                    "Esto solo cambia el orden de recomendaciones y las imágenes de referencia; no define tu identidad.",
+                  close: "Cerrar",
+                  closeFilters: "Cerrar filtros",
+                  currentSelection: "Selección actual",
+                  applySitewide: "Aplicar en todo el sitio",
+                  lookGallery: "Galería de looks",
+                  libraryFooter: `${resolvedLooks.length} looks disponibles. Elige uno y sube una selfie para probarlo.`,
+                }
+              : isPt
+                ? {
+                    chooseInspiration: "Escolher inspiração de maquiagem",
+                    inspirationHint:
+                      "Isso só altera a ordem das recomendações e as imagens de referência; não define sua identidade.",
+                    close: "Fechar",
+                    closeFilters: "Fechar filtros",
+                    currentSelection: "Seleção atual",
+                    applySitewide: "Aplicar em todo o site",
+                    lookGallery: "Galeria de looks",
+                    libraryFooter: `${resolvedLooks.length} looks disponíveis. Escolha um e envie uma selfie para testar.`,
+                  }
+                : {
+                    chooseInspiration: "Choose makeup inspiration",
+                    inspirationHint:
+                      "This changes recommendations and reference images, not your identity.",
+                    close: "Close",
+                    closeFilters: "Close filters",
+                    currentSelection: "Current selection",
+                    applySitewide: "Apply across the site",
+                    lookGallery: "Look Gallery",
+                    libraryFooter: `${resolvedLooks.length} looks available — choose one and upload a selfie to try it on`,
+                  };
+
+const allLabel = finishL.all;
+const finishMatches = isKo
+  ? {
+      sheer: ["시어", "촉촉한", "가벼운"],
+      natural: ["내추럴", "깔끔한", "빠른", "이지"],
+      glow: ["광채", "부드러운", "화사한"],
+      matte: ["소프트 매트", "저채도", "벨벳", "에디토리얼"],
+      satin: ["윤광", "새틴", "정돈된"],
+      photogenic: ["사진 준비", "소프트 포커스"],
+      contour: ["웜", "윤곽", "리프팅"],
+      professional: ["프로페셔널"],
+    }
+  : isDe
+    ? {
+        sheer: ["Transparent", "Dewy", "Leicht"],
+        natural: ["Natürlich", "Clean", "Schnell", "Unkompliziert"],
+        glow: ["Glowy", "Sanft", "Strahlend", "Aufhellend"],
+        matte: ["Soft Matte", "Gedeckt", "Samtig", "Editorial"],
+        satin: ["Leuchtend", "Satin", "Gepflegt"],
+        photogenic: ["Kameratauglich", "Soft Focus"],
+        contour: ["Warm", "Konturiert", "Geliftet"],
+        professional: ["Professionell"],
+      }
+    : isFr
+      ? {
+          sheer: ["Léger", "Glowy", "Aérien"],
+          natural: ["Naturel", "Net", "Rapide", "Sans effort"],
+          glow: ["Éclatant", "Doux", "Radieux", "Illuminateur"],
+          matte: ["Mat doux", "Sourd", "Velours", "Éditorial"],
+          satin: ["Lumineux", "Satiné", "Soigné"],
+          photogenic: ["Photogénique", "Flou doux"],
+          contour: ["Chaud", "Sculpté", "Lifté"],
+          professional: ["Professionnel"],
+        }
+      : isJa
+        ? {
+            sheer: ["シアー", "ツヤ", "軽やか"],
+            natural: ["ナチュラル", "クリーン", "時短", "抜け感"],
+            glow: ["グロウ", "ソフト", "明るいツヤ", "トーンアップ"],
+            matte: ["ソフトマット", "低彩度", "ベルベット", "エディトリアル"],
+            satin: ["ルミナス", "サテン", "上品"],
+            photogenic: ["写真向け", "ソフトフォーカス"],
+            contour: ["ウォーム", "立体感", "リフト"],
+            professional: ["きちんと感"],
+          }
+        : isZhTW
+          ? {
+              sheer: ["清透", "水潤", "輕盈"],
+              natural: ["自然", "乾淨", "快速", "輕鬆"],
+              glow: ["光澤", "柔和", "光采", "提亮"],
+              matte: ["柔霧", "低飽和", "絲絨", "編輯感"],
+              satin: ["透亮", "緞光", "精緻"],
+              photogenic: ["上鏡", "柔焦"],
+              contour: ["暖調", "輪廓", "提拉"],
+              professional: ["專業"],
+            }
+          : isZh
+            ? {
+                sheer: ["清透", "水润", "水光", "轻盈"],
+                natural: ["自然", "松弛", "快速", "干净"],
+                glow: ["显气色", "柔和", "焕亮", "提神"],
+                matte: ["柔雾", "低饱和", "丝绒", "高级"],
+                satin: ["光泽", "缎光", "精致"],
+                photogenic: ["上镜", "柔焦"],
+                contour: ["暖调", "立体", "提拉"],
+                professional: ["专业"],
+              }
+            : isEs
+              ? {
+                  sheer: ["Ligero", "Luminoso"],
+                  natural: ["Natural", "Limpio", "Rápido", "Sin esfuerzo"],
+                  glow: ["Brillante", "Suave", "Radiante", "Iluminador"],
+                  matte: ["Mate suave", "Apagado", "Terciopelo", "Editorial"],
+                  satin: ["Luminoso", "Satinado", "Pulido"],
+                  photogenic: ["Listo para cámara", "Soft focus"],
+                  contour: ["Cálido", "Definido", "Elevado"],
+                  professional: ["Profesional"],
+                }
+              : isPt
+                ? {
+                    sheer: ["Leve", "Glow"],
+                    natural: ["Natural", "Limpo", "Rápido", "Descomplicado"],
+                    glow: ["Viçoso", "Suave", "Radiante", "Iluminado"],
+                    matte: [
+                      "Matte suave",
+                      "Baixa saturação",
+                      "Velvet",
+                      "Editorial",
+                    ],
+                    satin: ["Luminoso", "Satinado", "Polido"],
+                    photogenic: ["Pronto para câmera", "Soft focus"],
+                    contour: ["Quente", "Contornado", "Lift"],
+                    professional: ["Profissional"],
+                  }
+                : {
+                    sheer: ["Sheer", "Dewy", "Airy"],
+                    natural: ["Natural", "Clean", "Quick", "Effortless"],
+                    glow: ["Glowing", "Soft", "Radiant", "Brightening"],
+                    matte: ["Soft Matte", "Muted", "Velvet", "Editorial"],
+                    satin: ["Luminous", "Satin", "Polished"],
+                    photogenic: ["Camera Ready", "Soft Focus"],
+                    contour: ["Warm", "Sculpted", "Lifted"],
+                    professional: ["Professional"],
+                  };
+
+const scenarioFilters = [
+  { value: allLabel, label: allLabel },
+  { value: scenarioL.daily, label: scenarioL.daily },
+  { value: scenarioL.commute, label: scenarioL.commute },
+  { value: scenarioL.interview, label: scenarioL.interview },
+  { value: scenarioL.date, label: scenarioL.date },
+  { value: scenarioL.photo, label: scenarioL.photo },
+  { value: scenarioL.event, label: scenarioL.event },
+  { value: scenarioL.evening, label: scenarioL.evening },
+];
+
+const finishFilters = [
+  { value: allLabel, label: finishL.all },
+  {
+    value: finishMatches.sheer[0],
+    label: finishL.sheer,
+    match: finishMatches.sheer,
+  },
+  {
+    value: finishMatches.natural[0],
+    label: finishL.natural,
+    match: finishMatches.natural,
+  },
+  {
+    value: finishMatches.glow[0],
+    label: finishL.glow,
+    match: finishMatches.glow,
+  },
+  {
+    value: finishMatches.matte[0],
+    label: finishL.matte,
+    match: finishMatches.matte,
+  },
+  {
+    value: finishMatches.satin[0],
+    label: finishL.satin,
+    match: finishMatches.satin,
+  },
+  {
+    value: finishMatches.photogenic[0],
+    label: finishL.photogenic,
+    match: finishMatches.photogenic,
+  },
+  {
+    value: finishMatches.contour[0],
+    label: finishL.contour,
+    match: finishMatches.contour,
+  },
+  {
+    value: finishMatches.professional[0],
+    label: finishL.professional,
+    match: finishMatches.professional,
+  },
+];
+
+const experienceFilters = [
+  { value: allLabel, label: allLabel },
+  { value: experienceL.beginner, label: experienceL.beginner },
+  { value: experienceL.advanced, label: experienceL.advanced },
+];
+
+const filterGroups = [
+  { id: "scenario", label: ui.filterScenario, options: scenarioFilters },
+  { id: "finish", label: ui.filterFinish, options: finishFilters },
+  { id: "experience", label: ui.filterExperience, options: experienceFilters },
+] as const;
+
+function matchValues(option: { value: string; match?: string[] }) {
+  return (option.match ?? [option.value]).join("|");
+}
+---
+
+<BaseLayout title={ui.discoverTitle} description={ui.discoverDescription}>
+  <SiteHeader active="discover" />
+  <main class="discover-main">
+    <div class="shell">
+      <div class="page-heading">
+        <div>
+          <h1>{ui.pageTitle}</h1>
+          <p>{ui.pageSubtitle}</p>
+        </div>
+      </div>
+      <!-- 灵感地区提示 -->
+      <div class="inspiration-bar" data-inspiration-bar>
+        <span class="inspiration-label">
+          {ui.inspirationLabel}：<strong>{marketLabel}</strong>
+        </span>
+        <button
+          class="btn btn-sm inspiration-switch"
+          type="button"
+          data-switch-inspiration
+          hidden={marketOptions.length <= 1}
+        >
+          {ui.switchInspiration}
+        </button>
+      </div>
+      <dialog
+        class="inspiration-dialog"
+        data-inspiration-dialog
+        aria-labelledby="inspiration-dialog-title"
+      >
+        <div class="inspiration-dialog-head">
+          <div>
+            <h2 id="inspiration-dialog-title">
+              {copy.chooseInspiration}
+            </h2>
+            <p>{copy.inspirationHint}</p>
+          </div>
+          <button
+            class="inspiration-dialog-close"
+            type="button"
+            data-inspiration-close
+            aria-label={copy.close}
+          >
+            ×
+          </button>
+        </div>
+        <div class="inspiration-options" role="list">
+          {
+            marketOptions.map((option) => (
+              <button
+                class:list={[
+                  "inspiration-option",
+                  option.value === audienceContext.marketProfile && "active",
+                ]}
+                type="button"
+                data-inspiration-value={option.value}
+                aria-pressed={
+                  option.value === audienceContext.marketProfile
+                    ? "true"
+                    : "false"
+                }
+              >
+                <strong>{option.label}</strong>
+                <span>
+                  {option.value === audienceContext.marketProfile
+                    ? copy.currentSelection
+                    : copy.applySitewide}
+                </span>
+              </button>
+            ))
+          }
+        </div>
+        <p
+          class="inspiration-dialog-status"
+          data-inspiration-status
+          role="status"
+        >
+        </p>
+      </dialog>
+      <div class="mobile-filter-bar" data-mobile-filter-bar>
+        <button
+          class="mobile-filter-trigger"
+          type="button"
+          data-filter-open
+          aria-controls="discover-filter-sheet"
+          aria-expanded="false"
+        >
+          <span>{ui.filterTitle}</span>
+          <strong data-filter-mobile-summary>{ui.filterTitle}</strong>
+          <small data-filter-mobile-count data-looks-label={ui.looksCount}
+            >{resolvedLooks.length} {ui.looksCount}</small
+          >
+        </button>
+      </div>
+      <div class="discover-layout">
+        <button
+          class="filter-sheet-backdrop"
+          type="button"
+          data-filter-backdrop
+          data-filter-close
+          aria-label={copy.closeFilters}
+          hidden
+        >
+        </button>
+        <aside
+          class="filter-panel panel"
+          id="discover-filter-sheet"
+          data-filter-panel
+          aria-label={ui.filterTitle}
+        >
+          <div class="filter-sheet-header">
+            <div>
+              <strong>{ui.filterTitle}</strong>
+              <small data-filter-mobile-count data-looks-label={ui.looksCount}
+                >{resolvedLooks.length} {ui.looksCount}</small
+              >
+            </div>
+            <button
+              class="filter-sheet-close"
+              type="button"
+              data-filter-close
+              aria-label={copy.closeFilters}
+            >
+              {copy.close}
+            </button>
+          </div>
+          <div class="filter-sheet-body">
+            {
+              filterGroups.map((group) => (
+                <fieldset class="filter-group" data-filter-group={group.id}>
+                  <legend class="filter-title">{group.label}</legend>
+                  <div class="filter-options">
+                    {group.options.map((option) => (
+                      <button
+                        type="button"
+                        class:list={[
+                          "filter-chip",
+                          option.value === allLabel && "active",
+                        ]}
+                        data-filter-value={option.value}
+                        data-filter-match={matchValues(option)}
+                        data-filter-all={option.value === allLabel || undefined}
+                        aria-pressed={
+                          option.value === allLabel ? "true" : "false"
+                        }
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+              ))
+            }
+          </div>
+          <div class="filter-sheet-actions">
+            <button class="btn btn-wide" type="button" data-clear-filters
+              >{ui.clearFilters}</button
+            >
+            <button
+              class="btn btn-primary filter-sheet-apply"
+              type="button"
+              data-filter-apply
+            >
+              {ui.viewResults}
+              <span data-filter-result-count>{resolvedLooks.length}</span>
+              {ui.looksCount}
+            </button>
+          </div>
+        </aside>
+        <section class="look-library panel" aria-label={copy.lookGallery}>
+          <h2 class="sr-only">{copy.lookGallery}</h2>
+          <div class="look-grid" id="look-grid">
+            {
+              resolvedLooks.map((look, index) => (
+                <LookCard
+                  look={look}
+                  variant="library"
+                  source="discover_library"
+                  priority={index < 4}
+                />
+              ))
+            }
+          </div>
+          <div class="empty-state" id="empty-state" hidden>
+            <span class="empty-icon" aria-hidden="true"></span>
+            <h3>{ui.emptyTitle}</h3>
+            <p class="muted">{ui.emptyHint}</p>
+            <button class="btn btn-primary" type="button" data-clear-filters
+              >{ui.clearFilters}</button
+            >
+          </div>
+          <div
+            class="library-footer"
+            data-filter-summary
+            data-filter-summary-template={`${ui.viewResults}: {count} ${ui.looksCount}`}
+            id="filter-summary"
+            role="status"
+            aria-live="polite"
+          >
+            {copy.libraryFooter}
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

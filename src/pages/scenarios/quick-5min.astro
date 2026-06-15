@@ -1,0 +1,314 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title:
+    "5-Minute Makeup Routine: Quick, Polished, and Done Before Your Coffee",
+  description:
+    "Learn the science behind the fastest possible makeup routine that still looks polished. Discover the 3-product rule, common 5-minute mistakes, product multi-tasking strategies, and a timed step-by-step routine.",
+  faq: [
+    {
+      q: "What is the fastest makeup routine that still looks polished?",
+      a: "The fastest polished routine uses three to five products applied in a specific order that maximizes efficiency. Start with a tinted moisturizer or skin tint that evens out your overall tone in one step. Apply concealer only where you actually need it: under the eyes and on visible blemishes. Brush through your brows with a tinted brow gel. Apply one coat of mascara to the top lashes. Finish with a tinted lip balm or your-signature lipstick. This routine takes approximately four to five minutes if you have your products organized and know your technique. The key is not speed of application but elimination of unnecessary steps.",
+    },
+    {
+      q: "What three products make the most difference in a rushed routine?",
+      a: "If you can only use three products, the most impactful combination is: a tinted moisturizer or skin tint for even skin tone, brow gel for frame and structure, and a tinted lip product for color and life. These three products address the three things people notice first: your skin appears even and healthy, your face has structure and definition from groomed brows, and your mouth has color that makes you look awake and engaged. Mascara is the most common fourth addition. Blush is the most common fifth. But if you truly have three products and three minutes, these three deliver the maximum visible improvement.",
+    },
+    {
+      q: "How can I adapt a 5-minute makeup routine for work?",
+      a: "For work, add two products to the core three: a touch of cream blush and a light dusting of translucent powder on the T-zone. The blush prevents you from looking washed out under office lighting, and the powder prevents mid-morning shine. If you wear glasses, prioritize concealer under the eyes since glasses frames draw attention to that area. If you are on video calls frequently, add a touch of bronzer along the perimeter of your face since webcams flatten your features. Keep a small desk kit with blotting papers and lip balm for a two-minute midday refresh.",
+    },
+    {
+      q: "What are the most common 5-minute makeup mistakes?",
+      a: "The most common mistake is applying products in the wrong order, which wastes time fixing mistakes instead of building the look efficiently. Another frequent error is over-applying foundation in an attempt to speed up the process, which results in a heavy, unnatural finish that looks worse than less product applied carefully. Skipping brow grooming is another mistake because brows are the frame of your face and take only thirty seconds to improve. Finally, choosing a lip color that does not match your overall look wastes time because you end up layering or correcting it. Pick products you know work together and keep them in a designated rush-kit.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+  { label: "Natural Makeup", url: "/looks/natural-makeup" },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      You do not need thirty minutes to look put-together. You need the right
+      products, applied in the right order, with zero wasted steps. Learn the
+      science of maximum-impact makeup in minimum time.
+    </p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>The Science of What Matters Most in Five Minutes</h2>
+    <p>
+      When you have five minutes to apply makeup, every second needs to produce
+      visible results. This is not about being lazy or cutting corners. It is
+      about understanding which cosmetic changes produce the largest perceptual
+      impact on how other people see you.
+    </p>
+    <p>
+      Research in social psychology and facial perception shows that people form
+      impressions based on three primary visual cues: skin tone evenness, eye
+      openness and definition, and facial color and warmth. These three cues map
+      directly to three product categories: base products for skin, eye products
+      for definition, and cheek and lip products for color. If you address all
+      three in your five-minute routine, you cover the entire perceptual
+      landscape of what makes someone look polished and awake. Everything else
+      is refinement.
+    </p>
+    <p>
+      This is why the most effective rushed routines are not simply shorter
+      versions of full routines. They are structurally different. A full routine
+      builds detail layer by layer. A five-minute routine addresses the three
+      perceptual priorities with one product each, then stops. There is no time
+      for contour, highlight, multiple eyeshadow shades, or precise lip lining.
+      There is time for the three things that matter most.
+    </p>
+
+    <h2>The Three-Product Rule</h2>
+    <p>
+      If you strip makeup down to its absolute essentials, three products
+      produce roughly eighty percent of the visible improvement that a full
+      routine delivers. Here is why each one matters.
+    </p>
+    <h3>Tinted Moisturizer or Skin Tint</h3>
+    <p>
+      Uneven skin tone is the single most visible factor in facial appearance.
+      Redness, dark circles, and post-acne marks are all picked up by the human
+      eye before you consciously process them. A lightweight tinted product that
+      evens out your overall skin tone addresses this in one step. It does not
+      need to be full coverage. It needs to reduce the contrast between your
+      problem areas and your clear skin so that the overall impression is
+      uniform and healthy.
+    </p>
+    <h3>Brow Gel</h3>
+    <p>
+      Brows frame the face more than any other feature. Ungroomed brows make the
+      face look unfinished regardless of how flawless your skin is. Tinted brow
+      gel brushed upward fills sparse areas, shapes the brow, and takes thirty
+      seconds. This is the highest return-on-investment product in any makeup
+      routine because the improvement is dramatic relative to the time invested.
+    </p>
+    <h3>Tinted Lip Product</h3>
+    <p>
+      Pale or colorless lips make the lower face look flat and contribute to a
+      tired or washed-out appearance. A tinted lip balm, lipstick, or gloss in a
+      shade close to your natural lip color adds warmth, life, and a signal of
+      health. The specific product type matters less than the presence of color.
+      If you have dry lips, a tinted balm. If you want more pigment, a satin
+      lipstick. If you want shine, a tinted gloss. The color is what matters.
+    </p>
+
+    <h2>How Time Expands What You Can Do</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>3 Minutes</th>
+          <th>5 Minutes</th>
+          <th>10 Minutes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tinted moisturizer all over</td>
+          <td>Tinted moisturizer + spot concealer</td>
+          <td>Lightweight foundation + targeted concealer</td>
+        </tr>
+        <tr>
+          <td>Brow gel brushed through</td>
+          <td>Brow gel + pencil for sparse areas</td>
+          <td>Brow pencil for shape + gel to set</td>
+        </tr>
+        <tr>
+          <td>Tinted lip balm</td>
+          <td>Mascara on top lashes</td>
+          <td>Mascara + neutral eyeshadow wash</td>
+        </tr>
+        <tr>
+          <td>(that is it)</td>
+          <td>Cream blush on cheeks</td>
+          <td>Cream blush + light bronzer</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>Tinted lip product</td>
+          <td>Lined and filled lip color</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>Setting powder on T-zone</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The difference between three minutes and five minutes is concealer,
+      mascara, and blush. These three additions take you from "I look awake" to
+      "I look polished." The difference between five minutes and ten minutes is
+      refinement: better brows, more eye definition, added dimension from
+      bronzer, and a more deliberate lip application. Ten minutes gets you into
+      the zone where other people start asking if you did something different
+      with your makeup.
+    </p>
+
+    <h2>Product Multi-Tasking Strategies</h2>
+    <p>
+      The secret to a fast routine is not applying products faster. It is using
+      fewer products that do more work. Here are the most effective
+      multi-tasking combinations.
+    </p>
+    <ul>
+      <li>
+        <strong>Cream blush on cheeks and lips.</strong> One product, two applications.
+        A cream blush stick in a rosy or coral shade works beautifully on both areas
+        and gives you a coordinated, natural flush.
+      </li>
+      <li>
+        <strong>Neutral eyeshadow stick as liner.</strong> A taupe or bronze shadow
+        stick swept across the lid gives you definition, and the same product pressed
+        along the lash line functions as soft eyeliner.
+      </li>
+      <li>
+        <strong>Tinted sunscreen as base.</strong> If your tinted sunscreen provides
+        enough coverage, it eliminates the need for a separate foundation or moisturizer
+        step.
+      </li>
+      <li>
+        <strong>Concealer as eyeshadow primer.</strong> Pat a thin layer of concealer
+        on the lids before applying shadow or liner, and you have eliminated a separate
+        primer product.
+      </li>
+      <li>
+        <strong>Setting powder under the eyes.</strong> Pressing translucent powder
+        under your concealer sets it and brightens the area simultaneously, eliminating
+        the need for a separate brightening product.
+      </li>
+    </ul>
+
+    <h2>Common 5-Minute Mistakes</h2>
+    <ul>
+      <li>
+        <strong>Over-applying foundation to save time.</strong> Slapping on too much
+        product and then spending the remaining minutes trying to blend it out is
+        the most common rushed-routine mistake. Less product applied carefully always
+        beats more product applied hastily.
+      </li>
+      <li>
+        <strong>Skipping brows because they take effort.</strong> Brows take thirty
+        seconds with a gel and deliver more improvement than a full minute of foundation
+        blending. Never skip brows in a rushed routine.
+      </li>
+      <li>
+        <strong>Choosing the wrong lip color.</strong> A lip color that clashes with
+        your overall look wastes time because you will try to correct it or wipe it
+        off. Keep a rush-kit lip product that you know works every time.
+      </li>
+      <li>
+        <strong>Trying to do everything.</strong> A five-minute routine that attempts
+        foundation, concealer, brows, eyes, blush, contour, highlight, and lips will
+        fail at all of them. Choose three to five products and execute them well.
+      </li>
+    </ul>
+
+    <h2>Your Timed 5-Minute Routine</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Minute 1: Tinted Moisturizer All Over</h4>
+          <p>
+            Apply with your fingers, starting from the center of your face and
+            blending outward. Focus on areas of redness and uneven tone. Do not
+            aim for perfection. Aim for overall evenness. If you have a few
+            spots that need more coverage, skip them for now and come back.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Minute 2: Spot Concealer</h4>
+          <p>
+            Pat concealer under the eyes and on any visible blemishes or dark
+            spots. Use your ring finger for a gentle, seamless blend. Targeted
+            application here is faster and more effective than trying to cover
+            everything with foundation.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Minute 3: Brow Gel</h4>
+          <p>
+            Brush brows upward and outward with tinted brow gel. Fill any
+            visibly sparse areas with quick, light strokes using the pencil end
+            if your product has one. This takes thirty seconds and transforms
+            your entire face.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Minute 4: Mascara</h4>
+          <p>
+            Apply one coat of mascara to the top lashes only. Wiggle the wand at
+            the base and pull through to the tips. Brown or black-brown reads
+            softer and more natural. Skip the bottom lashes in a rushed routine
+            since they take extra time and the visual impact is minimal.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Minute 5: Blush and Lip</h4>
+          <p>
+            Swipe cream blush on the apples of your cheeks and blend with your
+            fingers in one upward motion. Then apply your tinted lip product.
+            Blot once if it feels too heavy. Look in the mirror, check for any
+            obvious smudges, and walk out the door.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Fragment slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Find Your Perfect Quick Look</h2>
+        <p>
+          See which minimal makeup style looks best on your face without wasting
+          time experimenting.
+        </p>
+        <a href="/tryon-free" class="cta-btn"
+          >Try 5-Minute Makeup on Your Face — Free</a
+        >
+      </div>
+    </div>
+  </Fragment>
+
+  <Fragment slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {relatedLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+        </ul>
+      </div>
+    </section>
+  </Fragment>
+</SeoLandingLayout>

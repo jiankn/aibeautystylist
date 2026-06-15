@@ -1,0 +1,363 @@
+---
+import LookSelector from "../components/LookSelector.astro";
+import ResultState from "../components/ResultState.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
+import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { t } from "../lib/i18n";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const audienceContext = Astro.locals.audienceContext;
+const isLoggedIn = Astro.locals.isLoggedIn;
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const loginHref = localizeAppHref(
+  `/login?mode=register&next=${encodeURIComponent(localizeAppHref("/tryon-free"))}`,
+);
+const shareCardHref = localizeAppHref("/share-card");
+const resolvedLooks = resolveLookCatalog(audienceContext);
+const featuredSlugs = ["commute", "no-makeup", "rose-milk-date", "photogenic"];
+const defaultFeaturedLooks = featuredSlugs
+  .map((slug) => resolvedLooks.find((look) => look.slug === slug))
+  .filter(Boolean) as typeof resolvedLooks;
+const requestedSlug = Astro.url.searchParams.get("look");
+const requestedLook = resolvedLooks.find((look) => look.slug === requestedSlug);
+const featuredLooks = requestedLook
+  ? [
+      requestedLook,
+      ...defaultFeaturedLooks.filter(
+        (look) => look.slug !== requestedLook.slug,
+      ),
+    ].slice(0, 4)
+  : defaultFeaturedLooks;
+const selected = requestedLook ?? featuredLooks[0];
+const hasExternalSelection =
+  requestedLook && !featuredSlugs.includes(requestedLook.slug);
+const freeClientMessages = {
+  copied: t("tryon", "copied"),
+  copyShareLink: t("tryon", "copyShareLink"),
+  rewarded: t("tryon", "rewarded"),
+  alreadyRewarded: t("tryon", "alreadyRewarded"),
+  failed: t("tryon", "failed"),
+};
+---
+
+<BaseLayout
+  title={t("tryon", "title") + " | " + t("brand", "name")}
+  description={t("tryon", "subtitle")}
+  bodyClass="workspace-body"
+>
+  <SiteHeader active="tryOn" />
+  <main class="workspace-main">
+    <div class="shell">
+      {
+        isLoggedIn ? (
+          <WorkspaceStatusBar
+            plan="Free"
+            title={t("tryon", "title")}
+            subtitle={t("tryon", "subtitle")}
+            active="tryon-free"
+            remaining={3}
+            total={3}
+            note={t("tryon", "remainingPrefix")}
+            live
+          />
+        ) : (
+          <section class="workspace-status panel" data-plan="Free">
+            <div class="workspace-status-main">
+              <span class="workspace-status-plan">Free</span>
+              <div>
+                <h1>{t("tryon", "title")}</h1>
+                <p>{t("workspace", "loginDesc")}</p>
+                <p class="workspace-status-perks">
+                  {t("workspace", "freeBenefits")}
+                </p>
+              </div>
+            </div>
+            <div
+              class="workspace-status-actions"
+              aria-label={t("workspace", "quickActions")}
+            >
+              <a class="btn btn-primary workspace-status-link" href={loginHref}>
+                {t("workspace", "loginCta")}
+              </a>
+              <a
+                class="btn workspace-status-link"
+                href={localizeAppHref("/discover")}
+              >
+                {t("workspace", "browseLooks")}
+              </a>
+            </div>
+          </section>
+        )
+      }
+      <div class="workspace-grid">
+        <aside class="selector-panel panel">
+          <div class="selector-head">
+            <div>
+              <h2 class="panel-title">{t("tryon", "selectLook")}</h2><p
+                class="panel-subtitle"
+              >
+                {
+                  hasExternalSelection
+                    ? t("tryon", "externalSelectionDesc")
+                    : t("tryon", "featuredLooksDesc")
+                }
+              </p>
+            </div>
+          </div>
+          <LookSelector looks={featuredLooks} selectedSlug={selected.slug} />
+          <a
+            class="btn btn-wide"
+            style="margin-top:12px"
+            href={localizeAppHref("/discover")}>{t("tryon", "allLooksBtn")}</a
+          >
+        </aside>
+        <section class="result-panel panel">
+          <div class="result-head">
+            <div>
+              <h2>
+                {t("tryon", "previewTitle")} · <span data-look-title
+                  >{selected.title}</span
+                >
+              </h2><p class="panel-subtitle">
+                {t("tryon", "uploadPromptDesc")}
+              </p>
+            </div>
+          </div>
+          <div class="upload-preview">
+            <div class="upload-box">
+              <span class="upload-camera">▣</span>
+              <h3>{t("tryon", "uploadSelfie")}</h3>
+              <p>{t("tryon", "uploadFormatDesc")}</p>
+              <div class="privacy-promise">
+                <span>✓ {t("privacy", "photoPurpose")}</span>
+                <span>✓ {t("privacy", "deletion")}</span>
+                <span>✓ {t("privacy", "noTraining")}</span>
+              </div>
+              <div class="upload-auth-lock" data-upload-auth-lock hidden>
+                <b>{t("tryon", "loginToUseQuota")}</b>
+                <span>{t("tryon", "loginToUseDesc")}</span>
+              </div>
+              <label class="privacy-consent">
+                <input type="checkbox" data-photo-consent />
+                <span>{t("tryon", "consentCheckbox")}</span>
+              </label>
+              <button
+                class="btn btn-primary"
+                data-upload
+                data-login-label={t("tryon", "loginToUpload")}
+                disabled>{t("tryon", "uploadBtn")}</button
+              >
+              <div class="upload-task-status" data-upload-task hidden>
+                <div class="upload-task-head">
+                  <span data-upload-status>{t("tryon", "waitingUpload")}</span>
+                  <b data-upload-percent>0%</b>
+                </div>
+                <div class="meter">
+                  <i data-upload-progress style="width:0%"></i>
+                </div>
+                <div class="upload-task-actions">
+                  <button class="btn" type="button" data-upload-cancel hidden
+                    >{t("tryon", "cancelUpload")}</button
+                  >
+                  <button class="btn" type="button" data-upload-retry hidden
+                    >{t("tryon", "retry")}</button
+                  >
+                  <button class="btn" type="button" data-upload-delete hidden
+                    >{t("tryon", "deleteOriginal")}</button
+                  >
+                  <button class="btn" type="button" data-result-delete hidden
+                    >{t("tryon", "deleteResult")}</button
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="upload-arrow">→</div>
+            <div data-result-target>
+              <ResultState
+                title={t("tryon", "previewPlaceholderTitle")}
+                message={t("tryon", "previewPlaceholderDesc")}
+              />
+            </div>
+          </div>
+          <div class="rule-strip">
+            ▣&nbsp; {t("tryon", "ruleStrip")}
+            <a href={localizeAppHref("/pricing")}
+              >{t("tryon", "learnRules")} ›</a
+            >
+          </div>
+          <section
+            class="result-share-bar"
+            id="free-share-actions"
+            aria-label={t("tryon", "shareAria")}
+            hidden
+          >
+            <div>
+              <strong>{t("tryon", "shareTitle")}</strong>
+              <span>{t("tryon", "shareDesc")}</span>
+            </div>
+            <button class="btn" id="free-share-card" disabled
+              >▧&nbsp; {t("tryon", "saveShareCard")}</button
+            >
+            <button class="btn" id="free-copy-link" disabled
+              >⌘&nbsp; {t("tryon", "copyLink")}</button
+            >
+            <button class="btn btn-outline-rose" id="free-share-reward" disabled
+              >{t("tryon", "shareReward")}</button
+            >
+          </section>
+        </section>
+        <aside
+          class="explain-panel panel advisor-panel"
+          data-look-advisor
+          aria-labelledby="look-advisor-title"
+        >
+          <div class="advisor-head">
+            <span class="advisor-kicker">{t("tryon", "advisorKicker")}</span>
+            <h2 class="panel-title" id="look-advisor-title" data-advisor-title>
+              {selected.title}
+            </h2>
+          </div>
+          <section class="advisor-section">
+            <h3>{t("tryon", "advisorFit")}</h3>
+            <p data-advisor-fit-text>{selected.advisor.fit}</p>
+          </section>
+          <section class="advisor-section">
+            <h3>{t("tryon", "advisorEffect")}</h3>
+            <p data-advisor-effect-text>{selected.advisor.effect}</p>
+          </section>
+          <section class="advisor-section">
+            <h3>{t("tryon", "advisorAnchors")}</h3>
+            <ul data-advisor-anchor-list>
+              {selected.advisor.anchors.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+          <section class="advisor-section advisor-caution">
+            <h3>{t("tryon", "advisorCaution")}</h3>
+            <p data-advisor-caution-text>{selected.advisor.caution}</p>
+          </section>
+          <section class="advisor-section">
+            <h3>{t("tryon", "advisorJudge")}</h3>
+            <ul data-advisor-judge-list>
+              {selected.advisor.judge.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+        </aside>
+      </div>
+      <section class="panel upgrade-banner" id="free-upgrade" hidden>
+        <div>
+          <h3>{t("tryon", "upgradeTitle")}</h3>
+          <p>{t("tryon", "upgradeDesc")}</p>
+        </div>
+        <a class="btn btn-primary" href={localizeAppHref("/pricing")}
+          >{t("tryon", "viewPlansShort")}</a
+        >
+      </section>
+    </div>
+  </main>
+</BaseLayout>
+
+<script is:inline define:vars={{ freeClientMessages, shareCardHref }}>
+  (function () {
+    let lastSucceededJobId = window.__absLastSucceededJobId || null;
+    function activateShareActions(jobId) {
+      if (!jobId) return;
+      lastSucceededJobId = jobId;
+      const upgrade = document.getElementById("free-upgrade");
+      if (upgrade) upgrade.hidden = false;
+      const shareActions = document.getElementById("free-share-actions");
+      if (shareActions) shareActions.hidden = false;
+      ["free-share-card", "free-copy-link", "free-share-reward"].forEach(
+        (id) => {
+          const btn = document.getElementById(id);
+          if (btn) btn.disabled = false;
+        },
+      );
+    }
+    document.addEventListener("abs:tryon-succeeded", function (event) {
+      activateShareActions(event.detail?.job?.id);
+    });
+    if (lastSucceededJobId) activateShareActions(lastSucceededJobId);
+
+    const copyBtn = document.getElementById("free-copy-link");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => {
+        if (!lastSucceededJobId) return;
+        navigator.clipboard?.writeText(
+          location.origin +
+            shareCardHref +
+            "?jobId=" +
+            lastSucceededJobId +
+            "&ref=share",
+        );
+        copyBtn.textContent = "✓ " + freeClientMessages.copied;
+        setTimeout(() => {
+          copyBtn.textContent = "⌘  " + freeClientMessages.copyShareLink;
+        }, 2000);
+      });
+    }
+
+    const rewardBtn = document.getElementById("free-share-reward");
+    if (rewardBtn) {
+      rewardBtn.addEventListener("click", async () => {
+        if (!lastSucceededJobId) return;
+        rewardBtn.disabled = true;
+        try {
+          const res = await fetch("/api/shares/reward", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jobId: lastSucceededJobId }),
+          });
+          const data = await res.json();
+          if (data.ok && data.data.rewarded) {
+            rewardBtn.textContent = "✓ " + freeClientMessages.rewarded;
+            if (data.data.quota && window.updateQuotaDisplay) {
+              window.updateQuotaDisplay(data.data.quota);
+            }
+          } else {
+            rewardBtn.textContent =
+              "i " + (data.data?.reason || freeClientMessages.alreadyRewarded);
+            if (data.data?.quota && window.updateQuotaDisplay) {
+              window.updateQuotaDisplay(data.data.quota);
+            }
+          }
+        } catch {
+          rewardBtn.textContent = "× " + freeClientMessages.failed;
+          rewardBtn.disabled = false;
+        }
+      });
+    }
+
+    const shareCardBtn = document.getElementById("free-share-card");
+    if (shareCardBtn) {
+      shareCardBtn.addEventListener("click", () => {
+        if (!lastSucceededJobId) return;
+        window.location.href = shareCardHref + "?jobId=" + lastSucceededJobId;
+      });
+    }
+  })();
+</script>
+
+<style>
+  .upgrade-banner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 16px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--rose-soft), var(--teal-soft));
+  }
+  .upgrade-banner h3 {
+    margin: 0 0 4px;
+  }
+  .upgrade-banner p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>

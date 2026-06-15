@@ -1,0 +1,285 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Interview Makeup: Look Professional Without Looking Overdone",
+  description:
+    "Master the art of interview makeup with the 'quiet confidence' approach. Learn what works for conservative and creative industries, photo interview tips, and the psychology of interview colors.",
+  heroImage: "/images/look-interview-ready.webp",
+  ogImage: "/images/look-interview-ready.webp",
+  faq: [
+    {
+      q: "What makeup is best for a job interview?",
+      a: "The best interview makeup is polished but understated. Think even-toned skin with lightweight foundation or tinted moisturizer, groomed brows, a thin line of brown mascara, and a natural lip color like rose or nude-brown. The goal is to look put-together and professional, not like you are trying too hard. Interviewers remember candidates who look confident and approachable, not those whose makeup is the first thing they notice.",
+    },
+    {
+      q: "Should I wear foundation to an interview?",
+      a: "A lightweight base is recommended, but it does not need to be full-coverage foundation. A tinted moisturizer, BB cream, or sheer foundation applied with a damp sponge gives skin an even, healthy appearance without looking heavy. The key is to address visible concerns (dark circles, redness) while keeping the overall finish natural. Heavy foundation can crack under office lighting or during a long day of back-to-back interviews, which draws more attention than bare skin would.",
+    },
+    {
+      q: "How should I adjust my makeup for a photo or video interview?",
+      a: "Camera lenses flatten features and wash out color, so you need slightly more definition than you would for an in-person meeting. Use a matte base to prevent glare from ring lights or overhead fixtures. Add a touch more blush than usual, define your brows clearly, and use a lip color with enough pigment to read on camera. Avoid SPF in your base product since it causes white cast on camera, and skip shimmery highlighters that reflect light as hot spots.",
+    },
+    {
+      q: "What is a quick interview makeup routine if I only have 15 minutes?",
+      a: "Start with a tinted moisturizer and spot concealer (3 min), set with translucent powder only on the T-zone (1 min), brush and fill brows with a tinted brow gel (2 min), apply one coat of brown mascara to top lashes only (2 min), add cream blush to apples of cheeks and blend up (1 min), apply a tinted lip balm or your-signature-nude lipstick (1 min), and finish with a quick setting spray (1 min). That leaves you four minutes of buffer time.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+  { label: "Natural Makeup", url: "/looks/natural-makeup" },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={page.heroImage}
+  ogImage={page.ogImage}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      The best interview makeup makes people remember you, not your makeup.
+      Learn the "quiet confidence" principle that hiring managers respond to,
+      and see how AI can help you preview your look before the big day.
+    </p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>The "Quiet Confidence" Principle</h2>
+    <p>
+      Research in organizational psychology shows that interviewers form
+      impressions within the first seven seconds of meeting a candidate. Those
+      impressions are shaped less by what you say and more by how you present
+      yourself. This does not mean you need a flawless makeup application. It
+      means your makeup should communicate professionalism, attention to detail,
+      and self-awareness before you even open your mouth.
+    </p>
+    <p>
+      The "quiet confidence" principle suggests that your makeup should enhance
+      your natural features without creating a separate visual identity. Think
+      of it as the visual equivalent of speaking clearly and making eye contact.
+      When done right, the interviewer never thinks about your makeup at all.
+      They just think you look capable and polished.
+    </p>
+    <p>
+      This principle matters more than you might realize. Studies from the
+      Journal of Applied Psychology have found that candidates who appear
+      well-groomed and professionally presented are rated higher on competence
+      and hireability, even when their actual qualifications are identical to
+      less-groomed applicants. It is not about being conventionally attractive.
+      It is about looking like someone who takes the opportunity seriously.
+    </p>
+
+    <h2>Conservative vs. Creative Industry Expectations</h2>
+    <p>
+      Not all interviews are created equal. The makeup that works for a banking
+      internship will send a very different message than the makeup you choose
+      for a graphic design portfolio review.
+    </p>
+    <h3>Conservative Industries (Finance, Law, Government, Healthcare)</h3>
+    <p>
+      In these fields, the cultural norm values tradition and restraint. Your
+      makeup should follow the "two-feature rule": choose two features to
+      enhance modestly and leave everything else natural. For example, even skin
+      plus defined brows, or a neat eye line plus a soft lip. Avoid dramatic
+      eyeliner, bold lips, or heavy contouring. Stick to neutral eyeshadows like
+      taupe, warm beige, or soft brown. Your lip should be close to your natural
+      lip color, perhaps one shade deeper. A matte or satin finish reads as more
+      professional than dewy or glossy in conservative environments.
+    </p>
+    <h3>Creative Industries (Tech, Design, Marketing, Media)</h3>
+    <p>
+      Creative fields give you more room to express personality. This does not
+      mean wearing full editorial glam, but a muted berry lip, a subtle winged
+      liner, or a hint of shimmer on the lid can communicate creative confidence
+      without crossing into distracting territory. The key is still
+      intentionality: every product should have a purpose. If you wear a bold
+      lip, keep the eye minimal. If you want a smoky eye, choose a neutral lip.
+      Creative industries value individuality, but they still want to know you
+      can show up on time and deliver.
+    </p>
+    <h3>Remote or Start-Up Environments</h3>
+    <p>
+      If your interview is with a start-up or fully remote company, the dress
+      code is likely casual, but that does not mean "no effort." A light tinted
+      moisturizer, groomed brows, and mascara signal professionalism on a video
+      call without appearing out of touch with the company culture. The risk
+      here is overcompensating with full glam for a casual culture, which can
+      make you seem misaligned with the team.
+    </p>
+
+    <div class="highlight-box">
+      <p>
+        <strong>Color Psychology for Interviews:</strong> Warm rose and peach tones
+        on the cheeks signal approachability and energy, which are the qualities interviewers
+        subconsciously look for. Cool-toned pinks can read as more reserved, which
+        may work well for analytical roles. A soft coral or rose-brown lip is universally
+        flattering and conveys warmth without being flirtatious or aggressive. Avoid
+        bright red for a first interview: it commands attention, which is the opposite
+        of what you want when you are trying to showcase your qualifications.
+      </p>
+    </div>
+
+    <h2>Photo and Video Interview Makeup Tips</h2>
+    <p>
+      Virtual interviews have become the norm, and the camera changes the rules.
+      Ring lights wash out your complexion, webcams reduce resolution, and
+      compression algorithms smooth fine details. Your makeup needs to survive
+      this digital filter.
+    </p>
+    <p>
+      First, skip any product with SPF. Zinc oxide and titanium dioxide create a
+      visible white cast on camera that makes your face look ghostly or chalky.
+      Use a regular moisturizer under your base instead. Second, apply a cream
+      blush slightly more heavily than you normally would because the camera
+      flattens color. Third, define your brows clearly since they frame your
+      face on video and help you look alert and engaged. Finally, test your
+      setup before the interview: open your webcam, sit in your interview spot,
+      and check for glare, uneven lighting, or a lip color that disappears on
+      screen.
+    </p>
+
+    <h2>Common Interview Makeup Mistakes to Avoid</h2>
+    <ul>
+      <li>
+        <strong>New products on interview day.</strong> Never try a new foundation,
+        concealer, or lip color on the day of your interview. Patch-test everything
+        at least a week in advance to rule out breakouts or color mismatches.
+      </li>
+      <li>
+        <strong>Overly shiny finish.</strong> Dewy skin looks great in person but
+        reads as sweaty or oily on camera and under office fluorescent lighting. Set
+        your T-zone with translucent powder.
+      </li>
+      <li>
+        <strong>Heavy perfume.</strong> While not technically makeup, heavily scented
+        primers or setting sprays can overwhelm small interview rooms. Choose unscented
+        products.
+      </li>
+      <li>
+        <strong>Unblended edges.</strong> Harsh jawline foundation lines or unblended
+        contour are the fastest way to make your makeup look amateur. Blend down your
+        neck and use a damp sponge for seamless edges.
+      </li>
+    </ul>
+
+    <h2>Your 15-Minute Interview Routine</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Even Out Skin Tone (3 min)</h4>
+          <p>
+            Apply a tinted moisturizer or lightweight foundation with your
+            fingers or a damp sponge. Focus on areas of redness or uneven tone.
+            Dot concealer under the eyes and on any visible blemishes, then pat
+            to blend. Do not drag the product. The goal is coverage where
+            needed, not a full mask.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Set the T-Zone (1 min)</h4>
+          <p>
+            Press translucent powder onto the forehead, nose, and chin with a
+            fluffy brush or puff. This prevents shine under office lighting and
+            keeps your base intact for the duration of the interview day.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Groom and Define Brows (2 min)</h4>
+          <p>
+            Brush brows upward with a spoolie. Fill sparse areas with a brow
+            pencil or tinted gel matching your natural brow color. Well-defined
+            brows make you look alert and put-together more than any other
+            single product.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Subtle Eye Definition (2 min)</h4>
+          <p>
+            Apply a thin line of brown or dark-brown mascara to the top lashes
+            only. Brown reads softer and more natural than black. If you want
+            extra definition, use a taupe eyeshadow swept across the crease with
+            a fluffy brush.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Add Warmth with Blush (1 min)</h4>
+          <p>
+            Smile lightly and apply a cream blush to the apples of your cheeks,
+            blending upward toward the temples. Warm rose or peach tones are
+            universally flattering for interview settings.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Choose Your Interview Lip (1 min)</h4>
+          <p>
+            Apply a nude, rose, or soft coral lipstick or tinted balm. Blot with
+            a tissue to remove excess product. You want color that enhances your
+            natural lip, not replaces it.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">7</div>
+        <div>
+          <h4>Lock It In (1 min)</h4>
+          <p>
+            Finish with a light mist of setting spray to meld the products and
+            reduce powderiness. Check your look in natural light before heading
+            out or logging on.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Fragment slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>See How Interview Makeup Looks on Your Face</h2>
+        <p>
+          Upload a selfie and preview your professional makeup look before your
+          interview day. It takes seconds and costs nothing.
+        </p>
+        <a href="/tryon-free" class="cta-btn"
+          >Try Interview Makeup on Your Face — Free</a
+        >
+      </div>
+    </div>
+  </Fragment>
+
+  <Fragment slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {relatedLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+        </ul>
+      </div>
+    </section>
+  </Fragment>
+</SeoLandingLayout>

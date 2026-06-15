@@ -1,0 +1,81 @@
+---
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { t } from "../lib/i18n";
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const privacyHref = getLocalizedAppHref(
+  "/privacy#cookies",
+  currentRoute.language.slug,
+);
+---
+
+<aside
+  class="cookie-consent panel"
+  data-cookie-consent
+  aria-labelledby="cookie-consent-title"
+  hidden
+>
+  <div>
+    <strong id="cookie-consent-title">{t("cookie", "title")}</strong>
+    <p>
+      {t("cookie", "description")}
+      <a href={privacyHref}>{t("cookie", "privacyLink")}</a>
+    </p>
+  </div>
+  <div class="cookie-consent-actions">
+    <button class="btn" type="button" data-cookie-choice="necessary"
+      >{t("cookie", "necessary")}</button
+    >
+    <button class="btn btn-primary" type="button" data-cookie-choice="all"
+      >{t("cookie", "acceptAll")}</button
+    >
+  </div>
+</aside>
+
+<script>
+  const cookieConsent = document.querySelector<HTMLElement>(
+    "[data-cookie-consent]",
+  );
+  const cookiePreferenceKey = "abs_cookie_consent_v1";
+
+  function showCookieSettings() {
+    if (cookieConsent) cookieConsent.hidden = false;
+  }
+
+  function saveCookiePreference(choice: string) {
+    try {
+      localStorage.setItem(
+        cookiePreferenceKey,
+        JSON.stringify({ choice, updatedAt: new Date().toISOString() }),
+      );
+    } catch {}
+    if (cookieConsent) cookieConsent.hidden = true;
+    window.showToast?.(
+      choice === "all"
+        ? window.msg?.("cookieAllSaved")
+        : window.msg?.("cookieNecessarySaved"),
+    );
+  }
+
+  if (cookieConsent) {
+    try {
+      cookieConsent.hidden = Boolean(localStorage.getItem(cookiePreferenceKey));
+    } catch {
+      cookieConsent.hidden = false;
+    }
+  }
+
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-cookie-choice]")
+    .forEach((button) => {
+      button.addEventListener("click", () =>
+        saveCookiePreference(button.dataset.cookieChoice || "necessary"),
+      );
+    });
+
+  document.querySelectorAll("[data-cookie-settings]").forEach((button) => {
+    button.addEventListener("click", showCookieSettings);
+  });
+</script>

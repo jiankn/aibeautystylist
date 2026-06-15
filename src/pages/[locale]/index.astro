@@ -1,0 +1,12 @@
+---
+import HomePage from "../../components/HomePage.astro";
+import { getLanguageByPathPrefix } from "../../i18n/config";
+
+const language = getLanguageByPathPrefix(Astro.params.locale);
+
+if (!language) {
+  return Astro.rewrite("/404");
+}
+---
+
+<HomePage />

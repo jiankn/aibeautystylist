@@ -1,0 +1,18 @@
+---
+interface Props {
+  icon?: string;
+  title: string;
+  message: string;
+  class?: string;
+}
+
+const { icon = "✦", title, message, class: className = "" } = Astro.props;
+---
+
+<div class:list={["notice", "panel", className]}>
+  <span class="notice-icon">{icon}</span>
+  <div>
+    <b>{title}</b>
+    <span class="small muted">{message}</span>
+  </div>
+</div>

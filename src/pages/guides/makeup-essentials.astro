@@ -1,0 +1,347 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Basic Makeup Essentials: What You Actually Need (and What You Don't)",
+  description:
+    "The definitive beginner's shopping guide for makeup essentials. Must-buy versus nice-to-have, drugstore versus high-end by product type, and what you can safely skip entirely.",
+  faq: [
+    {
+      q: "What makeup essentials does every beginner need?",
+      a: "Every beginner needs a core set of seven essentials: a base product (tinted moisturizer or light foundation), concealer, translucent setting powder, mascara, a neutral eyeshadow palette with at least three matte shades, cream blush, and a tinted lip balm or everyday lipstick. These seven products cover every area of your face and allow you to create both minimal everyday looks and slightly more polished versions. Everything else — contour palettes, setting sprays, primers, eyeliner, lip liner, highlighter, brow products — can be added later once you have mastered these basics and identified what your routine is genuinely missing.",
+    },
+    {
+      q: "Should beginners buy drugstore or high-end makeup?",
+      a: "The smart approach is a mix. Spend more on products that sit on your skin all day and are hard to get right at low price points — specifically, foundation and concealer. A good drugstore foundation can work well, but the shade range and formula refinement of mid-range and high-end options often justify the extra cost. Save money on products where drugstore formulas have genuinely caught up to high-end: mascara, eyeshadow palettes, blush, and lip products. The drugstore mascara category in particular has products that perform as well as or better than high-end alternatives. Never buy high-end versions of products you are not sure you will use regularly — experiment at the drugstore first.",
+    },
+    {
+      q: "What makeup products can beginners safely skip?",
+      a: "Beginners can safely skip: contour palettes (bronzer does the same job more naturally and is easier to blend), color correctors (concealer handles most correction needs if you choose the right shade), baking powder (this is an advanced technique that looks harsh in everyday settings), setting spray (translucent powder does the job for beginners), makeup setting powder in pressed compact form (loose powder gives better results), eyebrow pomade (clear gel or pencil is easier for beginners), lip liner (unnecessary with modern creamy lip formulas and tinted balms), and makeup brushes sets of twenty plus (you only need three or four good brushes to start). These products are not bad — they are just unnecessary complexity for someone still learning the basics.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  {
+    label: "Drugstore Makeup for Beginners",
+    url: "/guides/drugstore-beginners",
+  },
+  { label: "Makeup Tutorial for Beginners", url: "/guides/beginner-tutorial" },
+  { label: "Makeup Mistakes to Avoid", url: "/guides/mistakes-avoid" },
+];
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Walking into a makeup store as a beginner is like walking into a hardware
+      store without knowing what a hammer looks like. This guide separates the
+      essentials from the noise, tells you where to spend and where to save, and
+      identifies the products you can confidently skip.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>The Beginner Shopping Problem</h2>
+    <p>
+      Every beauty brand has an incentive to sell you more products. Every
+      influencer has an affiliate link for the latest palette, brush set, or
+      primer. The result is a beginner shopping experience that feels like you
+      need a degree in cosmetics to make purchasing decisions. You do not.
+    </p>
+    <p>
+      The reality is that a complete, polished makeup look requires far fewer
+      products than the industry wants you to believe. This guide categorizes
+      every product type into three buckets: must-buy (you genuinely need this
+      to have a functional routine), nice-to-have (it improves your routine but
+      is not essential), and skip (it adds complexity without a proportional
+      benefit for beginners).
+    </p>
+
+    <h2>Must-Buy, Nice-to-Have, and Skip</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">Must</div>
+        <h4>Tinted Moisturizer</h4>
+        <p>
+          The foundation alternative that is forgiving, hydrating, and
+          natural-looking. The single most important product in a beginner kit.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Must</div>
+        <h4>Concealer</h4>
+        <p>
+          Targeted coverage for dark circles, blemishes, and redness. One tube
+          lasts months because you use tiny amounts.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Must</div>
+        <h4>Mascara</h4>
+        <p>
+          The highest-impact-per-dollar product. Opens your eyes and makes you
+          look awake instantly.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Must</div>
+        <h4>Neutral Eyeshadow Palette</h4>
+        <p>
+          Three to four matte shades in neutral tones. Gives you subtle
+          definition without the complexity of color theory.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Must</div>
+        <h4>Cream Blush</h4>
+        <p>
+          Easiest blush type for beginners. Applied with fingers. Doubles as lip
+          color in a pinch.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Must</div>
+        <h4>Tinted Lip Balm</h4>
+        <p>
+          Zero-skill lip color that hydrates while adding a natural tint. The
+          easiest product in your entire routine.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">+</div>
+        <h4>Nice-to-Have: Primer</h4>
+        <p>
+          Extends wear time and smooths texture. Worth adding once your base
+          routine is solid and you notice your makeup fading too quickly.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">+</div>
+        <h4>Nice-to-Have: Setting Powder</h4>
+        <p>
+          Controls shine and prevents creasing. Essential for oily skin,
+          optional for dry skin. Add it when you notice your makeup sliding.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">+</div>
+        <h4>Nice-to-Have: Bronzer</h4>
+        <p>
+          Adds warmth and dimension. Easier than contour and more versatile. A
+          good addition once you are comfortable with blush.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">+</div>
+        <h4>Nice-to-Have: Brow Gel</h4>
+        <p>
+          Groomed brows make a disproportionate difference. Clear gel is the
+          easiest entry point if your brows are already fairly full.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">Skip</div>
+        <h4>Skip: Contour Palette</h4>
+        <p>
+          Bronzer does the same job more naturally. Contour requires advanced
+          blending skills and precise placement that beginners do not yet have.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Skip</div>
+        <h4>Skip: Color Corrector</h4>
+        <p>
+          Concealer handles most correction needs. Color correctors are a
+          solution to a problem most beginners do not have.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Skip</div>
+        <h4>Skip: Highlighter</h4>
+        <p>
+          Healthy, moisturized skin has its own natural glow. Highlighter is an
+          extra that becomes relevant only after your base is solid.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Skip</div>
+        <h4>Skip: Brush Sets</h4>
+        <p>
+          You can apply almost everything with your fingers at the beginner
+          stage. If you want brushes, buy three good individual ones, not a set
+          of twenty.
+        </p>
+      </div>
+    </div>
+
+    <h2>Drugstore Versus Mid-Range: Where to Spend</h2>
+    <p>
+      Not every product category benefits equally from a higher price tag. Here
+      is how to allocate your budget for maximum impact.
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Drugstore Pick</th>
+          <th>Mid-Range Pick</th>
+          <th>Worth the Upgrade?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tinted Moisturizer</td>
+          <td>$8 to $15</td>
+          <td>$22 to $38</td>
+          <td
+            >Sometimes — drugstore options have improved dramatically. Try
+            drugstore first.</td
+          >
+        </tr>
+        <tr>
+          <td>Concealer</td>
+          <td>$6 to $10</td>
+          <td>$18 to $30</td>
+          <td
+            >Yes — mid-range concealers have better shade ranges, smoother
+            textures, and less creasing.</td
+          >
+        </tr>
+        <tr>
+          <td>Mascara</td>
+          <td>$6 to $10</td>
+          <td>$20 to $28</td>
+          <td
+            >No — drugstore mascara consistently rivals or beats high-end in
+            independent tests.</td
+          >
+        </tr>
+        <tr>
+          <td>Eyeshadow Palette</td>
+          <td>$8 to $15</td>
+          <td>$25 to $55</td>
+          <td
+            >No for beginners — drugstore palettes have excellent pigmentation
+            and blendability now.</td
+          >
+        </tr>
+        <tr>
+          <td>Blush</td>
+          <td>$6 to $12</td>
+          <td>$18 to $30</td>
+          <td
+            >No — blush formula is straightforward and drugstore options perform
+            well.</td
+          >
+        </tr>
+        <tr>
+          <td>Lip Balm / Lipstick</td>
+          <td>$4 to $10</td>
+          <td>$16 to $32</td>
+          <td
+            >Personal preference — drugstore lip products are fine for everyday
+            use.</td
+          >
+        </tr>
+        <tr>
+          <td>Setting Powder</td>
+          <td>$6 to $12</td>
+          <td>$20 to $36</td>
+          <td
+            >Maybe — the best-selling setting powder on the market is drugstore.
+            Try it first.</td
+          >
+        </tr>
+        <tr>
+          <td>Primer</td>
+          <td>$6 to $12</td>
+          <td>$20 to $38</td>
+          <td
+            >Sometimes — if you have specific skin concerns (large pores,
+            extreme oiliness), a targeted mid-range primer may perform better.</td
+          >
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>How to Build Your Shopping List</h2>
+    <p>
+      Do not buy everything at once. Follow this order and wait at least one
+      week between each purchase to give yourself time to evaluate whether the
+      product works for you.
+    </p>
+    <p>
+      <strong>Purchase one:</strong> Tinted moisturizer. Test three shades on your
+      jawline in natural light. Buy the one that disappears into your skin. Use it
+      for a week before buying anything else.
+    </p>
+    <p>
+      <strong>Purchase two:</strong> Concealer. Choose a shade that matches your skin
+      for blemishes and one shade lighter for under eyes. Apply over your tinted moisturizer
+      and evaluate the coverage.
+    </p>
+    <p>
+      <strong>Purchase three:</strong> Mascara. This is the easiest purchase — almost
+      any drugstore mascara will work. Pick one with a wand shape that matches your
+      lash type (thin wand for short lashes, curved wand for straight lashes, volumizing
+      formula for thin lashes).
+    </p>
+    <p>
+      <strong>Purchase four:</strong> Cream blush and tinted lip balm. Buy these together
+      since you will likely use the same shade family for both. Choose a color that
+      matches your natural flush.
+    </p>
+    <p>
+      <strong>Purchase five:</strong> Neutral eyeshadow palette. Look for a small
+      palette (four to six shades) with matte finishes in beige, taupe, and brown.
+      Avoid palettes with mostly shimmer or bright colors — you will not use them.
+    </p>
+    <p>
+      By this point, you have a complete, functional makeup routine for under
+      fifty to seventy dollars if you shop drugstore. Only after you have used
+      all five products consistently for at least two weeks should you consider
+      adding anything else.
+    </p>
+  </div>
+
+  <div slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>See Products on Your Face Before Buying</h2>
+        <p>
+          Our AI try-on lets you preview any product combination on your unique
+          skin tone and features.
+        </p>
+        <a href="/tryon-free" class="cta-btn">Try AI Makeup Try-On for Free</a>
+      </div>
+    </div>
+  </div>
+
+  <div slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Related Guides</h3>
+        <ul class="related-list">
+          {
+            relatedLinks.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</SeoLandingLayout>

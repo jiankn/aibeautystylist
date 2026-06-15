@@ -1,0 +1,96 @@
+---
+// 全站登录状态入口：复用现有入口，缺失时再创建。
+---
+
+<script is:inline>
+  (() => {
+    const actions = document.querySelector(".nav-actions");
+    if (!actions) return;
+    const locale = String(
+      window.__absLocale || document.documentElement.lang || "en",
+    );
+    const authCopy = {
+      en: ["Get Started", "Sign up"],
+      "zh-CN": ["开始使用", "开始"],
+      "zh-TW": ["開始使用", "開始"],
+      "de-DE": ["Loslegen", "Starten"],
+      "fr-FR": ["Commencer", "Débuter"],
+      "ja-JP": ["始める", "開始"],
+      "ko-KR": ["시작하기", "시작"],
+      "es-ES": ["Comenzar", "Empezar"],
+      "es-419": ["Comenzar", "Empezar"],
+      "pt-BR": ["Começar", "Iniciar"],
+    }[locale] || ["Get Started", "Start"];
+    const localePrefix =
+      {
+        "zh-CN": "/zh-cn",
+        "zh-TW": "/zh-tw",
+        "de-DE": "/de",
+        "fr-FR": "/fr",
+        "ja-JP": "/ja",
+        "ko-KR": "/ko",
+        "es-ES": "/es",
+        "es-419": "/es",
+        "pt-BR": "/pt-br",
+      }[locale] || "";
+    const routePathname =
+      location.pathname.replace(
+        /^\/(zh-cn|zh-tw|de|fr|ja|ko|es|pt-br)(?=\/|$)/i,
+        "",
+      ) || "/";
+
+    function localized(path) {
+      return `${localePrefix}${path}`;
+    }
+
+    let link = actions.querySelector("[data-auth-entry]");
+    if (
+      !link &&
+      (routePathname === "/login" || routePathname === "/reset-password")
+    ) {
+      return;
+    }
+    if (!link) {
+      link = document.createElement("a");
+      link.setAttribute("data-auth-entry", "");
+      link.className = "btn btn-primary auth-entry-btn keep-mobile";
+      actions.insertBefore(link, actions.firstChild);
+    }
+
+    const authHref = link.dataset.authHref || localized("/login?mode=register");
+    const accountHref = link.dataset.accountHref || localized("/account");
+    const authLabel = link.dataset.authLabel || authCopy[0];
+    const authShortLabel = link.dataset.authShortLabel || authCopy[1];
+
+    function setAuthLabel(anchor) {
+      const desktopLabel = anchor.querySelector(".auth-entry-label-desktop");
+      const mobileLabel = anchor.querySelector(".auth-entry-label-mobile");
+      if (desktopLabel || mobileLabel) {
+        if (desktopLabel) desktopLabel.textContent = authLabel;
+        if (mobileLabel) mobileLabel.textContent = authShortLabel;
+      } else {
+        anchor.textContent = authLabel;
+      }
+      anchor.setAttribute("aria-label", `${authLabel}. ${authShortLabel}`);
+    }
+
+    link.href = authHref;
+    setAuthLabel(link);
+
+    fetch("/api/session")
+      .then((res) => res.json())
+      .then((body) => {
+        const email = body?.data?.user?.email;
+        if (email) {
+          link.href = accountHref;
+          link.textContent =
+            email.length > 18 ? email.slice(0, 16) + "…" : email;
+          link.setAttribute("aria-label", email);
+        } else {
+          link.href = authHref;
+          setAuthLabel(link);
+        }
+      })
+      .catch(() => {});
+  })();
+</script>

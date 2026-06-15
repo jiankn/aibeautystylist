@@ -1,0 +1,498 @@
+{
+  "desktop": {
+    "metrics": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scroll": {
+        "width": 1440,
+        "clientWidth": 1440,
+        "height": 1610
+      },
+      "overflow": false,
+      "filterDisplay": "block",
+      "filterRect": {
+        "x": 86,
+        "y": 193,
+        "width": 248,
+        "height": 734,
+        "top": 193,
+        "bottom": 927
+      },
+      "filterRows": [
+        {
+          "scrollWidth": 210,
+          "clientWidth": 210,
+          "rect": {
+            "x": 105,
+            "y": 244,
+            "width": 210,
+            "height": 150,
+            "top": 244,
+            "bottom": 394
+          }
+        },
+        {
+          "scrollWidth": 210,
+          "clientWidth": 210,
+          "rect": {
+            "x": 105,
+            "y": 463,
+            "width": 210,
+            "height": 256,
+            "top": 463,
+            "bottom": 719
+          }
+        },
+        {
+          "scrollWidth": 210,
+          "clientWidth": 210,
+          "rect": {
+            "x": 105,
+            "y": 788,
+            "width": 210,
+            "height": 44,
+            "top": 788,
+            "bottom": 832
+          }
+        }
+      ],
+      "chipCount": 20,
+      "chipsWithoutPressed": 0,
+      "cardCount": 44,
+      "visibleCards": 3,
+      "summary": "共找到 3 个可直接试妆的妆容",
+      "smallTargets": [
+        {
+          "text": "重置筛选",
+          "tag": "BUTTON",
+          "w": 210,
+          "h": 40
+        },
+        {
+          "text": "Cookie 偏好设置",
+          "tag": "BUTTON",
+          "w": 260,
+          "h": 19
+        }
+      ],
+      "targetCount": 36,
+      "firstCard": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "bottom": 0
+        },
+        "image": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "bottom": 0
+        },
+        "copy": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "bottom": 0
+        },
+        "action": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "bottom": 0
+        },
+        "text": "日常清透新手友好新手自然妆减少粉感，让皮肤看起来干净、轻薄，适合近距离日常场景。适合日常时，适合想要快速提气色，妆感保持轻的人；整体妆效偏清透、自然。重点看气色是否更精神、粉感是否轻看妆容说明妆容抓手底妆：薄涂，保留皮肤纹理眉眼：贴近睫毛，放大眼神唇颊：同色系轻扫，先提气色慎选情况如果生成后压肤色或显疲惫，新手自然妆就不是最优先选择。 上传自拍试妆"
+      },
+      "brokenImages": []
+    },
+    "analytics": [
+      "[Analytics] {event: page_view, properties: Object, timestamp: 2026-06-12T15:49:17.680Z}",
+      "[Analytics] {event: discover_filter_apply, properties: Object, timestamp: 2026-06-12T15:49:23.037Z}",
+      "[Analytics] {event: discover_filter_apply, properties: Object, timestamp: 2026-06-12T15:49:23.043Z}"
+    ],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": []
+  },
+  "tablet": {
+    "metrics": {
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "scroll": {
+        "width": 768,
+        "clientWidth": 768,
+        "height": 11015
+      },
+      "overflow": false,
+      "filterDisplay": "block",
+      "filterRect": {
+        "x": 46,
+        "y": 193,
+        "width": 676,
+        "height": 357,
+        "top": 193,
+        "bottom": 550
+      },
+      "filterRows": [
+        {
+          "scrollWidth": 646,
+          "clientWidth": 646,
+          "rect": {
+            "x": 61,
+            "y": 235,
+            "width": 646,
+            "height": 48,
+            "top": 235,
+            "bottom": 283
+          }
+        },
+        {
+          "scrollWidth": 806,
+          "clientWidth": 646,
+          "rect": {
+            "x": 61,
+            "y": 335,
+            "width": 646,
+            "height": 48,
+            "top": 335,
+            "bottom": 383
+          }
+        },
+        {
+          "scrollWidth": 646,
+          "clientWidth": 646,
+          "rect": {
+            "x": 61,
+            "y": 435,
+            "width": 646,
+            "height": 48,
+            "top": 435,
+            "bottom": 483
+          }
+        }
+      ],
+      "chipCount": 20,
+      "chipsWithoutPressed": 0,
+      "cardCount": 44,
+      "visibleCards": 44,
+      "summary": "共 44 个妆容，可选择后上传自拍试妆",
+      "smallTargets": [
+        {
+          "text": "打开导航菜单",
+          "tag": "BUTTON",
+          "w": 42,
+          "h": 42
+        },
+        {
+          "text": "重置筛选",
+          "tag": "BUTTON",
+          "w": 646,
+          "h": 40
+        },
+        {
+          "text": "Cookie 偏好设置",
+          "tag": "BUTTON",
+          "w": 326,
+          "h": 19
+        }
+      ],
+      "targetCount": 160,
+      "firstCard": {
+        "rect": {
+          "x": 65,
+          "y": 593,
+          "width": 310,
+          "height": 421,
+          "top": 593,
+          "bottom": 1015
+        },
+        "image": {
+          "x": 66,
+          "y": 594,
+          "width": 148,
+          "height": 357,
+          "top": 594,
+          "bottom": 952
+        },
+        "copy": {
+          "x": 214,
+          "y": 594,
+          "width": 160,
+          "height": 357,
+          "top": 594,
+          "bottom": 952
+        },
+        "action": {
+          "x": 84,
+          "y": 952,
+          "width": 272,
+          "height": 44,
+          "top": 952,
+          "bottom": 996
+        },
+        "text": "日常清透新手友好新手自然妆减少粉感，让皮肤看起来干净、轻薄，适合近距离日常场景。适合日常时，适合想要快速提气色，妆感保持轻的人；整体妆效偏清透、自然。重点看气色是否更精神、粉感是否轻看妆容说明妆容抓手底妆：薄涂，保留皮肤纹理眉眼：贴近睫毛，放大眼神唇颊：同色系轻扫，先提气色慎选情况如果生成后压肤色或显疲惫，新手自然妆就不是最优先选择。 上传自拍试妆"
+      },
+      "brokenImages": []
+    },
+    "analytics": [
+      "[Analytics] {event: page_view, properties: Object, timestamp: 2026-06-12T15:49:25.616Z}"
+    ],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": []
+  },
+  "mobile": {
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "width": 390,
+        "clientWidth": 390,
+        "height": 3397
+      },
+      "overflow": false,
+      "filterDisplay": "block",
+      "filterRect": {
+        "x": 12,
+        "y": 197,
+        "width": 471,
+        "height": 357,
+        "top": 197,
+        "bottom": 554
+      },
+      "filterRows": [
+        {
+          "scrollWidth": 495,
+          "clientWidth": 441,
+          "rect": {
+            "x": 27,
+            "y": 239,
+            "width": 441,
+            "height": 48,
+            "top": 239,
+            "bottom": 287
+          }
+        },
+        {
+          "scrollWidth": 806,
+          "clientWidth": 441,
+          "rect": {
+            "x": 27,
+            "y": 339,
+            "width": 441,
+            "height": 48,
+            "top": 339,
+            "bottom": 387
+          }
+        },
+        {
+          "scrollWidth": 441,
+          "clientWidth": 441,
+          "rect": {
+            "x": 27,
+            "y": 439,
+            "width": 441,
+            "height": 48,
+            "top": 439,
+            "bottom": 487
+          }
+        }
+      ],
+      "chipCount": 20,
+      "chipsWithoutPressed": 0,
+      "cardCount": 44,
+      "visibleCards": 3,
+      "summary": "共找到 3 个可直接试妆的妆容",
+      "smallTargets": [
+        {
+          "text": "重置筛选",
+          "tag": "BUTTON",
+          "w": 441,
+          "h": 40
+        }
+      ],
+      "targetCount": 37,
+      "firstCard": {
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "bottom": 0
+        },
+        "image": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "bottom": 0
+        },
+        "copy": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "bottom": 0
+        },
+        "action": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "bottom": 0
+        },
+        "text": "日常清透新手友好新手自然妆减少粉感，让皮肤看起来干净、轻薄，适合近距离日常场景。适合日常时，适合想要快速提气色，妆感保持轻的人；整体妆效偏清透、自然。重点看气色是否更精神、粉感是否轻看妆容说明妆容抓手底妆：薄涂，保留皮肤纹理眉眼：贴近睫毛，放大眼神唇颊：同色系轻扫，先提气色慎选情况如果生成后压肤色或显疲惫，新手自然妆就不是最优先选择。 上传自拍试妆"
+      },
+      "brokenImages": []
+    },
+    "analytics": [
+      "[Analytics] {event: page_view, properties: Object, timestamp: 2026-06-12T15:49:32.217Z}",
+      "[Analytics] {event: discover_filter_apply, properties: Object, timestamp: 2026-06-12T15:49:39.058Z}",
+      "[Analytics] {event: discover_filter_apply, properties: Object, timestamp: 2026-06-12T15:49:39.068Z}"
+    ],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": []
+  },
+  "dark": {
+    "metrics": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scroll": {
+        "width": 1440,
+        "clientWidth": 1440,
+        "height": 10445
+      },
+      "overflow": false,
+      "filterDisplay": "block",
+      "filterRect": {
+        "x": 86,
+        "y": 193,
+        "width": 248,
+        "height": 734,
+        "top": 193,
+        "bottom": 927
+      },
+      "filterRows": [
+        {
+          "scrollWidth": 210,
+          "clientWidth": 210,
+          "rect": {
+            "x": 105,
+            "y": 244,
+            "width": 210,
+            "height": 150,
+            "top": 244,
+            "bottom": 394
+          }
+        },
+        {
+          "scrollWidth": 210,
+          "clientWidth": 210,
+          "rect": {
+            "x": 105,
+            "y": 463,
+            "width": 210,
+            "height": 256,
+            "top": 463,
+            "bottom": 719
+          }
+        },
+        {
+          "scrollWidth": 210,
+          "clientWidth": 210,
+          "rect": {
+            "x": 105,
+            "y": 788,
+            "width": 210,
+            "height": 44,
+            "top": 788,
+            "bottom": 832
+          }
+        }
+      ],
+      "chipCount": 20,
+      "chipsWithoutPressed": 0,
+      "cardCount": 44,
+      "visibleCards": 44,
+      "summary": "共 44 个妆容，可选择后上传自拍试妆",
+      "smallTargets": [
+        {
+          "text": "重置筛选",
+          "tag": "BUTTON",
+          "w": 210,
+          "h": 40
+        },
+        {
+          "text": "Cookie 偏好设置",
+          "tag": "BUTTON",
+          "w": 260,
+          "h": 19
+        }
+      ],
+      "targetCount": 159,
+      "firstCard": {
+        "rect": {
+          "x": 377,
+          "y": 212,
+          "width": 470,
+          "height": 413,
+          "top": 212,
+          "bottom": 625
+        },
+        "image": {
+          "x": 378,
+          "y": 213,
+          "width": 196,
+          "height": 328,
+          "top": 213,
+          "bottom": 541
+        },
+        "copy": {
+          "x": 575,
+          "y": 213,
+          "width": 271,
+          "height": 328,
+          "top": 213,
+          "bottom": 541
+        },
+        "action": {
+          "x": 396,
+          "y": 541,
+          "width": 432,
+          "height": 66,
+          "top": 541,
+          "bottom": 606
+        },
+        "text": "日常清透新手友好新手自然妆减少粉感，让皮肤看起来干净、轻薄，适合近距离日常场景。适合日常时，适合想要快速提气色，妆感保持轻的人；整体妆效偏清透、自然。重点看气色是否更精神、粉感是否轻看妆容说明妆容抓手底妆：薄涂，保留皮肤纹理眉眼：贴近睫毛，放大眼神唇颊：同色系轻扫，先提气色慎选情况如果生成后压肤色或显疲惫，新手自然妆就不是最优先选择。 上传自拍试妆"
+      },
+      "brokenImages": []
+    },
+    "analytics": [
+      "[Analytics] {event: page_view, properties: Object, timestamp: 2026-06-12T15:49:43.178Z}"
+    ],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": []
+  }
+}

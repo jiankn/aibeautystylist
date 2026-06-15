@@ -1,0 +1,217 @@
+---
+import ToastRegion from "../components/ToastRegion.astro";
+import CookieConsent from "../components/CookieConsent.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import AuthNav from "../components/AuthNav.astro";
+import {
+  buildHreflangLinks,
+  getCanonicalPathname,
+  shouldNoindexLocalizedFallback,
+} from "../i18n/hreflang";
+import { getCurrentLocale, t } from "../lib/i18n";
+
+interface Props {
+  title: string;
+  description?: string;
+  bodyClass?: string;
+  ogImage?: string;
+  ogType?: "website" | "article";
+  jsonLd?: string;
+  robots?: string;
+}
+
+const {
+  title,
+  description = t("base", "defaultDescription"),
+  bodyClass = "",
+  ogImage = "/images/og-default.png",
+  ogType = "website",
+  jsonLd,
+  robots = "index,follow",
+} = Astro.props;
+
+const currentLocale = getCurrentLocale();
+const origin = Astro.site ?? Astro.url.origin;
+const ogImageUrl = new URL(ogImage, Astro.site ?? Astro.url.origin).href;
+const requestedPathname = Astro.originPathname || Astro.url.pathname;
+const canonicalPathname = getCanonicalPathname(requestedPathname);
+const canonicalUrl = new URL(canonicalPathname, origin).href;
+const hreflangLinks = buildHreflangLinks(requestedPathname, origin);
+const effectiveRobots = shouldNoindexLocalizedFallback(requestedPathname)
+  ? "noindex,follow"
+  : robots;
+const htmlClass = /\/discover\/?$/i.test(requestedPathname)
+  ? "filter-sheet-ready"
+  : undefined;
+const fontStylesheet = currentLocale.startsWith("zh")
+  ? "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600&family=Satisfy&display=optional"
+  : "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&family=Satisfy&display=optional";
+const clientMessages = {
+  loginRequired: t("tryon", "loginToUseQuota"),
+  loginToUpload: t("tryon", "loginToUpload"),
+  uploadButton: t("tryon", "uploadBtn"),
+  chooseFile: t("tryon", "uploadFormatDesc"),
+  consentRequired: t("tryon", "consentCheckbox"),
+  uploadFailed: t("tryon", "failed"),
+  jobCreateFailed: t("tryon", "failed"),
+  quotaRefresh: t("workspace", "refreshDate"),
+  loginAfter: t("navigation", "loginShort"),
+  viewAfter: t("workspace", "remaining"),
+  loginQuotaNote: t("tryon", "loginToUseDesc"),
+  cookieAllSaved: t("cookie", "allSaved"),
+  cookieNecessarySaved: t("cookie", "necessarySaved"),
+  jobCreated: t("tryon", "creatingTask"),
+  uploadValidating: t("tryon", "uploading"),
+  diagnosisRunning: t("tryon", "aiAnalyzing"),
+  imageRunning: t("tryon", "generatingImage"),
+  generationFailedRefunded: t("tryon", "failed"),
+  taskCancelledRefunded: t("tryon", "failed"),
+  timedOutRefunded: t("tryon", "timeout"),
+  referenceEffect: t("tryon", "tryonResult"),
+  tryonEffect: t("tryon", "tryonResult"),
+  referenceAlt: t("tryon", "tryonAfterAlt"),
+  resultDisclaimer: t("tryon", "aiResultCaption"),
+  referenceGenerated: t("tryon", "generated"),
+  tryonGenerated: t("tryon", "generated"),
+  referenceGeneratedNote: t("tryon", "aiResultCaption"),
+  taskIncomplete: t("tryon", "failed"),
+  cancelGeneration: t("tryon", "cancelUpload"),
+  statusQueryFailed: t("tryon", "historyLoadFailed"),
+  uploadingSafely: t("tryon", "uploading"),
+  cancelUpload: t("tryon", "cancelUpload"),
+  confirmingConsent: t("tryon", "confirmingPhotoNotice"),
+  validatingUpload: t("tryon", "uploading"),
+  generatingReference: t("tryon", "generatingImage"),
+  uploadValidated: t("tryon", "generatingImage"),
+  uploadCancelled: t("tryon", "cancelUpload"),
+  processFailed: t("tryon", "failed"),
+  loginQuotaRequired: t("tryon", "loginToUseQuota"),
+  cancelFailed: t("tryon", "failed"),
+  retryCreating: t("tryon", "creatingTask"),
+  retryCreateFailed: t("tryon", "failed"),
+  deleteUploadFailed: t("tryon", "failed"),
+  originalDeleted: t("tryon", "deleteOriginal"),
+  deleteResultFailed: t("tryon", "failed"),
+  resultDeletedTitle: t("tryon", "deleteResult"),
+  resultDeletedDesc: t("tryon", "previewPlaceholderDesc"),
+  openMenu: t("navigation", "openMenu"),
+  closeMenu: t("navigation", "closeMenu"),
+};
+---
+
+<!doctype html>
+<html lang={currentLocale} class={htmlClass}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content={effectiveRobots} />
+    <meta id="theme-color" name="theme-color" content="#fffaf8" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="AI Beauty Stylist" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <link rel="canonical" href={canonicalUrl} />
+    {
+      hreflangLinks.map((link) => (
+        <link rel="alternate" hreflang={link.hreflang} href={link.href} />
+      ))
+    }
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link id="font-stylesheet" rel="preload" as="style" href={fontStylesheet} />
+    <script is:inline>
+      document
+        .getElementById("font-stylesheet")
+        ?.addEventListener("load", function () {
+          this.setAttribute("rel", "stylesheet");
+        });
+    </script>
+    <noscript><link rel="stylesheet" href={fontStylesheet} /></noscript>
+    {
+      jsonLd && (
+        <script type="application/ld+json" is:inline set:html={jsonLd} />
+      )
+    }
+    <title>{title}</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script is:inline>
+      // 暗黑模式初始化（在 CSS 加载后、页面渲染前执行，避免闪烁）。
+      (function () {
+        var saved = localStorage.getItem("theme");
+        var isDark =
+          saved === "dark" ||
+          (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        if (isDark) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        } else if (saved === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+        document
+          .getElementById("theme-color")
+          ?.setAttribute("content", isDark ? "#0f1520" : "#fffaf8");
+      })();
+    </script>
+    <script is:inline define:vars={{ currentLocale, clientMessages }}>
+      window.__absLocale = currentLocale;
+      window.__absMessages = clientMessages;
+    </script>
+  </head>
+  <body class={bodyClass}>
+    <slot />
+    <SiteFooter />
+    <CookieConsent />
+    <ToastRegion />
+    <AuthNav />
+    <script is:inline src="/app.js" defer></script>
+    <script is:inline src="/analytics.js" defer></script>
+    <script is:inline>
+      // 暗黑模式切换按钮。
+      (function () {
+        var btn = document.getElementById("theme-toggle");
+        if (!btn) return;
+        function updateIcon() {
+          var isDark =
+            document.documentElement.getAttribute("data-theme") === "dark" ||
+            (!document.documentElement.getAttribute("data-theme") &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          btn.dataset.mode = isDark ? "dark" : "light";
+          var actionLabel = isDark
+            ? btn.dataset.lightLabel
+            : btn.dataset.darkLabel;
+          if (actionLabel) {
+            btn.setAttribute("aria-label", actionLabel);
+            btn.setAttribute("title", actionLabel);
+          }
+          document
+            .getElementById("theme-color")
+            ?.setAttribute("content", isDark ? "#0f1520" : "#fffaf8");
+        }
+        updateIcon();
+        btn.addEventListener("click", function () {
+          var current = document.documentElement.getAttribute("data-theme");
+          var isDark =
+            current === "dark" ||
+            (!current &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          var next = isDark ? "light" : "dark";
+          document.documentElement.setAttribute("data-theme", next);
+          localStorage.setItem("theme", next);
+          updateIcon();
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,180 @@
+---
+import SeoLandingLayout from "../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Virtual Makeup App — Try 40+ Styles on Your Real Face",
+  description:
+    "The virtual makeup app that adapts to your skin tone and face shape. Try 40+ AI-generated makeup styles with personalized tutorials and real product recommendations.",
+  heroImage: "/images/article-ai-tryon-comparison.webp",
+  ogImage: "/images/article-ai-tryon-comparison.webp",
+  faq: [
+    {
+      q: "What makes this different from other virtual makeup apps?",
+      a: "Unlike AR overlay apps that paint the same makeup onto every face, our AI generates a unique try-on image that adapts the style to your actual bone structure, skin undertone, and facial proportions. It also provides a step-by-step tutorial so you can recreate the look in real life.",
+    },
+    {
+      q: "Do I need to download anything?",
+      a: "No. Everything runs in your browser — no app download required. Just open the page, upload a selfie, and start trying on styles.",
+    },
+    {
+      q: "How many styles are available?",
+      a: "The catalog includes 40+ styles across categories like daily, commute, date night, photo, and event makeup. New styles are added regularly.",
+    },
+    {
+      q: "Can I try styles without uploading my photo?",
+      a: "Yes. You can browse the full style catalog and see reference photos without uploading. The personalized try-on requires a photo so the AI can adapt the style to your face.",
+    },
+  ],
+  relatedLinks: [
+    { label: "Glass Skin Makeup", url: "/looks/glass-skin" },
+    { label: "Clean Girl Makeup", url: "/looks/clean-girl" },
+    { label: "First Date Makeup", url: "/scenarios/first-date" },
+    { label: "Office Makeup", url: "/scenarios/office" },
+    { label: "Makeup for Mature Skin", url: "/for/mature-skin" },
+  ],
+};
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>Virtual Makeup App: 40+ Styles, Adapted to Your Face</h1>
+    <p>
+      No downloads. No filters. A browser-based virtual makeup app that
+      generates realistic try-on images — personalized to your skin tone, face
+      shape, and features.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>A Virtual App That Actually Helps You Get Ready</h2>
+    <p>
+      Most virtual makeup apps stop at "here's a filter." You look pretty, you
+      close the app, and you're back to the same question: what do I actually
+      put on my face today?
+    </p>
+    <p>
+      This virtual makeup app goes further. After you see a style you like on
+      your own face, it gives you a personalized tutorial and product
+      recommendations — so you can walk into the bathroom and actually recreate
+      the look.
+    </p>
+
+    <h2>What You Can Do in This App</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">&#9733;</div>
+        <h4>Browse 40+ Styles</h4>
+        <p>
+          Soft glam, natural, date night, interview — filter by scenario or
+          finish.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#9889;</div>
+        <h4>AI Try-On in 30 Seconds</h4>
+        <p>Upload a selfie, pick a style, get a realistic try-on image.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#9998;</div>
+        <h4>Personalized Tutorial</h4>
+        <p>Step-by-step guide adapted to your face shape and features.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#128722;</div>
+        <h4>Real Product Picks</h4>
+        <p>Drugstore to high-end SKUs matched to your skin tone and budget.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#128247;</div>
+        <h4>Before & After</h4>
+        <p>Shareable comparison images — save or post to social media.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#128274;</div>
+        <h4>Private by Design</h4>
+        <p>
+          Photos are deleted no later than 30 days and are not used for model
+          training without separate authorization. Only vetted service providers
+          receive the minimum data needed to deliver the requested try-on.
+        </p>
+      </div>
+    </div>
+
+    <h2>How the App Adapts to Your Face</h2>
+    <p>
+      The app's AI analyzes five dimensions of your face before generating the
+      try-on:
+    </p>
+    <ol>
+      <li>
+        <strong>Skin tone and undertone</strong> — warm, cool, or neutral; determines
+        which makeup shades look natural on you.
+      </li>
+      <li>
+        <strong>Face shape</strong> — oval, round, square, heart, or diamond; influences
+        contour and blush placement.
+      </li>
+      <li>
+        <strong>Eye shape</strong> — hooded, almond, deep-set, or round; guides eyeshadow
+        technique and eyeliner style.
+      </li>
+      <li>
+        <strong>Feature proportions</strong> — lip fullness, brow bone height, cheekbone
+        prominence.
+      </li>
+      <li>
+        <strong>Color season</strong> — based on the 12-season color analysis system;
+        determines your most flattering makeup palette.
+      </li>
+    </ol>
+
+    <h2>Try Styles Before You Buy Products</h2>
+    <p>
+      Every try-on session comes with product recommendations at three budget
+      tiers:
+    </p>
+    <ul>
+      <li><strong>Budget</strong> — drugstore picks under $15</li>
+      <li>
+        <strong>Mid-range</strong> — quality brands like MAC, NARS, Charlotte Tilbury
+      </li>
+      <li>
+        <strong>Premium</strong> — luxury picks from Dior, Chanel, Tom Ford
+      </li>
+    </ul>
+    <p>
+      You also get a "skip this" section — products you don't need for this
+      look, which saves you money and clutter.
+    </p>
+
+    <h2>Free to Start</h2>
+    <p>
+      The app is free to use with 3 try-on sessions per month. Share your
+      results on social media and earn bonus sessions — up to 30 free sessions
+      per month if you share daily.
+    </p>
+  </div>
+
+  <div class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Start Trying Styles Now</h2>
+      <p>No download, no signup required for your first try.</p>
+      <a href="/tryon-free" class="cta-btn">Open the Virtual Makeup App</a>
+    </div>
+  </div>
+
+  <div class="seo-related" slot="related">
+    <div class="related-inner">
+      <h3>Explore More</h3>
+      <ul class="related-list">
+        {
+          page.relatedLinks.map((link) => (
+            <li>
+              <a href={link.url}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</SeoLandingLayout>

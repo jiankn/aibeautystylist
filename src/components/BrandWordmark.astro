@@ -1,0 +1,45 @@
+---
+interface Props {
+  variant?: "header" | "footer";
+}
+
+const { variant = "header" } = Astro.props as Props;
+---
+
+<span
+  class:list={["brand-wordmark", `brand-wordmark-${variant}`]}
+  aria-hidden="true"
+>
+  AI Beauty Stylist
+</span>
+
+<style>
+  .brand-wordmark {
+    display: inline-block;
+    color: var(--heading);
+    font-family: "Satisfy", "Segoe Script", cursive;
+    font-size: 20px;
+    font-variant-ligatures: common-ligatures contextual;
+    font-weight: 400;
+    font-feature-settings:
+      "liga" 1,
+      "clig" 1,
+      "calt" 1;
+    letter-spacing: 0;
+    line-height: 1.15;
+    text-rendering: optimizeLegibility;
+    white-space: nowrap;
+    word-spacing: 0.04em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .brand-wordmark-footer {
+    font-size: 19px;
+  }
+
+  @media (max-width: 700px) {
+    .brand-wordmark-header {
+      display: none;
+    }
+  }
+</style>

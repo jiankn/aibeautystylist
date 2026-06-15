@@ -1,0 +1,269 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title:
+    "Wedding Guest Makeup: Beautiful Without Stealing the Bride's Spotlight",
+  description:
+    "Find the perfect wedding guest makeup that is elegant but never too much. Learn how to adapt your look for indoor versus outdoor weddings, choose season-appropriate palettes, and make your makeup last through hours of celebration.",
+  heroImage: "/images/look-wedding-guest.webp",
+  ogImage: "/images/look-wedding-guest.webp",
+  faq: [
+    {
+      q: "What are the golden rules of wedding guest makeup?",
+      a: "The cardinal rule is simple: do not outshine the bride. This means avoiding all-white or ivory anything in your look, skipping extremely dramatic or attention-grabbing styles like heavy glitter, very bold graphic liner, or intensely bright lip colors, and choosing a palette that complements the overall wedding aesthetic rather than competing with it. Beyond that, aim for polished and intentional. Weddings are formal events, and your makeup should reflect the specialness of the occasion without making you the center of attention in any photograph.",
+    },
+    {
+      q: "How should I adjust my makeup for an outdoor wedding?",
+      a: "Outdoor weddings introduce heat, humidity, wind, and sun, all of which break down makeup. Use a waterproof primer and long-wear, water-resistant formulas for your base and eye makeup. Cream blush lasts better than powder in heat and humidity. Apply a generous layer of setting spray at the end of your routine and bring a travel-size version for touch-ups. If the wedding is during the day, add SPF underneath your makeup, and consider a slightly lighter coverage base since you will likely be outdoors for extended periods.",
+    },
+    {
+      q: "What color palette is appropriate for a wedding guest?",
+      a: "Let the season and the invitation guide you. Spring weddings call for soft pinks, peaches, and rose golds. Summer weddings suit warm bronzes, coral, and champagne tones. Fall weddings pair beautifully with terracotta, plum, and burnt orange. Winter weddings are perfect for deeper berry tones, cool taupe, and muted metallics. Avoid white and ivory in any form, including highlighters with a strong white base. Also consider the bridal party colors if they are listed on the invitation: you do not want to accidentally match the bridesmaids.",
+    },
+    {
+      q: "How do I make my makeup last through a full wedding day?",
+      a: "Longevity starts with skin prep. Apply a gripping primer that creates a tacky base for your products. Use long-wear foundation and concealer, and set them with powder using the baking technique under your eyes and on your T-zone. Layer cream blush with a matching powder blush to lock in color. Use waterproof mascara and eyeliner. Line and fill your entire lip with pencil before applying lipstick, then blot and reapply. Finish with a professional setting spray. Carry blotting papers, a pressed powder, and your lip color for discreet touch-ups during the reception.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+  { label: "Natural Makeup", url: "/looks/natural-makeup" },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={page.heroImage}
+  ogImage={page.ogImage}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Wedding guest makeup walks a delicate line: you want to look beautiful and
+      feel special, but never at the expense of the couple being celebrated.
+      Discover how to find that balance and make your look last from ceremony to
+      last dance.
+    </p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>The Elegant-but-Not-Too-Much Principle</h2>
+    <p>
+      Weddings are some of the most photographed events in most people's lives.
+      You will appear in hundreds of photos, from the ceremony to the reception,
+      from posed group shots to candid dancing moments. Your makeup needs to
+      look appropriate in all of them. This is not the time to experiment with a
+      bold new look you have been wanting to try. This is the time to wear a
+      version of your best, most polished self that reads as intentional and
+      refined.
+    </p>
+    <p>
+      The easiest way to think about wedding guest makeup is to imagine your
+      look next to the bridal party. If you stood beside the bridesmaids, your
+      makeup should look like it belongs at the same event without competing for
+      attention. Soft, romantic, and warm tones almost always work. Harsh lines,
+      heavy smoke, and neon colors rarely do.
+    </p>
+    <p>
+      That said, weddings are celebrations, and you should absolutely feel
+      glamorous if that is your goal. The difference between wedding-appropriate
+      glam and wedding-inappropriate glam comes down to refinement. A
+      beautifully blended warm-toned eye with a satin nude lip is glamorous but
+      appropriate. A heavily lined smoky eye with a bold red lip at a daytime
+      garden wedding draws attention in a way that works against the spirit of
+      the day.
+    </p>
+
+    <h2>Season-Appropriate Wedding Palettes</h2>
+    <p>
+      The season of the wedding gives you a natural framework for choosing your
+      makeup palette. When your look harmonizes with the season, it reads as
+      thoughtfully chosen rather than randomly applied.
+    </p>
+    <h3>Spring: Soft and Romantic</h3>
+    <p>
+      Spring weddings are often outdoors or in venues with lots of natural
+      light. Soft pink and peach eyeshadows, a flushed rose blush, and a glossy
+      or satin lip in a pinky-nude shade create a fresh, romantic look that fits
+      perfectly with the season. Keep the finish dewy but not wet-looking, and
+      use a light hand with bronzer since spring light is forgiving and warm.
+    </p>
+    <h3>Summer: Warm and Glowing</h3>
+    <p>
+      Summer weddings demand heat-proof products but reward a sun-kissed look.
+      Bronze and champagne eyeshadows, warm coral blush, and a terracotta-toned
+      lip balm work beautifully. The key is making everything waterproof and
+      long-wear so your look survives the humidity and the dance floor. A
+      setting spray is non-negotiable.
+    </p>
+    <h3>Fall: Rich and Earthy</h3>
+    <p>
+      Fall is the season for deeper, richer tones. Terracotta, burnt orange, and
+      warm brown eyeshadows create gorgeous depth. Pair with a berry or plum lip
+      and a softly sculpted cheek. The cooler weather means you can use slightly
+      richer formulas without worrying about melting, and the warm, golden tones
+      of autumn light complement deeper palettes perfectly.
+    </p>
+    <h3>Winter: Polished and Refined</h3>
+    <p>
+      Winter weddings, especially evening ones, invite a slightly dressier
+      approach. Cool taupe and champagne eyeshadows, a muted berry lip, and a
+      satin-finish base look stunning under crystal chandeliers and candlelight.
+      Winter is the one season where a slightly more dramatic eye feels
+      completely appropriate, especially for black-tie events.
+    </p>
+
+    <h2>Indoor Versus Outdoor Wedding Makeup</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">&#x2600;</div>
+        <h4>Day / Outdoor Wedding</h4>
+        <p>
+          Prioritize sun protection and long-wear formulas. Use a lightweight
+          base with SPF underneath, waterproof eye products, and cream formulas
+          that will not cake in heat. Keep the overall look lighter and fresher
+          since daylight reveals every detail. A setting spray is essential.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F319;</div>
+        <h4>Evening / Indoor Wedding</h4>
+        <p>
+          Indoor evening lighting allows for more intensity and drama. You can
+          deepen your eye look, add a touch of shimmer (tested for photo flash),
+          and choose a slightly bolder lip color. The controlled environment
+          means you have less concern about weather, but your makeup still needs
+          to last through hours of indoor heating and dancing.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F33F;</div>
+        <h4>Garden or Rustic Wedding</h4>
+        <p>
+          Garden weddings call for a natural, romantic aesthetic that echoes the
+          setting. Think dewy skin, soft peach or pink tones, fluttery lashes,
+          and a stain-like lip. Avoid anything too structured or sharp: soft,
+          blended, and garden-appropriate is the goal. Wind will be a factor, so
+          use products that set well and resist smudging.
+        </p>
+      </div>
+    </div>
+
+    <h2>Your Long-Lasting Wedding Guest Routine</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Prime for Longevity (3 min)</h4>
+          <p>
+            Apply a gripping primer all over your face, focusing on areas where
+            makeup tends to break down: the T-zone, around the nose, and the
+            chin. If you are attending an outdoor or summer wedding, use a
+            waterproof or long-wear primer formulation. Let it set for a minute
+            before applying your base.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Build a Long-Wear Base (5 min)</h4>
+          <p>
+            Apply a long-wear foundation with a damp sponge for even, buildable
+            coverage. Set under the eyes and on the T-zone using the pressing
+            and rolling technique with translucent powder to prevent creasing
+            and shine. Avoid heavy powdering on the cheeks to maintain a
+            natural, skin-like finish.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Create a Soft, Romantic Eye (5 min)</h4>
+          <p>
+            Apply a neutral transition shade across the entire lid and crease.
+            Deepen the outer corner and crease with a slightly darker warm tone.
+            Add a touch of shimmer to the center of the lid for dimension (skip
+            this if you are concerned about flash photography). Line the upper
+            lash line with brown or black-brown pencil and smudge. Curl lashes
+            and apply two coats of waterproof mascara. Add natural false lashes
+            if desired.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Add Warmth and Color (2 min)</h4>
+          <p>
+            Apply bronzer to the hollows of your cheeks, temples, and jawline
+            for warmth and dimension. Layer cream blush on the apples of your
+            cheeks and set lightly with a matching powder blush for all-day
+            wear. This double-layer technique is the secret to blush that
+            survives a full day of celebration.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Lock in Your Lip (3 min)</h4>
+          <p>
+            Line your lips with a pencil that matches your lipstick. Fill in the
+            entire lip for a long-lasting color base. Apply your lipstick, blot
+            with a tissue, and reapply. This technique creates a lip color that
+            resists transfer through the entire reception, including eating and
+            drinking.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Set for All-Day Wear (1 min)</h4>
+          <p>
+            Mist your entire face with a professional setting spray, holding the
+            bottle at arm's length and spraying in an X and T pattern. Let it
+            dry completely before applying perfume or jewelry. This final step
+            locks everything in place for hours.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Fragment slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Preview Your Wedding Guest Look</h2>
+        <p>
+          See how your makeup will look in wedding photos before the big day
+          arrives.
+        </p>
+        <a href="/tryon-free" class="cta-btn"
+          >Try Wedding Guest Makeup on Your Face — Free</a
+        >
+      </div>
+    </div>
+  </Fragment>
+
+  <Fragment slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {relatedLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+        </ul>
+      </div>
+    </section>
+  </Fragment>
+</SeoLandingLayout>

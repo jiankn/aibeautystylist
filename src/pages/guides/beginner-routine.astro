@@ -1,0 +1,286 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Beginner Makeup Routine: Your Daily 10-Minute Look",
+  description:
+    "Build a realistic 10-minute makeup routine that actually works on busy mornings. Learn the three-product minimum, the morning versus evening difference, and how to stay consistent without burning out.",
+  faq: [
+    {
+      q: "What is a good beginner makeup routine?",
+      a: "A good beginner routine is one you can actually complete every morning without rushing or stressing. Start with three products: a tinted moisturizer with SPF, a concealer for spot coverage, and mascara. This takes about five minutes and gives you a polished, natural look. As you get comfortable, add a tinted lip balm (one minute) and a cream blush (one minute) to reach a ten-minute routine that covers every part of your face. The key is to start small and add products gradually rather than trying to do everything at once from day one.",
+    },
+    {
+      q: "How long does a basic makeup routine take?",
+      a: "A basic everyday routine should take between five and ten minutes once you have practiced. The first week, expect it to take fifteen to twenty minutes as you learn the steps and figure out how much product to use. By week two, you should be down to ten minutes. By week four, five minutes is realistic for the three-product routine. If your routine consistently takes more than fifteen minutes for an everyday look, you are either using too many products, applying too much of each product, or both. Simplifying usually makes the result look better, not worse.",
+    },
+    {
+      q: "Should I do a different makeup routine in the morning versus evening?",
+      a: "Your morning routine should be fast and focused on looking fresh: tinted moisturizer with SPF, concealer, mascara, and lip balm. This takes five to ten minutes and is designed for efficiency. Your evening routine can be more elaborate because you have more time and do not need SPF. You might add eyeshadow, eyeliner, a fuller-coverage foundation, and a bolder lip color. The evening routine is also where you experiment with new techniques and products. Think of morning as your reliable everyday routine and evening as your creative practice time.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Easy Everyday Makeup", url: "/guides/easy-everyday" },
+  { label: "Makeup Tutorial for Beginners", url: "/guides/beginner-tutorial" },
+  { label: "Natural Makeup Guide", url: "/guides/natural-makeup-how" },
+];
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      You do not need twenty minutes or twenty products to look put together.
+      This guide builds a realistic ten-minute routine around the three products
+      you actually need, with clear advice on what to add as you improve and how
+      to make the routine stick as a daily habit.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>The Three Products You Actually Need</h2>
+    <p>
+      If you stripped away every non-essential product, you would be left with
+      three things that make the biggest visual difference: something to even
+      your skin tone, something to brighten your eyes, and something to add life
+      to your lips. Everything else is an enhancement, not a requirement.
+    </p>
+    <p>
+      The specific products are a tinted moisturizer with SPF (combines two
+      steps into one), a concealer for targeted coverage, and a mascara. These
+      three products take approximately five minutes to apply and give you a
+      clean, fresh look that works for any casual or professional setting. If
+      you only have five minutes on a rushed morning, these three are your
+      safety net.
+    </p>
+    <p>
+      The philosophy behind this minimal approach is not about denying yourself
+      products you enjoy. It is about building a reliable foundation — a routine
+      you can do on your worst mornings, when you are running late, tired, or
+      overwhelmed. Once that foundation is automatic, adding more products
+      becomes a choice, not a burden.
+    </p>
+
+    <h2>The Timed 10-Minute Routine</h2>
+    <p>
+      Here is the full ten-minute breakdown. Each step has a time allocation so
+      you can see exactly where your time goes and where you can save seconds if
+      you are running late.
+    </p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Moisturize with SPF — 1 minute</h4>
+          <p>
+            Apply a moisturizer with built-in SPF 30 or higher. Massage it in
+            using upward motions across your face and neck. Using a combined
+            moisturizer and SPF saves the two minutes you would spend applying
+            them separately. Wait thirty seconds before moving to the next step.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Tinted Moisturizer or Light Foundation — 2 minutes</h4>
+          <p>
+            Dot on your forehead, cheeks, nose, and chin. Blend outward with
+            your fingers or a damp sponge. Focus on the center of your face
+            where most discoloration and redness occurs — you can use less
+            product toward your hairline and jaw where your skin tone is
+            naturally more even.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Concealer — 1 minute</h4>
+          <p>
+            Apply only where you need it: under eyes, around the nose, on any
+            blemishes. Pat gently with your ring finger. This targeted approach
+            is faster than full-coverage foundation and looks more natural
+            because your skin still shows through in areas that do not need
+            correction.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Cream Blush — 1 minute</h4>
+          <p>
+            Smile and dab cream blush on the apples of your cheeks. Blend upward
+            with your fingers. Cream blush is faster than powder because you
+            apply and blend with the same tool — your fingers. It also looks
+            more natural on bare or lightly covered skin.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Mascara — 1.5 minutes</h4>
+          <p>
+            Apply one coat to upper lashes. If you have time, add a second coat.
+            Look down into your phone camera (using the front-facing camera as a
+            mirror) to get the angle right. This trick is faster than holding a
+            separate mirror and looking down.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Brows — 1 minute</h4>
+          <p>
+            Brush brows upward with a spoolie, then fill in sparse areas with a
+            brow pencil using short strokes. Clear brow gel takes even less time
+            if your brows are already fairly full. Well-groomed brows make your
+            entire face look more polished with minimal effort.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">7</div>
+        <div>
+          <h4>Lip Color — 0.5 minutes</h4>
+          <p>
+            Apply a tinted lip balm or your go-to everyday lipstick directly
+            from the tube. No liner needed for a natural look. This is the
+            fastest step and the one that signals to your brain that you are
+            "done" — psychologically important for feeling ready.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>What to Add As You Get Better</h2>
+    <p>
+      Once your ten-minute routine feels effortless (usually after three to four
+      weeks of daily practice), you can start layering in additional products.
+      Do not add more than one new product per week, and only add something if
+      you feel your current routine is genuinely missing something.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">A</div>
+        <h4>Eyeshadow (Week 5)</h4>
+        <p>
+          Add a single neutral eyeshadow shade swept across your lid. Takes one
+          extra minute. Choose a matte beige or taupe that requires no blending
+          skill.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">B</div>
+        <h4>Setting Powder (Week 6)</h4>
+        <p>
+          If your makeup fades by midday, add translucent powder to your T-zone.
+          Takes thirty seconds and extends your wear time significantly.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">C</div>
+        <h4>Bronzer (Week 7)</h4>
+        <p>
+          Apply to the perimeter of your face and cheekbones for warmth and
+          dimension. Takes one minute. Use a light hand — you can always add
+          more but you cannot take it away.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">D</div>
+        <h4>Eyeliner (Week 8)</h4>
+        <p>
+          Start with a brown pencil liner along your upper lash line. It is
+          softer and more forgiving than black liquid liner. Takes one minute.
+          Tight-lining (lining the upper waterline) gives the most natural
+          definition.
+        </p>
+      </div>
+    </div>
+
+    <h2>Morning Versus Evening: Two Routines, Same Products</h2>
+    <p>
+      Your morning routine should prioritize speed and sun protection. Your
+      evening routine is where you have the luxury of time and can focus on
+      precision and creativity. Here is how they differ in practice.
+    </p>
+    <p>
+      <strong>Morning:</strong> Tinted moisturizer with SPF, concealer, cream blush,
+      mascara, brows, tinted lip balm. Total time: ten minutes. Goal: look awake,
+      fresh, and polished with zero stress.
+    </p>
+    <p>
+      <strong>Evening:</strong> Full-coverage foundation (instead of tinted moisturizer),
+      concealer, setting powder, bronzer, powder blush, highlighter, eyeshadow with
+      two shades, eyeliner, mascara, brows, lip liner plus lipstick, setting spray.
+      Total time: twenty to twenty-five minutes. Goal: look intentional, polished,
+      and camera-ready.
+    </p>
+    <p>
+      The products overlap significantly — you are not buying two separate sets.
+      You are simply using different versions (lighter for morning, fuller for
+      evening) and adding steps that require more time. This approach keeps your
+      makeup bag manageable while giving you flexibility based on the occasion.
+    </p>
+
+    <h2>The Consistency Secret: Make It Easier to Do It Than to Skip It</h2>
+    <p>
+      The hardest part of any makeup routine is not the technique — it is
+      showing up every day and doing it. The single best thing you can do to
+      make consistency automatic is to organize your products the night before.
+      Lay out the exact products you will use in the order you will use them.
+      Keep your brushes clean and ready. Put your tinted moisturizer next to
+      your toothbrush so you see it every morning.
+    </p>
+    <p>
+      Another effective strategy is to attach your makeup routine to an existing
+      habit. If you always drink coffee in the morning, do your makeup while
+      your coffee brews. The existing habit becomes the trigger that starts the
+      new one, and after a few weeks, the routine runs on autopilot.
+    </p>
+    <p>
+      Finally, give yourself permission to do a minimal routine on days when you
+      cannot face a full one. Three products is always better than zero.
+      Consistency is about showing up, not about being perfect every single day.
+    </p>
+  </div>
+
+  <div slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Find Your Perfect 10-Minute Look</h2>
+        <p>
+          Our AI try-on tool helps you preview different product combinations so
+          you know exactly what works before you buy.
+        </p>
+        <a href="/tryon-free" class="cta-btn">Try AI Makeup Try-On for Free</a>
+      </div>
+    </div>
+  </div>
+
+  <div slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Related Guides</h3>
+        <ul class="related-list">
+          {
+            relatedLinks.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</SeoLandingLayout>

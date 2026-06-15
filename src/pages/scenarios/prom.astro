@@ -1,0 +1,279 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Prom Makeup: Glamorous, Photo-Ready, and Dance-Proof",
+  description:
+    "Prom makeup needs to survive photos, dancing, and six-plus hours of wear while looking stunning in flash photography. Learn how to coordinate with your dress color, make your look last, and handle emotional moments without ruining your makeup.",
+  heroImage: "/images/look-champagne-gala.webp",
+  ogImage: "/images/look-champagne-gala.webp",
+  faq: [
+    {
+      q: "What are the most important prom makeup tips?",
+      a: "Prom makeup has three non-negotiable requirements: it must photograph well under flash, last for six or more hours without significant touch-ups, and look glamorous without crossing into costume territory. Build your look around long-wear products set with powder and locked with setting spray. Use a matte or satin base to prevent flash glare, and define your features more than you would for everyday wear because cameras and distance soften everything. Coordinate your color palette with your dress for a cohesive look.",
+    },
+    {
+      q: "How do I make my prom makeup last all night?",
+      a: "Start with a gripping primer that creates a tacky surface for products to adhere to. Use long-wear foundation and concealer, then set every liquid or cream product with a matching powder. For eyes, use an eyeshadow primer to prevent creasing and fading. Apply waterproof mascara and a long-wear eyeliner. For lips, use the lip-liner-fill-and-blottle technique: line, fill in the entire lip with liner, apply lipstick, blot, and reapply. Finish with a professional-grade setting spray. Bring a small touch-up kit with blotting papers, pressed powder, and your lip color.",
+    },
+    {
+      q: "Should prom makeup be glam or natural?",
+      a: "Prom is one of the few occasions where a full-glam look is completely appropriate and expected. This is your night to go bigger: more intense eye definition, bolder lashes, more sculpted cheeks, and a more dramatic lip. However, glam should still look polished, not messy. The difference between prom glam and everyday glam is refinement: seamless blending, carefully placed shimmer, and products that have been chosen for their longevity. If you have never worn glam makeup before, practice your full look at least twice before prom night so you are not learning on the actual night.",
+    },
+    {
+      q: "How do I handle tears or emotional moments without ruining my prom makeup?",
+      a: "Prom can be emotional, and that is completely okay. To prepare, use waterproof mascara and waterproof eyeliner as your non-negotiables. These products are formulated to resist water and will survive tears. For your face, a good setting spray creates a protective film over your makeup that reduces transfer when you blot. If you do cry, gently press a tissue against the affected area rather than wiping. Wiping removes product. Pressing absorbs moisture without disturbing the makeup underneath. Avoid rubbing your eyes, and if mascara does run slightly, a clean cotton swab can clean it up without removing surrounding makeup.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+  { label: "Natural Makeup", url: "/looks/natural-makeup" },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={page.heroImage}
+  ogImage={page.ogImage}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Prom night is a marathon, not a sprint. Your makeup needs to survive
+      photos, dancing, hugs, tears, and six-plus hours of celebration while
+      looking flawless in every single picture. Here is how to build a look that
+      holds up from pre-prom to after-party.
+    </p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>The Prom Makeup Challenge: Glam That Lasts</h2>
+    <p>
+      Prom makeup sits at the intersection of three demands that rarely overlap
+      in everyday makeup. You need it to look dramatic enough to photograph
+      beautifully. You need it to last through hours of movement, heat, and
+      physical activity. And you need it to look good in person, not just
+      through a lens. These requirements pull in different directions, which is
+      why so many people are disappointed with their prom photos.
+    </p>
+    <p>
+      The solution is building your look around endurance first, then
+      aesthetics. Choose products specifically designed for long wear. Test
+      every product under flash photography before the night. Practice your full
+      routine so the actual application is smooth and confident. Prom is not the
+      night to discover that your favorite highlighter creates a white hotspot
+      under camera flash.
+    </p>
+
+    <h2>Flash Photography and Your Makeup</h2>
+    <div class="highlight-box">
+      <p>
+        <strong>Photography Tip:</strong> Prom photos are taken with direct flash
+        in dimly lit environments. This combination is unforgiving. Any product with
+        shimmer, glitter, or a dewy finish will reflect the flash as a bright white
+        or silver spot. Test your entire look by having someone take a photo of you
+        with flash in a dim room before prom night. If you see hot spots on your cheeks,
+        forehead, nose, or collarbones, those products need to be swapped for matte
+        or satin alternatives. The exception is controlled shimmer on the center of
+        the eyelid, which can photograph beautifully when it is subtle and well-placed
+        rather than scattered across the entire lid.
+      </p>
+    </div>
+    <p>
+      Flash also compresses contrast, which means subtle makeup reads as no
+      makeup in photos. This is why prom makeup needs to be slightly more
+      intense than what feels comfortable in your bathroom mirror. Your eyeliner
+      should be a shade darker, your eyeshadow more pigmented, and your blush
+      more visible than you would normally wear. The camera and the flash will
+      soften everything by the time it reaches the final image.
+    </p>
+
+    <h2>Coordinate Your Makeup With Your Dress</h2>
+    <p>
+      Your dress is the centerpiece of your look, and your makeup should
+      complement it rather than compete with it. The color of your dress should
+      influence your eyeshadow and lip palette.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">&#x1F49C;</div>
+        <h4>Black Dress</h4>
+        <p>
+          Black is the ultimate canvas. Go bold: a classic red lip with a soft
+          smoky eye, or a dramatic cat-eye with a nude lip. Both combinations
+          look stunning against black fabric in photos. Avoid matching a black
+          lip to a black dress unless you have mastered the technique.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F497;</div>
+        <h4>Red Dress</h4>
+        <p>
+          With a red dress, keep the eye neutral and the lip either matching or
+          one shade softer than the dress. A warm champagne eye with a red or
+          berry lip looks cohesive and dramatic without creating color chaos.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F499;</div>
+        <h4>Blue or Navy Dress</h4>
+        <p>
+          Cool-toned blues pair beautifully with champagne, taupe, and silver
+          eyeshadows. A rosy-nude lip keeps the focus on the dress color while
+          adding warmth to your face. Gold tones also work surprisingly well
+          with navy for a regal look.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F496;</div>
+        <h4>Pink or Blush Dress</h4>
+        <p>
+          With pink or blush dresses, lean into warm rose and mauve tones. A
+          soft pinky-brown eye with a slightly deeper rose lip creates a
+          monochromatic look that photographs beautifully. Add warmth with
+          bronze on the outer corner to keep the look from feeling too pastel.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F5A4;</div>
+        <h4>Emerald or Jewel Tone Dress</h4>
+        <p>
+          Jewel tones call for gold and bronze accents. A warm gold eye with a
+          plum or berry lip is striking and elegant. The warmth of gold against
+          cool jewel tones creates beautiful color contrast in photos.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x26AA;</div>
+        <h4>White or Ivory Dress</h4>
+        <p>
+          With lighter dresses, avoid white-based highlighters that can wash you
+          out. Go for a warm bronze and peach palette that adds color and
+          dimension. A coral or rose lip keeps you from looking flat against the
+          light fabric.
+        </p>
+      </div>
+    </div>
+
+    <h2>Your Prom Night Routine</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Prime Everything (3 min)</h4>
+          <p>
+            Apply a gripping face primer all over and a dedicated eyeshadow
+            primer on your lids. These two products are the foundation of a look
+            that survives hours of wear. Let them set for at least two minutes
+            before applying base products.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Long-Wear Base (5 min)</h4>
+          <p>
+            Apply a matte or satin long-wear foundation with a sponge for full,
+            even coverage. Conceal under the eyes, on the chin, and around the
+            nose. Set the entire face with translucent powder, pressing it into
+            the skin rather than sweeping. This pressing technique creates a
+            smooth, flash-ready finish that does not look powdery in person.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Statement Eyes (8 min)</h4>
+          <p>
+            Apply a transition shade across the crease. Build depth in the outer
+            corner with a darker shade and blend thoroughly until there are no
+            harsh edges. Add a controlled shimmer to the center of the lid for
+            photo dimension. Line the upper lash line with a long-wear gel or
+            liquid liner, creating your desired wing or cat-eye shape. Line the
+            lower lash line lightly with a matching pencil and smudge. Curl
+            lashes, apply two coats of waterproof mascara, and add false lashes
+            if desired. Individual or cluster lashes look more natural and
+            photograph better than full strips.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Sculpt and Color (3 min)</h4>
+          <p>
+            Apply bronzer or contour powder under the cheekbones, along the
+            jawline, and at the temples. Add cream blush to the apples of your
+            cheeks and set with a powder blush in the same shade family. The
+            double layer ensures your color shows up in photos and lasts through
+            dancing. Apply a subtle highlighter to the high points of your face,
+            avoiding areas that will be hit directly by camera flash.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Transfer-Resistant Lips (4 min)</h4>
+          <p>
+            Line your lips with a pencil, then fill in the entire lip surface.
+            Apply your chosen lipstick, blot firmly with a tissue, and apply a
+            second layer. For extra staying power, place a single-ply tissue
+            over your lips and dust translucent powder through it. This sets the
+            lip color without removing the finish. Bring your lip color and
+            liner for mid-evening touch-ups.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Lock It All Down (1 min)</h4>
+          <p>
+            Spray a professional setting spray in an X and T pattern across your
+            face. Hold the bottle at arm's length and do not skimp. This final
+            layer is what keeps everything in place through photos, dancing, and
+            emotional moments. Let it dry for a full minute before putting on
+            jewelry, perfume, or your corsage.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Fragment slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>See Your Prom Look Before the Big Night</h2>
+        <p>
+          Try different glam styles matched to your dress color and find your
+          perfect prom look.
+        </p>
+        <a href="/tryon-free" class="cta-btn"
+          >Try Prom Makeup on Your Face — Free</a
+        >
+      </div>
+    </div>
+  </Fragment>
+
+  <Fragment slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {relatedLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+        </ul>
+      </div>
+    </section>
+  </Fragment>
+</SeoLandingLayout>

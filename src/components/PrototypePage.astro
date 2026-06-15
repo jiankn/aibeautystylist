@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { parsePrototype } from "../lib/prototype";
+
+interface Props {
+  source: string;
+  description?: string;
+}
+
+const page = parsePrototype(Astro.props.source);
+---
+
+<BaseLayout
+  title={page.title}
+  description={Astro.props.description}
+  bodyClass={page.bodyClass}
+>
+  <Fragment set:html={page.bodyHtml} />
+</BaseLayout>

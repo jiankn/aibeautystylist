@@ -1,0 +1,212 @@
+---
+/**
+ * 教程步骤组件：根据用户计划展示不同数量的步骤。
+ * Free 用户仅展示前 3 步（后续步骤模糊遮罩），Pro/Premium 展示全部。
+ */
+import type { Tutorial } from "../data/tutorials";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+
+interface Props {
+  tutorial: Tutorial;
+  userPlan?: "free" | "pro" | "premium";
+}
+
+const { tutorial, userPlan = "free" } = Astro.props;
+const showAll = userPlan !== "free";
+const freeLimit = 3;
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const pricingHref = getLocalizedAppHref("/pricing", currentRoute.language.slug);
+
+const regionLabels: Record<string, string> = {
+  base: "底妆",
+  eyes: "眼妆",
+  brows: "眉部",
+  cheeks: "腮红",
+  lips: "唇妆",
+  contour: "修容",
+};
+
+const difficultyLabels: Record<string, string> = {
+  beginner: "新手友好",
+  intermediate: "进阶",
+  advanced: "高阶",
+};
+---
+
+<section class="tutorial-panel">
+  <div class="tutorial-header">
+    <h2 class="panel-title">{tutorial.title}</h2>
+    <div class="tutorial-meta">
+      <span class="pill pill-teal"
+        >{difficultyLabels[tutorial.difficulty] || tutorial.difficulty}</span
+      >
+      <span class="small muted">预计 {tutorial.estimatedMinutes} 分钟</span>
+      <span class="small muted">共 {tutorial.steps.length} 步</span>
+    </div>
+  </div>
+  <p class="panel-subtitle">{tutorial.description}</p>
+
+  <ol class="tutorial-steps">
+    {
+      tutorial.steps.map((step, index) => {
+        const isLocked = !showAll && index >= freeLimit;
+        return (
+          <li class:list={["tutorial-step", { locked: isLocked }]}>
+            <div class="step-indicator">
+              <span class="step-dot">{isLocked ? "Pro" : step.order}</span>
+              <span class="step-region pill">
+                {regionLabels[step.region] || step.region}
+              </span>
+            </div>
+            <div class="step-content">
+              <h3>{step.title}</h3>
+              {isLocked ? (
+                <p class="locked-text">Pro 可查看完整步骤</p>
+              ) : (
+                <>
+                  <p class="step-tool">工具：{step.tool}</p>
+                  <p class="step-action">{step.action}</p>
+                  {step.errorWarning && (
+                    <p class="step-warning">提醒：{step.errorWarning}</p>
+                  )}
+                  {step.selfCheck && (
+                    <p class="step-check">✓ 自检：{step.selfCheck}</p>
+                  )}
+                </>
+              )}
+            </div>
+          </li>
+        );
+      })
+    }
+  </ol>
+
+  {
+    !showAll && tutorial.steps.length > freeLimit && (
+      <div class="tutorial-upgrade">
+        <p>
+          还有 {tutorial.steps.length - freeLimit} 个步骤可在 Pro 以上方案查看
+        </p>
+        <a class="btn btn-primary" href={pricingHref}>
+          查看会员方案
+        </a>
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .tutorial-panel {
+    padding: 24px;
+  }
+  .tutorial-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .tutorial-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+  }
+  .tutorial-steps {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+    display: grid;
+    gap: 16px;
+  }
+  .tutorial-step {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: box-shadow 0.2s;
+  }
+  .tutorial-step:hover:not(.locked) {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  }
+  .tutorial-step.locked {
+    opacity: 0.5;
+    filter: blur(1px);
+    pointer-events: none;
+  }
+  .step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .step-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--rose-soft);
+    color: var(--rose);
+    font-weight: 800;
+    font-size: 1.1rem;
+  }
+  .step-region {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+  .step-content h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+  }
+  .step-tool {
+    margin: 0 0 4px;
+    font-size: 13px;
+    color: var(--teal);
+    font-weight: 600;
+  }
+  .step-action {
+    margin: 0 0 8px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .step-warning {
+    margin: 0 0 4px;
+    font-size: 12px;
+    color: var(--rose);
+    background: var(--rose-soft);
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+  .step-check {
+    margin: 0;
+    font-size: 12px;
+    color: var(--teal);
+    background: var(--teal-soft);
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+  .locked-text {
+    margin: 0;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .tutorial-upgrade {
+    text-align: center;
+    padding: 24px;
+    margin-top: 16px;
+    border: 2px dashed var(--line);
+    border-radius: var(--radius);
+    background: var(--soft);
+  }
+  .tutorial-upgrade p {
+    margin: 0 0 12px;
+    color: var(--muted);
+  }
+</style>

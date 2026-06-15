@@ -1,0 +1,173 @@
+---
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { t } from "../lib/i18n";
+
+interface Props {
+  plan: "Free" | "Pro" | "Premium";
+  title: string;
+  subtitle: string;
+  active: "tryon-free" | "tryon-pro" | "tryon-premium" | "diagnosis";
+  remaining?: number;
+  total?: number;
+  note?: string;
+  live?: boolean;
+}
+
+const {
+  plan,
+  title,
+  subtitle,
+  active,
+  remaining,
+  total,
+  note = t("workspace", "defaultNote"),
+  live = false,
+} = Astro.props;
+const hasQuota = typeof remaining === "number" && typeof total === "number";
+const used = hasQuota ? total - remaining : 0;
+const percentage = hasQuota
+  ? Math.max(0, Math.min(100, (used / total) * 100))
+  : 0;
+const lowQuota = hasQuota && remaining < 2 && remaining >= 0;
+const planClass =
+  plan === "Premium"
+    ? "workspace-status-plan-gold"
+    : plan === "Pro"
+      ? "workspace-status-plan-teal"
+      : "";
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+
+// Build links based on plan state
+// Free plan: conditional - unlogged vs logged-in
+// Pro / Premium: fixed links, no "view plans"
+const links =
+  plan === "Free"
+    ? [
+        {
+          href: localizeAppHref("/tryon-free"),
+          label: t("workspace", "startTryon"),
+          id: "tryon-free",
+          variant: "primary" as const,
+        },
+        {
+          href: localizeAppHref("/diagnosis"),
+          label: t("workspace", "diagnosis"),
+          id: "diagnosis",
+          variant: "secondary" as const,
+        },
+      ]
+    : plan === "Pro"
+      ? [
+          {
+            href: localizeAppHref("/tryon-pro"),
+            label: t("workspace", "startHdTrypton"),
+            id: "tryon-pro",
+            variant: "primary" as const,
+          },
+          {
+            href: localizeAppHref("/discover"),
+            label: t("workspace", "viewHistory"),
+            id: "view-history",
+            variant: "secondary" as const,
+          },
+        ]
+      : [
+          {
+            href: localizeAppHref("/tryon-premium"),
+            label: t("workspace", "openFullCatalog"),
+            id: "tryon-premium",
+            variant: "primary" as const,
+          },
+          {
+            href: localizeAppHref("/discover"),
+            label: t("workspace", "viewHistory"),
+            id: "view-history",
+            variant: "secondary" as const,
+          },
+        ];
+
+// Perks text for paid users
+const perksText =
+  plan === "Pro"
+    ? t("workspace", "proPerks")
+    : plan === "Premium"
+      ? t("workspace", "premiumPerks")
+      : undefined;
+---
+
+<section
+  class="workspace-status panel"
+  data-plan={plan}
+  data-quota-live={live || undefined}
+  aria-label={`${title}${t("workspace", "statusSuffix")}`}
+>
+  <!-- Left: identity + value prop -->
+  <div class="workspace-status-main">
+    <span class:list={["workspace-status-plan", planClass]}>{plan}</span>
+    <div>
+      <h1>{title}</h1>
+      <p data-workspace-subtitle>{subtitle}</p>
+      {perksText && <p class="workspace-status-perks">{perksText}</p>}
+      <!-- Low quota warning for Free logged-in -->
+      {
+        lowQuota && plan === "Free" && (
+          <p class="workspace-status-low">{t("workspace", "lowQuotaHint")}</p>
+        )
+      }
+    </div>
+  </div>
+
+  <!-- Middle: quota state -->
+  {
+    hasQuota && (
+      <div class="workspace-status-quota">
+        <div class="workspace-status-quota-head">
+          <b data-quota-label>
+            {t("workspace", "quotaRemaining")
+              .replace("{remaining}", String(remaining))
+              .replace("{total}", String(total))}
+          </b>
+        </div>
+        <div class="meter">
+          <i data-quota-meter style={`width:${percentage}%`} />
+        </div>
+        <small data-quota-refresh>{note}</small>
+      </div>
+    )
+  }
+
+  <!-- Right: action buttons -->
+  <div
+    class="workspace-status-actions"
+    aria-label={t("workspace", "quickActions")}
+  >
+    {
+      links.map((link) => (
+        <a
+          class:list={[
+            "btn",
+            "workspace-status-link",
+            active === link.id && "active",
+            link.variant === "primary" && "btn-primary",
+            link.variant === "secondary" && "btn-outline",
+          ]}
+          href={link.href}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+    <!-- "View Plans" only for Free plan (conversion) -->
+    {
+      plan === "Free" && (
+        <a class="btn workspace-status-link" href={localizeAppHref("/pricing")}>
+          {t("workspace", "upgradeGetMore")}
+        </a>
+      )
+    }
+  </div>
+</section>

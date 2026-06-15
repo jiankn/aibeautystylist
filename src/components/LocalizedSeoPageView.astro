@@ -1,0 +1,192 @@
+---
+import SeoLandingLayout from "./SeoLandingLayout.astro";
+import {
+  getLocalizedPathForRoute,
+  type LocalizedSeoPage,
+} from "../i18n/localizedSeoPages";
+import {
+  addLocalePrefix,
+  getLocalizedAppHref,
+  shouldRewriteLocaleRoute,
+} from "../i18n/routing";
+
+interface Props {
+  page: LocalizedSeoPage;
+}
+
+const { page } = Astro.props as Props;
+const resolveRelatedUrl = (url: string) => {
+  const localizedSeoPath = getLocalizedPathForRoute(
+    "en",
+    url,
+    page.languageSlug,
+  );
+  if (localizedSeoPath) {
+    return addLocalePrefix(localizedSeoPath, page.languageSlug);
+  }
+
+  const localizedAppHref = getLocalizedAppHref(url, page.languageSlug);
+  return shouldRewriteLocaleRoute(localizedAppHref) ? localizedAppHref : url;
+};
+const relatedLinks = page.relatedLinks.map((link) => ({
+  label: link.label,
+  url: resolveRelatedUrl(link.url),
+}));
+const tableHeadings = {
+  "zh-cn": { good: "建议", avoid: "避免" },
+  de: { good: "Besser", avoid: "Vermeiden" },
+  fr: { good: "À faire", avoid: "À éviter" },
+  ja: { good: "おすすめ", avoid: "避けたいこと" },
+  ko: { good: "추천", avoid: "피할 점" },
+  "zh-tw": { good: "建議", avoid: "避免" },
+  es: { good: "Mejor", avoid: "Evitar" },
+  "pt-br": { good: "Melhor", avoid: "Evitar" },
+}[page.languageSlug];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={page.heroImage}
+  ogImage={page.ogImage}
+  faq={page.faq}
+  faqHeading={page.faqHeading}
+  heroCtaHref={getLocalizedAppHref("/tryon-free", page.languageSlug)}
+  heroCtaLabel={page.ctaLabel}
+>
+  <Fragment slot="hero">
+    <h1>{page.heroTitle}</h1>
+    <p>{page.heroSubtitle}</p>
+  </Fragment>
+
+  <div class="seo-content">
+    {
+      page.sections.map((section, sectionIndex) => (
+        <>
+          {section.kind === "paragraphs" && (
+            <section class="content-section">
+              {section.title && <h2>{section.title}</h2>}
+              {section.paragraphs?.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+            </section>
+          )}
+
+          {section.kind === "steps" && (
+            <section class="content-section content-section-wide">
+              {section.title && <h2>{section.title}</h2>}
+              <div class="step-list">
+                {section.items?.map((item, index) => (
+                  <div class="step-card">
+                    <div class="step-num">{index + 1}</div>
+                    <div>
+                      <h4>{item.title}</h4>
+                      <p>{item.body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {section.kind === "grid" && (
+            <section class="content-section content-section-wide">
+              {section.title && <h2>{section.title}</h2>}
+              <div class="feature-grid">
+                {section.items?.map((item) => (
+                  <div class="feature-card">
+                    <h4>{item.title}</h4>
+                    <p>{item.body}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {section.kind === "table" && (
+            <section class="content-section content-section-wide">
+              {section.title && <h2>{section.title}</h2>}
+              <div
+                class="compare-table-scroll"
+                role="region"
+                aria-label={section.title}
+                tabindex="0"
+              >
+                <table class="compare-table">
+                  <thead>
+                    <tr>
+                      <th />
+                      <th>{tableHeadings.good}</th>
+                      <th>{tableHeadings.avoid}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {section.rows?.map((row) => (
+                      <tr>
+                        <td>{row.label}</td>
+                        <td>{row.good}</td>
+                        <td>{row.avoid}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
+
+          {section.kind === "highlight" && (
+            <div class="highlight-box">
+              <p>{section.text}</p>
+            </div>
+          )}
+
+          {sectionIndex === 0 &&
+            page.contentAssets &&
+            page.contentAssets.length > 0 && (
+              <section class="content-section content-section-wide visual-guide">
+                {page.contentAssetsHeading && (
+                  <h2>{page.contentAssetsHeading}</h2>
+                )}
+                <div class="visual-guide-grid">
+                  {page.contentAssets.map((asset) => (
+                    <figure class="visual-guide-item">
+                      <img src={asset.src} alt={asset.alt} loading="lazy" />
+                      <figcaption>{asset.caption}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </section>
+            )}
+        </>
+      ))
+    }
+  </div>
+
+  <div class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>{page.ctaTitle}</h2>
+      <p>{page.ctaText}</p>
+      <a
+        href={getLocalizedAppHref("/tryon-free", page.languageSlug)}
+        class="cta-btn"
+      >
+        {page.ctaLabel}
+      </a>
+    </div>
+  </div>
+
+  <div class="seo-related" slot="related">
+    <div class="related-inner">
+      <h3>{page.relatedHeading}</h3>
+      <ul class="related-list">
+        {
+          relatedLinks.map((link) => (
+            <li>
+              <a href={link.url}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</SeoLandingLayout>

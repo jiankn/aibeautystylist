@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx astro *)",
+      "Bash(curl -s http://localhost:4321/tryon-free)",
+      "Bash(curl -s http://localhost:4322/tryon-free)",
+      "Bash(grep -oP '\\(?<=class=\"workspace-status panel\"\\)[^<]*<\\(?:[^<]*<\\){0,30}')",
+      "Bash(curl -s http://localhost:4322/tryon-pro)",
+      "Bash(curl -s http://localhost:4322/tryon-premium)",
+      "WebSearch",
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "WebFetch(domain:www.mediasearchgroup.com)",
+      "WebFetch(domain:seosandwitch.com)",
+      "WebFetch(domain:seo.london)",
+      "WebFetch(domain:www.seopital.co)",
+      "WebFetch(domain:api.seoreviewtools.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.dataforseo.com)",
+      "Bash(grep -v ',N/A$' keyword-kd-results.csv)",
+      "Bash(ls -la src/pages/looks/*.astro src/pages/scenarios/*.astro src/pages/for/*.astro src/pages/guides/*.astro)",
+      "Bash(ls src/pages/scenarios/*.astro)",
+      "Bash(ls src/pages/*.astro)",
+      "Bash(ls src/pages/looks/*.astro)",
+      "Bash(ls src/pages/for/*.astro)",
+      "Bash(ls src/pages/guides/*.astro)",
+      "Bash(ls -1 src/pages/*.astro)",
+      "Bash(ls -1 src/pages/looks/*.astro)",
+      "Bash(ls -1 src/pages/scenarios/*.astro)",
+      "Bash(ls -1 src/pages/for/*.astro)",
+      "Bash(ls -1 src/pages/guides/*.astro)"
+    ]
+  }
+}

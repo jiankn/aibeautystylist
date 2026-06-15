@@ -1,0 +1,676 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import { getBlogPosts } from "../../data/blogData";
+import { getBlogUiCopy } from "../../data/localizedBlogContent";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+import { getCurrentLocale } from "../../lib/i18n";
+
+const locale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const posts = getBlogPosts(locale);
+const post = posts.find((item) => item.slug === Astro.params.slug);
+if (!post) return Astro.redirect(localizeAppHref("/404"));
+const curatedRelated = (post.relatedSlugs ?? [])
+  .map((slug) => posts.find((item) => item.slug === slug))
+  .filter((item): item is (typeof posts)[number] => Boolean(item));
+const curatedSlugs = new Set(curatedRelated.map((item) => item.slug));
+const related = [
+  ...curatedRelated,
+  ...posts.filter(
+    (item) => item.slug !== post.slug && !curatedSlugs.has(item.slug),
+  ),
+].slice(0, 2);
+const origin = Astro.site ?? Astro.url.origin;
+const homeHref = localizeAppHref("/");
+const blogHref = localizeAppHref("/blog");
+const aiDisclaimerHref = localizeAppHref("/ai-disclaimer");
+const diagnosisHref = localizeAppHref("/diagnosis");
+const discoverHref = localizeAppHref("/discover");
+const articleUrl = new URL(localizeAppHref(`/blog/${post.slug}`), origin).href;
+const imageUrl = new URL(post.coverImage, origin).href;
+const localizedContent = post.content.replace(
+  /href=(["'])(\/(?:blog|discover|tryon-free|pricing|diagnosis|support|faq|privacy|terms|account|login|share-card)(?:[^"']*)?)\1/g,
+  (_match, quote: string, href: string) =>
+    `href=${quote}${localizeAppHref(href)}${quote}`,
+);
+const copy = getBlogUiCopy(locale).article;
+const blogJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": `${articleUrl}#article`,
+      headline: post.title,
+      description: post.summary,
+      image: [imageUrl],
+      datePublished: `${post.date}T08:00:00+08:00`,
+      dateModified: `${post.updated}T08:00:00+08:00`,
+      author: { "@type": "Organization", name: "AI Beauty Stylist Editorial" },
+      publisher: {
+        "@type": "Organization",
+        name: "AI Beauty Stylist",
+        logo: {
+          "@type": "ImageObject",
+          url: new URL("/images/logo.png", origin).href,
+        },
+      },
+      mainEntityOfPage: articleUrl,
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: copy.home,
+          item: new URL(homeHref, origin).href,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: copy.blog,
+          item: new URL(blogHref, origin).href,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: post.title,
+          item: articleUrl,
+        },
+      ],
+    },
+  ],
+});
+---
+
+<BaseLayout
+  title={`${post.title} | AI Beauty Stylist`}
+  description={post.summary}
+  ogImage={post.coverImage}
+  ogType="article"
+  jsonLd={blogJsonLd}
+>
+  <SiteHeader active="blog" />
+  <main class="article-main">
+    <nav class="breadcrumb shell" aria-label={copy.breadcrumb}>
+      <a href={homeHref}>{copy.home}</a><span>/</span><a href={blogHref}
+        >{copy.blog}</a
+      ><span>/</span><b>{post.category}</b>
+    </nav>
+
+    <article>
+      <header class="article-header shell">
+        <span class="category">{post.category}</span>
+        <h1>{post.title}</h1>
+        <p>{post.summary}</p>
+        {
+          post.takeaways?.length && (
+            <div class="article-takeaways">
+              <strong>{copy.takeaways}</strong>
+              <ul>
+                {post.takeaways.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+        <div class="article-meta">
+          <div class="byline">
+            <span class="author-mark" aria-hidden="true">
+              <img src="/images/logo-ui.webp" alt="" width="34" height="34" />
+            </span><span
+              ><strong>{post.author.name}</strong><small
+                >{post.author.role}</small
+              ></span
+            >
+          </div>
+          <div>
+            <time datetime={post.updated}>{copy.updated} {post.updated}</time
+            ><span>{post.readTime} {copy.read}</span>
+          </div>
+        </div>
+      </header>
+
+      <figure
+        class="article-cover"
+        style={`--image-position: ${post.focalPosition}`}
+      >
+        <img
+          src={post.coverImage}
+          alt={post.coverAlt}
+          width="1280"
+          height="720"
+          fetchpriority="high"
+        />
+      </figure>
+
+      <div class="article-layout shell">
+        <div class="article-content" set:html={localizedContent} />
+        <aside>
+          <div class="review-note">
+            <strong>{copy.reviewed}</strong>
+            <p>{copy.reviewedBody}</p>
+            <a href={aiDisclaimerHref}
+              >{copy.standards} <span aria-hidden="true">→</span></a
+            >
+          </div>
+          {
+            post.sources?.length && (
+              <div class="source-note">
+                <strong>{copy.sources}</strong>
+                <p>{copy.sourcesNote}</p>
+                <ul>
+                  {post.sources.map((source) => (
+                    <li>
+                      <a
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {source.label}
+                      </a>
+                      <span>{source.note}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+          <div class="action-list">
+            <a href={diagnosisHref}
+              >{copy.diagnosis}<span aria-hidden="true">→</span></a
+            >
+            <a href={discoverHref}
+              >{copy.tryon}<span aria-hidden="true">→</span></a
+            >
+          </div>
+          <p class="reference-note">{copy.note}</p>
+        </aside>
+      </div>
+    </article>
+
+    <section class="related shell" aria-labelledby="related-title">
+      <h2 id="related-title">{copy.related}</h2>
+      <div>
+        {
+          related.map((item) => (
+            <a
+              class="related-item"
+              href={localizeAppHref(`/blog/${item.slug}`)}
+            >
+              <span
+                class="related-media"
+                style={`--image-position: ${item.focalPosition}`}
+              >
+                <img
+                  src={item.coverImage}
+                  alt={item.coverAlt}
+                  width="1280"
+                  height="720"
+                  loading="lazy"
+                />
+              </span>
+              <span class="related-copy">
+                <small>{item.category}</small>
+                <strong>{item.title}</strong>
+                <span class="related-read">{item.readTime}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .article-main {
+    padding: 24px 0 82px;
+    background: var(--page-surface);
+  }
+  .breadcrumb {
+    display: flex;
+    gap: 8px;
+    padding-block: 8px 26px;
+    color: var(--muted);
+    font-size: var(--content-label-size);
+  }
+  .breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .breadcrumb b {
+    max-width: 220px;
+    overflow: hidden;
+    color: var(--body-secondary);
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .article-header {
+    max-width: 900px;
+    padding-top: 28px;
+    padding-bottom: 36px;
+    text-align: center;
+  }
+  .category {
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+  .article-header h1 {
+    margin: 16px auto 17px;
+    color: var(--heading);
+    font-family: var(--font-display);
+    font-size: var(--content-hero-size);
+    font-weight: 500;
+    line-height: 1.12;
+  }
+  .article-header > p {
+    max-width: 720px;
+    margin: 0 auto;
+    color: var(--body-secondary);
+    font-size: var(--content-body-size);
+    line-height: 1.75;
+  }
+  .article-takeaways {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 16px 22px;
+    max-width: 720px;
+    margin: 24px auto 0;
+    padding: 18px 0;
+    border-block: 1px solid var(--line);
+    text-align: left;
+  }
+  .article-takeaways strong {
+    color: var(--heading);
+    font-size: 14px;
+  }
+  .article-takeaways ul {
+    display: grid;
+    gap: 7px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .article-takeaways li {
+    position: relative;
+    padding-left: 14px;
+    color: var(--body-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .article-takeaways li::before {
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--rose);
+    content: "";
+  }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 26px;
+  }
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-align: left;
+  }
+  .author-mark {
+    display: block;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex: 0 0 34px;
+    overflow: hidden;
+  }
+  .author-mark img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .byline strong,
+  .byline small {
+    display: block;
+  }
+  .byline strong {
+    color: var(--heading);
+    font-size: var(--content-label-size);
+  }
+  .byline small,
+  .article-meta > div:last-child {
+    color: var(--muted);
+    font-size: var(--content-label-size);
+  }
+  .article-meta > div:last-child {
+    display: flex;
+    gap: 14px;
+  }
+  .article-cover {
+    width: min(calc(100% - 40px), 1120px);
+    height: min(54vw, 560px);
+    margin: 0 auto;
+    overflow: hidden;
+    background: var(--page-surface-alt);
+  }
+  .article-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--image-position, 50% 32%);
+  }
+  .article-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 720px) 250px;
+    justify-content: center;
+    gap: 68px;
+    padding-top: 46px;
+  }
+  .article-content {
+    color: var(--body-secondary);
+    font-size: var(--content-body-size);
+    line-height: 1.9;
+  }
+  .article-content :global(p) {
+    margin: 0 0 24px;
+  }
+  .article-content :global(.article-lead) {
+    color: var(--heading);
+    font-size: 19px;
+    line-height: 1.8;
+  }
+  .article-content :global(h2) {
+    margin: 42px 0 15px;
+    color: var(--heading);
+    font-size: var(--content-subsection-title-size);
+    line-height: 1.35;
+  }
+  .article-content :global(a) {
+    color: var(--rose);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+  .article-content :global(ul),
+  .article-content :global(ol) {
+    margin: 0 0 26px;
+    padding-left: 22px;
+  }
+  .article-content :global(li) {
+    margin-bottom: 10px;
+    padding-left: 4px;
+  }
+  .article-content :global(strong) {
+    color: var(--heading);
+  }
+  .article-content :global(.article-note) {
+    margin: 34px 0;
+    padding: 20px 22px;
+    border-left: 3px solid var(--rose);
+    background: var(--surface-rose);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .article-content :global(.article-matrix) {
+    display: grid;
+    margin: 4px 0 28px;
+    border-top: 1px solid var(--line);
+  }
+  .article-content :global(.article-matrix > div) {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.42fr) minmax(0, 1fr);
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .article-content :global(.article-matrix strong) {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .article-content :global(.article-matrix span) {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .article-layout aside {
+    position: sticky;
+    top: 84px;
+    align-self: start;
+  }
+  .review-note {
+    padding: 18px 0;
+    border-block: 1px solid var(--line);
+  }
+  .review-note strong {
+    color: var(--heading);
+    font-size: 13px;
+  }
+  .review-note p,
+  .reference-note {
+    margin: 8px 0;
+    color: var(--body-secondary);
+    font-size: var(--content-label-size);
+    line-height: 1.65;
+  }
+  .review-note a {
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .source-note {
+    margin-top: 22px;
+    padding: 18px 0;
+    border-block: 1px solid var(--line);
+  }
+  .source-note > strong {
+    color: var(--heading);
+    font-size: 13px;
+  }
+  .source-note p {
+    margin: 8px 0 14px;
+    color: var(--body-secondary);
+    font-size: var(--content-label-size);
+    line-height: 1.65;
+  }
+  .source-note ul {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .source-note li {
+    display: grid;
+    gap: 5px;
+  }
+  .source-note a {
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+    line-height: 1.5;
+    text-decoration: none;
+  }
+  .source-note span {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .action-list {
+    display: grid;
+    margin-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  .action-list a {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    color: var(--heading);
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .action-list a span {
+    color: var(--rose);
+  }
+  .reference-note {
+    margin-top: 20px;
+  }
+  .related {
+    padding-top: 56px;
+  }
+  .related h2 {
+    margin: 0 0 18px;
+    color: var(--heading);
+    font-size: 22px;
+  }
+  .related > div {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 28px;
+    border-top: 1px solid var(--line);
+  }
+  .related-item {
+    display: grid;
+    grid-template-columns: 144px minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+    min-height: 136px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--heading);
+    text-decoration: none;
+  }
+  .related-media {
+    position: relative;
+    display: block;
+    width: 144px;
+    height: 96px;
+    overflow: hidden;
+    background: var(--page-surface-alt);
+  }
+  .related-media img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--image-position, 50% 32%);
+    transition: transform 0.25s ease;
+  }
+  .related-copy {
+    display: block;
+    min-width: 0;
+  }
+  .related small,
+  .related strong {
+    display: block;
+  }
+  .related small {
+    margin-bottom: 7px;
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+  }
+  .related strong {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .related-read {
+    display: block;
+    margin-top: 9px;
+    color: var(--muted);
+    font-size: var(--content-label-size);
+  }
+  .related-item:hover strong,
+  .related-item:focus-visible strong {
+    color: var(--rose);
+  }
+  .related-item:hover img,
+  .related-item:focus-visible img {
+    transform: scale(1.025);
+  }
+  .related-item:focus-visible {
+    outline: 3px solid var(--rose-soft);
+    outline-offset: 3px;
+  }
+  @media (max-width: 900px) {
+    .article-layout {
+      grid-template-columns: minmax(0, 720px);
+      gap: 36px;
+    }
+    .article-layout aside {
+      position: static;
+    }
+  }
+  @media (max-width: 700px) {
+    .article-main {
+      padding-top: 14px;
+    }
+    .article-header {
+      padding-top: 16px;
+    }
+    .article-header h1 {
+      font-size: var(--content-hero-size-mobile);
+    }
+    .article-meta {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 13px;
+      text-align: left;
+    }
+    .article-takeaways {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .article-cover {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3;
+    }
+    .article-layout {
+      padding-top: 30px;
+    }
+    .article-content {
+      font-size: 15px;
+    }
+    .article-content :global(.article-lead) {
+      font-size: 17px;
+    }
+    .article-content :global(.article-matrix > div) {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .related > div {
+      grid-template-columns: 1fr;
+    }
+    .related-item {
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 14px;
+      min-height: 116px;
+      padding: 14px 0;
+    }
+    .related-media {
+      width: 112px;
+      height: 84px;
+    }
+  }
+</style>

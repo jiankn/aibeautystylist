@@ -1,0 +1,39 @@
+---
+interface Props {
+  href?: string;
+  variant?: "default" | "primary" | "navy" | "rose" | "gold";
+  wide?: boolean;
+  type?: "button" | "submit";
+  class?: string;
+}
+
+const {
+  href,
+  variant = "default",
+  wide = false,
+  type = "button",
+  class: className = "",
+} = Astro.props;
+
+const classes = [
+  "btn",
+  variant !== "default" &&
+    `btn-${variant === "rose" ? "outline-rose" : variant}`,
+  wide && "btn-wide",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+{
+  href ? (
+    <a class={classes} href={href}>
+      <slot />
+    </a>
+  ) : (
+    <button class={classes} type={type}>
+      <slot />
+    </button>
+  )
+}

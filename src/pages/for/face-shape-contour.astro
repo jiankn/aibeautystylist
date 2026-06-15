@@ -1,0 +1,323 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Contouring for Your Face Shape: A Complete Guide",
+  description:
+    "Identify your face shape and learn the exact contour and highlight placement for oval, round, square, heart, and diamond faces. Includes a face shape guide and common mistakes to avoid.",
+  faq: [
+    {
+      q: "How do I determine my face shape?",
+      a: "To determine your face shape, pull your hair back and look at your face straight-on in a mirror in good lighting. Trace the outline of your face on the mirror with a washable marker or a bar of soap, or take a straight-on photo and trace the outline digitally. Then compare your outline to the five basic face shapes. Oval: the face is slightly longer than it is wide, with a gently curved jawline and the widest point at the cheekbones. Round: the face is approximately as wide as it is long, with soft angles and the widest point at the cheeks. Square: the face has a strong, angular jawline and the forehead, cheekbones, and jaw are roughly equal in width. Heart: the forehead is the widest part of the face, with high cheekbones that taper to a narrow, pointed chin. Diamond: the cheekbones are the widest part, with a narrow forehead and a narrow, pointed chin. Most people fall somewhere between two shapes, which is completely normal.",
+    },
+    {
+      q: "Where should I contour for a round face?",
+      a: "For a round face, contour along the sides of the forehead near the hairline, below the cheekbones (focusing on the area just beneath the bone, not the hollow), and along the jawline from ear to chin. The goal is to create the illusion of angles and vertical length. Apply highlighter in a vertical line down the center of the forehead, nose, and chin to draw the eye up and down. Blush should be swept on an upward diagonal from the apples to the temples. This combination of perimeter shadow, central brightness, and diagonal blush creates structure and elongation on a round face.",
+    },
+    {
+      q: "Where should I contour for a square face?",
+      a: "For a square face, the goal is to soften the angular jawline and forehead. Contour the corners of the forehead near the hairline and the angles of the jawline (the sharp corners where the jaw meets the ear). Apply a touch of contour along the sides of the nose if you want to narrow it. Highlighter should go on the center of the forehead, the center of the chin, and the apples of the cheeks to draw attention to the center of the face rather than the angular perimeter. Blush should be applied on the apples of the cheeks in a slightly circular motion, which softens the angularity of the face.",
+    },
+    {
+      q: "What are the most common contouring mistakes?",
+      a: "The most common contouring mistake is using a shade that is too dark or too cool-toned. Contour should mimic natural shadow, which means it should be a neutral to slightly warm brown, not a grey or orange shade. Another common error is placing contour in the wrong location for your face shape. Contouring a round face the same way you contour a square face will not give the desired result. Over-application is also frequent: contour should be subtle enough that someone looking at you cannot see a stripe of color. The contour should read as shadow, not as makeup. Finally, failing to blend thoroughly is a visible mistake. Contour lines should have no visible edges.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  {
+    label: "Personalized Recommendations",
+    url: "/personalized-makeup-recommendation",
+  },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  faq={page.faq}
+>
+  <div slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Contouring is not a one-size-fits-all technique. The placement that works
+      for an oval face will look completely wrong on a square face. This guide
+      identifies your shape and gives you the exact placement map.
+    </p>
+  </div>
+
+  <div class="seo-content">
+    <h2>Identifying Your Face Shape</h2>
+
+    <p>
+      Before you can contour effectively, you need to know which face shape you
+      are working with. The five basic shapes each have distinct
+      characteristics, and most people fall clearly into one category or between
+      two adjacent shapes.
+    </p>
+
+    <p>
+      The fastest identification method is the three-point measurement: measure
+      the width of your forehead, the width of your cheekbones, and the width of
+      your jawline, then compare these to the length of your face (from hairline
+      to chin). If the length is greater than the width and the cheekbones are
+      the widest point, you have an oval face. If the width and length are
+      approximately equal with soft angles, you have a round face. If the
+      forehead, cheekbones, and jaw are roughly equal with a strong jawline, you
+      have a square face. If the forehead is the widest point and the chin is
+      narrow and pointed, you have a heart face. If the cheekbones are the
+      widest point with a narrow forehead and chin, you have a diamond face.
+    </p>
+
+    <p>
+      You do not need to be perfectly symmetrical or fit the description
+      exactly. Most faces have unique variations, and the contour placement
+      guidelines below should be adapted to your individual features. Think of
+      them as starting points, not rigid rules.
+    </p>
+
+    <h2>Contour and Highlight Placement by Face Shape</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Face Shape</th>
+          <th>Where to Contour</th>
+          <th>Where to Highlight</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Oval</strong></td>
+          <td
+            >Lightly below the cheekbones and along the jawline. Minimal
+            contouring needed; the oval shape is already balanced.</td
+          >
+          <td
+            >Center of forehead, bridge of nose, center of chin, tops of
+            cheekbones. Standard highlight placement.</td
+          >
+        </tr>
+        <tr>
+          <td><strong>Round</strong></td>
+          <td
+            >Sides of forehead, below the cheekbones (upward blending), and
+            along the jawline from ear to chin. Focus on creating vertical
+            lines.</td
+          >
+          <td
+            >Center of forehead, down the nose, center of chin. The vertical
+            highlight line elongates the round shape.</td
+          >
+        </tr>
+        <tr>
+          <td><strong>Square</strong></td>
+          <td
+            >Corners of the forehead near the hairline and the sharp angles of
+            the jawline. Soften the perimeter rather than narrowing it.</td
+          >
+          <td
+            >Center of forehead, apples of cheeks, center of chin. Draw
+            attention inward to soften the angular edges.</td
+          >
+        </tr>
+        <tr>
+          <td><strong>Heart</strong></td>
+          <td
+            >Sides of the forehead near the temples and along the jawline on the
+            lower sides. Balance the wider forehead with the narrower chin.</td
+          >
+          <td
+            >Center of the chin and the apples of the cheeks. Add dimension to
+            the lower face to balance the wider upper face.</td
+          >
+        </tr>
+        <tr>
+          <td><strong>Diamond</strong></td>
+          <td
+            >Along the high cheekbones (on the outer edges) and the narrow
+            forehead near the temples. Reduce the width of the widest point.</td
+          >
+          <td
+            >Center of forehead, center of chin, and under the eyes. Soften the
+            narrow areas and create balance across the face.</td
+          >
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>The Universal Contouring Technique</h2>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Choose the Right Shade and Formula</h4>
+          <p>
+            Select a cream or powder contour product that is two to three shades
+            darker than your natural skin tone and has a neutral to slightly
+            warm undertone. Avoid shades that are too grey (they look like dirt)
+            or too orange (they look like bronzer, not contour).
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Map Your Placement Based on Face Shape</h4>
+          <p>
+            Using the guide above, lightly place dots or dashes of contour
+            product in the correct positions for your face shape. Do this before
+            blending so you can check the placement in natural light and adjust
+            before committing.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Blend Thoroughly</h4>
+          <p>
+            Using a damp beauty sponge for cream products or a fluffy brush for
+            powder, blend each contour line until there are no visible edges.
+            The contour should read as natural shadow, not as a stripe of color.
+            Blend in the direction that enhances the desired effect (upward for
+            lift, inward for softening).
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Apply Highlighter to Strategic Points</h4>
+          <p>
+            Using the face shape guide above, apply highlighter to the
+            designated areas. Use a light hand and build gradually. The
+            highlight should create a natural luminosity, not a visible stripe
+            of shimmer.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Add Blush for Your Face Shape</h4>
+          <p>
+            Apply blush according to your face shape: upward diagonal for round
+            and square faces, on the apples for heart and diamond faces, and on
+            the apples blending slightly upward for oval faces. Blush adds
+            warmth and ties the contour and highlight together.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Check in Natural Light</h4>
+          <p>
+            The final step is always a natural light check. Indoor lighting can
+            hide blending errors and shade mismatches. Step near a window or go
+            outside and assess your contour from different angles. If you can
+            see distinct lines, blend more. If the contour looks too heavy,
+            soften it with a light dusting of translucent powder.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Common Contour Mistakes and How to Fix Them</h2>
+
+    <p>
+      <strong>Mistake: Contour shade is too dark or too cool.</strong> A contour that
+      is significantly darker than your natural shadow will look obvious and artificial.
+      Similarly, a cool, grey-toned contour reads as a shadow cast by a cold light
+      source, which looks unnatural. The fix is to choose a warmer, more neutral shade
+      that closely mimics the shadow your own bone structure would create.
+    </p>
+
+    <p>
+      <strong>Mistake: Contour placement does not match face shape.</strong> Applying
+      contour designed for a round face to a square face will not create the desired
+      effect and may actually emphasize the features you are trying to soften. The
+      fix is to use the face shape guide above to ensure your placement is appropriate
+      for your unique proportions.
+    </p>
+
+    <p>
+      <strong>Mistake: Insufficient blending.</strong> Visible contour lines are the
+      hallmark of an unskilled application. The fix is to take more time with blending
+      and to use the right tools: a damp sponge for cream products and a fluffy, tapered
+      brush for powder. Blend until you can no longer see where the contour begins
+      and ends.
+    </p>
+
+    <p>
+      <strong>Mistake: Contouring without highlight.</strong> Contour alone creates
+      shadow without light, which can make the face look flat and muddy. The fix is
+      to always pair contour with strategic highlight placement. The contrast between
+      the two creates the dimension that makes contouring effective.
+    </p>
+
+    <p>
+      <strong>Mistake: Using bronzer as contour.</strong> Bronzer is designed to add
+      warmth and a sun-kissed glow; it typically has warm, orange, or golden undertones.
+      Contour is designed to create shadow and should be more neutral. Using bronzer
+      in the hollows of your cheeks will make you look tanned, not sculpted. The fix
+      is to use separate products for bronzing (perimeter warmth) and contouring (strategic
+      shadow).
+    </p>
+
+    <h2>Adapting the Guide to Your Unique Features</h2>
+
+    <p>
+      While the five face shapes provide a useful framework, every face is
+      unique. You may have an oval face with a slightly wider forehead, or a
+      round face with a more defined jawline. Use the guide as a starting point
+      and adjust based on what you see in the mirror. The goal of contouring is
+      not to force your face into a different shape but to enhance your natural
+      bone structure and create balanced proportions.
+    </p>
+
+    <p>
+      The best way to find your ideal placement is through experimentation.
+      Apply contour lightly, check the result in natural light, and adjust the
+      placement and intensity until you achieve the look you want. With
+      practice, the technique becomes intuitive and takes only a few minutes as
+      part of your daily routine.
+    </p>
+  </div>
+
+  <div slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>See Contour Placement on Your Face</h2>
+        <p>
+          Upload a photo to our AI makeup try-on and experiment with contour and
+          highlight placement tailored to your exact face shape.
+        </p>
+        <a href="/tryon-free" class="cta-btn">Try It Free</a>
+      </div>
+    </div>
+  </div>
+
+  <div slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {
+            relatedLinks.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</SeoLandingLayout>

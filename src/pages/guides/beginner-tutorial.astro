@@ -1,0 +1,287 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Makeup Tutorial for Beginners: A Complete Step-by-Step Guide",
+  description:
+    "Learn makeup from zero with this complete beginner tutorial. We cover the wrong order mistakes everyone makes, the minimal starter kit, what to practice at home, and how to build real confidence with cosmetics.",
+  faq: [
+    {
+      q: "What makeup should beginners buy first?",
+      a: "Start with just five products: a lightweight tinted moisturizer or BB cream, a concealer that matches your skin tone, a neutral eyeshadow palette with matte shades, a mascara, and a tinted lip balm or lipstick in a shade close to your natural lip color. This minimal set covers every part of your face without overwhelming you. Once you feel comfortable applying these five products consistently, you can gradually expand to blush, bronzer, eyeliner, and other items.",
+    },
+    {
+      q: "What order do you apply makeup?",
+      a: "The correct order is: skincare first (cleanser, moisturizer, sunscreen), then primer, then base products (foundation or tinted moisturizer, concealer), then powder to set, then cream or powder blush and bronzer, then eye makeup (eyeshadow, eyeliner, mascara), then eyebrows, and finally lips (liner, lipstick, gloss). A common beginner mistake is applying eye makeup before base makeup — while professional makeup artists sometimes do this to clean up eyeshadow fallout, beginners should do face first so they do not accidentally smudge their eye work while blending foundation.",
+    },
+    {
+      q: "How to practice makeup at home?",
+      a: "The best way to practice is to set aside thirty minutes twice a week where you apply a full face of makeup with no pressure to go anywhere. Use your phone camera to take photos in natural daylight from the front and from both sides — this helps you see imbalances you cannot notice in the mirror. Practice one technique at a time: one week focus only on getting an even base, the next week focus on blending eyeshadow. Keep a small notebook of what products and techniques worked and what did not. Many beginners also find it helpful to practice on one side of their face first, then mirror that on the other side.",
+    },
+    {
+      q: "How long does it take to learn basic makeup?",
+      a: "Most beginners can achieve a clean, everyday look within two to four weeks of regular practice. The first week is about learning the order and getting comfortable touching your face with products. By week two, your application speed improves noticeably. By week four, you will have developed muscle memory for blending and you will instinctively know how much product to pick up. Learning more advanced techniques like cut-crease eyeshadow or contouring takes longer, typically three to six months of consistent practice. The key is regular short sessions rather than occasional marathon attempts.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Easy Everyday Makeup", url: "/guides/easy-everyday" },
+  { label: "Beginner Makeup Routine", url: "/guides/beginner-routine" },
+];
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      If you have never worn makeup before, the wall of products at any beauty
+      store can feel terrifying. This guide cuts through the noise and gives you
+      exactly what you need to start — a simple routine, the right products, and
+      the confidence to experiment without wasting money on things you will not
+      use.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>Why Every Beginner Feels Overwhelmed (and Why That Is Normal)</h2>
+    <p>
+      When you search for makeup tutorials online, you are immediately hit with
+      thirty-step routines that include color correctors, baking powder,
+      cut-crease eyeshadow, contour palettes, setting sprays, and at least four
+      different brushes you did not know existed. No wonder beginners quit
+      before they start. The truth is that a polished everyday look requires far
+      fewer products and steps than most tutorials suggest.
+    </p>
+    <p>
+      The real challenge for beginners is not a lack of skill — it is a lack of
+      a structured starting point. Without knowing the correct order of
+      application, even the best products will look wrong. This guide gives you
+      that structure so you can build confidence one layer at a time instead of
+      trying to master everything at once.
+    </p>
+
+    <h2>The Wrong Order: Mistakes Everyone Makes at the Start</h2>
+    <p>
+      Before we cover the right way, let us talk about the wrong way, because
+      almost every beginner makes these same mistakes in the first few weeks.
+      Understanding why these are wrong will save you hours of frustration and
+      prevent the "my makeup looks bad and I do not know why" problem.
+    </p>
+    <p>
+      The most common mistake is applying concealer before foundation.
+      Foundation already evens out your skin tone, so applying concealer first
+      means you waste product covering areas that foundation would have covered
+      anyway. The second mistake is applying powder before cream products —
+      powder creates a barrier that makes cream blush and cream bronzer
+      impossible to blend evenly. The third mistake is using a shade of
+      foundation that is too light or too orange because you tested it on the
+      back of your hand instead of your jawline. Always test foundation along
+      your jaw in natural light.
+    </p>
+
+    <h2>Your Minimal Starter Kit</h2>
+    <p>
+      You do not need twenty products to look good. You need five well-chosen
+      ones. The philosophy behind this starter kit is simple: each product
+      should do one job really well, and the combination of all five should give
+      you a complete, polished look that works for school, work, or casual
+      outings.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">1</div>
+        <h4>Tinted Moisturizer</h4>
+        <p>
+          Lighter and more forgiving than foundation. Evens skin tone while
+          hydrating. Choose one shade that matches your neck.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">2</div>
+        <h4>Concealer</h4>
+        <p>
+          Covers dark circles, blemishes, and red spots that tinted moisturizer
+          misses. Go one shade lighter than your skin for under eyes.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">3</div>
+        <h4>Neutral Eyeshadow Palette</h4>
+        <p>
+          A small palette with three to four matte shades in beige, taupe, and
+          brown tones. Matte is easier to blend than shimmer for beginners.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">4</div>
+        <h4>Mascara</h4>
+        <p>
+          The single most transformative product. Opens up your eyes instantly.
+          Brown mascara is softer for daytime, black for evening.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">5</div>
+        <h4>Tinted Lip Balm</h4>
+        <p>
+          Gives color without the precision required by lipstick. Hydrates while
+          adding a natural flush. Choose a shade close to your natural lip
+          color.
+        </p>
+      </div>
+    </div>
+
+    <h2>The Complete Beginner Routine</h2>
+    <p>
+      Follow these steps in order. Do not skip ahead. The first time you do
+      this, it might take fifteen to twenty minutes. After a week of practice,
+      you will finish in under ten minutes without thinking about it.
+    </p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Cleanse and Moisturize</h4>
+          <p>
+            Start with clean, moisturized skin. This is non-negotiable — makeup
+            applied on dry or dirty skin will look patchy and settle into fine
+            lines. Wait two minutes after moisturizing so the product absorbs
+            fully.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Apply Tinted Moisturizer</h4>
+          <p>
+            Use your fingers to dot the product on your forehead, cheeks, nose,
+            and chin. Blend outward toward your hairline and down your neck. Use
+            a damp beauty sponge to press the product into the skin for a
+            natural finish.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Spot-Conceal</h4>
+          <p>
+            Dab a tiny amount of concealer on dark circles, blemishes, and any
+            redness. Pat it in with your ring finger — do not rub. The warmth of
+            your finger helps the product melt into your skin naturally.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Set with Light Powder</h4>
+          <p>
+            Lightly dust translucent powder only on areas that tend to get oily:
+            your T-zone (forehead, nose, chin) and under your eyes. Do not
+            powder your entire face — this makes you look flat and cakey.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Apply Eyeshadow</h4>
+          <p>
+            Use the lightest shade from your palette all over your lid as a
+            base. Then apply the medium shade to your crease (the fold above
+            your eyelid) with a fluffy brush, using gentle back-and-forth
+            motions. Keep it simple — one or two shades is enough.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Mascara</h4>
+          <p>
+            Look down into a mirror held at chin level. Wiggle the mascara wand
+            at the base of your upper lashes, then sweep upward. One coat is
+            enough for a natural look. Avoid pumping the wand in and out of the
+            tube — this introduces air and dries the product faster.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">7</div>
+        <div>
+          <h4>Tinted Lip Balm</h4>
+          <p>
+            Apply directly from the tube. There is no technique required — this
+            is the easiest step and the one that makes you look "done" even if
+            everything else is minimal.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Building Confidence: What to Practice at Home</h2>
+    <p>
+      Confidence with makeup comes from repetition, not talent. Here is a
+      practical practice schedule that takes you from total beginner to
+      comfortable in about four weeks.
+    </p>
+    <p>
+      <strong>Week one:</strong> Focus only on getting an even base. Practice applying
+      your tinted moisturizer and concealer until you can do it without streaks or
+      visible lines. Do not worry about eyes or lips yet.
+    </p>
+    <p>
+      <strong>Week two:</strong> Add eyeshadow and mascara to your routine. Practice
+      blending the eyeshadow until there are no harsh lines. The key is using a clean
+      fluffy brush to soften edges after you apply color.
+    </p>
+    <p>
+      <strong>Week three:</strong> Add powder and start paying attention to how long
+      your makeup lasts. Notice which areas get oily first and which areas stay dry.
+      This information will help you customize your routine going forward.
+    </p>
+    <p>
+      <strong>Week four:</strong> Put it all together and time yourself. Your goal
+      is to complete the full routine in under ten minutes while maintaining quality.
+      At this point, you are ready to start experimenting with additional products
+      like blush, bronzer, or eyeliner.
+    </p>
+  </div>
+
+  <div slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Want to See How These Products Look on You?</h2>
+        <p>
+          Try our AI-powered virtual makeup try-on to preview different looks
+          before buying anything.
+        </p>
+        <a href="/tryon-free" class="cta-btn">Try AI Makeup Try-On for Free</a>
+      </div>
+    </div>
+  </div>
+
+  <div slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Related Guides</h3>
+        <ul class="related-list">
+          {
+            relatedLinks.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</SeoLandingLayout>

@@ -1,0 +1,90 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "./SiteHeader.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { getCurrentLocale } from "../lib/i18n";
+
+const currentLocale = getCurrentLocale();
+const isZh = currentLocale.startsWith("zh");
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(Astro.url.pathname);
+const homeHref = getLocalizedAppHref("/", currentRoute.language.slug);
+const discoverHref = getLocalizedAppHref(
+  "/discover",
+  currentRoute.language.slug,
+);
+const copy = isZh
+  ? {
+      title: "页面未找到 | AI Beauty Stylist",
+      description: "你访问的页面不存在或已被移除。",
+      heading: "页面未找到",
+      body: "这个链接可能已失效，也可能是地址输入有误。",
+      home: "返回首页",
+      discover: "浏览妆容",
+    }
+  : {
+      title: "Page not found | AI Beauty Stylist",
+      description: "The page you requested does not exist or was removed.",
+      heading: "Page not found",
+      body: "This link may have expired, or the address may be incorrect.",
+      home: "Back to home",
+      discover: "Browse looks",
+    };
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  robots="noindex,follow"
+>
+  <SiteHeader />
+  <main class="error-page">
+    <div class="error-content">
+      <span class="error-code">404</span>
+      <h1>{copy.heading}</h1>
+      <p>{copy.body}</p>
+      <div class="error-actions">
+        <a class="btn btn-primary" href={homeHref}>{copy.home}</a>
+        <a class="btn" href={discoverHref}>{copy.discover}</a>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100dvh - 200px);
+    padding: 40px 20px;
+    text-align: center;
+  }
+  .error-content {
+    max-width: 500px;
+  }
+  .error-code {
+    display: block;
+    font-size: 6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--rose), var(--teal));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .error-content h1 {
+    margin: 0 0 12px;
+    font-size: 2rem;
+  }
+  .error-content p {
+    color: var(--muted);
+    margin: 0 0 24px;
+  }
+  .error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+</style>

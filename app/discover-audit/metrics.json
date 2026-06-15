@@ -1,0 +1,7893 @@
+{
+  "desktop": {
+    "metrics": {
+      "title": "按场景找妆容 | AI Beauty Stylist",
+      "lang": "zh-CN",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scroll": {
+        "width": 1440,
+        "height": 6731,
+        "clientWidth": 1440
+      },
+      "hasHorizontalOverflow": false,
+      "h1": "按场景找妆容",
+      "intro": "先按通勤、约会、拍照和活动场景缩小范围，再看妆感和上手难度。浏览妆容不扣次数，上传自拍生成时才使用额度。",
+      "filterPanel": {
+        "x": 86,
+        "y": 193,
+        "width": 232,
+        "height": 725,
+        "top": 193,
+        "bottom": 918
+      },
+      "filterPanelDisplay": "block",
+      "filterChipCount": 13,
+      "activeFilters": [
+        "全部",
+        "全部",
+        "全部"
+      ],
+      "cardCount": 44,
+      "visibleCards": 44,
+      "firstCards": [
+        {
+          "title": "新手自然妆",
+          "intent": "新手自然妆，适合日常场景，重点呈现清透、自然妆效。",
+          "rect": {
+            "x": 369,
+            "y": 216,
+            "width": 308,
+            "height": 385,
+            "top": 216,
+            "bottom": 601
+          },
+          "copyRect": {
+            "x": 370,
+            "y": 491,
+            "width": 306,
+            "height": 110,
+            "top": 491,
+            "bottom": 600
+          },
+          "actionRect": {
+            "x": 599,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          }
+        },
+        {
+          "title": "鎏金晚宴妆",
+          "intent": "鎏金晚宴妆，适合晚宴、活动场景，重点呈现暖调、立体妆效。",
+          "rect": {
+            "x": 696,
+            "y": 216,
+            "width": 308,
+            "height": 385,
+            "top": 216,
+            "bottom": 601
+          },
+          "copyRect": {
+            "x": 697,
+            "y": 491,
+            "width": 306,
+            "height": 110,
+            "top": 491,
+            "bottom": 600
+          },
+          "actionRect": {
+            "x": 925,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          }
+        },
+        {
+          "title": "酒红丝绒妆",
+          "intent": "酒红丝绒妆，适合晚宴、活动场景，重点呈现丝绒、显气色妆效。",
+          "rect": {
+            "x": 1022,
+            "y": 216,
+            "width": 308,
+            "height": 385,
+            "top": 216,
+            "bottom": 601
+          },
+          "copyRect": {
+            "x": 1023,
+            "y": 491,
+            "width": 306,
+            "height": 110,
+            "top": 491,
+            "bottom": 600
+          },
+          "actionRect": {
+            "x": 1252,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          }
+        },
+        {
+          "title": "烛光灰粉妆",
+          "intent": "烛光灰粉妆，适合约会、晚宴场景，重点呈现柔雾、低饱和妆效。",
+          "rect": {
+            "x": 369,
+            "y": 619,
+            "width": 308,
+            "height": 385,
+            "top": 619,
+            "bottom": 1004
+          },
+          "copyRect": {
+            "x": 370,
+            "y": 894,
+            "width": 306,
+            "height": 110,
+            "top": 894,
+            "bottom": 1003
+          },
+          "actionRect": {
+            "x": 599,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          }
+        },
+        {
+          "title": "香槟宴会妆",
+          "intent": "香槟宴会妆，适合晚宴、活动场景，重点呈现光泽、精致妆效。",
+          "rect": {
+            "x": 696,
+            "y": 619,
+            "width": 308,
+            "height": 385,
+            "top": 619,
+            "bottom": 1004
+          },
+          "copyRect": {
+            "x": 697,
+            "y": 894,
+            "width": 306,
+            "height": 110,
+            "top": 894,
+            "bottom": 1003
+          },
+          "actionRect": {
+            "x": 925,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          }
+        },
+        {
+          "title": "客户会议裸妆",
+          "intent": "客户会议裸妆，适合通勤、面试场景，重点呈现自然、专业妆效。",
+          "rect": {
+            "x": 1022,
+            "y": 619,
+            "width": 308,
+            "height": 385,
+            "top": 619,
+            "bottom": 1004
+          },
+          "copyRect": {
+            "x": 1023,
+            "y": 894,
+            "width": 306,
+            "height": 110,
+            "top": 894,
+            "bottom": 1003
+          },
+          "actionRect": {
+            "x": 1252,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          }
+        }
+      ],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "按场景找妆容",
+          "rect": {
+            "x": 86,
+            "y": 52,
+            "width": 1267,
+            "height": 55,
+            "top": 52,
+            "bottom": 107
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "新手自然妆",
+          "rect": {
+            "x": 384,
+            "y": 523,
+            "width": 278,
+            "height": 22,
+            "top": 523,
+            "bottom": 545
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "鎏金晚宴妆",
+          "rect": {
+            "x": 711,
+            "y": 523,
+            "width": 278,
+            "height": 22,
+            "top": 523,
+            "bottom": 545
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "酒红丝绒妆",
+          "rect": {
+            "x": 1037,
+            "y": 523,
+            "width": 278,
+            "height": 22,
+            "top": 523,
+            "bottom": 545
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "烛光灰粉妆",
+          "rect": {
+            "x": 384,
+            "y": 926,
+            "width": 278,
+            "height": 22,
+            "top": 926,
+            "bottom": 948
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "香槟宴会妆",
+          "rect": {
+            "x": 711,
+            "y": 926,
+            "width": 278,
+            "height": 22,
+            "top": 926,
+            "bottom": 948
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "客户会议裸妆",
+          "rect": {
+            "x": 1037,
+            "y": 926,
+            "width": 278,
+            "height": 22,
+            "top": 926,
+            "bottom": 948
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "云感柔雾妆",
+          "rect": {
+            "x": 384,
+            "y": 1329,
+            "width": 278,
+            "height": 22,
+            "top": 1329,
+            "bottom": 1351
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "蜜桃气色妆",
+          "rect": {
+            "x": 711,
+            "y": 1329,
+            "width": 278,
+            "height": 22,
+            "top": 1329,
+            "bottom": 1351
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "镜头光泽妆",
+          "rect": {
+            "x": 1037,
+            "y": 1329,
+            "width": 278,
+            "height": 22,
+            "top": 1329,
+            "bottom": 1351
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "温柔约会妆",
+          "rect": {
+            "x": 384,
+            "y": 1732,
+            "width": 278,
+            "height": 22,
+            "top": 1732,
+            "bottom": 1754
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔焦氛围妆",
+          "rect": {
+            "x": 711,
+            "y": 1732,
+            "width": 278,
+            "height": 22,
+            "top": 1732,
+            "bottom": 1754
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "精致晚间妆",
+          "rect": {
+            "x": 1037,
+            "y": 1732,
+            "width": 278,
+            "height": 22,
+            "top": 1732,
+            "bottom": 1754
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "职场玫瑰妆",
+          "rect": {
+            "x": 384,
+            "y": 2135,
+            "width": 278,
+            "height": 22,
+            "top": 2135,
+            "bottom": 2157
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "五分钟新手妆",
+          "rect": {
+            "x": 711,
+            "y": 2135,
+            "width": 278,
+            "height": 22,
+            "top": 2135,
+            "bottom": 2157
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "闪光灯缎光妆",
+          "rect": {
+            "x": 1037,
+            "y": 2135,
+            "width": 278,
+            "height": 22,
+            "top": 2135,
+            "bottom": 2157
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "法式自然妆",
+          "rect": {
+            "x": 384,
+            "y": 2538,
+            "width": 278,
+            "height": 22,
+            "top": 2538,
+            "bottom": 2560
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "肿眼泡提拉眼妆",
+          "rect": {
+            "x": 711,
+            "y": 2538,
+            "width": 278,
+            "height": 22,
+            "top": 2538,
+            "bottom": 2560
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "面试精神妆",
+          "rect": {
+            "x": 1037,
+            "y": 2538,
+            "width": 278,
+            "height": 22,
+            "top": 2538,
+            "bottom": 2560
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "果冻唇妆",
+          "rect": {
+            "x": 384,
+            "y": 2941,
+            "width": 278,
+            "height": 22,
+            "top": 2941,
+            "bottom": 2963
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "韩系水光妆",
+          "rect": {
+            "x": 711,
+            "y": 2941,
+            "width": 278,
+            "height": 22,
+            "top": 2941,
+            "bottom": 2963
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "韩系清透妆",
+          "rect": {
+            "x": 1037,
+            "y": 2941,
+            "width": 278,
+            "height": 22,
+            "top": 2941,
+            "bottom": 2963
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "拉丁暖金妆",
+          "rect": {
+            "x": 384,
+            "y": 3344,
+            "width": 278,
+            "height": 22,
+            "top": 3344,
+            "bottom": 3366
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "熟龄焕亮妆",
+          "rect": {
+            "x": 711,
+            "y": 3344,
+            "width": 278,
+            "height": 22,
+            "top": 3344,
+            "bottom": 3366
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "单眼皮清透眼妆",
+          "rect": {
+            "x": 1037,
+            "y": 3344,
+            "width": 278,
+            "height": 22,
+            "top": 3344,
+            "bottom": 3366
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "清透裸妆",
+          "rect": {
+            "x": 384,
+            "y": 3747,
+            "width": 278,
+            "height": 22,
+            "top": 3747,
+            "bottom": 3769
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "橄榄皮玫瑰妆",
+          "rect": {
+            "x": 711,
+            "y": 3747,
+            "width": 278,
+            "height": 22,
+            "top": 3747,
+            "bottom": 3769
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "证件照干净妆",
+          "rect": {
+            "x": 1037,
+            "y": 3747,
+            "width": 278,
+            "height": 22,
+            "top": 3747,
+            "bottom": 3769
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "蜜桃米色约会妆",
+          "rect": {
+            "x": 384,
+            "y": 4150,
+            "width": 278,
+            "height": 22,
+            "top": 4150,
+            "bottom": 4172
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "晨光蜜桃妆",
+          "rect": {
+            "x": 711,
+            "y": 4150,
+            "width": 278,
+            "height": 22,
+            "top": 4150,
+            "bottom": 4172
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "上镜柔焦妆",
+          "rect": {
+            "x": 1037,
+            "y": 4150,
+            "width": 278,
+            "height": 22,
+            "top": 4150,
+            "bottom": 4172
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "轻熟精致妆",
+          "rect": {
+            "x": 384,
+            "y": 4553,
+            "width": 278,
+            "height": 22,
+            "top": 4553,
+            "bottom": 4575
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "闪耀眼皮光泽妆",
+          "rect": {
+            "x": 711,
+            "y": 4553,
+            "width": 278,
+            "height": 22,
+            "top": 4553,
+            "bottom": 4575
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "浪漫粉调妆",
+          "rect": {
+            "x": 1037,
+            "y": 4553,
+            "width": 278,
+            "height": 22,
+            "top": 4553,
+            "bottom": 4575
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "玫瑰奶茶妆",
+          "rect": {
+            "x": 384,
+            "y": 4956,
+            "width": 278,
+            "height": 22,
+            "top": 4956,
+            "bottom": 4978
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔莓染唇妆",
+          "rect": {
+            "x": 711,
+            "y": 4956,
+            "width": 278,
+            "height": 22,
+            "top": 4956,
+            "bottom": 4978
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔和编辑妆",
+          "rect": {
+            "x": 1037,
+            "y": 4956,
+            "width": 278,
+            "height": 22,
+            "top": 4956,
+            "bottom": 4978
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "日常柔雾妆",
+          "rect": {
+            "x": 384,
+            "y": 5359,
+            "width": 278,
+            "height": 22,
+            "top": 5359,
+            "bottom": 5381
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "夏日婚礼宾客妆",
+          "rect": {
+            "x": 711,
+            "y": 5359,
+            "width": 278,
+            "height": 22,
+            "top": 5359,
+            "bottom": 5381
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "晒后缎光妆",
+          "rect": {
+            "x": 1037,
+            "y": 5359,
+            "width": 278,
+            "height": 22,
+            "top": 5359,
+            "bottom": 5381
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "度假古铜妆",
+          "rect": {
+            "x": 384,
+            "y": 5762,
+            "width": 278,
+            "height": 22,
+            "top": 5762,
+            "bottom": 5784
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "暖调日常裸妆",
+          "rect": {
+            "x": 711,
+            "y": 5762,
+            "width": 278,
+            "height": 22,
+            "top": 5762,
+            "bottom": 5784
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "水彩腮红妆",
+          "rect": {
+            "x": 1037,
+            "y": 5762,
+            "width": 278,
+            "height": 22,
+            "top": 5762,
+            "bottom": 5784
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "婚礼宾客妆",
+          "rect": {
+            "x": 384,
+            "y": 6165,
+            "width": 278,
+            "height": 22,
+            "top": 6165,
+            "bottom": 6187
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "周末光泽妆",
+          "rect": {
+            "x": 711,
+            "y": 6165,
+            "width": 278,
+            "height": 22,
+            "top": 6165,
+            "bottom": 6187
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "暂时没有匹配的妆容",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "bottom": 0
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "产品服务",
+          "rect": {
+            "x": 509,
+            "y": 6454,
+            "width": 260,
+            "height": 20,
+            "top": 6454,
+            "bottom": 6474
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "支持与帮助",
+          "rect": {
+            "x": 801,
+            "y": 6454,
+            "width": 260,
+            "height": 20,
+            "top": 6454,
+            "bottom": 6474
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "关于与合规",
+          "rect": {
+            "x": 1093,
+            "y": 6454,
+            "width": 260,
+            "height": 20,
+            "top": 6454,
+            "bottom": 6474
+          }
+        }
+      ],
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "切换至深色模式",
+          "href": "",
+          "rect": {
+            "x": 1182,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "选择语言",
+          "href": "",
+          "rect": {
+            "x": 1226,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "登录 / 注册",
+          "aria": "",
+          "href": "/login",
+          "rect": {
+            "x": 1270,
+            "y": 9,
+            "width": 84,
+            "height": 34,
+            "top": 9,
+            "bottom": 43
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "↻ 清空筛选",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 857,
+            "width": 190,
+            "height": 40,
+            "top": 857,
+            "bottom": 897
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试香槟宴会妆",
+          "href": "/tryon-free?look=champagne-gala&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试客户会议裸妆",
+          "href": "/tryon-free?look=client-meeting-nude&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试云感柔雾妆",
+          "href": "/tryon-free?look=cloud-skin-matte&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 1033,
+            "width": 68,
+            "height": 34,
+            "top": 1033,
+            "bottom": 1067
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃气色妆",
+          "href": "/tryon-free?look=commute&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 1033,
+            "width": 68,
+            "height": 34,
+            "top": 1033,
+            "bottom": 1067
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试镜头光泽妆",
+          "href": "/tryon-free?look=creator-camera-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 1033,
+            "width": 68,
+            "height": 34,
+            "top": 1033,
+            "bottom": 1067
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试温柔约会妆",
+          "href": "/tryon-free?look=date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 1436,
+            "width": 68,
+            "height": 34,
+            "top": 1436,
+            "bottom": 1470
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔焦氛围妆",
+          "href": "/tryon-free?look=douyin-soft-focus&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 1436,
+            "width": 68,
+            "height": 34,
+            "top": 1436,
+            "bottom": 1470
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试精致晚间妆",
+          "href": "/tryon-free?look=evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 1436,
+            "width": 68,
+            "height": 34,
+            "top": 1436,
+            "bottom": 1470
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试职场玫瑰妆",
+          "href": "/tryon-free?look=executive-rose&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 1839,
+            "width": 68,
+            "height": 34,
+            "top": 1839,
+            "bottom": 1873
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试五分钟新手妆",
+          "href": "/tryon-free?look=five-minute-beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 1839,
+            "width": 68,
+            "height": 34,
+            "top": 1839,
+            "bottom": 1873
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试闪光灯缎光妆",
+          "href": "/tryon-free?look=flash-proof-satin&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 1839,
+            "width": 68,
+            "height": 34,
+            "top": 1839,
+            "bottom": 1873
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试法式自然妆",
+          "href": "/tryon-free?look=french-natural-chic&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 2242,
+            "width": 68,
+            "height": 34,
+            "top": 2242,
+            "bottom": 2276
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试肿眼泡提拉眼妆",
+          "href": "/tryon-free?look=hooded-eyes-lift&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 2242,
+            "width": 68,
+            "height": 34,
+            "top": 2242,
+            "bottom": 2276
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试面试精神妆",
+          "href": "/tryon-free?look=interview-ready&scenario=%E9%9D%A2%E8%AF%95&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 2242,
+            "width": 68,
+            "height": 34,
+            "top": 2242,
+            "bottom": 2276
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试果冻唇妆",
+          "href": "/tryon-free?look=jelly-lip-tint&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 2645,
+            "width": 68,
+            "height": 34,
+            "top": 2645,
+            "bottom": 2679
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试韩系水光妆",
+          "href": "/tryon-free?look=korean-dewy-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 2645,
+            "width": 68,
+            "height": 34,
+            "top": 2645,
+            "bottom": 2679
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试韩系清透妆",
+          "href": "/tryon-free?look=korean-dewy-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 2645,
+            "width": 68,
+            "height": 34,
+            "top": 2645,
+            "bottom": 2679
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试拉丁暖金妆",
+          "href": "/tryon-free?look=latina-bronze-glam&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 3048,
+            "width": 68,
+            "height": 34,
+            "top": 3048,
+            "bottom": 3082
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试熟龄焕亮妆",
+          "href": "/tryon-free?look=mature-skin-radiance&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 3048,
+            "width": 68,
+            "height": 34,
+            "top": 3048,
+            "bottom": 3082
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试单眼皮清透眼妆",
+          "href": "/tryon-free?look=monolid-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 3048,
+            "width": 68,
+            "height": 34,
+            "top": 3048,
+            "bottom": 3082
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试清透裸妆",
+          "href": "/tryon-free?look=no-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 3451,
+            "width": 68,
+            "height": 34,
+            "top": 3451,
+            "bottom": 3485
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试橄榄皮玫瑰妆",
+          "href": "/tryon-free?look=olive-undertone-rose&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 3451,
+            "width": 68,
+            "height": 34,
+            "top": 3451,
+            "bottom": 3485
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试证件照干净妆",
+          "href": "/tryon-free?look=passport-photo-clean&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 3451,
+            "width": 68,
+            "height": 34,
+            "top": 3451,
+            "bottom": 3485
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃米色约会妆",
+          "href": "/tryon-free?look=peach-beige-date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 3854,
+            "width": 68,
+            "height": 34,
+            "top": 3854,
+            "bottom": 3888
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试晨光蜜桃妆",
+          "href": "/tryon-free?look=peach-morning-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 3854,
+            "width": 68,
+            "height": 34,
+            "top": 3854,
+            "bottom": 3888
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试上镜柔焦妆",
+          "href": "/tryon-free?look=photogenic&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 3854,
+            "width": 68,
+            "height": 34,
+            "top": 3854,
+            "bottom": 3888
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试轻熟精致妆",
+          "href": "/tryon-free?look=refined&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 4257,
+            "width": 68,
+            "height": 34,
+            "top": 4257,
+            "bottom": 4291
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试闪耀眼皮光泽妆",
+          "href": "/tryon-free?look=reflective-lid-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 4257,
+            "width": 68,
+            "height": 34,
+            "top": 4257,
+            "bottom": 4291
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试浪漫粉调妆",
+          "href": "/tryon-free?look=romantic-pink&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 4257,
+            "width": 68,
+            "height": 34,
+            "top": 4257,
+            "bottom": 4291
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试玫瑰奶茶妆",
+          "href": "/tryon-free?look=rose-milk-date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 4660,
+            "width": 68,
+            "height": 34,
+            "top": 4660,
+            "bottom": 4694
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔莓染唇妆",
+          "href": "/tryon-free?look=soft-berry-stain&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 4660,
+            "width": 68,
+            "height": 34,
+            "top": 4660,
+            "bottom": 4694
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔和编辑妆",
+          "href": "/tryon-free?look=soft-editorial&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 4660,
+            "width": 68,
+            "height": 34,
+            "top": 4660,
+            "bottom": 4694
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试日常柔雾妆",
+          "href": "/tryon-free?look=soft-matte-everyday&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 5063,
+            "width": 68,
+            "height": 34,
+            "top": 5063,
+            "bottom": 5097
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试夏日婚礼宾客妆",
+          "href": "/tryon-free?look=summer-wedding-guest&scenario=%E6%B4%BB%E5%8A%A8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 5063,
+            "width": 68,
+            "height": 34,
+            "top": 5063,
+            "bottom": 5097
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试晒后缎光妆",
+          "href": "/tryon-free?look=sunburn-satin-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 5063,
+            "width": 68,
+            "height": 34,
+            "top": 5063,
+            "bottom": 5097
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试度假古铜妆",
+          "href": "/tryon-free?look=vacation-bronze&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 5466,
+            "width": 68,
+            "height": 34,
+            "top": 5466,
+            "bottom": 5500
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试暖调日常裸妆",
+          "href": "/tryon-free?look=warm-nude-daily&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 5466,
+            "width": 68,
+            "height": 34,
+            "top": 5466,
+            "bottom": 5500
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试水彩腮红妆",
+          "href": "/tryon-free?look=watercolor-blush&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 5466,
+            "width": 68,
+            "height": 34,
+            "top": 5466,
+            "bottom": 5500
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试婚礼宾客妆",
+          "href": "/tryon-free?look=wedding-guest&scenario=%E6%B4%BB%E5%8A%A8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 5869,
+            "width": 68,
+            "height": 34,
+            "top": 5869,
+            "bottom": 5903
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试周末光泽妆",
+          "href": "/tryon-free?look=weekend-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 5869,
+            "width": 68,
+            "height": 34,
+            "top": 5869,
+            "bottom": 5903
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Cookie 偏好设置",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 801,
+            "y": 6548,
+            "width": 260,
+            "height": 19,
+            "top": 6548,
+            "bottom": 6567
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "仅使用必要 Cookie",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 1054,
+            "y": 899,
+            "width": 139,
+            "height": 42,
+            "top": 899,
+            "bottom": 941
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "同意全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 1203,
+            "y": 899,
+            "width": 84,
+            "height": 42,
+            "top": 899,
+            "bottom": 941
+          },
+          "visible": true
+        }
+      ],
+      "buttons": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "切换至深色模式",
+          "href": "",
+          "rect": {
+            "x": 1182,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "选择语言",
+          "href": "",
+          "rect": {
+            "x": 1226,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "登录 / 注册",
+          "aria": "",
+          "href": "/login",
+          "rect": {
+            "x": 1270,
+            "y": 9,
+            "width": 84,
+            "height": 34,
+            "top": 9,
+            "bottom": 43
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 252,
+            "width": 90,
+            "height": 44,
+            "top": 252,
+            "bottom": 296
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "通勤",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 252,
+            "width": 90,
+            "height": 44,
+            "top": 252,
+            "bottom": 296
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "约会",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 307,
+            "width": 90,
+            "height": 44,
+            "top": 307,
+            "bottom": 351
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "拍照",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 307,
+            "width": 90,
+            "height": 44,
+            "top": 307,
+            "bottom": 351
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "活动",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 362,
+            "width": 90,
+            "height": 44,
+            "top": 362,
+            "bottom": 406
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 485,
+            "width": 90,
+            "height": 44,
+            "top": 485,
+            "bottom": 529
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "清透",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 485,
+            "width": 90,
+            "height": 44,
+            "top": 485,
+            "bottom": 529
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "柔雾",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 540,
+            "width": 90,
+            "height": 44,
+            "top": 540,
+            "bottom": 584
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "显气色",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 540,
+            "width": 90,
+            "height": 44,
+            "top": 540,
+            "bottom": 584
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "上镜",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 595,
+            "width": 90,
+            "height": 44,
+            "top": 595,
+            "bottom": 639
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 718,
+            "width": 90,
+            "height": 44,
+            "top": 718,
+            "bottom": 762
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "新手",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 718,
+            "width": 90,
+            "height": 44,
+            "top": 718,
+            "bottom": 762
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "进阶",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 773,
+            "width": 90,
+            "height": 44,
+            "top": 773,
+            "bottom": 817
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "↻ 清空筛选",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 857,
+            "width": 190,
+            "height": 40,
+            "top": 857,
+            "bottom": 897
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试新手自然妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 370,
+            "y": 217,
+            "width": 306,
+            "height": 383,
+            "top": 217,
+            "bottom": 600
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试鎏金晚宴妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 697,
+            "y": 217,
+            "width": 306,
+            "height": 383,
+            "top": 217,
+            "bottom": 600
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试酒红丝绒妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 1023,
+            "y": 217,
+            "width": 306,
+            "height": 383,
+            "top": 217,
+            "bottom": 600
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试烛光灰粉妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 370,
+            "y": 620,
+            "width": 306,
+            "height": 383,
+            "top": 620,
+            "bottom": 1003
+          },
+          "visible": true
+        }
+      ],
+      "imageCount": 46,
+      "brokenImages": [],
+      "missingAlt": [
+        {
+          "src": "/images/logo.svg",
+          "alt": "",
+          "rect": {
+            "x": 86,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "complete": true,
+          "naturalWidth": 150,
+          "naturalHeight": 150
+        },
+        {
+          "src": "/images/logo.svg",
+          "alt": "",
+          "rect": {
+            "x": 86,
+            "y": 6454,
+            "width": 20,
+            "height": 20,
+            "top": 6454,
+            "bottom": 6474
+          },
+          "complete": true,
+          "naturalWidth": 150,
+          "naturalHeight": 150
+        }
+      ],
+      "cookieVisible": true,
+      "cookieRect": {
+        "x": 130,
+        "y": 862,
+        "width": 1180,
+        "height": 116,
+        "top": 862,
+        "bottom": 978
+      },
+      "headerRect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 52,
+        "top": 0,
+        "bottom": 52
+      },
+      "gridRect": {
+        "x": 369,
+        "y": 216,
+        "width": 961,
+        "height": 6027,
+        "top": 216,
+        "bottom": 6243
+      },
+      "footerSummary": "共 44 个妆容，可选择后上传自拍试妆"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": []
+  },
+  "desktopFilter": {
+    "visibleCards": 6,
+    "summary": "共找到 6 个可直接试妆的妆容",
+    "visibleTitles": [
+      "镜头光泽妆",
+      "柔焦氛围妆",
+      "闪光灯缎光妆",
+      "证件照干净妆",
+      "上镜柔焦妆",
+      "闪耀眼皮光泽妆"
+    ]
+  },
+  "desktopFilterCombo": {
+    "visibleCards": 0,
+    "summaryHidden": true,
+    "emptyHidden": false,
+    "emptyText": "🔍 暂时没有匹配的妆容 可以减少一个筛选条件，或清空后重新选择。 ↻ 清空筛选"
+  },
+  "tablet": {
+    "metrics": {
+      "title": "按场景找妆容 | AI Beauty Stylist",
+      "lang": "zh-CN",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "scroll": {
+        "width": 768,
+        "height": 9649,
+        "clientWidth": 768
+      },
+      "hasHorizontalOverflow": false,
+      "h1": "按场景找妆容",
+      "intro": "先按通勤、约会、拍照和活动场景缩小范围，再看妆感和上手难度。浏览妆容不扣次数，上传自拍生成时才使用额度。",
+      "filterPanel": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "bottom": 0
+      },
+      "filterPanelDisplay": "none",
+      "filterChipCount": 13,
+      "activeFilters": [
+        "全部",
+        "全部",
+        "全部"
+      ],
+      "cardCount": 44,
+      "visibleCards": 44,
+      "firstCards": [
+        {
+          "title": "新手自然妆",
+          "intent": "新手自然妆，适合日常场景，重点呈现清透、自然妆效。",
+          "rect": {
+            "x": 69,
+            "y": 216,
+            "width": 306,
+            "height": 382,
+            "top": 216,
+            "bottom": 598
+          },
+          "copyRect": {
+            "x": 70,
+            "y": 488,
+            "width": 304,
+            "height": 110,
+            "top": 488,
+            "bottom": 597
+          },
+          "actionRect": {
+            "x": 296,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          }
+        },
+        {
+          "title": "鎏金晚宴妆",
+          "intent": "鎏金晚宴妆，适合晚宴、活动场景，重点呈现暖调、立体妆效。",
+          "rect": {
+            "x": 393,
+            "y": 216,
+            "width": 306,
+            "height": 382,
+            "top": 216,
+            "bottom": 598
+          },
+          "copyRect": {
+            "x": 394,
+            "y": 488,
+            "width": 304,
+            "height": 110,
+            "top": 488,
+            "bottom": 597
+          },
+          "actionRect": {
+            "x": 620,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          }
+        },
+        {
+          "title": "酒红丝绒妆",
+          "intent": "酒红丝绒妆，适合晚宴、活动场景，重点呈现丝绒、显气色妆效。",
+          "rect": {
+            "x": 69,
+            "y": 616,
+            "width": 306,
+            "height": 382,
+            "top": 616,
+            "bottom": 998
+          },
+          "copyRect": {
+            "x": 70,
+            "y": 888,
+            "width": 304,
+            "height": 110,
+            "top": 888,
+            "bottom": 997
+          },
+          "actionRect": {
+            "x": 296,
+            "y": 627,
+            "width": 68,
+            "height": 34,
+            "top": 627,
+            "bottom": 661
+          }
+        },
+        {
+          "title": "烛光灰粉妆",
+          "intent": "烛光灰粉妆，适合约会、晚宴场景，重点呈现柔雾、低饱和妆效。",
+          "rect": {
+            "x": 393,
+            "y": 616,
+            "width": 306,
+            "height": 382,
+            "top": 616,
+            "bottom": 998
+          },
+          "copyRect": {
+            "x": 394,
+            "y": 888,
+            "width": 304,
+            "height": 110,
+            "top": 888,
+            "bottom": 997
+          },
+          "actionRect": {
+            "x": 620,
+            "y": 627,
+            "width": 68,
+            "height": 34,
+            "top": 627,
+            "bottom": 661
+          }
+        },
+        {
+          "title": "香槟宴会妆",
+          "intent": "香槟宴会妆，适合晚宴、活动场景，重点呈现光泽、精致妆效。",
+          "rect": {
+            "x": 69,
+            "y": 1016,
+            "width": 306,
+            "height": 382,
+            "top": 1016,
+            "bottom": 1398
+          },
+          "copyRect": {
+            "x": 70,
+            "y": 1287,
+            "width": 304,
+            "height": 110,
+            "top": 1287,
+            "bottom": 1397
+          },
+          "actionRect": {
+            "x": 296,
+            "y": 1027,
+            "width": 68,
+            "height": 34,
+            "top": 1027,
+            "bottom": 1061
+          }
+        },
+        {
+          "title": "客户会议裸妆",
+          "intent": "客户会议裸妆，适合通勤、面试场景，重点呈现自然、专业妆效。",
+          "rect": {
+            "x": 393,
+            "y": 1016,
+            "width": 306,
+            "height": 382,
+            "top": 1016,
+            "bottom": 1398
+          },
+          "copyRect": {
+            "x": 394,
+            "y": 1287,
+            "width": 304,
+            "height": 110,
+            "top": 1287,
+            "bottom": 1397
+          },
+          "actionRect": {
+            "x": 620,
+            "y": 1027,
+            "width": 68,
+            "height": 34,
+            "top": 1027,
+            "bottom": 1061
+          }
+        }
+      ],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "按场景找妆容",
+          "rect": {
+            "x": 46,
+            "y": 52,
+            "width": 676,
+            "height": 55,
+            "top": 52,
+            "bottom": 107
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "新手自然妆",
+          "rect": {
+            "x": 84,
+            "y": 520,
+            "width": 276,
+            "height": 22,
+            "top": 520,
+            "bottom": 542
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "鎏金晚宴妆",
+          "rect": {
+            "x": 408,
+            "y": 520,
+            "width": 276,
+            "height": 22,
+            "top": 520,
+            "bottom": 542
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "酒红丝绒妆",
+          "rect": {
+            "x": 84,
+            "y": 920,
+            "width": 276,
+            "height": 22,
+            "top": 920,
+            "bottom": 942
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "烛光灰粉妆",
+          "rect": {
+            "x": 408,
+            "y": 920,
+            "width": 276,
+            "height": 22,
+            "top": 920,
+            "bottom": 942
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "香槟宴会妆",
+          "rect": {
+            "x": 84,
+            "y": 1319,
+            "width": 276,
+            "height": 22,
+            "top": 1319,
+            "bottom": 1342
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "客户会议裸妆",
+          "rect": {
+            "x": 408,
+            "y": 1319,
+            "width": 276,
+            "height": 22,
+            "top": 1319,
+            "bottom": 1342
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "云感柔雾妆",
+          "rect": {
+            "x": 84,
+            "y": 1719,
+            "width": 276,
+            "height": 22,
+            "top": 1719,
+            "bottom": 1741
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "蜜桃气色妆",
+          "rect": {
+            "x": 408,
+            "y": 1719,
+            "width": 276,
+            "height": 22,
+            "top": 1719,
+            "bottom": 1741
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "镜头光泽妆",
+          "rect": {
+            "x": 84,
+            "y": 2119,
+            "width": 276,
+            "height": 22,
+            "top": 2119,
+            "bottom": 2141
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "温柔约会妆",
+          "rect": {
+            "x": 408,
+            "y": 2119,
+            "width": 276,
+            "height": 22,
+            "top": 2119,
+            "bottom": 2141
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔焦氛围妆",
+          "rect": {
+            "x": 84,
+            "y": 2519,
+            "width": 276,
+            "height": 22,
+            "top": 2519,
+            "bottom": 2541
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "精致晚间妆",
+          "rect": {
+            "x": 408,
+            "y": 2519,
+            "width": 276,
+            "height": 22,
+            "top": 2519,
+            "bottom": 2541
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "职场玫瑰妆",
+          "rect": {
+            "x": 84,
+            "y": 2919,
+            "width": 276,
+            "height": 22,
+            "top": 2919,
+            "bottom": 2941
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "五分钟新手妆",
+          "rect": {
+            "x": 408,
+            "y": 2919,
+            "width": 276,
+            "height": 22,
+            "top": 2919,
+            "bottom": 2941
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "闪光灯缎光妆",
+          "rect": {
+            "x": 84,
+            "y": 3319,
+            "width": 276,
+            "height": 22,
+            "top": 3319,
+            "bottom": 3341
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "法式自然妆",
+          "rect": {
+            "x": 408,
+            "y": 3319,
+            "width": 276,
+            "height": 22,
+            "top": 3319,
+            "bottom": 3341
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "肿眼泡提拉眼妆",
+          "rect": {
+            "x": 84,
+            "y": 3719,
+            "width": 276,
+            "height": 22,
+            "top": 3719,
+            "bottom": 3741
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "面试精神妆",
+          "rect": {
+            "x": 408,
+            "y": 3719,
+            "width": 276,
+            "height": 22,
+            "top": 3719,
+            "bottom": 3741
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "果冻唇妆",
+          "rect": {
+            "x": 84,
+            "y": 4119,
+            "width": 276,
+            "height": 22,
+            "top": 4119,
+            "bottom": 4141
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "韩系水光妆",
+          "rect": {
+            "x": 408,
+            "y": 4119,
+            "width": 276,
+            "height": 22,
+            "top": 4119,
+            "bottom": 4141
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "韩系清透妆",
+          "rect": {
+            "x": 84,
+            "y": 4519,
+            "width": 276,
+            "height": 22,
+            "top": 4519,
+            "bottom": 4541
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "拉丁暖金妆",
+          "rect": {
+            "x": 408,
+            "y": 4519,
+            "width": 276,
+            "height": 22,
+            "top": 4519,
+            "bottom": 4541
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "熟龄焕亮妆",
+          "rect": {
+            "x": 84,
+            "y": 4918,
+            "width": 276,
+            "height": 22,
+            "top": 4918,
+            "bottom": 4941
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "单眼皮清透眼妆",
+          "rect": {
+            "x": 408,
+            "y": 4918,
+            "width": 276,
+            "height": 22,
+            "top": 4918,
+            "bottom": 4941
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "清透裸妆",
+          "rect": {
+            "x": 84,
+            "y": 5318,
+            "width": 276,
+            "height": 22,
+            "top": 5318,
+            "bottom": 5340
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "橄榄皮玫瑰妆",
+          "rect": {
+            "x": 408,
+            "y": 5318,
+            "width": 276,
+            "height": 22,
+            "top": 5318,
+            "bottom": 5340
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "证件照干净妆",
+          "rect": {
+            "x": 84,
+            "y": 5718,
+            "width": 276,
+            "height": 22,
+            "top": 5718,
+            "bottom": 5740
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "蜜桃米色约会妆",
+          "rect": {
+            "x": 408,
+            "y": 5718,
+            "width": 276,
+            "height": 22,
+            "top": 5718,
+            "bottom": 5740
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "晨光蜜桃妆",
+          "rect": {
+            "x": 84,
+            "y": 6118,
+            "width": 276,
+            "height": 22,
+            "top": 6118,
+            "bottom": 6140
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "上镜柔焦妆",
+          "rect": {
+            "x": 408,
+            "y": 6118,
+            "width": 276,
+            "height": 22,
+            "top": 6118,
+            "bottom": 6140
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "轻熟精致妆",
+          "rect": {
+            "x": 84,
+            "y": 6518,
+            "width": 276,
+            "height": 22,
+            "top": 6518,
+            "bottom": 6540
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "闪耀眼皮光泽妆",
+          "rect": {
+            "x": 408,
+            "y": 6518,
+            "width": 276,
+            "height": 22,
+            "top": 6518,
+            "bottom": 6540
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "浪漫粉调妆",
+          "rect": {
+            "x": 84,
+            "y": 6918,
+            "width": 276,
+            "height": 22,
+            "top": 6918,
+            "bottom": 6940
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "玫瑰奶茶妆",
+          "rect": {
+            "x": 408,
+            "y": 6918,
+            "width": 276,
+            "height": 22,
+            "top": 6918,
+            "bottom": 6940
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔莓染唇妆",
+          "rect": {
+            "x": 84,
+            "y": 7318,
+            "width": 276,
+            "height": 22,
+            "top": 7318,
+            "bottom": 7340
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔和编辑妆",
+          "rect": {
+            "x": 408,
+            "y": 7318,
+            "width": 276,
+            "height": 22,
+            "top": 7318,
+            "bottom": 7340
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "日常柔雾妆",
+          "rect": {
+            "x": 84,
+            "y": 7718,
+            "width": 276,
+            "height": 22,
+            "top": 7718,
+            "bottom": 7740
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "夏日婚礼宾客妆",
+          "rect": {
+            "x": 408,
+            "y": 7718,
+            "width": 276,
+            "height": 22,
+            "top": 7718,
+            "bottom": 7740
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "晒后缎光妆",
+          "rect": {
+            "x": 84,
+            "y": 8118,
+            "width": 276,
+            "height": 22,
+            "top": 8118,
+            "bottom": 8140
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "度假古铜妆",
+          "rect": {
+            "x": 408,
+            "y": 8118,
+            "width": 276,
+            "height": 22,
+            "top": 8118,
+            "bottom": 8140
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "暖调日常裸妆",
+          "rect": {
+            "x": 84,
+            "y": 8517,
+            "width": 276,
+            "height": 22,
+            "top": 8517,
+            "bottom": 8540
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "水彩腮红妆",
+          "rect": {
+            "x": 408,
+            "y": 8517,
+            "width": 276,
+            "height": 22,
+            "top": 8517,
+            "bottom": 8540
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "婚礼宾客妆",
+          "rect": {
+            "x": 84,
+            "y": 8917,
+            "width": 276,
+            "height": 22,
+            "top": 8917,
+            "bottom": 8939
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "周末光泽妆",
+          "rect": {
+            "x": 408,
+            "y": 8917,
+            "width": 276,
+            "height": 22,
+            "top": 8917,
+            "bottom": 8939
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "暂时没有匹配的妆容",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "bottom": 0
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "产品服务",
+          "rect": {
+            "x": 396,
+            "y": 9207,
+            "width": 326,
+            "height": 20,
+            "top": 9207,
+            "bottom": 9227
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "支持与帮助",
+          "rect": {
+            "x": 46,
+            "y": 9373,
+            "width": 326,
+            "height": 20,
+            "top": 9373,
+            "bottom": 9393
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "关于与合规",
+          "rect": {
+            "x": 396,
+            "y": 9373,
+            "width": 326,
+            "height": 20,
+            "top": 9373,
+            "bottom": 9393
+          }
+        }
+      ],
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "打开导航菜单",
+          "href": "",
+          "rect": {
+            "x": 46,
+            "y": 5,
+            "width": 42,
+            "height": 42,
+            "top": 5,
+            "bottom": 47
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "切换至深色模式",
+          "href": "",
+          "rect": {
+            "x": 550,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "选择语言",
+          "href": "",
+          "rect": {
+            "x": 594,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "登录 / 注册",
+          "aria": "",
+          "href": "/login",
+          "rect": {
+            "x": 638,
+            "y": 9,
+            "width": 84,
+            "height": 34,
+            "top": 9,
+            "bottom": 43
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 627,
+            "width": 68,
+            "height": 34,
+            "top": 627,
+            "bottom": 661
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 627,
+            "width": 68,
+            "height": 34,
+            "top": 627,
+            "bottom": 661
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试香槟宴会妆",
+          "href": "/tryon-free?look=champagne-gala&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 1027,
+            "width": 68,
+            "height": 34,
+            "top": 1027,
+            "bottom": 1061
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试客户会议裸妆",
+          "href": "/tryon-free?look=client-meeting-nude&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 1027,
+            "width": 68,
+            "height": 34,
+            "top": 1027,
+            "bottom": 1061
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试云感柔雾妆",
+          "href": "/tryon-free?look=cloud-skin-matte&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 1427,
+            "width": 68,
+            "height": 34,
+            "top": 1427,
+            "bottom": 1461
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃气色妆",
+          "href": "/tryon-free?look=commute&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 1427,
+            "width": 68,
+            "height": 34,
+            "top": 1427,
+            "bottom": 1461
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试镜头光泽妆",
+          "href": "/tryon-free?look=creator-camera-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 1827,
+            "width": 68,
+            "height": 34,
+            "top": 1827,
+            "bottom": 1861
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试温柔约会妆",
+          "href": "/tryon-free?look=date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 1827,
+            "width": 68,
+            "height": 34,
+            "top": 1827,
+            "bottom": 1861
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔焦氛围妆",
+          "href": "/tryon-free?look=douyin-soft-focus&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 2227,
+            "width": 68,
+            "height": 34,
+            "top": 2227,
+            "bottom": 2261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试精致晚间妆",
+          "href": "/tryon-free?look=evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 2227,
+            "width": 68,
+            "height": 34,
+            "top": 2227,
+            "bottom": 2261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试职场玫瑰妆",
+          "href": "/tryon-free?look=executive-rose&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 2627,
+            "width": 68,
+            "height": 34,
+            "top": 2627,
+            "bottom": 2661
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试五分钟新手妆",
+          "href": "/tryon-free?look=five-minute-beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 2627,
+            "width": 68,
+            "height": 34,
+            "top": 2627,
+            "bottom": 2661
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试闪光灯缎光妆",
+          "href": "/tryon-free?look=flash-proof-satin&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 3027,
+            "width": 68,
+            "height": 34,
+            "top": 3027,
+            "bottom": 3061
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试法式自然妆",
+          "href": "/tryon-free?look=french-natural-chic&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 3027,
+            "width": 68,
+            "height": 34,
+            "top": 3027,
+            "bottom": 3061
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试肿眼泡提拉眼妆",
+          "href": "/tryon-free?look=hooded-eyes-lift&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 3427,
+            "width": 68,
+            "height": 34,
+            "top": 3427,
+            "bottom": 3461
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试面试精神妆",
+          "href": "/tryon-free?look=interview-ready&scenario=%E9%9D%A2%E8%AF%95&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 3427,
+            "width": 68,
+            "height": 34,
+            "top": 3427,
+            "bottom": 3461
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试果冻唇妆",
+          "href": "/tryon-free?look=jelly-lip-tint&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 3826,
+            "width": 68,
+            "height": 34,
+            "top": 3826,
+            "bottom": 3860
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试韩系水光妆",
+          "href": "/tryon-free?look=korean-dewy-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 3826,
+            "width": 68,
+            "height": 34,
+            "top": 3826,
+            "bottom": 3860
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试韩系清透妆",
+          "href": "/tryon-free?look=korean-dewy-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 4226,
+            "width": 68,
+            "height": 34,
+            "top": 4226,
+            "bottom": 4260
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试拉丁暖金妆",
+          "href": "/tryon-free?look=latina-bronze-glam&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 4226,
+            "width": 68,
+            "height": 34,
+            "top": 4226,
+            "bottom": 4260
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试熟龄焕亮妆",
+          "href": "/tryon-free?look=mature-skin-radiance&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 4626,
+            "width": 68,
+            "height": 34,
+            "top": 4626,
+            "bottom": 4660
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试单眼皮清透眼妆",
+          "href": "/tryon-free?look=monolid-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 4626,
+            "width": 68,
+            "height": 34,
+            "top": 4626,
+            "bottom": 4660
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试清透裸妆",
+          "href": "/tryon-free?look=no-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 5026,
+            "width": 68,
+            "height": 34,
+            "top": 5026,
+            "bottom": 5060
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试橄榄皮玫瑰妆",
+          "href": "/tryon-free?look=olive-undertone-rose&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 5026,
+            "width": 68,
+            "height": 34,
+            "top": 5026,
+            "bottom": 5060
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试证件照干净妆",
+          "href": "/tryon-free?look=passport-photo-clean&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 5426,
+            "width": 68,
+            "height": 34,
+            "top": 5426,
+            "bottom": 5460
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃米色约会妆",
+          "href": "/tryon-free?look=peach-beige-date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 5426,
+            "width": 68,
+            "height": 34,
+            "top": 5426,
+            "bottom": 5460
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试晨光蜜桃妆",
+          "href": "/tryon-free?look=peach-morning-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 5826,
+            "width": 68,
+            "height": 34,
+            "top": 5826,
+            "bottom": 5860
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试上镜柔焦妆",
+          "href": "/tryon-free?look=photogenic&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 5826,
+            "width": 68,
+            "height": 34,
+            "top": 5826,
+            "bottom": 5860
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试轻熟精致妆",
+          "href": "/tryon-free?look=refined&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 6226,
+            "width": 68,
+            "height": 34,
+            "top": 6226,
+            "bottom": 6260
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试闪耀眼皮光泽妆",
+          "href": "/tryon-free?look=reflective-lid-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 6226,
+            "width": 68,
+            "height": 34,
+            "top": 6226,
+            "bottom": 6260
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试浪漫粉调妆",
+          "href": "/tryon-free?look=romantic-pink&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 6626,
+            "width": 68,
+            "height": 34,
+            "top": 6626,
+            "bottom": 6660
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试玫瑰奶茶妆",
+          "href": "/tryon-free?look=rose-milk-date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 6626,
+            "width": 68,
+            "height": 34,
+            "top": 6626,
+            "bottom": 6660
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔莓染唇妆",
+          "href": "/tryon-free?look=soft-berry-stain&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 7026,
+            "width": 68,
+            "height": 34,
+            "top": 7026,
+            "bottom": 7060
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔和编辑妆",
+          "href": "/tryon-free?look=soft-editorial&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 7026,
+            "width": 68,
+            "height": 34,
+            "top": 7026,
+            "bottom": 7060
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试日常柔雾妆",
+          "href": "/tryon-free?look=soft-matte-everyday&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 7425,
+            "width": 68,
+            "height": 34,
+            "top": 7425,
+            "bottom": 7459
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试夏日婚礼宾客妆",
+          "href": "/tryon-free?look=summer-wedding-guest&scenario=%E6%B4%BB%E5%8A%A8&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 7425,
+            "width": 68,
+            "height": 34,
+            "top": 7425,
+            "bottom": 7459
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试晒后缎光妆",
+          "href": "/tryon-free?look=sunburn-satin-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 7825,
+            "width": 68,
+            "height": 34,
+            "top": 7825,
+            "bottom": 7859
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试度假古铜妆",
+          "href": "/tryon-free?look=vacation-bronze&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 7825,
+            "width": 68,
+            "height": 34,
+            "top": 7825,
+            "bottom": 7859
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试暖调日常裸妆",
+          "href": "/tryon-free?look=warm-nude-daily&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 8225,
+            "width": 68,
+            "height": 34,
+            "top": 8225,
+            "bottom": 8259
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试水彩腮红妆",
+          "href": "/tryon-free?look=watercolor-blush&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 8225,
+            "width": 68,
+            "height": 34,
+            "top": 8225,
+            "bottom": 8259
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试婚礼宾客妆",
+          "href": "/tryon-free?look=wedding-guest&scenario=%E6%B4%BB%E5%8A%A8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 8625,
+            "width": 68,
+            "height": 34,
+            "top": 8625,
+            "bottom": 8659
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试周末光泽妆",
+          "href": "/tryon-free?look=weekend-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 8625,
+            "width": 68,
+            "height": 34,
+            "top": 8625,
+            "bottom": 8659
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Cookie 偏好设置",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 46,
+            "y": 9467,
+            "width": 326,
+            "height": 19,
+            "top": 9467,
+            "bottom": 9486
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "仅使用必要 Cookie",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 490,
+            "y": 923,
+            "width": 139,
+            "height": 42,
+            "top": 923,
+            "bottom": 965
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "同意全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 639,
+            "y": 923,
+            "width": 84,
+            "height": 42,
+            "top": 923,
+            "bottom": 965
+          },
+          "visible": true
+        }
+      ],
+      "buttons": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "打开导航菜单",
+          "href": "",
+          "rect": {
+            "x": 46,
+            "y": 5,
+            "width": 42,
+            "height": 42,
+            "top": 5,
+            "bottom": 47
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "切换至深色模式",
+          "href": "",
+          "rect": {
+            "x": 550,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "选择语言",
+          "href": "",
+          "rect": {
+            "x": 594,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "登录 / 注册",
+          "aria": "",
+          "href": "/login",
+          "rect": {
+            "x": 638,
+            "y": 9,
+            "width": 84,
+            "height": 34,
+            "top": 9,
+            "bottom": 43
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试新手自然妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 70,
+            "y": 217,
+            "width": 304,
+            "height": 380,
+            "top": 217,
+            "bottom": 597
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试鎏金晚宴妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 394,
+            "y": 217,
+            "width": 304,
+            "height": 380,
+            "top": 217,
+            "bottom": 597
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试酒红丝绒妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 70,
+            "y": 617,
+            "width": 304,
+            "height": 380,
+            "top": 617,
+            "bottom": 997
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 627,
+            "width": 68,
+            "height": 34,
+            "top": 627,
+            "bottom": 661
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试烛光灰粉妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 394,
+            "y": 617,
+            "width": 304,
+            "height": 380,
+            "top": 617,
+            "bottom": 997
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 627,
+            "width": 68,
+            "height": 34,
+            "top": 627,
+            "bottom": 661
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试香槟宴会妆",
+          "aria": "上传自拍试香槟宴会妆",
+          "href": "/tryon-free?look=champagne-gala&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 70,
+            "y": 1017,
+            "width": 304,
+            "height": 380,
+            "top": 1017,
+            "bottom": 1397
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试香槟宴会妆",
+          "href": "/tryon-free?look=champagne-gala&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 1027,
+            "width": 68,
+            "height": 34,
+            "top": 1027,
+            "bottom": 1061
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试客户会议裸妆",
+          "aria": "上传自拍试客户会议裸妆",
+          "href": "/tryon-free?look=client-meeting-nude&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 394,
+            "y": 1017,
+            "width": 304,
+            "height": 380,
+            "top": 1017,
+            "bottom": 1397
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试客户会议裸妆",
+          "href": "/tryon-free?look=client-meeting-nude&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 1027,
+            "width": 68,
+            "height": 34,
+            "top": 1027,
+            "bottom": 1061
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试云感柔雾妆",
+          "aria": "上传自拍试云感柔雾妆",
+          "href": "/tryon-free?look=cloud-skin-matte&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 70,
+            "y": 1417,
+            "width": 304,
+            "height": 380,
+            "top": 1417,
+            "bottom": 1797
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试云感柔雾妆",
+          "href": "/tryon-free?look=cloud-skin-matte&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 1427,
+            "width": 68,
+            "height": 34,
+            "top": 1427,
+            "bottom": 1461
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试蜜桃气色妆",
+          "aria": "上传自拍试蜜桃气色妆",
+          "href": "/tryon-free?look=commute&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 394,
+            "y": 1417,
+            "width": 304,
+            "height": 380,
+            "top": 1417,
+            "bottom": 1797
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃气色妆",
+          "href": "/tryon-free?look=commute&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 1427,
+            "width": 68,
+            "height": 34,
+            "top": 1427,
+            "bottom": 1461
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试镜头光泽妆",
+          "aria": "上传自拍试镜头光泽妆",
+          "href": "/tryon-free?look=creator-camera-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 70,
+            "y": 1817,
+            "width": 304,
+            "height": 380,
+            "top": 1817,
+            "bottom": 2197
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试镜头光泽妆",
+          "href": "/tryon-free?look=creator-camera-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 296,
+            "y": 1827,
+            "width": 68,
+            "height": 34,
+            "top": 1827,
+            "bottom": 1861
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试温柔约会妆",
+          "aria": "上传自拍试温柔约会妆",
+          "href": "/tryon-free?look=date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 394,
+            "y": 1817,
+            "width": 304,
+            "height": 380,
+            "top": 1817,
+            "bottom": 2197
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试温柔约会妆",
+          "href": "/tryon-free?look=date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 620,
+            "y": 1827,
+            "width": 68,
+            "height": 34,
+            "top": 1827,
+            "bottom": 1861
+          },
+          "visible": true
+        }
+      ],
+      "imageCount": 46,
+      "brokenImages": [],
+      "missingAlt": [
+        {
+          "src": "/images/logo.svg",
+          "alt": "",
+          "rect": {
+            "x": 100,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "complete": true,
+          "naturalWidth": 150,
+          "naturalHeight": 150
+        },
+        {
+          "src": "/images/logo.svg",
+          "alt": "",
+          "rect": {
+            "x": 46,
+            "y": 9207,
+            "width": 20,
+            "height": 20,
+            "top": 9207,
+            "bottom": 9227
+          },
+          "complete": true,
+          "naturalWidth": 150,
+          "naturalHeight": 150
+        }
+      ],
+      "cookieVisible": true,
+      "cookieRect": {
+        "x": 22,
+        "y": 886,
+        "width": 724,
+        "height": 116,
+        "top": 886,
+        "bottom": 1002
+      },
+      "headerRect": {
+        "x": 0,
+        "y": 0,
+        "width": 768,
+        "height": 52,
+        "top": 0,
+        "bottom": 52
+      },
+      "gridRect": {
+        "x": 69,
+        "y": 216,
+        "width": 630,
+        "height": 8780,
+        "top": 216,
+        "bottom": 8996
+      },
+      "footerSummary": "共 44 个妆容，可选择后上传自拍试妆"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": []
+  },
+  "mobile": {
+    "metrics": {
+      "title": "按场景找妆容 | AI Beauty Stylist",
+      "lang": "zh-CN",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "width": 390,
+        "height": 19197,
+        "clientWidth": 390
+      },
+      "hasHorizontalOverflow": false,
+      "h1": "按场景找妆容",
+      "intro": "先按通勤、约会、拍照和活动场景缩小范围，再看妆感和上手难度。浏览妆容不扣次数，上传自拍生成时才使用额度。",
+      "filterPanel": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "bottom": 0
+      },
+      "filterPanelDisplay": "none",
+      "filterChipCount": 13,
+      "activeFilters": [
+        "全部",
+        "全部",
+        "全部"
+      ],
+      "cardCount": 44,
+      "visibleCards": 44,
+      "firstCards": [
+        {
+          "title": "新手自然妆",
+          "intent": "新手自然妆，适合日常场景，重点呈现清透、自然妆效。",
+          "rect": {
+            "x": 37,
+            "y": 244,
+            "width": 316,
+            "height": 395,
+            "top": 244,
+            "bottom": 638
+          },
+          "copyRect": {
+            "x": 38,
+            "y": 523,
+            "width": 314,
+            "height": 114,
+            "top": 523,
+            "bottom": 637
+          },
+          "actionRect": {
+            "x": 274,
+            "y": 255,
+            "width": 68,
+            "height": 34,
+            "top": 255,
+            "bottom": 289
+          }
+        },
+        {
+          "title": "鎏金晚宴妆",
+          "intent": "鎏金晚宴妆，适合晚宴、活动场景，重点呈现暖调、立体妆效。",
+          "rect": {
+            "x": 37,
+            "y": 656,
+            "width": 316,
+            "height": 395,
+            "top": 656,
+            "bottom": 1051
+          },
+          "copyRect": {
+            "x": 38,
+            "y": 935,
+            "width": 314,
+            "height": 114,
+            "top": 935,
+            "bottom": 1050
+          },
+          "actionRect": {
+            "x": 274,
+            "y": 667,
+            "width": 68,
+            "height": 34,
+            "top": 667,
+            "bottom": 701
+          }
+        },
+        {
+          "title": "酒红丝绒妆",
+          "intent": "酒红丝绒妆，适合晚宴、活动场景，重点呈现丝绒、显气色妆效。",
+          "rect": {
+            "x": 37,
+            "y": 1069,
+            "width": 316,
+            "height": 395,
+            "top": 1069,
+            "bottom": 1463
+          },
+          "copyRect": {
+            "x": 38,
+            "y": 1348,
+            "width": 314,
+            "height": 114,
+            "top": 1348,
+            "bottom": 1462
+          },
+          "actionRect": {
+            "x": 274,
+            "y": 1080,
+            "width": 68,
+            "height": 34,
+            "top": 1080,
+            "bottom": 1114
+          }
+        },
+        {
+          "title": "烛光灰粉妆",
+          "intent": "烛光灰粉妆，适合约会、晚宴场景，重点呈现柔雾、低饱和妆效。",
+          "rect": {
+            "x": 37,
+            "y": 1481,
+            "width": 316,
+            "height": 395,
+            "top": 1481,
+            "bottom": 1876
+          },
+          "copyRect": {
+            "x": 38,
+            "y": 1760,
+            "width": 314,
+            "height": 114,
+            "top": 1760,
+            "bottom": 1875
+          },
+          "actionRect": {
+            "x": 274,
+            "y": 1492,
+            "width": 68,
+            "height": 34,
+            "top": 1492,
+            "bottom": 1526
+          }
+        },
+        {
+          "title": "香槟宴会妆",
+          "intent": "香槟宴会妆，适合晚宴、活动场景，重点呈现光泽、精致妆效。",
+          "rect": {
+            "x": 37,
+            "y": 1894,
+            "width": 316,
+            "height": 395,
+            "top": 1894,
+            "bottom": 2288
+          },
+          "copyRect": {
+            "x": 38,
+            "y": 2173,
+            "width": 314,
+            "height": 114,
+            "top": 2173,
+            "bottom": 2287
+          },
+          "actionRect": {
+            "x": 274,
+            "y": 1905,
+            "width": 68,
+            "height": 34,
+            "top": 1905,
+            "bottom": 1939
+          }
+        },
+        {
+          "title": "客户会议裸妆",
+          "intent": "客户会议裸妆，适合通勤、面试场景，重点呈现自然、专业妆效。",
+          "rect": {
+            "x": 37,
+            "y": 2306,
+            "width": 316,
+            "height": 395,
+            "top": 2306,
+            "bottom": 2701
+          },
+          "copyRect": {
+            "x": 38,
+            "y": 2585,
+            "width": 314,
+            "height": 114,
+            "top": 2585,
+            "bottom": 2700
+          },
+          "actionRect": {
+            "x": 274,
+            "y": 2317,
+            "width": 68,
+            "height": 34,
+            "top": 2317,
+            "bottom": 2351
+          }
+        }
+      ],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "按场景找妆容",
+          "rect": {
+            "x": 14,
+            "y": 52,
+            "width": 362,
+            "height": 55,
+            "top": 52,
+            "bottom": 107
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "新手自然妆",
+          "rect": {
+            "x": 52,
+            "y": 557,
+            "width": 286,
+            "height": 23,
+            "top": 557,
+            "bottom": 580
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "鎏金晚宴妆",
+          "rect": {
+            "x": 52,
+            "y": 969,
+            "width": 286,
+            "height": 23,
+            "top": 969,
+            "bottom": 993
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "酒红丝绒妆",
+          "rect": {
+            "x": 52,
+            "y": 1382,
+            "width": 286,
+            "height": 23,
+            "top": 1382,
+            "bottom": 1405
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "烛光灰粉妆",
+          "rect": {
+            "x": 52,
+            "y": 1794,
+            "width": 286,
+            "height": 23,
+            "top": 1794,
+            "bottom": 1818
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "香槟宴会妆",
+          "rect": {
+            "x": 52,
+            "y": 2207,
+            "width": 286,
+            "height": 23,
+            "top": 2207,
+            "bottom": 2230
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "客户会议裸妆",
+          "rect": {
+            "x": 52,
+            "y": 2619,
+            "width": 286,
+            "height": 23,
+            "top": 2619,
+            "bottom": 2643
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "云感柔雾妆",
+          "rect": {
+            "x": 52,
+            "y": 3032,
+            "width": 286,
+            "height": 23,
+            "top": 3032,
+            "bottom": 3055
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "蜜桃气色妆",
+          "rect": {
+            "x": 52,
+            "y": 3444,
+            "width": 286,
+            "height": 23,
+            "top": 3444,
+            "bottom": 3468
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "镜头光泽妆",
+          "rect": {
+            "x": 52,
+            "y": 3857,
+            "width": 286,
+            "height": 23,
+            "top": 3857,
+            "bottom": 3880
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "温柔约会妆",
+          "rect": {
+            "x": 52,
+            "y": 4269,
+            "width": 286,
+            "height": 23,
+            "top": 4269,
+            "bottom": 4293
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔焦氛围妆",
+          "rect": {
+            "x": 52,
+            "y": 4682,
+            "width": 286,
+            "height": 23,
+            "top": 4682,
+            "bottom": 4705
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "精致晚间妆",
+          "rect": {
+            "x": 52,
+            "y": 5094,
+            "width": 286,
+            "height": 23,
+            "top": 5094,
+            "bottom": 5118
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "职场玫瑰妆",
+          "rect": {
+            "x": 52,
+            "y": 5507,
+            "width": 286,
+            "height": 23,
+            "top": 5507,
+            "bottom": 5530
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "五分钟新手妆",
+          "rect": {
+            "x": 52,
+            "y": 5919,
+            "width": 286,
+            "height": 23,
+            "top": 5919,
+            "bottom": 5943
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "闪光灯缎光妆",
+          "rect": {
+            "x": 52,
+            "y": 6332,
+            "width": 286,
+            "height": 23,
+            "top": 6332,
+            "bottom": 6355
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "法式自然妆",
+          "rect": {
+            "x": 52,
+            "y": 6744,
+            "width": 286,
+            "height": 23,
+            "top": 6744,
+            "bottom": 6768
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "肿眼泡提拉眼妆",
+          "rect": {
+            "x": 52,
+            "y": 7157,
+            "width": 286,
+            "height": 23,
+            "top": 7157,
+            "bottom": 7180
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "面试精神妆",
+          "rect": {
+            "x": 52,
+            "y": 7569,
+            "width": 286,
+            "height": 23,
+            "top": 7569,
+            "bottom": 7593
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "果冻唇妆",
+          "rect": {
+            "x": 52,
+            "y": 7982,
+            "width": 286,
+            "height": 23,
+            "top": 7982,
+            "bottom": 8005
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "韩系水光妆",
+          "rect": {
+            "x": 52,
+            "y": 8394,
+            "width": 286,
+            "height": 23,
+            "top": 8394,
+            "bottom": 8418
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "韩系清透妆",
+          "rect": {
+            "x": 52,
+            "y": 8807,
+            "width": 286,
+            "height": 23,
+            "top": 8807,
+            "bottom": 8830
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "拉丁暖金妆",
+          "rect": {
+            "x": 52,
+            "y": 9219,
+            "width": 286,
+            "height": 23,
+            "top": 9219,
+            "bottom": 9243
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "熟龄焕亮妆",
+          "rect": {
+            "x": 52,
+            "y": 9632,
+            "width": 286,
+            "height": 23,
+            "top": 9632,
+            "bottom": 9655
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "单眼皮清透眼妆",
+          "rect": {
+            "x": 52,
+            "y": 10044,
+            "width": 286,
+            "height": 23,
+            "top": 10044,
+            "bottom": 10068
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "清透裸妆",
+          "rect": {
+            "x": 52,
+            "y": 10457,
+            "width": 286,
+            "height": 23,
+            "top": 10457,
+            "bottom": 10480
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "橄榄皮玫瑰妆",
+          "rect": {
+            "x": 52,
+            "y": 10869,
+            "width": 286,
+            "height": 23,
+            "top": 10869,
+            "bottom": 10893
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "证件照干净妆",
+          "rect": {
+            "x": 52,
+            "y": 11282,
+            "width": 286,
+            "height": 23,
+            "top": 11282,
+            "bottom": 11305
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "蜜桃米色约会妆",
+          "rect": {
+            "x": 52,
+            "y": 11694,
+            "width": 286,
+            "height": 23,
+            "top": 11694,
+            "bottom": 11718
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "晨光蜜桃妆",
+          "rect": {
+            "x": 52,
+            "y": 12107,
+            "width": 286,
+            "height": 23,
+            "top": 12107,
+            "bottom": 12130
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "上镜柔焦妆",
+          "rect": {
+            "x": 52,
+            "y": 12519,
+            "width": 286,
+            "height": 23,
+            "top": 12519,
+            "bottom": 12543
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "轻熟精致妆",
+          "rect": {
+            "x": 52,
+            "y": 12932,
+            "width": 286,
+            "height": 23,
+            "top": 12932,
+            "bottom": 12955
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "闪耀眼皮光泽妆",
+          "rect": {
+            "x": 52,
+            "y": 13344,
+            "width": 286,
+            "height": 23,
+            "top": 13344,
+            "bottom": 13368
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "浪漫粉调妆",
+          "rect": {
+            "x": 52,
+            "y": 13757,
+            "width": 286,
+            "height": 23,
+            "top": 13757,
+            "bottom": 13780
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "玫瑰奶茶妆",
+          "rect": {
+            "x": 52,
+            "y": 14169,
+            "width": 286,
+            "height": 23,
+            "top": 14169,
+            "bottom": 14193
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔莓染唇妆",
+          "rect": {
+            "x": 52,
+            "y": 14582,
+            "width": 286,
+            "height": 23,
+            "top": 14582,
+            "bottom": 14605
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔和编辑妆",
+          "rect": {
+            "x": 52,
+            "y": 14994,
+            "width": 286,
+            "height": 23,
+            "top": 14994,
+            "bottom": 15018
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "日常柔雾妆",
+          "rect": {
+            "x": 52,
+            "y": 15407,
+            "width": 286,
+            "height": 23,
+            "top": 15407,
+            "bottom": 15430
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "夏日婚礼宾客妆",
+          "rect": {
+            "x": 52,
+            "y": 15819,
+            "width": 286,
+            "height": 23,
+            "top": 15819,
+            "bottom": 15843
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "晒后缎光妆",
+          "rect": {
+            "x": 52,
+            "y": 16232,
+            "width": 286,
+            "height": 23,
+            "top": 16232,
+            "bottom": 16255
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "度假古铜妆",
+          "rect": {
+            "x": 52,
+            "y": 16644,
+            "width": 286,
+            "height": 23,
+            "top": 16644,
+            "bottom": 16668
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "暖调日常裸妆",
+          "rect": {
+            "x": 52,
+            "y": 17057,
+            "width": 286,
+            "height": 23,
+            "top": 17057,
+            "bottom": 17080
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "水彩腮红妆",
+          "rect": {
+            "x": 52,
+            "y": 17469,
+            "width": 286,
+            "height": 23,
+            "top": 17469,
+            "bottom": 17493
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "婚礼宾客妆",
+          "rect": {
+            "x": 52,
+            "y": 17882,
+            "width": 286,
+            "height": 23,
+            "top": 17882,
+            "bottom": 17905
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "周末光泽妆",
+          "rect": {
+            "x": 52,
+            "y": 18294,
+            "width": 286,
+            "height": 23,
+            "top": 18294,
+            "bottom": 18318
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "暂时没有匹配的妆容",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "bottom": 0
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "产品服务",
+          "rect": {
+            "x": 14,
+            "y": 18721,
+            "width": 173,
+            "height": 17,
+            "top": 18721,
+            "bottom": 18738
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "支持与帮助",
+          "rect": {
+            "x": 203,
+            "y": 18721,
+            "width": 173,
+            "height": 17,
+            "top": 18721,
+            "bottom": 18738
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "关于与合规",
+          "rect": {
+            "x": 14,
+            "y": 18952,
+            "width": 362,
+            "height": 17,
+            "top": 18952,
+            "bottom": 18969
+          }
+        }
+      ],
+      "smallTargets": [
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 255,
+            "width": 68,
+            "height": 34,
+            "top": 255,
+            "bottom": 289
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 667,
+            "width": 68,
+            "height": 34,
+            "top": 667,
+            "bottom": 701
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 1080,
+            "width": 68,
+            "height": 34,
+            "top": 1080,
+            "bottom": 1114
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 1492,
+            "width": 68,
+            "height": 34,
+            "top": 1492,
+            "bottom": 1526
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试香槟宴会妆",
+          "href": "/tryon-free?look=champagne-gala&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 1905,
+            "width": 68,
+            "height": 34,
+            "top": 1905,
+            "bottom": 1939
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试客户会议裸妆",
+          "href": "/tryon-free?look=client-meeting-nude&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 2317,
+            "width": 68,
+            "height": 34,
+            "top": 2317,
+            "bottom": 2351
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试云感柔雾妆",
+          "href": "/tryon-free?look=cloud-skin-matte&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 2730,
+            "width": 68,
+            "height": 34,
+            "top": 2730,
+            "bottom": 2764
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃气色妆",
+          "href": "/tryon-free?look=commute&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 3142,
+            "width": 68,
+            "height": 34,
+            "top": 3142,
+            "bottom": 3176
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试镜头光泽妆",
+          "href": "/tryon-free?look=creator-camera-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 3555,
+            "width": 68,
+            "height": 34,
+            "top": 3555,
+            "bottom": 3589
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试温柔约会妆",
+          "href": "/tryon-free?look=date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 3967,
+            "width": 68,
+            "height": 34,
+            "top": 3967,
+            "bottom": 4001
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔焦氛围妆",
+          "href": "/tryon-free?look=douyin-soft-focus&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 4380,
+            "width": 68,
+            "height": 34,
+            "top": 4380,
+            "bottom": 4414
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试精致晚间妆",
+          "href": "/tryon-free?look=evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 4792,
+            "width": 68,
+            "height": 34,
+            "top": 4792,
+            "bottom": 4826
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试职场玫瑰妆",
+          "href": "/tryon-free?look=executive-rose&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 5205,
+            "width": 68,
+            "height": 34,
+            "top": 5205,
+            "bottom": 5239
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试五分钟新手妆",
+          "href": "/tryon-free?look=five-minute-beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 5617,
+            "width": 68,
+            "height": 34,
+            "top": 5617,
+            "bottom": 5651
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试闪光灯缎光妆",
+          "href": "/tryon-free?look=flash-proof-satin&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 6030,
+            "width": 68,
+            "height": 34,
+            "top": 6030,
+            "bottom": 6064
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试法式自然妆",
+          "href": "/tryon-free?look=french-natural-chic&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 6442,
+            "width": 68,
+            "height": 34,
+            "top": 6442,
+            "bottom": 6476
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试肿眼泡提拉眼妆",
+          "href": "/tryon-free?look=hooded-eyes-lift&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 6855,
+            "width": 68,
+            "height": 34,
+            "top": 6855,
+            "bottom": 6889
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试面试精神妆",
+          "href": "/tryon-free?look=interview-ready&scenario=%E9%9D%A2%E8%AF%95&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 7267,
+            "width": 68,
+            "height": 34,
+            "top": 7267,
+            "bottom": 7301
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试果冻唇妆",
+          "href": "/tryon-free?look=jelly-lip-tint&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 7680,
+            "width": 68,
+            "height": 34,
+            "top": 7680,
+            "bottom": 7714
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试韩系水光妆",
+          "href": "/tryon-free?look=korean-dewy-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 8092,
+            "width": 68,
+            "height": 34,
+            "top": 8092,
+            "bottom": 8126
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试韩系清透妆",
+          "href": "/tryon-free?look=korean-dewy-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 8505,
+            "width": 68,
+            "height": 34,
+            "top": 8505,
+            "bottom": 8539
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试拉丁暖金妆",
+          "href": "/tryon-free?look=latina-bronze-glam&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 8917,
+            "width": 68,
+            "height": 34,
+            "top": 8917,
+            "bottom": 8951
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试熟龄焕亮妆",
+          "href": "/tryon-free?look=mature-skin-radiance&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 9330,
+            "width": 68,
+            "height": 34,
+            "top": 9330,
+            "bottom": 9364
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试单眼皮清透眼妆",
+          "href": "/tryon-free?look=monolid-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 9742,
+            "width": 68,
+            "height": 34,
+            "top": 9742,
+            "bottom": 9776
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试清透裸妆",
+          "href": "/tryon-free?look=no-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 10155,
+            "width": 68,
+            "height": 34,
+            "top": 10155,
+            "bottom": 10189
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试橄榄皮玫瑰妆",
+          "href": "/tryon-free?look=olive-undertone-rose&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 10567,
+            "width": 68,
+            "height": 34,
+            "top": 10567,
+            "bottom": 10601
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试证件照干净妆",
+          "href": "/tryon-free?look=passport-photo-clean&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 10980,
+            "width": 68,
+            "height": 34,
+            "top": 10980,
+            "bottom": 11014
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃米色约会妆",
+          "href": "/tryon-free?look=peach-beige-date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 11392,
+            "width": 68,
+            "height": 34,
+            "top": 11392,
+            "bottom": 11426
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试晨光蜜桃妆",
+          "href": "/tryon-free?look=peach-morning-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 11805,
+            "width": 68,
+            "height": 34,
+            "top": 11805,
+            "bottom": 11839
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试上镜柔焦妆",
+          "href": "/tryon-free?look=photogenic&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 12217,
+            "width": 68,
+            "height": 34,
+            "top": 12217,
+            "bottom": 12251
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试轻熟精致妆",
+          "href": "/tryon-free?look=refined&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 12630,
+            "width": 68,
+            "height": 34,
+            "top": 12630,
+            "bottom": 12664
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试闪耀眼皮光泽妆",
+          "href": "/tryon-free?look=reflective-lid-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 13042,
+            "width": 68,
+            "height": 34,
+            "top": 13042,
+            "bottom": 13076
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试浪漫粉调妆",
+          "href": "/tryon-free?look=romantic-pink&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 13455,
+            "width": 68,
+            "height": 34,
+            "top": 13455,
+            "bottom": 13489
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试玫瑰奶茶妆",
+          "href": "/tryon-free?look=rose-milk-date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 13867,
+            "width": 68,
+            "height": 34,
+            "top": 13867,
+            "bottom": 13901
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔莓染唇妆",
+          "href": "/tryon-free?look=soft-berry-stain&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 14280,
+            "width": 68,
+            "height": 34,
+            "top": 14280,
+            "bottom": 14314
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔和编辑妆",
+          "href": "/tryon-free?look=soft-editorial&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 14692,
+            "width": 68,
+            "height": 34,
+            "top": 14692,
+            "bottom": 14726
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试日常柔雾妆",
+          "href": "/tryon-free?look=soft-matte-everyday&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 15105,
+            "width": 68,
+            "height": 34,
+            "top": 15105,
+            "bottom": 15139
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试夏日婚礼宾客妆",
+          "href": "/tryon-free?look=summer-wedding-guest&scenario=%E6%B4%BB%E5%8A%A8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 15517,
+            "width": 68,
+            "height": 34,
+            "top": 15517,
+            "bottom": 15551
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试晒后缎光妆",
+          "href": "/tryon-free?look=sunburn-satin-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 15930,
+            "width": 68,
+            "height": 34,
+            "top": 15930,
+            "bottom": 15964
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试度假古铜妆",
+          "href": "/tryon-free?look=vacation-bronze&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 16342,
+            "width": 68,
+            "height": 34,
+            "top": 16342,
+            "bottom": 16376
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试暖调日常裸妆",
+          "href": "/tryon-free?look=warm-nude-daily&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 16755,
+            "width": 68,
+            "height": 34,
+            "top": 16755,
+            "bottom": 16789
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试水彩腮红妆",
+          "href": "/tryon-free?look=watercolor-blush&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 17167,
+            "width": 68,
+            "height": 34,
+            "top": 17167,
+            "bottom": 17201
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试婚礼宾客妆",
+          "href": "/tryon-free?look=wedding-guest&scenario=%E6%B4%BB%E5%8A%A8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 17580,
+            "width": 68,
+            "height": 34,
+            "top": 17580,
+            "bottom": 17614
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试周末光泽妆",
+          "href": "/tryon-free?look=weekend-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 17992,
+            "width": 68,
+            "height": 34,
+            "top": 17992,
+            "bottom": 18026
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "仅使用必要 Cookie",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 25,
+            "y": 785,
+            "width": 166,
+            "height": 38,
+            "top": 785,
+            "bottom": 823
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "同意全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 199,
+            "y": 785,
+            "width": 166,
+            "height": 38,
+            "top": 785,
+            "bottom": 823
+          },
+          "visible": true
+        }
+      ],
+      "buttons": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "打开导航菜单",
+          "href": "",
+          "rect": {
+            "x": 14,
+            "y": 4,
+            "width": 44,
+            "height": 44,
+            "top": 4,
+            "bottom": 48
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "切换至深色模式",
+          "href": "",
+          "rect": {
+            "x": 188,
+            "y": 4,
+            "width": 44,
+            "height": 44,
+            "top": 4,
+            "bottom": 48
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "选择语言",
+          "href": "",
+          "rect": {
+            "x": 240,
+            "y": 4,
+            "width": 44,
+            "height": 44,
+            "top": 4,
+            "bottom": 48
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "登录 / 注册",
+          "aria": "",
+          "href": "/login",
+          "rect": {
+            "x": 292,
+            "y": 4,
+            "width": 84,
+            "height": 44,
+            "top": 4,
+            "bottom": 48
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试新手自然妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 245,
+            "width": 314,
+            "height": 393,
+            "top": 245,
+            "bottom": 637
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 255,
+            "width": 68,
+            "height": 34,
+            "top": 255,
+            "bottom": 289
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试鎏金晚宴妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 657,
+            "width": 314,
+            "height": 393,
+            "top": 657,
+            "bottom": 1050
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 667,
+            "width": 68,
+            "height": 34,
+            "top": 667,
+            "bottom": 701
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试酒红丝绒妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 1070,
+            "width": 314,
+            "height": 393,
+            "top": 1070,
+            "bottom": 1462
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 1080,
+            "width": 68,
+            "height": 34,
+            "top": 1080,
+            "bottom": 1114
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试烛光灰粉妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 1482,
+            "width": 314,
+            "height": 393,
+            "top": 1482,
+            "bottom": 1875
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 1492,
+            "width": 68,
+            "height": 34,
+            "top": 1492,
+            "bottom": 1526
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试香槟宴会妆",
+          "aria": "上传自拍试香槟宴会妆",
+          "href": "/tryon-free?look=champagne-gala&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 1895,
+            "width": 314,
+            "height": 393,
+            "top": 1895,
+            "bottom": 2287
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试香槟宴会妆",
+          "href": "/tryon-free?look=champagne-gala&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 1905,
+            "width": 68,
+            "height": 34,
+            "top": 1905,
+            "bottom": 1939
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试客户会议裸妆",
+          "aria": "上传自拍试客户会议裸妆",
+          "href": "/tryon-free?look=client-meeting-nude&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 2307,
+            "width": 314,
+            "height": 393,
+            "top": 2307,
+            "bottom": 2700
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试客户会议裸妆",
+          "href": "/tryon-free?look=client-meeting-nude&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 2317,
+            "width": 68,
+            "height": 34,
+            "top": 2317,
+            "bottom": 2351
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试云感柔雾妆",
+          "aria": "上传自拍试云感柔雾妆",
+          "href": "/tryon-free?look=cloud-skin-matte&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 2720,
+            "width": 314,
+            "height": 393,
+            "top": 2720,
+            "bottom": 3112
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试云感柔雾妆",
+          "href": "/tryon-free?look=cloud-skin-matte&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 2730,
+            "width": 68,
+            "height": 34,
+            "top": 2730,
+            "bottom": 2764
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试蜜桃气色妆",
+          "aria": "上传自拍试蜜桃气色妆",
+          "href": "/tryon-free?look=commute&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 3132,
+            "width": 314,
+            "height": 393,
+            "top": 3132,
+            "bottom": 3525
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃气色妆",
+          "href": "/tryon-free?look=commute&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 3142,
+            "width": 68,
+            "height": 34,
+            "top": 3142,
+            "bottom": 3176
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试镜头光泽妆",
+          "aria": "上传自拍试镜头光泽妆",
+          "href": "/tryon-free?look=creator-camera-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 3545,
+            "width": 314,
+            "height": 393,
+            "top": 3545,
+            "bottom": 3937
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试镜头光泽妆",
+          "href": "/tryon-free?look=creator-camera-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 3555,
+            "width": 68,
+            "height": 34,
+            "top": 3555,
+            "bottom": 3589
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试温柔约会妆",
+          "aria": "上传自拍试温柔约会妆",
+          "href": "/tryon-free?look=date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 38,
+            "y": 3957,
+            "width": 314,
+            "height": 393,
+            "top": 3957,
+            "bottom": 4350
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试温柔约会妆",
+          "href": "/tryon-free?look=date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 274,
+            "y": 3967,
+            "width": 68,
+            "height": 34,
+            "top": 3967,
+            "bottom": 4001
+          },
+          "visible": true
+        }
+      ],
+      "imageCount": 46,
+      "brokenImages": [],
+      "missingAlt": [
+        {
+          "src": "/images/logo.svg",
+          "alt": "",
+          "rect": {
+            "x": 70,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "complete": true,
+          "naturalWidth": 150,
+          "naturalHeight": 150
+        },
+        {
+          "src": "/images/logo.svg",
+          "alt": "",
+          "rect": {
+            "x": 14,
+            "y": 18571,
+            "width": 20,
+            "height": 20,
+            "top": 18571,
+            "bottom": 18591
+          },
+          "complete": true,
+          "naturalWidth": 150,
+          "naturalHeight": 150
+        }
+      ],
+      "cookieVisible": true,
+      "cookieRect": {
+        "x": 14,
+        "y": 706,
+        "width": 362,
+        "height": 128,
+        "top": 706,
+        "bottom": 834
+      },
+      "headerRect": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 52,
+        "top": 0,
+        "bottom": 52
+      },
+      "gridRect": {
+        "x": 37,
+        "y": 244,
+        "width": 316,
+        "height": 18132,
+        "top": 244,
+        "bottom": 18376
+      },
+      "footerSummary": "共 44 个妆容，可选择后上传自拍试妆"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": []
+  },
+  "dark": {
+    "metrics": {
+      "title": "按场景找妆容 | AI Beauty Stylist",
+      "lang": "zh-CN",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scroll": {
+        "width": 1440,
+        "height": 6731,
+        "clientWidth": 1440
+      },
+      "hasHorizontalOverflow": false,
+      "h1": "按场景找妆容",
+      "intro": "先按通勤、约会、拍照和活动场景缩小范围，再看妆感和上手难度。浏览妆容不扣次数，上传自拍生成时才使用额度。",
+      "filterPanel": {
+        "x": 86,
+        "y": 193,
+        "width": 232,
+        "height": 725,
+        "top": 193,
+        "bottom": 918
+      },
+      "filterPanelDisplay": "block",
+      "filterChipCount": 13,
+      "activeFilters": [
+        "全部",
+        "全部",
+        "全部"
+      ],
+      "cardCount": 44,
+      "visibleCards": 44,
+      "firstCards": [
+        {
+          "title": "新手自然妆",
+          "intent": "新手自然妆，适合日常场景，重点呈现清透、自然妆效。",
+          "rect": {
+            "x": 369,
+            "y": 216,
+            "width": 308,
+            "height": 385,
+            "top": 216,
+            "bottom": 601
+          },
+          "copyRect": {
+            "x": 370,
+            "y": 491,
+            "width": 306,
+            "height": 110,
+            "top": 491,
+            "bottom": 600
+          },
+          "actionRect": {
+            "x": 599,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          }
+        },
+        {
+          "title": "鎏金晚宴妆",
+          "intent": "鎏金晚宴妆，适合晚宴、活动场景，重点呈现暖调、立体妆效。",
+          "rect": {
+            "x": 696,
+            "y": 216,
+            "width": 308,
+            "height": 385,
+            "top": 216,
+            "bottom": 601
+          },
+          "copyRect": {
+            "x": 697,
+            "y": 491,
+            "width": 306,
+            "height": 110,
+            "top": 491,
+            "bottom": 600
+          },
+          "actionRect": {
+            "x": 925,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          }
+        },
+        {
+          "title": "酒红丝绒妆",
+          "intent": "酒红丝绒妆，适合晚宴、活动场景，重点呈现丝绒、显气色妆效。",
+          "rect": {
+            "x": 1022,
+            "y": 216,
+            "width": 308,
+            "height": 385,
+            "top": 216,
+            "bottom": 601
+          },
+          "copyRect": {
+            "x": 1023,
+            "y": 491,
+            "width": 306,
+            "height": 110,
+            "top": 491,
+            "bottom": 600
+          },
+          "actionRect": {
+            "x": 1252,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          }
+        },
+        {
+          "title": "烛光灰粉妆",
+          "intent": "烛光灰粉妆，适合约会、晚宴场景，重点呈现柔雾、低饱和妆效。",
+          "rect": {
+            "x": 369,
+            "y": 619,
+            "width": 308,
+            "height": 385,
+            "top": 619,
+            "bottom": 1004
+          },
+          "copyRect": {
+            "x": 370,
+            "y": 894,
+            "width": 306,
+            "height": 110,
+            "top": 894,
+            "bottom": 1003
+          },
+          "actionRect": {
+            "x": 599,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          }
+        },
+        {
+          "title": "香槟宴会妆",
+          "intent": "香槟宴会妆，适合晚宴、活动场景，重点呈现光泽、精致妆效。",
+          "rect": {
+            "x": 696,
+            "y": 619,
+            "width": 308,
+            "height": 385,
+            "top": 619,
+            "bottom": 1004
+          },
+          "copyRect": {
+            "x": 697,
+            "y": 894,
+            "width": 306,
+            "height": 110,
+            "top": 894,
+            "bottom": 1003
+          },
+          "actionRect": {
+            "x": 925,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          }
+        },
+        {
+          "title": "客户会议裸妆",
+          "intent": "客户会议裸妆，适合通勤、面试场景，重点呈现自然、专业妆效。",
+          "rect": {
+            "x": 1022,
+            "y": 619,
+            "width": 308,
+            "height": 385,
+            "top": 619,
+            "bottom": 1004
+          },
+          "copyRect": {
+            "x": 1023,
+            "y": 894,
+            "width": 306,
+            "height": 110,
+            "top": 894,
+            "bottom": 1003
+          },
+          "actionRect": {
+            "x": 1252,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          }
+        }
+      ],
+      "headings": [
+        {
+          "tag": "H1",
+          "text": "按场景找妆容",
+          "rect": {
+            "x": 86,
+            "y": 52,
+            "width": 1267,
+            "height": 55,
+            "top": 52,
+            "bottom": 107
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "新手自然妆",
+          "rect": {
+            "x": 384,
+            "y": 523,
+            "width": 278,
+            "height": 22,
+            "top": 523,
+            "bottom": 545
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "鎏金晚宴妆",
+          "rect": {
+            "x": 711,
+            "y": 523,
+            "width": 278,
+            "height": 22,
+            "top": 523,
+            "bottom": 545
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "酒红丝绒妆",
+          "rect": {
+            "x": 1037,
+            "y": 523,
+            "width": 278,
+            "height": 22,
+            "top": 523,
+            "bottom": 545
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "烛光灰粉妆",
+          "rect": {
+            "x": 384,
+            "y": 926,
+            "width": 278,
+            "height": 22,
+            "top": 926,
+            "bottom": 948
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "香槟宴会妆",
+          "rect": {
+            "x": 711,
+            "y": 926,
+            "width": 278,
+            "height": 22,
+            "top": 926,
+            "bottom": 948
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "客户会议裸妆",
+          "rect": {
+            "x": 1037,
+            "y": 926,
+            "width": 278,
+            "height": 22,
+            "top": 926,
+            "bottom": 948
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "云感柔雾妆",
+          "rect": {
+            "x": 384,
+            "y": 1329,
+            "width": 278,
+            "height": 22,
+            "top": 1329,
+            "bottom": 1351
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "蜜桃气色妆",
+          "rect": {
+            "x": 711,
+            "y": 1329,
+            "width": 278,
+            "height": 22,
+            "top": 1329,
+            "bottom": 1351
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "镜头光泽妆",
+          "rect": {
+            "x": 1037,
+            "y": 1329,
+            "width": 278,
+            "height": 22,
+            "top": 1329,
+            "bottom": 1351
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "温柔约会妆",
+          "rect": {
+            "x": 384,
+            "y": 1732,
+            "width": 278,
+            "height": 22,
+            "top": 1732,
+            "bottom": 1754
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔焦氛围妆",
+          "rect": {
+            "x": 711,
+            "y": 1732,
+            "width": 278,
+            "height": 22,
+            "top": 1732,
+            "bottom": 1754
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "精致晚间妆",
+          "rect": {
+            "x": 1037,
+            "y": 1732,
+            "width": 278,
+            "height": 22,
+            "top": 1732,
+            "bottom": 1754
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "职场玫瑰妆",
+          "rect": {
+            "x": 384,
+            "y": 2135,
+            "width": 278,
+            "height": 22,
+            "top": 2135,
+            "bottom": 2157
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "五分钟新手妆",
+          "rect": {
+            "x": 711,
+            "y": 2135,
+            "width": 278,
+            "height": 22,
+            "top": 2135,
+            "bottom": 2157
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "闪光灯缎光妆",
+          "rect": {
+            "x": 1037,
+            "y": 2135,
+            "width": 278,
+            "height": 22,
+            "top": 2135,
+            "bottom": 2157
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "法式自然妆",
+          "rect": {
+            "x": 384,
+            "y": 2538,
+            "width": 278,
+            "height": 22,
+            "top": 2538,
+            "bottom": 2560
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "肿眼泡提拉眼妆",
+          "rect": {
+            "x": 711,
+            "y": 2538,
+            "width": 278,
+            "height": 22,
+            "top": 2538,
+            "bottom": 2560
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "面试精神妆",
+          "rect": {
+            "x": 1037,
+            "y": 2538,
+            "width": 278,
+            "height": 22,
+            "top": 2538,
+            "bottom": 2560
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "果冻唇妆",
+          "rect": {
+            "x": 384,
+            "y": 2941,
+            "width": 278,
+            "height": 22,
+            "top": 2941,
+            "bottom": 2963
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "韩系水光妆",
+          "rect": {
+            "x": 711,
+            "y": 2941,
+            "width": 278,
+            "height": 22,
+            "top": 2941,
+            "bottom": 2963
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "韩系清透妆",
+          "rect": {
+            "x": 1037,
+            "y": 2941,
+            "width": 278,
+            "height": 22,
+            "top": 2941,
+            "bottom": 2963
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "拉丁暖金妆",
+          "rect": {
+            "x": 384,
+            "y": 3344,
+            "width": 278,
+            "height": 22,
+            "top": 3344,
+            "bottom": 3366
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "熟龄焕亮妆",
+          "rect": {
+            "x": 711,
+            "y": 3344,
+            "width": 278,
+            "height": 22,
+            "top": 3344,
+            "bottom": 3366
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "单眼皮清透眼妆",
+          "rect": {
+            "x": 1037,
+            "y": 3344,
+            "width": 278,
+            "height": 22,
+            "top": 3344,
+            "bottom": 3366
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "清透裸妆",
+          "rect": {
+            "x": 384,
+            "y": 3747,
+            "width": 278,
+            "height": 22,
+            "top": 3747,
+            "bottom": 3769
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "橄榄皮玫瑰妆",
+          "rect": {
+            "x": 711,
+            "y": 3747,
+            "width": 278,
+            "height": 22,
+            "top": 3747,
+            "bottom": 3769
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "证件照干净妆",
+          "rect": {
+            "x": 1037,
+            "y": 3747,
+            "width": 278,
+            "height": 22,
+            "top": 3747,
+            "bottom": 3769
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "蜜桃米色约会妆",
+          "rect": {
+            "x": 384,
+            "y": 4150,
+            "width": 278,
+            "height": 22,
+            "top": 4150,
+            "bottom": 4172
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "晨光蜜桃妆",
+          "rect": {
+            "x": 711,
+            "y": 4150,
+            "width": 278,
+            "height": 22,
+            "top": 4150,
+            "bottom": 4172
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "上镜柔焦妆",
+          "rect": {
+            "x": 1037,
+            "y": 4150,
+            "width": 278,
+            "height": 22,
+            "top": 4150,
+            "bottom": 4172
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "轻熟精致妆",
+          "rect": {
+            "x": 384,
+            "y": 4553,
+            "width": 278,
+            "height": 22,
+            "top": 4553,
+            "bottom": 4575
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "闪耀眼皮光泽妆",
+          "rect": {
+            "x": 711,
+            "y": 4553,
+            "width": 278,
+            "height": 22,
+            "top": 4553,
+            "bottom": 4575
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "浪漫粉调妆",
+          "rect": {
+            "x": 1037,
+            "y": 4553,
+            "width": 278,
+            "height": 22,
+            "top": 4553,
+            "bottom": 4575
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "玫瑰奶茶妆",
+          "rect": {
+            "x": 384,
+            "y": 4956,
+            "width": 278,
+            "height": 22,
+            "top": 4956,
+            "bottom": 4978
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔莓染唇妆",
+          "rect": {
+            "x": 711,
+            "y": 4956,
+            "width": 278,
+            "height": 22,
+            "top": 4956,
+            "bottom": 4978
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "柔和编辑妆",
+          "rect": {
+            "x": 1037,
+            "y": 4956,
+            "width": 278,
+            "height": 22,
+            "top": 4956,
+            "bottom": 4978
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "日常柔雾妆",
+          "rect": {
+            "x": 384,
+            "y": 5359,
+            "width": 278,
+            "height": 22,
+            "top": 5359,
+            "bottom": 5381
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "夏日婚礼宾客妆",
+          "rect": {
+            "x": 711,
+            "y": 5359,
+            "width": 278,
+            "height": 22,
+            "top": 5359,
+            "bottom": 5381
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "晒后缎光妆",
+          "rect": {
+            "x": 1037,
+            "y": 5359,
+            "width": 278,
+            "height": 22,
+            "top": 5359,
+            "bottom": 5381
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "度假古铜妆",
+          "rect": {
+            "x": 384,
+            "y": 5762,
+            "width": 278,
+            "height": 22,
+            "top": 5762,
+            "bottom": 5784
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "暖调日常裸妆",
+          "rect": {
+            "x": 711,
+            "y": 5762,
+            "width": 278,
+            "height": 22,
+            "top": 5762,
+            "bottom": 5784
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "水彩腮红妆",
+          "rect": {
+            "x": 1037,
+            "y": 5762,
+            "width": 278,
+            "height": 22,
+            "top": 5762,
+            "bottom": 5784
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "婚礼宾客妆",
+          "rect": {
+            "x": 384,
+            "y": 6165,
+            "width": 278,
+            "height": 22,
+            "top": 6165,
+            "bottom": 6187
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "周末光泽妆",
+          "rect": {
+            "x": 711,
+            "y": 6165,
+            "width": 278,
+            "height": 22,
+            "top": 6165,
+            "bottom": 6187
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "暂时没有匹配的妆容",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "bottom": 0
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "产品服务",
+          "rect": {
+            "x": 509,
+            "y": 6454,
+            "width": 260,
+            "height": 20,
+            "top": 6454,
+            "bottom": 6474
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "支持与帮助",
+          "rect": {
+            "x": 801,
+            "y": 6454,
+            "width": 260,
+            "height": 20,
+            "top": 6454,
+            "bottom": 6474
+          }
+        },
+        {
+          "tag": "H3",
+          "text": "关于与合规",
+          "rect": {
+            "x": 1093,
+            "y": 6454,
+            "width": 260,
+            "height": 20,
+            "top": 6454,
+            "bottom": 6474
+          }
+        }
+      ],
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "切换至浅色模式",
+          "href": "",
+          "rect": {
+            "x": 1182,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "选择语言",
+          "href": "",
+          "rect": {
+            "x": 1226,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "登录 / 注册",
+          "aria": "",
+          "href": "/login",
+          "rect": {
+            "x": 1270,
+            "y": 9,
+            "width": 84,
+            "height": 34,
+            "top": 9,
+            "bottom": 43
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "↻ 清空筛选",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 857,
+            "width": 190,
+            "height": 40,
+            "top": 857,
+            "bottom": 897
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试香槟宴会妆",
+          "href": "/tryon-free?look=champagne-gala&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试客户会议裸妆",
+          "href": "/tryon-free?look=client-meeting-nude&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 630,
+            "width": 68,
+            "height": 34,
+            "top": 630,
+            "bottom": 664
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试云感柔雾妆",
+          "href": "/tryon-free?look=cloud-skin-matte&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 1033,
+            "width": 68,
+            "height": 34,
+            "top": 1033,
+            "bottom": 1067
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃气色妆",
+          "href": "/tryon-free?look=commute&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 1033,
+            "width": 68,
+            "height": 34,
+            "top": 1033,
+            "bottom": 1067
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试镜头光泽妆",
+          "href": "/tryon-free?look=creator-camera-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 1033,
+            "width": 68,
+            "height": 34,
+            "top": 1033,
+            "bottom": 1067
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试温柔约会妆",
+          "href": "/tryon-free?look=date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 1436,
+            "width": 68,
+            "height": 34,
+            "top": 1436,
+            "bottom": 1470
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔焦氛围妆",
+          "href": "/tryon-free?look=douyin-soft-focus&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 1436,
+            "width": 68,
+            "height": 34,
+            "top": 1436,
+            "bottom": 1470
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试精致晚间妆",
+          "href": "/tryon-free?look=evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 1436,
+            "width": 68,
+            "height": 34,
+            "top": 1436,
+            "bottom": 1470
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试职场玫瑰妆",
+          "href": "/tryon-free?look=executive-rose&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 1839,
+            "width": 68,
+            "height": 34,
+            "top": 1839,
+            "bottom": 1873
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试五分钟新手妆",
+          "href": "/tryon-free?look=five-minute-beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 1839,
+            "width": 68,
+            "height": 34,
+            "top": 1839,
+            "bottom": 1873
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试闪光灯缎光妆",
+          "href": "/tryon-free?look=flash-proof-satin&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 1839,
+            "width": 68,
+            "height": 34,
+            "top": 1839,
+            "bottom": 1873
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试法式自然妆",
+          "href": "/tryon-free?look=french-natural-chic&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 2242,
+            "width": 68,
+            "height": 34,
+            "top": 2242,
+            "bottom": 2276
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试肿眼泡提拉眼妆",
+          "href": "/tryon-free?look=hooded-eyes-lift&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 2242,
+            "width": 68,
+            "height": 34,
+            "top": 2242,
+            "bottom": 2276
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试面试精神妆",
+          "href": "/tryon-free?look=interview-ready&scenario=%E9%9D%A2%E8%AF%95&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 2242,
+            "width": 68,
+            "height": 34,
+            "top": 2242,
+            "bottom": 2276
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试果冻唇妆",
+          "href": "/tryon-free?look=jelly-lip-tint&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 2645,
+            "width": 68,
+            "height": 34,
+            "top": 2645,
+            "bottom": 2679
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试韩系水光妆",
+          "href": "/tryon-free?look=korean-dewy-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 2645,
+            "width": 68,
+            "height": 34,
+            "top": 2645,
+            "bottom": 2679
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试韩系清透妆",
+          "href": "/tryon-free?look=korean-dewy-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 2645,
+            "width": 68,
+            "height": 34,
+            "top": 2645,
+            "bottom": 2679
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试拉丁暖金妆",
+          "href": "/tryon-free?look=latina-bronze-glam&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 3048,
+            "width": 68,
+            "height": 34,
+            "top": 3048,
+            "bottom": 3082
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试熟龄焕亮妆",
+          "href": "/tryon-free?look=mature-skin-radiance&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 3048,
+            "width": 68,
+            "height": 34,
+            "top": 3048,
+            "bottom": 3082
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试单眼皮清透眼妆",
+          "href": "/tryon-free?look=monolid-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 3048,
+            "width": 68,
+            "height": 34,
+            "top": 3048,
+            "bottom": 3082
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试清透裸妆",
+          "href": "/tryon-free?look=no-makeup&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 3451,
+            "width": 68,
+            "height": 34,
+            "top": 3451,
+            "bottom": 3485
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试橄榄皮玫瑰妆",
+          "href": "/tryon-free?look=olive-undertone-rose&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 3451,
+            "width": 68,
+            "height": 34,
+            "top": 3451,
+            "bottom": 3485
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试证件照干净妆",
+          "href": "/tryon-free?look=passport-photo-clean&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 3451,
+            "width": 68,
+            "height": 34,
+            "top": 3451,
+            "bottom": 3485
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试蜜桃米色约会妆",
+          "href": "/tryon-free?look=peach-beige-date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 3854,
+            "width": 68,
+            "height": 34,
+            "top": 3854,
+            "bottom": 3888
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试晨光蜜桃妆",
+          "href": "/tryon-free?look=peach-morning-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 3854,
+            "width": 68,
+            "height": 34,
+            "top": 3854,
+            "bottom": 3888
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试上镜柔焦妆",
+          "href": "/tryon-free?look=photogenic&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 3854,
+            "width": 68,
+            "height": 34,
+            "top": 3854,
+            "bottom": 3888
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试轻熟精致妆",
+          "href": "/tryon-free?look=refined&scenario=%E9%80%9A%E5%8B%A4&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 4257,
+            "width": 68,
+            "height": 34,
+            "top": 4257,
+            "bottom": 4291
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试闪耀眼皮光泽妆",
+          "href": "/tryon-free?look=reflective-lid-glow&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 4257,
+            "width": 68,
+            "height": 34,
+            "top": 4257,
+            "bottom": 4291
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试浪漫粉调妆",
+          "href": "/tryon-free?look=romantic-pink&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 4257,
+            "width": 68,
+            "height": 34,
+            "top": 4257,
+            "bottom": 4291
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试玫瑰奶茶妆",
+          "href": "/tryon-free?look=rose-milk-date&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 4660,
+            "width": 68,
+            "height": 34,
+            "top": 4660,
+            "bottom": 4694
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔莓染唇妆",
+          "href": "/tryon-free?look=soft-berry-stain&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 4660,
+            "width": 68,
+            "height": 34,
+            "top": 4660,
+            "bottom": 4694
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试柔和编辑妆",
+          "href": "/tryon-free?look=soft-editorial&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 4660,
+            "width": 68,
+            "height": 34,
+            "top": 4660,
+            "bottom": 4694
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试日常柔雾妆",
+          "href": "/tryon-free?look=soft-matte-everyday&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 5063,
+            "width": 68,
+            "height": 34,
+            "top": 5063,
+            "bottom": 5097
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试夏日婚礼宾客妆",
+          "href": "/tryon-free?look=summer-wedding-guest&scenario=%E6%B4%BB%E5%8A%A8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 5063,
+            "width": 68,
+            "height": 34,
+            "top": 5063,
+            "bottom": 5097
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试晒后缎光妆",
+          "href": "/tryon-free?look=sunburn-satin-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 5063,
+            "width": 68,
+            "height": 34,
+            "top": 5063,
+            "bottom": 5097
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试度假古铜妆",
+          "href": "/tryon-free?look=vacation-bronze&scenario=%E6%8B%8D%E7%85%A7&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 5466,
+            "width": 68,
+            "height": 34,
+            "top": 5466,
+            "bottom": 5500
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试暖调日常裸妆",
+          "href": "/tryon-free?look=warm-nude-daily&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 5466,
+            "width": 68,
+            "height": 34,
+            "top": 5466,
+            "bottom": 5500
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试水彩腮红妆",
+          "href": "/tryon-free?look=watercolor-blush&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 5466,
+            "width": 68,
+            "height": 34,
+            "top": 5466,
+            "bottom": 5500
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试婚礼宾客妆",
+          "href": "/tryon-free?look=wedding-guest&scenario=%E6%B4%BB%E5%8A%A8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 5869,
+            "width": 68,
+            "height": 34,
+            "top": 5869,
+            "bottom": 5903
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试周末光泽妆",
+          "href": "/tryon-free?look=weekend-glow&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 5869,
+            "width": 68,
+            "height": 34,
+            "top": 5869,
+            "bottom": 5903
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Cookie 偏好设置",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 801,
+            "y": 6548,
+            "width": 260,
+            "height": 19,
+            "top": 6548,
+            "bottom": 6567
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "仅使用必要 Cookie",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 1054,
+            "y": 899,
+            "width": 139,
+            "height": 42,
+            "top": 899,
+            "bottom": 941
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "同意全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 1203,
+            "y": 899,
+            "width": 84,
+            "height": 42,
+            "top": 899,
+            "bottom": 941
+          },
+          "visible": true
+        }
+      ],
+      "buttons": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "切换至浅色模式",
+          "href": "",
+          "rect": {
+            "x": 1182,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": "选择语言",
+          "href": "",
+          "rect": {
+            "x": 1226,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "登录 / 注册",
+          "aria": "",
+          "href": "/login",
+          "rect": {
+            "x": 1270,
+            "y": 9,
+            "width": 84,
+            "height": 34,
+            "top": 9,
+            "bottom": 43
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 252,
+            "width": 90,
+            "height": 44,
+            "top": 252,
+            "bottom": 296
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "通勤",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 252,
+            "width": 90,
+            "height": 44,
+            "top": 252,
+            "bottom": 296
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "约会",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 307,
+            "width": 90,
+            "height": 44,
+            "top": 307,
+            "bottom": 351
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "拍照",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 307,
+            "width": 90,
+            "height": 44,
+            "top": 307,
+            "bottom": 351
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "活动",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 362,
+            "width": 90,
+            "height": 44,
+            "top": 362,
+            "bottom": 406
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 485,
+            "width": 90,
+            "height": 44,
+            "top": 485,
+            "bottom": 529
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "清透",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 485,
+            "width": 90,
+            "height": 44,
+            "top": 485,
+            "bottom": 529
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "柔雾",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 540,
+            "width": 90,
+            "height": 44,
+            "top": 540,
+            "bottom": 584
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "显气色",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 540,
+            "width": 90,
+            "height": 44,
+            "top": 540,
+            "bottom": 584
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "上镜",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 595,
+            "width": 90,
+            "height": 44,
+            "top": 595,
+            "bottom": 639
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "全部",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 718,
+            "width": 90,
+            "height": 44,
+            "top": 718,
+            "bottom": 762
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "新手",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 208,
+            "y": 718,
+            "width": 90,
+            "height": 44,
+            "top": 718,
+            "bottom": 762
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "进阶",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 773,
+            "width": 90,
+            "height": 44,
+            "top": 773,
+            "bottom": 817
+          },
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "text": "↻ 清空筛选",
+          "aria": "",
+          "href": "",
+          "rect": {
+            "x": 107,
+            "y": 857,
+            "width": 190,
+            "height": 40,
+            "top": 857,
+            "bottom": 897
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试新手自然妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 370,
+            "y": 217,
+            "width": 306,
+            "height": 383,
+            "top": 217,
+            "bottom": 600
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试新手自然妆",
+          "href": "/tryon-free?look=beginner&scenario=%E6%97%A5%E5%B8%B8&source=discover_library",
+          "rect": {
+            "x": 599,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试鎏金晚宴妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 697,
+            "y": 217,
+            "width": 306,
+            "height": 383,
+            "top": 217,
+            "bottom": 600
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试鎏金晚宴妆",
+          "href": "/tryon-free?look=bronze-evening&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 925,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试酒红丝绒妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 1023,
+            "y": 217,
+            "width": 306,
+            "height": 383,
+            "top": 217,
+            "bottom": 600
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "试这个妆",
+          "aria": "上传自拍试酒红丝绒妆",
+          "href": "/tryon-free?look=burgundy-velvet&scenario=%E6%99%9A%E5%AE%B4&source=discover_library",
+          "rect": {
+            "x": 1252,
+            "y": 227,
+            "width": 68,
+            "height": 34,
+            "top": 227,
+            "bottom": 261
+          },
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "text": "上传自拍试烛光灰粉妆",
+          "aria": "上传自拍试烛光灰粉妆",
+          "href": "/tryon-free?look=candlelight-mauve&scenario=%E7%BA%A6%E4%BC%9A&source=discover_library",
+          "rect": {
+            "x": 370,
+            "y": 620,
+            "width": 306,
+            "height": 383,
+            "top": 620,
+            "bottom": 1003
+          },
+          "visible": true
+        }
+      ],
+      "imageCount": 46,
+      "brokenImages": [],
+      "missingAlt": [
+        {
+          "src": "/images/logo.svg",
+          "alt": "",
+          "rect": {
+            "x": 86,
+            "y": 8,
+            "width": 36,
+            "height": 36,
+            "top": 8,
+            "bottom": 44
+          },
+          "complete": true,
+          "naturalWidth": 150,
+          "naturalHeight": 150
+        },
+        {
+          "src": "/images/logo.svg",
+          "alt": "",
+          "rect": {
+            "x": 86,
+            "y": 6454,
+            "width": 20,
+            "height": 20,
+            "top": 6454,
+            "bottom": 6474
+          },
+          "complete": true,
+          "naturalWidth": 150,
+          "naturalHeight": 150
+        }
+      ],
+      "cookieVisible": true,
+      "cookieRect": {
+        "x": 130,
+        "y": 862,
+        "width": 1180,
+        "height": 116,
+        "top": 862,
+        "bottom": 978
+      },
+      "headerRect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 52,
+        "top": 0,
+        "bottom": 52
+      },
+      "gridRect": {
+        "x": 369,
+        "y": 216,
+        "width": 961,
+        "height": 6027,
+        "top": 216,
+        "bottom": 6243
+      },
+      "footerSummary": "共 44 个妆容，可选择后上传自拍试妆"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": []
+  }
+}

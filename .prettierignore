@@ -1,0 +1,18 @@
+# Original prototypes and product documents are preserved as source baselines.
+/*.html
+/styles.css
+/app.js
+/*.md
+/UI/
+/docs/
+/app/
+
+# Copied public assets mirror the preserved prototype files.
+/public/
+
+# Generated and dependency directories
+/node_modules/
+/dist/
+/.astro/
+/.wrangler/
+/coverage/

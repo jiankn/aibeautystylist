@@ -1,0 +1,1468 @@
+---
+import BrandWordmark from "./BrandWordmark.astro";
+import { languageConfigs } from "../i18n/config";
+import { getLocalizedPathForRoute } from "../i18n/localizedSeoPages";
+import {
+  addLocalePrefix,
+  getLocalizedAppHref,
+  getLocalizedPathname,
+  resolveLocaleRoute,
+} from "../i18n/routing";
+import { t } from "../lib/i18n";
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const activeLanguageSlug = currentRoute.language.slug;
+const localizeHref = (href: string) =>
+  getLocalizedPathname(href, currentRoute.language.slug);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const localizeSeoHref = (href: string) => {
+  if (currentRoute.language.slug === "en") return href;
+  const localizedPath = getLocalizedPathForRoute(
+    "en",
+    href,
+    currentRoute.language.slug,
+  );
+  return localizedPath
+    ? addLocalePrefix(localizedPath, currentRoute.language.slug)
+    : href;
+};
+const appRoutePathnames = new Set([
+  "/tryon-free",
+  "/discover",
+  "/diagnosis",
+  "/pricing",
+  "/login",
+  "/account",
+  "/tryon-pro",
+  "/tryon-premium",
+]);
+const languageSwitchHref = (languageSlug: string) => {
+  if (appRoutePathnames.has(currentRoute.routePathname)) {
+    return getLocalizedAppHref(
+      `${currentRoute.routePathname}${Astro.url.search}${Astro.url.hash}`,
+      languageSlug,
+    );
+  }
+  return getLocalizedPathname(currentPathname, languageSlug);
+};
+
+interface Props {
+  active?: "tryOn" | "discover" | "blog" | "diagnosis" | "pricing";
+  mark?: string;
+  markClass?: string;
+  showAuth?: boolean;
+  userLabel?: string;
+  minimal?: boolean;
+}
+
+const {
+  active,
+  mark = "",
+  markClass = "",
+  showAuth = true,
+  userLabel,
+  minimal = false,
+} = Astro.props as Props;
+
+const links = [
+  {
+    id: "tryOn",
+    href: localizeAppHref("/tryon-free"),
+    label: t("navigation", "tryOn"),
+  },
+  {
+    id: "discover",
+    href: localizeAppHref("/discover"),
+    label: t("navigation", "discover"),
+  },
+  {
+    id: "diagnosis",
+    href: localizeAppHref("/diagnosis"),
+    label: t("navigation", "diagnosis"),
+  },
+  {
+    id: "pricing",
+    href: localizeAppHref("/pricing"),
+    label: t("navigation", "pricing"),
+  },
+] as const;
+
+const guideEntries = [
+  {
+    href: localizeHref("/blog"),
+    label: t("navigation", "blog"),
+    description: t("navigation", "guideBeautyNotesDesc"),
+  },
+  {
+    href: localizeSeoHref("/looks/soft-glam"),
+    label: t("footer", "makeupStyles"),
+    description: t("navigation", "guideStylesDesc"),
+  },
+  {
+    href: localizeSeoHref("/scenarios/office"),
+    label: t("footer", "scenarios"),
+    description: t("navigation", "guideScenariosDesc"),
+  },
+  {
+    href: localizeSeoHref("/for/hooded-eyes"),
+    label: t("footer", "featureGuides"),
+    description: t("navigation", "guideFeaturesDesc"),
+  },
+  {
+    href: localizeSeoHref("/guides/beginner-tutorial"),
+    label: t("footer", "beginnerGuide"),
+    description: t("navigation", "guideBeginnerDesc"),
+  },
+  {
+    href: localizeSeoHref("/guides/makeup-essentials"),
+    label: t("footer", "makeupEssentials"),
+    description: t("navigation", "guideEssentialsDesc"),
+  },
+] as const;
+
+const featuredGuide = {
+  href: localizeHref("/blog/ai-tryon-vs-beauty-filters"),
+  image: "/images/article-ai-tryon-comparison.webp",
+  title: t("navigation", "guideFeaturedTitle"),
+};
+
+const authEntryHref = localizeAppHref("/login?mode=register");
+const authAccountHref = localizeAppHref("/account");
+const authEntryLabel = t("navigation", "login");
+const authEntryShortLabel = t("navigation", "loginShort");
+
+const languageOptions = languageConfigs
+  .filter((language) => language.includeInLanguageSwitcher)
+  .map((language) => ({
+    ...language,
+    active: language.slug === activeLanguageSlug,
+    href: languageSwitchHref(language.slug),
+  }));
+---
+
+<header class:list={["site-header", { "site-header-minimal": minimal }]}>
+  <nav class="site-nav shell" aria-label={t("navigation", "mainNav")}>
+    <a class="brand" href={localizeHref("/")} aria-label={t("brand", "name")}>
+      {
+        mark ? (
+          <span
+            class:list={["brand-mark", markClass, "brand-mark-custom"]}
+            aria-hidden="true"
+          >
+            <span class="brand-symbol">{mark}</span>
+          </span>
+        ) : (
+          <img
+            class="brand-logo-img"
+            src="/images/logo-ui.webp"
+            alt=""
+            aria-hidden="true"
+          />
+        )
+      }
+      <BrandWordmark variant="header" />
+    </a>
+    {
+      !minimal && (
+        <>
+          <div class="nav-links">
+            {links.slice(0, 2).map((link) => (
+              <a class:list={{ active: active === link.id }} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+            <details class="guides-menu" data-guides-menu>
+              <summary class:list={{ active: active === "blog" }}>
+                <span>{t("navigation", "guides")}</span>
+                <span class="guides-chevron" aria-hidden="true" />
+              </summary>
+              <div class="guides-mega">
+                <section class="guides-directory">
+                  <p class="guides-eyebrow">
+                    {t("navigation", "guideMenuEyebrow")}
+                  </p>
+                  <nav
+                    class="guides-entry-grid"
+                    aria-label={t("navigation", "guideMenuEyebrow")}
+                  >
+                    {guideEntries.map((entry) => (
+                      <a class="guide-entry" href={entry.href}>
+                        <strong>{entry.label}</strong>
+                        <span>{entry.description}</span>
+                      </a>
+                    ))}
+                  </nav>
+                </section>
+                <aside class="guides-feature">
+                  <p class="guides-eyebrow">
+                    {t("navigation", "guideFeatured")}
+                  </p>
+                  <a class="guide-feature-link" href={featuredGuide.href}>
+                    <img
+                      src={featuredGuide.image}
+                      alt=""
+                      width="640"
+                      height="360"
+                      loading="eager"
+                    />
+                    <strong>{featuredGuide.title}</strong>
+                    <span>
+                      {t("navigation", "guideFeaturedAction")}
+                      <i aria-hidden="true">→</i>
+                    </span>
+                  </a>
+                </aside>
+              </div>
+            </details>
+            {links.slice(2).map((link) => (
+              <a class:list={{ active: active === link.id }} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+          </div>
+          <button
+            class="mobile-menu-toggle keep-mobile"
+            type="button"
+            data-mobile-toggle
+            aria-label={t("navigation", "openMenu")}
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+          >
+            <span class="hamburger-icon" aria-hidden="true" />
+          </button>
+        </>
+      )
+    }
+    <div class="nav-actions">
+      <button
+        class="btn nav-control keep-mobile"
+        id="theme-toggle"
+        type="button"
+        aria-label={t("navigation", "toggleTheme")}
+        title={t("navigation", "toggleTheme")}
+        data-dark-label={t("navigation", "switchToDark")}
+        data-light-label={t("navigation", "switchToLight")}
+      >
+        <span class="nav-control-icon theme-icons" aria-hidden="true">
+          <svg
+            class="theme-icon theme-icon-moon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+          <svg
+            class="theme-icon theme-icon-sun"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="m4.93 4.93 1.42 1.42"></path>
+            <path d="m17.66 17.66 1.41 1.41"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="m6.34 17.66-1.41 1.41"></path>
+            <path d="m19.07 4.93-1.41 1.42"></path>
+          </svg>
+        </span>
+      </button>
+      <div class="lang-dropdown" id="lang-dropdown">
+        <button
+          class="btn nav-control keep-mobile"
+          id="lang-toggle"
+          type="button"
+          aria-label={t("navigation", "language")}
+          title={t("navigation", "language")}
+          aria-expanded="false"
+          aria-haspopup="true"
+          aria-controls="lang-menu"
+        >
+          <svg
+            class="nav-control-icon language-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m5 8 6 6"></path>
+            <path d="m4 14 6-6 2-3"></path>
+            <path d="M2 5h12"></path>
+            <path d="M7 2h1"></path>
+            <path d="m22 22-5-10-5 10"></path>
+            <path d="M14 18h6"></path>
+          </svg>
+        </button>
+        <ul class="lang-menu" id="lang-menu" role="menu">
+          {
+            languageOptions.map((language) => (
+              <li role="none">
+                <button
+                  class:list={["lang-option", { active: language.active }]}
+                  type="button"
+                  data-locale={language.locale}
+                  data-href={language.href}
+                  role="menuitemradio"
+                  aria-checked={language.active}
+                >
+                  <span>{language.nativeLabel}</span>
+                  <svg
+                    class="lang-check"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="m20 6-11 11-5-5" />
+                  </svg>
+                </button>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      {
+        userLabel ? (
+          <span class="avatar">{userLabel}</span>
+        ) : showAuth ? (
+          <a
+            class="btn btn-primary auth-entry-btn keep-mobile"
+            href={authEntryHref}
+            data-auth-entry
+            data-auth-href={authEntryHref}
+            data-account-href={authAccountHref}
+            data-auth-label={authEntryLabel}
+            data-auth-short-label={authEntryShortLabel}
+            aria-label={authEntryLabel}
+          >
+            <svg
+              class="auth-entry-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6" />
+            </svg>
+            <span class="auth-entry-label-desktop" aria-hidden="true">
+              {authEntryLabel}
+            </span>
+            <span class="auth-entry-label-mobile" aria-hidden="true">
+              {authEntryShortLabel}
+            </span>
+          </a>
+        ) : null
+      }
+    </div>
+  </nav>
+</header>
+{
+  !minimal && (
+    <>
+      <div
+        class="mobile-nav-backdrop"
+        data-mobile-backdrop
+        aria-hidden="true"
+      />
+      <div class="mobile-nav-panel" id="mobile-nav" data-mobile-nav>
+        <div class="mobile-nav-track">
+          <div class="mobile-nav-page mobile-nav-root" data-mobile-root>
+            <div class="mobile-root-header">
+              <a
+                class="mobile-root-brand"
+                href={localizeHref("/")}
+                aria-label={t("brand", "name")}
+              >
+                <img
+                  src="/images/logo-ui.webp"
+                  alt=""
+                  width="29"
+                  height="29"
+                  aria-hidden="true"
+                />
+                <BrandWordmark variant="header" />
+              </a>
+              <div class="mobile-root-actions">
+                {showAuth && !userLabel ? (
+                  <a class="mobile-menu-auth-cta" href={authEntryHref}>
+                    {authEntryLabel}
+                  </a>
+                ) : null}
+                <button
+                  class="mobile-subnav-close"
+                  type="button"
+                  data-mobile-root-close
+                  aria-label={t("navigation", "closeMenu")}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+            {links.slice(0, 2).map((link) => (
+              <a class:list={{ active: active === link.id }} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+            <button
+              class:list={["mobile-nav-row", { active: active === "blog" }]}
+              type="button"
+              data-mobile-guides-open
+              aria-expanded="false"
+              aria-controls="mobile-guides-page"
+            >
+              <span>{t("navigation", "guides")}</span>
+              <span class="mobile-row-chevron" aria-hidden="true" />
+            </button>
+            {links.slice(2).map((link) => (
+              <a class:list={{ active: active === link.id }} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+          </div>
+          <div
+            class="mobile-nav-page mobile-guides-page"
+            id="mobile-guides-page"
+            data-mobile-guides-page
+            aria-hidden="true"
+            inert
+          >
+            <div class="mobile-subnav-header">
+              <button
+                class="mobile-subnav-back"
+                type="button"
+                data-mobile-guides-back
+              >
+                <span class="mobile-back-chevron" aria-hidden="true" />
+                <span>{t("navigation", "back")}</span>
+              </button>
+              <div class="mobile-root-actions">
+                {showAuth && !userLabel ? (
+                  <a class="mobile-menu-auth-cta" href={authEntryHref}>
+                    {authEntryLabel}
+                  </a>
+                ) : null}
+                <button
+                  class="mobile-subnav-close"
+                  type="button"
+                  data-mobile-guides-close
+                  aria-label={t("navigation", "closeMenu")}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+            <p class="mobile-guides-eyebrow">
+              {t("navigation", "guideMenuEyebrow")}
+            </p>
+            <nav
+              class="mobile-guide-list"
+              aria-label={t("navigation", "guideMenuEyebrow")}
+            >
+              {guideEntries.map((entry) => (
+                <a href={entry.href}>
+                  <strong>{entry.label}</strong>
+                  <span>{entry.description}</span>
+                </a>
+              ))}
+            </nav>
+            <aside class="mobile-guide-feature">
+              <p>{t("navigation", "guideFeatured")}</p>
+              <a href={featuredGuide.href}>
+                <img
+                  src={featuredGuide.image}
+                  alt=""
+                  width="640"
+                  height="360"
+                  loading="lazy"
+                />
+                <strong>{featuredGuide.title}</strong>
+                <span>
+                  {t("navigation", "guideFeaturedAction")}
+                  <i aria-hidden="true">→</i>
+                </span>
+              </a>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+<script is:inline>
+  (() => {
+    const toggle = document.getElementById("lang-toggle");
+    const menu = document.getElementById("lang-menu");
+    const dropdown = document.getElementById("lang-dropdown");
+    if (!toggle || !menu || !dropdown) return;
+
+    const options = [...menu.querySelectorAll(".lang-option")];
+
+    const setOpen = (open, focusOption = false) => {
+      dropdown.classList.toggle("open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      if (open && focusOption) {
+        (menu.querySelector(".lang-option.active") || options[0])?.focus();
+      }
+    };
+
+    toggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setOpen(!dropdown.classList.contains("open"));
+    });
+
+    toggle.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        setOpen(true, true);
+      }
+    });
+
+    options.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.classList.contains("active")) {
+          setOpen(false);
+          toggle.focus();
+          return;
+        }
+        const locale = btn.getAttribute("data-locale");
+        const href = btn.getAttribute("data-href") || "/";
+        if (locale) {
+          document.cookie = `abs_locale=${encodeURIComponent(locale)};path=/;max-age=31536000;SameSite=Lax`;
+        }
+        const target = new URL(href, window.location.origin);
+        target.search = window.location.search;
+        target.hash = window.location.hash;
+        window.location.assign(target.href);
+      });
+    });
+
+    menu.addEventListener("keydown", (event) => {
+      const currentIndex = options.indexOf(document.activeElement);
+      let nextIndex = currentIndex;
+      if (event.key === "ArrowDown")
+        nextIndex = (currentIndex + 1) % options.length;
+      if (event.key === "ArrowUp")
+        nextIndex = (currentIndex - 1 + options.length) % options.length;
+      if (event.key === "Home") nextIndex = 0;
+      if (event.key === "End") nextIndex = options.length - 1;
+      if (nextIndex !== currentIndex) {
+        event.preventDefault();
+        options[nextIndex]?.focus();
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!dropdown.contains(e.target)) {
+        setOpen(false);
+      }
+    });
+  })();
+</script>
+
+<script is:inline>
+  (() => {
+    const details = document.querySelector("[data-guides-menu]");
+    if (!details) return;
+
+    details.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => details.removeAttribute("open"));
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!details.contains(event.target)) details.removeAttribute("open");
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && details.hasAttribute("open")) {
+        details.removeAttribute("open");
+        details.querySelector("summary")?.focus();
+      }
+    });
+  })();
+</script>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(
+    "[data-mobile-toggle]",
+  );
+  const nav = document.querySelector<HTMLElement>("[data-mobile-nav]");
+  const backdrop = document.querySelector<HTMLElement>(
+    "[data-mobile-backdrop]",
+  );
+  const openGuides = document.querySelector<HTMLButtonElement>(
+    "[data-mobile-guides-open]",
+  );
+  const backFromGuides = document.querySelector<HTMLButtonElement>(
+    "[data-mobile-guides-back]",
+  );
+  const closeFromGuides = document.querySelector<HTMLButtonElement>(
+    "[data-mobile-guides-close]",
+  );
+  const closeFromRoot = document.querySelector<HTMLButtonElement>(
+    "[data-mobile-root-close]",
+  );
+  const rootPage = document.querySelector<HTMLElement>("[data-mobile-root]");
+  const guidesPage = document.querySelector<HTMLElement>(
+    "[data-mobile-guides-page]",
+  );
+
+  if (toggle && nav) {
+    const mobileToggle = toggle;
+    const mobileNav = nav;
+    const mobileQuery = window.matchMedia("(max-width: 1100px)");
+
+    function setNavHidden(hidden: boolean) {
+      if (hidden) {
+        mobileNav.setAttribute("aria-hidden", "true");
+        mobileNav.setAttribute("inert", "");
+      } else {
+        mobileNav.removeAttribute("aria-hidden");
+        mobileNav.removeAttribute("inert");
+      }
+    }
+
+    function setGuidesOpen(open: boolean, focusTarget = true) {
+      mobileNav.classList.toggle("guides-open", open);
+      openGuides?.setAttribute("aria-expanded", String(open));
+      rootPage?.toggleAttribute("inert", open);
+      rootPage?.setAttribute("aria-hidden", String(open));
+      guidesPage?.toggleAttribute("inert", !open);
+      guidesPage?.setAttribute("aria-hidden", String(!open));
+
+      if (focusTarget) {
+        if (open) backFromGuides?.focus();
+        else openGuides?.focus();
+      }
+    }
+
+    function openMenu() {
+      setGuidesOpen(false, false);
+      mobileNav.classList.add("mobile-open");
+      setNavHidden(false);
+      backdrop?.classList.add("visible");
+      mobileToggle.setAttribute("aria-expanded", "true");
+      mobileToggle.setAttribute(
+        "aria-label",
+        window.msg?.("closeMenu") || "Close",
+      );
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeMenu() {
+      mobileNav.classList.remove("mobile-open");
+      setGuidesOpen(false, false);
+      setNavHidden(mobileQuery.matches);
+      backdrop?.classList.remove("visible");
+      mobileToggle.setAttribute("aria-expanded", "false");
+      mobileToggle.setAttribute(
+        "aria-label",
+        window.msg?.("openMenu") || "Menu",
+      );
+      document.body.style.overflow = "";
+    }
+
+    function isOpen() {
+      return mobileNav.classList.contains("mobile-open");
+    }
+
+    setNavHidden(mobileQuery.matches);
+
+    mobileToggle.addEventListener("click", () => {
+      isOpen() ? closeMenu() : openMenu();
+    });
+
+    openGuides?.addEventListener("click", () => setGuidesOpen(true));
+    backFromGuides?.addEventListener("click", () => setGuidesOpen(false));
+    closeFromRoot?.addEventListener("click", closeMenu);
+    closeFromGuides?.addEventListener("click", closeMenu);
+    backdrop?.addEventListener("click", closeMenu);
+
+    mobileNav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !isOpen()) return;
+      if (mobileNav.classList.contains("guides-open")) {
+        setGuidesOpen(false);
+        return;
+      }
+      closeMenu();
+    });
+
+    mobileQuery.addEventListener("change", (event) => {
+      if (event.matches) {
+        setNavHidden(!isOpen());
+      } else {
+        if (isOpen()) closeMenu();
+        setNavHidden(false);
+      }
+    });
+  }
+</script>
+
+<style>
+  .site-header-minimal {
+    border-bottom-color: color-mix(in srgb, var(--line) 58%, transparent);
+    background: color-mix(in srgb, var(--header-bg) 78%, transparent);
+  }
+  .site-header-minimal .site-nav {
+    width: min(calc(100% - 40px), 1500px);
+  }
+  .site-header .brand {
+    gap: 5px;
+  }
+  .site-header .nav-links {
+    gap: clamp(12px, 1.45vw, 21px);
+  }
+  .guides-menu {
+    position: relative;
+    display: flex;
+    height: 100%;
+    align-items: stretch;
+  }
+  .guides-menu summary {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--nav-link);
+    font-size: 14px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .guides-menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .guides-menu summary.active {
+    color: var(--rose);
+    font-weight: 700;
+  }
+  .guides-menu summary.active::after {
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 3px;
+    background: var(--rose);
+    content: "";
+  }
+  .guides-chevron {
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 0.18s ease;
+  }
+  .guides-menu[open] .guides-chevron {
+    transform: translateY(2px) rotate(225deg);
+  }
+  .guides-mega {
+    position: fixed;
+    z-index: 1001;
+    top: 58px;
+    left: 50%;
+    display: grid;
+    width: min(980px, calc(100vw - 48px));
+    grid-template-columns: minmax(0, 1.85fr) minmax(260px, 0.85fr);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--bg-elevated);
+    box-shadow:
+      0 22px 52px rgba(20, 39, 68, 0.16),
+      0 3px 10px rgba(20, 39, 68, 0.06);
+    transform: translateX(-50%);
+    animation: guidesMenuIn 0.18s ease-out;
+  }
+  :global([data-theme="dark"]) .guides-mega {
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.42);
+  }
+  .guides-directory,
+  .guides-feature {
+    min-width: 0;
+    padding: 30px 32px 28px;
+  }
+  .guides-feature {
+    border-left: 1px solid var(--line);
+    background: color-mix(in srgb, var(--soft) 62%, var(--bg-elevated));
+  }
+  .guides-eyebrow {
+    margin: 0 0 16px;
+    color: var(--body-secondary);
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+  .guides-entry-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 16px;
+  }
+  .nav-links .guide-entry {
+    display: block;
+    min-height: 76px;
+    padding: 11px 12px;
+    border-radius: 8px;
+    color: var(--nav-link);
+    text-align: left;
+  }
+  .nav-links .guide-entry:hover,
+  .nav-links .guide-entry:focus-visible {
+    background: var(--surface-rose);
+  }
+  .guide-entry strong {
+    display: block;
+    width: 100%;
+    color: var(--heading);
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.35;
+  }
+  .guide-entry span {
+    display: block;
+    margin-top: 4px;
+    color: var(--body-secondary);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .guide-feature-link {
+    display: block;
+    color: var(--nav-link);
+    text-align: left;
+  }
+  .guide-feature-link img {
+    display: block;
+    width: 100%;
+    height: 176px;
+    object-fit: cover;
+    border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+    border-radius: 8px;
+  }
+  .guide-feature-link strong {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+    color: var(--heading);
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.4;
+  }
+  .guide-feature-link span {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    margin-top: 9px;
+    color: var(--body-secondary);
+    font-size: 12px;
+    font-weight: 650;
+  }
+  .guide-feature-link i,
+  .mobile-guide-feature i {
+    font-style: normal;
+    transition: transform 0.16s ease;
+  }
+  .guide-feature-link:hover span,
+  .guide-feature-link:focus-visible span {
+    color: var(--rose);
+  }
+  .guide-feature-link:hover i,
+  .guide-feature-link:focus-visible i,
+  .mobile-guide-feature a:hover i,
+  .mobile-guide-feature a:focus-visible i {
+    transform: translateX(3px);
+  }
+  .lang-dropdown {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .nav-control {
+    position: relative;
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    min-height: 38px;
+    padding: 0;
+    border-color: transparent;
+    border-radius: 8px;
+    background: transparent;
+    box-shadow: none;
+    color: var(--nav-link);
+  }
+  .nav-control::after {
+    position: absolute;
+    inset: -3px;
+    content: "";
+  }
+  .nav-actions {
+    gap: 3px;
+  }
+  .nav-control:hover,
+  .lang-dropdown.open .nav-control {
+    border-color: transparent;
+    background: var(--soft);
+    box-shadow: none;
+    color: var(--rose);
+    transform: none;
+  }
+  .nav-control:active {
+    transform: none;
+  }
+  .nav-actions .auth-entry-btn {
+    position: relative;
+    min-width: 0;
+    min-height: 36px;
+    padding-inline: 9px;
+    border-color: rgba(173, 49, 88, 0.72);
+    border-radius: 7px;
+    background: linear-gradient(135deg, #c83e68 0%, #a82a55 100%);
+    color: #fff8fb;
+    font-size: 11.5px;
+    font-weight: 750;
+    line-height: 1;
+    box-shadow:
+      0 7px 16px rgba(184, 46, 92, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+  .auth-entry-icon,
+  .auth-entry-label-mobile {
+    display: none;
+  }
+  .nav-actions .auth-entry-btn::after {
+    content: "";
+    position: absolute;
+    inset: -4px -3px;
+  }
+  .nav-actions .auth-entry-btn:hover {
+    border-color: rgba(173, 49, 88, 0.82);
+    box-shadow:
+      0 10px 20px rgba(184, 46, 92, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  }
+  .nav-actions .auth-entry-btn:active {
+    transform: translateY(0);
+    box-shadow:
+      0 4px 10px rgba(184, 46, 92, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+  :global([data-theme="dark"]) .nav-actions .auth-entry-btn {
+    border-color: rgba(232, 122, 152, 0.56);
+    background: linear-gradient(135deg, #d94b76 0%, #9d244e 100%);
+    color: #fff8fb;
+    box-shadow:
+      0 8px 18px rgba(0, 0, 0, 0.28),
+      0 0 18px rgba(200, 62, 104, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+  .nav-control-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    color: currentColor;
+  }
+  .theme-icons {
+    position: relative;
+  }
+  .theme-icon {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .theme-icon-sun {
+    display: none;
+  }
+  :global([data-theme="dark"]) .theme-icon-moon {
+    display: none;
+  }
+  :global([data-theme="dark"]) .theme-icon-sun {
+    display: block;
+  }
+  .lang-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 7px);
+    right: 0;
+    min-width: 180px;
+    max-height: min(70vh, 360px);
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e5e5e5);
+    border-radius: 9px;
+    box-shadow:
+      0 10px 24px rgba(20, 39, 68, 0.1),
+      0 2px 5px rgba(20, 39, 68, 0.06);
+    z-index: 1000;
+    animation: langMenuIn 0.18s ease-out;
+  }
+  :global([data-theme="dark"]) .lang-menu {
+    background: var(--surface, #1e1e1e);
+    border-color: var(--border, #333);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+  .lang-dropdown.open .lang-menu {
+    display: block;
+  }
+  .lang-option {
+    display: flex;
+    width: 100%;
+    min-height: 36px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 7px 9px 7px 10px;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text, #333);
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    border-radius: 6px;
+    transition:
+      background-color 0.15s,
+      color 0.15s;
+  }
+  .lang-option:hover {
+    background-color: var(--rose-soft, rgba(244, 63, 94, 0.07));
+  }
+  .lang-option.active {
+    color: var(--rose);
+    background: var(--rose-soft);
+    font-weight: 650;
+  }
+  .lang-check {
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+  }
+  .lang-option.active .lang-check {
+    opacity: 1;
+  }
+  :global([data-theme="dark"]) .lang-option:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+  @media (max-width: 700px) {
+    .nav-actions {
+      gap: 1px;
+    }
+    .site-header .nav-actions .auth-entry-btn {
+      min-width: 0;
+      min-height: 34px;
+      gap: 5px;
+      padding-inline: 8px 9px;
+      border-color: rgba(173, 49, 88, 0.62);
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow:
+        0 4px 10px rgba(184, 46, 92, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    .site-header .nav-actions .auth-entry-btn::after {
+      inset: -5px -4px;
+    }
+    .auth-entry-icon {
+      display: block;
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+    }
+    .auth-entry-label-desktop {
+      display: none;
+    }
+    .auth-entry-label-mobile {
+      display: inline;
+    }
+    .nav-control {
+      width: 36px;
+      min-width: 44px;
+      height: 36px;
+      min-height: 44px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      color: var(--nav-link);
+    }
+    .nav-control:hover,
+    .lang-dropdown.open .nav-control {
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      color: var(--rose);
+    }
+    .nav-control:focus-visible {
+      outline: 2px solid color-mix(in srgb, var(--rose) 42%, transparent);
+      outline-offset: 1px;
+    }
+    .nav-control-icon {
+      width: 18px;
+      height: 18px;
+      flex-basis: 18px;
+    }
+    .lang-menu {
+      top: calc(100% + 4px);
+    }
+  }
+  @media (max-width: 1100px) {
+    .mobile-nav-panel {
+      z-index: 120;
+      top: 0;
+      right: 0;
+      width: 100vw;
+      height: 100dvh;
+      gap: 0;
+      padding: 0;
+      box-shadow: none;
+      overflow: hidden;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mobile-nav-panel.mobile-open {
+      transform: translateX(0);
+    }
+    .mobile-nav-track {
+      display: grid;
+      width: 200%;
+      height: 100%;
+      min-height: 0;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      transform: translateX(0);
+      transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mobile-nav-panel.guides-open .mobile-nav-track {
+      transform: translateX(-50%);
+    }
+    .mobile-nav-page {
+      width: 100%;
+      min-width: 0;
+      height: 100%;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 18px clamp(20px, 5vw, 32px) 40px;
+    }
+    .mobile-nav-root {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .mobile-root-header {
+      display: flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .mobile-nav-panel .mobile-root-brand {
+      display: inline-flex;
+      min-width: 0;
+      min-height: 0;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--heading);
+      font-size: inherit;
+      font-weight: inherit;
+      overflow: hidden;
+    }
+    .mobile-nav-panel .mobile-root-brand:hover {
+      background: transparent;
+    }
+    .mobile-nav-panel .mobile-root-brand img {
+      display: block;
+      width: 29px;
+      height: 29px;
+      flex: 0 0 29px;
+      object-fit: contain;
+    }
+    .mobile-root-brand :global(.brand-wordmark-header) {
+      display: inline-block;
+      font-size: 18px;
+      max-width: min(42vw, 170px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+    }
+    .mobile-root-actions {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+    .mobile-menu-auth-cta {
+      display: inline-flex;
+      min-height: 34px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      border: 1px solid rgba(173, 49, 88, 0.62);
+      border-radius: 7px;
+      background: linear-gradient(135deg, #c83e68 0%, #a82a55 100%);
+      color: #fff8fb;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow:
+        0 5px 12px rgba(184, 46, 92, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    .mobile-menu-auth-cta:hover {
+      color: #fff8fb;
+      background: linear-gradient(135deg, #d04c75 0%, #a72d55 100%);
+    }
+    :global([data-theme="dark"]) .mobile-menu-auth-cta {
+      border-color: rgba(232, 122, 152, 0.56);
+      background: linear-gradient(135deg, #d94b76 0%, #9d244e 100%);
+      color: #fff8fb;
+      box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+    .mobile-nav-panel .mobile-nav-root > a,
+    .mobile-nav-row {
+      display: flex;
+      width: 100%;
+      min-height: 58px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 2px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      background: transparent;
+      color: var(--nav-link);
+      font: inherit;
+      font-size: 18px;
+      font-weight: 650;
+      text-align: left;
+      cursor: pointer;
+    }
+    .mobile-nav-panel .mobile-nav-root > a:hover,
+    .mobile-nav-row:hover {
+      background: transparent;
+      color: var(--rose);
+    }
+    .mobile-nav-row.active {
+      color: var(--rose);
+      font-weight: 800;
+    }
+    .mobile-row-chevron,
+    .mobile-back-chevron {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+      border-top: 1.7px solid currentColor;
+      border-right: 1.7px solid currentColor;
+      transform: rotate(45deg);
+    }
+    .mobile-subnav-header {
+      display: flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .mobile-subnav-back,
+    .mobile-subnav-close {
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      color: var(--heading);
+      cursor: pointer;
+    }
+    .mobile-subnav-back {
+      gap: 12px;
+      padding: 0 8px 0 2px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .mobile-back-chevron {
+      transform: rotate(225deg);
+    }
+    .mobile-subnav-close {
+      position: relative;
+      width: 40px;
+      justify-content: center;
+      padding: 0;
+    }
+    .mobile-subnav-close span,
+    .mobile-subnav-close span::after {
+      display: block;
+      width: 20px;
+      height: 1.7px;
+      background: currentColor;
+      content: "";
+    }
+    .mobile-subnav-close span {
+      transform: rotate(45deg);
+    }
+    .mobile-subnav-close span::after {
+      transform: rotate(90deg);
+    }
+    @media (max-width: 380px) {
+      .mobile-root-header,
+      .mobile-subnav-header {
+        gap: 8px;
+      }
+      .mobile-root-actions {
+        gap: 6px;
+      }
+      .mobile-root-brand :global(.brand-wordmark-header) {
+        max-width: min(36vw, 128px);
+        font-size: 16px;
+      }
+      .mobile-menu-auth-cta {
+        min-height: 32px;
+        padding-inline: 10px;
+        font-size: 11.5px;
+      }
+      .mobile-subnav-close {
+        width: 36px;
+      }
+    }
+    .mobile-guides-eyebrow,
+    .mobile-guide-feature > p {
+      margin: 0 0 12px;
+      color: var(--body-secondary);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .mobile-guide-list {
+      display: grid;
+    }
+    .mobile-nav-panel .mobile-guide-list a {
+      display: block;
+      min-height: 0;
+      padding: 13px 0 14px;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+    }
+    .mobile-guide-list strong,
+    .mobile-guide-list span {
+      display: block;
+    }
+    .mobile-guide-list strong {
+      color: var(--heading);
+      font-size: 16px;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+    .mobile-guide-list span {
+      margin-top: 3px;
+      color: var(--body-secondary);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .mobile-guide-feature {
+      margin-top: 24px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--soft) 62%, var(--bg-elevated));
+    }
+    .mobile-nav-panel .mobile-guide-feature a {
+      display: block;
+      min-height: 0;
+      padding: 0;
+      border-radius: 0;
+    }
+    .mobile-guide-feature img {
+      display: block;
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .mobile-guide-feature strong {
+      display: block;
+      margin-top: 12px;
+      color: var(--heading);
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .mobile-guide-feature span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      color: var(--body-secondary);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .mobile-nav-backdrop {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .guides-mega,
+    .mobile-nav-track {
+      animation: none;
+      transition: none;
+    }
+  }
+  @keyframes guidesMenuIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -6px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+  @keyframes langMenuIn {
+    from {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>

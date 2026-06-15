@@ -1,0 +1,153 @@
+---
+import type { LookCatalogItem } from "../data/lookCatalog";
+import type { ResolvedLook } from "../data/makeup/audienceTypes";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { getCurrentLocale } from "../lib/i18n";
+import { uiLabels as deUiLabels } from "../data/makeup/localizations/de";
+import { uiLabels as enUiLabels } from "../data/makeup/localizations/en";
+import { uiLabels as esUiLabels } from "../data/makeup/localizations/es";
+import { uiLabels as frUiLabels } from "../data/makeup/localizations/fr";
+import { uiLabels as jaUiLabels } from "../data/makeup/localizations/ja";
+import { uiLabels as koUiLabels } from "../data/makeup/localizations/ko";
+import { uiLabels as ptBRUiLabels } from "../data/makeup/localizations/pt-BR";
+import { uiLabels as zhCNUiLabels } from "../data/makeup/localizations/zh-CN";
+import { uiLabels as zhTWUiLabels } from "../data/makeup/localizations/zh-TW";
+
+type LookInput = LookCatalogItem | ResolvedLook;
+
+interface Props {
+  look: LookInput;
+  variant?: "featured" | "library";
+  source: string;
+  priority?: boolean;
+}
+
+const { look, variant = "featured", source, priority = false } = Astro.props;
+const locale = getCurrentLocale();
+const ui = locale.startsWith("de")
+  ? deUiLabels
+  : locale.startsWith("fr")
+    ? frUiLabels
+    : locale.startsWith("ja")
+      ? jaUiLabels
+      : locale.startsWith("ko")
+        ? koUiLabels
+        : locale.startsWith("es")
+          ? esUiLabels
+          : locale.startsWith("pt")
+            ? ptBRUiLabels
+            : locale === "zh-TW"
+              ? zhTWUiLabels
+              : locale.startsWith("zh")
+                ? zhCNUiLabels
+                : enUiLabels;
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+
+const tryOnHref = getLocalizedAppHref(
+  `/tryon-free?look=${look.slug}&scenario=${encodeURIComponent(look.scenarios[0])}&source=${source}`,
+  currentRoute.language.slug,
+);
+const imageLoading = priority ? "eager" : "lazy";
+const imageFetchPriority = priority ? "high" : "low";
+const filterData = {
+  "data-look-card": "",
+  "data-scenarios": look.scenarios.join("|"),
+  "data-finishes": look.finish.join("|"),
+  "data-experience": look.experience,
+};
+const selectData = {
+  "data-look-select": "",
+  "data-look-slug": look.slug,
+  "data-look-scenario": look.scenarios[0],
+  "data-look-source": source,
+};
+
+// 本地化 UI 文案
+const suitableLabel = ui.suitableFor;
+const keyPointsLabel = ui.keyPoints;
+const detailsLabel = ui.lookDetails;
+const anchorsLabel = ui.makeupAnchors;
+const cautionLabel = ui.cautionTitle;
+const tryLabel = ui.tryThisLook;
+const friendlyLabel = ui.experienceFriendly;
+const uploadAria = `${tryLabel}: ${look.title}`;
+const listSeparator =
+  locale.startsWith("zh") || locale.startsWith("ja") ? "、" : ", ";
+---
+
+{
+  variant === "featured" ? (
+    <a class="featured-card" href={tryOnHref}>
+      <img src={look.image} alt={look.imageAlt} loading="lazy" />
+      <strong>{look.title}</strong>
+      <small>
+        {look.scenarios[0]} · {look.finish[0]}
+      </small>
+    </a>
+  ) : (
+    <article class="look-tile" {...filterData}>
+      <a class="look-image-link" href={tryOnHref} {...selectData}>
+        <span class="sr-only">{uploadAria}</span>
+        <img
+          src={look.image}
+          alt={look.imageAlt}
+          loading={imageLoading}
+          fetchpriority={imageFetchPriority}
+          decoding="async"
+          sizes="(max-width: 700px) calc(100vw - 48px), (max-width: 1100px) calc((100vw - 76px) / 2), 320px"
+        />
+        <span class="look-media-tags" aria-hidden="true">
+          <span class="tag">{look.scenarios[0]}</span>
+          <span class="tag">
+            {look.experience}
+            {friendlyLabel}
+          </span>
+        </span>
+      </a>
+      <div class="look-copy">
+        <div class="look-title-row">
+          <h3>{look.title}</h3>
+          <span class="look-finish">{look.finish[0]}</span>
+        </div>
+        <p class="look-effect" title={look.advisor.effect}>
+          {look.advisor.effect}
+        </p>
+        <p class="look-fit">
+          <strong>{suitableLabel}</strong>
+          {look.advisor.fit}
+        </p>
+        <p class="look-judge">
+          <strong>{keyPointsLabel}</strong>
+          {look.advisor.judge.slice(0, 2).join(listSeparator)}
+        </p>
+        <details class="look-detail">
+          <summary>{detailsLabel}</summary>
+          <div class="look-detail-body">
+            <div>
+              <b>{anchorsLabel}</b>
+              <ul>
+                {look.advisor.anchors.map((anchor) => (
+                  <li>{anchor}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <b>{cautionLabel}</b>
+              <p>{look.advisor.caution}</p>
+            </div>
+          </div>
+        </details>
+        <a
+          class="btn btn-primary look-cta"
+          href={tryOnHref}
+          aria-label={uploadAria}
+          {...selectData}
+        >
+          {tryLabel}
+        </a>
+      </div>
+    </article>
+  )
+}

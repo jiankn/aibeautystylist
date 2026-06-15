@@ -1,0 +1,265 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Office Makeup: Polished Everyday Makeup for the Workplace",
+  description:
+    "Learn the art of office makeup that looks professional without being boring. Discover the 5-minute morning routine, desk touch-up kit essentials, and how office lighting changes everything about how your makeup reads.",
+  heroImage: "/images/look-commute.webp",
+  ogImage: "/images/look-commute.webp",
+  faq: [
+    {
+      q: "What is the difference between office makeup and natural makeup?",
+      a: "Natural makeup aims to look like you are wearing nothing at all. Office makeup has a slightly more polished edge because fluorescent and LED office lighting washes out your features. Under typical office lights, blush disappears, lip color fades to invisible, and skin tone looks flatter. Office makeup adds just enough definition to counteract that washout effect: a shade more blush than you think you need, a lip color with actual pigment, and a light setting powder to prevent midday shine. It still reads as natural to a coworker sitting across from you.",
+    },
+    {
+      q: "How do I keep my makeup fresh throughout a full workday?",
+      a: "The key is building in layers and carrying a small touch-up kit. Start with a hydrating primer so your base adheres well and does not crack. Use a long-wear concealer rather than a heavy foundation across the entire face, since targeted coverage moves less and looks fresher longer. Keep blotting papers at your desk to absorb oil without adding more product. A midday swipe of cream blush over your existing base revives color, and a hydrating lip product reapplied after lunch keeps your lips from looking dry by 3 PM.",
+    },
+    {
+      q: "How should I adjust my makeup for Zoom or video calls at the office?",
+      a: "Office cameras tend to be unforgiving because they sit at eye level under overhead lighting. Matte finishes photograph better than dewy ones on webcam. Make sure your base is set with powder in the T-zone, and apply a touch more blush and bronzer than usual since the camera compresses color contrast. Define your lips with a liner to prevent a blurred edge on low-resolution video. Avoid wearing very fine shimmer on the lids since it can create distracting flicker on camera when you move.",
+    },
+    {
+      q: "What is the fastest everyday office makeup routine?",
+      a: "A five-product routine takes under five minutes: tinted moisturizer with SPF (1 min), concealer on dark circles and redness (1 min), brow gel brushed through (30 sec), mascara on top lashes only (1 min), and a tinted lip balm (30 sec). Blot and set the T-zone with powder if your skin tends to get oily. That is it. This routine gives you a polished, professional appearance without any complexity or risk of looking overdone.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+  { label: "Natural Makeup", url: "/looks/natural-makeup" },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={page.heroImage}
+  ogImage={page.ogImage}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Office makeup is not about being boring. It is about looking like the most
+      capable version of yourself. Learn the five-minute routine that gets you
+      out the door, the desk kit that keeps you fresh until 5 PM, and why office
+      lighting changes everything.
+    </p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>Office Makeup Is Not "No Makeup" — It Is "Better Than No Makeup"</h2>
+    <p>
+      There is a persistent myth that the best office makeup looks like you are
+      wearing nothing. This advice is well-intentioned but wrong. Under standard
+      office fluorescent or LED panel lighting, your skin tone looks flatter,
+      your lips look paler, and your natural blush essentially disappears. A
+      coworker sitting two desks away will not see your makeup as "too much"
+      because the lighting is already working against you.
+    </p>
+    <p>
+      The sweet spot for office makeup sits between "bare face" and "going-out
+      glam." It is the difference between looking tired and looking like you got
+      eight hours of sleep, between looking like you rolled out of bed and
+      looking like you planned your day. Your colleagues will not be able to
+      name what you are doing differently. They will just notice that you look
+      sharp, alert, and professional.
+    </p>
+
+    <h2>The Office Lighting Problem (and How to Fix It)</h2>
+    <p>
+      Most offices use cool-toned fluorescent or LED lighting with a color
+      temperature around 4000-5000 Kelvin. This light is bluer than natural
+      daylight and it has two effects on your appearance: it makes warm skin
+      tones look sallow, and it washes out warm makeup colors like peach and
+      coral.
+    </p>
+    <p>
+      The solution is straightforward. Choose a foundation or tinted moisturizer
+      with a neutral or slightly warm undertone rather than a cool one. Use a
+      blush in a deeper shade than you would normally pick: a medium rose
+      instead of a soft pink, a warm berry instead of a pastel. Your lip product
+      should have enough pigment to register under these lights, which means
+      skipping clear gloss and choosing a tinted balm or satin lipstick instead.
+    </p>
+    <p>
+      If your office has windows and you sit near natural light, your makeup
+      will look different depending on where you are standing. Check your look
+      in both the office lighting and near a window before you start your day.
+      If it looks good in the harsher office light, it will definitely look good
+      in natural light.
+    </p>
+
+    <h2>The 5-Minute Morning Office Routine</h2>
+    <p>
+      The goal here is speed without sloppiness. Every product earns its place
+      in the routine by doing meaningful work.
+    </p>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Tinted Moisturizer or Lightweight Foundation (1 min)</h4>
+          <p>
+            Apply with your fingers for speed. Focus on the center of the face
+            where redness and uneven tone are most visible. You do not need full
+            coverage along the jawline and hairline since those areas rarely
+            need correction.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Spot Concealer (1 min)</h4>
+          <p>
+            Target under-eye darkness and any visible blemishes or post-acne
+            marks. Pat the product in with your ring finger for a seamless blend
+            that does not move your base underneath.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Brow Gel (30 sec)</h4>
+          <p>
+            Brush brows upward and outward. A tinted gel fills sparse areas
+            while keeping hairs in place. Groomed brows instantly make the whole
+            face look intentional rather than accidental.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Mascara, Top Lashes Only (1 min)</h4>
+          <p>
+            One coat of brown or black-brown mascara opens the eyes without
+            looking dramatic. Skip bottom-lash mascara for the office since it
+            can smudge during screen-staring sessions and look harsh under
+            overhead lights.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Cheek Color + Lip Tint (1.5 min)</h4>
+          <p>
+            Apply cream blush to the apples of your cheeks and blend upward.
+            Then apply a tinted lip balm or satin lipstick in a shade close to
+            your natural lip color but slightly more pigmented. This is the
+            one-two punch that keeps you from looking washed out under office
+            lights.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Your Desk Touch-Up Kit</h2>
+    <p>
+      Even the best morning routine fades by 2 PM. A small desk kit takes up
+      almost no space and saves your afternoon appearance. Keep these items in a
+      drawer or small pouch at your workstation.
+    </p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">&#x1F4C4;</div>
+        <h4>Blotting Papers</h4>
+        <p>
+          Absorb excess oil without disturbing your makeup. Far better than
+          adding more powder on top of shiny skin, which creates a cakey buildup
+          by late afternoon.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F484;</div>
+        <h4>Cream Blush Stick</h4>
+        <p>
+          One swipe on each cheek and a quick blend revives your color in
+          seconds. Cream formulas meld with your existing base instead of
+          sitting on top like powder.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F48B;</div>
+        <h4>Hydrating Lip Product</h4>
+        <p>
+          Office air conditioning dries out lips by midday. A hydrating lip balm
+          or tinted oil restores moisture and color simultaneously.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F4A8;</div>
+        <h4>Mini Setting Spray</h4>
+        <p>
+          A two-spray refresh brings everything back together and removes any
+          powdery look that develops after hours of sitting under dry office
+          air.
+        </p>
+      </div>
+    </div>
+
+    <h2>What Office Makeup Is Not</h2>
+    <p>
+      It is not full glam. It is not cut-crease eyeshadow, dramatic false
+      lashes, or contouring that could double as stage makeup. It is also not
+      the opposite extreme: showing up with nothing when you are in a
+      client-facing role or a workplace where presentation matters. The boundary
+      is defined by intentionality. If you looked in the mirror and your makeup
+      says "I chose this" rather than "I grabbed whatever," you are in the right
+      zone.
+    </p>
+    <p>
+      Think about your work context. If you present to clients, attend meetings
+      where people evaluate your competence, or work in an environment where
+      first impressions carry weight, your makeup is part of your professional
+      toolkit. It deserves the same thought you give to your clothing choices.
+    </p>
+
+    <h2>Seasonal Adjustments for Office Makeup</h2>
+    <p>
+      Your office makeup should shift slightly with the seasons. In winter, when
+      indoor heating dries your skin, lean into cream products and hydrating
+      formulas to avoid a flaky or ashy appearance. Switch from powder blush to
+      cream blush, and choose a richer lip balm. In summer, when humidity and
+      commuting heat make everything melt, switch to long-wear liquid formulas
+      and set everything with powder. A mattifying primer becomes essential in
+      hot months, while a hydrating serum underneath your base is your winter
+      secret weapon.
+    </p>
+  </section>
+
+  <Fragment slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Preview Your Office Look Before You Leave Home</h2>
+        <p>
+          Upload a photo and test your everyday professional makeup with AI. See
+          how it reads under different lighting conditions.
+        </p>
+        <a href="/tryon-free" class="cta-btn"
+          >Try Office Makeup on Your Face — Free</a
+        >
+      </div>
+    </div>
+  </Fragment>
+
+  <Fragment slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {relatedLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+        </ul>
+      </div>
+    </section>
+  </Fragment>
+</SeoLandingLayout>

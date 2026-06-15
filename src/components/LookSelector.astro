@@ -1,0 +1,172 @@
+---
+import type { LookCatalogItem } from "../data/lookCatalog";
+import type { ResolvedLook } from "../data/makeup/audienceTypes";
+import { getCurrentLocale } from "../lib/i18n";
+
+type LookInput = LookCatalogItem | ResolvedLook;
+
+interface Props {
+  looks: LookInput[];
+  selectedSlug: string;
+  variant?: "list" | "grid";
+}
+
+const { looks, selectedSlug, variant = "list" } = Astro.props;
+const locale = getCurrentLocale();
+const isZh = locale.startsWith("zh");
+const selectedLabel = isZh ? "已选择" : "Selected";
+---
+
+{
+  variant === "grid" ? (
+    <div
+      class="featured-grid"
+      style="grid-template-columns:repeat(2,1fr);gap:12px"
+    >
+      {looks.map((look) => (
+        <button
+          class:list={["featured-card", look.slug === selectedSlug && "active"]}
+          type="button"
+          data-look={look.title}
+          data-look-slug={look.slug}
+          data-look-image={look.image}
+          data-advisor-fit={look.advisor.fit}
+          data-advisor-effect={look.advisor.effect}
+          data-advisor-anchors={JSON.stringify(look.advisor.anchors)}
+          data-advisor-caution={look.advisor.caution}
+          data-advisor-judge={JSON.stringify(look.advisor.judge)}
+          data-toast={`${selectedLabel}${look.title}`}
+        >
+          <img src={look.image} alt={look.imageAlt} loading="lazy" />
+          <strong>{look.title}</strong>
+          <small>{look.scenarios.join(" / ")}</small>
+        </button>
+      ))}
+    </div>
+  ) : (
+    <div class="selector-list">
+      {looks.map((look) => (
+        <article
+          class:list={["selector-item", look.slug === selectedSlug && "active"]}
+          data-look={look.title}
+          data-look-slug={look.slug}
+          data-look-image={look.image}
+          data-advisor-fit={look.advisor.fit}
+          data-advisor-effect={look.advisor.effect}
+          data-advisor-anchors={JSON.stringify(look.advisor.anchors)}
+          data-advisor-caution={look.advisor.caution}
+          data-advisor-judge={JSON.stringify(look.advisor.judge)}
+          tabindex="0"
+          role="button"
+        >
+          <img src={look.image} alt={look.imageAlt} loading="lazy" />
+          <div>
+            <h3>{look.title}</h3>
+            <p>
+              {look.scenarios.join(" / ")}
+              <br />
+              {look.finish.join(isZh ? "，" : ", ")}
+            </p>
+          </div>
+          <span class="check-dot">✓</span>
+        </article>
+      ))}
+    </div>
+  )
+}
+
+<script>
+  function parseLookAdvisorList(value: string | undefined): string[] {
+    if (!value) return [];
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+    } catch {
+      return value
+        .split("|")
+        .map((item: string) => item.trim())
+        .filter(Boolean);
+    }
+  }
+
+  function setAdvisorText(selector: string, value: string | undefined) {
+    document.querySelectorAll<HTMLElement>(selector).forEach((target) => {
+      target.textContent = value || "";
+    });
+  }
+
+  function setAdvisorList(selector: string, items: string[]) {
+    document.querySelectorAll<HTMLElement>(selector).forEach((target) => {
+      target.replaceChildren(
+        ...items.map((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          return li;
+        }),
+      );
+    });
+  }
+
+  function updateLookAdvisor(item: HTMLElement) {
+    if (!document.querySelector("[data-look-advisor]")) return;
+    setAdvisorText(
+      "[data-advisor-title]",
+      item.dataset.look || window.msg?.("fallbackLook"),
+    );
+    setAdvisorText("[data-advisor-fit-text]", item.dataset.advisorFit || "");
+    setAdvisorText(
+      "[data-advisor-effect-text]",
+      item.dataset.advisorEffect || "",
+    );
+    setAdvisorText(
+      "[data-advisor-caution-text]",
+      item.dataset.advisorCaution || "",
+    );
+    setAdvisorList(
+      "[data-advisor-anchor-list]",
+      parseLookAdvisorList(item.dataset.advisorAnchors),
+    );
+    setAdvisorList(
+      "[data-advisor-judge-list]",
+      parseLookAdvisorList(item.dataset.advisorJudge),
+    );
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-look-slug]").forEach((item) => {
+    const selectLook = () => {
+      const container = item.closest(".selector-list, .featured-grid");
+      container
+        ?.querySelectorAll("[data-look-slug]")
+        .forEach((option) => option.classList.remove("active"));
+      item.classList.add("active");
+      document
+        .querySelectorAll<HTMLElement>("[data-look-title]")
+        .forEach((title) => {
+          title.textContent =
+            item.dataset.look || window.msg?.("fallbackLookShort");
+        });
+      document
+        .querySelectorAll<HTMLImageElement>("[data-result-image]")
+        .forEach((image) => {
+          if (item.dataset.lookImage) image.src = item.dataset.lookImage;
+        });
+      updateLookAdvisor(item);
+      const url = new URL(window.location.href);
+      url.searchParams.set("look", item.dataset.lookSlug || "");
+      window.history.replaceState({}, "", url);
+      window.showToast?.(
+        window.msg?.("selectedLook", {
+          look: item.dataset.look || window.msg?.("fallbackLookShort"),
+        }),
+      );
+    };
+
+    item.addEventListener("click", selectLook);
+    item.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        selectLook();
+      }
+    });
+  });
+</script>

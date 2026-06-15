@@ -1,0 +1,1071 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { isGoogleOAuthConfigured, safeAuthNextPath } from "../lib/googleOAuth";
+import { getCurrentLocale } from "../lib/i18n";
+import { getRuntimeBindings } from "../lib/runtime";
+import { getLocalizedLoginContent } from "../data/authContent";
+
+const oauthAvailable = isGoogleOAuthConfigured(getRuntimeBindings());
+const currentLocale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const nextPath = safeAuthNextPath(Astro.url.searchParams.get("next"));
+const authNextPath = nextPath === "/" ? localizeAppHref("/") : nextPath;
+const initialAuthMode =
+  Astro.url.searchParams.get("mode") === "register" ? "register" : "login";
+const googleHref = `/api/auth/google/start?next=${encodeURIComponent(authNextPath)}`;
+const termsHref = localizeAppHref("/terms");
+const privacyHref = localizeAppHref("/privacy");
+const isEnglish = !currentLocale.startsWith("zh");
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentLocale);
+const pageAssets = resolvePageAssets("login", Astro.locals.audienceContext);
+const posterLight =
+  pageAssets.heroImages?.light ?? "/images/login-hero-global-light.webp";
+const posterDark =
+  pageAssets.heroImages?.dark ?? "/images/login-hero-global-dark.webp";
+
+const fallbackCopy = isEnglish
+  ? {
+      title: "Get started | AI Beauty Stylist",
+      description:
+        "Sign in or create an AI Beauty Stylist account to save looks, diagnoses and membership benefits.",
+      posterAria: "Editorial makeup portrait",
+      posterKicker: "Your beauty, directed",
+      posterTitle: "See the look before it becomes the moment.",
+      posterBody:
+        "Explore makeup directions shaped around your features, lighting and occasion.",
+      proof: ["Personalized looks", "Private by design", "Saved for later"],
+      eyebrow: "One account for every look",
+      heading: "Get started",
+      intro:
+        "Sign in or create an account to save looks, diagnoses and membership benefits.",
+      google: "Continue with Google",
+      emailDivider: "or continue with email",
+      tabsLabel: "Account actions",
+      login: "Sign in",
+      register: "Create account",
+      email: "Email",
+      password: "Password",
+      passwordHint: "At least 8 characters with letters and numbers",
+      forgot: "Forgot password",
+      forgotHint: "Enter your account email and we will send a reset link.",
+      sendReset: "Send reset email",
+      back: "Back to sign in",
+      legalPrefix: "By continuing, you agree to the ",
+      terms: "Terms of Service",
+      legalJoin: " and ",
+      privacy: "Privacy Policy",
+      legalSuffix: ".",
+      messages: {
+        connectingGoogle: "Connecting to Google...",
+        networkError:
+          "Network connection failed. Check your connection and try again.",
+        signingIn: "Signing in...",
+        signInSuccess: "Signed in. Redirecting...",
+        signInFailed: "Sign in failed",
+        registering: "Creating account...",
+        registerSuccess: "Account created. Check your email to verify it.",
+        registerFailed: "Account creation failed",
+        sending: "Sending...",
+        resetFallback:
+          "If this email is registered, we have sent a password reset link.",
+        verifyInvalid:
+          "This verification link is invalid or expired. Create an account again or reset your password.",
+        oauthFailed: "Google sign in failed. Please try again.",
+        oauthInvalid:
+          "Google sign in session validation failed. Please try again.",
+        oauthUnavailable:
+          "Google sign in is temporarily unavailable. Use email or try again later.",
+        oauthCancelled:
+          "Google sign in was cancelled. You can try again or use email.",
+        oauthUnverified:
+          "This Google account email is not verified. Try another account.",
+        oauthConflict:
+          "This Google account cannot be linked right now. Contact support.",
+      },
+    }
+  : {
+      title: "开始使用 | AI Beauty Stylist",
+      description:
+        "登录或创建 AI Beauty Stylist 账户，保存你的试妆记录、诊断报告和会员权益。",
+      posterAria: "精致妆容人物海报",
+      posterKicker: "为你的美，找到方向",
+      posterTitle: "在重要时刻到来前，先看见理想妆容。",
+      posterBody: "结合你的五官、光线与场景，探索真正适合你的妆容方向。",
+      proof: ["专属妆容方向", "隐私优先", "随时回看"],
+      eyebrow: "一个账户管理所有妆容",
+      heading: "开始使用",
+      intro: "登录或创建账户，保存试妆记录、诊断报告和会员权益。",
+      google: "使用 Google 账户继续",
+      emailDivider: "或使用邮箱",
+      tabsLabel: "账户操作",
+      login: "登录",
+      register: "创建账户",
+      email: "邮箱",
+      password: "密码",
+      passwordHint: "至少 8 位，包含字母和数字",
+      forgot: "忘记密码",
+      forgotHint: "输入注册邮箱，我们会发送密码重置链接。",
+      sendReset: "发送重置邮件",
+      back: "返回登录",
+      legalPrefix: "继续即表示你同意",
+      terms: "服务条款",
+      legalJoin: "和",
+      privacy: "隐私政策",
+      legalSuffix: "。",
+      messages: {
+        connectingGoogle: "正在连接 Google...",
+        networkError: "网络连接失败，请检查网络后重试",
+        signingIn: "登录中...",
+        signInSuccess: "登录成功，正在跳转...",
+        signInFailed: "登录失败",
+        registering: "注册中...",
+        registerSuccess: "注册成功，请查收验证邮件",
+        registerFailed: "注册失败",
+        sending: "发送中...",
+        resetFallback: "如果该邮箱已注册，我们已发送重置邮件",
+        verifyInvalid: "验证链接无效或已过期，请重新创建账户或找回密码",
+        oauthFailed: "Google 登录失败，请重试",
+        oauthInvalid: "Google 登录会话校验失败，请重试",
+        oauthUnavailable: "Google 登录暂时不可用，请使用邮箱登录或稍后重试",
+        oauthCancelled: "你已取消 Google 登录，可以重新尝试或使用邮箱登录",
+        oauthUnverified: "该 Google 账户的邮箱尚未验证，请更换账户后重试",
+        oauthConflict: "该 Google 账户暂时无法关联，请联系支持",
+      },
+    };
+const copy = getLocalizedLoginContent(currentLocale) ?? fallbackCopy;
+
+const authMessages = copy.messages;
+const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-global"}`;
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  bodyClass={bodyClass}
+  robots="noindex,follow"
+>
+  <SiteHeader showAuth={false} minimal />
+  <main
+    class="auth-main"
+    style={`--auth-poster-light: url("${posterLight}"); --auth-poster-dark: url("${posterDark}");`}
+  >
+    <section class="auth-poster" aria-label={copy.posterAria}>
+      <div class="auth-poster-copy">
+        <span class="poster-kicker">{copy.posterKicker}</span>
+        <h1>{copy.posterTitle}</h1>
+        <p>{copy.posterBody}</p>
+        <div class="poster-proof" aria-label={copy.posterBody}>
+          {copy.proof.map((item) => <span>{item}</span>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-form-pane">
+      <div class="auth-card" data-auth>
+        <header class="auth-intro">
+          <span class="auth-eyebrow">{copy.eyebrow}</span>
+          <h2>{copy.heading}</h2>
+          <p>{copy.intro}</p>
+        </header>
+
+        {
+          oauthAvailable && (
+            <>
+              <a
+                class="btn btn-wide auth-google"
+                href={googleHref}
+                data-google-auth
+                aria-label={copy.google}
+              >
+                <img
+                  class="google-mark"
+                  src="/images/google-g.svg"
+                  alt=""
+                  width="20"
+                  height="20"
+                />
+                <span data-google-label>{copy.google}</span>
+              </a>
+              <div class="auth-divider">
+                <span>{copy.emailDivider}</span>
+              </div>
+            </>
+          )
+        }
+
+        <div class="auth-tabs" role="tablist" aria-label={copy.tabsLabel}>
+          <button
+            type="button"
+            class:list={["auth-tab", { active: initialAuthMode === "login" }]}
+            role="tab"
+            aria-selected={initialAuthMode === "login"}
+            aria-controls="auth-login"
+            data-auth-tab="login">{copy.login}</button
+          >
+          <button
+            type="button"
+            class:list={[
+              "auth-tab",
+              { active: initialAuthMode === "register" },
+            ]}
+            role="tab"
+            aria-selected={initialAuthMode === "register"}
+            aria-controls="auth-register"
+            data-auth-tab="register">{copy.register}</button
+          >
+        </div>
+
+        <form
+          class="auth-form"
+          id="auth-login"
+          role="tabpanel"
+          data-auth-form="login"
+          hidden={initialAuthMode !== "login"}
+        >
+          <label
+            >{copy.email}<input
+              type="email"
+              name="email"
+              autocomplete="email"
+              required
+            /></label
+          >
+          <label
+            >{copy.password}<input
+              type="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            /></label
+          >
+          <button class="btn btn-primary btn-wide" type="submit"
+            >{copy.login}</button
+          >
+          <button type="button" class="auth-link" data-auth-forgot
+            >{copy.forgot}</button
+          >
+        </form>
+
+        <form
+          class="auth-form"
+          id="auth-register"
+          role="tabpanel"
+          data-auth-form="register"
+          hidden={initialAuthMode !== "register"}
+        >
+          <label
+            >{copy.email}<input
+              type="email"
+              name="email"
+              autocomplete="email"
+              required
+            /></label
+          >
+          <label
+            >{copy.password}<input
+              type="password"
+              name="password"
+              autocomplete="new-password"
+              required
+            /><small>{copy.passwordHint}</small></label
+          >
+          <button class="btn btn-primary btn-wide" type="submit"
+            >{copy.register}</button
+          >
+        </form>
+
+        <form class="auth-form" data-auth-form="forgot" hidden>
+          <p class="auth-hint">{copy.forgotHint}</p>
+          <label
+            >{copy.email}<input
+              type="email"
+              name="email"
+              autocomplete="email"
+              required
+            /></label
+          >
+          <button class="btn btn-primary btn-wide" type="submit"
+            >{copy.sendReset}</button
+          >
+          <button type="button" class="auth-link" data-auth-back
+            >{copy.back}</button
+          >
+        </form>
+
+        <p
+          class="auth-message"
+          data-auth-message
+          role="status"
+          aria-live="polite"
+        >
+        </p>
+        <p class="auth-legal">
+          {copy.legalPrefix}<a href={termsHref}>{copy.terms}</a>{
+            copy.legalJoin
+          }<a href={privacyHref}>{copy.privacy}</a>{copy.legalSuffix}
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    :global(.auth-body) {
+      --auth-pane: rgba(247, 247, 246, 0.91);
+      --auth-card: rgba(255, 255, 255, 0.82);
+      --auth-card-border: rgba(55, 61, 70, 0.12);
+      --auth-control: rgba(255, 255, 255, 0.72);
+      --auth-control-hover: rgba(255, 255, 255, 0.96);
+      --auth-control-border: rgba(65, 70, 78, 0.2);
+      --auth-heading: #17191d;
+      --auth-text: #34383f;
+      --auth-muted: #6c7179;
+      --auth-accent: #a72f54;
+      --auth-accent-soft: rgba(179, 50, 89, 0.09);
+      --auth-accent-border: rgba(167, 47, 84, 0.36);
+      --auth-shadow: 0 28px 70px rgba(24, 29, 36, 0.13);
+      background: #e9e9e7;
+    }
+    :global([data-theme="dark"] .auth-body) {
+      --auth-pane: rgba(15, 14, 17, 0.9);
+      --auth-card: rgba(26, 24, 28, 0.86);
+      --auth-card-border: rgba(255, 255, 255, 0.12);
+      --auth-control: rgba(255, 255, 255, 0.055);
+      --auth-control-hover: rgba(255, 255, 255, 0.09);
+      --auth-control-border: rgba(255, 255, 255, 0.16);
+      --auth-heading: #f3edef;
+      --auth-text: #e1dadd;
+      --auth-muted: #a89fa4;
+      --auth-accent: #ef8ca7;
+      --auth-accent-soft: rgba(218, 79, 119, 0.14);
+      --auth-accent-border: rgba(239, 140, 167, 0.42);
+      --auth-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+      background: #0d0c0f;
+    }
+    :global(.auth-body .site-footer) {
+      display: none;
+    }
+    :global(.auth-body .site-header-minimal) {
+      border-bottom-color: rgba(72, 75, 82, 0.16);
+      background: rgba(248, 248, 247, 0.72);
+    }
+    :global([data-theme="dark"] .auth-body .site-header-minimal) {
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+      background: rgba(12, 11, 14, 0.7);
+    }
+    .auth-main {
+      --auth-poster-image: var(--auth-poster-light);
+      position: relative;
+      display: grid;
+      min-height: 100dvh;
+      grid-template-columns: minmax(0, 1.48fr) minmax(390px, 0.92fr);
+      padding-top: 52px;
+      overflow: hidden;
+      background: var(--auth-pane);
+      isolation: isolate;
+    }
+    :global([data-theme="dark"]) .auth-main {
+      --auth-poster-image: var(--auth-poster-dark);
+    }
+    :global([data-theme="dark"]) .auth-poster-copy {
+      color: #f7f3f5;
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.55);
+    }
+    :global([data-theme="dark"]) .auth-poster p {
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .auth-main::before {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+    }
+    .auth-poster {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      align-items: flex-end;
+      padding: clamp(42px, 7vw, 104px);
+      overflow: hidden;
+      background-image: var(--auth-poster-image);
+      background-position: var(--auth-poster-position, 52% 32%);
+      background-repeat: no-repeat;
+      background-size: cover;
+      isolation: isolate;
+    }
+    :global(.auth-east-asian) .auth-poster {
+      --auth-poster-position: 50% 31%;
+    }
+    .auth-poster::before {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          90deg,
+          rgba(5, 7, 11, 0.3) 0%,
+          rgba(5, 7, 11, 0.06) 46%,
+          rgba(5, 7, 11, 0.2) 100%
+        ),
+        linear-gradient(180deg, rgba(5, 7, 11, 0.08) 0%, transparent 42%);
+      content: "";
+      pointer-events: none;
+    }
+    .auth-poster::after {
+      position: absolute;
+      inset: 42% 0 0;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(8, 9, 12, 0.2) 46%,
+        rgba(8, 9, 12, 0.68) 100%
+      );
+      content: "";
+      pointer-events: none;
+    }
+    .auth-poster-copy {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 480px);
+      box-sizing: border-box;
+      color: #fff;
+      text-shadow: 0 2px 22px rgba(0, 0, 0, 0.34);
+    }
+    .poster-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+    .poster-kicker::before {
+      width: 28px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.76);
+      content: "";
+    }
+    .auth-poster h1 {
+      max-width: 590px;
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(36px, 4.3vw, 66px);
+      font-weight: 600;
+      line-height: 1.16;
+      letter-spacing: 0;
+      text-wrap: balance;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .auth-poster p {
+      max-width: 510px;
+      margin: 20px 0 0;
+      color: rgba(255, 255, 255, 0.83);
+      font-size: 15px;
+      line-height: 1.75;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .poster-proof {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 24px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .poster-proof span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .poster-proof span::before {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #e8a0b4;
+      box-shadow: 0 0 0 3px rgba(232, 160, 180, 0.16);
+      content: "";
+    }
+    .auth-form-pane {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(34px, 6vh, 72px) clamp(28px, 4.5vw, 72px);
+      border-left: 1px solid var(--auth-card-border);
+      background: var(--auth-pane);
+      backdrop-filter: blur(22px) saturate(0.9);
+      -webkit-backdrop-filter: blur(22px) saturate(0.9);
+    }
+    .auth-card {
+      width: min(100%, 430px);
+      color: var(--auth-text);
+    }
+    .auth-intro {
+      margin-bottom: 24px;
+    }
+    .auth-eyebrow {
+      display: inline-flex;
+      margin-bottom: 11px;
+      color: var(--auth-accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+    .auth-intro h2 {
+      margin: 0;
+      color: var(--auth-heading);
+      font-family: var(--font-display);
+      font-size: clamp(29px, 3.2vw, 40px);
+      font-weight: 600;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+    .auth-intro p {
+      max-width: 390px;
+      margin: 11px 0 0;
+      color: var(--auth-muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .auth-google {
+      display: grid;
+      min-height: 46px;
+      grid-template-columns: 20px max-content 20px;
+      align-items: center;
+      justify-content: center;
+      column-gap: 10px;
+      padding-inline: 16px;
+      border-color: var(--auth-control-border);
+      background: var(--auth-control);
+      color: var(--auth-text);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: 0;
+      box-shadow: none;
+    }
+    .auth-google::after {
+      width: 20px;
+      height: 20px;
+      content: "";
+    }
+    .auth-google [data-google-label] {
+      text-align: center;
+    }
+    .auth-google:hover {
+      border-color: var(--auth-accent-border);
+      background: var(--auth-control-hover);
+      box-shadow: none;
+      transform: none;
+    }
+    .auth-google.is-loading {
+      pointer-events: none;
+      opacity: 0.72;
+    }
+    .google-mark {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+    .auth-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 18px;
+      padding: 3px;
+      border: 1px solid var(--auth-control-border);
+      border-radius: 8px;
+      background: var(--auth-accent-soft);
+    }
+    .auth-tab {
+      flex: 1;
+      min-height: 38px;
+      padding: 7px 12px;
+      border: 1px solid transparent;
+      background: transparent;
+      border-radius: 5px;
+      cursor: pointer;
+      color: var(--auth-muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .auth-tab.active {
+      border-color: var(--auth-control-border);
+      background: var(--auth-control-hover);
+      color: var(--auth-heading);
+      box-shadow: 0 2px 9px rgba(19, 22, 27, 0.07);
+    }
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0;
+      color: var(--auth-muted);
+      font-size: 11px;
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      height: 1px;
+      flex: 1;
+      background: var(--auth-control-border);
+      content: "";
+    }
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .auth-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: var(--auth-text);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .auth-form input {
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid var(--auth-control-border);
+      border-radius: 7px;
+      background: var(--auth-control);
+      color: var(--auth-heading);
+      font-size: 16px;
+      font-weight: 400;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .auth-form input:focus {
+      border-color: var(--auth-accent-border);
+      outline: 2px solid var(--auth-accent-soft);
+      outline-offset: 1px;
+    }
+    .auth-form .btn-primary {
+      min-height: 44px;
+      margin-top: 2px;
+      border-color: #9b294e;
+      border-radius: 7px;
+      background: linear-gradient(135deg, #c7466d, #9c284f);
+      color: #fff9fb;
+      font-size: 13px;
+      box-shadow:
+        0 10px 22px rgba(155, 41, 78, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    .auth-form .btn-primary:hover {
+      background: linear-gradient(135deg, #d04c75, #a72d55);
+      box-shadow:
+        0 13px 26px rgba(155, 41, 78, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    }
+    .auth-form small {
+      color: var(--auth-muted);
+      font-size: 11px;
+      font-weight: 400;
+    }
+    .auth-link {
+      min-height: 30px;
+      align-self: flex-start;
+      padding: 4px 0;
+      border: none;
+      background: none;
+      color: var(--auth-accent);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .auth-hint {
+      margin: 0;
+      color: var(--auth-muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .auth-message {
+      margin: 14px 0 0;
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .auth-message:empty {
+      display: none;
+    }
+    .auth-message.is-error {
+      color: var(--danger-text);
+    }
+    .auth-message.is-success {
+      color: var(--success-text);
+    }
+    .auth-legal {
+      margin: 18px 0 0;
+      color: var(--auth-muted);
+      font-size: 10px;
+      line-height: 1.65;
+      text-align: center;
+    }
+    .auth-legal a {
+      color: var(--auth-text);
+      text-decoration: underline;
+      text-decoration-color: var(--auth-control-border);
+      text-underline-offset: 3px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"]) .auth-body) {
+        --auth-pane: rgba(15, 14, 17, 0.9);
+        --auth-card: rgba(26, 24, 28, 0.86);
+        --auth-card-border: rgba(255, 255, 255, 0.12);
+        --auth-control: rgba(255, 255, 255, 0.055);
+        --auth-control-hover: rgba(255, 255, 255, 0.09);
+        --auth-control-border: rgba(255, 255, 255, 0.16);
+        --auth-heading: #f3edef;
+        --auth-text: #e1dadd;
+        --auth-muted: #a89fa4;
+        --auth-accent: #ef8ca7;
+        --auth-accent-soft: rgba(218, 79, 119, 0.14);
+        --auth-accent-border: rgba(239, 140, 167, 0.42);
+        --auth-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+        background: #0d0c0f;
+      }
+      :global(:root:not([data-theme="light"]) .auth-body .site-header-minimal) {
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+        background: rgba(12, 11, 14, 0.7);
+      }
+      :global(:root:not([data-theme="light"])) .auth-main {
+        --auth-poster-image: var(--auth-poster-dark);
+      }
+      :global(:root:not([data-theme="light"])) .auth-main::before {
+        display: none;
+      }
+    }
+    @media (max-width: 900px) {
+      .auth-main {
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+        overflow: visible;
+        /* 人脸居中、按宽度铺满、顶部对齐头部 */
+        background-image: var(--auth-poster-image);
+        background-position: center top;
+        background-size: 100% auto;
+        background-repeat: no-repeat;
+        background-color: var(--auth-pane);
+      }
+      /* 移动端不需要水平渐变遮罩 */
+      .auth-main::before {
+        display: none !important;
+      }
+      .auth-poster {
+        display: none;
+      }
+      .auth-form-pane {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        align-items: flex-start;
+        /* 上方留足空间展示完整人脸（含下巴），渐变在图片底部区域开始 */
+        margin-top: clamp(280px, 46vh, 420px);
+        padding: 40px 18px 48px;
+        border-left: 0;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+      /* 表单区域顶部的渐变遮罩 —— 从透明平滑过渡到面板色，让人脸与文字自然融合 */
+      .auth-form-pane::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 100%;
+        height: clamp(140px, 22vh, 260px);
+        pointer-events: none;
+        background: linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(247, 247, 246, 0.08) 20%,
+          rgba(247, 247, 246, 0.35) 42%,
+          rgba(247, 247, 246, 0.65) 60%,
+          rgba(247, 247, 246, 0.88) 78%,
+          var(--auth-pane) 100%
+        );
+      }
+      /* 表单区域本身的纯色背景 */
+      .auth-form-pane::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: var(--auth-pane);
+        z-index: -1;
+      }
+      :global([data-theme="dark"]) .auth-form-pane::before {
+        background: linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(15, 14, 17, 0.08) 20%,
+          rgba(15, 14, 17, 0.35) 42%,
+          rgba(15, 14, 17, 0.65) 60%,
+          rgba(15, 14, 17, 0.88) 78%,
+          var(--auth-pane) 100%
+        );
+      }
+      .auth-card {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 460px);
+        padding: 24px;
+        border: 1px solid var(--auth-card-border);
+        border-radius: 8px;
+        background: var(--auth-card);
+        box-shadow: var(--auth-shadow);
+        backdrop-filter: blur(20px) saturate(0.9);
+        -webkit-backdrop-filter: blur(20px) saturate(0.9);
+      }
+      .auth-intro {
+        margin-bottom: 20px;
+      }
+    }
+    @media (max-width: 520px) {
+      :global(.auth-body .site-header-minimal .site-nav) {
+        width: calc(100% - 24px);
+      }
+      .auth-main {
+        /* 小屏也保持按宽度自动铺满 */
+        background-position: center top;
+        background-size: 100% auto;
+        background-repeat: no-repeat;
+      }
+      .auth-form-pane {
+        margin-top: clamp(220px, 40vh, 340px);
+        padding: 36px 10px 34px;
+      }
+      .auth-card {
+        padding: 21px 16px;
+      }
+      .auth-intro h2 {
+        font-size: 28px;
+      }
+      .auth-google {
+        grid-template-columns: 18px minmax(0, max-content) 18px;
+        padding-inline: 10px;
+        font-size: 12px;
+      }
+      .google-mark,
+      .auth-google::after {
+        width: 18px;
+        height: 18px;
+      }
+    }
+    /* 系统暗色偏好下的移动端渐变适配 */
+    @media (max-width: 900px) and (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"])) .auth-form-pane::before {
+        background: linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(15, 14, 17, 0.15) 25%,
+          rgba(15, 14, 17, 0.55) 55%,
+          rgba(15, 14, 17, 0.88) 80%,
+          var(--auth-pane) 100%
+        );
+      }
+    }
+    /* ── 东亚语言排版微调（CJK 标题 line-height 与 letter-spacing） ── */
+    :global(.auth-east-asian) .auth-poster h1 {
+      line-height: 1.32;
+      letter-spacing: 0.02em;
+    }
+    :global(.auth-east-asian) .auth-poster p {
+      line-height: 1.85;
+      letter-spacing: 0.01em;
+    }
+    :global(.auth-east-asian) .poster-kicker {
+      letter-spacing: 0.06em;
+      text-transform: none;
+    }
+    :global(.auth-east-asian) .auth-intro h2 {
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+    }
+    :global(.auth-east-asian) .auth-intro p {
+      line-height: 1.8;
+    }
+  </style>
+
+  <script is:inline define:vars={{ authMessages, authNextPath }}>
+    (() => {
+      const root = document.querySelector("[data-auth]");
+      if (!root) return;
+      const message = root.querySelector("[data-auth-message]");
+      const forms = {
+        login: root.querySelector('[data-auth-form="login"]'),
+        register: root.querySelector('[data-auth-form="register"]'),
+        forgot: root.querySelector('[data-auth-form="forgot"]'),
+      };
+      const tabs = root.querySelectorAll("[data-auth-tab]");
+
+      function setMessage(text, kind) {
+        message.textContent = text || "";
+        message.className = "auth-message" + (kind ? " is-" + kind : "");
+      }
+      function show(name) {
+        for (const key of Object.keys(forms)) forms[key].hidden = key !== name;
+        tabs.forEach((tab) => {
+          const active = tab.dataset.authTab === name;
+          tab.classList.toggle("active", active);
+          tab.setAttribute("aria-selected", String(active));
+        });
+        setMessage("");
+      }
+
+      tabs.forEach((tab) =>
+        tab.addEventListener("click", () => show(tab.dataset.authTab)),
+      );
+      root
+        .querySelector("[data-auth-forgot]")
+        ?.addEventListener("click", () => show("forgot"));
+      root
+        .querySelector("[data-auth-back]")
+        ?.addEventListener("click", () => show("login"));
+
+      root
+        .querySelector("[data-google-auth]")
+        ?.addEventListener("click", (event) => {
+          if (
+            event.defaultPrevented ||
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+          ) {
+            return;
+          }
+          const link = event.currentTarget;
+          link.classList.add("is-loading");
+          link.setAttribute("aria-disabled", "true");
+          const label = link.querySelector("[data-google-label]");
+          if (label) label.textContent = authMessages.connectingGoogle;
+        });
+
+      async function postJson(url, payload) {
+        try {
+          const res = await fetch(url, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          return {
+            status: res.status,
+            body: await res.json().catch(() => null),
+          };
+        } catch {
+          return {
+            status: 0,
+            body: {
+              ok: false,
+              error: { message: authMessages.networkError },
+            },
+          };
+        }
+      }
+
+      function setPending(form, pending, label) {
+        const button = form.querySelector('button[type="submit"]');
+        if (!button) return;
+        if (!button.dataset.defaultLabel) {
+          button.dataset.defaultLabel = button.textContent.trim();
+        }
+        button.disabled = pending;
+        button.textContent = pending ? label : button.dataset.defaultLabel;
+      }
+
+      forms.login.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = new FormData(forms.login);
+        setMessage(authMessages.signingIn);
+        setPending(forms.login, true, authMessages.signingIn);
+        const { body } = await postJson("/api/auth/login", {
+          email: data.get("email"),
+          password: data.get("password"),
+        });
+        if (body?.ok) {
+          setMessage(authMessages.signInSuccess, "success");
+          window.location.href = authNextPath || "/";
+        } else {
+          setPending(forms.login, false);
+          setMessage(
+            body?.error?.message ?? authMessages.signInFailed,
+            "error",
+          );
+        }
+      });
+
+      forms.register.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = new FormData(forms.register);
+        setMessage(authMessages.registering);
+        setPending(forms.register, true, authMessages.registering);
+        const { body } = await postJson("/api/auth/register", {
+          email: data.get("email"),
+          password: data.get("password"),
+        });
+        setPending(forms.register, false);
+        if (body?.ok) {
+          setMessage(
+            body.data?.message ?? authMessages.registerSuccess,
+            "success",
+          );
+        } else {
+          setMessage(
+            body?.error?.message ?? authMessages.registerFailed,
+            "error",
+          );
+        }
+      });
+
+      forms.forgot.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = new FormData(forms.forgot);
+        setMessage(authMessages.sending);
+        setPending(forms.forgot, true, authMessages.sending);
+        const { body } = await postJson("/api/auth/forgot-password", {
+          email: data.get("email"),
+        });
+        setPending(forms.forgot, false);
+        setMessage(
+          body?.data?.message ??
+            body?.error?.message ??
+            authMessages.resetFallback,
+          body?.ok ? "success" : "error",
+        );
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("verify") === "invalid")
+        setMessage(authMessages.verifyInvalid, "error");
+      if (params.get("oauth") === "failed")
+        setMessage(authMessages.oauthFailed, "error");
+      if (params.get("oauth") === "invalid")
+        setMessage(authMessages.oauthInvalid, "error");
+      if (params.get("oauth") === "unavailable")
+        setMessage(authMessages.oauthUnavailable, "error");
+      if (params.get("oauth") === "cancelled")
+        setMessage(authMessages.oauthCancelled);
+      if (params.get("oauth") === "unverified")
+        setMessage(authMessages.oauthUnverified, "error");
+      if (params.get("oauth") === "conflict")
+        setMessage(authMessages.oauthConflict, "error");
+    })();
+  </script>
+</BaseLayout>

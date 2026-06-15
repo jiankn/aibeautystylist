@@ -1,0 +1,258 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "10 Makeup Mistakes to Avoid — And How to Fix Them",
+  description:
+    "The ten most common beginner makeup mistakes, why they happen, and exactly how to fix each one. Includes the number one mistake that ruins everything and a guide to self-diagnosing what is going wrong with your look.",
+  faq: [
+    {
+      q: "What are the most common makeup mistakes beginners make?",
+      a: "The top ten most common beginner mistakes are: wrong foundation shade, applying concealer before foundation, using too much powder, skipping skincare prep, unblended harsh eyeshadow edges, overfilled eyebrows, no mascara on the lash base, mismatched lip liner, applying blush too low on the face, and not setting makeup with powder or spray. These mistakes are universal because beginners do not know what they do not know — the mistakes are invisible to the person making them. The fix for each one is usually a small adjustment in technique rather than buying different products.",
+    },
+    {
+      q: "How do I fix cakey foundation?",
+      a: "Cakey foundation is almost always caused by one of three things: using too much product, applying it on unmoisturized skin, or layering powder too heavily. To fix it mid-application, take a damp beauty sponge and gently press it across your face. The moisture reactivates the foundation and removes excess product, leaving a thinner, more natural layer. To prevent cakey foundation in the future, apply your base in thin layers — start with half the amount you think you need and add only where necessary. Also, make sure your skin is well moisturized before applying any base product. Hydrated skin makes any foundation look better.",
+    },
+    {
+      q: "Why does my makeup look off even though I followed a tutorial?",
+      a: "There are three common reasons. First, your skin tone or undertone may not match the person in the tutorial, so the same shade of foundation or blush that looks natural on them looks wrong on you. Second, tutorials are often filmed in studio lighting that makes everything look better than it does in real life. Third, the person in the tutorial has practiced the technique hundreds or thousands of times, and they are editing out their mistakes. The fix is to adapt every tutorial to your own features: test products on your own skin in natural light, focus on technique rather than specific product recommendations, and give yourself permission to look imperfect while you are learning.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  {
+    label: "How to Apply Makeup Step by Step",
+    url: "/guides/apply-step-by-step",
+  },
+  { label: "Basic Makeup Essentials", url: "/guides/makeup-essentials" },
+  {
+    label: "Drugstore Makeup for Beginners",
+    url: "/guides/drugstore-beginners",
+  },
+];
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      The hardest part about being a makeup beginner is that you cannot see your
+      own mistakes. This guide identifies the ten most common errors, explains
+      why they happen, and gives you a specific fix for each one — so you can
+      self-diagnose what is going wrong with your look.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <div class="highlight-box">
+      <p>
+        <strong>The number one mistake:</strong> Wearing the wrong foundation shade.
+        This single error makes everything else look wrong, no matter how well you
+        apply your other products. If your foundation does not match your neck, you
+        will always look like you are wearing a mask. Test foundation on your jawline
+        in natural daylight, not on the back of your hand under store lighting. When
+        in doubt between two shades, choose the darker one — you can always lighten
+        it with a lighter concealer, but you cannot darken a foundation that is too
+        light without buying a new one.
+      </p>
+    </div>
+
+    <h2>Why You Cannot See Your Own Makeup Mistakes</h2>
+    <p>
+      There is a psychological reason beginners struggle with self-diagnosis:
+      proximity. When you are three inches from a mirror applying makeup, you
+      are looking at your face from an angle and distance that nobody else ever
+      sees. The person across from you at lunch sees your face from three feet
+      away, in ambient lighting, while you are talking and moving. The lighting,
+      distance, and angle differences mean that what looks fine in your bathroom
+      mirror can look completely different in the real world.
+    </p>
+    <p>
+      This is why the phone camera is your most valuable diagnostic tool. Take a
+      selfie in natural daylight after applying your makeup. The camera shows
+      you what other people actually see — the harsh lines, the color
+      mismatches, the uneven blending — that your bathroom mirror hides. It is
+      uncomfortable at first, but it is the fastest way to identify what needs
+      fixing.
+    </p>
+
+    <h2>The 10 Most Common Mistakes and Their Fixes</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">1</div>
+        <h4>Wrong Foundation Shade</h4>
+        <p>
+          Face looks orange, gray, or noticeably different from your neck. Fix:
+          Test on your jawline in daylight. When unsure, go slightly darker and
+          brighten under eyes with a lighter concealer.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">2</div>
+        <h4>Concealer Before Foundation</h4>
+        <p>
+          You use twice as much concealer as needed and it gets partially
+          removed when you blend foundation. Fix: Always apply concealer after
+          foundation. You will be surprised by how little you need.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">3</div>
+        <h4>Too Much Powder</h4>
+        <p>
+          Face looks flat, dry, and cakey. Fine lines become more visible. Fix:
+          Use a light hand and only powder your T-zone and under eyes. Press
+          powder in rather than sweeping it across your face.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">4</div>
+        <h4>Skipping Skincare Prep</h4>
+        <p>
+          Foundation clings to dry patches, looks uneven, and fades quickly.
+          Fix: Always moisturize before makeup and wait two minutes for
+          absorption. This single change is more impactful than any product
+          upgrade.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">5</div>
+        <h4>Unblended Eyeshadow Edges</h4>
+        <p>
+          Harsh lines of color sitting on your eyelid with no transition to your
+          skin. Fix: After applying eyeshadow, take a clean fluffy brush and
+          blend the edges in small circular motions until the transition is
+          seamless.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">6</div>
+        <h4>Overfilled Eyebrows</h4>
+        <p>
+          Brows look like solid blocks of color instead of individual hairs.
+          Fix: Use a lighter hand, choose a shade one tone lighter than your
+          natural brow color, and always brush through with a spoolie to soften.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">7</div>
+        <h4>Mascara Only on Tips</h4>
+        <p>
+          Lashes look spidery and separated because the base has no volume. Fix:
+          Wiggle the mascara wand at the very base of your lashes and hold for
+          one second before sweeping upward. The base is where volume comes
+          from.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">8</div>
+        <h4>Mismatched Lip Liner</h4>
+        <p>
+          A visible ring of color around your lips that does not match the
+          lipstick inside. Fix: Choose a lip liner that matches your lipstick or
+          your natural lip color, not one that is dramatically darker. Blend the
+          liner inward before applying lipstick.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">9</div>
+        <h4>Blush Too Low</h4>
+        <p>
+          Cheeks look droopy and your face appears heavier. Fix: Apply blush on
+          the apples of your cheeks (smile to find them) and blend upward toward
+          your temples. Never apply blush below the tip of your nose.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">10</div>
+        <h4>No Setting Step</h4>
+        <p>
+          Makeup fades, creases, and slides within a few hours. Fix: Set cream
+          products with translucent powder (pressed in, not swept) and finish
+          with a light mist of setting spray. This extends wear time by at least
+          four hours.
+        </p>
+      </div>
+    </div>
+
+    <h2>How to Self-Diagnose: The Three-Light Test</h2>
+    <p>
+      When your makeup looks off and you cannot figure out why, run this
+      diagnostic. It takes two minutes and identifies the problem every time.
+    </p>
+    <p>
+      <strong>Step one: Check in your bathroom mirror.</strong> Does the overall look
+      seem balanced? Are there any obvious lines or patches? If something looks wrong
+      here, it is a blending or application problem.
+    </p>
+    <p>
+      <strong>Step two: Check in natural window light.</strong> Does your foundation
+      match your neck? Does your blush look like a natural flush or a painted stripe?
+      If something looks wrong here that looked fine in the bathroom, it is a color
+      or shade problem.
+    </p>
+    <p>
+      <strong>Step three: Check with your phone camera.</strong> Are there harsh edges
+      you cannot see in the mirror? Does your eyeshadow look muddy? Is your foundation
+      textured? The camera reveals what both mirrors hide. If something looks wrong
+      here, it is a texture or precision problem.
+    </p>
+    <p>
+      Once you know which category the problem falls into, you can look up the
+      specific fix in the mistake list above. This diagnostic process is what
+      separates people who improve quickly from people who make the same
+      mistakes for months without realizing it.
+    </p>
+
+    <h2>The Mistake You Will Make Before You Improve</h2>
+    <p>
+      Every beginner goes through a phase where they use too much product. This
+      is not a personal failing — it is a natural consequence of not yet knowing
+      how little makeup actually looks like on skin. Foundation, concealer,
+      eyeshadow, and blush all look different on your hand (where you test them)
+      than on your face (where the lighting, skin texture, and surrounding
+      features change the appearance).
+    </p>
+    <p>
+      The fix is counterintuitive: start with half the amount you think you
+      need, and add more only if necessary. You can always build coverage, but
+      you cannot easily remove excess product without starting over. This "start
+      small" habit is the single best thing you can develop as a beginner, and
+      it prevents at least half of the mistakes listed above.
+    </p>
+  </div>
+
+  <div slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Spot Mistakes Before They Happen</h2>
+        <p>
+          Preview your makeup look with AI try-on and catch shade mismatches and
+          application issues before you leave the house.
+        </p>
+        <a href="/tryon-free" class="cta-btn">Try AI Makeup Try-On</a>
+      </div>
+    </div>
+  </div>
+
+  <div slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Related Guides</h3>
+        <ul class="related-list">
+          {
+            relatedLinks.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</SeoLandingLayout>

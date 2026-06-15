@@ -1,0 +1,689 @@
+---
+import LookSelector from "../components/LookSelector.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
+import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { t } from "../lib/i18n";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// Premium 展示完整妆容库。
+const audienceContext = Astro.locals.audienceContext;
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const pricingHref = localizeAppHref("/pricing");
+const discoverHref = localizeAppHref("/discover");
+const loginHref = localizeAppHref("/login");
+const shareCardHref = localizeAppHref("/share-card");
+const allLooks = resolveLookCatalog(audienceContext);
+const requestedSlug = Astro.url.searchParams.get("look");
+const selected =
+  allLooks.find((look) => look.slug === requestedSlug) ?? allLooks[0];
+const selectorLooks = [
+  selected,
+  ...allLooks.filter((look) => look.slug !== selected.slug),
+].slice(0, 12);
+const premiumClientMessages = {
+  loginTitle: t("tryon", "loginPremiumTitle"),
+  loginDesc: t("tryon", "loginWorkspaceDesc"),
+  loginRegister: t("tryon", "loginRegister"),
+  uploadFlowNotReady: t("tryon", "uploadFlowNotReady"),
+  uploading: t("tryon", "uploading"),
+  confirmingPhotoNotice: t("tryon", "confirmingPhotoNotice"),
+  creatingTask: t("tryon", "creatingTask"),
+  aiGeneratingImage: t("tryon", "aiGeneratingImage"),
+  generating: t("tryon", "generating"),
+  timeout: t("tryon", "timeout"),
+  aiAnalyzing: t("tryon", "aiAnalyzing"),
+  generatingImage: t("tryon", "generatingImage"),
+  complete: t("tryon", "complete"),
+  failed: t("tryon", "failed"),
+  loadSavedFailed: t("tryon", "loadSavedFailed"),
+  operationSavedFailed: t("tryon", "operationSavedFailed"),
+  confirmDeleteResult: t("tryon", "confirmDeleteResult"),
+  saveResult: t("tryon", "saveResult"),
+  savedResult: t("tryon", "savedResult"),
+  noSuccessHistory: t("tryon", "noSuccessHistory"),
+  noHistory: t("tryon", "noHistory"),
+  historyLoadFailed: t("tryon", "historyLoadFailed"),
+  copied: t("tryon", "copied"),
+  copyShareLink: t("tryon", "copyShareLink"),
+  highQualityOutput: t("tryon", "highQualityOutput"),
+};
+---
+
+<BaseLayout
+  title={t("tryon", "premiumTitle") + " | " + t("brand", "name")}
+  description={t("tryon", "premiumSubtitle")}
+  bodyClass="workspace-body"
+  robots="noindex,follow"
+>
+  <SiteHeader active="tryOn" />
+  <main class="workspace-main">
+    <div class="shell">
+      <WorkspaceStatusBar
+        plan="Premium"
+        title={t("tryon", "premiumTitle")}
+        subtitle={t("tryon", "premiumSubtitle")}
+        active="tryon-premium"
+        remaining={0}
+        total={150}
+        note={t("tryon", "premiumNote")}
+        live
+      />
+      <!-- 权限检查提示 -->
+      <div
+        id="prem-gate"
+        class="panel"
+        style="text-align:center;padding:40px"
+        hidden
+      >
+        <h2>🔒&nbsp; {t("tryon", "needPremium")}</h2>
+        <p>{t("tryon", "onlyForPremium")}</p>
+        <a class="btn btn-gold" href={pricingHref}
+          >{t("tryon", "viewPricing")}</a
+        >
+      </div>
+
+      <div id="prem-content">
+        <div class="workspace-grid premium-grid">
+          <aside class="selector-panel panel">
+            <div class="selector-head">
+              <h2 class="panel-title">{t("tryon", "selectLook")}</h2><a
+                href={discoverHref}>{t("tryon", "allLooksBtn")}</a
+              >
+            </div>
+            <LookSelector
+              looks={selectorLooks}
+              selectedSlug={selected.slug}
+              variant="grid"
+            />
+            <a class="btn btn-wide" style="margin-top:14px" href={discoverHref}
+              >{t("tryon", "allLooksBtn")}</a
+            >
+          </aside>
+          <section class="result-panel panel">
+            <div class="result-head">
+              <div>
+                <span class="pill pill-gold">Premium</span>
+                <h2 style="margin-top:10px">
+                  <span data-look-title>{selected.title}</span>
+                  <span class="small muted"
+                    >· {selected.scenarios.join(" / ")}</span
+                  >
+                </h2>
+              </div>
+              <span
+                class="teal strong"
+                style="margin-left:auto"
+                id="prem-result-badge"
+                >✓&nbsp; {t("tryon", "highQualityOutput")}</span
+              >
+            </div>
+
+            <!-- 上传区 -->
+            <div class="upload-preview" id="prem-upload-area">
+              <div class="upload-box">
+                <span class="upload-camera">▣</span>
+                <h3>{t("tryon", "uploadSelfie")}</h3>
+                <p>{t("tryon", "uploadFormatDesc")}</p>
+                <div class="privacy-promise">
+                  <span>✓ {t("privacy", "photoPurpose")}</span>
+                  <span>✓ {t("tryon", "premiumNote")}</span>
+                </div>
+                <label class="privacy-consent" for="prem-consent">
+                  <input type="checkbox" id="prem-consent" />
+                  <span>{t("tryon", "consentCheckbox")}</span>
+                </label>
+                <button class="btn btn-gold" id="prem-upload-btn" disabled
+                  >{t("tryon", "uploadBtn")}</button
+                >
+                <div class="upload-task-status" id="prem-task-status" hidden>
+                  <div class="upload-task-head">
+                    <span id="prem-status-text"
+                      >{t("tryon", "waitingUpload")}</span
+                    >
+                    <b id="prem-percent">0%</b>
+                  </div>
+                  <div class="meter">
+                    <i id="prem-progress" style="width:0%"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="upload-arrow">→</div>
+              <div id="prem-result-target">
+                <div class="result-placeholder">
+                  <p class="muted">{t("tryon", "resultWillAppear")}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 结果对比区 -->
+            <div class="compare-hero result-compare" id="prem-compare" hidden>
+              <div class="compare-half right">
+                <img
+                  id="prem-result-img"
+                  src=""
+                  alt={t("tryon", "tryonAfterAlt")}
+                />
+              </div>
+              <div class="compare-half left">
+                <img
+                  id="prem-original-img"
+                  src=""
+                  alt={t("tryon", "originalAlt")}
+                />
+              </div>
+              <span class="compare-label before">{t("tryon", "original")}</span>
+              <span class="compare-label after"
+                >{t("tryon", "tryonResult")}</span
+              >
+            </div>
+            <p class="result-caption">{t("tryon", "aiResultCaption")}</p>
+
+            <div class="pro-result-actions" id="prem-actions" hidden>
+              <button class="btn" id="prem-save-btn"
+                >▱&nbsp; {t("tryon", "saveResult")}</button
+              >
+              <a class="btn btn-gold" id="prem-download-btn" download
+                >↓&nbsp; {t("tryon", "downloadHd")}</a
+              >
+              <button class="btn" id="prem-delete-btn"
+                >×&nbsp; {t("tryon", "delete")}</button
+              >
+            </div>
+
+            <div class="panel premium-share-panel" style="margin-top:16px">
+              <h3>{t("tryon", "shareEffectTitle")}</h3>
+              <div>
+                <a
+                  class="btn btn-primary"
+                  href={shareCardHref}
+                  data-share-card-link>▱&nbsp; {t("tryon", "saveShareCard")}</a
+                >
+                <button class="btn" id="prem-copy-link"
+                  >⌘&nbsp; {t("tryon", "copyShareLink")}</button
+                >
+                <button
+                  class="btn"
+                  data-toast={t("tryon", "toastSelectNewLook")}
+                  >↻&nbsp; {t("tryon", "continueTryon")}</button
+                >
+              </div>
+            </div>
+          </section>
+          <aside>
+            <section class="explain-panel panel">
+              <h2 class="panel-title">{t("tryon", "productTypeInfo")}</h2>
+              <div class="product-list">
+                {
+                  [
+                    t("tryon", "baseProduct"),
+                    t("tryon", "blush"),
+                    t("tryon", "eyeshadow"),
+                    t("tryon", "lip"),
+                  ].map((name) => (
+                    <div class="enhance">
+                      <>
+                        <i>◉</i>
+                        <div>
+                          <>
+                            <b>{name}</b>
+                            <span>{t("tryon", "profileMatched")}</span>
+                          </>
+                        </div>
+                      </>
+                    </div>
+                  ))
+                }
+              </div>
+              <button
+                class="btn btn-wide"
+                style="margin-top:12px"
+                data-toast={t("tryon", "fullProductListComing")}
+                >{t("tryon", "viewFullProductList")}</button
+              >
+            </section>
+            <section class="explain-panel panel" style="margin-top:16px">
+              <h2 class="panel-title">
+                ◇&nbsp; {t("tryon", "premiumEnhance")}
+              </h2>
+              <div class="enhance-list" style="margin-top:15px">
+                {
+                  [
+                    {
+                      name: t("tryon", "priorityQueue"),
+                      desc: t("tryon", "priorityQueueDesc"),
+                    },
+                    {
+                      name: t("tryon", "highQualityOutput"),
+                      desc: t("tryon", "highQualityOutputDesc"),
+                    },
+                    {
+                      name: t("tryon", "longTermHistory"),
+                      desc: t("tryon", "longTermHistoryDesc"),
+                    },
+                    {
+                      name: t("tryon", "fullCatalog"),
+                      desc: String(t("tryon", "fullCatalogDesc")).replace(
+                        "{count}",
+                        String(allLooks.length),
+                      ),
+                    },
+                  ].map((item) => (
+                    <div class="enhance">
+                      <>
+                        <i>◇</i>
+                        <div>
+                          <>
+                            <b>{item.name}</b>
+                            <span>{item.desc}</span>
+                          </>
+                        </div>
+                      </>
+                    </div>
+                  ))
+                }
+              </div>
+            </section>
+            <section class="panel" style="margin-top:16px">
+              <h2 class="panel-title">{t("tryon", "historyTitle")}</h2>
+              <div id="prem-history" class="diag-history-list">
+                <p class="muted">{t("tryon", "loading")}</p>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script
+  is:inline
+  define:vars={{ premiumClientMessages, loginHref, shareCardHref }}
+>
+  (function () {
+    const POLL_INTERVAL = 2000;
+    const gate = document.getElementById("prem-gate");
+    const content = document.getElementById("prem-content");
+    const consentBox = document.getElementById("prem-consent");
+    const uploadBtn = document.getElementById("prem-upload-btn");
+    const taskStatus = document.getElementById("prem-task-status");
+    const statusText = document.getElementById("prem-status-text");
+    const percentText = document.getElementById("prem-percent");
+    const progressBar = document.getElementById("prem-progress");
+    const compareDiv = document.getElementById("prem-compare");
+    const uploadArea = document.getElementById("prem-upload-area");
+    const actionsDiv = document.getElementById("prem-actions");
+    const resultImg = document.getElementById("prem-result-img");
+    const downloadBtn = document.getElementById("prem-download-btn");
+    const badge = document.getElementById("prem-result-badge");
+    const shareCardLink = document.querySelector("[data-share-card-link]");
+    const historyList = document.getElementById("prem-history");
+    let currentJobId = null;
+
+    function loginUrl() {
+      return (
+        loginHref +
+        "?mode=register&next=" +
+        encodeURIComponent(location.pathname + location.search + location.hash)
+      );
+    }
+
+    // 权限检查
+    fetch("/api/session")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.ok) return;
+        if (data.data.user?.kind !== "account") {
+          gate.hidden = false;
+          content.hidden = true;
+          gate.querySelector("h2").textContent =
+            premiumClientMessages.loginTitle;
+          gate.querySelector("p").textContent = premiumClientMessages.loginDesc;
+          const link = gate.querySelector("a");
+          link.href = loginUrl();
+          link.textContent = premiumClientMessages.loginRegister;
+          return;
+        }
+        const plan = data.data.plan;
+        if (plan !== "premium") {
+          gate.hidden = false;
+          content.hidden = true;
+          return;
+        }
+        const q = data.data.quota;
+        const pct = Math.min(100, (q.used / q.total) * 100);
+        const label = document.querySelector("[data-quota-label]");
+        const meter = document.querySelector("[data-quota-meter]");
+        if (label) {
+          label.textContent = q.remaining + " / " + q.total + " 次";
+        }
+        if (meter) {
+          meter.style.width = pct + "%";
+        }
+      });
+
+    // 同意控制
+    if (consentBox && uploadBtn) {
+      consentBox.addEventListener("change", () => {
+        uploadBtn.disabled = !consentBox.checked;
+      });
+    }
+
+    // 上传 + 生成
+    if (uploadBtn) {
+      uploadBtn.addEventListener("click", async () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/jpeg,image/png,image/webp,image/heic,image/heif";
+        input.onchange = async () => {
+          const file = input.files?.[0];
+          if (!file) return;
+          try {
+            const createTryOnJob = window.__absCreateTryOnJob;
+            if (typeof createTryOnJob !== "function") {
+              throw new Error(premiumClientMessages.uploadFlowNotReady);
+            }
+            uploadBtn.disabled = true;
+            taskStatus.hidden = false;
+            updateProgress(premiumClientMessages.uploading, 10);
+            updateProgress(premiumClientMessages.confirmingPhotoNotice, 18);
+            updateProgress(premiumClientMessages.creatingTask, 25);
+
+            const slug =
+              document.querySelector("#prem-content [data-look-slug].active")
+                ?.dataset.lookSlug || "beginner";
+            const result = await createTryOnJob({
+              file,
+              lookSlug: slug,
+              requiredPlan: "premium",
+              idempotencyKey:
+                "prem-" +
+                Date.now() +
+                "-" +
+                Math.random().toString(36).slice(2),
+            });
+            currentJobId = result.job.id;
+            updateProgress(premiumClientMessages.aiGeneratingImage, 40);
+            badge.textContent = premiumClientMessages.generating;
+            pollJob(result.job.id);
+          } catch (err) {
+            updateProgress("❌ " + err.message, 0);
+            uploadBtn.disabled = false;
+          }
+        };
+        input.click();
+      });
+    }
+
+    function updateProgress(text, pct) {
+      if (statusText) statusText.textContent = text;
+      if (percentText) percentText.textContent = pct + "%";
+      if (progressBar) progressBar.style.width = pct + "%";
+    }
+
+    async function pollJob(jobId) {
+      let attempt = 0;
+      const interval = setInterval(async () => {
+        attempt++;
+        if (attempt > 60) {
+          clearInterval(interval);
+          updateProgress(premiumClientMessages.timeout, 0);
+          return;
+        }
+        try {
+          const res = await fetch("/api/tryon-jobs/" + jobId);
+          const data = await res.json();
+          if (!data.ok) return;
+          const job = data.data;
+          if (job.status === "diagnosis_running")
+            updateProgress(premiumClientMessages.aiAnalyzing, 50 + attempt);
+          else if (job.status === "image_running")
+            updateProgress(premiumClientMessages.generatingImage, 70 + attempt);
+          else if (job.status === "succeeded") {
+            clearInterval(interval);
+            updateProgress(premiumClientMessages.complete, 100);
+            badge.textContent = "✓ " + premiumClientMessages.highQualityOutput;
+            if (job.resultImage) showResult(job.resultImage, jobId);
+            loadHistory();
+          } else if (job.status === "failed" || job.status === "timed_out") {
+            clearInterval(interval);
+            updateProgress(
+              "× " + (job.errorCode || premiumClientMessages.failed),
+              0,
+            );
+            badge.textContent = "× " + premiumClientMessages.failed;
+            uploadBtn.disabled = false;
+          }
+        } catch {
+          /* ignore */
+        }
+      }, POLL_INTERVAL);
+    }
+
+    let savedJobIds = new Set();
+    async function loadSavedLooks() {
+      try {
+        const res = await fetch("/api/saved-looks");
+        const data = await res.json();
+        if (data.ok && data.data?.items) {
+          savedJobIds = new Set(data.data.items.map((item) => item.jobId));
+        }
+      } catch (e) {
+        console.error(premiumClientMessages.loadSavedFailed, e);
+      }
+    }
+
+    function showResult(imageUrl, jobId) {
+      currentJobId = jobId;
+      if (uploadArea) uploadArea.hidden = true;
+      if (compareDiv) compareDiv.hidden = false;
+      if (resultImg) resultImg.src = imageUrl;
+      if (actionsDiv) actionsDiv.hidden = false;
+      if (downloadBtn)
+        downloadBtn.href = "/api/tryon-jobs/" + jobId + "/result";
+      if (shareCardLink) shareCardLink.href = shareCardHref + "?jobId=" + jobId;
+      const deleteBtn = document.getElementById("prem-delete-btn");
+      if (deleteBtn) {
+        deleteBtn.onclick = async () => {
+          if (!confirm(premiumClientMessages.confirmDeleteResult)) return;
+          await fetch("/api/tryon-jobs/" + jobId, { method: "DELETE" });
+          location.reload();
+        };
+      }
+
+      // 绑定收藏逻辑
+      const saveBtn = document.getElementById("prem-save-btn");
+      if (saveBtn) {
+        const isSaved = savedJobIds.has(jobId);
+        saveBtn.innerHTML = isSaved
+          ? "★ " + premiumClientMessages.savedResult
+          : "☆ " + premiumClientMessages.saveResult;
+        saveBtn.onclick = async () => {
+          saveBtn.disabled = true;
+          try {
+            if (savedJobIds.has(jobId)) {
+              const delRes = await fetch("/api/saved-looks/" + jobId, {
+                method: "DELETE",
+              });
+              const delData = await delRes.json();
+              if (delData.ok) {
+                savedJobIds.delete(jobId);
+                saveBtn.innerHTML = "☆ " + premiumClientMessages.saveResult;
+              }
+            } else {
+              const slug =
+                document.querySelector("#prem-content [data-look-slug].active")
+                  ?.dataset.lookSlug || "beginner";
+              const postRes = await fetch("/api/saved-looks", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ jobId, lookSlug: slug }),
+              });
+              const postData = await postRes.json();
+              if (postData.ok) {
+                savedJobIds.add(jobId);
+                saveBtn.innerHTML = "★ " + premiumClientMessages.savedResult;
+              }
+            }
+          } catch (e) {
+            console.error(premiumClientMessages.operationSavedFailed, e);
+          } finally {
+            saveBtn.disabled = false;
+          }
+        };
+      }
+    }
+
+    // 历史记录
+    async function loadHistory() {
+      if (!historyList) return;
+      try {
+        await loadSavedLooks();
+        const res = await fetch("/api/tryon-jobs");
+        const data = await res.json();
+        if (data.ok && data.data?.items?.length > 0) {
+          const succeededJobs = data.data.items.filter(
+            (job) => job.status === "succeeded" && job.resultImage,
+          );
+          if (succeededJobs.length === 0) {
+            historyList.innerHTML = `<p class="muted">${premiumClientMessages.noSuccessHistory}</p>`;
+            return;
+          }
+
+          historyList.innerHTML = `
+            <div class="history-grid-container">
+              ${succeededJobs
+                .map(
+                  (job) => `
+                <div class="history-item-card" data-job-id="${job.id}">
+                  <img src="${job.resultImage}" alt="${job.lookTitle}" class="history-thumb" />
+                  <div class="history-info">
+                    <span class="history-title">${job.lookTitle}</span>
+                    <span class="history-date">${new Date(job.createdAt).toLocaleDateString(document.documentElement.lang || "zh-CN", { month: "2-digit", day: "2-digit" })}</span>
+                  </div>
+                </div>
+              `,
+                )
+                .join("")}
+            </div>
+          `;
+
+          historyList.querySelectorAll(".history-item-card").forEach((card) => {
+            card.addEventListener("click", () => {
+              const jobId = card.dataset.jobId;
+              const job = succeededJobs.find((j) => j.id === jobId);
+              if (job && job.resultImage) {
+                document
+                  .querySelectorAll("#prem-content [data-look-slug]")
+                  .forEach((btn) => {
+                    if (btn.dataset.lookSlug === job.lookSlug) {
+                      btn.classList.add("active");
+                      const titleEl = document.querySelector(
+                        "#prem-content [data-look-title]",
+                      );
+                      if (titleEl) titleEl.textContent = job.lookTitle;
+                    } else {
+                      btn.classList.remove("active");
+                    }
+                  });
+                showResult(job.resultImage, job.id);
+              }
+            });
+          });
+        } else {
+          historyList.innerHTML = `<p class="muted">${premiumClientMessages.noHistory}</p>`;
+        }
+      } catch (e) {
+        historyList.innerHTML = `<p class="muted">${premiumClientMessages.historyLoadFailed}</p>`;
+      }
+    }
+
+    // 复制链接
+    const copyBtn = document.getElementById("prem-copy-link");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => {
+        if (!currentJobId) return;
+        navigator.clipboard?.writeText(
+          location.origin +
+            shareCardHref +
+            "?jobId=" +
+            currentJobId +
+            "&ref=share",
+        );
+        copyBtn.textContent = "✓ " + premiumClientMessages.copied;
+        setTimeout(() => {
+          copyBtn.textContent = "⌘  " + premiumClientMessages.copyShareLink;
+        }, 2000);
+      });
+    }
+
+    loadHistory();
+  })();
+</script>
+
+<style>
+  .pro-result-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .result-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+  }
+  .history-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .history-item-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--bg);
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+  .history-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--rose-soft);
+  }
+  .history-thumb {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    display: block;
+  }
+  .history-info {
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .history-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .history-date {
+    font-size: 9px;
+    color: var(--muted);
+  }
+</style>

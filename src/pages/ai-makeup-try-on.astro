@@ -1,0 +1,205 @@
+---
+import SeoLandingLayout from "../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "AI Makeup Try-On — See How Any Style Looks on Your Face",
+  description:
+    "Upload a selfie and get a personalized AI makeup try-on in seconds. See before-and-after results for any style before you buy products or follow a tutorial.",
+  heroImage: "/images/article-ai-tryon-comparison.webp",
+  ogImage: "/images/article-ai-tryon-comparison.webp",
+  faq: [
+    {
+      q: "How does AI makeup try-on work?",
+      a: "Our AI analyzes your skin tone, face shape, and facial features using Gemini 2.5 Flash. It then generates a realistic try-on image showing how the selected makeup style would look on you — not a filter overlay, but a genuine adaptation to your unique face.",
+    },
+    {
+      q: "Is my photo stored or shared?",
+      a: "Your photo is used only to provide the analysis or try-on you request and is automatically deleted no later than 30 days. We do not use uploaded selfies for model training without separate authorization. You can delete related results and records from the product.",
+    },
+    {
+      q: "How many styles can I try on for free?",
+      a: "Free accounts get 3 complete diagnosis sessions per month. You can earn additional free tries by sharing your before-and-after results on social media (one share = one extra try, up to once per day).",
+    },
+    {
+      q: "Is the try-on realistic?",
+      a: "The AI adapts the selected makeup style to your actual face shape, skin tone, and feature proportions. It is not a one-size-fits-all filter — a soft glam look will look different on your face than on someone else's, just like in real life.",
+    },
+  ],
+  relatedLinks: [
+    { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+    { label: "Natural Makeup Look", url: "/looks/natural-makeup" },
+    { label: "Interview Makeup", url: "/scenarios/interview" },
+    { label: "Date Night Makeup", url: "/looks/date-night" },
+    { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+  ],
+};
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>AI Makeup Try-On: See the Look Before You Apply It</h1>
+    <p>
+      Upload a selfie and watch any makeup style come alive on your actual face
+      — personalized, realistic, and tailored to your skin tone and features.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>Why Try-On Beats Guessing</h2>
+    <p>
+      Most makeup decisions are educated guesses. You buy a lipstick because it
+      looks great on someone else, only to find it clashes with your undertone.
+      You follow a tutorial that's designed for hooded eyes when yours are
+      deep-set. The result? Disappointment, wasted money, and a drawer full of
+      "maybe someday" products.
+    </p>
+    <p>
+      AI makeup try-on eliminates that guesswork. Before you buy anything or
+      spend twenty minutes on a tutorial, you see exactly how the style looks on <strong
+        >your</strong
+      >
+      face. Not a filter. Not a stock model. Your face.
+    </p>
+
+    <h2>How It Works</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Upload Your Selfie</h4>
+          <p>
+            Take a clear photo of your face in natural light. No makeup needed —
+            bare face works best.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>AI Analyzes Your Features</h4>
+          <p>
+            The AI assesses your skin tone, undertone, face shape, eye shape,
+            and feature proportions.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Pick a Style to Try On</h4>
+          <p>
+            Choose from soft glam, natural, date night, interview — or browse
+            40+ styles in our catalog.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>See Your Personalized Result</h4>
+          <p>
+            The AI generates a realistic try-on image showing how that style
+            looks on your face.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Try-On vs. Photo Filter: The Difference</h2>
+    <div class="highlight-box">
+      <p>
+        Filters apply the same overlay to every face. AI try-on adapts the
+        makeup to your unique bone structure, skin texture, and natural coloring
+        — the same way a real makeup artist would adjust their technique for
+        each client.
+      </p>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>AI Try-On</th>
+          <th>Photo Filter</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Adapts to your face</td>
+          <td>Yes</td>
+          <td>No — same overlay</td>
+        </tr>
+        <tr>
+          <td>Considers skin tone</td>
+          <td>Yes</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>Shows realistic finish</td>
+          <td>Yes</td>
+          <td>Often exaggerated</td>
+        </tr>
+        <tr>
+          <td>Helps you buy the right products</td>
+          <td>Yes — includes product recommendations</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>Privacy-focused</td>
+          <td>Photo auto-deleted in 30 days</td>
+          <td>Varies by app</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>What You Get After Try-On</h2>
+    <p>Once you see a style you like, the platform gives you three things:</p>
+    <ul>
+      <li>
+        <strong>Personalized tutorial</strong> — a step-by-step guide showing how
+        to recreate the look on your own face, with tips for your specific features.
+      </li>
+      <li>
+        <strong>Product recommendations</strong> — real SKUs matched to your skin
+        tone and budget (drugstore to high-end).
+      </li>
+      <li>
+        <strong>Before-and-after image</strong> — a shareable comparison you can save
+        or post on social media.
+      </li>
+    </ul>
+
+    <h2>Try It Free</h2>
+    <p>
+      You get 3 free try-on sessions per month — enough to validate that the
+      output actually works for your face. If it does, upgrade to Pro for
+      unlimited access.
+    </p>
+  </div>
+
+  <div class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Ready to See How You Look?</h2>
+      <p>
+        Upload your selfie, pick a style, and see the result in under 30
+        seconds.
+      </p>
+      <a href="/tryon-free" class="cta-btn">Try AI Makeup Try-On — Free</a>
+    </div>
+  </div>
+
+  <div class="seo-related" slot="related">
+    <div class="related-inner">
+      <h3>Explore More</h3>
+      <ul class="related-list">
+        {
+          page.relatedLinks.map((link) => (
+            <li>
+              <a href={link.url}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</SeoLandingLayout>

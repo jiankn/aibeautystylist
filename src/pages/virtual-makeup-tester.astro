@@ -1,0 +1,130 @@
+---
+import SeoLandingLayout from "../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Virtual Makeup Tester — Test Styles and Shades Before You Buy",
+  description:
+    "Test 40+ makeup styles on your real face with our virtual makeup tester. See personalized results before buying products or following tutorials.",
+  faq: [
+    {
+      q: "How is a virtual makeup tester different from in-store testers?",
+      a: "In-store testers let you try products on your skin one at a time. Our virtual tester lets you test complete styles — base, eyes, lips, cheeks — adapted to your face shape and skin tone. It's faster, more hygienic, and you can test dozens of looks without touching your face.",
+    },
+    {
+      q: "Can I test individual products?",
+      a: "Currently the tester focuses on complete makeup styles rather than individual products. However, each style comes with specific product recommendations so you know exactly which products to buy to recreate the look.",
+    },
+    {
+      q: "Do I need to create an account?",
+      a: "You can browse the style catalog without an account. To use the virtual tester with your own photo, you'll need a free account. No credit card required.",
+    },
+  ],
+  relatedLinks: [
+    { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+    { label: "No-Makeup Makeup Look", url: "/looks/no-makeup-makeup" },
+    { label: "Interview Makeup", url: "/scenarios/interview" },
+    { label: "Makeup for Hooded Eyes", url: "/for/hooded-eyes" },
+  ],
+};
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>Virtual Makeup Tester: Try Before You Buy, on Your Own Face</h1>
+    <p>
+      Test complete makeup styles — not just lipsticks — on your real face
+      before spending money on products. Hygienic, fast, and personalized to
+      your features.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>What a Virtual Makeup Tester Actually Tests</h2>
+    <p>
+      Most virtual testers let you swipe a lipstick shade on your selfie. That's
+      useful, but it's incomplete. The real question isn't "does this lipstick
+      look good?" — it's "does this <em>entire look</em> work together on my face?"
+    </p>
+    <p>Our virtual makeup tester lets you test complete styles:</p>
+    <ul>
+      <li>
+        <strong>Base and complexion</strong> — matte, dewy, satin, or natural finish
+      </li>
+      <li>
+        <strong>Eyes</strong> — eyeshadow palette, eyeliner style, lash emphasis
+      </li>
+      <li><strong>Cheeks</strong> — blush shade, placement, intensity</li>
+      <li><strong>Lips</strong> — color family, finish (matte/gloss/satin)</li>
+      <li>
+        <strong>Contour and highlight</strong> — where and how to sculpt your face
+      </li>
+    </ul>
+
+    <h2>Test Styles, Not Just Products</h2>
+    <p>
+      Pick any style from the catalog — soft glam, natural, date night,
+      interview — and see how it looks on your face in under 30 seconds. The
+      tester adapts the style to your skin tone and features, so the result
+      looks realistic, not like a filter.
+    </p>
+
+    <h2>Before and After Comparison</h2>
+    <p>
+      Every test generates a before-and-after comparison you can save, share, or
+      use as a reference when you go shopping. This is especially useful for:
+    </p>
+    <ul>
+      <li>
+        <strong>Shopping trips</strong> — show the result to a store associate and
+        ask for matching products
+      </li>
+      <li>
+        <strong>Online shopping</strong> — reference the recommended products in the
+        app
+      </li>
+      <li>
+        <strong>Salon visits</strong> — show your makeup artist exactly what you want
+      </li>
+      <li>
+        <strong>Practice at home</strong> — use the tutorial to recreate the tested
+        look
+      </li>
+    </ul>
+
+    <div class="highlight-box">
+      <p>
+        <strong>Privacy note:</strong> Your test photos are used only to deliver the
+        requested try-on, are not used for model training without separate authorization,
+        and are deleted no later than 30 days. You can delete your related results
+        at any time.
+      </p>
+    </div>
+  </div>
+
+  <div class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Start Testing Styles</h2>
+      <p>
+        Pick a style, upload your selfie, see the result — all in your browser.
+      </p>
+      <a href="/tryon-free" class="cta-btn"
+        >Try the Virtual Makeup Tester — Free</a
+      >
+    </div>
+  </div>
+
+  <div class="seo-related" slot="related">
+    <div class="related-inner">
+      <h3>Explore More</h3>
+      <ul class="related-list">
+        {
+          page.relatedLinks.map((link) => (
+            <li>
+              <a href={link.url}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</SeoLandingLayout>

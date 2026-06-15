@@ -1,0 +1,2377 @@
+---
+import SiteHeader from "../components/SiteHeader.astro";
+import {
+  getLocalizedPathForRoute,
+  getLocalizedSeoPageByRoute,
+} from "../i18n/localizedSeoPages";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getLocalizedPricingContent } from "../data/pricingContent";
+import { getCurrentLocale } from "../lib/i18n";
+import { PLAN_DEFINITIONS, type PlanCode } from "../lib/plans";
+
+const currentLocale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEnglish = !currentLocale.startsWith("zh");
+const yearlyFactor = 10;
+const planOrder: PlanCode[] = ["free", "pro", "premium"];
+const prices: Record<PlanCode, number> = {
+  free: 0,
+  pro: 19.99,
+  premium: 39.99,
+};
+
+const fallbackFeatureText = isEnglish
+  ? {
+      yes: "Included",
+      no: "Not included",
+      freeCta: "Start free",
+      upgradeCta: "Upgrade",
+      manageCta: "Manage subscription",
+      currentPlan: "Current plan",
+    }
+  : {
+      yes: "包含",
+      no: "不包含",
+      freeCta: "免费开始",
+      upgradeCta: "选择方案",
+      manageCta: "管理订阅",
+      currentPlan: "当前计划",
+    };
+
+const fallbackCopy = isEnglish
+  ? {
+      metaTitle: "Pricing | AI Beauty Stylist",
+      metaDescription:
+        "Compare Free, Pro, and Premium plans for AI makeup try-on, facial diagnosis, HD downloads, and priority generation.",
+      kicker: "Plans",
+      title: "Choose the plan by how often you generate",
+      subtitle:
+        "Diagnosis and try-on use the same monthly generation credits. Pick a plan by usage frequency, output quality, and whether you need priority and long-term history.",
+      billingMonthly: "Monthly",
+      billingYearly: "Yearly",
+      yearlySave: "Save 2 months",
+      bestFor: "Best for",
+      included: "Included",
+      monthlyUnit: "/ month",
+      yearlyUnit: "/ year",
+      popular: "Best value",
+      premiumRibbon: "For frequent users",
+      decisionHelperTitle: "Not sure which plan fits?",
+      decisionHelperLead: "Most regular users start with Pro.",
+      decisionHelperItems: [
+        ["Free", "Use it only to validate the workflow and output quality."],
+        [
+          "Pro",
+          "Best for weekly try-ons, diagnosis-led choices, and HD downloads.",
+        ],
+        [
+          "Premium",
+          "Choose it when speed, full catalog access, and longer history matter.",
+        ],
+      ],
+      heroPoints: [
+        [
+          "One credit model",
+          "A diagnosis or a try-on task uses one generation credit.",
+        ],
+        [
+          "Refund on failure",
+          "Failed, timed-out, or cancelled tasks are refunded automatically.",
+        ],
+        [
+          "Cancel anytime",
+          "Subscription benefits stay active until the end of the paid period.",
+        ],
+      ],
+      planContent: {
+        free: {
+          badge: "Trial",
+          audience: "First-time users validating the product",
+          reason:
+            "Use Free to confirm whether the AI workflow and image quality fit you.",
+          features: [
+            "3 monthly generation credits",
+            "AI facial diagnosis and try-on both available",
+            "Standard preview quality",
+            "Daily share reward for extra credits",
+          ],
+        },
+        pro: {
+          badge: "Most useful",
+          audience: "Regular users building daily looks",
+          reason:
+            "Enough credits for weekly experiments, diagnosis-led choices, and HD output.",
+          features: [
+            "70 monthly generation credits",
+            "HD downloads",
+            "Detailed makeup tutorials",
+            "Better fit for comparing multiple scenarios",
+          ],
+        },
+        premium: {
+          badge: "Complete",
+          audience: "High-frequency creators and beauty explorers",
+          reason:
+            "Designed for faster iteration, more saved context, and complete look access.",
+          features: [
+            "150 monthly generation credits",
+            "Priority queue",
+            "Long-term history",
+            "Full look library access",
+            "HD downloads and tutorials",
+          ],
+        },
+      },
+      proofKicker: "The upgrade experience",
+      proofTitle: "Upgrade to reduce the cost of trial and error",
+      proofSubtitle:
+        "The meaningful difference is how many options you can compare, how useful each result becomes, and how much context the product keeps for you.",
+      proofCta: "View the full plan comparison",
+      proof: [
+        [
+          "Options you can compare",
+          "3 → 70 → 150 credits / month",
+          "Move from validating one result to comparing looks across scenarios.",
+        ],
+        [
+          "Results you can use",
+          "Standard preview → HD downloads and tutorials",
+          "Keep useful outputs and turn a generated look into something you can recreate.",
+        ],
+        [
+          "Generation and history",
+          "Standard queue → priority and long-term history",
+          "Premium supports frequent iterations, event preparation, and saved context.",
+        ],
+      ],
+      compareTitle: "Plan comparison",
+      compareSubtitle:
+        "All generation-related pages follow the same quota rules.",
+      mobileCompareTitle: "Choose by how often you try looks",
+      mobileCompareSubtitle:
+        "Start with the best-fit plan, then expand the full feature list only if you need detail.",
+      mobileCompareCredits: "Credits / month",
+      mobileCompareDetails: "Compare all features",
+      mobilePlanCta: {
+        free: "Start free",
+        pro: "Choose Pro",
+        premium: "Choose Premium",
+      },
+      faqTitle: "Questions before upgrading",
+      faq: [
+        [
+          "Can I cancel after subscribing?",
+          "Yes. Benefits remain active until the end of the current billing period.",
+        ],
+        [
+          "Are diagnosis credits separate?",
+          "No. Diagnosis and try-on use the same monthly generation credits.",
+        ],
+        [
+          "What happens if generation fails?",
+          "Failed, timed-out, or cancelled tasks refund the reserved credit automatically.",
+        ],
+        [
+          "Can I use downloaded images commercially?",
+          "Personal use is supported by default. Commercial use requires separate authorization.",
+        ],
+      ],
+      policyTitle: "Billing and policy",
+      policyText:
+        "Subscriptions renew automatically. You can cancel from the customer portal. Paid fees are not refunded, but cancellation prevents the next renewal.",
+      policyKicker: "Billing clarity",
+      policyFacts: [
+        ["Renewal", "Renews automatically for the selected billing cycle"],
+        [
+          "After cancellation",
+          "Benefits stay active until the paid period ends",
+        ],
+        ["Refunds", "Paid subscription fees are not refunded"],
+      ],
+      policySupportLead: "Still unsure about billing or cancellation?",
+      policySupportCta: "Contact support",
+      checkoutTitle: "Confirm subscription",
+      checkoutCopy:
+        "You will be redirected to Stripe Checkout. The subscription renews automatically for the selected billing cycle.",
+      checkoutCancel: "Cancel",
+      checkoutConfirm: "Continue to checkout",
+      toastBillingMissing: "Billing is not configured yet.",
+      toastCheckoutFailed: "Unable to start checkout. Please try again later.",
+      toastPortalFailed: "Unable to open subscription management.",
+      checkoutSuccess:
+        "Checkout completed. Your plan may take a moment to update.",
+      checkoutCancelNotice: "Checkout was cancelled.",
+    }
+  : {
+      metaTitle: "AI 试妆会员价格 | AI Beauty Stylist",
+      metaDescription:
+        "比较 AI Beauty Stylist Free、Pro 和 Premium 计划，了解在线 AI 试妆、妆容诊断、高清下载和优先队列权益。",
+      kicker: "会员计划",
+      title: "按试妆频率选择合适计划",
+      subtitle:
+        "诊断和试妆共用月度生成额度。先看你每月大概会生成多少次，再决定是否需要高清下载、优先队列和长期历史。",
+      billingMonthly: "按月",
+      billingYearly: "按年",
+      yearlySave: "省 2 个月",
+      bestFor: "适合",
+      included: "包含功能",
+      monthlyUnit: "/ 月",
+      yearlyUnit: "/ 年",
+      popular: "推荐选择",
+      premiumRibbon: "适合高频使用",
+      decisionHelperTitle: "不确定选哪个？",
+      decisionHelperLead: "先用 Free 验证流程，需要连续试妆时再看 Pro。",
+      decisionHelperItems: [
+        ["Free", "适合先确认上传、生成和结果展示是否符合预期。"],
+        ["Pro", "适合每周试不同妆容，并保存更清晰的结果。"],
+        ["Premium", "适合高频对比、活动准备或需要更长历史记录。"],
+      ],
+      heroPoints: [
+        ["统一额度", "一次诊断或一次试妆都使用 1 次月度生成额度。"],
+        ["失败返还", "失败、超时或取消的任务会自动返还预占额度。"],
+        ["随时取消", "取消后权益保留到当前已付周期结束。"],
+      ],
+      planContent: {
+        free: {
+          badge: "入门",
+          audience: "第一次验证产品的用户",
+          reason: "先确认上传流程、生成效果和照片处理方式是否符合预期。",
+          features: [
+            "每月 3 次生成额度",
+            "可用于 AI 妆容诊断或直接试妆",
+            "标准清晰度预览",
+            "分享后可获得额外生成额度",
+          ],
+        },
+        pro: {
+          badge: "常用",
+          audience: "经常探索日常妆容的用户",
+          reason: "额度足够做每周试妆、诊断后再选妆，并保留高清结果。",
+          features: [
+            "每月 70 次生成额度",
+            "高清下载",
+            "详细妆容教程",
+            "适合对比多个场景和妆容方向",
+          ],
+        },
+        premium: {
+          badge: "完整",
+          audience: "高频试妆、内容创作或活动前准备",
+          reason: "更适合频繁迭代、需要完整妆容库和更长历史记录的用户。",
+          features: [
+            "每月 150 次生成额度",
+            "优先队列",
+            "长期历史记录",
+            "完整妆容库",
+            "高清下载和详细教程",
+          ],
+        },
+      },
+      proofKicker: "升级后的体验",
+      proofTitle: "升级的价值，在于减少反复试错",
+      proofSubtitle:
+        "差异不只是功能数量，而是你能比较多少方向、保留多清晰的结果，以及是否需要更长时间回看记录。",
+      proofCta: "查看完整权益对比",
+      proof: [
+        [
+          "可比较的次数",
+          "3 → 70 → 150 次 / 月",
+          "从偶尔验证一次效果，到持续比较不同场景和妆容方向。",
+        ],
+        [
+          "可使用的结果",
+          "标准预览 → 高清下载与教程",
+          "把生成结果保存下来，并转化成可以实际复现的妆容方案。",
+        ],
+        [
+          "生成与记录体验",
+          "标准队列 → 优先队列与长期历史",
+          "Premium 更适合高频尝试、活动准备和长期回看历史记录。",
+        ],
+      ],
+      compareTitle: "权益对比",
+      compareSubtitle: "所有生成相关页面都遵循同一套额度规则。",
+      mobileCompareTitle: "先按试妆频率选方案",
+      mobileCompareSubtitle: "先看最适合自己的方案，再按需展开完整功能对比。",
+      mobileCompareCredits: "每月额度",
+      mobileCompareDetails: "查看完整权益对比",
+      mobilePlanCta: {
+        free: "免费开始",
+        pro: "选择 Pro",
+        premium: "选择 Premium",
+      },
+      faqTitle: "升级前常见问题",
+      faq: [
+        [
+          "订阅后可以取消吗？",
+          "可以。取消后权益会持续到当前计费周期结束，到期后不再续费。",
+        ],
+        [
+          "诊断额度是单独计算的吗？",
+          "不是。AI 妆容诊断和试妆都使用同一套月度生成额度。",
+        ],
+        ["生成失败会扣额度吗？", "失败、超时或取消任务会自动返还预占额度。"],
+        ["下载图片可以商用吗？", "默认支持个人使用；商业使用需要单独授权。"],
+      ],
+      policyTitle: "扣费与取消说明",
+      policyText:
+        "订阅会按所选周期自动续费，可在客户门户随时取消；取消后当前周期内权益保留。已支付费用不退款，但不会再产生下一周期扣费。",
+      policyKicker: "订阅规则",
+      policyFacts: [
+        ["续费方式", "按所选月付或年付周期自动续费"],
+        ["取消之后", "当前已付周期内的权益继续保留"],
+        ["退款规则", "已支付的订阅费用不予退款"],
+      ],
+      policySupportLead: "对扣费、取消或账户状态仍有疑问？",
+      policySupportCta: "联系支持",
+      checkoutTitle: "确认订阅",
+      checkoutCopy:
+        "你将前往 Stripe Checkout 完成支付。订阅会按所选周期自动续费。",
+      checkoutCancel: "取消",
+      checkoutConfirm: "前往支付",
+      toastBillingMissing: "支付尚未配置，敬请期待。",
+      toastCheckoutFailed: "无法发起结账，请稍后重试。",
+      toastPortalFailed: "无法打开订阅管理页面。",
+      checkoutSuccess: "支付已完成，计划状态可能需要片刻同步。",
+      checkoutCancelNotice: "支付流程已取消。",
+    };
+
+const localizedPricingContent = getLocalizedPricingContent(currentLocale);
+const featureText = localizedPricingContent?.featureText ?? fallbackFeatureText;
+const copy = localizedPricingContent?.copy
+  ? { ...fallbackCopy, ...localizedPricingContent.copy }
+  : fallbackCopy;
+const comparisonLabels = localizedPricingContent?.comparisonLabels ?? {
+  credits: isEnglish ? "Monthly generation credits" : "月度生成额度",
+  diagnosis: isEnglish ? "AI diagnosis uses credits" : "妆容诊断使用额度",
+  tryon: isEnglish ? "AI try-on uses credits" : "AI 试妆使用额度",
+  hd: isEnglish ? "HD download" : "高清下载",
+  tutorials: isEnglish ? "Makeup tutorials" : "详细妆容教程",
+  priority: isEnglish ? "Priority queue" : "优先队列",
+  history: isEnglish ? "Long-term history" : "长期历史",
+  catalog: isEnglish ? "Full look library" : "完整妆容库",
+};
+
+const localizedPricingPath = getLocalizedPathForRoute(
+  "en",
+  "/pricing",
+  currentRoute.language.slug,
+);
+const localizedPricingSeo = localizedPricingPath
+  ? getLocalizedSeoPageByRoute(currentRoute.language.slug, localizedPricingPath)
+  : undefined;
+const pageMetaTitle = localizedPricingSeo?.title ?? copy.metaTitle;
+const pageMetaDescription =
+  localizedPricingSeo?.description ?? copy.metaDescription;
+const pageTitle = localizedPricingSeo?.heroTitle ?? copy.title;
+const pageSubtitle = localizedPricingSeo?.heroSubtitle ?? copy.subtitle;
+
+const boolText = (value: boolean) => (value ? featureText.yes : featureText.no);
+const comparisonRows = [
+  {
+    label: comparisonLabels.credits,
+    values: Object.fromEntries(
+      planOrder.map((code) => [
+        code,
+        String(PLAN_DEFINITIONS[code].monthlyQuota),
+      ]),
+    ) as Record<PlanCode, string>,
+  },
+  {
+    label: comparisonLabels.diagnosis,
+    values: {
+      free: featureText.yes,
+      pro: featureText.yes,
+      premium: featureText.yes,
+    },
+  },
+  {
+    label: comparisonLabels.tryon,
+    values: {
+      free: featureText.yes,
+      pro: featureText.yes,
+      premium: featureText.yes,
+    },
+  },
+  {
+    label: comparisonLabels.hd,
+    values: Object.fromEntries(
+      planOrder.map((code) => [
+        code,
+        boolText(PLAN_DEFINITIONS[code].features.hdDownload),
+      ]),
+    ) as Record<PlanCode, string>,
+  },
+  {
+    label: comparisonLabels.tutorials,
+    values: Object.fromEntries(
+      planOrder.map((code) => [
+        code,
+        boolText(PLAN_DEFINITIONS[code].features.tutorials),
+      ]),
+    ) as Record<PlanCode, string>,
+  },
+  {
+    label: comparisonLabels.priority,
+    values: Object.fromEntries(
+      planOrder.map((code) => [
+        code,
+        boolText(PLAN_DEFINITIONS[code].features.priorityQueue),
+      ]),
+    ) as Record<PlanCode, string>,
+  },
+  {
+    label: comparisonLabels.history,
+    values: Object.fromEntries(
+      planOrder.map((code) => [
+        code,
+        boolText(PLAN_DEFINITIONS[code].features.longTermHistory),
+      ]),
+    ) as Record<PlanCode, string>,
+  },
+  {
+    label: comparisonLabels.catalog,
+    values: Object.fromEntries(
+      planOrder.map((code) => [
+        code,
+        boolText(PLAN_DEFINITIONS[code].features.fullLookLibrary),
+      ]),
+    ) as Record<PlanCode, string>,
+  },
+];
+
+const planCards = planOrder.map((code) => ({
+  code,
+  title: PLAN_DEFINITIONS[code].title,
+  quota: PLAN_DEFINITIONS[code].monthlyQuota,
+  monthlyPrice: prices[code].toFixed(code === "free" ? 0 : 2),
+  yearlyPrice: (prices[code] * yearlyFactor).toFixed(code === "free" ? 0 : 2),
+  content: copy.planContent[code],
+}));
+
+const productJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Product",
+      name: "AI Beauty Stylist",
+      description: pageMetaDescription,
+      brand: { "@type": "Brand", name: "AI Beauty Stylist" },
+      offers: planCards
+        .filter((plan) => plan.code !== "free")
+        .map((plan) => ({
+          "@type": "Offer",
+          name: plan.title,
+          price: plan.monthlyPrice,
+          priceCurrency: "USD",
+          category: "subscription",
+        })),
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: copy.faq.map(([question, answer]) => ({
+        "@type": "Question",
+        name: question,
+        acceptedAnswer: { "@type": "Answer", text: answer },
+      })),
+    },
+  ],
+});
+
+const checkoutCopy = {
+  ...featureText,
+  monthly: copy.billingMonthly,
+  yearly: copy.billingYearly,
+  monthlyUnit: copy.monthlyUnit,
+  yearlyUnit: copy.yearlyUnit,
+  checkoutTitle: copy.checkoutTitle,
+  checkoutCopy: copy.checkoutCopy,
+  checkoutConfirm: copy.checkoutConfirm,
+  toastBillingMissing: copy.toastBillingMissing,
+  toastCheckoutFailed: copy.toastCheckoutFailed,
+  toastPortalFailed: copy.toastPortalFailed,
+  checkoutSuccess: copy.checkoutSuccess,
+  checkoutCancelNotice: copy.checkoutCancelNotice,
+};
+---
+
+<BaseLayout
+  title={pageMetaTitle}
+  description={pageMetaDescription}
+  bodyClass="pricing-body"
+  jsonLd={productJsonLd}
+>
+  <SiteHeader active="pricing" />
+  <main class="pricing-main">
+    <section class="pricing-hero shell" aria-labelledby="pricing-title">
+      <div class="pricing-hero-copy">
+        <span class="section-eyebrow">{copy.kicker}</span>
+        <h1 id="pricing-title">{pageTitle}</h1>
+        <p>{pageSubtitle}</p>
+        <div class="pricing-hero-points">
+          {
+            copy.heroPoints.map(([title, text]) => (
+              <div>
+                <b>{title}</b>
+                <span>{text}</span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing-plans shell" aria-label={copy.kicker}>
+      <div class="billing-toggle" role="group" aria-label={copy.kicker}>
+        <button type="button" data-interval="monthly" class="active">
+          {copy.billingMonthly}
+        </button>
+        <button type="button" data-interval="yearly">
+          {copy.billingYearly}
+          <span>{copy.yearlySave}</span>
+        </button>
+      </div>
+
+      <div class="pricing-grid">
+        {
+          planCards.map((plan) => (
+            <article
+              class:list={[
+                "pricing-plan-card",
+                "panel",
+                plan.code === "pro" && "recommended",
+                plan.code === "premium" && "premium",
+              ]}
+              data-plan={plan.code}
+            >
+              {plan.code === "pro" && (
+                <div class="plan-ribbon">{copy.popular}</div>
+              )}
+              {plan.code === "premium" && (
+                <div class="plan-ribbon">{copy.premiumRibbon}</div>
+              )}
+              <div class="plan-head">
+                <div>
+                  <h2>{plan.title}</h2>
+                  <p>{plan.content.audience}</p>
+                </div>
+                <span>{plan.content.badge}</span>
+              </div>
+              <div
+                class="plan-price"
+                data-monthly={plan.monthlyPrice}
+                data-yearly={plan.yearlyPrice}
+              >
+                <span>$</span>
+                <b class="price-amount">{plan.monthlyPrice}</b>
+                <small class="price-unit">{copy.monthlyUnit}</small>
+              </div>
+              <p class="plan-reason">{plan.content.reason}</p>
+              {plan.code === "free" ? (
+                <a
+                  class="btn btn-wide btn-outline-rose"
+                  href={localizeAppHref("/tryon-free")}
+                >
+                  {featureText.freeCta}
+                </a>
+              ) : (
+                <a
+                  class:list={[
+                    "btn",
+                    "btn-wide",
+                    plan.code === "premium" ? "btn-gold" : "btn-primary",
+                  ]}
+                  href="#checkout"
+                  data-plan-cta
+                  data-plan={plan.code}
+                >
+                  {featureText.upgradeCta}
+                </a>
+              )}
+              <div class="feature-list">
+                <b>{copy.included}</b>
+                {plan.content.features.map((feature) => (
+                  <span>{feature}</span>
+                ))}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="pricing-choice-helper" aria-label={copy.decisionHelperTitle}>
+        <div class="pricing-choice-copy">
+          <b>{copy.decisionHelperTitle}</b>
+          <span>{copy.decisionHelperLead}</span>
+        </div>
+        <div class="pricing-choice-list">
+          {
+            copy.decisionHelperItems.map(([plan, text]) => (
+              <span>
+                <strong>{plan}</strong>
+                {text}
+              </span>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing-proof shell" aria-labelledby="pricing-proof-title">
+      <div class="pricing-proof-head">
+        <span class="section-eyebrow">{copy.proofKicker}</span>
+        <h2 id="pricing-proof-title">{copy.proofTitle}</h2>
+        <p>{copy.proofSubtitle}</p>
+      </div>
+      <div class="pricing-proof-list">
+        {
+          copy.proof.map(([title, value, text]) => (
+            <article>
+              <span>{title}</span>
+              <strong>{value}</strong>
+              <p>{text}</p>
+            </article>
+          ))
+        }
+      </div>
+      <a class="pricing-proof-link" href="#pricing-comparison">
+        {copy.proofCta}
+      </a>
+    </section>
+
+    <section
+      class="pricing-comparison shell"
+      id="pricing-comparison"
+      aria-labelledby="compare-title"
+    >
+      <div class="pricing-section-head">
+        <h2 id="compare-title">{copy.compareTitle}</h2>
+        <p>{copy.compareSubtitle}</p>
+      </div>
+      <div
+        class="mobile-comparison-summary"
+        aria-label={copy.mobileCompareTitle}
+      >
+        <div class="mobile-comparison-intro">
+          <h3>{copy.mobileCompareTitle}</h3>
+          <p>{copy.mobileCompareSubtitle}</p>
+        </div>
+        <div class="mobile-plan-compare-cards">
+          {
+            planCards.map((plan) => (
+              <article
+                class:list={[
+                  "mobile-plan-compare-card",
+                  plan.code === "pro" && "recommended",
+                  plan.code === "premium" && "premium",
+                ]}
+              >
+                <div class="mobile-plan-compare-head">
+                  <div>
+                    <h4>{plan.title}</h4>
+                    <p>{plan.content.audience}</p>
+                  </div>
+                  <span>{plan.content.badge}</span>
+                </div>
+                <div class="mobile-plan-quota">
+                  <b>{plan.quota}</b>
+                  <span>{copy.mobileCompareCredits}</span>
+                </div>
+                <ul>
+                  {plan.content.features.slice(0, 4).map((feature) => (
+                    <li>{feature}</li>
+                  ))}
+                </ul>
+                {plan.code === "free" ? (
+                  <a class="btn btn-wide" href={localizeAppHref("/tryon-free")}>
+                    {copy.mobilePlanCta[plan.code]}
+                  </a>
+                ) : (
+                  <a
+                    class:list={[
+                      "btn",
+                      "btn-wide",
+                      plan.code === "premium" ? "btn-gold" : "btn-primary",
+                    ]}
+                    href="#checkout"
+                    data-plan-cta
+                    data-plan={plan.code}
+                  >
+                    {copy.mobilePlanCta[plan.code]}
+                  </a>
+                )}
+              </article>
+            ))
+          }
+        </div>
+      </div>
+      <div class="comparison-table panel">
+        <div class="compare-row heading">
+          <span>{copy.compareTitle}</span>
+          {planOrder.map((code) => <span>{PLAN_DEFINITIONS[code].title}</span>)}
+        </div>
+        {
+          comparisonRows.map((row) => (
+            <div class="compare-row">
+              <span>{row.label}</span>
+              {planOrder.map((code) => {
+                const val = row.values[code];
+                const isYes = val === featureText.yes;
+                const isNo = val === featureText.no;
+                return (
+                  <span
+                    data-plan-label={PLAN_DEFINITIONS[code].title}
+                    class:list={[isYes && "compare-yes", isNo && "compare-no"]}
+                  >
+                    {isYes ? "✓" : isNo ? "✗" : val}
+                  </span>
+                );
+              })}
+            </div>
+          ))
+        }
+      </div>
+      <details class="mobile-comparison-details">
+        <summary>
+          <span>{copy.mobileCompareDetails}</span>
+          <i aria-hidden="true"></i>
+        </summary>
+        <div class="mobile-feature-comparison">
+          {
+            comparisonRows.map((row) => (
+              <article class="mobile-feature-card">
+                <h4>{row.label}</h4>
+                <div>
+                  {planOrder.map((code) => {
+                    const val = row.values[code];
+                    const isYes = val === featureText.yes;
+                    const isNo = val === featureText.no;
+                    return (
+                      <span
+                        class:list={[
+                          isYes && "is-included",
+                          isNo && "is-excluded",
+                        ]}
+                      >
+                        <b>{PLAN_DEFINITIONS[code].title}</b>
+                        <em>{val}</em>
+                      </span>
+                    );
+                  })}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </details>
+    </section>
+
+    <section class="pricing-faq shell" aria-labelledby="pricing-faq-title">
+      <div class="pricing-section-head">
+        <h2 id="pricing-faq-title">{copy.faqTitle}</h2>
+      </div>
+      <div class="pricing-faq-grid">
+        {
+          copy.faq.map(([question, answer], index) => (
+            <details class="panel" open={index === 0}>
+              <summary>{question}</summary>
+              <p>{answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <section
+      class="pricing-policy shell"
+      aria-labelledby="pricing-policy-title"
+    >
+      <div class="pricing-policy-inner">
+        <div class="pricing-policy-head">
+          <span class="section-eyebrow">{copy.policyKicker}</span>
+          <h2 id="pricing-policy-title">{copy.policyTitle}</h2>
+        </div>
+        <div class="pricing-policy-copy">
+          <p>{copy.policyText}</p>
+          <dl>
+            {
+              copy.policyFacts.map(([term, description]) => (
+                <div>
+                  <dt>{term}</dt>
+                  <dd>{description}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+        <div class="pricing-policy-support">
+          <span>{copy.policySupportLead}</span>
+          <a class="btn" href={localizeAppHref("/support")}>
+            {copy.policySupportCta}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <dialog class="panel checkout-dialog" id="checkout-dialog">
+      <form method="dialog">
+        <button
+          class="dialog-close"
+          value="cancel"
+          aria-label={copy.checkoutCancel}
+        >
+          ×
+        </button>
+      </form>
+      <h2>{copy.checkoutTitle}</h2>
+      <p>{copy.checkoutCopy}</p>
+      <div class="checkout-summary" data-checkout-summary></div>
+      <div class="checkout-actions">
+        <button class="btn" type="button" data-checkout-cancel>
+          {copy.checkoutCancel}
+        </button>
+        <button class="btn btn-primary" type="button" data-checkout-confirm>
+          {copy.checkoutConfirm}
+        </button>
+      </div>
+    </dialog>
+  </main>
+
+  <script is:inline define:vars={{ checkoutCopy }}>
+    (() => {
+      const cards = Array.from(document.querySelectorAll(".pricing-plan-card"));
+      const intervalButtons = document.querySelectorAll("[data-interval]");
+      const dialog = document.getElementById("checkout-dialog");
+      const summary = document.querySelector("[data-checkout-summary]");
+      const confirmBtn = document.querySelector("[data-checkout-confirm]");
+      const cancelBtn = document.querySelector("[data-checkout-cancel]");
+      let interval = "monthly";
+      let pendingPlan = null;
+
+      function toast(msg) {
+        if (window.showToast) window.showToast(msg);
+        else window.alert(msg);
+      }
+
+      function priceFor(card) {
+        const price = card.querySelector(".plan-price");
+        return price?.dataset[interval] || "0";
+      }
+
+      function updatePrices() {
+        cards.forEach((card) => {
+          const price = card.querySelector(".plan-price");
+          const amount = card.querySelector(".price-amount");
+          const unit = card.querySelector(".price-unit");
+          if (!price || !amount || !unit) return;
+          amount.textContent = price.dataset[interval] || "0";
+          unit.textContent =
+            interval === "yearly"
+              ? checkoutCopy.yearlyUnit
+              : checkoutCopy.monthlyUnit;
+        });
+      }
+
+      intervalButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          interval = button.dataset.interval || "monthly";
+          intervalButtons.forEach((item) =>
+            item.classList.toggle("active", item === button),
+          );
+          updatePrices();
+        });
+      });
+
+      function openCheckout(plan) {
+        const card = cards.find((item) => item.dataset.plan === plan);
+        if (!card) return;
+        pendingPlan = plan;
+        const title = card.querySelector("h2")?.textContent?.trim() || plan;
+        const price = priceFor(card);
+        if (summary) {
+          summary.innerHTML = `
+            <b>${title}</b>
+            <span>$${price} ${
+              interval === "yearly"
+                ? checkoutCopy.yearlyUnit
+                : checkoutCopy.monthlyUnit
+            }</span>
+          `;
+        }
+        if (dialog && typeof dialog.showModal === "function") {
+          dialog.showModal();
+        } else {
+          startCheckout();
+        }
+      }
+
+      async function startCheckout() {
+        if (!pendingPlan) return;
+        if (confirmBtn) confirmBtn.disabled = true;
+        try {
+          const res = await fetch("/api/billing/checkout", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ planCode: pendingPlan, interval }),
+          });
+          const body = await res.json().catch(() => null);
+          if (body?.ok && body.data?.url) {
+            window.location.href = body.data.url;
+            return;
+          }
+          if (
+            body?.error?.code === "BILLING_NOT_CONFIGURED" ||
+            body?.error?.code === "PRICE_NOT_CONFIGURED"
+          ) {
+            toast(checkoutCopy.toastBillingMissing);
+          } else {
+            toast(body?.error?.message || checkoutCopy.toastCheckoutFailed);
+          }
+        } catch {
+          toast(checkoutCopy.toastCheckoutFailed);
+        } finally {
+          if (confirmBtn) confirmBtn.disabled = false;
+        }
+      }
+
+      async function openPortal() {
+        try {
+          const res = await fetch("/api/billing/portal", { method: "POST" });
+          const body = await res.json().catch(() => null);
+          if (body?.ok && body.data?.url) {
+            window.location.href = body.data.url;
+            return;
+          }
+          toast(body?.error?.message || checkoutCopy.toastPortalFailed);
+        } catch {
+          toast(checkoutCopy.toastPortalFailed);
+        }
+      }
+
+      document.querySelectorAll("[data-plan-cta]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          const card = button.closest(".pricing-plan-card");
+          const plan = button.dataset.plan;
+          if (card?.dataset.current === "true") openPortal();
+          else if (plan) openCheckout(plan);
+        });
+      });
+
+      confirmBtn?.addEventListener("click", startCheckout);
+      cancelBtn?.addEventListener("click", () => dialog?.close());
+
+      fetch("/api/session")
+        .then((res) => res.json())
+        .then((body) => {
+          const plan = body?.data?.plan;
+          cards.forEach((card) => {
+            if (card.dataset.plan !== plan) return;
+            card.dataset.current = "true";
+            card.insertAdjacentHTML(
+              "afterbegin",
+              `<div class="current-plan-flag">${checkoutCopy.currentPlan}</div>`,
+            );
+            const cta = card.querySelector("[data-plan-cta]");
+            if (cta) cta.textContent = checkoutCopy.manageCta;
+          });
+        })
+        .catch(() => {});
+
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("checkout") === "success") {
+        toast(checkoutCopy.checkoutSuccess);
+      } else if (params.get("checkout") === "cancel") {
+        toast(checkoutCopy.checkoutCancelNotice);
+      }
+    })();
+  </script>
+
+  <style>
+    :global(.pricing-body) {
+      --pro-rose-ink: #8f244b;
+      --pro-rose-ink-strong: #fff8fb;
+      --pro-card-border: rgba(200, 62, 104, 0.54);
+      --pro-card-bg:
+        radial-gradient(
+          circle at 84% 0,
+          rgba(255, 190, 211, 0.62),
+          transparent 36%
+        ),
+        linear-gradient(
+          150deg,
+          #fffafc 0%,
+          #ffeaf1 34%,
+          #fff6f9 64%,
+          #ffffff 100%
+        );
+      --pro-card-wash: linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0.58),
+        transparent 29%,
+        rgba(200, 62, 104, 0.14) 52%,
+        transparent 74%
+      );
+      --pro-card-inset-border: rgba(255, 210, 224, 0.72);
+      --pro-card-shadow:
+        0 24px 52px rgba(156, 38, 82, 0.15), 0 8px 18px rgba(156, 38, 82, 0.07),
+        var(--panel-inset);
+      --pro-ribbon-bg: linear-gradient(
+        90deg,
+        #9d244e 0%,
+        #c83e68 36%,
+        #bd315f 64%,
+        #8e1d45 100%
+      );
+      --pro-ribbon-text: #fff8fb;
+      --pro-pill-bg: linear-gradient(135deg, #ffe7ef, #f3a1b9);
+      --pro-pill-border: rgba(200, 62, 104, 0.32);
+      --pro-pill-color: #842244;
+      --pro-price-color: #8d234a;
+      --pro-price-unit: #7f5363;
+      --pro-dot-bg: radial-gradient(
+        circle at 34% 28%,
+        #ffd8e4 0 18%,
+        #d94b76 52%,
+        #8b1e44 100%
+      );
+      --pro-cta-bg: linear-gradient(
+        135deg,
+        #c83e68 0%,
+        #bd315f 46%,
+        #8e1d45 100%
+      );
+      --pro-cta-border: #9b254d;
+      --pro-cta-shadow:
+        0 14px 28px rgba(168, 42, 85, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        inset 0 -1px 0 rgba(83, 12, 35, 0.28);
+      --premium-gold-ink: #714606;
+      --premium-gold-ink-strong: #2d1b04;
+      --premium-card-border: rgba(184, 123, 23, 0.58);
+      --premium-card-bg:
+        radial-gradient(
+          circle at 84% 0,
+          rgba(255, 237, 178, 0.7),
+          transparent 36%
+        ),
+        linear-gradient(
+          150deg,
+          #fffdf6 0%,
+          #fff4d5 34%,
+          #fffaf1 64%,
+          #ffffff 100%
+        );
+      --premium-card-wash: linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0.6),
+        transparent 28%,
+        rgba(221, 169, 62, 0.16) 52%,
+        transparent 74%
+      );
+      --premium-card-inset-border: rgba(255, 235, 175, 0.74);
+      --premium-card-shadow:
+        0 24px 52px rgba(143, 88, 12, 0.16), 0 8px 18px rgba(143, 88, 12, 0.08),
+        var(--panel-inset);
+      --premium-ribbon-bg: linear-gradient(
+        90deg,
+        #9a6111 0%,
+        #d7a23a 28%,
+        #fff0b4 50%,
+        #c98c24 72%,
+        #7c4c0a 100%
+      );
+      --premium-ribbon-text: #2c1a04;
+      --premium-pill-bg: linear-gradient(135deg, #fff4cc, #e7bd61);
+      --premium-pill-border: rgba(176, 116, 19, 0.42);
+      --premium-pill-color: #704504;
+      --premium-price-color: #754805;
+      --premium-price-unit: #7b6641;
+      --premium-dot-bg: radial-gradient(
+        circle at 34% 28%,
+        #fff4b8 0 18%,
+        #d8a23a 52%,
+        #8c570d 100%
+      );
+      --premium-cta-bg: linear-gradient(
+        135deg,
+        #fff2b7 0%,
+        #e4b64d 34%,
+        #bd7b17 100%
+      );
+      --premium-cta-border: #a76912;
+      --premium-cta-shadow:
+        0 14px 28px rgba(179, 115, 21, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62),
+        inset 0 -1px 0 rgba(92, 53, 5, 0.3);
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 248, 246, 0.9),
+          rgba(248, 252, 252, 0.72) 42%,
+          var(--page-surface)
+        ),
+        var(--page-surface);
+    }
+    :global([data-theme="dark"] .pricing-body) {
+      --pro-rose-ink: #ffabc3;
+      --pro-rose-ink-strong: #fff8fb;
+      --pro-card-border: rgba(232, 122, 152, 0.42);
+      --pro-card-bg:
+        radial-gradient(
+          circle at 84% 0,
+          rgba(232, 122, 152, 0.22),
+          transparent 38%
+        ),
+        linear-gradient(
+          150deg,
+          rgba(54, 22, 37, 0.94) 0%,
+          rgba(30, 35, 47, 0.96) 46%,
+          rgba(24, 32, 48, 0.98) 100%
+        );
+      --pro-card-wash: linear-gradient(
+        115deg,
+        rgba(255, 166, 194, 0.13),
+        transparent 32%,
+        rgba(255, 255, 255, 0.04) 58%,
+        transparent 78%
+      );
+      --pro-card-inset-border: rgba(255, 178, 202, 0.17);
+      --pro-card-shadow:
+        0 24px 52px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(232, 122, 152, 0.07),
+        var(--panel-inset);
+      --pro-ribbon-bg: linear-gradient(
+        90deg,
+        #9d244e 0%,
+        #c83e68 36%,
+        #bd315f 64%,
+        #7e193d 100%
+      );
+      --pro-ribbon-text: #fff8fb;
+      --pro-pill-bg: linear-gradient(
+        135deg,
+        rgba(232, 122, 152, 0.2),
+        rgba(166, 43, 82, 0.18)
+      );
+      --pro-pill-border: rgba(232, 122, 152, 0.36);
+      --pro-pill-color: #ffb3ca;
+      --pro-price-color: #ffabc3;
+      --pro-price-unit: #d5a8b7;
+      --pro-cta-bg: linear-gradient(
+        135deg,
+        #c83e68 0%,
+        #b92e5c 46%,
+        #7e193d 100%
+      );
+      --pro-cta-border: rgba(232, 122, 152, 0.68);
+      --pro-cta-shadow:
+        0 16px 34px rgba(0, 0, 0, 0.34), 0 0 22px rgba(200, 62, 104, 0.13),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        inset 0 -1px 0 rgba(55, 8, 25, 0.42);
+      --premium-gold-ink: #f2c978;
+      --premium-gold-ink-strong: #211304;
+      --premium-card-border: rgba(239, 182, 82, 0.42);
+      --premium-card-bg:
+        radial-gradient(
+          circle at 84% 0,
+          rgba(240, 168, 50, 0.22),
+          transparent 38%
+        ),
+        linear-gradient(
+          150deg,
+          rgba(56, 43, 21, 0.94) 0%,
+          rgba(30, 35, 46, 0.96) 46%,
+          rgba(24, 32, 48, 0.98) 100%
+        );
+      --premium-card-wash: linear-gradient(
+        115deg,
+        rgba(255, 226, 152, 0.12),
+        transparent 32%,
+        rgba(255, 255, 255, 0.04) 58%,
+        transparent 78%
+      );
+      --premium-card-inset-border: rgba(255, 226, 149, 0.18);
+      --premium-card-shadow:
+        0 24px 52px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(237, 181, 82, 0.08),
+        var(--panel-inset);
+      --premium-ribbon-bg: linear-gradient(
+        90deg,
+        #f2cd7a 0%,
+        #b8791a 38%,
+        #f8df9a 56%,
+        #a1620f 100%
+      );
+      --premium-ribbon-text: #1d1304;
+      --premium-pill-bg: linear-gradient(
+        135deg,
+        rgba(246, 204, 115, 0.2),
+        rgba(172, 109, 18, 0.18)
+      );
+      --premium-pill-border: rgba(240, 185, 84, 0.38);
+      --premium-pill-color: #f5cf82;
+      --premium-price-color: #f6d58c;
+      --premium-price-unit: #cbb990;
+      --premium-cta-bg: linear-gradient(
+        135deg,
+        #ffeaa5 0%,
+        #d9a33a 42%,
+        #9c5f10 100%
+      );
+      --premium-cta-border: rgba(244, 196, 94, 0.76);
+      --premium-cta-shadow:
+        0 16px 34px rgba(0, 0, 0, 0.34), 0 0 22px rgba(216, 154, 48, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.36),
+        inset 0 -1px 0 rgba(61, 36, 3, 0.42);
+      background:
+        linear-gradient(
+          180deg,
+          rgba(36, 23, 28, 0.55),
+          rgba(15, 23, 35, 0.72) 42%,
+          var(--page-surface)
+        ),
+        var(--page-surface);
+    }
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"]) .pricing-body) {
+        --pro-rose-ink: #ffabc3;
+        --pro-rose-ink-strong: #fff8fb;
+        --pro-card-border: rgba(232, 122, 152, 0.42);
+        --pro-card-bg:
+          radial-gradient(
+            circle at 84% 0,
+            rgba(232, 122, 152, 0.22),
+            transparent 38%
+          ),
+          linear-gradient(
+            150deg,
+            rgba(54, 22, 37, 0.94) 0%,
+            rgba(30, 35, 47, 0.96) 46%,
+            rgba(24, 32, 48, 0.98) 100%
+          );
+        --pro-card-wash: linear-gradient(
+          115deg,
+          rgba(255, 166, 194, 0.13),
+          transparent 32%,
+          rgba(255, 255, 255, 0.04) 58%,
+          transparent 78%
+        );
+        --pro-card-inset-border: rgba(255, 178, 202, 0.17);
+        --pro-card-shadow:
+          0 24px 52px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(232, 122, 152, 0.07),
+          var(--panel-inset);
+        --pro-ribbon-bg: linear-gradient(
+          90deg,
+          #9d244e 0%,
+          #c83e68 36%,
+          #bd315f 64%,
+          #7e193d 100%
+        );
+        --pro-ribbon-text: #fff8fb;
+        --pro-pill-bg: linear-gradient(
+          135deg,
+          rgba(232, 122, 152, 0.2),
+          rgba(166, 43, 82, 0.18)
+        );
+        --pro-pill-border: rgba(232, 122, 152, 0.36);
+        --pro-pill-color: #ffb3ca;
+        --pro-price-color: #ffabc3;
+        --pro-price-unit: #d5a8b7;
+        --pro-cta-bg: linear-gradient(
+          135deg,
+          #c83e68 0%,
+          #b92e5c 46%,
+          #7e193d 100%
+        );
+        --pro-cta-border: rgba(232, 122, 152, 0.68);
+        --pro-cta-shadow:
+          0 16px 34px rgba(0, 0, 0, 0.34), 0 0 22px rgba(200, 62, 104, 0.13),
+          inset 0 1px 0 rgba(255, 255, 255, 0.22),
+          inset 0 -1px 0 rgba(55, 8, 25, 0.42);
+        --premium-gold-ink: #f2c978;
+        --premium-gold-ink-strong: #211304;
+        --premium-card-border: rgba(239, 182, 82, 0.42);
+        --premium-card-bg:
+          radial-gradient(
+            circle at 84% 0,
+            rgba(240, 168, 50, 0.22),
+            transparent 38%
+          ),
+          linear-gradient(
+            150deg,
+            rgba(56, 43, 21, 0.94) 0%,
+            rgba(30, 35, 46, 0.96) 46%,
+            rgba(24, 32, 48, 0.98) 100%
+          );
+        --premium-card-wash: linear-gradient(
+          115deg,
+          rgba(255, 226, 152, 0.12),
+          transparent 32%,
+          rgba(255, 255, 255, 0.04) 58%,
+          transparent 78%
+        );
+        --premium-card-inset-border: rgba(255, 226, 149, 0.18);
+        --premium-card-shadow:
+          0 24px 52px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(237, 181, 82, 0.08),
+          var(--panel-inset);
+        --premium-ribbon-bg: linear-gradient(
+          90deg,
+          #f2cd7a 0%,
+          #b8791a 38%,
+          #f8df9a 56%,
+          #a1620f 100%
+        );
+        --premium-ribbon-text: #1d1304;
+        --premium-pill-bg: linear-gradient(
+          135deg,
+          rgba(246, 204, 115, 0.2),
+          rgba(172, 109, 18, 0.18)
+        );
+        --premium-pill-border: rgba(240, 185, 84, 0.38);
+        --premium-pill-color: #f5cf82;
+        --premium-price-color: #f6d58c;
+        --premium-price-unit: #cbb990;
+        --premium-cta-bg: linear-gradient(
+          135deg,
+          #ffeaa5 0%,
+          #d9a33a 42%,
+          #9c5f10 100%
+        );
+        --premium-cta-border: rgba(244, 196, 94, 0.76);
+        --premium-cta-shadow:
+          0 16px 34px rgba(0, 0, 0, 0.34), 0 0 22px rgba(216, 154, 48, 0.14),
+          inset 0 1px 0 rgba(255, 255, 255, 0.36),
+          inset 0 -1px 0 rgba(61, 36, 3, 0.42);
+        background:
+          linear-gradient(
+            180deg,
+            rgba(36, 23, 28, 0.55),
+            rgba(15, 23, 35, 0.72) 42%,
+            var(--page-surface)
+          ),
+          var(--page-surface);
+      }
+    }
+    .pricing-main {
+      padding: calc(52px + 34px) 0 52px;
+    }
+    .section-eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      padding: 6px 10px;
+      border: 1px solid var(--rose-border);
+      border-radius: 999px;
+      background: var(--surface-rose);
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .pricing-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
+      gap: 18px;
+      margin-bottom: 26px;
+      text-align: center;
+    }
+    .pricing-hero-copy {
+      display: grid;
+      justify-items: center;
+      gap: 0;
+    }
+    .pricing-hero-copy .section-eyebrow {
+      margin-bottom: 20px;
+    }
+    .pricing-hero h1 {
+      margin: 0;
+      max-width: 860px;
+      color: var(--heading);
+      font-family: var(--font-display);
+      font-size: clamp(42px, 5vw, 68px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .pricing-hero-copy > p {
+      margin: 16px 0 0;
+      max-width: 780px;
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+    .pricing-hero-points {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+      max-width: 960px;
+      margin-top: 24px;
+    }
+    .pricing-hero-points > div {
+      min-width: 0;
+      padding-top: 13px;
+      border-top: 1px solid var(--line);
+    }
+    .pricing-hero-points b {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--heading);
+      font-size: 13px;
+    }
+    .pricing-hero-points span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .billing-toggle {
+      display: flex;
+      width: fit-content;
+      margin: 0 auto 18px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      box-shadow: var(--shadow);
+    }
+    .billing-toggle button {
+      min-height: 38px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .billing-toggle button.active {
+      background: var(--rose);
+      color: #fff;
+    }
+    .billing-toggle span {
+      margin-left: 5px;
+      font-size: 12px;
+      opacity: 0.85;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      align-items: stretch;
+    }
+    .pricing-choice-helper {
+      display: grid;
+      grid-template-columns: minmax(240px, 0.36fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+      margin-top: 18px;
+      padding: 18px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .pricing-choice-copy {
+      display: grid;
+      gap: 5px;
+    }
+    .pricing-choice-copy b {
+      color: var(--heading);
+      font-size: 16px;
+    }
+    .pricing-choice-copy span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .pricing-choice-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+    }
+    .pricing-choice-list span {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+      padding: 0 14px;
+      border-left: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .pricing-choice-list strong {
+      color: var(--heading);
+      font-size: 13px;
+    }
+    .pricing-plan-card {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      min-height: 520px;
+      flex-direction: column;
+      padding: 26px;
+      overflow: hidden;
+    }
+    .pricing-plan-card.recommended {
+      isolation: isolate;
+      border-color: var(--pro-card-border);
+      background: var(--pro-card-bg);
+      box-shadow: var(--pro-card-shadow);
+    }
+    .pricing-plan-card.recommended::before,
+    .pricing-plan-card.recommended::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .pricing-plan-card.recommended::before {
+      inset: 0;
+      background: var(--pro-card-wash);
+    }
+    .pricing-plan-card.recommended::after {
+      inset: 1px;
+      border: 1px solid var(--pro-card-inset-border);
+      border-radius: calc(var(--radius) - 1px);
+      box-shadow: inset 0 0 0 1px rgba(132, 34, 68, 0.05);
+    }
+    .pricing-plan-card.recommended > * {
+      position: relative;
+      z-index: 1;
+    }
+    .pricing-plan-card.premium {
+      isolation: isolate;
+      border-color: var(--premium-card-border);
+      background: var(--premium-card-bg);
+      box-shadow: var(--premium-card-shadow);
+    }
+    .pricing-plan-card.premium::before,
+    .pricing-plan-card.premium::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .pricing-plan-card.premium::before {
+      inset: 0;
+      background: var(--premium-card-wash);
+    }
+    .pricing-plan-card.premium::after {
+      inset: 1px;
+      border: 1px solid var(--premium-card-inset-border);
+      border-radius: calc(var(--radius) - 1px);
+      box-shadow: inset 0 0 0 1px rgba(124, 76, 10, 0.05);
+    }
+    .pricing-plan-card.premium > * {
+      position: relative;
+      z-index: 1;
+    }
+    .plan-ribbon,
+    .current-plan-flag {
+      margin: -26px -26px 20px;
+      padding: 9px 12px;
+      background: var(--rose);
+      color: #fff;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .recommended .plan-ribbon {
+      background: var(--pro-ribbon-bg);
+      color: var(--pro-ribbon-text);
+      text-shadow: 0 1px 0 rgba(54, 8, 26, 0.3);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        inset 0 -1px 0 rgba(70, 8, 30, 0.3);
+    }
+    .premium .plan-ribbon {
+      background: var(--premium-ribbon-bg);
+      color: var(--premium-ribbon-text);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.36);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        inset 0 -1px 0 rgba(87, 52, 6, 0.28);
+    }
+    .current-plan-flag {
+      background: var(--teal);
+    }
+    .plan-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .plan-head h2 {
+      margin: 0 0 6px;
+      color: var(--heading);
+      font-size: 28px;
+    }
+    .plan-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .plan-head > span {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--heading);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .recommended .plan-head > span {
+      border-color: var(--pro-pill-border);
+      background: var(--pro-pill-bg);
+      color: var(--pro-pill-color);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+    .premium .plan-head > span {
+      border-color: var(--premium-pill-border);
+      background: var(--premium-pill-bg);
+      color: var(--premium-pill-color);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
+    }
+    .plan-price {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin: 28px 0 14px;
+      color: var(--heading);
+    }
+    .recommended .plan-price {
+      color: var(--pro-price-color);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
+    }
+    .premium .plan-price {
+      color: var(--premium-price-color);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.34);
+    }
+    .plan-price > span {
+      font-size: 18px;
+    }
+    .plan-price b {
+      font-size: clamp(42px, 5vw, 58px);
+      line-height: 0.95;
+    }
+    .plan-price small {
+      color: var(--text);
+      font-size: 15px;
+    }
+    .recommended .plan-price small {
+      color: var(--pro-price-unit);
+    }
+    .premium .plan-price small {
+      color: var(--premium-price-unit);
+    }
+    .plan-reason {
+      min-height: 58px;
+      margin: 0 0 18px;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .feature-list {
+      display: grid;
+      gap: 13px;
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .feature-list b {
+      color: var(--heading);
+    }
+    .recommended .feature-list {
+      border-top-color: rgba(200, 62, 104, 0.24);
+    }
+    .premium .feature-list {
+      border-top-color: rgba(195, 143, 42, 0.28);
+    }
+    .feature-list span {
+      position: relative;
+      padding-left: 20px;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .feature-list span::before {
+      content: "";
+      position: absolute;
+      top: 0.58em;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--rose);
+    }
+    .recommended .feature-list span::before {
+      background: var(--pro-dot-bg);
+      box-shadow: 0 0 0 3px rgba(200, 62, 104, 0.1);
+    }
+    .premium .feature-list span::before {
+      background: var(--premium-dot-bg);
+      box-shadow: 0 0 0 3px rgba(216, 162, 59, 0.12);
+    }
+    .pricing-plan-card.recommended .btn-primary {
+      border-color: var(--pro-cta-border);
+      background: var(--pro-cta-bg);
+      color: var(--pro-rose-ink-strong);
+      box-shadow: var(--pro-cta-shadow);
+    }
+    .pricing-plan-card.recommended .btn-primary:hover {
+      border-color: var(--pro-cta-border);
+      box-shadow:
+        0 18px 34px rgba(168, 42, 85, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.34),
+        inset 0 -1px 0 rgba(83, 12, 35, 0.32);
+    }
+    .pricing-plan-card.premium .btn-gold {
+      border-color: var(--premium-cta-border);
+      background: var(--premium-cta-bg);
+      color: var(--premium-gold-ink-strong);
+      box-shadow: var(--premium-cta-shadow);
+    }
+    .pricing-plan-card.premium .btn-gold:hover {
+      border-color: var(--premium-cta-border);
+      box-shadow:
+        0 18px 34px rgba(179, 115, 21, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.68),
+        inset 0 -1px 0 rgba(92, 53, 5, 0.34);
+    }
+    .pricing-proof {
+      display: grid;
+      gap: 24px;
+      margin-top: 56px;
+      padding: 34px 0 30px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .pricing-proof-head {
+      display: grid;
+      max-width: 820px;
+    }
+    .pricing-proof .section-eyebrow {
+      margin-bottom: 16px;
+    }
+    .pricing-proof h2,
+    .pricing-section-head h2,
+    .pricing-policy h2 {
+      margin: 9px 0 8px;
+      color: var(--heading);
+      font-family: var(--font-display);
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.12;
+    }
+    .pricing-proof h2 {
+      margin: 0 0 12px;
+    }
+    .pricing-proof-head > p {
+      max-width: 760px;
+    }
+    .pricing-proof p,
+    .pricing-section-head p,
+    .pricing-policy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+    .pricing-proof-list {
+      display: grid;
+      border-top: 1px solid var(--line);
+    }
+    .pricing-proof-list article {
+      display: grid;
+      grid-template-columns: minmax(150px, 0.42fr) minmax(260px, 0.86fr) minmax(
+          0,
+          1fr
+        );
+      gap: 20px;
+      align-items: baseline;
+      min-width: 0;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .pricing-proof-list span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .pricing-proof-list strong {
+      color: var(--heading);
+      font-size: clamp(17px, 1.8vw, 22px);
+      line-height: 1.3;
+    }
+    .pricing-proof-list p {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .pricing-proof-link {
+      display: inline-flex;
+      width: fit-content;
+      min-height: 44px;
+      align-items: center;
+      color: var(--rose);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .pricing-proof-link::after {
+      content: " ↓";
+    }
+    .pricing-comparison {
+      scroll-margin-top: 76px;
+    }
+    .pricing-comparison,
+    .pricing-faq,
+    .pricing-policy {
+      margin-top: 42px;
+    }
+    .pricing-section-head {
+      margin-bottom: 16px;
+    }
+    .comparison-table {
+      overflow: hidden;
+    }
+    .mobile-comparison-summary,
+    .mobile-comparison-details {
+      display: none;
+    }
+    .compare-row {
+      display: grid;
+      grid-template-columns: 1.1fr repeat(3, 1fr);
+    }
+    .compare-row > * {
+      min-width: 0;
+      padding: 13px 16px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--text);
+      font-size: 13px;
+      text-align: center;
+    }
+    .compare-row > *:first-child {
+      color: var(--heading);
+      font-weight: 800;
+      text-align: left;
+    }
+    .compare-row.heading {
+      background: var(--soft);
+      font-weight: 900;
+    }
+    .compare-row.heading > * {
+      color: var(--heading);
+    }
+    .compare-yes,
+    .compare-no {
+      font-weight: 800;
+      font-size: 15px;
+    }
+    .comparison-table .compare-yes {
+      color: var(--rose, #c83e68);
+      font-weight: 900;
+    }
+    .compare-no {
+      color: var(--muted);
+      opacity: 0.5;
+    }
+    .pricing-faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .pricing-faq details {
+      padding: 18px;
+    }
+    .pricing-faq summary {
+      color: var(--heading);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 900;
+    }
+    .pricing-faq details p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .pricing-policy-inner {
+      display: grid;
+      grid-template-columns: minmax(200px, 0.42fr) minmax(0, 1fr) minmax(
+          190px,
+          0.34fr
+        );
+      gap: 28px;
+      align-items: start;
+      padding: 30px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .pricing-policy-head {
+      display: grid;
+      align-content: start;
+    }
+    .pricing-policy-head .section-eyebrow {
+      margin-bottom: 14px;
+    }
+    .pricing-policy h2 {
+      margin: 0;
+      font-size: clamp(24px, 2.5vw, 32px);
+    }
+    .pricing-policy-copy {
+      display: grid;
+      gap: 20px;
+    }
+    .pricing-policy-copy > p {
+      max-width: 760px;
+      color: var(--text);
+    }
+    .pricing-policy-copy dl {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      margin: 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .pricing-policy-copy dl > div {
+      min-width: 0;
+      padding: 0 16px;
+      border-left: 1px solid var(--line);
+    }
+    .pricing-policy-copy dl > div:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .pricing-policy-copy dt {
+      margin-bottom: 6px;
+      color: var(--heading);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .pricing-policy-copy dd {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .pricing-policy-support {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      padding-left: 20px;
+      border-left: 1px solid var(--line);
+    }
+    .pricing-policy-support span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .pricing-policy-support .btn {
+      width: 100%;
+      min-height: 44px;
+    }
+    .checkout-dialog {
+      width: min(420px, calc(100vw - 32px));
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      color: var(--text);
+    }
+    .checkout-dialog::backdrop {
+      background: rgba(9, 20, 35, 0.42);
+    }
+    .checkout-dialog h2 {
+      margin: 0 0 10px;
+      color: var(--heading);
+    }
+    .checkout-dialog p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .dialog-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .checkout-summary {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 18px 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--soft);
+      color: var(--heading);
+    }
+    .checkout-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 980px) {
+      .pricing-hero,
+      .pricing-proof,
+      .pricing-choice-helper,
+      .pricing-policy-inner {
+        grid-template-columns: 1fr;
+      }
+      .pricing-hero-points,
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+      .pricing-proof-list article {
+        grid-template-columns: minmax(130px, 0.34fr) minmax(0, 1fr);
+        gap: 8px 18px;
+      }
+      .pricing-proof-list p {
+        grid-column: 2;
+      }
+      .pricing-policy-support {
+        padding-top: 18px;
+        padding-left: 0;
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+      .pricing-plan-card {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .pricing-main {
+        padding-top: calc(52px + 20px);
+      }
+      .pricing-hero {
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+      .pricing-hero-copy .section-eyebrow {
+        margin-bottom: 16px;
+      }
+      .pricing-hero h1 {
+        font-size: clamp(34px, 10vw, 44px);
+      }
+      .pricing-hero-copy > p {
+        margin-top: 14px;
+      }
+      .pricing-hero-copy > p,
+      .pricing-proof p,
+      .pricing-section-head p,
+      .pricing-policy p {
+        font-size: 14px;
+        line-height: 1.68;
+      }
+      .pricing-hero-points {
+        display: none;
+      }
+      .pricing-proof {
+        margin-top: 44px;
+        padding: 28px 0 24px;
+      }
+      .pricing-proof .section-eyebrow {
+        margin-bottom: 14px;
+      }
+      .pricing-proof-list article {
+        grid-template-columns: 1fr;
+        gap: 7px;
+        padding: 16px 0;
+      }
+      .pricing-proof-list p {
+        grid-column: auto;
+      }
+      .pricing-proof-list strong {
+        font-size: 18px;
+      }
+      .pricing-proof-link {
+        width: 100%;
+      }
+      .pricing-policy-inner {
+        gap: 22px;
+        padding: 26px 0;
+      }
+      .pricing-policy-copy dl {
+        grid-template-columns: 1fr;
+        padding-top: 0;
+        border-top: 0;
+      }
+      .pricing-policy-copy dl > div {
+        padding: 12px 0;
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+      .pricing-policy-copy dl > div:first-child {
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+      .billing-toggle {
+        width: 100%;
+        margin-bottom: 14px;
+      }
+      .pricing-choice-helper {
+        gap: 12px;
+        margin-top: 14px;
+        padding: 14px 0;
+      }
+      .pricing-choice-list {
+        grid-template-columns: 1fr;
+      }
+      .pricing-choice-list span {
+        padding: 10px 0;
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+      .pricing-choice-list span:first-child {
+        padding-top: 0;
+        border-top: 0;
+      }
+      .billing-toggle button {
+        flex: 1;
+        padding-inline: 10px;
+      }
+      .pricing-plan-card {
+        padding: 22px;
+      }
+      .pricing-plan-card[data-plan="pro"] {
+        order: -1;
+      }
+      .plan-ribbon,
+      .current-plan-flag {
+        margin: -22px -22px 18px;
+      }
+      .pricing-faq-grid {
+        grid-template-columns: 1fr;
+      }
+      .mobile-comparison-summary {
+        display: grid;
+        gap: 14px;
+      }
+      .mobile-comparison-intro {
+        display: grid;
+        gap: 8px;
+      }
+      .mobile-comparison-intro h3 {
+        margin: 0;
+        color: var(--heading);
+        font-size: 20px;
+        line-height: 1.25;
+      }
+      .mobile-comparison-intro p {
+        max-width: 36rem;
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .mobile-plan-compare-cards {
+        display: grid;
+        gap: 12px;
+      }
+      .mobile-plan-compare-card {
+        display: grid;
+        gap: 14px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--bg-elevated);
+        box-shadow: 0 12px 30px rgba(18, 32, 48, 0.06);
+      }
+      .mobile-plan-compare-card.recommended {
+        border-color: var(--pro-card-border);
+        background: var(--pro-card-bg);
+        box-shadow: var(--pro-card-shadow);
+      }
+      .mobile-plan-compare-card.premium {
+        border-color: var(--premium-card-border);
+        background: var(--premium-card-bg);
+        box-shadow: var(--premium-card-shadow);
+      }
+      .mobile-plan-compare-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .mobile-plan-compare-head h4 {
+        margin: 0 0 4px;
+        color: var(--heading);
+        font-size: 21px;
+        line-height: 1.15;
+      }
+      .mobile-plan-compare-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+      .mobile-plan-compare-head > span {
+        flex: 0 0 auto;
+        padding: 5px 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--soft);
+        color: var(--heading);
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .mobile-plan-quota {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        color: var(--heading);
+      }
+      .mobile-plan-quota b {
+        font-size: 34px;
+        line-height: 0.95;
+      }
+      .mobile-plan-quota span {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 750;
+      }
+      .mobile-plan-compare-card ul {
+        display: grid;
+        gap: 9px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .mobile-plan-compare-card li {
+        position: relative;
+        padding-left: 18px;
+        color: var(--text);
+        font-size: 13px;
+        line-height: 1.42;
+      }
+      .mobile-plan-compare-card li::before {
+        position: absolute;
+        top: 0.58em;
+        left: 0;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--rose);
+        content: "";
+      }
+      .mobile-plan-compare-card .btn {
+        margin-top: 2px;
+      }
+      .comparison-table {
+        display: none;
+      }
+      .mobile-comparison-details {
+        display: block;
+        margin-top: 14px;
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      .mobile-comparison-details summary {
+        display: flex;
+        min-height: 50px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 16px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--bg-elevated);
+        color: var(--heading);
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 850;
+        list-style: none;
+      }
+      .mobile-comparison-details summary::-webkit-details-marker {
+        display: none;
+      }
+      .mobile-comparison-details summary i {
+        width: 9px;
+        height: 9px;
+        flex: 0 0 9px;
+        border-right: 1.8px solid currentColor;
+        border-bottom: 1.8px solid currentColor;
+        transform: translateY(-2px) rotate(45deg);
+        transition: transform 0.18s ease;
+      }
+      .mobile-comparison-details[open] summary i {
+        transform: translateY(2px) rotate(225deg);
+      }
+      .mobile-comparison-details:not([open]) .mobile-feature-comparison {
+        display: none;
+      }
+      .mobile-feature-comparison {
+        display: grid;
+        gap: 10px;
+        padding-top: 10px;
+      }
+      .mobile-feature-card {
+        display: grid;
+        gap: 10px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--soft) 52%, var(--bg-elevated));
+      }
+      .mobile-feature-card h4 {
+        margin: 0;
+        color: var(--heading);
+        font-size: 14px;
+        line-height: 1.35;
+      }
+      .mobile-feature-card > div {
+        display: grid;
+        gap: 7px;
+      }
+      .mobile-feature-card span {
+        display: flex;
+        min-height: 30px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--text);
+        font-size: 12px;
+      }
+      .mobile-feature-card b {
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .mobile-feature-card em {
+        color: var(--heading);
+        font-style: normal;
+        font-weight: 850;
+        text-align: right;
+      }
+      .mobile-feature-card .is-included em {
+        color: var(--rose);
+      }
+      .mobile-feature-card .is-excluded em {
+        color: var(--muted);
+        opacity: 0.65;
+      }
+      .checkout-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>

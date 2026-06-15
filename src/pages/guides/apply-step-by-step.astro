@@ -1,0 +1,326 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "How to Apply Makeup Step by Step: The Correct Order",
+  description:
+    "Understanding the correct makeup application order is the difference between a polished look and a muddy mess. Learn the science behind layering, why order matters, and what happens when you get it wrong.",
+  faq: [
+    {
+      q: "What order do you apply makeup?",
+      a: "The correct layer-by-layer order is: skincare prep (cleanser, moisturizer, SPF), primer, color corrector if needed, foundation, concealer, setting powder, bronzer, blush, highlighter, eyeshadow, eyeliner, mascara, eyebrows, lip liner, lipstick, and finally setting spray. The golden rule is liquids before powders, and thin layers before thick layers. This order ensures each product can bond properly to the layer beneath it without pilling or sliding off.",
+    },
+    {
+      q: "Do you do eyes or face first?",
+      a: "For most people, face first is the better approach. Apply your base makeup (foundation, concealer, powder) before your eye makeup. The reason is practical: eyeshadow fallout — the loose pigment that falls onto your cheeks during application — will land on bare skin that you can simply wipe clean. If you do eyes first and then apply foundation, you risk smudging or removing your eye work while blending your base. Professional makeup artists sometimes reverse this order because they have the skill to apply base without disturbing the eyes, but for everyday application, face first is the most logical sequence.",
+    },
+    {
+      q: "Can you apply primer after foundation?",
+      a: "No, primer must always go before foundation. Primer creates a smooth, adhesive surface that helps your foundation grip to your skin and last longer. Applying primer on top of foundation will cause the foundation to break down, streak, and separate. The only exception is an eye primer, which goes specifically on your eyelids before eyeshadow, and a pore-filling primer that you might apply only to your T-zone before foundation. If you forgot primer and already applied foundation, do not try to fix it by putting primer on top — instead, blot any excess foundation, then lightly spray a setting spray to help things hold.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Makeup for Beginners Guide", url: "/guides/beginner-tutorial" },
+  { label: "Beginner Makeup Routine", url: "/guides/beginner-routine" },
+  { label: "Makeup Mistakes to Avoid", url: "/guides/mistakes-avoid" },
+];
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Makeup is not just about what products you use — it is about the order in
+      which you layer them. Get the sequence right and even drugstore products
+      look expensive. Get it wrong and luxury products look muddy. This guide
+      explains the science behind every step so you never have to guess again.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>The Science of Layering: Why Order Actually Matters</h2>
+    <p>
+      Think of makeup application like building a house. You do not start with
+      the roof. Each layer has a specific purpose, and each layer must be
+      compatible with the one before it and the one after it. The fundamental
+      principle is simple: thin to thick, liquid to powder, large areas to small
+      details.
+    </p>
+    <p>
+      Here is why this matters at a chemical level. Foundation contains water,
+      oils, and pigments suspended in an emulsion. When you apply it to clean,
+      moisturized skin, those ingredients bond with your skin and the
+      moisturizer underneath. If you put a silicone-based primer on top of
+      foundation instead of underneath it, the silicone repels the water-based
+      foundation and causes pilling — those frustrating little balls of product
+      that roll off your skin. This is not a product quality problem. It is a
+      layering problem.
+    </p>
+    <p>
+      Similarly, cream products must always go before powder products. Powder
+      creates a matte, absorbent surface. When you try to apply cream on top of
+      powder, the cream grabs onto the powder particles instead of your skin,
+      resulting in a patchy, uneven finish that looks worse than wearing no
+      makeup at all.
+    </p>
+
+    <h2>The Correct Layer-by-Layer Sequence</h2>
+    <p>
+      Follow this exact order every time. With practice, the sequence becomes
+      second nature and you will be able to do a full face in under ten minutes.
+    </p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Skincare Prep</h4>
+          <p>
+            Cleanse, apply moisturizer, and finish with sunscreen. Wait two to
+            three minutes for everything to absorb. This step creates the canvas
+            — makeup applied on unprepared skin will never look smooth,
+            regardless of how good your products are.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Primer</h4>
+          <p>
+            Apply a thin, even layer across your entire face or just in problem
+            areas. Hydrating primers work for dry skin, pore-filling primers for
+            textured skin, and mattifying primers for oily skin. Let it set for
+            thirty seconds before moving on.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Color Corrector (Optional)</h4>
+          <p>
+            Use only if you have specific discoloration. Green neutralizes
+            redness, peach cancels dark circles on medium to deep skin tones,
+            and lavender brightens dullness. Apply a tiny amount only where
+            needed — this is not an all-over product.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Foundation</h4>
+          <p>
+            Apply in thin layers, building coverage where needed. Use a damp
+            sponge for a natural finish or a brush for more coverage. Start from
+            the center of your face and blend outward. Always blend down your
+            neck to avoid a visible line.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Concealer</h4>
+          <p>
+            Apply after foundation because you will need less than you think.
+            Foundation has already done most of the work. Dot concealer on
+            remaining blemishes, under-eye darkness, and any area that still
+            needs extra coverage. Pat, do not rub.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Setting Powder</h4>
+          <p>
+            Press translucent powder into areas that crease or get oily: under
+            eyes, T-zone, and around the nose. Use a pressing motion rather than
+            sweeping to avoid disturbing the concealer underneath. Do not
+            over-powder — a little goes a long way.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">7</div>
+        <div>
+          <h4>Bronzer, Blush, and Highlighter</h4>
+          <p>
+            Bronzer goes where the sun naturally hits: forehead, cheekbones, and
+            jawline. Blush goes on the apples of your cheeks, blended upward
+            toward your temples. Highlighter goes on the highest points:
+            cheekbones, bridge of the nose, and cupid's bow. Apply in this order
+            so colors layer cleanly.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">8</div>
+        <div>
+          <h4>Eyes: Shadow, Liner, Mascara</h4>
+          <p>
+            Start with eyeshadow (lightest shade first, then build depth in the
+            crease). Then eyeliner, then mascara. Doing shadow first means any
+            fallout lands on your already-powdered face, which you can easily
+            brush away. Eyeliner before mascara because mascara can clump if
+            applied over liner.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">9</div>
+        <div>
+          <h4>Eyebrows</h4>
+          <p>
+            Fill in brows with a pencil or powder using light, hair-like
+            strokes. Brush through with a spoolie to soften. Brows frame your
+            entire face and should be done after eye makeup so you can balance
+            the intensity of both.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">10</div>
+        <div>
+          <h4>Lips and Set</h4>
+          <p>
+            Line your lips, apply lipstick, and finish with a light mist of
+            setting spray held about eight inches from your face. The setting
+            spray melds all the layers together and extends wear time by several
+            hours.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>What Happens When You Get the Order Wrong</h2>
+    <p>
+      Getting the sequence wrong does not just make your makeup look mediocre —
+      it creates specific visible problems that are easy to recognize once you
+      know what to look for.
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Wrong Move</th>
+          <th>What Goes Wrong</th>
+          <th>The Fix</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Concealer before foundation</td>
+          <td
+            >You use twice as much concealer as needed and it gets wiped away
+            when you blend foundation over it</td
+          >
+          <td
+            >Always apply concealer after foundation — you will need far less</td
+          >
+        </tr>
+        <tr>
+          <td>Powder before cream blush</td>
+          <td
+            >Cream blush sits on top of powder, looking patchy and never
+            blending smoothly</td
+          >
+          <td>All cream products go before powder — always</td>
+        </tr>
+        <tr>
+          <td>Eyes after lips</td>
+          <td
+            >Lipstick transfers to your face when you lean in to apply mascara
+            or eyeliner</td
+          >
+          <td>Lips are always the final step before setting spray</td>
+        </tr>
+        <tr>
+          <td>No primer before foundation</td>
+          <td
+            >Foundation slides around, separates into fine lines, and fades
+            within a few hours</td
+          >
+          <td
+            >Use a primer matched to your skin type — it is not optional for
+            all-day wear</td
+          >
+        </tr>
+        <tr>
+          <td>Foundation without moisturizer underneath</td>
+          <td
+            >Foundation clings to dry patches and looks cakey, no matter how
+            good the formula is</td
+          >
+          <td
+            >Moisturize first and wait two minutes — this single habit changes
+            everything</td
+          >
+        </tr>
+        <tr>
+          <td>Setting spray before powder</td>
+          <td
+            >The spray reactivates liquid products and makes everything slide,
+            defeating its purpose</td
+          >
+          <td
+            >Setting spray is always the very last step, after everything else
+            is done</td
+          >
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>How to Check Your Work</h2>
+    <p>
+      After you finish applying makeup, check it in three lighting conditions:
+      the bathroom mirror, a window with natural daylight, and your phone
+      camera. If your makeup looks good in all three, you got the order and
+      blending right. If it looks fine in the bathroom but terrible in daylight,
+      your foundation shade is wrong. If it looks good in daylight but your
+      phone camera reveals texture, you are using too much powder or your
+      skincare prep was insufficient.
+    </p>
+    <p>
+      This multi-lighting check is the fastest way to identify what step in your
+      sequence needs adjustment. Most beginners only check in one lighting
+      condition, which gives them a false sense of confidence that disappears
+      the moment they step outside.
+    </p>
+  </div>
+
+  <div slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>See the Results Before You Apply</h2>
+        <p>
+          Use our AI virtual try-on to preview how different products and
+          techniques will look on your face.
+        </p>
+        <a href="/tryon-free" class="cta-btn">Try Virtual Makeup Try-On</a>
+      </div>
+    </div>
+  </div>
+
+  <div slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Related Guides</h3>
+        <ul class="related-list">
+          {
+            relatedLinks.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</SeoLandingLayout>

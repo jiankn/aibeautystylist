@@ -1,0 +1,312 @@
+---
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCurrentLocale } from "../lib/i18n";
+
+const currentLocale = getCurrentLocale();
+const isZh = currentLocale.startsWith("zh");
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const homeHref = localizeAppHref("/");
+const tryOnHref = localizeAppHref("/tryon-free");
+const shareCardHref = localizeAppHref("/share-card");
+const copy = isZh
+  ? {
+      title: "我的试妆效果 | AI Beauty Stylist",
+      description: "查看并分享 AI Beauty Stylist 生成的试妆参考效果。",
+      cardAria: "试妆分享卡",
+      heading: "我的试妆效果",
+      loading: "加载中…",
+      cardLoading: "加载分享卡中…",
+      benefitTryon: "AI 在线试妆",
+      benefitTryonDesc: "先看自己的上脸参考",
+      benefitScenario: "按场景选妆",
+      benefitScenarioDesc: "通勤、约会、拍照都能试",
+      benefitFree: "免费体验",
+      benefitFreeDesc: "每月 3 次免费机会",
+      ctaTitle: "上传自拍，先免费试",
+      download: "保存为图片",
+      share: "分享",
+      copyLink: "复制链接",
+      reward: "获取分享奖励 (+1 额度)",
+      emptyTitle: "暂无试妆结果",
+      emptyBody: "先完成一次试妆，再生成可分享的结果。",
+      emptyCta: "去试妆",
+      defaultLook: "妆容效果",
+      resultAltSuffix: "试妆效果",
+      before: "原图",
+      after: "试妆后",
+      shareTitle: "我的 AI 试妆效果",
+      shareText: "来看看我的 AI 试妆参考效果。",
+      shareCopied: "✓ 链接已复制",
+      copied: "✓ 已复制",
+      rewardSuccess: "✓ 额度 +1，奖励已领取！",
+      rewardAlready: "今日已领取",
+      rewardFailed: "× 领取失败，请重试",
+    }
+  : {
+      title: "My try-on result | AI Beauty Stylist",
+      description:
+        "View and share an AI Beauty Stylist makeup try-on reference result.",
+      cardAria: "Makeup try-on share card",
+      heading: "My try-on result",
+      loading: "Loading...",
+      cardLoading: "Loading share card...",
+      benefitTryon: "AI makeup try-on",
+      benefitTryonDesc: "Preview the look on your own face",
+      benefitScenario: "Looks by scenario",
+      benefitScenarioDesc: "Try work, date, and photo-ready looks",
+      benefitFree: "Free trial",
+      benefitFreeDesc: "3 free generations each month",
+      ctaTitle: "Upload a selfie and try",
+      download: "Save image",
+      share: "Share",
+      copyLink: "Copy link",
+      reward: "Get share reward (+1 credit)",
+      emptyTitle: "No try-on result yet",
+      emptyBody: "Finish a try-on first, then generate a shareable result.",
+      emptyCta: "Try makeup",
+      defaultLook: "Makeup result",
+      resultAltSuffix: " try-on result",
+      before: "Before",
+      after: "After",
+      shareTitle: "My AI makeup try-on result",
+      shareText: "See my AI makeup try-on reference result.",
+      shareCopied: "✓ Link copied",
+      copied: "✓ Copied",
+      rewardSuccess: "✓ Credit +1 reward claimed",
+      rewardAlready: "Already claimed today",
+      rewardFailed: "× Reward failed. Try again",
+    };
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  robots="noindex,follow"
+>
+  <main class="share-page">
+    <article class="share-card" aria-label={copy.cardAria} id="share-card">
+      <header class="share-top">
+        <h1>{copy.heading}&nbsp; ✦</h1>
+        <div class="share-look" id="share-look-name">{copy.loading}</div>
+        <div class="share-brand">AI Beauty Stylist</div>
+      </header>
+      <div class="share-image" id="share-image-area">
+        <div class="share-loading">{copy.cardLoading}</div>
+      </div>
+      <section class="benefit-row" id="share-benefits">
+        <div class="benefit">
+          <i>♧</i><div>
+            <b>{copy.benefitTryon}</b><span>{copy.benefitTryonDesc}</span>
+          </div>
+        </div>
+        <div class="benefit">
+          <i>◉</i><div>
+            <b>{copy.benefitScenario}</b><span>{copy.benefitScenarioDesc}</span>
+          </div>
+        </div>
+        <div class="benefit">
+          <i>⌒</i><div>
+            <b>{copy.benefitFree}</b><span>{copy.benefitFreeDesc}</span>
+          </div>
+        </div>
+      </section>
+      <footer class="share-cta">
+        <div>
+          <h2>{copy.ctaTitle} <span style="color:#ffe78f">3</span></h2>
+          <a class="brand" href={homeHref}>
+            <img
+              class="brand-logo-img share-brand-logo"
+              src="/images/logo-ui.webp"
+              alt=""
+              aria-hidden="true"
+            />
+            <span
+              >AI Beauty Stylist<br /><small style="font-weight:400"
+                >aibeautystylist.com</small
+              ></span
+            >
+          </a>
+        </div>
+      </footer>
+    </article>
+
+    <!-- 操作按钮 -->
+    <div class="share-actions" id="share-actions">
+      <button class="btn btn-primary" id="share-download-btn">
+        ↓&nbsp; {copy.download}</button
+      >
+      <button class="btn" id="share-web-btn">↗&nbsp; {copy.share}</button>
+      <button class="btn" id="share-copy-btn">⌘&nbsp; {copy.copyLink}</button>
+      <button class="btn btn-outline-rose" id="share-reward-btn">
+        +&nbsp; {copy.reward}</button
+      >
+    </div>
+
+    <!-- 无结果时展示 -->
+    <div
+      class="panel"
+      id="share-empty"
+      style="text-align:center;padding:40px"
+      hidden
+    >
+      <h2>{copy.emptyTitle}</h2>
+      <p>{copy.emptyBody}</p>
+      <a class="btn btn-primary" href={tryOnHref}>{copy.emptyCta}</a>
+    </div>
+  </main>
+</BaseLayout>
+
+<script is:inline define:vars={{ copy, shareCardHref }}>
+  (function () {
+    const params = new URLSearchParams(location.search);
+    const jobId = params.get("jobId");
+    const lookNameEl = document.getElementById("share-look-name");
+    const imageArea = document.getElementById("share-image-area");
+    const emptyEl = document.getElementById("share-empty");
+    const actionsEl = document.getElementById("share-actions");
+    const cardEl = document.getElementById("share-card");
+
+    if (!jobId) {
+      // 没有 jobId，展示空状态。
+      cardEl.hidden = true;
+      actionsEl.hidden = true;
+      emptyEl.hidden = false;
+      return;
+    }
+
+    // 加载任务数据。
+    fetch("/api/tryon-jobs/" + jobId)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.ok || data.data.status !== "succeeded") {
+          cardEl.hidden = true;
+          actionsEl.hidden = true;
+          emptyEl.hidden = false;
+          return;
+        }
+        const job = data.data;
+        if (lookNameEl)
+          lookNameEl.textContent = job.lookTitle || copy.defaultLook;
+        if (imageArea && job.resultImage) {
+          imageArea.innerHTML = `
+          <img src="${job.resultImage}" alt="${job.lookTitle || ""}${copy.resultAltSuffix}" />
+          <span class="compare-label before">${copy.before}</span>
+          <span class="compare-label after">${copy.after}</span>
+        `;
+        }
+      })
+      .catch(() => {
+        cardEl.hidden = true;
+        actionsEl.hidden = true;
+        emptyEl.hidden = false;
+      });
+
+    // 保存为图片（Canvas 导出）。
+    const downloadBtn = document.getElementById("share-download-btn");
+    if (downloadBtn) {
+      downloadBtn.addEventListener("click", async () => {
+        try {
+          // 尝试用 html2canvas 或简单截图。
+          // 简化方案：直接下载结果图。
+          const img = imageArea?.querySelector("img");
+          if (!img?.src) return;
+          const a = document.createElement("a");
+          a.href = img.src;
+          a.download = "ai-beauty-stylist-share.png";
+          a.click();
+        } catch {
+          /* ignore */
+        }
+      });
+    }
+
+    // Web Share API。
+    const webShareBtn = document.getElementById("share-web-btn");
+    if (webShareBtn) {
+      webShareBtn.addEventListener("click", async () => {
+        const shareUrl =
+          location.origin + shareCardHref + "?jobId=" + jobId + "&ref=share";
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: copy.shareTitle,
+              text: copy.shareText,
+              url: shareUrl,
+            });
+          } catch {
+            /* user cancelled */
+          }
+        } else {
+          navigator.clipboard?.writeText(shareUrl);
+          webShareBtn.textContent = copy.shareCopied;
+          setTimeout(() => {
+            webShareBtn.textContent = "↗  " + copy.share;
+          }, 2000);
+        }
+      });
+    }
+
+    // 复制链接。
+    const copyBtn = document.getElementById("share-copy-btn");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", () => {
+        const shareUrl =
+          location.origin + shareCardHref + "?jobId=" + jobId + "&ref=share";
+        navigator.clipboard?.writeText(shareUrl);
+        copyBtn.textContent = copy.copied;
+        setTimeout(() => {
+          copyBtn.textContent = "⌘  " + copy.copyLink;
+        }, 2000);
+      });
+    }
+
+    // 分享奖励。
+    const rewardBtn = document.getElementById("share-reward-btn");
+    if (rewardBtn) {
+      rewardBtn.addEventListener("click", async () => {
+        try {
+          rewardBtn.disabled = true;
+          const res = await fetch("/api/shares/reward", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jobId }),
+          });
+          const data = await res.json();
+          if (data.ok && data.data.rewarded) {
+            rewardBtn.textContent = copy.rewardSuccess;
+            rewardBtn.classList.add("btn-primary");
+          } else {
+            rewardBtn.textContent =
+              "i " + (data.data?.reason || copy.rewardAlready);
+          }
+        } catch {
+          rewardBtn.textContent = copy.rewardFailed;
+          rewardBtn.disabled = false;
+        }
+      });
+    }
+  })();
+</script>
+
+<style>
+  .share-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 24px auto;
+    max-width: 600px;
+  }
+  .share-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: var(--muted);
+  }
+</style>

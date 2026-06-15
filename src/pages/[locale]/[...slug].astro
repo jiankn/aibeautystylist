@@ -1,0 +1,16 @@
+---
+import LocalizedSeoPageView from "../../components/LocalizedSeoPageView.astro";
+import NotFoundView from "../../components/NotFoundView.astro";
+import { getLanguageByPathPrefix } from "../../i18n/config";
+import { getLocalizedSeoPageByRoute } from "../../i18n/localizedSeoPages";
+
+const language = getLanguageByPathPrefix(Astro.params.locale);
+const routePath = `/${Astro.params.slug ?? ""}`;
+const page = language
+  ? getLocalizedSeoPageByRoute(language.slug, routePath)
+  : undefined;
+
+if (!page) Astro.response.status = 404;
+---
+
+{page ? <LocalizedSeoPageView page={page} /> : <NotFoundView />}

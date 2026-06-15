@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pro 工作台 | AI Beauty Stylist</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="workspace-body">
+  <header class="workspace-header">
+    <nav class="workspace-nav shell">
+      <a class="brand" href="index.html"><span class="brand-mark teal-mark">◒</span>AI Beauty Stylist</a>
+      <div class="workspace-tabs"><a class="active" href="tryon-pro.html">Pro 工作台</a><a href="tryon-premium.html">Premium 工作台</a></div>
+      <div class="nav-actions"><button class="btn" data-toast="试妆结果已保存">▱&nbsp; 保存结果</button><a class="btn btn-navy" href="share-card.html">↓&nbsp; 下载高清图</a></div>
+    </nav>
+  </header>
+  <main class="workspace-main">
+    <div class="shell">
+      <section class="quota-bar panel">
+        <div class="quota-plan"><span class="plan-badge">Pro</span><div><b>当前工作台</b><div class="small muted">直接试妆</div></div></div>
+        <div class="quota-meter"><div><b class="small">本月试妆额度</b><div class="meter" style="margin-top:10px"><i></i></div></div><span class="quota-number"><b>42</b> / 60 可用</span></div>
+        <div class="quota-note">ⓘ&nbsp; 单次生成 1 张<div class="small muted">换妆容再次生成将消耗 1 次额度</div></div>
+      </section>
+
+      <div class="workspace-grid">
+        <aside class="selector-panel panel">
+          <div class="selector-head"><div><h2 class="panel-title">选择一个妆容</h2><p class="panel-subtitle">精选妆容</p></div></div>
+          <div class="selector-list">
+            <article class="selector-item active" data-look="蜜桃气色"><img src="images/look-commute.webp" alt=""><div><h3>蜜桃气色</h3><p>通勤 / 面试<br>元气自然，提亮气色</p></div><span class="check-dot">✓</span></article>
+            <article class="selector-item" data-look="清透裸妆"><img src="images/look-no-makeup.webp" alt=""><div><h3>清透裸妆</h3><p>通勤 / 面试<br>清透自然，轻盈干净</p></div><span class="check-dot">✓</span></article>
+            <article class="selector-item" data-look="玫瑰奶茶"><img src="images/look-rose-milk-date.webp" alt=""><div><h3>玫瑰奶茶</h3><p>约会<br>温柔显白，气质提升</p></div><span class="check-dot">✓</span></article>
+            <article class="selector-item" data-look="上镜柔焦"><img src="images/look-photogenic.webp" alt=""><div><h3>上镜柔焦</h3><p>拍照 / 上镜<br>立体聚焦，镜头感强</p></div><span class="check-dot">✓</span></article>
+          </div>
+          <a class="btn btn-wide" style="margin-top:12px" href="discover.html">▧&nbsp; 获取更多灵感</a>
+        </aside>
+
+        <section class="result-panel panel">
+          <div class="result-head"><h2>试妆效果 · <span data-look-title>蜜桃气色</span></h2><span class="pill pill-rose">已生成</span></div>
+          <div class="compare-hero result-compare">
+            <div class="compare-half right"><img src="images/look-rose-milk-date.webp" alt="试妆后效果"></div>
+            <div class="compare-half left"><img src="images/look-rose-milk-date.webp" alt="原图效果"></div>
+            <span class="compare-label before">原图</span><span class="compare-label after">试妆效果</span><button class="compare-knob" data-toast="可拖动查看前后差异">›</button>
+          </div>
+          <p class="result-caption">结果为 AI 生成建议，仅供参考。个人效果可能有所不同。</p>
+        </section>
+
+        <aside class="explain-panel panel">
+          <h2 class="panel-title">本妆容产品类型</h2><p class="panel-subtitle">产品分类推荐，可按需选择具体产品</p>
+          <div class="product-list">
+            <div class="product-item"><div class="product-art"><span class="smear"></span></div><div class="product-copy"><b>底妆</b><span>轻薄自然底妆<br>均匀肤色，打造清透妆感</span></div></div>
+            <div class="product-item"><div class="product-art"><span class="smear blush"></span></div><div class="product-copy"><b>腮红</b><span>蜜桃色系腮红<br>提亮气色，打造元气感</span></div></div>
+            <div class="product-item"><div class="product-art"><span class="smear eye"></span></div><div class="product-copy"><b>眼影</b><span>暖调粉棕眼影<br>自然深邃，放大双眼</span></div></div>
+            <div class="product-item"><div class="product-art"><span class="smear lip"></span></div><div class="product-copy"><b>唇釉 / 唇膏</b><span>蜜桃豆沙色系<br>水润显色，提升气色</span></div></div>
+          </div>
+          <button class="btn btn-wide" style="margin-top:16px" data-toast="个性化教程将在下一阶段接入">▤&nbsp; 查看上妆步骤&nbsp; ›</button>
+        </aside>
+      </div>
+      <section class="share-strip panel"><div><h3>分享试妆效果</h3><p>把你的试妆效果分享给朋友</p></div><a class="btn" href="share-card.html">▧&nbsp; 保存分享卡</a><button class="btn" data-toast="分享链接已复制">⌘&nbsp; 复制分享链接</button><button class="btn" data-toast="请选择新妆容继续试妆">↻&nbsp; 继续试妆</button></section>
+    </div>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

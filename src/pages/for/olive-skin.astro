@@ -1,0 +1,272 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Makeup for Olive Skin Tone: Find Your Most Flattering Shades",
+  description:
+    "Olive skin has unique undertones that make shade matching tricky. Learn which lipsticks, foundations, and blush shades complement olive skin beautifully.",
+  faq: [
+    {
+      q: "What undertone does olive skin have?",
+      a: "Olive skin has a greenish undertone that sits alongside either warm, cool, or neutral base tones. This green-gold quality is what distinguishes olive skin from other skin tones and what makes shade matching uniquely challenging. Warm olive skin has a golden-green undertone (think Mediterranean or Latinx complexions with a warm cast). Cool olive skin has a blue-green or ashy-green undertone (think some Eastern European or East Asian complexions). Neutral olive sits somewhere in between. The green quality means that many foundations with standard warm or cool undertones will not match: warm foundations can make olive skin look orange, while cool foundations can make it look grey.",
+    },
+    {
+      q: "What are the best lipstick shades for olive skin?",
+      a: "For olive skin, the most universally flattering lipstick shades are those that complement the green undertone rather than fighting it. Warm olive skin looks stunning in brick red, terracotta, warm coral, and rich peach shades. Cool olive skin excels in berry, mauve, wine, and blue-based red. Both warm and cool olive skin can wear neutral shades like dusty rose and warm nude, provided they have enough depth and are not too pale. Avoid shades that are too light or too pastel, as they can make olive skin look sallow or washed out. For a bold look, a deep plum or burgundy is incredibly striking on olive skin of any undertone.",
+    },
+    {
+      q: "Which foundations work best for olive skin?",
+      a: "The ideal foundation for olive skin has a green or golden-green undertone built into the formula. Unfortunately, many mainstream brands do not offer true olive shades. Look for brands that specifically label shades as 'olive' or that offer shades in the golden-yellow range with a slightly muted, less saturated quality. Fenty Beauty, NARS, and Estee Lauder are among the brands known for better olive shade representation. If you cannot find a perfect match, a slightly yellow-based foundation mixed with a green color corrector can create a custom match that avoids the orange or grey cast that standard warm or cool foundations produce on olive skin.",
+    },
+    {
+      q: "Which blush shades work best on olive skin?",
+      a: "The best blush shades for olive skin are those that add a natural flush without clashing with the green undertone. Muted rose, dusty pink, and soft terracotta are universally flattering. Warm olive skin can also pull off peachy-coral shades beautifully. Cool olive skin should lean toward berry and mauve tones. Avoid extremely bright, neon pinks and oranges, as they can create an unnatural contrast with the olive undertone. A good test: if the blush looks like it is sitting on top of your skin rather than blending into it, the shade is likely clashing with your undertone.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  {
+    label: "Personalized Recommendations",
+    url: "/personalized-makeup-recommendation",
+  },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  faq={page.faq}
+>
+  <div slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Olive skin's unique green-gold undertones make shade matching one of the
+      most complex challenges in makeup. This guide breaks down exactly which
+      shades complement your undertone and which to avoid.
+    </p>
+  </div>
+
+  <div class="seo-content">
+    <h2>The Olive Undertone Puzzle</h2>
+
+    <p>
+      Olive skin is one of the most misunderstood and poorly served skin tones
+      in the beauty industry. The green undertone that defines olive skin is
+      rare in standard cosmetic formulations, which are typically designed
+      around warm (golden, yellow, peach) or cool (pink, red, blue) undertone
+      categories. When olive skin is forced into one of these standard
+      categories, the result is almost always a mismatch.
+    </p>
+
+    <p>
+      Warm olive skin has a golden-green quality that makes it look yellow when
+      a foundation with standard warm undertones is applied. Cool olive skin has
+      a blue-green quality that can look grey or sallow when matched with
+      standard cool-toned foundations. Neutral olive skin has the most
+      flexibility but still struggles to find shades that capture the unique
+      muted, greenish quality of the natural complexion.
+    </p>
+
+    <p>
+      The green undertone also affects how color products appear once applied. A
+      blush that looks perfect on a swatch may pull too pink or too orange on
+      olive skin. A lipstick that appears vibrant on someone else may look muted
+      or even slightly off on olive skin. Understanding this interaction is the
+      key to choosing shades that enhance rather than fight your natural
+      coloring.
+    </p>
+
+    <h2>Warm Olive vs Cool Olive: Shade Recommendations</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Warm Olive (Golden-Green)</th>
+          <th>Cool Olive (Blue-Green)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Lipstick</strong></td>
+          <td>Brick red, terracotta, warm coral, rich peach, burnt orange</td>
+          <td>Berry, mauve, wine, blue-based red, cool plum</td>
+        </tr>
+        <tr>
+          <td><strong>Blush</strong></td>
+          <td>Peachy-coral, warm terracotta, golden rose</td>
+          <td>Muted rose, dusty pink, berry-toned pink</td>
+        </tr>
+        <tr>
+          <td><strong>Eyeshadow</strong></td>
+          <td>Warm bronze, gold, copper, burnt sienna, olive green</td>
+          <td>Cool taupe, plum, cool brown, steel grey, navy</td>
+        </tr>
+        <tr>
+          <td><strong>Foundation</strong></td>
+          <td>Golden-yellow base with muted saturation</td>
+          <td>Yellow-beige base with a slight cool lean</td>
+        </tr>
+        <tr>
+          <td><strong>Bronzer</strong></td>
+          <td>Rich golden-brown with warm undertones</td>
+          <td>Cooler, more neutral brown without orange</td>
+        </tr>
+        <tr>
+          <td><strong>Highlighter</strong></td>
+          <td>Gold, champagne, warm bronze</td>
+          <td>Rose gold, soft gold, neutral champagne</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Foundation Oxidation: The Olive Skin Problem</h2>
+
+    <p>
+      Olive skin is particularly vulnerable to foundation oxidation because the
+      green undertone shifts visibly when the formula darkens. A foundation that
+      initially matches may turn noticeably orange within an hour of application
+      as the warm pigments in the formula oxidize. This is especially common
+      with foundations that have a yellow or golden base, as the yellow
+      intensifies with oxidation while the green undertone of the skin remains
+      constant, creating a visible mismatch.
+    </p>
+
+    <p>
+      To combat this, test foundation shades with the oxidation process in mind.
+      Apply a stripe of each candidate along your jawline and wait at least
+      thirty minutes. Observe the color change and note which shade ends up
+      closest to your natural skin tone. If all shades in a line oxidize too
+      orange, that particular formula is likely not compatible with olive skin,
+      regardless of how perfect the initial match appears.
+    </p>
+
+    <p>
+      Some olive-skinned individuals find success mixing two foundation shades:
+      one that matches the depth but leans warm, and another that is slightly
+      cooler. The resulting custom blend can capture the muted, greenish quality
+      that neither shade achieves alone.
+    </p>
+
+    <h2>Best and Worst Shades for Olive Skin</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">Yes</div>
+        <h4>Muted, Earthy Tones</h4>
+        <p>
+          Earthy shades like terracotta, burnt sienna, and muted rose blend
+          naturally with olive undertones and enhance the skin's warmth without
+          clashing.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">No</div>
+        <h4>Neon Brights</h4>
+        <p>
+          Neon pink, electric orange, and other highly saturated brights create
+          an unnatural contrast with the muted quality of olive skin.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Yes</div>
+        <h4>Deep Jewel Tones</h4>
+        <p>
+          Emerald, sapphire, and deep amethyst provide stunning contrast on
+          olive skin and are universally flattering across warm and cool olive
+          undertones.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">No</div>
+        <h4>Pastel Shades</h4>
+        <p>
+          Pastel pinks, lavenders, and peaches tend to look chalky or ashy on
+          olive skin because they lack the depth and saturation needed to
+          harmonize.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">Yes</div>
+        <h4>Warm Metallics</h4>
+        <p>
+          Gold, bronze, and copper metallics complement the golden-green
+          undertone in warm olive skin and add a luxurious, sun-kissed glow.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">No</div>
+        <h4>Orange-Based Warm Shades</h4>
+        <p>
+          Very warm, orange-toned products (think bright coral or tangerine) can
+          make olive skin look jaundiced or artificially tanned rather than
+          naturally flushed.
+        </p>
+      </div>
+    </div>
+
+    <h2>The Complete Olive Skin Shade-Matching Strategy</h2>
+
+    <p>
+      Building a makeup collection for olive skin requires a strategic approach
+      rather than buying what looks good on others. Start with foundation, as
+      this is your base and affects how every other product appears. Invest time
+      in finding a formula that does not oxidize orange on your skin. Once you
+      have your foundation match, move on to blush and lipstick, testing each
+      shade against your actual skin in natural light.
+    </p>
+
+    <p>
+      When shopping online, look for reviews and swatches from people with
+      similar skin tones. Many beauty bloggers and influencers specifically
+      focus on olive skin and provide invaluable shade-matching guidance. When
+      shopping in person, always test on your jawline and wait for the product
+      to dry down before making a decision.
+    </p>
+
+    <p>
+      The most important mindset shift for olive skin is accepting that the
+      shades that look beautiful on other people may not work for you, and that
+      is completely fine. Olive skin has its own palette of flattering shades,
+      and once you discover them, the results are uniquely gorgeous. The muted,
+      earthy, and jewel-toned shades that complement olive undertones create a
+      sophisticated, polished look that is hard to replicate on any other skin
+      tone.
+    </p>
+  </div>
+
+  <div slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Find Your Perfect Olive Skin Shades</h2>
+        <p>
+          Try our AI makeup try-on to test foundation, lipstick, and blush
+          shades on your olive skin tone and see which colors complement your
+          unique undertones.
+        </p>
+        <a href="/tryon-free" class="cta-btn">Try It Free</a>
+      </div>
+    </div>
+  </div>
+
+  <div slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {
+            relatedLinks.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</SeoLandingLayout>

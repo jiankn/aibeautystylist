@@ -1,0 +1,279 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Vacation Makeup: Lightweight, Humidity-Proof, and Travel-Ready",
+  description:
+    "Pack light and look great. Learn the essential vacation makeup kit, humidity-proof application techniques, the difference between beach and city vacation looks, and the 5-product routine that covers every travel scenario.",
+  faq: [
+    {
+      q: "What makeup should I pack for vacation?",
+      a: "The ideal vacation makeup kit fits in a small pouch and covers all scenarios with minimal products. Pack a tinted sunscreen for base and sun protection, a multi-use cream blush that works on cheeks and lips, waterproof mascara, a tinted lip balm with SPF, and a pressed powder for touch-ups. If you want to bring one extra item, make it a neutral eyeshadow stick that doubles as eyeliner. Every product should serve at least one purpose and ideally two. Leave the ten-step skincare routine and the full eyeshadow palette at home.",
+    },
+    {
+      q: "How do I keep makeup from melting in hot and humid vacation weather?",
+      a: "Humidity-proof makeup starts with product selection. Cream and liquid formulas actually perform better than powders in humidity because they melt into the skin rather than sitting on top and caking. Use a lightweight, water-resistant base like a tinted sunscreen. Set only the areas that get oily: the center of the forehead, the nose, and the chin. Skip heavy powdering on the cheeks. Use waterproof mascara and a cream blush that you can reapply with your fingers. Finish with a setting spray designed for heat and humidity, and carry blotting papers to absorb oil throughout the day without adding more product layers.",
+    },
+    {
+      q: "What is the best makeup approach for a beach vacation?",
+      a: "Beach vacations call for the lightest possible approach. A tinted sunscreen is your entire base. Waterproof mascara protects against ocean spray and pool splashes. A tinted lip balm with SPF keeps your lips hydrated and protected. If you want color, a cream blush applied with your fingers gives you a healthy flush that looks natural in sunlight. Skip foundation entirely: sunscreen plus concealer on any areas that need extra coverage is enough. The beach environment means your makeup will constantly face water, wind, and UV exposure, so every product needs to be water-resistant and sun-safe.",
+    },
+    {
+      q: "How does city vacation makeup differ from beach vacation makeup?",
+      a: "City vacations involve more walking, more photography, more restaurant dinners, and more time around people. You can afford to wear slightly more makeup because you are not dealing with water and direct sun all day. A lightweight foundation or skin tint over tinted sunscreen gives you a polished look for city exploring and photos. Add a neutral eyeshadow stick for definition, bring a proper lipstick for evening dinners, and carry pressed powder for midday touch-ups. The beach look is survival mode; the city look is exploration mode with a touch of style.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
+  { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+  { label: "Natural Makeup", url: "/looks/natural-makeup" },
+  { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+];
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Vacation makeup should enhance your trip, not complicate it. Whether you
+      are heading to the beach, exploring a new city, or backpacking through
+      mountains, learn how to pack light, look fresh, and keep your makeup from
+      melting in any climate.
+    </p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>The Philosophy of Vacation Makeup</h2>
+    <p>
+      Vacation makeup exists at the opposite end of the spectrum from event
+      makeup. At a wedding or prom, the goal is maximum impact. On vacation, the
+      goal is maximum convenience with just enough polish to make you feel good
+      in photos and in person. You are not trying to impress anyone. You are
+      trying to look like the best version of yourself while carrying the
+      absolute minimum.
+    </p>
+    <p>
+      This philosophy has two practical implications. First, every product must
+      earn its place in your bag by being multi-purpose or indispensable.
+      Second, your application routine should be fast enough to do in a hostel
+      bathroom, a hotel room with bad lighting, or the backseat of a rental car.
+      If a product requires five minutes of careful blending, it does not belong
+      in your vacation kit.
+    </p>
+
+    <h2>Your Vacation Makeup Kit</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">&#x2600;</div>
+        <h4>Tinted Sunscreen</h4>
+        <p>
+          Your base and your sun protection in one product. Choose SPF 30 or
+          higher with a tint that matches your skin tone. This eliminates the
+          need for a separate foundation and ensures you are protected wherever
+          you go.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F484;</div>
+        <h4>Cream Blush Stick</h4>
+        <p>
+          Works on cheeks and lips. Apply with your fingers for zero tools
+          required. Cream formulas adapt to heat and humidity better than
+          powders and give a natural, sun-kissed flush that looks perfect on
+          vacation.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F4A7;</div>
+        <h4>Waterproof Mascara</h4>
+        <p>
+          Non-negotiable for any vacation involving water, humidity, or sweat.
+          One coat of a good waterproof mascara opens your eyes and makes you
+          look awake without any other eye products.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F31E;</div>
+        <h4>Tinted Lip Balm with SPF</h4>
+        <p>
+          Keeps your lips hydrated, protected, and lightly tinted. The SPF is
+          critical because lips burn faster than skin and sun damage shows up
+          quickly as peeling and darkening.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x1F4C4;</div>
+        <h4>Pressed Powder</h4>
+        <p>
+          For midday touch-ups. A compact takes up almost no space and absorbs
+          oil, reduces shine, and extends the wear of everything underneath.
+          Choose a translucent shade that works regardless of skin tone changes
+          from tanning.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">&#x2728;</div>
+        <h4>Neutral Eyeshadow Stick</h4>
+        <p>
+          Optional but versatile. A taupe or bronze shadow stick can be swept
+          across the lid for definition or used as eyeliner along the lash line.
+          It requires no brush, no blending skill, and takes five seconds to
+          apply.
+        </p>
+      </div>
+    </div>
+
+    <h2>Beach Versus City Vacation Makeup</h2>
+    <p>
+      The environment you are vacationing in determines not just what you pack,
+      but how you apply it. Beach and city vacations have fundamentally
+      different demands.
+    </p>
+    <h3>Beach Vacation</h3>
+    <p>
+      On the beach, your makeup is in constant battle with three enemies: water,
+      UV radiation, and salt. Salt crystallizes on the skin and makes any powder
+      product look chalky and patchy. UV radiation breaks down cosmetic
+      pigments, causing color fading throughout the day. Water, whether from the
+      ocean or a pool, tests the water resistance of every product you wear.
+    </p>
+    <p>
+      The beach solution is minimalism. Tinted sunscreen as your base. Concealer
+      only where absolutely necessary. Waterproof mascara. Tinted lip balm with
+      SPF. That is it. If you add anything else, it should be a cream product
+      applied with your fingers. The goal is looking naturally sun-kissed and
+      healthy, not made-up. At the beach, your best accessory is a genuine tan
+      line and a smile.
+    </p>
+    <h3>City Vacation</h3>
+    <p>
+      City vacations involve museum visits, restaurant dinners, street
+      photography, and evening strolls. You have more control over your
+      environment and more opportunities to refresh your look. This means you
+      can carry a slightly expanded kit and invest more time in your morning
+      routine.
+    </p>
+    <p>
+      Start with the same tinted sunscreen base, but add a lightweight concealer
+      for under-eye coverage after late nights exploring. Use the cream blush
+      stick for cheek and lip color. Add the eyeshadow stick for eye definition
+      in the morning and for evening touch-ups before dinner. Bring the pressed
+      powder for midday blotting and refreshing. If you are going out for a nice
+      dinner, swap the tinted lip balm for a proper lipstick in a shade that
+      makes you feel dressed-up. The city kit is essentially the beach kit plus
+      two or three strategic additions.
+    </p>
+
+    <h2>Your Beach-Proof Routine</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Tinted Sunscreen Application (2 min)</h4>
+          <p>
+            Apply a generous amount of tinted sunscreen all over your face and
+            neck. This is your base, your sun protection, and your color
+            correction all in one. Blend it thoroughly with your fingers. Do not
+            skimp on the amount: sun protection requires adequate coverage to be
+            effective.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Strategic Concealer (1 min)</h4>
+          <p>
+            If you have areas that need extra coverage beyond what the tinted
+            sunscreen provides, dab concealer on dark circles, around the nose,
+            or on any spots. Pat it in with your ring finger. Skip concealer on
+            the forehead and jawline since these areas are less visible and tend
+            to collect sweat and product buildup.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Waterproof Mascara (1 min)</h4>
+          <p>
+            Apply one coat of waterproof mascara to the top lashes. This single
+            product makes the biggest difference in how awake and defined you
+            look. Skip eyeliner on the beach since it will likely smudge into
+            the water anyway.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Cheek and Lip Color (1 min)</h4>
+          <p>
+            Swipe your cream blush stick across the apples of your cheeks and
+            blend with your fingers. Then dab the same product onto your lips
+            for a coordinated, natural tint. This two-in-one move saves space
+            and time while giving you a cohesive, sun-kissed look.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Tinted SPF Lip Balm (30 sec)</h4>
+          <p>
+            Layer your tinted lip balm with SPF over the cream blush on your
+            lips. This adds an extra layer of sun protection to your lips and
+            gives you a more polished finish. Reapply every two hours,
+            especially after swimming or eating.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>The 5-Product Rule for Travel</h2>
+    <p>
+      If you can only bring five makeup items on vacation, they should be:
+      tinted sunscreen, concealer, waterproof mascara, cream blush stick, and
+      tinted lip balm with SPF. These five products cover every function you
+      need: base, coverage, eye definition, cheek color, lip color, and sun
+      protection. Everything else is a luxury. Before you add a sixth item, ask
+      yourself if one of these five can do the job instead. The shadow stick can
+      double as liner. The blush stick works on lips. The pressed powder
+      controls shine. Travel light, look great, and spend more time enjoying
+      your vacation and less time in the mirror.
+    </p>
+  </section>
+
+  <Fragment slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Test Your Vacation Look Before You Pack</h2>
+        <p>
+          Preview lightweight, travel-ready makeup on your face and find the
+          perfect vacation style.
+        </p>
+        <a href="/tryon-free" class="cta-btn"
+          >Try Vacation Makeup on Your Face — Free</a
+        >
+      </div>
+    </div>
+  </Fragment>
+
+  <Fragment slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Explore More</h3>
+        <ul class="related-list">
+          {relatedLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+        </ul>
+      </div>
+    </section>
+  </Fragment>
+</SeoLandingLayout>

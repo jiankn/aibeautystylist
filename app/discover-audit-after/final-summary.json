@@ -1,0 +1,50 @@
+{
+  "desktop": {
+    "overflow": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "filterDisplay": "block",
+    "filterRect": {
+      "w": 248,
+      "h": 738,
+      "x": 86,
+      "y": 193
+    },
+    "visibleCards": 44,
+    "summary": "共 44 个妆容，可选择后上传自拍试妆",
+    "smallTargets": [],
+    "chipsWithoutPressed": 0,
+    "firstVisibleAction": {
+      "w": 432,
+      "h": 66,
+      "x": 396,
+      "y": 541
+    },
+    "consoleErrors": [],
+    "analyticsCount": 1
+  },
+  "mobile": {
+    "overflow": false,
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "filterDisplay": "block",
+    "filterRect": {
+      "w": 366,
+      "h": 361,
+      "x": 12,
+      "y": 197
+    },
+    "visibleCards": 3,
+    "summary": "共找到 3 个可直接试妆的妆容",
+    "smallTargets": [],
+    "chipsWithoutPressed": 0,
+    "firstVisibleAction": {
+      "w": 306,
+      "h": 46,
+      "x": 42,
+      "y": 1128
+    },
+    "consoleErrors": [],
+    "analyticsCount": 3
+  }
+}

@@ -1,0 +1,310 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title:
+    "How to Do Natural Makeup: A Step-by-Step Guide to 'Barely There' Beauty",
+  description:
+    "Master the art of natural makeup that enhances rather than masks. Learn the skin-prep philosophy, the 'one touch of color' rule, and when the barely-there look is your best option.",
+  faq: [
+    {
+      q: "How do you make natural makeup last all day?",
+      a: "Natural makeup longevity depends almost entirely on skin preparation. Start with a well-hydrated base — apply a lightweight hydrating serum followed by a moisturizer suited to your skin type. Let both absorb for three minutes before applying any makeup. Use a tinted moisturizer instead of foundation, as it moves with your skin rather than sitting on top of it. Set only the areas that get oily (T-zone) with a light dusting of translucent powder, and carry a blotting paper for midday touch-ups instead of adding more powder, which builds up and becomes visible. A hydrating setting spray misted lightly over the finished look helps everything melt together and last longer.",
+    },
+    {
+      q: "How do you make natural makeup look good in photos?",
+      a: "Natural makeup photographs beautifully if you follow three rules. First, use matte or satin products rather than shimmery ones — camera flash amplifies shimmer and makes it look like glitter. Second, apply a touch more color than you think you need, because cameras wash out color. A barely-there blush in person reads as no blush in photos. Third, define your brows slightly more than usual, as frames your face in photographs and prevents the 'blank' look that minimal makeup can create under bright lighting. Avoid SPF-heavy products for flash photography, as the minerals can create a white cast in photos.",
+    },
+    {
+      q: "What products do you need for a natural makeup look?",
+      a: "A natural look requires fewer and lighter products than any other style. The essentials are: a tinted moisturizer or skin tint (not full-coverage foundation), a lightweight concealer only for spots that truly need it, a cream blush in a shade that matches your natural flush, a clear or tinted brow gel, a coat of brown or clear mascara, and a tinted lip balm. You do not need powder unless you are oily, you do not need eyeshadow, and you do not need eyeliner. The goal is to enhance what is already there, not to create a new version of your face.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Easy Everyday Makeup", url: "/guides/easy-everyday" },
+  { label: "Makeup Tutorial for Beginners", url: "/guides/beginner-tutorial" },
+  { label: "Basic Makeup Essentials", url: "/guides/makeup-essentials" },
+];
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      Natural makeup is not the absence of makeup — it is the art of
+      enhancement. The goal is for people to notice that you look good, not that
+      you are wearing makeup. This guide walks you through the philosophy, the
+      products, and the technique behind the barely-there look.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>The Philosophy: Enhance, Do Not Mask</h2>
+    <p>
+      Natural makeup operates on a fundamentally different principle than
+      glamorous or editorial makeup. Instead of creating a new canvas, you are
+      working with what you already have. Your freckles stay visible. Your skin
+      texture is not erased — it is smoothed. Your natural lip color is
+      intensified, not replaced. The result is a version of you that looks like
+      you on your best day, well-rested and glowing, not a version of you that
+      looks like someone else wearing your face.
+    </p>
+    <p>
+      This approach is deceptively difficult. It requires restraint — the
+      ability to stop after applying less than you think you need. It also
+      requires good skin, because natural makeup amplifies your skin rather than
+      covering it. This does not mean you need perfect skin. It means you need
+      healthy, well-cared-for skin. The work happens before you touch a single
+      makeup product.
+    </p>
+
+    <h2>Skin Prep: Where Natural Makeup Actually Begins</h2>
+    <p>
+      With full-coverage makeup, you can get away with lazy skincare because the
+      makeup does the heavy lifting. With natural makeup, your skincare is the
+      foundation in every sense. Here is what matters most.
+    </p>
+    <p>
+      <strong>Hydration is everything.</strong> Plump, well-hydrated skin makes every
+      product applied on top look better. A lightweight hydrating serum with hyaluronic
+      acid followed by a moisturizer creates the dewy, healthy base that natural makeup
+      requires. If your skin is dehydrated, even the best tinted moisturizer will
+      cling to dry patches and look uneven.
+    </p>
+    <p>
+      <strong>Exfoliation keeps things smooth.</strong> Gentle chemical exfoliation
+      two to three times per week removes dead skin cells that cause makeup to look
+      rough and textured. Do not over-exfoliate — irritated, red skin is the opposite
+      of the natural look you are going for.
+    </p>
+    <p>
+      <strong>Sunscreen is non-negotiable.</strong> Sun damage is the single biggest
+      threat to the "good bare skin" that natural makeup relies on. Use SPF 30 or
+      higher every morning, even on cloudy days. If your tinted moisturizer contains
+      SPF, that is a bonus, but do not rely on it as your sole sun protection — you
+      would need to apply far more than is comfortable to get the stated SPF level.
+    </p>
+
+    <h2>The "One Touch of Color" Rule</h2>
+    <p>
+      The defining characteristic of natural makeup is restraint with color. The
+      rule is simple: choose one feature to carry the color, and keep everything
+      else neutral. If your lips have a bold tinted balm, keep cheeks subtle. If
+      your cheeks have a warm cream blush, keep lips neutral. If you add a hint
+      of warm eyeshadow, keep cheeks and lips muted.
+    </p>
+    <p>
+      This rule prevents the "too much" feeling that distinguishes natural
+      makeup from heavier styles. When color is concentrated in one area, it
+      reads as intentional and harmonious. When color is distributed across your
+      entire face, it reads as makeup — which is fine for other styles but
+      defeats the natural aesthetic.
+    </p>
+
+    <h2>The Natural Makeup Routine</h2>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Hydrate — 2 minutes</h4>
+          <p>
+            Apply hydrating serum to damp skin, followed by moisturizer. Wait
+            two to three minutes. Your skin should feel bouncy and plump, not
+            tacky. This waiting time is critical — applying makeup on top of
+            unabsorbed skincare causes pilling and uneven coverage.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Skin Tint — 2 minutes</h4>
+          <p>
+            Apply tinted moisturizer or skin tint with your fingers, pressing it
+            into the skin rather than dragging it across. Focus on areas with
+            uneven tone and use almost nothing on areas that already look good.
+            The goal is "my skin but better," not "my skin replaced." A damp
+            sponge can help press the product in for a seamless finish.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Spot Conceal — 1 minute</h4>
+          <p>
+            Use concealer only on the things your skin tint did not cover: a
+            dark circle, a blemish, redness around the nose. Pat it in with your
+            fingertip and blend the edges. Leave the rest of your skin bare.
+            Visible skin under natural makeup is the point, not a flaw.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Cream Blush — 1 minute</h4>
+          <p>
+            Choose a shade that matches the color your cheeks turn after a brisk
+            walk. Dab on the apples of your cheeks and blend upward with your
+            fingers. Cream formulas look most natural because they mimic the way
+            actual blood flow creates a flush — from within the skin, not
+            sitting on top of it.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Brows — 30 seconds</h4>
+          <p>
+            Brush brows upward with a clear or lightly tinted gel. The goal is
+            groomed, not sculpted. Natural brows have individual hairs that go
+            in different directions — embrace that. Overly filled, perfectly
+            symmetrical brows are the fastest way to destroy a natural look.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div>
+          <h4>Mascara — 1 minute</h4>
+          <p>
+            One coat of brown or brown-black mascara on upper lashes only. Skip
+            the bottom lashes — they are rarely visible at a normal
+            conversational distance and mascara there looks intentionally done.
+            If your natural lashes are already dark and full, you can skip this
+            step entirely.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">7</div>
+        <div>
+          <h4>Lip Balm — 15 seconds</h4>
+          <p>
+            Apply a tinted lip balm that enhances your natural lip color. The
+            shade should be so close to your natural lip color that someone
+            would not be able to tell if you are wearing anything at all. This
+            is the final touch that makes the whole look feel complete.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>What to Enhance Versus What to Leave Bare</h2>
+    <p>
+      The natural makeup strategy is not about treating every part of your face
+      the same way. Some features benefit from enhancement while others look
+      best left completely untouched.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">+</div>
+        <h4>Enhance: Skin Evenness</h4>
+        <p>
+          Even out redness and discoloration with a light skin tint. This is the
+          single biggest visual improvement in natural makeup.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">+</div>
+        <h4>Enhance: Cheek Flush</h4>
+        <p>
+          A touch of cream blush mimics the healthy glow of good circulation.
+          This makes you look alive and vibrant.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">+</div>
+        <h4>Enhance: Brow Grooming</h4>
+        <p>
+          Well-groomed brows frame your face and make you look awake. A clear
+          gel takes seconds and has a disproportionate impact.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">-</div>
+        <h4>Leave Bare: Skin Texture</h4>
+        <p>
+          Do not try to erase pores, fine lines, or natural texture. These are
+          what make your skin look like skin, not plastic.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">-</div>
+        <h4>Leave Bare: Freckles</h4>
+        <p>
+          Freckles are beautiful and add character. A light skin tint lets them
+          show through. Full-coverage foundation erases them entirely.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">-</div>
+        <h4>Leave Bare: Natural Lip Shape</h4>
+        <p>
+          Do not over-line your lips for a natural look. The slight imperfection
+          of your natural lip line is what makes it look real.
+        </p>
+      </div>
+    </div>
+
+    <h2>When Natural Makeup Is Your Best Option</h2>
+    <p>
+      Natural makeup is appropriate for almost every everyday situation: the
+      office, school, job interviews, brunch with friends, running errands,
+      casual dates, and video calls. It is the look that says "I take care of
+      myself" without saying "I spent forty-five minutes on my face."
+    </p>
+    <p>
+      There are situations where natural makeup is actually the strategic
+      choice. Job interviews benefit from natural makeup because it projects
+      professionalism and confidence without distraction. First dates often work
+      best with natural makeup because it shows the real you and sets honest
+      expectations for future meetings. Video calls look best with natural
+      makeup because heavy makeup can appear harsh and overdone on camera.
+    </p>
+    <p>
+      The situations where natural makeup is not ideal are formal events,
+      evening parties, photoshoots, and occasions where you specifically want
+      your makeup to be a statement. Those are the times to reach for heavier
+      products and bolder colors. For everything else, natural makeup is your
+      most versatile and reliable option.
+    </p>
+  </div>
+
+  <div slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Preview Natural Looks on Your Face</h2>
+        <p>
+          Use our AI try-on to see how subtle, natural makeup enhances your
+          unique features before buying any products.
+        </p>
+        <a href="/tryon-free" class="cta-btn">Try Natural Makeup Try-On</a>
+      </div>
+    </div>
+  </div>
+
+  <div slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Related Guides</h3>
+        <ul class="related-list">
+          {
+            relatedLinks.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</SeoLandingLayout>

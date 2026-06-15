@@ -1,0 +1,415 @@
+---
+import BrandWordmark from "./BrandWordmark.astro";
+import { getLocalizedPathForRoute } from "../i18n/localizedSeoPages";
+import {
+  addLocalePrefix,
+  getLocalizedAppHref,
+  getLocalizedPathname,
+  resolveLocaleRoute,
+} from "../i18n/routing";
+import { t } from "../lib/i18n";
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeHref = (href: string) =>
+  getLocalizedPathname(href, currentRoute.language.slug);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const localizeSeoHref = (href: string) => {
+  if (currentRoute.language.slug === "en") return href;
+  const localizedPath = getLocalizedPathForRoute(
+    "en",
+    href,
+    currentRoute.language.slug,
+  );
+  return localizedPath
+    ? addLocalePrefix(localizedPath, currentRoute.language.slug)
+    : href;
+};
+const resolveLinkHref = (link: FooterLink) =>
+  link.seo
+    ? localizeSeoHref(link.href ?? "/")
+    : link.app
+      ? localizeAppHref(link.href ?? "/")
+      : localizeHref(link.href ?? "/");
+
+type FooterLink = {
+  href?: string;
+  label: string;
+  button?: boolean;
+  app?: boolean;
+  seo?: boolean;
+};
+
+type FooterColumn = {
+  heading: string;
+  ariaLabel: string;
+  links: FooterLink[];
+};
+
+const primaryColumns: FooterColumn[] = [
+  {
+    heading: t("footer", "productService"),
+    ariaLabel: t("footer", "productNavigation"),
+    links: [
+      { href: "/tryon-free", label: t("footer", "freeTryOn"), app: true },
+      { href: "/discover", label: t("footer", "discoverLooks"), app: true },
+      { href: "/diagnosis", label: t("footer", "aiDiagnosis"), app: true },
+      { href: "/pricing", label: t("footer", "pricingPlans"), app: true },
+      {
+        href: "/ai-makeup-try-on",
+        label: t("footer", "aiMakeupTryOn"),
+        seo: true,
+      },
+      {
+        href: "/virtual-makeup-app",
+        label: t("footer", "virtualMakeupApp"),
+        seo: true,
+      },
+    ],
+  },
+  {
+    heading: t("footer", "makeupStyles"),
+    ariaLabel: t("footer", "makeupStylesNavigation"),
+    links: [
+      { href: "/looks/soft-glam", label: t("footer", "softGlam"), seo: true },
+      {
+        href: "/looks/natural-makeup",
+        label: t("footer", "naturalLook"),
+        seo: true,
+      },
+      {
+        href: "/looks/no-makeup-makeup",
+        label: t("footer", "noMakeupLook"),
+        seo: true,
+      },
+      { href: "/looks/dewy-skin", label: t("footer", "dewySkin"), seo: true },
+      {
+        href: "/looks/glass-skin",
+        label: t("footer", "glassSkin"),
+        seo: true,
+      },
+      { href: "/looks/clean-girl", label: t("footer", "cleanGirl"), seo: true },
+    ],
+  },
+  {
+    heading: t("footer", "scenarios"),
+    ariaLabel: t("footer", "scenariosNavigation"),
+    links: [
+      {
+        href: "/scenarios/interview",
+        label: t("footer", "interviewMakeup"),
+        seo: true,
+      },
+      {
+        href: "/scenarios/office",
+        label: t("footer", "officeMakeup"),
+        seo: true,
+      },
+      {
+        href: "/scenarios/first-date",
+        label: t("footer", "firstDateMakeup"),
+        seo: true,
+      },
+      {
+        href: "/scenarios/passport-photo",
+        label: t("footer", "passportPhoto"),
+        seo: true,
+      },
+      {
+        href: "/scenarios/wedding-guest",
+        label: t("footer", "weddingGuest"),
+        seo: true,
+      },
+      { href: "/scenarios/prom", label: t("footer", "promMakeup"), seo: true },
+    ],
+  },
+  {
+    heading: t("footer", "helpLegal"),
+    ariaLabel: t("footer", "helpLegalNavigation"),
+    links: [
+      { href: "/faq", label: t("footer", "faq") },
+      { href: "/support", label: t("footer", "contactUs") },
+      { href: "/about", label: t("footer", "aboutUs") },
+      { href: "/blog", label: t("footer", "blog") },
+      { href: "/privacy", label: t("footer", "privacyPolicy") },
+      { href: "/terms", label: t("footer", "termsOfService") },
+      { href: "/ai-disclaimer", label: t("footer", "aiDisclaimer") },
+      { label: t("footer", "cookieSettings"), button: true },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer-inner shell">
+    <div class="footer-brand-column">
+      <a
+        class="site-footer-brand"
+        href={localizeHref("/")}
+        aria-label={t("brand", "name")}
+      >
+        <img
+          class="brand-logo-img footer-brand-logo"
+          src="/images/logo-ui.webp"
+          alt=""
+          aria-hidden="true"
+        />
+        <BrandWordmark variant="footer" />
+      </a>
+      <p class="brand-desc">
+        {t("footer", "brandDesc")}
+      </p>
+      <div class="footer-note" role="note">
+        <strong>{t("footer", "aiDisclaimer")}</strong>
+        <p>{t("footer", "disclaimerText")}</p>
+      </div>
+    </div>
+
+    <div class="footer-nav-grid">
+      {
+        primaryColumns.map((column) => (
+          <div class="footer-column">
+            <h3>{column.heading}</h3>
+            <nav aria-label={column.ariaLabel}>
+              {column.links.map((link) =>
+                link.button ? (
+                  <button class="footer-btn" type="button" data-cookie-settings>
+                    {link.label}
+                  </button>
+                ) : (
+                  <a href={resolveLinkHref(link)}>{link.label}</a>
+                ),
+              )}
+            </nav>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="footer-bottom shell">
+    <p>
+      &copy; {new Date().getFullYear()} AI Beauty Stylist. {
+        t("footer", "copyright")
+      }
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: linear-gradient(
+      180deg,
+      var(--bg-elevated),
+      var(--page-surface) 100%
+    );
+    padding-top: 28px;
+    padding-bottom: 18px;
+  }
+
+  .site-footer-inner {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.92fr) minmax(0, 1.72fr);
+    gap: clamp(24px, 4.5vw, 60px);
+    align-items: start;
+  }
+
+  .footer-brand-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .site-footer-brand {
+    min-height: 32px;
+  }
+
+  .brand-desc {
+    max-width: 360px;
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .footer-note {
+    max-width: 390px;
+    padding: 10px 12px;
+    border: 1px solid var(--warm-border);
+    border-radius: 12px;
+    background: var(--surface-warm);
+  }
+
+  .footer-note strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--heading);
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .footer-note p {
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .footer-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(18px, 3vw, 34px);
+    min-width: 0;
+  }
+
+  .footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .footer-column h3 {
+    margin: 0;
+    color: var(--heading);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+
+  .footer-column nav {
+    display: grid;
+    gap: 8px;
+  }
+
+  .footer-column a,
+  .footer-btn {
+    position: relative;
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    min-height: 24px;
+    align-items: center;
+    color: var(--body-secondary);
+    font-size: 13px;
+    line-height: 1.35;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 4px;
+    text-align: left;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    transition:
+      color 0.18s ease,
+      text-decoration-color 0.18s ease;
+  }
+
+  .footer-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .footer-column a:hover,
+  .footer-btn:hover {
+    color: var(--rose-dark);
+    text-decoration-color: currentColor;
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: center;
+    margin-top: 22px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+
+  .footer-bottom p {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  @media (max-width: 980px) {
+    .site-footer-inner {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .footer-brand-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.78fr);
+      gap: 16px 24px;
+      align-items: start;
+    }
+
+    .site-footer-brand,
+    .brand-desc {
+      grid-column: 1;
+    }
+
+    .footer-note {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      max-width: none;
+    }
+
+    .footer-nav-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 700px) {
+    .site-footer {
+      padding-top: 22px;
+      padding-bottom: 16px;
+    }
+
+    .site-footer-inner {
+      gap: 16px;
+    }
+
+    .footer-brand-column {
+      display: flex;
+      gap: 10px;
+    }
+
+    .brand-desc,
+    .footer-note {
+      max-width: none;
+    }
+
+    .footer-nav-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .footer-column h3 {
+      font-size: 12px;
+    }
+
+    .footer-column a,
+    .footer-btn {
+      min-height: 30px;
+      font-size: 12px;
+    }
+
+    .footer-column a::after,
+    .footer-btn::after {
+      content: "";
+      position: absolute;
+      inset: -7px -6px;
+    }
+
+    .footer-bottom {
+      margin-top: 14px;
+    }
+  }
+</style>

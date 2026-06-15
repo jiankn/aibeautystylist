@@ -1,0 +1,162 @@
+---
+import SeoLandingLayout from "../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Personalized Makeup Recommendations — AI-Powered Style Matching",
+  description:
+    "Get makeup recommendations tailored to your skin tone, face shape, and the occasion you're getting ready for. No more guessing what looks good on you.",
+  faq: [
+    {
+      q: "How are recommendations personalized?",
+      a: "The AI analyzes your skin undertone (warm/cool/neutral), face shape, eye shape, and feature proportions. It then matches these features against our makeup style catalog and recommends styles that naturally complement your coloring and bone structure.",
+    },
+    {
+      q: "Can I get recommendations for a specific occasion?",
+      a: "Yes. After your initial diagnosis, you can select a scenario — commute, interview, date night, photo, event — and the AI will recommend styles from its catalog that work best for that specific context and your features.",
+    },
+    {
+      q: "Do recommendations include product suggestions?",
+      a: "Yes. Each recommended style comes with product recommendations at three budget tiers (drugstore, mid-range, premium), matched to your skin tone. You also get honest advice on what products to skip.",
+    },
+  ],
+  relatedLinks: [
+    { label: "AI Beauty Advisor", url: "/ai-beauty-advisor" },
+    { label: "Soft Glam Makeup", url: "/looks/soft-glam" },
+    { label: "Makeup for Your Face Shape", url: "/for/face-shape-contour" },
+    { label: "Personal Color Diagnosis", url: "/diagnosis" },
+  ],
+};
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>Personalized Makeup Recommendations That Fit Your Face</h1>
+    <p>
+      Stop asking friends what shade looks good. Get AI-powered makeup
+      recommendations based on your actual skin tone, face shape, and the
+      occasion — with tutorials and product picks included.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>The Problem With Generic Makeup Advice</h2>
+    <p>
+      "Everyone needs a nude lipstick." "Soft glam works for every occasion."
+      "Contour here, highlight there." This advice assumes all faces are the
+      same. They're not.
+    </p>
+    <p>
+      A nude lipstick that flatters warm undertones will look chalky on cool
+      undertones. A contour technique for oval faces will look harsh on square
+      faces. And a soft glam eye look designed for almond eyes will vanish on
+      hooded eyes.
+    </p>
+    <p>
+      Personalized recommendations solve this by starting with <strong
+        >your face</strong
+      > and working outward — instead of starting with a trend and hoping it works
+      on you.
+    </p>
+
+    <h2>How the AI Matches Styles to Your Face</h2>
+    <p>
+      The recommendation engine uses a framework similar to what professional
+      color analysts and makeup artists use in person:
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Analysis Dimension</th>
+          <th>What It Determines</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Skin Undertone</strong></td>
+          <td
+            >Warm, cool, or neutral — which makeup shades harmonize vs. clash</td
+          >
+        </tr>
+        <tr>
+          <td><strong>Face Shape</strong></td>
+          <td
+            >Oval, round, square, heart, diamond — where to place blush and
+            contour</td
+          >
+        </tr>
+        <tr>
+          <td><strong>Eye Shape</strong></td>
+          <td
+            >Hooded, almond, deep-set, round — which eyeshadow techniques work</td
+          >
+        </tr>
+        <tr>
+          <td><strong>Feature Proportions</strong></td>
+          <td
+            >Lip fullness, brow bone, cheekbone prominence — where to emphasize
+            or soften</td
+          >
+        </tr>
+        <tr>
+          <td><strong>Color Season</strong></td>
+          <td
+            >Based on the 12-season system — your most flattering makeup palette</td
+          >
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>What You Receive</h2>
+    <p>After the analysis, you get:</p>
+    <ol>
+      <li>
+        <strong>3 style recommendations</strong> — each with a try-on image showing
+        the style on your face
+      </li>
+      <li>
+        <strong>A detailed diagnosis report</strong> — explaining your undertone,
+        face shape, and color season
+      </li>
+      <li>
+        <strong>A personalized tutorial</strong> — when you pick a style, you get
+        step-by-step instructions adapted to your features
+      </li>
+      <li>
+        <strong>Product recommendations</strong> — real SKUs at three budget tiers,
+        plus a "skip this" list to save money
+      </li>
+    </ol>
+
+    <h2>Start Free, Upgrade When Ready</h2>
+    <p>
+      The free plan gives you 3 full recommendation sessions per month — enough
+      to validate that the AI actually understands your face. If you like the
+      results, upgrade to Pro for unlimited access and high-definition try-on
+      images.
+    </p>
+  </div>
+
+  <div class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Get Your Personalized Recommendations</h2>
+      <p>3 free sessions — no credit card, no download.</p>
+      <a href="/tryon-free" class="cta-btn">Start Free</a>
+    </div>
+  </div>
+
+  <div class="seo-related" slot="related">
+    <div class="related-inner">
+      <h3>Explore More</h3>
+      <ul class="related-list">
+        {
+          page.relatedLinks.map((link) => (
+            <li>
+              <a href={link.url}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</SeoLandingLayout>

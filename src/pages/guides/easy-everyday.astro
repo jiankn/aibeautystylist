@@ -1,0 +1,303 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Easy Everyday Makeup: Polished in 5 Products or Less",
+  description:
+    "Discover the five-product philosophy for everyday makeup that looks polished without taking forever. Learn which products multitask, how to choose the right five for your features, and why easy does not mean no effort.",
+  faq: [
+    {
+      q: "What are the 5 products for everyday makeup?",
+      a: "The five-product everyday lineup consists of: one base product (tinted moisturizer, BB cream, or light foundation depending on your skin), one cheek color (cream blush doubles as lip color), one eye product (mascara is the most impactful single eye product), one brow product (clear gel or tinted pencil), and one setting product (translucent powder or setting spray). This combination covers every area of your face and can be applied in under eight minutes once you are practiced. The specific products within each category should be chosen based on your skin type, coloring, and how much time you realistically have each morning.",
+    },
+    {
+      q: "Can I use the same products every day?",
+      a: "Absolutely — in fact, using the same core products every day is the fastest way to master your everyday routine. Familiarity with your products means you know exactly how much to use, how they feel on your skin, and how they wear throughout the day. The only products you might rotate are your lip color (to match your outfit or mood) and your blush shade (warmer tones in summer, cooler tones in winter). Your base, mascara, and brow product should remain constant because consistency in those areas is what gives you a recognizable, polished signature look.",
+    },
+    {
+      q: "How do I make easy makeup look professional?",
+      a: "The difference between amateur-looking everyday makeup and professional-looking everyday makeup is not the number of products — it is the application. Three things make easy makeup look polished: first, blend every edge until you cannot see where the product starts and stops. Second, use thin layers and build gradually rather than applying a heavy amount all at once. Third, match your products to your natural coloring — warm tones for warm skin, cool tones for cool skin. When products harmonize with your natural features rather than fighting against them, even a three-product routine looks intentional and professional.",
+    },
+  ],
+};
+
+const relatedLinks = [
+  { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+  { label: "Natural Makeup Guide", url: "/guides/natural-makeup-how" },
+  { label: "Beginner Makeup Routine", url: "/guides/beginner-routine" },
+  { label: "Makeup Mistakes to Avoid", url: "/guides/mistakes-avoid" },
+];
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>{page.title}</h1>
+    <p>
+      You can look polished, intentional, and put-together with five products —
+      not fifteen. The secret is choosing the right five, using products that
+      multitask, and understanding that "easy" means "efficient," not "lazy."
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>The Five-Product Philosophy</h2>
+    <p>
+      The idea that you need a drawer full of makeup to look good is a myth
+      created by brands that profit when you buy more. In reality, every part of
+      your face needs exactly one thing addressed: your skin needs evening, your
+      cheeks need color, your eyes need definition, your brows need shape, and
+      your lips need moisture with a hint of tint. One product per job, five
+      products total, done.
+    </p>
+    <p>
+      The philosophy is not about deprivation. It is about intentionality. When
+      you limit yourself to five products, you are forced to choose the ones
+      that actually make a difference. You stop buying things that sit unused in
+      your makeup bag. You stop wasting time on steps that do not visibly
+      improve your look. And you start developing real skill with the products
+      you do use, which matters far more than the number of products you own.
+    </p>
+
+    <h2>The Five Products, Defined</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">F</div>
+        <h4>Base: Tinted Moisturizer</h4>
+        <p>
+          Lighter than foundation, more forgiving of application errors. Evens
+          skin tone while hydrating. Look for one with SPF 30+ to combine two
+          steps. This is your highest-impact product.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">C</div>
+        <h4>Cheek Color: Cream Blush</h4>
+        <p>
+          Apply to cheeks with fingers and tap the same product on your lips for
+          a coordinated, natural flush. Cream formulas blend faster than powder
+          and look more skin-like. Choose a shade that mimics your natural
+          post-exercise glow.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">E</div>
+        <h4>Eyes: Mascara</h4>
+        <p>
+          The single most transformative product in any makeup routine. Opens
+          and brightens your eyes instantly. Choose brown for a softer daytime
+          look, black for evening. Curl lashes first for maximum impact.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">B</div>
+        <h4>Brows: Clear or Tinted Gel</h4>
+        <p>
+          Brushes hairs upward and holds them in place. Clear gel works if your
+          brows are already full. Tinted gel adds color and fills sparse areas
+          simultaneously. Takes thirty seconds and frames your entire face.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">S</div>
+        <h4>Set: Translucent Powder</h4>
+        <p>
+          Applied only to the T-zone and under eyes to prevent shine and extend
+          wear. A little pressed into the skin with a small brush is enough. Do
+          not powder your entire face — you want your skin to still look like
+          skin.
+        </p>
+      </div>
+    </div>
+
+    <h2>How to Apply These Five Products</h2>
+    <p>
+      The order matters as much as the products themselves. Here is the most
+      efficient sequence, designed to minimize tool switching and maximize
+      speed.
+    </p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Base — 2 minutes</h4>
+          <p>
+            Apply tinted moisturizer with your fingers, starting from the center
+            of your face and blending outward. Use a damp sponge to press and
+            blend any areas that need extra smoothing. This is your
+            largest-coverage step, so do it first while your face is clean and
+            moisturized.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Cheek Color — 1 minute</h4>
+          <p>
+            Using your fingers, dab cream blush onto the apples of your cheeks
+            and blend upward. Then tap the same finger on your lips for a
+            coordinating tint. This dual-use technique is the core efficiency
+            hack of the five-product routine.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Brows — 30 seconds</h4>
+          <p>
+            Brush brows upward with the gel wand. If using tinted gel, also fill
+            in any sparse spots with short, upward strokes. Doing brows now
+            means your hands are still clean from the cream products before you
+            touch mascara.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Mascara — 1.5 minutes</h4>
+          <p>
+            Curl your lashes, then apply one coat of mascara to upper lashes.
+            Wiggle at the base and sweep upward. Use your phone camera as a
+            mirror to get the angle right. One coat is sufficient for an
+            everyday look.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div>
+          <h4>Set — 1 minute</h4>
+          <p>
+            Press translucent powder into your T-zone and under eyes with a
+            small fluffy brush. This locks everything in place and prevents
+            midday shine. Avoid your cheeks so your cream blush stays luminous.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Three Products Versus Five Products Versus Ten Products</h2>
+    <p>
+      Not every day calls for the same level of effort. Here is how the three
+      levels compare in terms of time, visual impact, and when to use each.
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Aspect</th>
+          <th>3 Products</th>
+          <th>5 Products</th>
+          <th>10 Products</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Time required</td>
+          <td>3 to 5 minutes</td>
+          <td>7 to 10 minutes</td>
+          <td>20 to 30 minutes</td>
+        </tr>
+        <tr>
+          <td>Products used</td>
+          <td>Tinted moisturizer, mascara, lip balm</td>
+          <td>Base, blush, mascara, brows, setting powder</td>
+          <td
+            >Full face including eyeshadow, eyeliner, contour, highlighter, lip
+            liner</td
+          >
+        </tr>
+        <tr>
+          <td>Visual impact</td>
+          <td>"You look well-rested"</td>
+          <td>"You look polished and intentional"</td>
+          <td>"Your makeup is noticeable and done with skill"</td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td>Rushed mornings, gym days, running errands</td>
+          <td>Office, school, casual outings, video calls</td>
+          <td>Events, dates, photos, nights out</td>
+        </tr>
+        <tr>
+          <td>Skill level needed</td>
+          <td>Beginner — nearly impossible to mess up</td>
+          <td>Beginner to intermediate — requires basic blending</td>
+          <td>Intermediate to advanced — requires practice</td>
+        </tr>
+        <tr>
+          <td>Touch-ups needed</td>
+          <td>Minimal — lip balm may need reapplication</td>
+          <td>Light — blot T-zone if oily</td>
+          <td>Moderate — lipstick, powder, and mascara may need refreshing</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Multi-Tasking Products: Your Efficiency Multiplier</h2>
+    <p>
+      The smartest way to keep your routine at five products or fewer is to
+      choose products that do double duty. A cream blush that also works as lip
+      color saves you an entire product slot. A tinted moisturizer with SPF
+      combines skincare and base. A brow gel with tint fills sparse areas while
+      setting hairs in place, eliminating the need for a separate brow pencil.
+    </p>
+    <p>
+      When shopping for everyday products, always ask yourself: can this do more
+      than one thing? If the answer is yes, it earns a spot in your minimal
+      routine. If the answer is no, it needs to be exceptionally good at its one
+      job to justify the space.
+    </p>
+
+    <h2>Choosing Your Five Based on Your Features</h2>
+    <p>
+      Not everyone needs the same five products. Your specific features should
+      guide your choices. If you have naturally full, defined brows, you might
+      skip the brow product and add a setting spray instead. If your lips are
+      naturally pigmented, you might skip the lip color entirely and add an
+      eyeshadow for subtle definition. If your skin is nearly flawless, you
+      might skip the base and invest in a good sunscreen, bronzer, and blush
+      instead.
+    </p>
+    <p>
+      The five-product philosophy is a framework, not a rigid rule. The goal is
+      to cover the areas where you feel least confident with your bare face
+      while leaving the areas where you already feel good untouched. This
+      targeted approach is what makes everyday makeup both easy and effective.
+    </p>
+  </div>
+
+  <div slot="cta">
+    <div class="seo-cta">
+      <div class="seo-cta-inner">
+        <h2>Discover Your Best Five-Product Combination</h2>
+        <p>
+          Try our AI makeup try-on to see which product combinations look best
+          on your unique features.
+        </p>
+        <a href="/tryon-free" class="cta-btn">Try Virtual Makeup Try-On</a>
+      </div>
+    </div>
+  </div>
+
+  <div slot="related">
+    <section class="seo-related">
+      <div class="related-inner">
+        <h3>Related Guides</h3>
+        <ul class="related-list">
+          {
+            relatedLinks.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</SeoLandingLayout>

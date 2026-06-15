@@ -1,0 +1,350 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import {
+  getMarketProfileOptions,
+  shouldUseEastAsiaAssetPack,
+} from "../data/makeup/audienceProfiles";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { getCurrentLocale } from "../lib/i18n";
+
+const locale = getCurrentLocale();
+const isZh = locale.startsWith("zh");
+const audienceContext = Astro.locals.audienceContext;
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const pricingHref = localizeAppHref("/pricing");
+const loginHref = localizeAppHref("/login");
+const homeHref = localizeAppHref("/");
+const marketOptions = getMarketProfileOptions(locale);
+const eastAsiaAssetPackLocked = shouldUseEastAsiaAssetPack(locale);
+const copy = isZh
+  ? {
+      title: "账户中心 | AI Beauty Stylist",
+      description: "管理你的 AI Beauty Stylist 账户、会员与订阅。",
+      heading: "账户中心",
+      email: "邮箱",
+      plan: "当前计划",
+      quota: "本月额度",
+      manage: "管理订阅",
+      upgrade: "升级会员",
+      logout: "退出登录",
+      quotaRemaining: "剩余 {remaining} / {total} 次",
+      portalFailed: "无法打开管理页面",
+    }
+  : {
+      title: "Account | AI Beauty Stylist",
+      description:
+        "Manage your AI Beauty Stylist account, membership, and subscription.",
+      heading: "Account",
+      email: "Email",
+      plan: "Current plan",
+      quota: "Monthly quota",
+      manage: "Manage subscription",
+      upgrade: "Upgrade",
+      logout: "Sign out",
+      quotaRemaining: "{remaining} / {total} remaining",
+      portalFailed: "Unable to open the management page",
+    };
+const representationOptions = [
+  { value: "diverse", zh: "多元轮换", en: "Diverse rotation" },
+  { value: "east-asian", zh: "东亚模特", en: "East Asian models" },
+  { value: "black", zh: "黑人模特", en: "Black models" },
+  { value: "south-asian", zh: "南亚模特", en: "South Asian models" },
+  { value: "latina", zh: "拉丁裔模特", en: "Latina models" },
+  { value: "white", zh: "白人模特", en: "White models" },
+  { value: "mixed", zh: "混合背景模特", en: "Mixed-background models" },
+].filter((option) => !eastAsiaAssetPackLocked || option.value === "east-asian");
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  bodyClass="auth-body"
+  robots="noindex,follow"
+>
+  <SiteHeader />
+  <main class="auth-main">
+    <div class="auth-card panel" data-account>
+      <h1 class="auth-heading">{copy.heading}</h1>
+      <div class="account-row">
+        <span>{copy.email}</span><b data-account-email>—</b>
+      </div>
+      <div class="account-row">
+        <span>{copy.plan}</span><b data-account-plan>—</b>
+      </div>
+      <div class="account-row">
+        <span>{copy.quota}</span><b data-account-quota>—</b>
+      </div>
+      <div class="account-actions">
+        <button class="btn btn-primary" type="button" data-account-manage hidden
+          >{copy.manage}</button
+        >
+        <a
+          class="btn btn-outline-rose"
+          href={pricingHref}
+          data-account-upgrade
+          hidden>{copy.upgrade}</a
+        >
+        <button class="btn" type="button" data-account-logout>
+          {copy.logout}
+        </button>
+      </div>
+      <p class="auth-message" data-account-message role="status"></p>
+      <form class="content-preference-form" data-content-preferences>
+        <div class="content-preference-head">
+          <h2>{isZh ? "妆容内容偏好" : "Makeup content preferences"}</h2>
+          <p>
+            {
+              isZh
+                ? "偏好只影响推荐顺序与参考图，不代表你的身份。"
+                : "Preferences affect recommendations and reference images, not your identity."
+            }
+          </p>
+        </div>
+        <label class="preference-field">
+          <span>{isZh ? "妆容灵感地区" : "Makeup inspiration"}</span>
+          <select name="marketProfile">
+            {
+              marketOptions.map((option) => (
+                <option
+                  value={option.value}
+                  selected={option.value === audienceContext.marketProfile}
+                >
+                  {option.label}
+                </option>
+              ))
+            }
+          </select>
+        </label>
+        <fieldset class="representation-field">
+          <legend>{isZh ? "参考模特展示" : "Reference model display"}</legend>
+          <div class="representation-options">
+            {
+              representationOptions.map((option) => (
+                <label>
+                  <input
+                    type="checkbox"
+                    name="representationPreference"
+                    value={option.value}
+                    checked={audienceContext.representationPreference.some(
+                      (preference) => preference === option.value,
+                    )}
+                  />
+                  <span>{isZh ? option.zh : option.en}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+        <button class="btn btn-primary" type="submit">
+          {isZh ? "保存内容偏好" : "Save preferences"}
+        </button>
+        <p class="preference-status" data-preference-status role="status"></p>
+      </form>
+    </div>
+  </main>
+
+  <style>
+    .auth-main {
+      display: flex;
+      justify-content: center;
+      padding: 48px 16px;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 480px;
+      padding: 28px;
+    }
+    .auth-heading {
+      font-size: 20px;
+      margin: 0 0 18px;
+    }
+    .account-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+    }
+    .account-row span {
+      color: var(--muted);
+    }
+    .account-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .auth-message {
+      margin-top: 14px;
+      font-size: 14px;
+      min-height: 20px;
+      color: var(--danger-text);
+    }
+    .content-preference-form {
+      display: grid;
+      gap: 18px;
+      margin-top: 26px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    .content-preference-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .content-preference-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .preference-field {
+      display: grid;
+      gap: 7px;
+      font-weight: 700;
+    }
+    .preference-field select {
+      min-height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .representation-field {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    .representation-field legend {
+      margin-bottom: 9px;
+      font-weight: 700;
+    }
+    .representation-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .representation-options label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      cursor: pointer;
+    }
+    .preference-status {
+      min-height: 20px;
+      margin: 0;
+      color: var(--muted);
+    }
+    @media (max-width: 520px) {
+      .representation-options {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script is:inline define:vars={{ copy, homeHref, loginHref }}>
+    (() => {
+      const root = document.querySelector("[data-account]");
+      if (!root) return;
+      const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
+
+      fetch("/api/session")
+        .then((res) => res.json())
+        .then((body) => {
+          const data = body?.data;
+          if (!data || data.user?.kind !== "account") {
+            window.location.href = loginHref;
+            return;
+          }
+          root.querySelector("[data-account-email]").textContent =
+            data.user.email ?? "—";
+          root.querySelector("[data-account-plan]").textContent =
+            planNames[data.plan] ?? data.plan;
+          const q = data.quota;
+          root.querySelector("[data-account-quota]").textContent = q
+            ? copy.quotaRemaining
+                .replace("{remaining}", q.remaining)
+                .replace("{total}", q.total)
+            : "—";
+          if (data.plan === "pro" || data.plan === "premium") {
+            root.querySelector("[data-account-manage]").hidden = false;
+          } else {
+            root.querySelector("[data-account-upgrade]").hidden = false;
+          }
+        })
+        .catch(() => {});
+
+      root
+        .querySelector("[data-account-manage]")
+        ?.addEventListener("click", async () => {
+          const res = await fetch("/api/billing/portal", { method: "POST" });
+          const body = await res.json().catch(() => null);
+          if (body?.ok && body.data?.url) window.location.href = body.data.url;
+          else
+            root.querySelector("[data-account-message]").textContent =
+              body?.error?.message ?? copy.portalFailed;
+        });
+
+      const preferenceForm = document.querySelector(
+        "[data-content-preferences]",
+      );
+      const preferenceStatus = document.querySelector(
+        "[data-preference-status]",
+      );
+      preferenceForm?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const submit = preferenceForm.querySelector('[type="submit"]');
+        const formData = new FormData(preferenceForm);
+        let representationPreferences = formData.getAll(
+          "representationPreference",
+        );
+        if (representationPreferences.includes("diverse")) {
+          representationPreferences = ["diverse"];
+        }
+        submit.disabled = true;
+        preferenceStatus.textContent =
+          !document.documentElement.lang.startsWith("zh")
+            ? "Saving preferences…"
+            : "正在保存偏好…";
+        try {
+          const response = await fetch("/api/content-preferences", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              marketProfile: formData.get("marketProfile"),
+              representationPreferences,
+            }),
+          });
+          if (!response.ok) throw new Error("SAVE_FAILED");
+          preferenceStatus.textContent =
+            !document.documentElement.lang.startsWith("zh")
+              ? "Preferences saved. Refreshing…"
+              : "偏好已保存，正在刷新…";
+          window.location.reload();
+        } catch {
+          submit.disabled = false;
+          preferenceStatus.textContent =
+            !document.documentElement.lang.startsWith("zh")
+              ? "Could not save preferences. Try again."
+              : "偏好保存失败，请重试。";
+        }
+      });
+
+      root
+        .querySelector("[data-account-logout]")
+        ?.addEventListener("click", async () => {
+          await fetch("/api/auth/logout", { method: "POST" });
+          window.location.href = homeHref;
+        });
+    })();
+  </script>
+</BaseLayout>

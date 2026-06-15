@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>免费试妆 | AI Beauty Stylist</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="workspace-body">
+  <header class="workspace-header">
+    <nav class="workspace-nav shell">
+      <a class="brand" href="index.html"><span class="brand-mark">◒</span>AI Beauty Stylist</a>
+      <div class="workspace-tabs"><a class="active" href="tryon-free.html">直接试妆</a><a href="diagnosis.html">做 AI 面容诊断&nbsp; <span class="pill pill-teal">免费体验 1 次</span></a></div>
+      <div class="nav-actions"><button class="btn icon-btn" data-toast="帮助中心将在正式版开放">?</button><span class="avatar">♙</span></div>
+    </nav>
+  </header>
+  <main class="workspace-main">
+    <div class="shell">
+      <section class="quota-bar panel">
+        <span class="plan-badge">Free 体验</span><b>今日试妆</b><span class="muted">|</span><span>剩余&nbsp; <b class="teal" style="font-size:25px">3 / 3</b></span><span class="muted">|</span><span>单次生成 1 张&nbsp; ⓘ</span>
+        <span style="margin-left:auto">♧&nbsp; 上传自拍后，选择一个妆容生成试妆效果</span>
+      </section>
+
+      <div class="workspace-grid">
+        <aside class="selector-panel panel">
+          <div class="selector-head"><div><h2 class="panel-title">选择一个妆容</h2><p class="panel-subtitle">精选 4 款妆容，找到最适合你的风格</p></div></div>
+          <div class="selector-list">
+            <article class="selector-item active" data-look="蜜桃气色"><img src="images/look-commute.webp" alt=""><div><h3>蜜桃气色</h3><p>自然元气，提升气色</p></div><span class="check-dot">✓</span></article>
+            <article class="selector-item" data-look="清透裸妆"><img src="images/look-no-makeup.webp" alt=""><div><h3>清透裸妆</h3><p>清透自然，日常百搭</p></div><span class="check-dot">✓</span></article>
+            <article class="selector-item" data-look="玫瑰奶茶"><img src="images/look-rose-milk-date.webp" alt=""><div><h3>玫瑰奶茶</h3><p>温柔浪漫，气质显白</p></div><span class="check-dot">✓</span></article>
+            <article class="selector-item" data-look="上镜柔焦"><img src="images/look-photogenic.webp" alt=""><div><h3>上镜柔焦</h3><p>立体精致，拍照更出彩</p></div><span class="check-dot">✓</span></article>
+          </div>
+          <a class="btn btn-wide" style="margin-top:12px" href="pricing.html">▦&nbsp; 查看更多妆容（升级解锁）›</a>
+        </aside>
+
+        <section class="result-panel panel">
+          <div class="result-head"><div><h2>试妆预览</h2><p class="panel-subtitle">上传自拍并生成选定妆容效果</p></div></div>
+          <div class="upload-preview">
+            <div class="upload-box"><span class="upload-camera">▣</span><h3>上传你的自拍</h3><p>支持 JPG / PNG，大小不超过 10MB</p><button class="btn btn-primary" data-upload>上传自拍试这个妆</button></div>
+            <div class="upload-arrow">→</div>
+            <div class="result-placeholder"><span class="upload-camera" style="background:#f2f4f7;color:#bcc5d2">✦</span><h3>生成效果将显示在这里</h3><p>上传自拍并选择妆容后开始生成</p></div>
+          </div>
+          <div class="rule-strip">▣&nbsp; 未上传自拍不扣次数，生成结果会消耗 1 次试妆机会 <a href="pricing.html">了解规则 ›</a></div>
+        </section>
+
+        <aside class="explain-panel panel">
+          <h2 class="panel-title">妆容说明</h2><p class="panel-subtitle">了解这个妆容的特点与使用建议</p><div class="section-rule"></div>
+          <section class="info-section"><h3><span class="pill pill-rose">※</span>适合场景</h3><p>通勤 / 面试、日常约会、上镜拍照<br>轻松提升气色，适合大多数肤色。</p></section>
+          <section class="info-section"><h3><span class="pill pill-rose">▣</span>产品类型</h3><ul><li>底妆：轻薄粉底 / 气垫</li><li>腮红：蜜桃色腮红</li><li>眼妆：浅棕色眼影，细致眼线</li><li>唇妆：蜜桃色唇膏 / 唇釉</li></ul></section>
+          <div class="section-rule"></div>
+          <section class="info-section"><h3><span class="pill pill-rose">⌘</span>怎么判断适不适合</h3><ul><li>看整体：是否提亮气色</li><li>看五官：是否让眼睛更有神</li><li>看肤色：是否自然贴肤</li></ul><p>生成后如果不满意，换一个妆容再试试。</p></section>
+        </aside>
+      </div>
+      <section class="share-strip panel"><div><h3>分享你的试妆效果，奖励 1 次试妆机会</h3><p>将生成结果分享到社交平台或发送给朋友，即可获得额外试妆次数。</p></div><span></span><span></span><button class="btn btn-outline-rose" data-toast="生成试妆结果后即可分享">生成结果后分享</button></section>
+    </div>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

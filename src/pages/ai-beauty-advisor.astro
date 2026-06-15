@@ -1,0 +1,169 @@
+---
+import SeoLandingLayout from "../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "AI Beauty Advisor — Get Personalized Makeup Recommendations",
+  description:
+    "Stop guessing. Our AI beauty advisor analyzes your face and recommends the exact makeup styles, products, and tutorials that work for your unique features.",
+  faq: [
+    {
+      q: "Is this like talking to a real beauty advisor?",
+      a: "Think of it as having a makeup artist who understands your face shape, skin undertone, and feature proportions — and can instantly show you what looks good before you commit to buying products or spending time on a tutorial.",
+    },
+    {
+      q: "How accurate are the recommendations?",
+      a: "The AI uses the same color analysis framework that professional stylists use (12-season color system) combined with facial feature analysis. Results are personalized to your actual face — not a generic 'what looks good on everyone' recommendation. However, we always note that AI suggestions are reference only, not professional beauty consultation.",
+    },
+    {
+      q: "Can I use this if I'm a complete beginner?",
+      a: "Yes. The AI recommends beginner-friendly styles first (minimal steps, forgiving techniques), and each recommendation comes with a step-by-step tutorial so you can actually recreate the look at home.",
+    },
+  ],
+  relatedLinks: [
+    { label: "AI Makeup Try-On", url: "/ai-makeup-try-on" },
+    { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
+    { label: "Personal Color Analysis", url: "/diagnosis" },
+    { label: "Pricing", url: "/pricing" },
+  ],
+};
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>
+      Your AI Beauty Advisor: Makeup Recommendations That Actually Fit You
+    </h1>
+    <p>
+      Not a generic quiz. An AI that analyzes your face, understands your
+      features, and recommends the exact styles, products, and tutorials made
+      for you.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <h2>Why "What Looks Good on Me" Is the Hardest Makeup Question</h2>
+    <p>
+      Walk into any makeup store and you'll find thousands of products. Search
+      on YouTube and you'll find thousands more tutorials. But none of them
+      start with the one thing that actually matters: your face.
+    </p>
+    <p>
+      Your AI beauty advisor flips that around. It starts with you — your skin
+      tone, your face shape, your eye shape, your undertone — and works outward
+      to recommend what actually looks good on <em>you</em>.
+    </p>
+
+    <h2>How the AI Advisor Works</h2>
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div>
+          <h4>Upload a Selfie</h4>
+          <p>
+            One clear photo of your bare face in natural light. That's all the
+            AI needs.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div>
+          <h4>Get a Diagnosis Report</h4>
+          <p>
+            The AI analyzes your skin undertone (warm/cool/neutral), face shape,
+            eye shape, and feature proportions.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div>
+          <h4>Pick a Scenario</h4>
+          <p>
+            Commute, date night, interview, photo — tell the AI what you need
+            makeup for today.
+          </p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div>
+          <h4>Receive 3 Personalized Recommendations</h4>
+          <p>
+            Three styles tailored to your face, with try-on images, tutorials,
+            and product picks.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>What Makes the Advice Different</h2>
+    <p>
+      Most makeup recommendations follow a template: "soft glam is great for
+      everyone" or "a nude lip always works." The problem is that soft glam on
+      hooded eyes requires a completely different eyeshadow technique than soft
+      glam on almond eyes. And a nude lip that looks perfect on warm undertones
+      will wash out cool undertones.
+    </p>
+    <p>
+      The AI advisor doesn't give templates. It adapts every recommendation to
+      your actual features — the same way a professional stylist would adjust
+      their advice for each client, but in seconds instead of an hour-long
+      consultation.
+    </p>
+
+    <h2>The Advisor Doesn't Stop at Styles</h2>
+    <p>After recommending styles, it also tells you:</p>
+    <ul>
+      <li>
+        <strong>Which products to buy</strong> — real SKUs at three budget tiers (drugstore,
+        mid-range, premium), matched to your skin tone.
+      </li>
+      <li>
+        <strong>Which products to skip</strong> — honest advice on what you don't
+        need, so you don't waste money.
+      </li>
+      <li>
+        <strong>What mistakes to avoid</strong> — common errors for your specific
+        features (e.g., "don't apply blush this low on your cheeks").
+      </li>
+      <li>
+        <strong>How to check your work</strong> — self-assessment tips so you know
+        if you got it right.
+      </li>
+    </ul>
+
+    <div class="highlight-box">
+      <p>
+        <strong>Disclaimer:</strong> AI recommendations are personalized references,
+        not professional beauty consultation. Results may vary based on individual
+        features and technique. Always use your own judgment.
+      </p>
+    </div>
+  </div>
+
+  <div class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Get Your Personalized Recommendations</h2>
+      <p>
+        Upload your photo and see what styles the AI recommends for your face.
+      </p>
+      <a href="/diagnosis" class="cta-btn">Start Your AI Diagnosis — Free</a>
+    </div>
+  </div>
+
+  <div class="seo-related" slot="related">
+    <div class="related-inner">
+      <h3>Explore More</h3>
+      <ul class="related-list">
+        {
+          page.relatedLinks.map((link) => (
+            <li>
+              <a href={link.url}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</SeoLandingLayout>

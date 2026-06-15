@@ -1,0 +1,456 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import { getBlogPosts } from "../../data/blogData";
+import { getBlogUiCopy } from "../../data/localizedBlogContent";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+import { getCurrentLocale } from "../../lib/i18n";
+
+const locale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const aiDisclaimerHref = localizeAppHref("/ai-disclaimer");
+const posts = getBlogPosts(locale);
+const [featuredPost, ...remainingPosts] = posts;
+const copy = getBlogUiCopy(locale).index;
+---
+
+<BaseLayout
+  title={`${copy.title} | AI Beauty Stylist`}
+  description={copy.intro}
+  ogImage={featuredPost.coverImage}
+>
+  <SiteHeader active="blog" />
+  <main class="blog-main">
+    <header class="blog-hero shell">
+      <span class="section-kicker">{copy.eyebrow}</span>
+      <h1>{copy.title}</h1>
+      <p>{copy.intro}</p>
+    </header>
+
+    <section class="featured shell" aria-labelledby="featured-title">
+      <div class="section-label">
+        <span>01</span><h2 id="featured-title">{copy.featured}</h2>
+      </div>
+      <article>
+        <a
+          class="featured-media"
+          href={localizeAppHref(`/blog/${featuredPost.slug}`)}
+          aria-label={featuredPost.title}
+          style={`--image-position: ${featuredPost.focalPosition}`}
+        >
+          <img
+            src={featuredPost.coverImage}
+            alt={featuredPost.coverAlt}
+            width="1280"
+            height="720"
+            fetchpriority="high"
+          />
+        </a>
+        <div class="featured-copy">
+          <div class="meta">
+            <span>{featuredPost.category}</span><time
+              datetime={featuredPost.date}>{featuredPost.date}</time
+            ><span>{featuredPost.readTime}</span>
+          </div>
+          <h3>
+            <a href={localizeAppHref(`/blog/${featuredPost.slug}`)}>
+              {featuredPost.title}
+            </a>
+          </h3>
+          <p>{featuredPost.summary}</p>
+          <div class="featured-takeaways">
+            <strong>{copy.takeawayLabel}</strong>
+            <ul>
+              {
+                (featuredPost.takeaways ?? copy.takeaways).map((item) => (
+                  <li>{item}</li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="byline">
+            <span class="author-mark" aria-hidden="true">
+              <img src="/images/logo-ui.webp" alt="" width="36" height="36" />
+            </span><span
+              ><strong>{copy.author}</strong><small
+                >{featuredPost.author.role}</small
+              ></span
+            >
+          </div>
+          <a
+            class="text-link"
+            href={localizeAppHref(`/blog/${featuredPost.slug}`)}
+            >{copy.read} <span aria-hidden="true">→</span></a
+          >
+        </div>
+      </article>
+    </section>
+
+    <section class="latest shell" aria-labelledby="latest-title">
+      <div class="section-label">
+        <span>02</span><h2 id="latest-title">{copy.latest}</h2>
+      </div>
+      <div class="post-list">
+        {
+          remainingPosts.map((post) => (
+            <article>
+              <a
+                class="post-media"
+                href={localizeAppHref(`/blog/${post.slug}`)}
+                aria-label={post.title}
+                style={`--image-position: ${post.focalPosition}`}
+              >
+                <img
+                  src={post.coverImage}
+                  alt={post.coverAlt}
+                  width="1280"
+                  height="720"
+                  loading="lazy"
+                />
+              </a>
+              <div class="post-copy">
+                <div class="meta">
+                  <>
+                    <span>{post.category}</span>
+                    <time datetime={post.date}>{post.date}</time>
+                    <span>{post.readTime}</span>
+                  </>
+                </div>
+                <h3>
+                  <a href={localizeAppHref(`/blog/${post.slug}`)}>
+                    {post.title}
+                  </a>
+                </h3>
+                <p>{post.summary}</p>
+                <a
+                  class="text-link"
+                  href={localizeAppHref(`/blog/${post.slug}`)}
+                >
+                  {copy.read} <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <aside class="editorial-band">
+      <div class="shell">
+        <div>
+          <span class="section-kicker">03</span><h2>{copy.editorial}</h2>
+        </div>
+        <p>{copy.editorialBody}</p>
+        <a class="btn" href={aiDisclaimerHref}>{copy.standards}</a>
+      </div>
+    </aside>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-main {
+    padding: 54px 0 0;
+    background: var(--page-surface);
+  }
+  .blog-hero {
+    padding-bottom: 42px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-kicker {
+    display: block;
+    margin-bottom: 13px;
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+  .blog-hero h1 {
+    max-width: 920px;
+    margin: 0;
+    color: var(--heading);
+    font-family: var(--font-display);
+    font-size: var(--content-hero-size);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+  .blog-hero p {
+    max-width: 680px;
+    margin: 20px 0 0;
+    color: var(--body-secondary);
+    font-size: var(--content-body-size);
+    line-height: 1.75;
+  }
+  .featured,
+  .latest {
+    padding-top: 42px;
+    padding-bottom: 54px;
+  }
+  .section-label {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .section-label span {
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+  }
+  .section-label h2 {
+    margin: 0;
+    color: var(--heading);
+    font-size: var(--content-subsection-title-size);
+  }
+  .featured article {
+    display: grid;
+    grid-template-columns: minmax(360px, 0.82fr) minmax(0, 1.18fr);
+    gap: 42px;
+    align-items: center;
+    border-block: 1px solid var(--line);
+  }
+  .featured-media {
+    position: relative;
+    align-self: stretch;
+    min-height: 360px;
+    overflow: hidden;
+    background: var(--page-surface-alt);
+  }
+  .featured-media img {
+    position: absolute;
+    inset: 0;
+  }
+  .featured-media img,
+  .post-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--image-position, 50% 32%);
+    transition: transform 0.35s ease;
+  }
+  .featured-media:hover img,
+  .post-media:hover img {
+    transform: scale(1.018);
+  }
+  .featured-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 28px 0;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    color: var(--muted);
+    font-size: var(--content-label-size);
+  }
+  .meta span:first-child {
+    color: var(--rose);
+    font-weight: 700;
+  }
+  .featured-copy h3 {
+    margin: 17px 0 13px;
+    font-size: 29px;
+    line-height: 1.28;
+  }
+  .featured-copy h3 a,
+  .post-copy h3 a {
+    color: var(--heading);
+    text-decoration: none;
+  }
+  .featured-copy p,
+  .post-copy p {
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .featured-takeaways {
+    margin-top: 22px;
+    padding-top: 17px;
+    border-top: 1px solid var(--line);
+  }
+  .featured-takeaways > strong {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--heading);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+  }
+  .featured-takeaways ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .featured-takeaways li {
+    position: relative;
+    padding-left: 14px;
+    color: var(--body-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .featured-takeaways li::before {
+    position: absolute;
+    top: 0.65em;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--rose);
+    content: "";
+  }
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .author-mark {
+    display: block;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    flex: 0 0 36px;
+    overflow: hidden;
+  }
+  .author-mark img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .byline strong,
+  .byline small {
+    display: block;
+  }
+  .byline strong {
+    color: var(--heading);
+    font-size: 12px;
+  }
+  .byline small {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: var(--content-label-size);
+  }
+  .text-link {
+    display: inline-flex;
+    gap: 8px;
+    margin-top: 24px;
+    color: var(--rose);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .latest {
+    border-top: 1px solid var(--line);
+  }
+  .post-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0 28px;
+  }
+  .post-list article {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 22px;
+    padding: 24px 0;
+    border-top: 1px solid var(--line);
+  }
+  .post-media {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--page-surface-alt);
+  }
+  .post-copy h3 {
+    margin: 11px 0 9px;
+    font-size: 17px;
+    line-height: 1.4;
+  }
+  .post-copy p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 13px;
+  }
+  .post-copy .text-link {
+    margin-top: 13px;
+    font-size: 13px;
+  }
+  .editorial-band {
+    padding: 44px 0;
+    border-top: 1px solid var(--line);
+    background: var(--surface-rose);
+  }
+  .editorial-band .shell {
+    display: grid;
+    grid-template-columns: 0.75fr 1.25fr auto;
+    gap: 34px;
+    align-items: center;
+  }
+  .editorial-band h2 {
+    margin: 0;
+    color: var(--heading);
+    font-size: var(--content-subsection-title-size);
+  }
+  .editorial-band p {
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  @media (max-width: 1000px) {
+    .featured article,
+    .editorial-band .shell {
+      grid-template-columns: 1fr;
+    }
+    .featured article {
+      gap: 0;
+      align-items: stretch;
+    }
+    .featured-media {
+      aspect-ratio: 16 / 9;
+      min-height: 0;
+    }
+    .featured-copy {
+      padding: 28px 0;
+    }
+    .post-list {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 700px) {
+    .blog-main {
+      padding-top: 34px;
+    }
+    .blog-hero h1 {
+      font-size: var(--content-hero-size-mobile);
+    }
+    .featured-media {
+      aspect-ratio: 4 / 3;
+    }
+    .featured-copy h3 {
+      font-size: 23px;
+    }
+    .post-list article {
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 14px;
+    }
+    .post-copy p {
+      display: none;
+    }
+    .featured-takeaways ul {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+</style>

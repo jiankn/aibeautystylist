@@ -1,0 +1,53 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ai-beauty-stylist",
+  "account_id": "62ca98e53f85ec589d9f64e5365055d3",
+  "compatibility_date": "2026-06-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "dist/client",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "824f7af0b39c4991b4afc16cef188ebe",
+    },
+  ],
+  // Local development uses these bindings with `.wrangler/state`.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ai-beauty-stylist-db",
+      "database_id": "8865fafc-4f99-4fb4-adac-c853ef5bb2a4",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "USER_UPLOADS",
+      "bucket_name": "ai-beauty-stylist-user-uploads",
+    },
+  ],
+  "vars": {
+    "APP_ENV": "production",
+    "APP_PUBLIC_URL": "https://aibeautystylist.com",
+    "AI_PROVIDER": "gemini",
+    "UPLOAD_PROVIDER": "r2",
+    "TRYON_PROVIDER": "gemini",
+    "IMAGE_PROVIDER": "gemini",
+    "GEMINI_MODEL": "gemini-2.5-flash",
+    "GEMINI_MODEL_FREE": "gemini-2.5-flash-lite",
+    "GEMINI_IMAGE_MODEL": "gemini-2.5-flash-image",
+    "GEMINI_TIMEOUT_MS": "120000",
+    "GEMINI_IMAGE_TIMEOUT_MS": "75000",
+    "GEMINI_THINKING_LEVEL": "none",
+    "EVOLINK_IMAGE_MODEL": "wan2.5-image-to-image",
+    "EVOLINK_IMAGE_SIZE": "1280x1280",
+    "EVOLINK_IMAGE_QUALITY": "low",
+    "EVOLINK_IMAGE_TIMEOUT_MS": "75000",
+    "SUPPORT_EMAIL": "support@aibeautystylist.com",
+  },
+}

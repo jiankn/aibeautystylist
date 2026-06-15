@@ -1,0 +1,516 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { getCurrentLocale } from "../lib/i18n";
+import { getLocalizedAboutContent } from "../data/supportingPageContent";
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const tryOnHref = localizeAppHref("/tryon-free");
+const diagnosisHref = localizeAppHref("/diagnosis");
+const isEn = !getCurrentLocale().startsWith("zh");
+const fallbackCopy = isEn
+  ? {
+      eyebrow: "About the product",
+      title: "A clearer way to explore makeup before you commit",
+      intro:
+        "AI Beauty Stylist helps you compare makeup directions on your own photo, understand why a direction may work, and carry useful choices into real life.",
+      primary: "Try a makeup look",
+      secondary: "See how diagnosis works",
+      promiseTitle: "What the product is designed to do",
+      promiseLead:
+        "The product sits between inspiration and a final purchase decision. It is a visual planning tool, not a guarantee of real-world results.",
+      promises: [
+        [
+          "Preserve your identity",
+          "Suggestions should work with your visible features instead of pushing one standard face.",
+        ],
+        [
+          "Make comparison easier",
+          "Try distinct color and finish directions before spending time or money on them.",
+        ],
+        [
+          "Turn output into action",
+          "Diagnosis and look pages explain the practical choices behind a recommendation.",
+        ],
+      ],
+      processTitle: "How a session works",
+      process: [
+        [
+          "Choose a goal",
+          "Start from a scene, look, or face diagnosis question.",
+        ],
+        [
+          "Upload with consent",
+          "A clear selfie enters processing only after you confirm the photo notice.",
+        ],
+        [
+          "Review critically",
+          "Use the result as a reference and account for lighting, products, technique, and screen color.",
+        ],
+      ],
+      boundariesTitle: "Where we draw the line",
+      boundariesLead:
+        "Trust depends on being explicit about what AI can and cannot decide.",
+      boundaries: [
+        [
+          "Not a medical assessment",
+          "The product does not diagnose skin conditions or replace a qualified clinician.",
+        ],
+        [
+          "Not an attractiveness score",
+          "We do not rank faces or define a universal standard of beauty.",
+        ],
+        [
+          "Not a perfect color match",
+          "Camera, display, lighting, and physical products can all change the final result.",
+        ],
+        [
+          "Not permission-free photo use",
+          "Photos are processed only after consent and can be deleted through the product flow.",
+        ],
+      ],
+      trustTitle: "Product and data commitments",
+      trustLead:
+        "Our operating principles are documented in the product and legal pages, so users can inspect them before uploading.",
+      trustLinks: [
+        [localizeAppHref("/privacy"), "Photo and privacy handling"],
+        [
+          localizeAppHref("/ai-disclaimer"),
+          "AI limitations and appropriate use",
+        ],
+        [localizeAppHref("/terms"), "Service terms"],
+        [localizeAppHref("/support"), "Raise a concern or request help"],
+      ],
+      ctaTitle: "Start with one practical question",
+      ctaBody:
+        "Choose a look to compare, or run a face diagnosis before deciding what to try.",
+    }
+  : {
+      eyebrow: "关于产品",
+      title: "试妆前，先把妆容方向看清楚",
+      intro:
+        "AI Beauty Stylist 帮助你在自己的照片上比较妆容方向，理解建议背后的原因，再把有用的选择带到现实中。",
+      primary: "开始试妆",
+      secondary: "了解妆容诊断",
+      promiseTitle: "这个产品要解决什么问题",
+      promiseLead:
+        "产品位于“获得灵感”和“做出最终选择”之间，是视觉规划工具，不对现实妆效作绝对保证。",
+      promises: [
+        [
+          "保留你的辨识度",
+          "建议应围绕你可见的面部特征展开，而不是把所有人推向同一张标准脸。",
+        ],
+        [
+          "让比较更容易",
+          "在花时间试色或购买产品前，先对比不同色彩、质感和场景方向。",
+        ],
+        [
+          "让结果可以行动",
+          "诊断与妆容页面会解释推荐背后的可执行选择，而不只展示一张图。",
+        ],
+      ],
+      processTitle: "一次体验如何完成",
+      process: [
+        ["明确目标", "从使用场景、妆容风格或妆容诊断问题开始。"],
+        [
+          "授权后上传",
+          "只有在你确认照片处理说明后，清晰自拍才会进入处理流程。",
+        ],
+        [
+          "带着判断查看",
+          "把结果作为参考，并考虑光线、产品、手法和屏幕色差带来的影响。",
+        ],
+      ],
+      boundariesTitle: "我们明确不做什么",
+      boundariesLead:
+        "可信的 AI 产品，需要明确说明它能做什么，也要说明它不能替你决定什么。",
+      boundaries: [
+        [
+          "不做医疗诊断",
+          "产品不会诊断皮肤疾病，也不能替代合格的医疗专业人员。",
+        ],
+        ["不评判外貌高低", "我们不为面容打分，也不定义统一的美丽标准。"],
+        ["不承诺绝对色彩一致", "相机、屏幕、光线和实体产品都会影响最终呈现。"],
+        [
+          "不在未授权时使用照片",
+          "照片仅在获得同意后进入处理，并可通过产品流程删除。",
+        ],
+      ],
+      trustTitle: "产品与数据承诺",
+      trustLead: "关键规则会公开写在产品和法律页面中，让你能在上传之前先检查。",
+      trustLinks: [
+        [localizeAppHref("/privacy"), "照片与隐私处理"],
+        [localizeAppHref("/ai-disclaimer"), "AI 局限与适用范围"],
+        [localizeAppHref("/terms"), "服务条款"],
+        [localizeAppHref("/support"), "提出疑问或获得支持"],
+      ],
+      ctaTitle: "从一个具体问题开始",
+      ctaBody: "先选择一个想比较的妆容，或在决定试什么之前完成一次妆容诊断。",
+    };
+const localizedAbout = getLocalizedAboutContent(getCurrentLocale());
+const copy = localizedAbout
+  ? {
+      ...localizedAbout,
+      trustLinks: localizedAbout.trustLinks.map(([href, label]) => [
+        localizeAppHref(href),
+        label,
+      ]),
+    }
+  : fallbackCopy;
+---
+
+<BaseLayout
+  title={`${copy.title} | AI Beauty Stylist`}
+  description={copy.intro}
+>
+  <SiteHeader />
+  <main class="about-main">
+    <header class="about-hero shell">
+      <span class="section-kicker">{copy.eyebrow}</span>
+      <h1>{copy.title}</h1>
+      <p>{copy.intro}</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href={tryOnHref}>{copy.primary}</a>
+        <a class="btn" href={diagnosisHref}>{copy.secondary}</a>
+      </div>
+    </header>
+
+    <section
+      class="about-section shell split-section"
+      aria-labelledby="product-purpose"
+    >
+      <div class="section-intro">
+        <span>01</span>
+        <h2 id="product-purpose">{copy.promiseTitle}</h2>
+        <p>{copy.promiseLead}</p>
+      </div>
+      <div class="principle-list">
+        {
+          copy.promises.map(([title, detail]) => (
+            <article>
+              <h3>{title}</h3>
+              <p>{detail}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="process-band">
+      <div class="shell">
+        <div class="section-intro compact">
+          <span>02</span>
+          <h2>{copy.processTitle}</h2>
+        </div>
+        <ol class="process-list">
+          {
+            copy.process.map(([title, detail], index) => (
+              <li>
+                <b>{String(index + 1).padStart(2, "0")}</b>
+                <h3>{title}</h3>
+                <p>{detail}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section
+      class="about-section shell split-section"
+      aria-labelledby="boundaries-title"
+    >
+      <div class="section-intro">
+        <span>03</span>
+        <h2 id="boundaries-title">{copy.boundariesTitle}</h2>
+        <p>{copy.boundariesLead}</p>
+      </div>
+      <div class="boundary-list">
+        {
+          copy.boundaries.map(([title, detail]) => (
+            <article>
+              <h3>{title}</h3>
+              <p>{detail}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="trust-band">
+      <div class="shell trust-layout">
+        <div>
+          <span class="section-kicker">04</span>
+          <h2>{copy.trustTitle}</h2>
+          <p>{copy.trustLead}</p>
+        </div>
+        <nav aria-label={copy.trustTitle}>
+          {
+            copy.trustLinks.map(([href, label]) => (
+              <a href={href}>
+                {label}
+                <span aria-hidden="true">→</span>
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </section>
+
+    <section class="about-cta shell">
+      <div>
+        <h2>{copy.ctaTitle}</h2>
+        <p>{copy.ctaBody}</p>
+      </div>
+      <a class="btn btn-primary" href={tryOnHref}>{copy.primary}</a>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .about-main {
+    padding: 54px 0 88px;
+    background: var(--page-surface);
+  }
+  .about-hero {
+    max-width: 980px;
+    padding-bottom: 54px;
+  }
+  .section-kicker {
+    display: block;
+    margin-bottom: 13px;
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+  .about-hero h1 {
+    max-width: 880px;
+    margin: 0;
+    color: var(--heading);
+    font-family: var(--font-display);
+    font-size: var(--content-hero-size);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+  .about-hero p {
+    max-width: 680px;
+    margin: 22px 0 0;
+    color: var(--body-secondary);
+    font-size: var(--content-body-size);
+    line-height: 1.75;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+  }
+  .about-section {
+    padding-top: 54px;
+    padding-bottom: 54px;
+    border-top: 1px solid var(--line);
+  }
+  .split-section {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+    gap: 64px;
+  }
+  .section-intro span {
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .section-intro h2 {
+    margin: 10px 0 14px;
+    color: var(--heading);
+    font-size: var(--content-section-title-size);
+    line-height: 1.25;
+  }
+  .section-intro p {
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: var(--content-supporting-size);
+    line-height: 1.75;
+  }
+  .principle-list,
+  .boundary-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .principle-list article,
+  .boundary-list article {
+    min-height: 170px;
+    padding: 24px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-elevated);
+  }
+  .principle-list article:first-child {
+    grid-column: 1 / -1;
+  }
+  .principle-list h3,
+  .boundary-list h3,
+  .process-list h3 {
+    margin: 0 0 8px;
+    color: var(--heading);
+    font-size: 16px;
+  }
+  .principle-list p,
+  .boundary-list p,
+  .process-list p {
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .process-band {
+    padding: 58px 0;
+    background: #142744;
+    color: #fff;
+  }
+  .section-intro.compact {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .section-intro.compact h2 {
+    margin: 0;
+    color: #fff;
+  }
+  .process-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    list-style: none;
+    margin: 34px 0 0;
+    padding: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .process-list li {
+    padding: 25px 28px 4px 0;
+  }
+  .process-list b {
+    display: block;
+    margin-bottom: 18px;
+    color: #e782a0;
+    font-size: 12px;
+  }
+  .process-list h3 {
+    color: #fff;
+  }
+  .process-list p {
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .boundary-list article {
+    min-height: 150px;
+    background: transparent;
+  }
+  .trust-band {
+    padding: 52px 0;
+    border-block: 1px solid var(--line);
+    background: var(--surface-rose);
+  }
+  .trust-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .trust-layout h2 {
+    margin: 0 0 12px;
+    color: var(--heading);
+    font-size: var(--content-section-title-size);
+  }
+  .trust-layout p {
+    max-width: 550px;
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .trust-layout nav {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+  .trust-layout a {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    color: var(--heading);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .trust-layout a span {
+    color: var(--rose);
+  }
+  .about-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding-top: 54px;
+  }
+  .about-cta h2 {
+    margin: 0 0 8px;
+    color: var(--heading);
+    font-size: 26px;
+  }
+  .about-cta p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  @media (max-width: 900px) {
+    .split-section,
+    .trust-layout {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    .process-list {
+      grid-template-columns: 1fr;
+    }
+    .process-list li {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 22px;
+    }
+  }
+  @media (max-width: 700px) {
+    .about-main {
+      padding-top: 34px;
+    }
+    .about-hero h1 {
+      font-size: var(--content-hero-size-mobile);
+    }
+    .hero-actions,
+    .about-cta {
+      align-items: stretch;
+      flex-direction: column;
+    }
+    .hero-actions .btn,
+    .about-cta .btn {
+      width: 100%;
+    }
+    .principle-list,
+    .boundary-list {
+      grid-template-columns: 1fr;
+    }
+    .principle-list article:first-child {
+      grid-column: auto;
+    }
+    .principle-list article,
+    .boundary-list article {
+      min-height: 0;
+    }
+  }
+</style>

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aibeautystylist.com/sitemap.xml
+
+# 不索引内部 API 和资源
+Disallow: /api/
+Disallow: /_astro/
