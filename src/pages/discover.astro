@@ -616,7 +616,8 @@ function matchValues(option: { value: string; match?: string[] }) {
                   look={look}
                   variant="library"
                   source="discover_library"
-                  priority={index < 4}
+                  priority={index < 3}
+                  highPriority={index === 0}
                 />
               ))
             }

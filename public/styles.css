@@ -797,6 +797,8 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .look-library { padding: 18px; }
 .look-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
 .look-tile {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 620px;
   display: flex;
   height: 100%;
   overflow: hidden;
@@ -884,16 +886,16 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .tag-row { display: flex; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
 .tag {
   padding: 5px 9px;
-  border: 1px solid rgba(255, 255, 255, .72);
+  border: 1px solid rgba(255, 255, 255, .78);
   border-radius: 999px;
-  background: rgba(255, 255, 255, .82);
-  color: var(--heading);
+  background: rgba(255, 255, 255, .92);
+  color: #102544;
   font-size: 11px;
   line-height: 1.25;
   font-weight: 750;
-  box-shadow: 0 6px 14px rgba(16, 37, 68, .08);
+  box-shadow: 0 8px 18px rgba(8, 16, 28, .16);
 }
-.tag:nth-child(even) { color: var(--rose); }
+.tag:nth-child(even) { color: #ad3158; }
 .look-finish {
   flex: 0 0 auto;
   padding: 5px 9px;

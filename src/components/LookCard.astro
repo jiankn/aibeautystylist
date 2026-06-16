@@ -20,9 +20,16 @@ interface Props {
   variant?: "featured" | "library";
   source: string;
   priority?: boolean;
+  highPriority?: boolean;
 }
 
-const { look, variant = "featured", source, priority = false } = Astro.props;
+const {
+  look,
+  variant = "featured",
+  source,
+  priority = false,
+  highPriority = false,
+} = Astro.props;
 const locale = getCurrentLocale();
 const ui = locale.startsWith("de")
   ? deUiLabels
@@ -49,8 +56,14 @@ const tryOnHref = getLocalizedAppHref(
   `/tryon-free?look=${look.slug}&scenario=${encodeURIComponent(look.scenarios[0])}&source=${source}`,
   currentRoute.language.slug,
 );
-const imageLoading = priority ? "eager" : "lazy";
-const imageFetchPriority = priority ? "high" : "low";
+const imageLoading = priority || highPriority ? "eager" : "lazy";
+const imageFetchPriority = highPriority ? "high" : priority ? undefined : "low";
+const cardImageWidths = [320, 480, 640] as const;
+const cardImageFallbackWidth = cardImageWidths[cardImageWidths.length - 1];
+const cardImageSrc = toCardImageSrc(look.image, cardImageFallbackWidth);
+const cardImageSrcSet = cardImageWidths
+  .map((width) => `${toCardImageSrc(look.image, width)} ${width}w`)
+  .join(", ");
 const filterData = {
   "data-look-card": "",
   "data-scenarios": look.scenarios.join("|"),
@@ -75,6 +88,13 @@ const friendlyLabel = ui.experienceFriendly;
 const uploadAria = `${tryLabel}: ${look.title}`;
 const listSeparator =
   locale.startsWith("zh") || locale.startsWith("ja") ? "、" : ", ";
+
+function toCardImageSrc(image: string, width: number): string {
+  if (!image.startsWith("/images/") || !image.endsWith(".webp")) return image;
+  return image
+    .replace(/^\/images\//, "/images/look-card/")
+    .replace(/\.webp$/, `-${width}.webp`);
+}
 ---
 
 {
@@ -91,8 +111,11 @@ const listSeparator =
       <a class="look-image-link" href={tryOnHref} {...selectData}>
         <span class="sr-only">{uploadAria}</span>
         <img
-          src={look.image}
+          src={cardImageSrc}
+          srcset={cardImageSrcSet}
           alt={look.imageAlt}
+          width={cardImageFallbackWidth}
+          height={cardImageFallbackWidth * 1.25}
           loading={imageLoading}
           fetchpriority={imageFetchPriority}
           decoding="async"

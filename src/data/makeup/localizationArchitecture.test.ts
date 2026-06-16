@@ -17,6 +17,7 @@ const publicAssetPaths = new Set(
     path.replace("../../../public", ""),
   ),
 );
+const cardImageWidths = [320, 480, 640] as const;
 
 const eastAsiaContext: AudienceContext = {
   locale: "zh-CN",
@@ -175,6 +176,11 @@ describe("global makeup localization architecture", () => {
       (candidate) => candidate.qualityStatus === "approved",
     )) {
       expect(publicAssetPaths.has(asset.image)).toBe(true);
+      for (const width of cardImageWidths) {
+        expect(publicAssetPaths.has(toCardImagePath(asset.image, width))).toBe(
+          true,
+        );
+      }
       if (asset.image.includes("/images/looks/")) {
         expect(asset.aspectRatio).toBe("1:1");
       }
@@ -242,3 +248,9 @@ describe("global makeup localization architecture", () => {
     }
   });
 });
+
+function toCardImagePath(image: string, width: number): string {
+  return image
+    .replace(/^\/images\//, "/images/look-card/")
+    .replace(/\.webp$/, `-${width}.webp`);
+}
