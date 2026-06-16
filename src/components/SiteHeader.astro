@@ -4,6 +4,7 @@ import { languageConfigs } from "../i18n/config";
 import { getLocalizedPathForRoute } from "../i18n/localizedSeoPages";
 import {
   addLocalePrefix,
+  getLanguageSwitchPathname,
   getLocalizedAppHref,
   getLocalizedPathname,
   resolveLocaleRoute,
@@ -46,7 +47,7 @@ const languageSwitchHref = (languageSlug: string) => {
       languageSlug,
     );
   }
-  return getLocalizedPathname(currentPathname, languageSlug);
+  return getLanguageSwitchPathname(currentPathname, languageSlug);
 };
 
 interface Props {

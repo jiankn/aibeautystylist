@@ -6,6 +6,7 @@ import {
   type LanguageSlug,
 } from "./config";
 import {
+  getLocalizedSeoGroupForRoute,
   getLocalizedPathForRoute,
   hasLocalizedSeoPageForRoute,
 } from "./localizedSeoPages";
@@ -87,6 +88,29 @@ export function getLocalizedPathname(
     languageSlug,
   );
   return addLocalePrefix(localizedPath ?? route.routePathname, languageSlug);
+}
+
+export function getLanguageSwitchPathname(
+  pathname: string,
+  languageSlug: LanguageSlug | string,
+): string {
+  const route = resolveLocaleRoute(pathname);
+  const localizedPath = getLocalizedPathForRoute(
+    route.language.slug,
+    route.routePathname,
+    languageSlug,
+  );
+
+  if (localizedPath) return addLocalePrefix(localizedPath, languageSlug);
+
+  const seoGroup = getLocalizedSeoGroupForRoute(
+    route.language.slug,
+    route.routePathname,
+  );
+
+  if (seoGroup) return seoGroup.englishPath;
+
+  return getLocalizedPathname(pathname, languageSlug);
 }
 
 export function getLocalizedAppHref(
