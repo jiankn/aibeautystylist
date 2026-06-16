@@ -1,7 +1,7 @@
 // 密码哈希：PBKDF2-SHA256（WebCrypto，Workers 兼容）。
 // 存储 salt 与派生 hash 的 hex；校验用 timing-safe 比较。
 
-const PBKDF2_ITERATIONS = 210_000;
+const PBKDF2_ITERATIONS = 100_000;
 const KEY_LENGTH_BITS = 256;
 const SALT_BYTES = 16;
 
