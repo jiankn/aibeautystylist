@@ -146,6 +146,7 @@ const localizableAppRoutes = new Set([
   "/account",
   "/ai-disclaimer",
   "/blog",
+  "/dashboard",
   "/diagnosis",
   "/discover",
   "/faq",

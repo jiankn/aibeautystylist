@@ -16,11 +16,7 @@ const localizeAppHref = (href: string) =>
 const pricingHref = localizeAppHref("/pricing");
 const loginHref = localizeAppHref("/login");
 const homeHref = localizeAppHref("/");
-const workspaceHrefs = {
-  free: localizeAppHref("/tryon-free"),
-  pro: localizeAppHref("/tryon-pro"),
-  premium: localizeAppHref("/tryon-premium"),
-};
+const dashboardHref = localizeAppHref("/dashboard");
 const marketOptions = getMarketProfileOptions(locale);
 const copy = isZh
   ? {
@@ -267,12 +263,11 @@ const representationOptions = [
     }
   </style>
 
-  <script is:inline define:vars={{ copy, homeHref, loginHref, workspaceHrefs }}>
+  <script is:inline define:vars={{ copy, homeHref, loginHref, dashboardHref }}>
     (() => {
       const root = document.querySelector("[data-account]");
       if (!root) return;
       const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
-      let currentPlan = "free";
 
       fetch("/api/session")
         .then((res) => res.json())
@@ -281,11 +276,6 @@ const representationOptions = [
           if (!data || data.user?.kind !== "account") {
             window.location.href = loginHref;
             return;
-          }
-          if (data.plan === "pro" || data.plan === "premium") {
-            currentPlan = data.plan;
-          } else {
-            currentPlan = "free";
           }
           root.querySelector("[data-account-email]").textContent =
             data.user.email ?? "—";
@@ -381,10 +371,9 @@ const representationOptions = [
           if (!response.ok) throw new Error("SAVE_FAILED");
           preferenceStatus.textContent =
             !document.documentElement.lang.startsWith("zh")
-              ? "Preferences saved. Opening your workspace…"
+              ? "Preferences saved. Opening your dashboard…"
               : "偏好已保存，正在进入工作台…";
-          window.location.href =
-            workspaceHrefs[currentPlan] ?? workspaceHrefs.free;
+          window.location.href = dashboardHref;
         } catch {
           submit.disabled = false;
           preferenceStatus.textContent =
