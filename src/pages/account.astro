@@ -1,10 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/SiteHeader.astro";
-import {
-  getMarketProfileOptions,
-  shouldUseEastAsiaAssetPack,
-} from "../data/makeup/audienceProfiles";
+import { getMarketProfileOptions } from "../data/makeup/audienceProfiles";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import { getCurrentLocale } from "../lib/i18n";
 
@@ -20,7 +17,6 @@ const pricingHref = localizeAppHref("/pricing");
 const loginHref = localizeAppHref("/login");
 const homeHref = localizeAppHref("/");
 const marketOptions = getMarketProfileOptions(locale);
-const eastAsiaAssetPackLocked = shouldUseEastAsiaAssetPack(locale);
 const copy = isZh
   ? {
       title: "账户中心 | AI Beauty Stylist",
@@ -50,14 +46,27 @@ const copy = isZh
       portalFailed: "Unable to open the management page",
     };
 const representationOptions = [
-  { value: "diverse", zh: "多元轮换", en: "Diverse rotation" },
-  { value: "east-asian", zh: "东亚模特", en: "East Asian models" },
-  { value: "black", zh: "黑人模特", en: "Black models" },
-  { value: "south-asian", zh: "南亚模特", en: "South Asian models" },
-  { value: "latina", zh: "拉丁裔模特", en: "Latina models" },
-  { value: "white", zh: "白人模特", en: "White models" },
-  { value: "mixed", zh: "混合背景模特", en: "Mixed-background models" },
-].filter((option) => !eastAsiaAssetPackLocked || option.value === "east-asian");
+  { value: "diverse", zh: "多元模特混合展示", en: "Diverse model rotation" },
+  {
+    value: "east-asian",
+    zh: "东亚面部特征参考",
+    en: "East Asian reference features",
+  },
+  { value: "black", zh: "深肤色参考", en: "Deep skin tone references" },
+  {
+    value: "south-asian",
+    zh: "南亚面部特征参考",
+    en: "South Asian reference features",
+  },
+  { value: "latina", zh: "拉美风格参考", en: "Latina style references" },
+  {
+    value: "middle-eastern",
+    zh: "中东面部特征参考",
+    en: "Middle Eastern reference features",
+  },
+  { value: "white", zh: "浅肤色参考", en: "Fair skin tone references" },
+  { value: "mixed", zh: "混合背景参考", en: "Mixed-background references" },
+];
 ---
 
 <BaseLayout
@@ -100,13 +109,13 @@ const representationOptions = [
           <p>
             {
               isZh
-                ? "偏好只影响推荐顺序与参考图，不代表你的身份。"
+                ? "偏好只影响推荐顺序与参考图展示，不代表你的身份，也不会限制可访问内容。"
                 : "Preferences affect recommendations and reference images, not your identity."
             }
           </p>
         </div>
         <label class="preference-field">
-          <span>{isZh ? "妆容灵感地区" : "Makeup inspiration"}</span>
+          <span>{isZh ? "妆容灵感来源" : "Makeup inspiration source"}</span>
           <select name="marketProfile">
             {
               marketOptions.map((option) => (
@@ -121,7 +130,9 @@ const representationOptions = [
           </select>
         </label>
         <fieldset class="representation-field">
-          <legend>{isZh ? "参考模特展示" : "Reference model display"}</legend>
+          <legend>
+            {isZh ? "参考图展示偏好" : "Reference image display preference"}
+          </legend>
           <div class="representation-options">
             {
               representationOptions.map((option) => (
@@ -300,6 +311,35 @@ const representationOptions = [
       const preferenceStatus = document.querySelector(
         "[data-preference-status]",
       );
+      const representationInputs = preferenceForm
+        ? [
+            ...preferenceForm.querySelectorAll(
+              'input[name="representationPreference"]',
+            ),
+          ]
+        : [];
+      const diverseRepresentationInput = representationInputs.find(
+        (input) => input.value === "diverse",
+      );
+      representationInputs.forEach((input) => {
+        input.addEventListener("change", () => {
+          if (input.value === "diverse" && input.checked) {
+            representationInputs.forEach((candidate) => {
+              if (candidate !== input) candidate.checked = false;
+            });
+            return;
+          }
+          if (input.checked && diverseRepresentationInput) {
+            diverseRepresentationInput.checked = false;
+          }
+          if (
+            diverseRepresentationInput &&
+            !representationInputs.some((candidate) => candidate.checked)
+          ) {
+            diverseRepresentationInput.checked = true;
+          }
+        });
+      });
       preferenceForm?.addEventListener("submit", async (event) => {
         event.preventDefault();
         const submit = preferenceForm.querySelector('[type="submit"]');
@@ -307,6 +347,9 @@ const representationOptions = [
         let representationPreferences = formData.getAll(
           "representationPreference",
         );
+        if (representationPreferences.length === 0) {
+          representationPreferences = ["diverse"];
+        }
         if (representationPreferences.includes("diverse")) {
           representationPreferences = ["diverse"];
         }

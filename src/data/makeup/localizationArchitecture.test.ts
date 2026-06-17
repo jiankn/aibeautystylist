@@ -44,10 +44,17 @@ describe("global makeup localization architecture", () => {
     expect(getDefaultMarketProfile("xx-ZZ")).toBe("global-diverse");
     expect(
       getMarketProfileOptions("ja-JP").map((option) => option.value),
-    ).toEqual(["east-asia"]);
+    ).toEqual([
+      "east-asia",
+      "global-english",
+      "global-diverse",
+      "north-america",
+      "latin-america",
+      "western-europe",
+    ]);
   });
 
-  it("resolves account preferences before cookies for non-east-asia locales", () => {
+  it("resolves account preferences before cookies", () => {
     const cookies = {
       get: (name: string) =>
         name === "abs_market_profile" ? { value: "western-europe" } : undefined,
@@ -65,7 +72,7 @@ describe("global makeup localization architecture", () => {
     });
   });
 
-  it("locks east-asia languages to east-asia assets over stored preferences", () => {
+  it("uses east-asia language as a default without overriding stored preferences", () => {
     const cookies = {
       get: (name: string) =>
         name === "abs_market_profile" ? { value: "western-europe" } : undefined,
@@ -73,26 +80,24 @@ describe("global makeup localization architecture", () => {
 
     for (const locale of ["zh-CN", "zh-TW", "ja-JP", "ko-KR"]) {
       const audienceContext = resolveAudienceContext(locale, cookies, {
-        marketProfile: "latin-america",
-        representationPreferences: ["latina"],
+        marketProfile: "global-diverse",
+        representationPreferences: ["black"],
       });
       expect(audienceContext).toMatchObject({
         locale,
-        marketProfile: "east-asia",
-        representationPreference: ["east-asian"],
-        source: "locale",
+        marketProfile: "global-diverse",
+        representationPreference: ["black"],
+        source: "account",
       });
       expect(
-        resolveLookCatalog(audienceContext).every(
-          (look) =>
-            look.marketVariantId.endsWith("--east-asia") &&
-            look.image.endsWith("--east-asia.webp"),
+        resolveLookCatalog(audienceContext).every((look) =>
+          look.marketVariantId.endsWith("--global-diverse"),
         ),
       ).toBe(true);
     }
   });
 
-  it("defensively locks conflicting east-asia contexts and old snapshots", () => {
+  it("honors explicit global contexts and snapshots for east-asia languages", () => {
     const conflictingContext: AudienceContext = {
       locale: "ja-JP",
       marketProfile: "global-diverse",
@@ -103,12 +108,12 @@ describe("global makeup localization architecture", () => {
 
     expect(
       resolveLookCatalog(conflictingContext).every((look) =>
-        look.marketVariantId.endsWith("--east-asia"),
+        look.marketVariantId.endsWith("--global-diverse"),
       ),
     ).toBe(true);
     expect(
       resolvePageAssets("login", conflictingContext).heroImages?.light,
-    ).toBe("/images/login-hero-east-asia-light.webp");
+    ).toBe("/images/login-hero-global-light.webp");
     expect(
       resolveBySnapshot(
         {
@@ -121,8 +126,8 @@ describe("global makeup localization architecture", () => {
         conflictingContext,
       ),
     ).toMatchObject({
-      marketVariantId: "commute--east-asia",
-      image: "/images/looks/commute--east-asia.webp",
+      marketVariantId: "commute--global-english",
+      image: "/images/looks/commute--africa.webp",
     });
   });
 

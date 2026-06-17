@@ -9,10 +9,7 @@ import {
   isValidRepresentationGroup,
   FALLBACK_MARKET_PROFILE,
 } from "./audienceTypes";
-import {
-  getDefaultMarketProfile,
-  shouldUseEastAsiaAssetPack,
-} from "./audienceProfiles";
+import { getDefaultMarketProfile } from "./audienceProfiles";
 
 /** Cookie 名称常量 */
 export const COOKIE_MARKET_PROFILE = "abs_market_profile";
@@ -31,61 +28,21 @@ export interface UserContentPreferences {
 }
 
 /**
- * 东亚语言是产品级视觉锁定规则，不允许旧 Cookie、账号偏好或手工 context
- * 让简中、繁中、日语、韩语页面回退到非东亚人物资产。
- */
-export function enforceLocaleAssetPack(
-  audienceContext: AudienceContext,
-): AudienceContext {
-  if (!shouldUseEastAsiaAssetPack(audienceContext.locale)) {
-    return audienceContext;
-  }
-
-  return {
-    ...audienceContext,
-    marketProfile: "east-asia",
-    representationPreference: ["east-asian"],
-    source: "locale",
-  };
-}
-
-/**
  * 解析用户的 Audience Context。
  *
  * 优先级（从高到低）：
- * 1. 东亚语言视觉资产包锁定
- * 2. 用户账户中保存的偏好
- * 3. Cookie 中的会话偏好
- * 4. 带地区的 BCP 47 locale
- * 5. 仅语言 locale
- * 6. global-diverse 回退
+ * 1. 用户账户中保存的偏好
+ * 2. Cookie 中的会话偏好
+ * 3. 带地区的 BCP 47 locale
+ * 4. 仅语言 locale
+ * 5. global-diverse 回退
  */
 export function resolveAudienceContext(
   locale: string,
   cookies?: CookieReader,
   userPreferences?: UserContentPreferences,
 ): AudienceContext {
-  if (shouldUseEastAsiaAssetPack(locale)) {
-    const accountBeautyPreferences = normalizeStringArray(
-      userPreferences?.beautyPreferences,
-    );
-    const sessionBeautyPreferences = parseCookieArray(
-      cookies?.get(COOKIE_BEAUTY_PREFERENCES)?.value,
-    );
-
-    return enforceLocaleAssetPack({
-      locale,
-      marketProfile: "east-asia",
-      beautyPreferences:
-        accountBeautyPreferences.length > 0
-          ? accountBeautyPreferences
-          : sessionBeautyPreferences,
-      representationPreference: ["east-asian"],
-      source: "locale",
-    });
-  }
-
-  // 2. 优先使用账户偏好
+  // 1. 优先使用账户偏好
   if (userPreferences?.marketProfile) {
     const mp = userPreferences.marketProfile;
     if (isValidMarketProfile(mp)) {
@@ -103,7 +60,7 @@ export function resolveAudienceContext(
     }
   }
 
-  // 3. 尝试从 Cookie 获取
+  // 2. 尝试从 Cookie 获取
   if (cookies) {
     const cookieMarket = cookies.get(COOKIE_MARKET_PROFILE)?.value;
     if (cookieMarket && isValidMarketProfile(cookieMarket)) {
@@ -124,7 +81,7 @@ export function resolveAudienceContext(
     }
   }
 
-  // 4-5. 根据 locale 推断
+  // 3-4. 根据 locale 推断
   const defaultMarket = getDefaultMarketProfile(locale);
   if (defaultMarket !== FALLBACK_MARKET_PROFILE) {
     return {
@@ -136,7 +93,7 @@ export function resolveAudienceContext(
     };
   }
 
-  // 6. 安全回退
+  // 5. 安全回退
   return {
     locale,
     marketProfile: FALLBACK_MARKET_PROFILE,

@@ -2,10 +2,7 @@ import type { APIRoute } from "astro";
 
 import { lookCatalog } from "../../data/lookCatalog";
 import { resolveLookCatalog } from "../../data/makeup/resolveCatalog";
-import {
-  enforceLocaleAssetPack,
-  resolveAudienceContext,
-} from "../../data/makeup/resolveAudienceContext";
+import { resolveAudienceContext } from "../../data/makeup/resolveAudienceContext";
 import { isValidMarketProfile } from "../../data/makeup/audienceTypes";
 import { normalizeLocale } from "../../lib/i18n";
 import { apiError, apiSuccess } from "../../lib/http";
@@ -54,11 +51,9 @@ export const GET: APIRoute = (context) => {
   }
   const validatedMarket =
     paramMarket && isValidMarketProfile(paramMarket) ? paramMarket : undefined;
-  const effectiveContext = enforceLocaleAssetPack(
-    validatedMarket
-      ? { ...audienceContext, marketProfile: validatedMarket }
-      : audienceContext,
-  );
+  const effectiveContext = validatedMarket
+    ? { ...audienceContext, marketProfile: validatedMarket }
+    : audienceContext;
 
   const resolvedLooks = resolveLookCatalog(effectiveContext);
 

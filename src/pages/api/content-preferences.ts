@@ -6,10 +6,7 @@ import {
   COOKIE_REPRESENTATION_PREFERENCES,
   resolveAudienceContext,
 } from "../../data/makeup/resolveAudienceContext";
-import {
-  getMarketProfileOptions,
-  shouldUseEastAsiaAssetPack,
-} from "../../data/makeup/audienceProfiles";
+import { getMarketProfileOptions } from "../../data/makeup/audienceProfiles";
 import { validRepresentationGroups } from "../../data/makeup/audienceTypes";
 import { resolveCurrentUser } from "../../lib/currentUser";
 import {
@@ -27,9 +24,7 @@ export const GET: APIRoute = async ({ locals }) => {
   return apiSuccess({
     audienceContext: locals.audienceContext,
     marketOptions: getMarketProfileOptions(locale),
-    representationOptions: shouldUseEastAsiaAssetPack(locale)
-      ? ["east-asian"]
-      : validRepresentationGroups,
+    representationOptions: ["diverse", ...validRepresentationGroups],
   });
 };
 
@@ -40,30 +35,30 @@ export const POST: APIRoute = async ({ cookies, locals, request, url }) => {
     representationPreferences?: unknown;
   } | null;
   const locale = normalizeLocale(locals.audienceContext.locale);
-  const eastAsiaAssetPackLocked = shouldUseEastAsiaAssetPack(locale);
+  const hasMarketProfile = Object.hasOwn(body ?? {}, "marketProfile");
   const requestedMarketProfile = normalizeMarketProfile(body?.marketProfile);
-  if (!requestedMarketProfile && !eastAsiaAssetPackLocked) {
+  if (hasMarketProfile && !requestedMarketProfile) {
     return apiError(
       {
         code: "INVALID_MARKET_PROFILE",
-        message: "妆容灵感地区无效",
+        message: "妆容灵感来源无效",
         retryable: false,
       },
       422,
     );
   }
 
-  const marketProfile = eastAsiaAssetPackLocked
-    ? "east-asia"
-    : requestedMarketProfile!;
+  const marketProfile =
+    requestedMarketProfile ?? locals.audienceContext.marketProfile;
   const beautyPreferences = Object.hasOwn(body ?? {}, "beautyPreferences")
     ? normalizeBeautyPreferences(body?.beautyPreferences)
     : locals.audienceContext.beautyPreferences;
-  const representationPreferences = eastAsiaAssetPackLocked
-    ? normalizeRepresentationPreferences(["east-asian"])
-    : Object.hasOwn(body ?? {}, "representationPreferences")
-      ? normalizeRepresentationPreferences(body?.representationPreferences)
-      : locals.audienceContext.representationPreference;
+  const representationPreferences = Object.hasOwn(
+    body ?? {},
+    "representationPreferences",
+  )
+    ? normalizeRepresentationPreferences(body?.representationPreferences)
+    : locals.audienceContext.representationPreference;
   const secure = url.protocol === "https:";
   setPreferenceCookie(cookies, COOKIE_MARKET_PROFILE, marketProfile, secure);
   setPreferenceCookie(

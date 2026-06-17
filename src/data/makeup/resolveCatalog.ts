@@ -11,7 +11,6 @@ import type {
 } from "./audienceTypes";
 import { getActiveRecipes, getRecipeById } from "./recipes";
 import { getVariantById, getVariantsForRecipe } from "./marketVariants";
-import { shouldUseEastAsiaAssetPack } from "./audienceProfiles";
 import { zhCNLocalizations } from "./localizations/zh-CN";
 import { enLocalizations } from "./localizations/en";
 import { esLocalizations } from "./localizations/es";
@@ -23,7 +22,6 @@ import { ptBRLocalizations } from "./localizations/pt-BR";
 import { zhTWLocalizations } from "./localizations/zh-TW";
 import { getAssetById, selectBestAsset } from "./assets";
 import { calculateScore, sortByScore } from "./ranking";
-import { enforceLocaleAssetPack } from "./resolveAudienceContext";
 
 /**
  * 解析妆容目录。
@@ -39,7 +37,7 @@ import { enforceLocaleAssetPack } from "./resolveAudienceContext";
 export function resolveLookCatalog(
   audienceContext: AudienceContext,
 ): ResolvedLook[] {
-  const effectiveAudienceContext = enforceLocaleAssetPack(audienceContext);
+  const effectiveAudienceContext = audienceContext;
   const recipes = getActiveRecipes();
   const results: ResolvedLook[] = [];
 
@@ -209,10 +207,10 @@ export function resolveBySnapshot(
   snapshot: LookSnapshot,
   fallbackContext: AudienceContext,
 ): ResolvedLook | undefined {
-  const effectiveFallbackContext = enforceLocaleAssetPack({
+  const effectiveFallbackContext = {
     ...fallbackContext,
     locale: snapshot.locale ?? fallbackContext.locale,
-  });
+  };
   const recipeId = snapshot.lookRecipeId ?? snapshot.lookSlug;
   const recipe = getRecipeById(recipeId);
   if (!recipe)
@@ -224,13 +222,6 @@ export function resolveBySnapshot(
   if (!variant || variant.recipeId !== recipe.id) {
     return resolveBySlug(snapshot.lookSlug, effectiveFallbackContext);
   }
-  if (
-    shouldUseEastAsiaAssetPack(effectiveFallbackContext.locale) &&
-    !variant.marketProfiles.includes("east-asia")
-  ) {
-    return resolveBySlug(snapshot.lookSlug, effectiveFallbackContext);
-  }
-
   const localization = findLocalization(
     variant.id,
     snapshot.locale ?? effectiveFallbackContext.locale,

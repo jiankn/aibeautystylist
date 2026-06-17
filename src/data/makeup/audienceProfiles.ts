@@ -22,7 +22,7 @@ export interface MarketProfileMeta {
 export const marketProfileMetas: MarketProfileMeta[] = [
   {
     id: "east-asia",
-    labelZh: "东亚灵感",
+    labelZh: "东亚灵感优先",
     labelEn: "East Asian Inspiration",
     descriptionZh:
       "优先清透底妆、柔雾、低饱和、单眼皮或内双可见区、日常通勤和本地活动场景",
@@ -31,10 +31,19 @@ export const marketProfileMetas: MarketProfileMeta[] = [
   },
   {
     id: "global-english",
-    labelZh: "全球多元",
-    labelEn: "Global Diverse",
-    descriptionZh: "多元风格混排，不默认白人优先",
-    descriptionEn: "Diverse style mix, no single-ethnicity default",
+    labelZh: "全球英文趋势",
+    labelEn: "Global English Trends",
+    descriptionZh: "英语内容市场中的日常、上镜和活动妆趋势",
+    descriptionEn:
+      "Everyday, camera-ready, and event makeup trends from English content markets",
+  },
+  {
+    id: "global-diverse",
+    labelZh: "全球灵感混合",
+    labelEn: "Global Mixed Inspiration",
+    descriptionZh: "综合所有地区的妆容灵感和多元参考图",
+    descriptionEn:
+      "A blended mix of makeup inspiration and diverse references across regions",
   },
   {
     id: "north-america",
@@ -60,13 +69,6 @@ export const marketProfileMetas: MarketProfileMeta[] = [
     descriptionEn:
       "Natural, refined, French effortless, editorial, commute and evening",
   },
-  {
-    id: "global-diverse",
-    labelZh: "混合推荐",
-    labelEn: "Mixed Recommendations",
-    descriptionZh: "综合所有地区的妆容灵感",
-    descriptionEn: "A blend of beauty inspiration from all regions",
-  },
 ];
 
 const localizedProfileLabels: Record<
@@ -75,59 +77,59 @@ const localizedProfileLabels: Record<
 > = {
   de: {
     "east-asia": "Ostasiatische Inspiration",
-    "global-english": "Globale Vielfalt",
+    "global-english": "Globale englische Trends",
+    "global-diverse": "Global gemischte Inspiration",
     "north-america": "Nordamerikanische Inspiration",
     "latin-america": "Lateinamerikanische Inspiration",
     "western-europe": "Europäischer Editorial Look",
-    "global-diverse": "Gemischte Empfehlungen",
   },
   fr: {
     "east-asia": "Inspiration est-asiatique",
-    "global-english": "Diversité mondiale",
+    "global-english": "Tendances mondiales anglophones",
+    "global-diverse": "Inspiration mondiale mixte",
     "north-america": "Inspiration nord-américaine",
     "latin-america": "Inspiration latino-américaine",
     "western-europe": "Éditorial européen",
-    "global-diverse": "Recommandations mixtes",
   },
   ja: {
     "east-asia": "東アジアのメイク",
-    "global-english": "グローバルなメイク",
+    "global-english": "英語圏のトレンドメイク",
+    "global-diverse": "グローバルミックス",
     "north-america": "北米のメイク",
     "latin-america": "ラテンアメリカのメイク",
     "western-europe": "ヨーロッパのエディトリアルメイク",
-    "global-diverse": "ミックスおすすめ",
   },
   ko: {
     "east-asia": "동아시아 메이크업",
-    "global-english": "글로벌 메이크업",
+    "global-english": "영어권 트렌드 메이크업",
+    "global-diverse": "글로벌 믹스 영감",
     "north-america": "북미 메이크업",
     "latin-america": "라틴아메리카 메이크업",
     "western-europe": "유럽 에디토리얼 메이크업",
-    "global-diverse": "혼합 추천",
   },
   "zh-TW": {
-    "east-asia": "東亞妝容靈感",
-    "global-english": "全球多元妝容",
+    "east-asia": "東亞妝容靈感優先",
+    "global-english": "全球英文趨勢",
+    "global-diverse": "全球靈感混合",
     "north-america": "北美妝容靈感",
     "latin-america": "拉丁美洲妝容靈感",
     "western-europe": "歐洲編輯感妝容",
-    "global-diverse": "綜合推薦",
   },
   es: {
     "east-asia": "Inspiración de Asia oriental",
-    "global-english": "Diversidad global",
+    "global-english": "Tendencias globales en inglés",
+    "global-diverse": "Inspiración global mixta",
     "north-america": "Inspiración norteamericana",
     "latin-america": "Inspiración latinoamericana",
     "western-europe": "Editorial europeo",
-    "global-diverse": "Recomendaciones mixtas",
   },
   pt: {
     "east-asia": "Inspiração do Leste Asiático",
-    "global-english": "Diversidade global",
+    "global-english": "Tendências globais em inglês",
+    "global-diverse": "Inspiração global mista",
     "north-america": "Inspiração norte-americana",
     "latin-america": "Inspiração latino-americana",
     "western-europe": "Editorial europeu",
-    "global-diverse": "Recomendações mistas",
   },
 };
 
@@ -157,11 +159,6 @@ export function getDefaultMarketProfile(locale: string): MarketProfile {
   return FALLBACK_MARKET_PROFILE;
 }
 
-/** 简中、繁中、日语、韩语始终使用东亚视觉与妆容资产包。 */
-export function shouldUseEastAsiaAssetPack(locale: string): boolean {
-  return getDefaultMarketProfile(locale) === "east-asia";
-}
-
 /** 获取市场画像的本地化名称 */
 export function getMarketProfileLabel(
   profile: MarketProfile,
@@ -178,11 +175,7 @@ export function getMarketProfileLabel(
 export function getMarketProfileOptions(
   locale: string,
 ): Array<{ value: MarketProfile; label: string }> {
-  const availableProfiles = shouldUseEastAsiaAssetPack(locale)
-    ? marketProfileMetas.filter((meta) => meta.id === "east-asia")
-    : marketProfileMetas;
-
-  return availableProfiles.map((meta) => ({
+  return marketProfileMetas.map((meta) => ({
     value: meta.id,
     label:
       getLocalizedProfileLabel(meta.id, locale) ??

@@ -7,7 +7,6 @@ import type {
   RepresentationGroup,
   ResolvedPageAssets,
 } from "./audienceTypes";
-import { enforceLocaleAssetPack } from "./resolveAudienceContext";
 
 function prefersRepresentation(
   audienceContext: AudienceContext,
@@ -37,9 +36,7 @@ export function resolvePageAssets(
   pageId: string,
   audienceContext: AudienceContext,
 ): ResolvedPageAssets {
-  const regionalProfile = resolveRegionalProfile(
-    enforceLocaleAssetPack(audienceContext),
-  );
+  const regionalProfile = resolveRegionalProfile(audienceContext);
   const isEastAsia = regionalProfile === "east-asia";
 
   switch (pageId) {
