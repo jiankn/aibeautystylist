@@ -8,9 +8,17 @@ import { checkAdmin } from "../../lib/adminGuard";
 import { getRuntimeBindings } from "../../lib/runtime";
 
 const { DB } = getRuntimeBindings();
-if (!DB) return Astro.redirect("/login");
+if (!DB) {
+  return Astro.redirect(
+    `/login?next=${encodeURIComponent(`${Astro.url.pathname}${Astro.url.search}`)}`,
+  );
+}
 const auth = await checkAdmin(Astro.cookies, DB);
-if (!auth.authorized) return Astro.redirect("/login");
+if (!auth.authorized) {
+  return Astro.redirect(
+    `/login?next=${encodeURIComponent(`${Astro.url.pathname}${Astro.url.search}`)}`,
+  );
+}
 ---
 
 <AdminLayout title="工单管理" activeNav="support">
