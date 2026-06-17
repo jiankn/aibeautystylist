@@ -19,11 +19,6 @@ const localizeAppHref = (href: string) =>
 const isEnglish = !currentLocale.startsWith("zh");
 const yearlyFactor = 10;
 const planOrder: PlanCode[] = ["free", "pro", "premium"];
-const prices: Record<PlanCode, number> = {
-  free: 0,
-  pro: 19.99,
-  premium: 39.99,
-};
 
 const fallbackFeatureText = isEnglish
   ? {
@@ -449,8 +444,12 @@ const planCards = planOrder.map((code) => ({
   code,
   title: PLAN_DEFINITIONS[code].title,
   quota: PLAN_DEFINITIONS[code].monthlyQuota,
-  monthlyPrice: prices[code].toFixed(code === "free" ? 0 : 2),
-  yearlyPrice: (prices[code] * yearlyFactor).toFixed(code === "free" ? 0 : 2),
+  monthlyPrice: PLAN_DEFINITIONS[code].monthlyPriceUsd.toFixed(
+    code === "free" ? 0 : 2,
+  ),
+  yearlyPrice: (PLAN_DEFINITIONS[code].monthlyPriceUsd * yearlyFactor).toFixed(
+    code === "free" ? 0 : 2,
+  ),
   content: copy.planContent[code],
 }));
 

@@ -17,6 +17,7 @@ wrangler.json
 tmp/
 uploads/
 user-uploads/
+scratch/
 coverage/
 *.log
 
@@ -25,4 +26,3 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
-

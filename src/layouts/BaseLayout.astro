@@ -44,8 +44,8 @@ const htmlClass = /\/discover\/?$/i.test(requestedPathname)
   ? "filter-sheet-ready"
   : undefined;
 const fontStylesheet = currentLocale.startsWith("zh")
-  ? "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600&family=Satisfy&display=optional"
-  : "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&family=Satisfy&display=optional";
+  ? "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600&display=optional"
+  : "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=optional";
 const clientMessages = {
   loginRequired: t("tryon", "loginToUseQuota"),
   loginToUpload: t("tryon", "loginToUpload"),
@@ -129,6 +129,13 @@ const clientMessages = {
     <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
     <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link
+      rel="preload"
+      href="/fonts/satisfy-brand.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link id="font-stylesheet" rel="preload" as="style" href={fontStylesheet} />
