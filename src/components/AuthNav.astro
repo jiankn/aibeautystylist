@@ -10,17 +10,149 @@
       window.__absLocale || document.documentElement.lang || "en",
     );
     const authCopy = {
-      en: ["Get Started", "Sign up"],
-      "zh-CN": ["开始使用", "开始"],
-      "zh-TW": ["開始使用", "開始"],
-      "de-DE": ["Loslegen", "Starten"],
-      "fr-FR": ["Commencer", "Débuter"],
-      "ja-JP": ["始める", "開始"],
-      "ko-KR": ["시작하기", "시작"],
-      "es-ES": ["Comenzar", "Empezar"],
-      "es-419": ["Comenzar", "Empezar"],
-      "pt-BR": ["Começar", "Iniciar"],
-    }[locale] || ["Get Started", "Start"];
+      en: {
+        cta: "Get Started",
+        shortCta: "Sign up",
+        dashboard: "Dashboard",
+        signedIn: "Signed in",
+        accountMenu: "Account menu",
+        plan: "Plan",
+        account: "Account settings",
+        billing: "Subscription and quota",
+        signOut: "Sign out",
+        signingOut: "Signing out...",
+        signOutFailed: "Could not sign out. Try again.",
+      },
+      "zh-CN": {
+        cta: "开始使用",
+        shortCta: "开始",
+        dashboard: "工作台",
+        signedIn: "已登录",
+        accountMenu: "账户菜单",
+        plan: "当前计划",
+        account: "账户设置",
+        billing: "订阅与额度",
+        signOut: "退出登录",
+        signingOut: "正在退出...",
+        signOutFailed: "退出失败，请重试。",
+      },
+      "zh-TW": {
+        cta: "開始使用",
+        shortCta: "開始",
+        dashboard: "工作台",
+        signedIn: "已登入",
+        accountMenu: "帳戶選單",
+        plan: "目前方案",
+        account: "帳戶設定",
+        billing: "訂閱與額度",
+        signOut: "登出",
+        signingOut: "正在登出...",
+        signOutFailed: "登出失敗，請重試。",
+      },
+      "de-DE": {
+        cta: "Loslegen",
+        shortCta: "Starten",
+        dashboard: "Dashboard",
+        signedIn: "Angemeldet",
+        accountMenu: "Kontomenü",
+        plan: "Tarif",
+        account: "Kontoeinstellungen",
+        billing: "Abo und Kontingent",
+        signOut: "Abmelden",
+        signingOut: "Abmelden...",
+        signOutFailed: "Abmeldung fehlgeschlagen. Erneut versuchen.",
+      },
+      "fr-FR": {
+        cta: "Commencer",
+        shortCta: "Débuter",
+        dashboard: "Tableau de bord",
+        signedIn: "Connecté",
+        accountMenu: "Menu du compte",
+        plan: "Offre",
+        account: "Paramètres du compte",
+        billing: "Abonnement et quota",
+        signOut: "Se déconnecter",
+        signingOut: "Déconnexion...",
+        signOutFailed: "Déconnexion impossible. Réessayez.",
+      },
+      "ja-JP": {
+        cta: "始める",
+        shortCta: "開始",
+        dashboard: "ダッシュボード",
+        signedIn: "ログイン中",
+        accountMenu: "アカウントメニュー",
+        plan: "プラン",
+        account: "アカウント設定",
+        billing: "サブスクと利用枠",
+        signOut: "ログアウト",
+        signingOut: "ログアウト中...",
+        signOutFailed: "ログアウトできません。再試行してください。",
+      },
+      "ko-KR": {
+        cta: "시작하기",
+        shortCta: "시작",
+        dashboard: "대시보드",
+        signedIn: "로그인됨",
+        accountMenu: "계정 메뉴",
+        plan: "플랜",
+        account: "계정 설정",
+        billing: "구독 및 한도",
+        signOut: "로그아웃",
+        signingOut: "로그아웃 중...",
+        signOutFailed: "로그아웃하지 못했습니다. 다시 시도하세요.",
+      },
+      "es-ES": {
+        cta: "Comenzar",
+        shortCta: "Empezar",
+        dashboard: "Panel",
+        signedIn: "Sesión iniciada",
+        accountMenu: "Menú de cuenta",
+        plan: "Plan",
+        account: "Ajustes de cuenta",
+        billing: "Suscripción y cuota",
+        signOut: "Cerrar sesión",
+        signingOut: "Cerrando sesión...",
+        signOutFailed: "No se pudo cerrar sesión. Inténtalo de nuevo.",
+      },
+      "es-419": {
+        cta: "Comenzar",
+        shortCta: "Empezar",
+        dashboard: "Panel",
+        signedIn: "Sesión iniciada",
+        accountMenu: "Menú de cuenta",
+        plan: "Plan",
+        account: "Ajustes de cuenta",
+        billing: "Suscripción y cuota",
+        signOut: "Cerrar sesión",
+        signingOut: "Cerrando sesión...",
+        signOutFailed: "No se pudo cerrar sesión. Inténtalo de nuevo.",
+      },
+      "pt-BR": {
+        cta: "Começar",
+        shortCta: "Iniciar",
+        dashboard: "Painel",
+        signedIn: "Conectado",
+        accountMenu: "Menu da conta",
+        plan: "Plano",
+        account: "Configurações da conta",
+        billing: "Assinatura e cota",
+        signOut: "Sair",
+        signingOut: "Saindo...",
+        signOutFailed: "Não foi possível sair. Tente novamente.",
+      },
+    }[locale] || {
+      cta: "Get Started",
+      shortCta: "Start",
+      dashboard: "Dashboard",
+      signedIn: "Signed in",
+      accountMenu: "Account menu",
+      plan: "Plan",
+      account: "Account settings",
+      billing: "Subscription and quota",
+      signOut: "Sign out",
+      signingOut: "Signing out...",
+      signOutFailed: "Could not sign out. Try again.",
+    };
     const localePrefix =
       {
         "zh-CN": "/zh-cn",
@@ -59,8 +191,9 @@
 
     const authHref = link.dataset.authHref || localized("/login?mode=register");
     const accountHref = link.dataset.accountHref || localized("/dashboard");
-    const authLabel = link.dataset.authLabel || authCopy[0];
-    const authShortLabel = link.dataset.authShortLabel || authCopy[1];
+    const authLabel = link.dataset.authLabel || authCopy.cta;
+    const authShortLabel = link.dataset.authShortLabel || authCopy.shortCta;
+    const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
 
     function setAuthLabel(anchor) {
       const desktopLabel = anchor.querySelector(".auth-entry-label-desktop");
@@ -74,18 +207,163 @@
       anchor.setAttribute("aria-label", `${authLabel}. ${authShortLabel}`);
     }
 
+    function closeAccountMenu(menu) {
+      menu.classList.remove("open");
+      menu
+        .querySelector("[data-account-menu-trigger]")
+        ?.setAttribute("aria-expanded", "false");
+    }
+
+    function createMenuItem({ href, label, isButton = false }) {
+      const item = document.createElement(isButton ? "button" : "a");
+      item.className = `account-menu-item${isButton ? " account-menu-logout" : ""}`;
+      if (isButton) item.type = "button";
+      else item.href = href;
+      item.setAttribute("role", "menuitem");
+      item.textContent = label;
+      return item;
+    }
+
+    function renderAccountMenu(anchor, session) {
+      const email = session?.user?.email || "";
+      const plan = planNames[session?.plan] || session?.plan || "Free";
+      const initial = (email.trim()[0] || "A").toUpperCase();
+      let menu = actions.querySelector("[data-account-menu]");
+
+      if (!menu) {
+        menu = document.createElement("div");
+        menu.className = "account-menu";
+        menu.setAttribute("data-account-menu", "");
+        anchor.replaceWith(menu);
+      }
+
+      menu.replaceChildren();
+      const trigger = document.createElement("button");
+      trigger.className = "btn account-menu-trigger keep-mobile";
+      trigger.type = "button";
+      trigger.setAttribute("data-account-menu-trigger", "");
+      trigger.setAttribute("aria-haspopup", "menu");
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.setAttribute("aria-label", `${authCopy.accountMenu}: ${email}`);
+
+      const avatar = document.createElement("span");
+      avatar.className = "account-avatar";
+      avatar.setAttribute("aria-hidden", "true");
+      avatar.textContent = initial;
+
+      const label = document.createElement("span");
+      label.className = "account-trigger-text";
+      label.textContent = authCopy.dashboard;
+
+      const chevron = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg",
+      );
+      chevron.setAttribute("class", "account-chevron");
+      chevron.setAttribute("viewBox", "0 0 24 24");
+      chevron.setAttribute("fill", "none");
+      chevron.setAttribute("stroke", "currentColor");
+      chevron.setAttribute("stroke-width", "2");
+      chevron.setAttribute("stroke-linecap", "round");
+      chevron.setAttribute("stroke-linejoin", "round");
+      chevron.setAttribute("aria-hidden", "true");
+      const path = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path",
+      );
+      path.setAttribute("d", "m6 9 6 6 6-6");
+      chevron.append(path);
+      trigger.append(avatar, label, chevron);
+
+      const panel = document.createElement("div");
+      panel.className = "account-menu-panel";
+      panel.setAttribute("data-account-menu-panel", "");
+      panel.setAttribute("role", "menu");
+
+      const identity = document.createElement("div");
+      identity.className = "account-menu-identity";
+      const signedIn = document.createElement("span");
+      signedIn.textContent = authCopy.signedIn;
+      const emailNode = document.createElement("strong");
+      emailNode.textContent = email;
+      const planNode = document.createElement("small");
+      planNode.textContent = `${authCopy.plan}: ${plan}`;
+      identity.append(signedIn, emailNode, planNode);
+
+      const list = document.createElement("div");
+      list.className = "account-menu-list";
+      const dashboard = createMenuItem({
+        href: accountHref,
+        label: authCopy.dashboard,
+      });
+      const account = createMenuItem({
+        href: localized("/account"),
+        label: authCopy.account,
+      });
+      const billing = createMenuItem({
+        href: localized("/pricing"),
+        label: authCopy.billing,
+      });
+      const logout = createMenuItem({
+        label: authCopy.signOut,
+        isButton: true,
+      });
+      const status = document.createElement("p");
+      status.className = "account-menu-status";
+      status.setAttribute("role", "status");
+      status.setAttribute("data-account-menu-status", "");
+      list.append(dashboard, account, billing, logout, status);
+      panel.append(identity, list);
+      menu.append(trigger, panel);
+
+      trigger.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const nextOpen = !menu.classList.contains("open");
+        document
+          .querySelectorAll("[data-account-menu].open")
+          .forEach((openMenu) => closeAccountMenu(openMenu));
+        menu.classList.toggle("open", nextOpen);
+        trigger.setAttribute("aria-expanded", String(nextOpen));
+      });
+
+      panel.addEventListener("click", (event) => event.stopPropagation());
+      logout.addEventListener("click", async () => {
+        logout.disabled = true;
+        status.textContent = authCopy.signingOut;
+        try {
+          const response = await fetch("/api/auth/logout", { method: "POST" });
+          if (!response.ok) throw new Error("LOGOUT_FAILED");
+          window.location.href = localized("/");
+        } catch {
+          logout.disabled = false;
+          status.textContent = authCopy.signOutFailed;
+        }
+      });
+    }
+
     link.href = authHref;
     setAuthLabel(link);
+
+    document.addEventListener("click", () => {
+      document
+        .querySelectorAll("[data-account-menu].open")
+        .forEach((menu) => closeAccountMenu(menu));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      document
+        .querySelectorAll("[data-account-menu].open")
+        .forEach((menu) => closeAccountMenu(menu));
+    });
 
     fetch("/api/session")
       .then((res) => res.json())
       .then((body) => {
-        const email = body?.data?.user?.email;
+        const data = body?.data;
+        const email = data?.user?.email;
         if (email) {
-          link.href = accountHref;
-          link.textContent =
-            email.length > 18 ? email.slice(0, 16) + "…" : email;
-          link.setAttribute("aria-label", email);
+          renderAccountMenu(link, data);
         } else {
           link.href = authHref;
           setAuthLabel(link);

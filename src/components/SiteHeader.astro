@@ -37,6 +37,7 @@ const appRoutePathnames = new Set([
   "/pricing",
   "/login",
   "/account",
+  "/dashboard",
   "/tryon-pro",
   "/tryon-premium",
 ]);
@@ -985,6 +986,145 @@ const languageOptions = languageConfigs
       0 0 18px rgba(200, 62, 104, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
+  :global(.account-menu) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  :global(.account-menu-trigger) {
+    min-width: 0;
+    min-height: 36px;
+    gap: 7px;
+    padding-inline: 8px 10px;
+    border-color: rgba(173, 49, 88, 0.72);
+    border-radius: 7px;
+    background: linear-gradient(135deg, #c83e68 0%, #a82a55 100%);
+    color: #fff8fb;
+    font-size: 11.5px;
+    font-weight: 750;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow:
+      0 7px 16px rgba(184, 46, 92, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+  :global(.account-avatar) {
+    display: grid;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+  :global(.account-chevron) {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+    transition: transform 0.18s ease;
+  }
+  :global(.account-menu.open .account-chevron) {
+    transform: rotate(180deg);
+  }
+  :global(.account-menu-panel) {
+    position: absolute;
+    z-index: 1000;
+    top: calc(100% + 8px);
+    right: 0;
+    display: none;
+    width: min(286px, calc(100vw - 24px));
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg-elevated);
+    box-shadow:
+      0 18px 40px rgba(20, 39, 68, 0.14),
+      0 3px 9px rgba(20, 39, 68, 0.08);
+  }
+  :global(.account-menu.open .account-menu-panel) {
+    display: grid;
+  }
+  :global(.account-menu-identity) {
+    display: grid;
+    gap: 3px;
+    padding: 9px 10px 11px;
+    border-bottom: 1px solid var(--line);
+  }
+  :global(.account-menu-identity span) {
+    color: var(--rose);
+    font-size: 11px;
+    font-weight: 800;
+  }
+  :global(.account-menu-identity strong) {
+    color: var(--navy);
+    font-size: 13px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+  :global(.account-menu-identity small) {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  :global(.account-menu-list) {
+    display: grid;
+    gap: 2px;
+    padding-top: 6px;
+  }
+  :global(.account-menu-item) {
+    display: flex;
+    width: 100%;
+    min-height: 40px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
+    text-decoration: none;
+  }
+  :global(.account-menu-item:hover),
+  :global(.account-menu-item:focus-visible) {
+    background: var(--rose-soft);
+    color: var(--rose);
+    outline: 0;
+  }
+  :global(.account-menu-logout) {
+    color: var(--danger-text);
+  }
+  :global(.account-menu-status) {
+    min-height: 18px;
+    margin: 4px 10px 0;
+    color: var(--danger-text);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  :global([data-theme="dark"] .account-menu-trigger) {
+    border-color: rgba(232, 122, 152, 0.56);
+    background: linear-gradient(135deg, #d94b76 0%, #9d244e 100%);
+    color: #fff8fb;
+    box-shadow:
+      0 8px 18px rgba(0, 0, 0, 0.28),
+      0 0 18px rgba(200, 62, 104, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+  :global([data-theme="dark"] .account-avatar) {
+    background: rgba(255, 255, 255, 0.16);
+  }
+  :global([data-theme="dark"] .account-menu-panel) {
+    background: var(--bg-elevated);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.46);
+  }
   .nav-control-icon {
     display: block;
     width: 20px;
@@ -1109,6 +1249,24 @@ const languageOptions = languageConfigs
     }
     .auth-entry-label-mobile {
       display: inline;
+    }
+    :global(.account-menu-trigger) {
+      min-width: 44px;
+      min-height: 44px;
+      gap: 0;
+      padding-inline: 8px;
+    }
+    :global(.account-trigger-text),
+    :global(.account-chevron) {
+      display: none;
+    }
+    :global(.account-avatar) {
+      width: 24px;
+      height: 24px;
+      flex-basis: 24px;
+    }
+    :global(.account-menu-panel) {
+      right: -2px;
     }
     .nav-control {
       width: 36px;
