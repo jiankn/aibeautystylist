@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 
 import { getAccountByEmail, normalizeEmail } from "../../../lib/accounts";
+import { isPasswordAuthDisabledEmail } from "../../../lib/adminPolicy";
 import { createSession, setSessionCookie } from "../../../lib/authSession";
 import { apiError, apiSuccess } from "../../../lib/http";
 import { verifyPassword } from "../../../lib/password";
@@ -20,6 +21,17 @@ export const POST: APIRoute = async ({ cookies, request }) => {
   const body = (await request.json().catch(() => null)) as LoginBody | null;
   const email = body?.email ? normalizeEmail(body.email) : "";
   const password = body?.password ?? "";
+
+  if (isPasswordAuthDisabledEmail(email)) {
+    return apiError(
+      {
+        code: "OAUTH_REQUIRED",
+        message: "该管理员账号仅支持 Google 登录",
+        retryable: false,
+      },
+      403,
+    );
+  }
 
   const { DB } = getRuntimeBindings();
   if (!DB) {

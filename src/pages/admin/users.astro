@@ -1,0 +1,291 @@
+---
+/**
+ * 管理后台 — 用户管理
+ * 支持搜索、筛选、分页和用户详情查看。
+ */
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { checkAdmin } from "../../lib/adminGuard";
+import { getRuntimeBindings } from "../../lib/runtime";
+
+const { DB } = getRuntimeBindings();
+if (!DB) return Astro.redirect("/login");
+const auth = await checkAdmin(Astro.cookies, DB);
+if (!auth.authorized) return Astro.redirect("/login");
+---
+
+<AdminLayout title="用户管理" activeNav="users">
+  <!-- 搜索筛选栏 -->
+  <div
+    style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center"
+  >
+    <input
+      type="text"
+      id="userSearch"
+      class="admin-input"
+      placeholder="搜索邮箱..."
+      style="min-width:260px;flex:1"
+    />
+    <select id="planFilter" class="admin-select">
+      <option value="">全部计划</option>
+      <option value="free">Free</option>
+      <option value="pro">Pro</option>
+      <option value="premium">Premium</option>
+    </select>
+    <button class="admin-btn" id="searchBtn">搜索</button>
+  </div>
+
+  <!-- 用户分布 KPI -->
+  <div
+    class="kpi-grid"
+    id="userKpiGrid"
+    style="grid-template-columns:repeat(4,1fr)"
+  >
+    <div class="kpi-card">
+      <div class="kpi-label">总用户</div><div class="kpi-value" id="ukTotal">
+        —
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Free 用户</div><div class="kpi-value" id="ukFree">
+        —
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Pro 用户</div><div class="kpi-value" id="ukPro">
+        —
+      </div><span class="badge badge-purple" style="margin-top:4px">付费</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Premium 用户</div><div
+        class="kpi-value"
+        id="ukPremium"
+      >
+        —
+      </div><span class="badge badge-amber" style="margin-top:4px">付费</span>
+    </div>
+  </div>
+
+  <!-- 用户表格 -->
+  <div class="admin-card admin-section">
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>邮箱</th>
+            <th>计划</th>
+            <th>订阅状态</th>
+            <th>本月用量</th>
+            <th>试妆次数</th>
+            <th>注册时间</th>
+          </tr>
+        </thead>
+        <tbody id="usersBody">
+          <tr
+            ><td colspan="6" class="admin-loading"
+              ><div class="admin-spinner"></div>加载中...</td
+            ></tr
+          >
+        </tbody>
+      </table>
+    </div>
+    <div class="admin-pagination" id="usersPagination"></div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var currentPage = 1;
+      var currentSearch = "";
+      var currentPlan = "";
+
+      function loadUsers(page) {
+        currentPage = page || 1;
+        currentSearch = document.getElementById("userSearch").value.trim();
+        currentPlan = document.getElementById("planFilter").value;
+
+        var params = new URLSearchParams();
+        params.set("page", String(currentPage));
+        params.set("limit", "20");
+        if (currentSearch) params.set("search", currentSearch);
+        if (currentPlan) params.set("plan", currentPlan);
+
+        fetch("/api/admin/users?" + params.toString())
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (res) {
+            if (!res.ok) return;
+            renderUsers(res.data.users);
+            renderPagination(res.data.pagination);
+          })
+          .catch(function (e) {
+            console.error(e);
+          });
+      }
+
+      // 加载KPI统计
+      fetch("/api/admin/stats")
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (res) {
+          if (!res.ok) return;
+          var d = res.data;
+          document.getElementById("ukTotal").textContent = formatNum(
+            d.totalUsers,
+          );
+          var free = d.totalUsers - d.proSubscriptions - d.premiumSubscriptions;
+          document.getElementById("ukFree").textContent = formatNum(free);
+          document.getElementById("ukPro").textContent = formatNum(
+            d.proSubscriptions,
+          );
+          document.getElementById("ukPremium").textContent = formatNum(
+            d.premiumSubscriptions,
+          );
+        });
+
+      function renderUsers(users) {
+        var tbody = document.getElementById("usersBody");
+        if (!users || !users.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="6" class="admin-empty">未找到用户</td></tr>';
+          return;
+        }
+        var planBadges = {
+          free: '<span class="badge badge-gray"><span class="badge-dot"></span>Free</span>',
+          pro: '<span class="badge badge-purple"><span class="badge-dot"></span>Pro</span>',
+          premium:
+            '<span class="badge badge-amber"><span class="badge-dot"></span>Premium</span>',
+        };
+        var statusBadges = {
+          active:
+            '<span class="badge badge-green"><span class="badge-dot"></span>Active</span>',
+          trialing:
+            '<span class="badge badge-blue"><span class="badge-dot"></span>Trial</span>',
+          past_due:
+            '<span class="badge badge-red"><span class="badge-dot"></span>Past Due</span>',
+          canceled:
+            '<span class="badge badge-gray"><span class="badge-dot"></span>Canceled</span>',
+          none: '<span class="badge badge-gray"><span class="badge-dot"></span>—</span>',
+        };
+
+        var html = "";
+        users.forEach(function (u) {
+          var plan = u.plan_code || "free";
+          var quotaTotal = plan === "premium" ? 150 : plan === "pro" ? 70 : 3;
+          var used = Math.max(0, Number(u.monthly_used) || 0);
+          var pct = Math.min(100, (used / quotaTotal) * 100);
+          var pctColor =
+            pct > 80
+              ? "var(--admin-red)"
+              : pct > 50
+                ? "var(--admin-amber)"
+                : "";
+
+          html += "<tr>";
+          html +=
+            '<td><span style="font-size:13px">' +
+            escapeHtml(u.email || "Anonymous") +
+            "</span><br>";
+          html +=
+            '<span style="font-size:11px;color:var(--admin-text-dim);font-family:monospace">' +
+            escapeHtml((u.id || "").slice(0, 8)) +
+            "...</span></td>";
+          html += "<td>" + (planBadges[plan] || planBadges.free) + "</td>";
+          html +=
+            "<td>" +
+            (statusBadges[u.subscription_status] || statusBadges.none) +
+            "</td>";
+          html +=
+            '<td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:80px"><div class="progress-fill" style="width:' +
+            pct +
+            "%" +
+            (pctColor ? ";background:" + pctColor : "") +
+            '"></div></div><span style="font-size:12px;color:var(--admin-text-muted)">' +
+            used +
+            "/" +
+            quotaTotal +
+            "</span></div></td>";
+          html += "<td>" + (Number(u.tryon_count) || 0) + "</td>";
+          html +=
+            '<td style="color:var(--admin-text-muted);font-size:12px;white-space:nowrap">' +
+            formatDate(u.created_at) +
+            "</td>";
+          html += "</tr>";
+        });
+        tbody.innerHTML = html;
+      }
+
+      function renderPagination(p) {
+        var el = document.getElementById("usersPagination");
+        if (!p || p.totalPages <= 1) {
+          el.innerHTML = "<span>共 " + (p?.total || 0) + " 条</span>";
+          return;
+        }
+        var html =
+          "<span>第 " +
+          p.page +
+          " / " +
+          p.totalPages +
+          " 页，共 " +
+          p.total +
+          " 条</span>";
+        html += '<div class="admin-pagination-btns">';
+        if (p.page > 1)
+          html +=
+            '<button class="admin-btn admin-btn-sm" onclick="window.__loadUsers(' +
+            (p.page - 1) +
+            ')">← 上一页</button>';
+        if (p.page < p.totalPages)
+          html +=
+            '<button class="admin-btn admin-btn-sm" onclick="window.__loadUsers(' +
+            (p.page + 1) +
+            ')">下一页 →</button>';
+        html += "</div>";
+        el.innerHTML = html;
+      }
+
+      function formatNum(n) {
+        if (n >= 1000) return (n / 1000).toFixed(1) + "K";
+        return String(n || 0);
+      }
+
+      function formatDate(iso) {
+        if (!iso) return "—";
+        return new Date(iso).toLocaleDateString("zh-CN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+      }
+
+      function escapeHtml(s) {
+        var div = document.createElement("div");
+        div.appendChild(document.createTextNode(s || ""));
+        return div.innerHTML;
+      }
+
+      // 搜索事件
+      document
+        .getElementById("searchBtn")
+        .addEventListener("click", function () {
+          loadUsers(1);
+        });
+      document
+        .getElementById("userSearch")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "Enter") loadUsers(1);
+        });
+      document
+        .getElementById("planFilter")
+        .addEventListener("change", function () {
+          loadUsers(1);
+        });
+
+      // 暴露翻页函数
+      window.__loadUsers = loadUsers;
+
+      // 初始加载
+      loadUsers(1);
+    })();
+  </script>
+</AdminLayout>

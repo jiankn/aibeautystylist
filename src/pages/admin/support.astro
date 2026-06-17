@@ -1,0 +1,421 @@
+---
+/**
+ * 管理后台 — 工单管理
+ * 工单列表、状态筛选和状态更新。
+ */
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { checkAdmin } from "../../lib/adminGuard";
+import { getRuntimeBindings } from "../../lib/runtime";
+
+const { DB } = getRuntimeBindings();
+if (!DB) return Astro.redirect("/login");
+const auth = await checkAdmin(Astro.cookies, DB);
+if (!auth.authorized) return Astro.redirect("/login");
+---
+
+<AdminLayout title="工单管理" activeNav="support">
+  <!-- 统计 KPI -->
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card" style="cursor:pointer" data-status-filter="">
+      <div class="kpi-label">全部工单</div>
+      <div class="kpi-value" id="stAll">—</div>
+    </div>
+    <div
+      class="kpi-card"
+      style="cursor:pointer;--admin-accent-glow:rgba(245,158,11,0.15)"
+      data-status-filter="open"
+    >
+      <div class="kpi-label">⏳ 待处理</div>
+      <div class="kpi-value" id="stOpen" style="color:var(--admin-amber)">
+        —
+      </div>
+    </div>
+    <div
+      class="kpi-card"
+      style="cursor:pointer;--admin-accent-glow:rgba(59,130,246,0.15)"
+      data-status-filter="pending"
+    >
+      <div class="kpi-label">🔄 处理中</div>
+      <div class="kpi-value" id="stPending" style="color:var(--admin-blue)">
+        —
+      </div>
+    </div>
+    <div
+      class="kpi-card"
+      style="cursor:pointer;--admin-accent-glow:rgba(16,185,129,0.15)"
+      data-status-filter="resolved"
+    >
+      <div class="kpi-label">✅ 已解决</div>
+      <div class="kpi-value" id="stResolved" style="color:var(--admin-green)">
+        —
+      </div>
+    </div>
+  </div>
+
+  <!-- 筛选栏 -->
+  <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
+    <select id="statusFilter" class="admin-select">
+      <option value="">全部状态</option>
+      <option value="open">待处理</option>
+      <option value="pending">处理中</option>
+      <option value="resolved">已解决</option>
+      <option value="closed">已关闭</option>
+    </select>
+    <span id="filterInfo" style="font-size:13px;color:var(--admin-text-muted)"
+    ></span>
+  </div>
+
+  <!-- 工单表格 -->
+  <div class="admin-card admin-section">
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>工单号</th>
+            <th>用户</th>
+            <th>主题</th>
+            <th>内容预览</th>
+            <th>语言</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="ticketsBody">
+          <tr
+            ><td colspan="8" class="admin-loading"
+              ><div class="admin-spinner"></div>加载中...</td
+            ></tr
+          >
+        </tbody>
+      </table>
+    </div>
+    <div class="admin-pagination" id="ticketsPagination"></div>
+  </div>
+
+  <!-- 工单详情弹窗 -->
+  <div
+    id="ticketModal"
+    style="display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)"
+  >
+    <div
+      style="position:absolute;right:0;top:0;bottom:0;width:480px;max-width:100%;background:var(--admin-surface);border-left:1px solid var(--admin-border);padding:28px;overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,0.4)"
+    >
+      <div
+        style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px"
+      >
+        <h2 style="font-size:18px;font-weight:600" id="modalTitle">工单详情</h2>
+        <button class="admin-btn admin-btn-sm" id="modalClose" type="button"
+          >✕ 关闭</button
+        >
+      </div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var currentPage = 1;
+      var currentStatus = "";
+
+      function loadTickets(page, status) {
+        currentPage = page || 1;
+        currentStatus = status !== undefined ? status : currentStatus;
+        document.getElementById("statusFilter").value = currentStatus;
+
+        var params = new URLSearchParams();
+        params.set("page", String(currentPage));
+        params.set("limit", "20");
+        if (currentStatus) params.set("status", currentStatus);
+
+        fetch("/api/admin/support?" + params.toString())
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (res) {
+            if (!res.ok) return;
+            renderTickets(res.data.tickets);
+            renderPagination(res.data.pagination);
+            document.getElementById("filterInfo").textContent =
+              "共 " + res.data.pagination.total + " 条";
+          });
+      }
+
+      // 加载统计
+      fetch("/api/admin/support?limit=0")
+        .then(function () {
+          // 用 stats 数据更好
+          return fetch("/api/admin/stats");
+        })
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (res) {
+          if (!res.ok) return;
+          document.getElementById("stOpen").textContent =
+            res.data.openTickets || 0;
+        });
+
+      // 逐状态统计
+      ["", "open", "pending", "resolved"].forEach(function (st, idx) {
+        var params = new URLSearchParams({ limit: "1" });
+        if (st) params.set("status", st);
+        fetch("/api/admin/support?" + params.toString())
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (res) {
+            if (!res.ok) return;
+            var ids = ["stAll", "stOpen", "stPending", "stResolved"];
+            document.getElementById(ids[idx]).textContent =
+              res.data.pagination.total;
+          });
+      });
+
+      // KPI 卡片点击筛选
+      document
+        .querySelectorAll("[data-status-filter]")
+        .forEach(function (card) {
+          card.addEventListener("click", function () {
+            loadTickets(1, card.dataset.statusFilter);
+          });
+        });
+
+      function renderTickets(tickets) {
+        var tbody = document.getElementById("ticketsBody");
+        if (!tickets || !tickets.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="8" class="admin-empty">暂无工单 🎉</td></tr>';
+          return;
+        }
+        var statusMap = {
+          open: { label: "待处理", cls: "badge-amber" },
+          pending: { label: "处理中", cls: "badge-blue" },
+          resolved: { label: "已解决", cls: "badge-green" },
+          closed: { label: "已关闭", cls: "badge-gray" },
+        };
+        var topicLabels = {
+          billing: "💳 账单",
+          tryon: "💄 试妆",
+          diagnosis: "🔬 诊断",
+          account: "👤 账户",
+          cooperation: "🤝 合作",
+          other: "📋 其他",
+        };
+        var html = "";
+        tickets.forEach(function (t) {
+          var s = statusMap[t.status] || statusMap.open;
+          html += "<tr>";
+          html +=
+            '<td><span style="font-family:monospace;font-size:12px;color:var(--admin-accent-light)">' +
+            escapeHtml(t.ticket_code) +
+            "</span></td>";
+          html +=
+            '<td><span style="font-size:13px">' +
+            escapeHtml(t.name) +
+            '</span><br><span style="font-size:11px;color:var(--admin-text-dim)">' +
+            escapeHtml(t.email) +
+            "</span></td>";
+          html +=
+            "<td>" + escapeHtml(topicLabels[t.topic] || t.topic) + "</td>";
+          html +=
+            '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--admin-text-muted)">' +
+            escapeHtml(t.message.slice(0, 60)) +
+            "</td>";
+          html +=
+            '<td><span class="badge badge-gray">' +
+            escapeHtml(t.locale || "en") +
+            "</span></td>";
+          html +=
+            '<td><span class="badge ' +
+            s.cls +
+            '"><span class="badge-dot"></span>' +
+            s.label +
+            "</span></td>";
+          html +=
+            '<td style="font-size:12px;color:var(--admin-text-muted);white-space:nowrap">' +
+            getTimeAgo(t.created_at) +
+            "</td>";
+          html +=
+            '<td><button class="admin-btn admin-btn-sm" data-ticket-id="' +
+            escapeHtml(t.id) +
+            '">查看</button></td>';
+          html += "</tr>";
+        });
+        tbody.innerHTML = html;
+        tbody.querySelectorAll("[data-ticket-id]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            window.__showTicket(btn.getAttribute("data-ticket-id"));
+          });
+        });
+
+        // 存储工单数据用于弹窗
+        window.__ticketData = {};
+        tickets.forEach(function (t) {
+          window.__ticketData[t.id] = t;
+        });
+      }
+
+      function renderPagination(p) {
+        var el = document.getElementById("ticketsPagination");
+        if (!p || p.totalPages <= 1) {
+          el.innerHTML = "";
+          return;
+        }
+        var html = "<span>第 " + p.page + " / " + p.totalPages + " 页</span>";
+        html += '<div class="admin-pagination-btns">';
+        if (p.page > 1)
+          html +=
+            '<button class="admin-btn admin-btn-sm" onclick="window.__loadTickets(' +
+            (p.page - 1) +
+            ')">← 上一页</button>';
+        if (p.page < p.totalPages)
+          html +=
+            '<button class="admin-btn admin-btn-sm" onclick="window.__loadTickets(' +
+            (p.page + 1) +
+            ')">下一页 →</button>';
+        html += "</div>";
+        el.innerHTML = html;
+      }
+
+      // 工单详情弹窗
+      window.__showTicket = function (id) {
+        var t = window.__ticketData && window.__ticketData[id];
+        if (!t) return;
+        var modal = document.getElementById("ticketModal");
+        var content = document.getElementById("modalContent");
+        document.getElementById("modalTitle").textContent = t.ticket_code;
+
+        var statusOpts = ["open", "pending", "resolved", "closed"];
+        var statusLabels = {
+          open: "待处理",
+          pending: "处理中",
+          resolved: "已解决",
+          closed: "已关闭",
+        };
+        var selectHtml =
+          '<select id="ticketStatusSelect" class="admin-select" style="width:100%">';
+        statusOpts.forEach(function (s) {
+          selectHtml +=
+            '<option value="' +
+            s +
+            '"' +
+            (s === t.status ? " selected" : "") +
+            ">" +
+            statusLabels[s] +
+            "</option>";
+        });
+        selectHtml += "</select>";
+
+        content.innerHTML =
+          "" +
+          '<div style="display:flex;flex-direction:column;gap:20px">' +
+          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:4px">用户</label>' +
+          '<div style="font-size:14px">' +
+          escapeHtml(t.name) +
+          "</div>" +
+          '<div style="font-size:13px;color:var(--admin-text-dim)">' +
+          escapeHtml(t.email) +
+          "</div></div>" +
+          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:4px">主题</label>' +
+          '<div style="font-size:14px">' +
+          escapeHtml(t.topic) +
+          "</div></div>" +
+          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:4px">内容</label>' +
+          '<div style="font-size:14px;line-height:1.7;background:var(--admin-bg);padding:14px;border-radius:8px;border:1px solid var(--admin-border);white-space:pre-wrap">' +
+          escapeHtml(t.message) +
+          "</div></div>" +
+          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:4px">创建时间</label>' +
+          '<div style="font-size:13px">' +
+          new Date(t.created_at).toLocaleString("zh-CN") +
+          "</div></div>" +
+          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:8px">状态</label>' +
+          selectHtml +
+          "</div>" +
+          '<button class="admin-btn admin-btn-primary" id="updateStatusBtn" style="width:100%">更新状态</button>' +
+          '<div id="updateMsg" style="font-size:13px;text-align:center"></div>' +
+          "</div>";
+
+        modal.style.display = "block";
+
+        document
+          .getElementById("updateStatusBtn")
+          .addEventListener("click", function () {
+            var newStatus = document.getElementById("ticketStatusSelect").value;
+            var msgEl = document.getElementById("updateMsg");
+            msgEl.textContent = "更新中...";
+            msgEl.style.color = "var(--admin-text-muted)";
+
+            fetch("/api/admin/support/" + id, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ status: newStatus }),
+            })
+              .then(function (r) {
+                return r.json();
+              })
+              .then(function (res) {
+                if (res.ok) {
+                  msgEl.textContent = "✅ 已更新";
+                  msgEl.style.color = "var(--admin-green)";
+                  // 刷新列表
+                  setTimeout(function () {
+                    loadTickets(currentPage);
+                    modal.style.display = "none";
+                  }, 800);
+                } else {
+                  msgEl.textContent =
+                    "❌ 更新失败: " + (res.error?.message || "未知错误");
+                  msgEl.style.color = "var(--admin-red)";
+                }
+              })
+              .catch(function () {
+                msgEl.textContent = "❌ 网络错误";
+                msgEl.style.color = "var(--admin-red)";
+              });
+          });
+      };
+
+      // 关闭弹窗
+      document
+        .getElementById("modalClose")
+        .addEventListener("click", function () {
+          document.getElementById("ticketModal").style.display = "none";
+        });
+      document
+        .getElementById("ticketModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) this.style.display = "none";
+        });
+
+      // 筛选
+      document
+        .getElementById("statusFilter")
+        .addEventListener("change", function () {
+          loadTickets(1, this.value);
+        });
+
+      window.__loadTickets = loadTickets;
+
+      function getTimeAgo(isoStr) {
+        var d = new Date(isoStr);
+        var now = new Date();
+        var diff = (now - d) / 1000;
+        if (diff < 60) return "刚刚";
+        if (diff < 3600) return Math.floor(diff / 60) + " 分钟前";
+        if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
+        if (diff < 604800) return Math.floor(diff / 86400) + " 天前";
+        return d.toLocaleDateString("zh-CN");
+      }
+
+      function escapeHtml(s) {
+        var div = document.createElement("div");
+        div.appendChild(document.createTextNode(s || ""));
+        return div.innerHTML;
+      }
+
+      // 初始加载
+      loadTickets(1);
+    })();
+  </script>
+</AdminLayout>

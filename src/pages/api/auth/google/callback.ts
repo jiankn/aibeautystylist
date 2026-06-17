@@ -18,6 +18,7 @@ import {
   isGoogleOAuthConfigured,
   safeAuthNextPath,
 } from "../../../../lib/googleOAuth";
+import { isPrimaryAdminEmail } from "../../../../lib/adminPolicy";
 import { createProxyFetcher } from "../../../../lib/proxyFetch";
 import { getRuntimeBindings } from "../../../../lib/runtime";
 
@@ -129,6 +130,14 @@ export const GET: APIRoute = async ({ cookies, request, redirect }) => {
       if (!linkedIdentity || linkedIdentity.userId !== userId) {
         return redirect(getOAuthLoginStatusUrl("conflict", next), 302);
       }
+    }
+
+    if (isPrimaryAdminEmail(email)) {
+      await DB.prepare(
+        "UPDATE auth_accounts SET role = 'admin', password_hash = NULL, password_salt = NULL, updated_at = ? WHERE user_id = ?",
+      )
+        .bind(new Date().toISOString(), userId)
+        .run();
     }
 
     const session = await createSession(userId, DB);

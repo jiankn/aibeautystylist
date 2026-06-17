@@ -18,6 +18,7 @@ export interface PlanDefinition {
   code: PlanCode;
   title: string;
   monthlyQuota: number;
+  monthlyPriceUsd: number;
   features: PlanFeatures;
   // Stripe Price 环境变量键名（运行时从 bindings 读取真实 price id）。
   priceEnvKeys: Record<BillingInterval, string | null>;
@@ -37,6 +38,7 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
     code: "free",
     title: "Free",
     monthlyQuota: 3,
+    monthlyPriceUsd: 0,
     features: { ...NO_FEATURES, shareReward: true },
     priceEnvKeys: { monthly: null, yearly: null },
   },
@@ -44,6 +46,7 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
     code: "pro",
     title: "Pro",
     monthlyQuota: 70,
+    monthlyPriceUsd: 19.99,
     features: {
       ...NO_FEATURES,
       tutorials: true,
@@ -58,6 +61,7 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
     code: "premium",
     title: "Premium",
     monthlyQuota: 150,
+    monthlyPriceUsd: 39.99,
     features: {
       ...NO_FEATURES,
       tutorials: true,

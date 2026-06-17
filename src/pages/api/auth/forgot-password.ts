@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 
+import { isPasswordAuthDisabledEmail } from "../../../lib/adminPolicy";
 import { getAccountByEmail, normalizeEmail } from "../../../lib/accounts";
 import { sendPasswordResetEmail } from "../../../lib/authEmails";
 import { createOneTimeToken } from "../../../lib/authSession";
@@ -28,6 +29,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
   if (!DB || !email) return genericOk();
+  if (isPasswordAuthDisabledEmail(email)) return genericOk();
 
   // 速率限制：每 IP 15 分钟内最多 5 次密码重置请求。
   const ip = getClientIp(request);

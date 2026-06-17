@@ -5,6 +5,7 @@ import {
   getAccountByEmail,
   normalizeEmail,
 } from "../../../lib/accounts";
+import { isPasswordAuthDisabledEmail } from "../../../lib/adminPolicy";
 import { sendVerificationEmail } from "../../../lib/authEmails";
 import { createOneTimeToken } from "../../../lib/authSession";
 import { apiError, apiSuccess } from "../../../lib/http";
@@ -36,6 +37,16 @@ export const POST: APIRoute = async ({ request }) => {
         retryable: false,
       },
       422,
+    );
+  }
+  if (isPasswordAuthDisabledEmail(email)) {
+    return apiError(
+      {
+        code: "OAUTH_REQUIRED",
+        message: "该管理员邮箱仅支持 Google 登录",
+        retryable: false,
+      },
+      403,
     );
   }
   if (!validatePasswordStrength(password)) {

@@ -5,6 +5,7 @@ import {
   markEmailVerified,
   setAccountPassword,
 } from "../../../lib/accounts";
+import { isPasswordAuthDisabledEmail } from "../../../lib/adminPolicy";
 import {
   consumeOneTimeToken,
   createSession,
@@ -59,11 +60,22 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     );
   }
 
+  const account = await getAccountByUserId(userId, DB);
+  if (account && isPasswordAuthDisabledEmail(account.email)) {
+    return apiError(
+      {
+        code: "OAUTH_REQUIRED",
+        message: "该管理员账号仅支持 Google 登录",
+        retryable: false,
+      },
+      403,
+    );
+  }
+
   const { hash, salt } = await hashPassword(password);
   await setAccountPassword(userId, hash, salt, DB);
 
   // 重置成功视为邮箱可达，确保账户可登录；并直接建立会话。
-  const account = await getAccountByUserId(userId, DB);
   if (account && !account.emailVerifiedAt) {
     await markEmailVerified(userId, DB);
   }
