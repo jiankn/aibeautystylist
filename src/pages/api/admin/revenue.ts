@@ -106,6 +106,11 @@ export const GET: APIRoute = async ({ cookies, url }) => {
   ]);
 
   return apiSuccess({
+    generatedAt: now,
+    period: {
+      days,
+      since,
+    },
     planDistribution: planDistribution.results ?? [],
     subscriptionsByDay: subscriptionsByDay.results ?? [],
     statusDistribution: statusDistribution.results ?? [],

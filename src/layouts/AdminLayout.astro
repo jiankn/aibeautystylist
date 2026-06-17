@@ -44,17 +44,18 @@ const navItems = [
       }
 
       :root {
-        --admin-bg: #0a0a1a;
-        --admin-surface: #12122a;
-        --admin-surface-hover: #1a1a3a;
-        --admin-border: rgba(139, 92, 246, 0.15);
-        --admin-border-strong: rgba(139, 92, 246, 0.3);
+        --admin-bg: #0b0f14;
+        --admin-surface: #121821;
+        --admin-surface-elevated: #17202b;
+        --admin-surface-hover: #1b2633;
+        --admin-border: rgba(148, 163, 184, 0.16);
+        --admin-border-strong: rgba(148, 163, 184, 0.3);
         --admin-text: #e2e8f0;
         --admin-text-muted: #94a3b8;
         --admin-text-dim: #64748b;
-        --admin-accent: #8b5cf6;
-        --admin-accent-light: #a78bfa;
-        --admin-accent-glow: rgba(139, 92, 246, 0.2);
+        --admin-accent: #38bdf8;
+        --admin-accent-light: #7dd3fc;
+        --admin-accent-glow: rgba(56, 189, 248, 0.16);
         --admin-pink: #ec4899;
         --admin-green: #10b981;
         --admin-amber: #f59e0b;
@@ -78,6 +79,21 @@ const navItems = [
         -webkit-font-smoothing: antialiased;
       }
 
+      a,
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 2px solid var(--admin-accent-light);
+        outline-offset: 2px;
+      }
+
       /* ========== 布局网格 ========== */
       .admin-shell {
         display: grid;
@@ -89,7 +105,7 @@ const navItems = [
       /* ========== 侧边栏 ========== */
       .admin-sidebar {
         grid-row: 1 / -1;
-        background: linear-gradient(180deg, #0f0f2a 0%, #0a0a1e 100%);
+        background: linear-gradient(180deg, #101721 0%, #0b0f14 100%);
         border-right: 1px solid var(--admin-border);
         padding: 0;
         display: flex;
@@ -113,16 +129,15 @@ const navItems = [
       .sidebar-brand-icon {
         width: 32px;
         height: 32px;
-        background: linear-gradient(
-          135deg,
-          var(--admin-accent),
-          var(--admin-pink)
-        );
+        background: rgba(56, 189, 248, 0.1);
+        border: 1px solid rgba(125, 211, 252, 0.28);
         border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        color: var(--admin-accent-light);
+        font-size: 12px;
+        font-weight: 800;
         flex-shrink: 0;
       }
 
@@ -207,7 +222,7 @@ const navItems = [
 
       /* ========== 顶栏 ========== */
       .admin-topbar {
-        background: rgba(10, 10, 26, 0.8);
+        background: rgba(11, 15, 20, 0.86);
         backdrop-filter: blur(20px);
         border-bottom: 1px solid var(--admin-border);
         display: flex;
@@ -240,22 +255,35 @@ const navItems = [
         font-weight: 500;
       }
 
+      .topbar-account {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .topbar-account-email {
+        max-width: 180px;
+        overflow: hidden;
+        color: var(--admin-text-muted);
+        font-size: 12px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
       .topbar-avatar {
         width: 34px;
         height: 34px;
-        border-radius: 50%;
-        background: linear-gradient(
-          135deg,
-          var(--admin-accent),
-          var(--admin-pink)
-        );
+        border-radius: 8px;
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(125, 211, 252, 0.28);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 14px;
         font-weight: 600;
-        color: #fff;
-        cursor: pointer;
+        color: var(--admin-accent-light);
       }
 
       /* ========== 主内容 ========== */
@@ -263,6 +291,106 @@ const navItems = [
         padding: 28px;
         overflow-y: auto;
         background: var(--admin-bg);
+      }
+
+      .admin-page-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .admin-page-kicker {
+        color: var(--admin-accent-light);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .admin-page-title {
+        margin-top: 4px;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .admin-page-description {
+        max-width: 760px;
+        margin-top: 6px;
+        color: var(--admin-text-muted);
+        font-size: 13px;
+      }
+
+      .admin-meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        margin-bottom: 18px;
+        color: var(--admin-text-dim);
+        font-size: 12px;
+      }
+
+      .admin-last-updated {
+        color: var(--admin-text-muted);
+      }
+
+      .admin-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .admin-toolbar-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .admin-status-banner {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 18px;
+        padding: 12px 14px;
+        border: 1px solid var(--admin-border);
+        border-radius: var(--admin-radius-sm);
+        background: rgba(148, 163, 184, 0.08);
+        color: var(--admin-text-muted);
+        font-size: 13px;
+      }
+
+      .admin-status-banner[hidden] {
+        display: none;
+      }
+
+      .admin-status-banner.error {
+        border-color: rgba(239, 68, 68, 0.35);
+        background: rgba(239, 68, 68, 0.08);
+        color: #fecaca;
+      }
+
+      .admin-status-banner.success {
+        border-color: rgba(16, 185, 129, 0.35);
+        background: rgba(16, 185, 129, 0.08);
+        color: #bbf7d0;
+      }
+
+      .admin-status-banner.warning {
+        border-color: rgba(245, 158, 11, 0.35);
+        background: rgba(245, 158, 11, 0.08);
+        color: #fde68a;
+      }
+
+      .admin-status-banner.loading {
+        border-color: var(--admin-border);
+        background: rgba(56, 189, 248, 0.08);
+        color: var(--admin-accent-light);
       }
 
       /* ========== 通用卡片 ========== */
@@ -299,7 +427,7 @@ const navItems = [
         background: linear-gradient(
           135deg,
           var(--admin-surface) 0%,
-          rgba(139, 92, 246, 0.06) 100%
+          rgba(56, 189, 248, 0.05) 100%
         );
         border: 1px solid var(--admin-border);
         border-radius: var(--admin-radius);
@@ -321,6 +449,14 @@ const navItems = [
           transparent 70%
         );
         opacity: 0.5;
+      }
+
+      button.kpi-card {
+        width: 100%;
+        color: inherit;
+        cursor: pointer;
+        font: inherit;
+        text-align: left;
       }
 
       .kpi-label {
@@ -386,13 +522,13 @@ const navItems = [
         text-transform: uppercase;
         letter-spacing: 0.08em;
         border-bottom: 1px solid var(--admin-border);
-        background: rgba(139, 92, 246, 0.04);
+        background: rgba(148, 163, 184, 0.06);
         white-space: nowrap;
       }
 
       .admin-table td {
         padding: 12px 16px;
-        border-bottom: 1px solid rgba(139, 92, 246, 0.08);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
         color: var(--admin-text);
         vertical-align: middle;
       }
@@ -494,10 +630,15 @@ const navItems = [
         border-color: var(--admin-border-strong);
       }
 
+      .admin-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
       .admin-btn-primary {
         background: var(--admin-accent);
         border-color: var(--admin-accent);
-        color: #fff;
+        color: #061018;
       }
 
       .admin-btn-primary:hover {
@@ -508,6 +649,16 @@ const navItems = [
       .admin-btn-sm {
         padding: 5px 10px;
         font-size: 12px;
+      }
+
+      .admin-btn-danger {
+        border-color: rgba(239, 68, 68, 0.45);
+        color: #fecaca;
+      }
+
+      .admin-btn-danger:hover {
+        background: rgba(239, 68, 68, 0.12);
+        border-color: rgba(239, 68, 68, 0.7);
       }
 
       /* ========== 输入框 ========== */
@@ -613,6 +764,141 @@ const navItems = [
         font-size: 14px;
       }
 
+      .admin-empty strong {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--admin-text);
+        font-size: 14px;
+      }
+
+      .admin-empty small {
+        display: block;
+        color: var(--admin-text-dim);
+        font-size: 12px;
+      }
+
+      .admin-action-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .admin-action-item {
+        display: grid;
+        grid-template-columns: 10px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border: 1px solid var(--admin-border);
+        border-radius: var(--admin-radius-sm);
+        background: rgba(148, 163, 184, 0.05);
+      }
+
+      .admin-action-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--admin-green);
+      }
+
+      .admin-action-dot.warning {
+        background: var(--admin-amber);
+      }
+
+      .admin-action-dot.danger {
+        background: var(--admin-red);
+      }
+
+      .admin-action-title {
+        color: var(--admin-text);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .admin-action-copy {
+        color: var(--admin-text-muted);
+        font-size: 12px;
+      }
+
+      .admin-drawer-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.58);
+        backdrop-filter: blur(4px);
+      }
+
+      .admin-drawer-backdrop.open {
+        display: block;
+      }
+
+      .admin-drawer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 520px;
+        max-width: 100%;
+        overflow-y: auto;
+        border-left: 1px solid var(--admin-border);
+        background: var(--admin-surface);
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.42);
+      }
+
+      .admin-drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 22px 24px;
+        border-bottom: 1px solid var(--admin-border);
+      }
+
+      .admin-drawer-title {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .admin-drawer-body {
+        display: grid;
+        gap: 18px;
+        padding: 24px;
+      }
+
+      .admin-detail-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .admin-detail-row {
+        display: grid;
+        grid-template-columns: 128px 1fr;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+        font-size: 13px;
+      }
+
+      .admin-detail-row dt {
+        color: var(--admin-text-muted);
+      }
+
+      .admin-detail-row dd {
+        color: var(--admin-text);
+        min-width: 0;
+        word-break: break-word;
+      }
+
+      .admin-muted {
+        color: var(--admin-text-muted);
+      }
+
+      .admin-code {
+        color: var(--admin-accent-light);
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 12px;
+      }
+
       /* ========== Pagination ========== */
       .admin-pagination {
         display: flex;
@@ -704,8 +990,21 @@ const navItems = [
         background: linear-gradient(
           90deg,
           var(--admin-accent),
-          var(--admin-pink)
+          var(--admin-teal)
         );
+      }
+
+      @media (max-width: 900px) {
+        .admin-page-header,
+        .admin-toolbar {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .topbar-account-email,
+        .topbar-badge {
+          display: none;
+        }
       }
     </style>
   </head>
@@ -714,7 +1013,7 @@ const navItems = [
       <!-- 侧边栏 -->
       <aside class="admin-sidebar" id="adminSidebar">
         <a href="/admin" class="sidebar-brand">
-          <span class="sidebar-brand-icon">✨</span>
+          <span class="sidebar-brand-icon">AB</span>
           <span class="sidebar-brand-text">
             AI Beauty Stylist
             <small>Admin Console</small>
@@ -726,6 +1025,7 @@ const navItems = [
               <a
                 href={item.href}
                 class:list={[{ active: activeNav === item.id }]}
+                aria-current={activeNav === item.id ? "page" : undefined}
               >
                 <span class="nav-icon">
                   {item.icon === "chart" && (
@@ -809,9 +1109,17 @@ const navItems = [
           <a
             href="/"
             class="admin-btn admin-btn-sm"
-            style="text-decoration:none">← 返回网站</a
+            style="text-decoration:none">返回网站</a
           >
-          <div class="topbar-avatar">A</div>
+          <div class="topbar-account" data-admin-account>
+            <div class="topbar-avatar" data-admin-avatar>A</div>
+            <span class="topbar-account-email" data-admin-email>Admin</span>
+            <button
+              class="admin-btn admin-btn-sm admin-btn-danger"
+              id="adminLogout"
+              type="button">退出</button
+            >
+          </div>
         </div>
       </header>
 
@@ -826,6 +1134,9 @@ const navItems = [
       (function () {
         var btn = document.getElementById("mobileMenuBtn");
         var sidebar = document.getElementById("adminSidebar");
+        var logoutBtn = document.getElementById("adminLogout");
+        var emailEl = document.querySelector("[data-admin-email]");
+        var avatarEl = document.querySelector("[data-admin-avatar]");
         if (btn && sidebar) {
           btn.addEventListener("click", function () {
             sidebar.classList.toggle("open");
@@ -834,6 +1145,32 @@ const navItems = [
             if (!sidebar.contains(e.target) && !btn.contains(e.target)) {
               sidebar.classList.remove("open");
             }
+          });
+        }
+
+        fetch("/api/session")
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (body) {
+            var email = body && body.data && body.data.user?.email;
+            if (!email) return;
+            if (emailEl) emailEl.textContent = email;
+            if (avatarEl)
+              avatarEl.textContent = email.slice(0, 1).toUpperCase();
+          })
+          .catch(function () {});
+
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", function () {
+            logoutBtn.disabled = true;
+            logoutBtn.textContent = "退出中";
+            fetch("/api/auth/logout", { method: "POST" })
+              .catch(function () {})
+              .finally(function () {
+                window.location.href =
+                  "/login?next=" + encodeURIComponent(window.location.pathname);
+              });
           });
         }
       })();

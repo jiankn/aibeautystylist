@@ -70,6 +70,10 @@ export const GET: APIRoute = async ({ cookies, url }) => {
     }>();
 
   return apiSuccess({
+    generatedAt: new Date().toISOString(),
+    filters: {
+      status: status || "all",
+    },
     tickets: rows.results ?? [],
     pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
   });

@@ -22,58 +22,78 @@ if (!auth.authorized) {
 ---
 
 <AdminLayout title="用户管理" activeNav="users">
-  <!-- 搜索筛选栏 -->
-  <div
-    style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center"
-  >
-    <input
-      type="text"
-      id="userSearch"
-      class="admin-input"
-      placeholder="搜索邮箱..."
-      style="min-width:260px;flex:1"
-    />
-    <select id="planFilter" class="admin-select">
-      <option value="">全部计划</option>
-      <option value="free">Free</option>
-      <option value="pro">Pro</option>
-      <option value="premium">Premium</option>
-    </select>
-    <button class="admin-btn" id="searchBtn">搜索</button>
+  <section class="admin-page-header">
+    <div>
+      <div class="admin-page-kicker">User Operations</div>
+      <h2 class="admin-page-title">用户管理</h2>
+      <p class="admin-page-description">
+        用于排查用户计划、额度消耗、订阅状态和最近试妆活动；暂不提供高风险人工改账户操作。
+      </p>
+    </div>
+    <button class="admin-btn" id="usersRefresh" type="button">刷新</button>
+  </section>
+
+  <div class="admin-meta-row">
+    <span
+      >数据口径：每位用户取当前最高有效订阅；本月用量来自 usage_records
+      reserve。</span
+    >
+    <span>最后更新：<b class="admin-last-updated" id="usersUpdated">—</b></span>
   </div>
 
-  <!-- 用户分布 KPI -->
+  <div class="admin-status-banner loading" id="usersStatus" role="status">
+    <span data-status-text>正在加载用户数据...</span>
+    <button class="admin-btn admin-btn-sm" id="usersRetry" type="button" hidden>
+      重试
+    </button>
+  </div>
+
+  <div class="admin-toolbar">
+    <div class="admin-toolbar-actions" style="flex:1">
+      <input
+        type="text"
+        id="userSearch"
+        class="admin-input"
+        placeholder="搜索邮箱..."
+        style="min-width:260px;flex:1"
+      />
+      <select id="planFilter" class="admin-select">
+        <option value="">全部计划</option>
+        <option value="free">Free</option>
+        <option value="pro">Pro</option>
+        <option value="premium">Premium</option>
+      </select>
+      <button class="admin-btn admin-btn-primary" id="searchBtn" type="button">
+        搜索
+      </button>
+    </div>
+  </div>
+
   <div
     class="kpi-grid"
     id="userKpiGrid"
-    style="grid-template-columns:repeat(4,1fr)"
+    style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))"
   >
     <div class="kpi-card">
-      <div class="kpi-label">总用户</div><div class="kpi-value" id="ukTotal">
-        —
-      </div>
+      <div class="kpi-label">总用户</div>
+      <div class="kpi-value" id="ukTotal">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Free 用户</div><div class="kpi-value" id="ukFree">
-        —
-      </div>
+      <div class="kpi-label">Free 用户</div>
+      <div class="kpi-value" id="ukFree">—</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Pro 用户</div><div class="kpi-value" id="ukPro">
-        —
-      </div><span class="badge badge-purple" style="margin-top:4px">付费</span>
+      <div class="kpi-label">Pro 用户</div>
+      <div class="kpi-value" id="ukPro">—</div>
+      <span class="badge badge-purple" style="margin-top:4px">付费</span>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Premium 用户</div><div
-        class="kpi-value"
-        id="ukPremium"
-      >
-        —
-      </div><span class="badge badge-amber" style="margin-top:4px">付费</span>
+      <div class="kpi-label">Premium 用户</div>
+      <div class="kpi-value" id="ukPremium">—</div>
+      <span class="badge badge-amber" style="margin-top:4px">付费</span>
     </div>
   </div>
 
-  <!-- 用户表格 -->
   <div class="admin-card admin-section">
     <div class="admin-table-wrap">
       <table class="admin-table">
@@ -85,11 +105,12 @@ if (!auth.authorized) {
             <th>本月用量</th>
             <th>试妆次数</th>
             <th>注册时间</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody id="usersBody">
           <tr
-            ><td colspan="6" class="admin-loading"
+            ><td colspan="7" class="admin-loading"
               ><div class="admin-spinner"></div>加载中...</td
             ></tr
           >
@@ -99,16 +120,95 @@ if (!auth.authorized) {
     <div class="admin-pagination" id="usersPagination"></div>
   </div>
 
+  <div class="admin-drawer-backdrop" id="userDrawerBackdrop" aria-hidden="true">
+    <aside
+      class="admin-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="userDrawerTitle"
+    >
+      <div class="admin-drawer-header">
+        <div>
+          <div class="admin-page-kicker">User Detail</div>
+          <h2 class="admin-drawer-title" id="userDrawerTitle">用户详情</h2>
+        </div>
+        <button
+          class="admin-btn admin-btn-sm"
+          id="userDrawerClose"
+          type="button"
+        >
+          关闭
+        </button>
+      </div>
+      <div class="admin-drawer-body" id="userDrawerBody"></div>
+    </aside>
+  </div>
+
   <script is:inline>
     (function () {
       var currentPage = 1;
       var currentSearch = "";
       var currentPlan = "";
+      var hasLoadedUsers = false;
+      var refreshBtn = document.getElementById("usersRefresh");
+      var retryBtn = document.getElementById("usersRetry");
+      var statusEl = document.getElementById("usersStatus");
+      var statusTextEl = statusEl?.querySelector("[data-status-text]");
+      var updatedEl = document.getElementById("usersUpdated");
+      var drawer = document.getElementById("userDrawerBackdrop");
+      var drawerBody = document.getElementById("userDrawerBody");
+      var drawerTitle = document.getElementById("userDrawerTitle");
+      var userDataById = {};
+
+      refreshBtn?.addEventListener("click", function () {
+        refreshAll(currentPage);
+      });
+      retryBtn?.addEventListener("click", function () {
+        refreshAll(currentPage);
+      });
+
+      document
+        .getElementById("searchBtn")
+        .addEventListener("click", function () {
+          refreshAll(1);
+        });
+      document
+        .getElementById("userSearch")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "Enter") refreshAll(1);
+        });
+      document
+        .getElementById("planFilter")
+        .addEventListener("change", function () {
+          refreshAll(1);
+        });
+
+      document
+        .getElementById("userDrawerClose")
+        .addEventListener("click", closeDrawer);
+      drawer.addEventListener("click", function (event) {
+        if (event.target === drawer) closeDrawer();
+      });
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeDrawer();
+      });
+
+      window.__loadUsers = loadUsers;
+      window.__showUser = showUser;
+      refreshAll(1);
+
+      function refreshAll(page) {
+        loadStats();
+        loadUsers(page || 1);
+      }
 
       function loadUsers(page) {
         currentPage = page || 1;
         currentSearch = document.getElementById("userSearch").value.trim();
         currentPlan = document.getElementById("planFilter").value;
+        if (refreshBtn) refreshBtn.disabled = true;
+        setStatus("loading", "正在加载用户数据...", false);
+        setTableLoading();
 
         var params = new URLSearchParams();
         params.set("page", String(currentPage));
@@ -117,45 +217,67 @@ if (!auth.authorized) {
         if (currentPlan) params.set("plan", currentPlan);
 
         fetch("/api/admin/users?" + params.toString())
-          .then(function (r) {
-            return r.json();
+          .then(function (response) {
+            return response.json().then(function (body) {
+              return { ok: response.ok, body: body };
+            });
           })
-          .then(function (res) {
-            if (!res.ok) return;
-            renderUsers(res.data.users);
-            renderPagination(res.data.pagination);
+          .then(function (payload) {
+            if (!payload.ok || !payload.body?.ok) {
+              throw new Error(
+                payload.body?.error?.message || "用户列表加载失败。",
+              );
+            }
+            renderUsers(payload.body.data.users || []);
+            renderPagination(payload.body.data.pagination);
+            setUpdatedAt(payload.body.data.generatedAt);
+            setStatus("", "", false);
+            hasLoadedUsers = true;
           })
-          .catch(function (e) {
-            console.error(e);
+          .catch(function (err) {
+            setStatus(
+              "error",
+              err?.message || "用户数据加载失败，请稍后重试。",
+              true,
+            );
+            if (!hasLoadedUsers) renderUsers([]);
+          })
+          .finally(function () {
+            if (refreshBtn) refreshBtn.disabled = false;
           });
       }
 
-      // 加载KPI统计
-      fetch("/api/admin/stats")
-        .then(function (r) {
-          return r.json();
-        })
-        .then(function (res) {
-          if (!res.ok) return;
-          var d = res.data;
-          document.getElementById("ukTotal").textContent = formatNum(
-            d.totalUsers,
-          );
-          var free = d.totalUsers - d.proSubscriptions - d.premiumSubscriptions;
-          document.getElementById("ukFree").textContent = formatNum(free);
-          document.getElementById("ukPro").textContent = formatNum(
-            d.proSubscriptions,
-          );
-          document.getElementById("ukPremium").textContent = formatNum(
-            d.premiumSubscriptions,
-          );
-        });
+      function loadStats() {
+        fetch("/api/admin/stats")
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (res) {
+            if (!res.ok) return;
+            var d = res.data;
+            document.getElementById("ukTotal").textContent = formatNum(
+              d.totalUsers,
+            );
+            var free =
+              d.totalUsers - d.proSubscriptions - d.premiumSubscriptions;
+            document.getElementById("ukFree").textContent = formatNum(free);
+            document.getElementById("ukPro").textContent = formatNum(
+              d.proSubscriptions,
+            );
+            document.getElementById("ukPremium").textContent = formatNum(
+              d.premiumSubscriptions,
+            );
+          })
+          .catch(function () {});
+      }
 
       function renderUsers(users) {
         var tbody = document.getElementById("usersBody");
+        userDataById = {};
         if (!users || !users.length) {
           tbody.innerHTML =
-            '<tr><td colspan="6" class="admin-empty">未找到用户</td></tr>';
+            '<tr><td colspan="7" class="admin-empty"><strong>未找到用户</strong><small>调整搜索词或计划筛选后重试。</small></td></tr>';
+          document.getElementById("usersPagination").innerHTML = "";
           return;
         }
         var planBadges = {
@@ -178,8 +300,9 @@ if (!auth.authorized) {
 
         var html = "";
         users.forEach(function (u) {
+          userDataById[u.id] = u;
           var plan = u.plan_code || "free";
-          var quotaTotal = plan === "premium" ? 150 : plan === "pro" ? 70 : 3;
+          var quotaTotal = getQuota(plan);
           var used = Math.max(0, Number(u.monthly_used) || 0);
           var pct = Math.min(100, (used / quotaTotal) * 100);
           var pctColor =
@@ -195,7 +318,7 @@ if (!auth.authorized) {
             escapeHtml(u.email || "Anonymous") +
             "</span><br>";
           html +=
-            '<span style="font-size:11px;color:var(--admin-text-dim);font-family:monospace">' +
+            '<span class="admin-code">' +
             escapeHtml((u.id || "").slice(0, 8)) +
             "...</span></td>";
           html += "<td>" + (planBadges[plan] || planBadges.free) + "</td>";
@@ -218,9 +341,18 @@ if (!auth.authorized) {
             '<td style="color:var(--admin-text-muted);font-size:12px;white-space:nowrap">' +
             formatDate(u.created_at) +
             "</td>";
+          html +=
+            '<td><button class="admin-btn admin-btn-sm" type="button" data-user-id="' +
+            escapeHtml(u.id) +
+            '">查看</button></td>';
           html += "</tr>";
         });
         tbody.innerHTML = html;
+        tbody.querySelectorAll("[data-user-id]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            showUser(btn.getAttribute("data-user-id"));
+          });
+        });
       }
 
       function renderPagination(p) {
@@ -238,23 +370,123 @@ if (!auth.authorized) {
           p.total +
           " 条</span>";
         html += '<div class="admin-pagination-btns">';
-        if (p.page > 1)
+        if (p.page > 1) {
           html +=
             '<button class="admin-btn admin-btn-sm" onclick="window.__loadUsers(' +
             (p.page - 1) +
-            ')">← 上一页</button>';
-        if (p.page < p.totalPages)
+            ')">上一页</button>';
+        }
+        if (p.page < p.totalPages) {
           html +=
             '<button class="admin-btn admin-btn-sm" onclick="window.__loadUsers(' +
             (p.page + 1) +
-            ')">下一页 →</button>';
+            ')">下一页</button>';
+        }
         html += "</div>";
         el.innerHTML = html;
       }
 
+      function showUser(id) {
+        var u = userDataById[id];
+        if (!u) return;
+        var plan = u.plan_code || "free";
+        var quotaTotal = getQuota(plan);
+        var used = Math.max(0, Number(u.monthly_used) || 0);
+        var pct = Math.min(100, (used / quotaTotal) * 100);
+        drawerTitle.textContent = u.email || "Anonymous";
+        drawerBody.innerHTML =
+          '<dl class="admin-detail-grid">' +
+          detailRow("邮箱", escapeHtml(u.email || "Anonymous")) +
+          detailRow(
+            "用户 ID",
+            '<span class="admin-code">' + escapeHtml(u.id) + "</span>",
+          ) +
+          detailRow("计划", escapeHtml(plan.toUpperCase())) +
+          detailRow("订阅状态", escapeHtml(u.subscription_status || "none")) +
+          detailRow("注册时间", escapeHtml(formatDateTime(u.created_at))) +
+          detailRow(
+            "最近试妆",
+            escapeHtml(
+              u.last_tryon_at ? formatDateTime(u.last_tryon_at) : "暂无记录",
+            ),
+          ) +
+          detailRow(
+            "试妆次数",
+            escapeHtml(String(Number(u.tryon_count) || 0)),
+          ) +
+          "</dl>" +
+          '<div class="admin-card" style="padding:16px;background:var(--admin-bg)">' +
+          '<div class="admin-card-title">本月额度</div>' +
+          '<div style="display:flex;align-items:center;gap:12px;margin-top:10px">' +
+          '<div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:' +
+          pct +
+          '%"></div></div>' +
+          '<span style="font-size:13px;color:var(--admin-text-muted)">' +
+          used +
+          " / " +
+          quotaTotal +
+          "</span>" +
+          "</div>" +
+          '<p class="admin-muted" style="font-size:12px;margin-top:10px">当前仅展示运营诊断数据；账户变更建议通过支付后台或受控 API 完成。</p>' +
+          "</div>" +
+          '<div class="admin-toolbar-actions">' +
+          '<button class="admin-btn admin-btn-sm" type="button" data-copy-email>复制邮箱</button>' +
+          '<a class="admin-btn admin-btn-sm" style="text-decoration:none" href="/admin/support">查看工单</a>' +
+          "</div>";
+        drawer.classList.add("open");
+        drawer.setAttribute("aria-hidden", "false");
+        drawer
+          .querySelector("[data-copy-email]")
+          ?.addEventListener("click", function () {
+            var email = u.email || "";
+            if (!email) return;
+            navigator.clipboard?.writeText(email).catch(function () {});
+          });
+      }
+
+      function closeDrawer() {
+        drawer.classList.remove("open");
+        drawer.setAttribute("aria-hidden", "true");
+      }
+
+      function detailRow(label, value) {
+        return (
+          '<div class="admin-detail-row"><dt>' +
+          escapeHtml(label) +
+          "</dt><dd>" +
+          value +
+          "</dd></div>"
+        );
+      }
+
+      function setTableLoading() {
+        document.getElementById("usersBody").innerHTML =
+          '<tr><td colspan="7" class="admin-loading"><div class="admin-spinner"></div>加载中...</td></tr>';
+      }
+
+      function setStatus(type, message, retryable) {
+        if (!statusEl || !statusTextEl) return;
+        statusEl.className = "admin-status-banner" + (type ? " " + type : "");
+        statusEl.hidden = !type;
+        statusTextEl.textContent = message;
+        if (retryBtn) retryBtn.hidden = !retryable;
+      }
+
+      function setUpdatedAt(iso) {
+        var d = iso ? new Date(iso) : new Date();
+        if (updatedEl) updatedEl.textContent = d.toLocaleString("zh-CN");
+      }
+
+      function getQuota(plan) {
+        if (plan === "premium") return 150;
+        if (plan === "pro") return 70;
+        return 3;
+      }
+
       function formatNum(n) {
+        n = Number(n) || 0;
         if (n >= 1000) return (n / 1000).toFixed(1) + "K";
-        return String(n || 0);
+        return String(n);
       }
 
       function formatDate(iso) {
@@ -266,34 +498,16 @@ if (!auth.authorized) {
         });
       }
 
+      function formatDateTime(iso) {
+        if (!iso) return "—";
+        return new Date(iso).toLocaleString("zh-CN");
+      }
+
       function escapeHtml(s) {
         var div = document.createElement("div");
         div.appendChild(document.createTextNode(s || ""));
         return div.innerHTML;
       }
-
-      // 搜索事件
-      document
-        .getElementById("searchBtn")
-        .addEventListener("click", function () {
-          loadUsers(1);
-        });
-      document
-        .getElementById("userSearch")
-        .addEventListener("keydown", function (e) {
-          if (e.key === "Enter") loadUsers(1);
-        });
-      document
-        .getElementById("planFilter")
-        .addEventListener("change", function () {
-          loadUsers(1);
-        });
-
-      // 暴露翻页函数
-      window.__loadUsers = loadUsers;
-
-      // 初始加载
-      loadUsers(1);
     })();
   </script>
 </AdminLayout>

@@ -143,6 +143,15 @@ export const GET: APIRoute = async ({ cookies }) => {
   const aiCostMicros = Number(monthlyAiCost?.total ?? 0);
 
   return apiSuccess({
+    generatedAt: now.toISOString(),
+    period: {
+      aiCostSince: monthStart,
+      userGrowthDays: 14,
+      newUsersSince: {
+        day: dayAgo,
+        week: weekAgo,
+      },
+    },
     totalUsers: Number(totalUsers?.cnt ?? 0),
     newUsersToday: Number(newUsersToday?.cnt ?? 0),
     newUsersWeek: Number(newUsersWeek?.cnt ?? 0),

@@ -22,58 +22,96 @@ if (!auth.authorized) {
 ---
 
 <AdminLayout title="工单管理" activeNav="support">
-  <!-- 统计 KPI -->
-  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
-    <div class="kpi-card" style="cursor:pointer" data-status-filter="">
+  <section class="admin-page-header">
+    <div>
+      <div class="admin-page-kicker">Support Operations</div>
+      <h2 class="admin-page-title">工单管理</h2>
+      <p class="admin-page-description">
+        以 open 和 pending
+        为优先级处理用户支持请求；状态更新会写入管理员审计日志。
+      </p>
+    </div>
+    <button class="admin-btn" id="supportRefresh" type="button">刷新</button>
+  </section>
+
+  <div class="admin-meta-row">
+    <span
+      >数据口径：open 为待处理，pending 为处理中，resolved/closed 不进入待办。</span
+    >
+    <span
+      >最后更新：<b class="admin-last-updated" id="supportUpdated">—</b></span
+    >
+  </div>
+
+  <div class="admin-status-banner loading" id="supportStatus" role="status">
+    <span data-status-text>正在加载工单数据...</span>
+    <button
+      class="admin-btn admin-btn-sm"
+      id="supportRetry"
+      type="button"
+      hidden
+    >
+      重试
+    </button>
+  </div>
+
+  <div
+    class="kpi-grid"
+    style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))"
+  >
+    <button class="kpi-card" type="button" data-status-filter="">
       <div class="kpi-label">全部工单</div>
       <div class="kpi-value" id="stAll">—</div>
-    </div>
-    <div
+    </button>
+    <button
       class="kpi-card"
-      style="cursor:pointer;--admin-accent-glow:rgba(245,158,11,0.15)"
+      type="button"
+      style="--admin-accent-glow:rgba(245,158,11,0.15)"
       data-status-filter="open"
     >
-      <div class="kpi-label">⏳ 待处理</div>
+      <div class="kpi-label">待处理</div>
       <div class="kpi-value" id="stOpen" style="color:var(--admin-amber)">
         —
       </div>
-    </div>
-    <div
+    </button>
+    <button
       class="kpi-card"
-      style="cursor:pointer;--admin-accent-glow:rgba(59,130,246,0.15)"
+      type="button"
+      style="--admin-accent-glow:rgba(59,130,246,0.15)"
       data-status-filter="pending"
     >
-      <div class="kpi-label">🔄 处理中</div>
+      <div class="kpi-label">处理中</div>
       <div class="kpi-value" id="stPending" style="color:var(--admin-blue)">
         —
       </div>
-    </div>
-    <div
+    </button>
+    <button
       class="kpi-card"
-      style="cursor:pointer;--admin-accent-glow:rgba(16,185,129,0.15)"
+      type="button"
+      style="--admin-accent-glow:rgba(16,185,129,0.15)"
       data-status-filter="resolved"
     >
-      <div class="kpi-label">✅ 已解决</div>
+      <div class="kpi-label">已解决</div>
       <div class="kpi-value" id="stResolved" style="color:var(--admin-green)">
         —
       </div>
+    </button>
+  </div>
+
+  <div class="admin-toolbar">
+    <div class="admin-toolbar-actions">
+      <select id="statusFilter" class="admin-select">
+        <option value="">全部状态</option>
+        <option value="open">待处理</option>
+        <option value="pending">处理中</option>
+        <option value="resolved">已解决</option>
+        <option value="closed">已关闭</option>
+      </select>
+      <span id="filterInfo" style="font-size:13px;color:var(--admin-text-muted)"
+      ></span>
     </div>
   </div>
 
-  <!-- 筛选栏 -->
-  <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
-    <select id="statusFilter" class="admin-select">
-      <option value="">全部状态</option>
-      <option value="open">待处理</option>
-      <option value="pending">处理中</option>
-      <option value="resolved">已解决</option>
-      <option value="closed">已关闭</option>
-    </select>
-    <span id="filterInfo" style="font-size:13px;color:var(--admin-text-muted)"
-    ></span>
-  </div>
-
-  <!-- 工单表格 -->
   <div class="admin-card admin-section">
     <div class="admin-table-wrap">
       <table class="admin-table">
@@ -101,35 +139,95 @@ if (!auth.authorized) {
     <div class="admin-pagination" id="ticketsPagination"></div>
   </div>
 
-  <!-- 工单详情弹窗 -->
   <div
-    id="ticketModal"
-    style="display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)"
+    class="admin-drawer-backdrop"
+    id="ticketDrawerBackdrop"
+    aria-hidden="true"
   >
-    <div
-      style="position:absolute;right:0;top:0;bottom:0;width:480px;max-width:100%;background:var(--admin-surface);border-left:1px solid var(--admin-border);padding:28px;overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,0.4)"
+    <aside
+      class="admin-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ticketDrawerTitle"
     >
-      <div
-        style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px"
-      >
-        <h2 style="font-size:18px;font-weight:600" id="modalTitle">工单详情</h2>
-        <button class="admin-btn admin-btn-sm" id="modalClose" type="button"
-          >✕ 关闭</button
+      <div class="admin-drawer-header">
+        <div>
+          <div class="admin-page-kicker">Ticket Detail</div>
+          <h2 class="admin-drawer-title" id="ticketDrawerTitle">工单详情</h2>
+        </div>
+        <button
+          class="admin-btn admin-btn-sm"
+          id="ticketDrawerClose"
+          type="button">关闭</button
         >
       </div>
-      <div id="modalContent"></div>
-    </div>
+      <div class="admin-drawer-body" id="ticketDrawerBody"></div>
+    </aside>
   </div>
 
   <script is:inline>
     (function () {
       var currentPage = 1;
       var currentStatus = "";
+      var hasLoadedTickets = false;
+      var ticketDataById = {};
+      var pendingConfirm = null;
+      var refreshBtn = document.getElementById("supportRefresh");
+      var retryBtn = document.getElementById("supportRetry");
+      var statusEl = document.getElementById("supportStatus");
+      var statusTextEl = statusEl?.querySelector("[data-status-text]");
+      var updatedEl = document.getElementById("supportUpdated");
+      var drawer = document.getElementById("ticketDrawerBackdrop");
+      var drawerBody = document.getElementById("ticketDrawerBody");
+      var drawerTitle = document.getElementById("ticketDrawerTitle");
+
+      refreshBtn?.addEventListener("click", function () {
+        refreshAll(currentPage, currentStatus);
+      });
+      retryBtn?.addEventListener("click", function () {
+        refreshAll(currentPage, currentStatus);
+      });
+
+      document
+        .querySelectorAll("[data-status-filter]")
+        .forEach(function (card) {
+          card.addEventListener("click", function () {
+            refreshAll(1, card.dataset.statusFilter);
+          });
+        });
+
+      document
+        .getElementById("statusFilter")
+        .addEventListener("change", function () {
+          refreshAll(1, this.value);
+        });
+
+      document
+        .getElementById("ticketDrawerClose")
+        .addEventListener("click", closeDrawer);
+      drawer.addEventListener("click", function (event) {
+        if (event.target === drawer) closeDrawer();
+      });
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeDrawer();
+      });
+
+      window.__loadTickets = loadTickets;
+      window.__showTicket = showTicket;
+      refreshAll(1, "");
+
+      function refreshAll(page, status) {
+        loadCounts();
+        loadTickets(page || 1, status);
+      }
 
       function loadTickets(page, status) {
         currentPage = page || 1;
         currentStatus = status !== undefined ? status : currentStatus;
         document.getElementById("statusFilter").value = currentStatus;
+        if (refreshBtn) refreshBtn.disabled = true;
+        setStatus("loading", "正在加载工单数据...", false);
+        setTableLoading();
 
         var params = new URLSearchParams();
         params.set("page", String(currentPage));
@@ -137,85 +235,74 @@ if (!auth.authorized) {
         if (currentStatus) params.set("status", currentStatus);
 
         fetch("/api/admin/support?" + params.toString())
-          .then(function (r) {
-            return r.json();
+          .then(function (response) {
+            return response.json().then(function (body) {
+              return { ok: response.ok, body: body };
+            });
           })
-          .then(function (res) {
-            if (!res.ok) return;
-            renderTickets(res.data.tickets);
-            renderPagination(res.data.pagination);
+          .then(function (payload) {
+            if (!payload.ok || !payload.body?.ok) {
+              throw new Error(
+                payload.body?.error?.message || "工单列表加载失败。",
+              );
+            }
+            renderTickets(payload.body.data.tickets || []);
+            renderPagination(payload.body.data.pagination);
             document.getElementById("filterInfo").textContent =
-              "共 " + res.data.pagination.total + " 条";
+              "共 " + payload.body.data.pagination.total + " 条";
+            setUpdatedAt(payload.body.data.generatedAt);
+            setStatus("", "", false);
+            hasLoadedTickets = true;
+          })
+          .catch(function (err) {
+            setStatus(
+              "error",
+              err?.message || "工单数据加载失败，请稍后重试。",
+              true,
+            );
+            if (!hasLoadedTickets) renderTickets([]);
+          })
+          .finally(function () {
+            if (refreshBtn) refreshBtn.disabled = false;
           });
       }
 
-      // 加载统计
-      fetch("/api/admin/support?limit=0")
-        .then(function () {
-          // 用 stats 数据更好
-          return fetch("/api/admin/stats");
-        })
-        .then(function (r) {
-          return r.json();
-        })
-        .then(function (res) {
-          if (!res.ok) return;
-          document.getElementById("stOpen").textContent =
-            res.data.openTickets || 0;
+      function loadCounts() {
+        ["", "open", "pending", "resolved"].forEach(function (st, idx) {
+          var params = new URLSearchParams({ limit: "1" });
+          if (st) params.set("status", st);
+          fetch("/api/admin/support?" + params.toString())
+            .then(function (r) {
+              return r.json();
+            })
+            .then(function (res) {
+              if (!res.ok) return;
+              var ids = ["stAll", "stOpen", "stPending", "stResolved"];
+              document.getElementById(ids[idx]).textContent =
+                res.data.pagination.total;
+            })
+            .catch(function () {});
         });
-
-      // 逐状态统计
-      ["", "open", "pending", "resolved"].forEach(function (st, idx) {
-        var params = new URLSearchParams({ limit: "1" });
-        if (st) params.set("status", st);
-        fetch("/api/admin/support?" + params.toString())
-          .then(function (r) {
-            return r.json();
-          })
-          .then(function (res) {
-            if (!res.ok) return;
-            var ids = ["stAll", "stOpen", "stPending", "stResolved"];
-            document.getElementById(ids[idx]).textContent =
-              res.data.pagination.total;
-          });
-      });
-
-      // KPI 卡片点击筛选
-      document
-        .querySelectorAll("[data-status-filter]")
-        .forEach(function (card) {
-          card.addEventListener("click", function () {
-            loadTickets(1, card.dataset.statusFilter);
-          });
-        });
+      }
 
       function renderTickets(tickets) {
         var tbody = document.getElementById("ticketsBody");
+        ticketDataById = {};
         if (!tickets || !tickets.length) {
           tbody.innerHTML =
-            '<tr><td colspan="8" class="admin-empty">暂无工单 🎉</td></tr>';
+            '<tr><td colspan="8" class="admin-empty"><strong>暂无工单</strong><small>当前筛选条件下没有支持请求。</small></td></tr>';
+          document.getElementById("ticketsPagination").innerHTML = "";
           return;
         }
-        var statusMap = {
-          open: { label: "待处理", cls: "badge-amber" },
-          pending: { label: "处理中", cls: "badge-blue" },
-          resolved: { label: "已解决", cls: "badge-green" },
-          closed: { label: "已关闭", cls: "badge-gray" },
-        };
-        var topicLabels = {
-          billing: "💳 账单",
-          tryon: "💄 试妆",
-          diagnosis: "🔬 诊断",
-          account: "👤 账户",
-          cooperation: "🤝 合作",
-          other: "📋 其他",
-        };
+        var statusMap = getStatusMap();
+        var topicLabels = getTopicLabels();
         var html = "";
         tickets.forEach(function (t) {
+          ticketDataById[t.id] = t;
           var s = statusMap[t.status] || statusMap.open;
           html += "<tr>";
           html +=
-            '<td><span style="font-family:monospace;font-size:12px;color:var(--admin-accent-light)">' +
+            '<td><span class="admin-code">' +
             escapeHtml(t.ticket_code) +
             "</span></td>";
           html +=
@@ -227,8 +314,8 @@ if (!auth.authorized) {
           html +=
             "<td>" + escapeHtml(topicLabels[t.topic] || t.topic) + "</td>";
           html +=
-            '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--admin-text-muted)">' +
-            escapeHtml(t.message.slice(0, 60)) +
+            '<td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--admin-text-muted)">' +
+            escapeHtml((t.message || "").slice(0, 72)) +
             "</td>";
           html +=
             '<td><span class="badge badge-gray">' +
@@ -245,7 +332,7 @@ if (!auth.authorized) {
             getTimeAgo(t.created_at) +
             "</td>";
           html +=
-            '<td><button class="admin-btn admin-btn-sm" data-ticket-id="' +
+            '<td><button class="admin-btn admin-btn-sm" type="button" data-ticket-id="' +
             escapeHtml(t.id) +
             '">查看</button></td>';
           html += "</tr>";
@@ -253,157 +340,238 @@ if (!auth.authorized) {
         tbody.innerHTML = html;
         tbody.querySelectorAll("[data-ticket-id]").forEach(function (btn) {
           btn.addEventListener("click", function () {
-            window.__showTicket(btn.getAttribute("data-ticket-id"));
+            showTicket(btn.getAttribute("data-ticket-id"));
           });
-        });
-
-        // 存储工单数据用于弹窗
-        window.__ticketData = {};
-        tickets.forEach(function (t) {
-          window.__ticketData[t.id] = t;
         });
       }
 
       function renderPagination(p) {
         var el = document.getElementById("ticketsPagination");
         if (!p || p.totalPages <= 1) {
-          el.innerHTML = "";
+          el.innerHTML = "<span>共 " + (p?.total || 0) + " 条</span>";
           return;
         }
-        var html = "<span>第 " + p.page + " / " + p.totalPages + " 页</span>";
+        var html =
+          "<span>第 " +
+          p.page +
+          " / " +
+          p.totalPages +
+          " 页，共 " +
+          p.total +
+          " 条</span>";
         html += '<div class="admin-pagination-btns">';
-        if (p.page > 1)
+        if (p.page > 1) {
           html +=
             '<button class="admin-btn admin-btn-sm" onclick="window.__loadTickets(' +
             (p.page - 1) +
-            ')">← 上一页</button>';
-        if (p.page < p.totalPages)
+            ')">上一页</button>';
+        }
+        if (p.page < p.totalPages) {
           html +=
             '<button class="admin-btn admin-btn-sm" onclick="window.__loadTickets(' +
             (p.page + 1) +
-            ')">下一页 →</button>';
+            ')">下一页</button>';
+        }
         html += "</div>";
         el.innerHTML = html;
       }
 
-      // 工单详情弹窗
-      window.__showTicket = function (id) {
-        var t = window.__ticketData && window.__ticketData[id];
+      function showTicket(id) {
+        var t = ticketDataById[id];
         if (!t) return;
-        var modal = document.getElementById("ticketModal");
-        var content = document.getElementById("modalContent");
-        document.getElementById("modalTitle").textContent = t.ticket_code;
+        pendingConfirm = null;
+        drawerTitle.textContent = t.ticket_code;
 
+        var statusMap = getStatusMap();
+        var topicLabels = getTopicLabels();
         var statusOpts = ["open", "pending", "resolved", "closed"];
-        var statusLabels = {
-          open: "待处理",
-          pending: "处理中",
-          resolved: "已解决",
-          closed: "已关闭",
-        };
         var selectHtml =
           '<select id="ticketStatusSelect" class="admin-select" style="width:100%">';
-        statusOpts.forEach(function (s) {
+        statusOpts.forEach(function (status) {
           selectHtml +=
             '<option value="' +
-            s +
+            status +
             '"' +
-            (s === t.status ? " selected" : "") +
+            (status === t.status ? " selected" : "") +
             ">" +
-            statusLabels[s] +
+            statusMap[status].label +
             "</option>";
         });
         selectHtml += "</select>";
 
-        content.innerHTML =
-          "" +
-          '<div style="display:flex;flex-direction:column;gap:20px">' +
-          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:4px">用户</label>' +
-          '<div style="font-size:14px">' +
-          escapeHtml(t.name) +
-          "</div>" +
-          '<div style="font-size:13px;color:var(--admin-text-dim)">' +
-          escapeHtml(t.email) +
-          "</div></div>" +
-          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:4px">主题</label>' +
-          '<div style="font-size:14px">' +
-          escapeHtml(t.topic) +
-          "</div></div>" +
-          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:4px">内容</label>' +
+        drawerBody.innerHTML =
+          '<dl class="admin-detail-grid">' +
+          detailRow("用户", escapeHtml(t.name || "—")) +
+          detailRow("邮箱", escapeHtml(t.email || "—")) +
+          detailRow(
+            "主题",
+            escapeHtml(topicLabels[t.topic] || t.topic || "—"),
+          ) +
+          detailRow("语言", escapeHtml(t.locale || "en")) +
+          detailRow(
+            "当前状态",
+            '<span class="badge ' +
+              (statusMap[t.status] || statusMap.open).cls +
+              '"><span class="badge-dot"></span>' +
+              (statusMap[t.status] || statusMap.open).label +
+              "</span>",
+          ) +
+          detailRow("创建时间", escapeHtml(formatDateTime(t.created_at))) +
+          detailRow("更新时间", escapeHtml(formatDateTime(t.updated_at))) +
+          "</dl>" +
+          '<div><div class="admin-card-title">内容</div>' +
           '<div style="font-size:14px;line-height:1.7;background:var(--admin-bg);padding:14px;border-radius:8px;border:1px solid var(--admin-border);white-space:pre-wrap">' +
-          escapeHtml(t.message) +
+          escapeHtml(t.message || "") +
           "</div></div>" +
-          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:4px">创建时间</label>' +
-          '<div style="font-size:13px">' +
-          new Date(t.created_at).toLocaleString("zh-CN") +
-          "</div></div>" +
-          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:8px">状态</label>' +
+          '<div><label style="font-size:12px;color:var(--admin-text-muted);display:block;margin-bottom:8px">更新状态</label>' +
           selectHtml +
+          '<p class="admin-muted" style="font-size:12px;margin-top:8px">确认后会写入 admin_audit_logs，记录旧状态、新状态和操作管理员。</p>' +
           "</div>" +
-          '<button class="admin-btn admin-btn-primary" id="updateStatusBtn" style="width:100%">更新状态</button>' +
-          '<div id="updateMsg" style="font-size:13px;text-align:center"></div>' +
-          "</div>";
+          '<button class="admin-btn admin-btn-primary" id="updateStatusBtn" type="button" style="width:100%">更新状态</button>' +
+          '<div id="updateMsg" role="status" style="font-size:13px;text-align:center;min-height:20px"></div>';
 
-        modal.style.display = "block";
+        drawer.classList.add("open");
+        drawer.setAttribute("aria-hidden", "false");
 
+        document
+          .getElementById("ticketStatusSelect")
+          .addEventListener("change", function () {
+            pendingConfirm = null;
+            document.getElementById("updateStatusBtn").textContent = "更新状态";
+            setUpdateMsg("", "var(--admin-text-muted)");
+          });
         document
           .getElementById("updateStatusBtn")
           .addEventListener("click", function () {
-            var newStatus = document.getElementById("ticketStatusSelect").value;
-            var msgEl = document.getElementById("updateMsg");
-            msgEl.textContent = "更新中...";
-            msgEl.style.color = "var(--admin-text-muted)";
-
-            fetch("/api/admin/support/" + id, {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ status: newStatus }),
-            })
-              .then(function (r) {
-                return r.json();
-              })
-              .then(function (res) {
-                if (res.ok) {
-                  msgEl.textContent = "✅ 已更新";
-                  msgEl.style.color = "var(--admin-green)";
-                  // 刷新列表
-                  setTimeout(function () {
-                    loadTickets(currentPage);
-                    modal.style.display = "none";
-                  }, 800);
-                } else {
-                  msgEl.textContent =
-                    "❌ 更新失败: " + (res.error?.message || "未知错误");
-                  msgEl.style.color = "var(--admin-red)";
-                }
-              })
-              .catch(function () {
-                msgEl.textContent = "❌ 网络错误";
-                msgEl.style.color = "var(--admin-red)";
-              });
+            updateTicketStatus(t);
           });
-      };
+      }
 
-      // 关闭弹窗
-      document
-        .getElementById("modalClose")
-        .addEventListener("click", function () {
-          document.getElementById("ticketModal").style.display = "none";
-        });
-      document
-        .getElementById("ticketModal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) this.style.display = "none";
-        });
+      function updateTicketStatus(ticket) {
+        var select = document.getElementById("ticketStatusSelect");
+        var btn = document.getElementById("updateStatusBtn");
+        var newStatus = select.value;
+        var statusMap = getStatusMap();
+        if (newStatus === ticket.status) {
+          setUpdateMsg("状态未变化，无需更新。", "var(--admin-text-muted)");
+          return;
+        }
 
-      // 筛选
-      document
-        .getElementById("statusFilter")
-        .addEventListener("change", function () {
-          loadTickets(1, this.value);
-        });
+        if (
+          !pendingConfirm ||
+          pendingConfirm.id !== ticket.id ||
+          pendingConfirm.status !== newStatus
+        ) {
+          pendingConfirm = { id: ticket.id, status: newStatus };
+          btn.textContent = "确认更新为 " + statusMap[newStatus].label;
+          var oldStatusLabel = (statusMap[ticket.status] || statusMap.open)
+            .label;
+          setUpdateMsg(
+            "再次点击确认，将把状态从 " +
+              oldStatusLabel +
+              " 改为 " +
+              statusMap[newStatus].label +
+              "。",
+            "var(--admin-amber)",
+          );
+          return;
+        }
 
-      window.__loadTickets = loadTickets;
+        btn.disabled = true;
+        setUpdateMsg("正在更新...", "var(--admin-text-muted)");
+        fetch("/api/admin/support/" + ticket.id, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        })
+          .then(function (response) {
+            return response.json().then(function (body) {
+              return { ok: response.ok, body: body };
+            });
+          })
+          .then(function (payload) {
+            if (!payload.ok || !payload.body?.ok) {
+              throw new Error(payload.body?.error?.message || "状态更新失败。");
+            }
+            setUpdateMsg("状态已更新，审计日志已记录。", "var(--admin-green)");
+            ticket.status = newStatus;
+            ticket.updated_at = payload.body.data.updatedAt;
+            loadCounts();
+            setTimeout(function () {
+              loadTickets(currentPage, currentStatus);
+              closeDrawer();
+            }, 700);
+          })
+          .catch(function (err) {
+            btn.disabled = false;
+            pendingConfirm = null;
+            btn.textContent = "更新状态";
+            setUpdateMsg(
+              err?.message || "网络错误，状态未更新。",
+              "var(--admin-red)",
+            );
+          });
+      }
+
+      function closeDrawer() {
+        drawer.classList.remove("open");
+        drawer.setAttribute("aria-hidden", "true");
+      }
+
+      function setUpdateMsg(message, color) {
+        var msgEl = document.getElementById("updateMsg");
+        if (!msgEl) return;
+        msgEl.textContent = message;
+        msgEl.style.color = color;
+      }
+
+      function setTableLoading() {
+        document.getElementById("ticketsBody").innerHTML =
+          '<tr><td colspan="8" class="admin-loading"><div class="admin-spinner"></div>加载中...</td></tr>';
+      }
+
+      function setStatus(type, message, retryable) {
+        if (!statusEl || !statusTextEl) return;
+        statusEl.className = "admin-status-banner" + (type ? " " + type : "");
+        statusEl.hidden = !type;
+        statusTextEl.textContent = message;
+        if (retryBtn) retryBtn.hidden = !retryable;
+      }
+
+      function setUpdatedAt(iso) {
+        var d = iso ? new Date(iso) : new Date();
+        if (updatedEl) updatedEl.textContent = d.toLocaleString("zh-CN");
+      }
+
+      function detailRow(label, value) {
+        return (
+          '<div class="admin-detail-row"><dt>' +
+          escapeHtml(label) +
+          "</dt><dd>" +
+          value +
+          "</dd></div>"
+        );
+      }
+
+      function getStatusMap() {
+        return {
+          open: { label: "待处理", cls: "badge-amber" },
+          pending: { label: "处理中", cls: "badge-blue" },
+          resolved: { label: "已解决", cls: "badge-green" },
+          closed: { label: "已关闭", cls: "badge-gray" },
+        };
+      }
+
+      function getTopicLabels() {
+        return {
+          billing: "账单",
+          tryon: "试妆",
+          diagnosis: "诊断",
+          account: "账户",
+          cooperation: "合作",
+          other: "其他",
+        };
+      }
 
       function getTimeAgo(isoStr) {
         var d = new Date(isoStr);
@@ -416,14 +584,16 @@ if (!auth.authorized) {
         return d.toLocaleDateString("zh-CN");
       }
 
+      function formatDateTime(iso) {
+        if (!iso) return "—";
+        return new Date(iso).toLocaleString("zh-CN");
+      }
+
       function escapeHtml(s) {
         var div = document.createElement("div");
         div.appendChild(document.createTextNode(s || ""));
         return div.innerHTML;
       }
-
-      // 初始加载
-      loadTickets(1);
     })();
   </script>
 </AdminLayout>

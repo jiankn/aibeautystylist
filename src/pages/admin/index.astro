@@ -23,27 +23,59 @@ if (!auth.authorized) {
 ---
 
 <AdminLayout title="总览" activeNav="overview">
-  <!-- KPI 卡片 -->
+  <section class="admin-page-header">
+    <div>
+      <div class="admin-page-kicker">Operations Overview</div>
+      <h2 class="admin-page-title">运营总览</h2>
+      <p class="admin-page-description">
+        用一屏判断今天是否需要处理工单、订阅异常、AI 成本或服务质量问题。
+      </p>
+    </div>
+    <button class="admin-btn" id="overviewRefresh" type="button">刷新</button>
+  </section>
+
+  <div class="admin-meta-row">
+    <span
+      >数据口径：订阅为当前有效订阅；AI 计量成本为本月 estimated_cost_micros
+      汇总。</span
+    >
+    <span
+      >最后更新：<b class="admin-last-updated" id="overviewUpdated">—</b></span
+    >
+  </div>
+
+  <div class="admin-status-banner loading" id="overviewStatus" role="status">
+    <span data-status-text>正在加载总览数据...</span>
+    <button
+      class="admin-btn admin-btn-sm"
+      id="overviewRetry"
+      type="button"
+      hidden
+    >
+      重试
+    </button>
+  </div>
+
   <div class="kpi-grid" id="kpiGrid">
     <div class="kpi-card">
       <div class="kpi-label">总用户数</div>
       <div class="kpi-value" id="kpiTotalUsers">—</div>
-      <span class="kpi-change neutral" id="kpiNewToday">加载中...</span>
+      <span class="kpi-change neutral" id="kpiNewToday">等待数据</span>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">活跃订阅</div>
       <div class="kpi-value" id="kpiActiveSubs">—</div>
-      <span class="kpi-change neutral" id="kpiSubsDetail">加载中...</span>
+      <span class="kpi-change neutral" id="kpiSubsDetail">等待数据</span>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">AI 计量成本 (本月)</div>
+      <div class="kpi-label">AI 计量成本</div>
       <div class="kpi-value" id="kpiAiCost">—</div>
-      <span class="kpi-change neutral" id="kpiAiCalls">加载中...</span>
+      <span class="kpi-change neutral" id="kpiAiCalls">本月</span>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">AI 成功率</div>
       <div class="kpi-value" id="kpiSuccessRate">—</div>
-      <span class="kpi-change neutral" id="kpiAvgDuration">加载中...</span>
+      <span class="kpi-change neutral" id="kpiAvgDuration">本月</span>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">待处理工单</div>
@@ -51,12 +83,32 @@ if (!auth.authorized) {
       <a
         href="/admin/support"
         class="kpi-change neutral"
-        style="text-decoration:none">查看全部 →</a
+        style="text-decoration:none">查看工单</a
       >
     </div>
   </div>
 
-  <!-- 图表区域 -->
+  <div class="admin-section">
+    <div class="admin-card">
+      <div
+        style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px"
+      >
+        <div>
+          <div class="admin-card-title" style="margin:0">今日处理队列</div>
+          <p class="admin-muted" style="font-size:13px;margin-top:6px">
+            按运营风险排序，优先处理影响收入、服务成功率和用户等待的问题。
+          </p>
+        </div>
+        <span class="badge badge-gray">自动生成</span>
+      </div>
+      <div class="admin-action-list" id="actionQueue">
+        <div class="admin-loading" style="padding:22px 0">
+          <div class="admin-spinner"></div>正在评估运营风险...
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="admin-grid-2 admin-section">
     <div class="admin-card">
       <div class="admin-card-title">用户增长趋势（近 14 天）</div>
@@ -74,7 +126,6 @@ if (!auth.authorized) {
     </div>
   </div>
 
-  <!-- 最新工单 -->
   <div class="admin-section">
     <div class="admin-card">
       <div
@@ -112,66 +163,199 @@ if (!auth.authorized) {
 
   <script is:inline>
     (function () {
-      // 从 API 加载数据
-      fetch("/api/admin/stats")
-        .then(function (r) {
-          return r.json();
-        })
-        .then(function (res) {
-          if (!res.ok) {
-            console.error("Stats API error", res.error);
-            return;
-          }
-          var d = res.data;
+      var refreshBtn = document.getElementById("overviewRefresh");
+      var retryBtn = document.getElementById("overviewRetry");
+      var statusEl = document.getElementById("overviewStatus");
+      var statusTextEl = statusEl?.querySelector("[data-status-text]");
+      var updatedEl = document.getElementById("overviewUpdated");
+      var hasLoaded = false;
 
-          // KPI 卡片
-          document.getElementById("kpiTotalUsers").textContent = formatNumber(
-            d.totalUsers,
-          );
-          document.getElementById("kpiNewToday").textContent =
-            "今日 +" + d.newUsersToday + " / 本周 +" + d.newUsersWeek;
-          document.getElementById("kpiNewToday").className = "kpi-change up";
+      refreshBtn?.addEventListener("click", loadOverview);
+      retryBtn?.addEventListener("click", loadOverview);
+      loadOverview();
 
-          document.getElementById("kpiActiveSubs").textContent = formatNumber(
-            d.activeSubscriptions,
-          );
-          document.getElementById("kpiSubsDetail").textContent =
-            "Pro " +
-            d.proSubscriptions +
-            " / Premium " +
-            d.premiumSubscriptions;
-          document.getElementById("kpiSubsDetail").className = "kpi-change up";
+      function loadOverview() {
+        if (refreshBtn) refreshBtn.disabled = true;
+        setStatus("loading", "正在加载总览数据...", false);
 
-          document.getElementById("kpiAiCost").textContent =
-            d.monthlyAiCostUnits.toLocaleString() + " units";
-          document.getElementById("kpiAiCalls").textContent =
-            formatNumber(d.monthlyAiCalls) + " 次调用";
-          document.getElementById("kpiAiCalls").className =
-            "kpi-change neutral";
+        fetch("/api/admin/stats")
+          .then(function (response) {
+            return response.json().then(function (body) {
+              return { ok: response.ok, body: body };
+            });
+          })
+          .then(function (payload) {
+            if (!payload.ok || !payload.body?.ok) {
+              var message =
+                payload.body?.error?.message || "总览数据加载失败，请重试。";
+              throw new Error(message);
+            }
 
-          document.getElementById("kpiSuccessRate").textContent =
-            d.aiSuccessRate + "%";
-          document.getElementById("kpiAvgDuration").textContent =
-            "平均 " + (d.avgAiDurationMs / 1000).toFixed(1) + "s";
-          document.getElementById("kpiAvgDuration").className =
-            d.aiSuccessRate >= 95 ? "kpi-change up" : "kpi-change down";
+            var d = payload.body.data;
+            updateKpis(d);
+            renderActionQueue(d);
+            renderUserChart(d.dailyNewUsers || []);
+            renderSubsDistribution(d);
+            renderTickets(d.recentTickets || []);
+            hasLoaded = true;
+            setUpdatedAt(d.generatedAt);
+            setStatus("", "", false);
+          })
+          .catch(function (err) {
+            setStatus(
+              "error",
+              err?.message || "总览数据加载失败，请检查网络后重试。",
+              true,
+            );
+            if (!hasLoaded) {
+              renderActionQueue(null);
+              renderUserChart([]);
+              renderSubsDistribution(null);
+              renderTickets([]);
+            }
+          })
+          .finally(function () {
+            if (refreshBtn) refreshBtn.disabled = false;
+          });
+      }
 
-          document.getElementById("kpiOpenTickets").textContent = d.openTickets;
+      function updateKpis(d) {
+        document.getElementById("kpiTotalUsers").textContent = formatNumber(
+          d.totalUsers,
+        );
+        document.getElementById("kpiNewToday").textContent =
+          "今日 +" + d.newUsersToday + " / 本周 +" + d.newUsersWeek;
+        document.getElementById("kpiNewToday").className =
+          d.newUsersToday > 0 ? "kpi-change up" : "kpi-change neutral";
 
-          // 用户增长图表（Canvas 纯绘制）
-          renderUserChart(d.dailyNewUsers);
+        document.getElementById("kpiActiveSubs").textContent = formatNumber(
+          d.activeSubscriptions,
+        );
+        document.getElementById("kpiSubsDetail").textContent =
+          "Pro " + d.proSubscriptions + " / Premium " + d.premiumSubscriptions;
+        document.getElementById("kpiSubsDetail").className =
+          d.activeSubscriptions > 0 ? "kpi-change up" : "kpi-change neutral";
 
-          // 订阅分布
-          renderSubsDistribution(d);
+        document.getElementById("kpiAiCost").textContent =
+          Number(d.monthlyAiCostUnits || 0).toLocaleString() + " units";
+        document.getElementById("kpiAiCalls").textContent =
+          formatNumber(d.monthlyAiCalls) + " 次调用";
 
-          // 工单表格
-          renderTickets(d.recentTickets);
-        })
-        .catch(function (err) {
-          console.error("Failed to load stats", err);
-        });
+        document.getElementById("kpiSuccessRate").textContent =
+          d.aiSuccessRate + "%";
+        document.getElementById("kpiAvgDuration").textContent =
+          "平均 " + (Number(d.avgAiDurationMs || 0) / 1000).toFixed(1) + "s";
+        document.getElementById("kpiAvgDuration").className =
+          d.aiSuccessRate >= 95 ? "kpi-change up" : "kpi-change down";
+
+        document.getElementById("kpiOpenTickets").textContent =
+          d.openTickets || 0;
+      }
+
+      function renderActionQueue(d) {
+        var el = document.getElementById("actionQueue");
+        if (!d) {
+          el.innerHTML =
+            '<div class="admin-empty"><strong>无法生成处理队列</strong><small>总览 API 未返回数据，请重试。</small></div>';
+          return;
+        }
+
+        var items = [];
+        if (Number(d.openTickets) > 0) {
+          items.push({
+            level: Number(d.openTickets) >= 5 ? "danger" : "warning",
+            title: d.openTickets + " 个待处理工单",
+            copy: "优先处理 open 状态，避免用户等待过久。",
+            href: "/admin/support",
+            action: "处理工单",
+          });
+        }
+        if (Number(d.aiSuccessRate) < 95) {
+          items.push({
+            level: "danger",
+            title: "AI 成功率低于 95%",
+            copy: "检查失败模型、错误码和最近调用日志。",
+            href: "/admin/ai-costs",
+            action: "查看成本",
+          });
+        } else if (Number(d.aiSuccessRate) < 98) {
+          items.push({
+            level: "warning",
+            title: "AI 成功率需要关注",
+            copy: "当前为 " + d.aiSuccessRate + "%，建议观察失败原因。",
+            href: "/admin/ai-costs",
+            action: "查看日志",
+          });
+        }
+        if (Number(d.avgAiDurationMs) > 10000) {
+          items.push({
+            level: "warning",
+            title: "AI 平均耗时超过 10 秒",
+            copy: "会影响用户等待体验，建议检查慢模型和高耗时操作。",
+            href: "/admin/ai-costs",
+            action: "定位耗时",
+          });
+        }
+        if (Number(d.totalUsers) >= 10 && Number(d.activeSubscriptions) === 0) {
+          items.push({
+            level: "warning",
+            title: "暂无有效付费订阅",
+            copy: "用户量已形成样本，建议检查定价页、支付链路和转化漏斗。",
+            href: "/admin/revenue",
+            action: "看收入",
+          });
+        }
+        if (!items.length) {
+          items.push({
+            level: "",
+            title: "暂无阻塞项",
+            copy: "工单、AI 成功率和订阅核心指标均无明显告警。",
+            href: "/admin/users",
+            action: "看用户",
+          });
+        }
+
+        el.innerHTML = items
+          .map(function (item) {
+            return (
+              '<div class="admin-action-item">' +
+              '<span class="admin-action-dot ' +
+              escapeHtml(item.level) +
+              '"></span>' +
+              "<div>" +
+              '<div class="admin-action-title">' +
+              escapeHtml(item.title) +
+              "</div>" +
+              '<div class="admin-action-copy">' +
+              escapeHtml(item.copy) +
+              "</div>" +
+              "</div>" +
+              '<a class="admin-btn admin-btn-sm" style="text-decoration:none" href="' +
+              escapeHtml(item.href) +
+              '">' +
+              escapeHtml(item.action) +
+              "</a>" +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      function setStatus(type, message, retryable) {
+        if (!statusEl || !statusTextEl) return;
+        statusEl.className = "admin-status-banner" + (type ? " " + type : "");
+        statusEl.hidden = !type;
+        statusTextEl.textContent = message;
+        if (retryBtn) retryBtn.hidden = !retryable;
+      }
+
+      function setUpdatedAt(iso) {
+        var d = iso ? new Date(iso) : new Date();
+        if (updatedEl) updatedEl.textContent = d.toLocaleString("zh-CN");
+      }
 
       function formatNumber(n) {
+        n = Number(n) || 0;
         if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
         if (n >= 1000) return (n / 1000).toFixed(1) + "K";
         return String(n);
@@ -179,15 +363,20 @@ if (!auth.authorized) {
 
       function renderUserChart(data) {
         var canvas = document.getElementById("userGrowthChart");
-        if (!canvas || !data || !data.length) return;
+        if (!canvas) return;
         var ctx = canvas.getContext("2d");
         var rect = canvas.parentElement.getBoundingClientRect();
         var dpr = window.devicePixelRatio || 1;
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
+        canvas.width = Math.max(1, rect.width * dpr);
+        canvas.height = Math.max(1, rect.height * dpr);
         ctx.scale(dpr, dpr);
         var w = rect.width;
         var h = rect.height;
+
+        if (!data.length) {
+          drawEmptyChart(ctx, w, h, "暂无用户增长数据");
+          return;
+        }
 
         var values = data.map(function (d) {
           return Number(d.cnt);
@@ -203,8 +392,7 @@ if (!auth.authorized) {
         var chartW = w - padL - padR;
         var chartH = h - padT - padB;
 
-        // 网格线
-        ctx.strokeStyle = "rgba(139,92,246,0.08)";
+        ctx.strokeStyle = "rgba(148,163,184,0.12)";
         ctx.lineWidth = 1;
         for (var i = 0; i <= 4; i++) {
           var y = padT + (chartH / 4) * i;
@@ -214,12 +402,10 @@ if (!auth.authorized) {
           ctx.stroke();
         }
 
-        // 填充渐变
         var grad = ctx.createLinearGradient(0, padT, 0, h - padB);
-        grad.addColorStop(0, "rgba(139,92,246,0.3)");
-        grad.addColorStop(1, "rgba(139,92,246,0.02)");
+        grad.addColorStop(0, "rgba(56,189,248,0.28)");
+        grad.addColorStop(1, "rgba(56,189,248,0.03)");
 
-        // 路径
         var pts = values.map(function (v, i) {
           return {
             x: padL + (chartW / (values.length - 1 || 1)) * i,
@@ -227,7 +413,6 @@ if (!auth.authorized) {
           };
         });
 
-        // 填充区域
         ctx.beginPath();
         ctx.moveTo(pts[0].x, h - padB);
         pts.forEach(function (p) {
@@ -238,29 +423,26 @@ if (!auth.authorized) {
         ctx.fillStyle = grad;
         ctx.fill();
 
-        // 线条
         ctx.beginPath();
         ctx.moveTo(pts[0].x, pts[0].y);
         pts.forEach(function (p) {
           ctx.lineTo(p.x, p.y);
         });
-        ctx.strokeStyle = "#8b5cf6";
+        ctx.strokeStyle = "#38bdf8";
         ctx.lineWidth = 2.5;
         ctx.stroke();
 
-        // 数据点
         pts.forEach(function (p) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-          ctx.fillStyle = "#8b5cf6";
+          ctx.fillStyle = "#38bdf8";
           ctx.fill();
           ctx.beginPath();
           ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-          ctx.fillStyle = "#0a0a1a";
+          ctx.fillStyle = "#0b0f14";
           ctx.fill();
         });
 
-        // X 轴标签
         ctx.fillStyle = "#64748b";
         ctx.font = "11px Inter, sans-serif";
         ctx.textAlign = "center";
@@ -270,7 +452,6 @@ if (!auth.authorized) {
           }
         });
 
-        // Y 轴标签
         ctx.textAlign = "right";
         for (var j = 0; j <= 4; j++) {
           var val = Math.round(max - (max / 4) * j);
@@ -278,10 +459,32 @@ if (!auth.authorized) {
         }
       }
 
+      function drawEmptyChart(ctx, w, h, message) {
+        ctx.fillStyle = "#64748b";
+        ctx.font = "14px Inter, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(message, w / 2, h / 2);
+      }
+
       function renderSubsDistribution(d) {
         var el = document.getElementById("subsDistribution");
-        var total = d.totalUsers || 1;
-        var free = total - d.proSubscriptions - d.premiumSubscriptions;
+        if (!d) {
+          el.innerHTML =
+            '<div class="admin-empty"><strong>订阅数据不可用</strong><small>请刷新后重试。</small></div>';
+          return;
+        }
+        var total = Number(d.totalUsers) || 0;
+        if (total === 0) {
+          el.innerHTML =
+            '<div class="admin-empty"><strong>暂无用户数据</strong><small>订阅分布会在有用户后生成。</small></div>';
+          return;
+        }
+        var free = Math.max(
+          0,
+          total -
+            Number(d.proSubscriptions || 0) -
+            Number(d.premiumSubscriptions || 0),
+        );
         var items = [
           {
             label: "Free",
@@ -291,14 +494,16 @@ if (!auth.authorized) {
           },
           {
             label: "Pro",
-            count: d.proSubscriptions,
-            pct: ((d.proSubscriptions / total) * 100).toFixed(1),
-            color: "#8b5cf6",
+            count: Number(d.proSubscriptions || 0),
+            pct: ((Number(d.proSubscriptions || 0) / total) * 100).toFixed(1),
+            color: "#38bdf8",
           },
           {
             label: "Premium",
-            count: d.premiumSubscriptions,
-            pct: ((d.premiumSubscriptions / total) * 100).toFixed(1),
+            count: Number(d.premiumSubscriptions || 0),
+            pct: ((Number(d.premiumSubscriptions || 0) / total) * 100).toFixed(
+              1,
+            ),
             color: "#f59e0b",
           },
         ];
@@ -334,17 +539,18 @@ if (!auth.authorized) {
         });
         html += "</div>";
 
-        // 总计
-        html +=
-          '<div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(139,92,246,0.1);display:flex;justify-content:space-between;font-size:13px">';
-        html += '<span style="color:#94a3b8">付费转化率</span>';
         var convRate =
-          d.totalUsers > 0
+          total > 0
             ? (
-                ((d.proSubscriptions + d.premiumSubscriptions) / d.totalUsers) *
+                ((Number(d.proSubscriptions || 0) +
+                  Number(d.premiumSubscriptions || 0)) /
+                  total) *
                 100
               ).toFixed(1)
             : "0.0";
+        html +=
+          '<div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(148,163,184,0.12);display:flex;justify-content:space-between;font-size:13px">';
+        html += '<span style="color:#94a3b8">付费转化率</span>';
         html +=
           '<span style="font-weight:600;color:#10b981">' +
           convRate +
@@ -358,7 +564,7 @@ if (!auth.authorized) {
         var tbody = document.getElementById("ticketsBody");
         if (!tickets || !tickets.length) {
           tbody.innerHTML =
-            '<tr><td colspan="5" class="admin-empty">暂无工单 🎉</td></tr>';
+            '<tr><td colspan="5" class="admin-empty"><strong>暂无工单</strong><small>最新用户支持请求会显示在这里。</small></td></tr>';
           return;
         }
         var statusMap = {
@@ -368,12 +574,12 @@ if (!auth.authorized) {
           closed: { label: "已关闭", cls: "badge-gray" },
         };
         var topicLabels = {
-          billing: "💳 账单",
-          tryon: "💄 试妆",
-          diagnosis: "🔬 诊断",
-          account: "👤 账户",
-          cooperation: "🤝 合作",
-          other: "📋 其他",
+          billing: "账单",
+          tryon: "试妆",
+          diagnosis: "诊断",
+          account: "账户",
+          cooperation: "合作",
+          other: "其他",
         };
         var html = "";
         tickets.forEach(function (t) {
@@ -382,7 +588,7 @@ if (!auth.authorized) {
           var timeAgo = getTimeAgo(t.created_at);
           html += "<tr>";
           html +=
-            '<td><span style="font-family:monospace;font-size:12px;color:var(--admin-accent-light)">' +
+            '<td><span class="admin-code">' +
             escapeHtml(t.ticket_code) +
             "</span></td>";
           html +=

@@ -89,6 +89,7 @@ export const GET: APIRoute = async ({ cookies, url }) => {
       COALESCE(s.plan_code, 'free') as plan_code,
       COALESCE(s.status, 'none') as subscription_status,
       (SELECT COUNT(*) FROM tryon_jobs t WHERE t.user_id = u.id) as tryon_count,
+      (SELECT MAX(t.created_at) FROM tryon_jobs t WHERE t.user_id = u.id) as last_tryon_at,
       (SELECT COALESCE(-SUM(amount), 0) FROM usage_records ur
        WHERE ur.user_id = u.id AND ur.occurred_at >= datetime('now', 'start of month')
        AND ur.type = 'reserve') as monthly_used
@@ -109,10 +110,16 @@ export const GET: APIRoute = async ({ cookies, url }) => {
     plan_code: string;
     subscription_status: string;
     tryon_count: number;
+    last_tryon_at: string | null;
     monthly_used: number;
   }>();
 
   return apiSuccess({
+    generatedAt: now,
+    filters: {
+      search,
+      plan: plan || "all",
+    },
     users: rows.results ?? [],
     pagination: {
       page,

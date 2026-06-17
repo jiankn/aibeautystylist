@@ -129,6 +129,11 @@ export const GET: APIRoute = async ({ cookies, url }) => {
   ]);
 
   return apiSuccess({
+    generatedAt: new Date().toISOString(),
+    period: {
+      days,
+      since,
+    },
     byModel: byModel.results ?? [],
     byDay: byDay.results ?? [],
     byOperation: byOperation.results ?? [],

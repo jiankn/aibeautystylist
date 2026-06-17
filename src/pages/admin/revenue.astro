@@ -28,8 +28,45 @@ const monthlyPrices = {
 ---
 
 <AdminLayout title="收入分析" activeNav="revenue">
+  <section class="admin-page-header">
+    <div>
+      <div class="admin-page-kicker">Revenue Operations</div>
+      <h2 class="admin-page-title">收入分析</h2>
+      <p class="admin-page-description">
+        跟踪当前有效订阅、估算
+        MRR、订阅状态和最近订阅变动，辅助判断支付链路和转化健康度。
+      </p>
+    </div>
+    <button class="admin-btn" id="revenueRefresh" type="button">刷新</button>
+  </section>
+
+  <div class="admin-meta-row">
+    <span
+      >数据口径：MRR 为当前 Pro/Premium 有效订阅按月价格估算，不等同于 Stripe
+      实收。</span
+    >
+    <span
+      >最后更新：<b class="admin-last-updated" id="revenueUpdated">—</b></span
+    >
+  </div>
+
+  <div class="admin-status-banner loading" id="revenueStatus" role="status">
+    <span data-status-text>正在加载收入数据...</span>
+    <button
+      class="admin-btn admin-btn-sm"
+      id="revenueRetry"
+      type="button"
+      hidden
+    >
+      重试
+    </button>
+  </div>
+
   <!-- KPI -->
-  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+  <div
+    class="kpi-grid"
+    style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))"
+  >
     <div class="kpi-card">
       <div class="kpi-label">活跃订阅</div>
       <div class="kpi-value" id="rvActiveSubs">—</div>
@@ -117,39 +154,77 @@ const monthlyPrices = {
 
   <script is:inline define:vars={{ monthlyPrices }}>
     (function () {
-      fetch("/api/admin/revenue")
-        .then(function (r) {
-          return r.json();
-        })
-        .then(function (res) {
-          if (!res.ok) return;
-          var d = res.data;
+      var refreshBtn = document.getElementById("revenueRefresh");
+      var retryBtn = document.getElementById("revenueRetry");
+      var statusEl = document.getElementById("revenueStatus");
+      var statusTextEl = statusEl?.querySelector("[data-status-text]");
+      var updatedEl = document.getElementById("revenueUpdated");
+      var hasLoaded = false;
 
-          // KPI
-          var proCount = 0,
-            premiumCount = 0;
-          (d.planDistribution || []).forEach(function (p) {
-            if (p.plan_code === "pro") proCount = p.cnt;
-            if (p.plan_code === "premium") premiumCount = p.cnt;
+      refreshBtn?.addEventListener("click", loadRevenue);
+      retryBtn?.addEventListener("click", loadRevenue);
+      loadRevenue();
+
+      function loadRevenue() {
+        if (refreshBtn) refreshBtn.disabled = true;
+        setStatus("loading", "正在加载收入数据...", false);
+        fetch("/api/admin/revenue")
+          .then(function (response) {
+            return response.json().then(function (body) {
+              return { ok: response.ok, body: body };
+            });
+          })
+          .then(function (payload) {
+            if (!payload.ok || !payload.body?.ok) {
+              throw new Error(
+                payload.body?.error?.message || "收入数据加载失败。",
+              );
+            }
+            var d = payload.body.data;
+
+            var proCount = 0;
+            var premiumCount = 0;
+            (d.planDistribution || []).forEach(function (p) {
+              if (p.plan_code === "pro") proCount = Number(p.cnt) || 0;
+              if (p.plan_code === "premium") {
+                premiumCount = Number(p.cnt) || 0;
+              }
+            });
+            var activeSubs = proCount + premiumCount;
+            var mrr =
+              proCount * monthlyPrices.pro +
+              premiumCount * monthlyPrices.premium;
+
+            document.getElementById("rvActiveSubs").textContent = activeSubs;
+            document.getElementById("rvProSubs").textContent = proCount;
+            document.getElementById("rvPremiumSubs").textContent = premiumCount;
+            document.getElementById("rvMrr").textContent = "$" + mrr.toFixed(0);
+
+            renderPlanDist(d.planDistribution || []);
+            renderStatusDist(d.statusDistribution || []);
+            renderSubsTrend(d.subscriptionsByDay || []);
+            renderRecentSubs(d.recentSubscriptions || []);
+            setUpdatedAt(d.generatedAt);
+            setStatus("", "", false);
+            hasLoaded = true;
+          })
+          .catch(function (err) {
+            setStatus(
+              "error",
+              err?.message || "收入数据加载失败，请稍后重试。",
+              true,
+            );
+            if (!hasLoaded) {
+              renderPlanDist([]);
+              renderStatusDist([]);
+              renderSubsTrend([]);
+              renderRecentSubs([]);
+            }
+          })
+          .finally(function () {
+            if (refreshBtn) refreshBtn.disabled = false;
           });
-          var activeSubs = proCount + premiumCount;
-          var mrr =
-            proCount * monthlyPrices.pro + premiumCount * monthlyPrices.premium;
-
-          document.getElementById("rvActiveSubs").textContent = activeSubs;
-          document.getElementById("rvProSubs").textContent = proCount;
-          document.getElementById("rvPremiumSubs").textContent = premiumCount;
-          document.getElementById("rvMrr").textContent = "$" + mrr.toFixed(0);
-
-          // 计划分布
-          renderPlanDist(d.planDistribution || []);
-          // 状态分布
-          renderStatusDist(d.statusDistribution || []);
-          // 趋势图
-          renderSubsTrend(d.subscriptionsByDay || []);
-          // 最近变动
-          renderRecentSubs(d.recentSubscriptions || []);
-        });
+      }
 
       function renderPlanDist(data) {
         var el = document.getElementById("planDist");
@@ -251,7 +326,7 @@ const monthlyPrices = {
 
       function renderSubsTrend(data) {
         var canvas = document.getElementById("subsTrendChart");
-        if (!canvas || !data.length) return;
+        if (!canvas) return;
         var ctx = canvas.getContext("2d");
         var rect = canvas.parentElement.getBoundingClientRect();
         var dpr = window.devicePixelRatio || 1;
@@ -260,6 +335,11 @@ const monthlyPrices = {
         ctx.scale(dpr, dpr);
         var w = rect.width,
           h = rect.height;
+
+        if (!data.length) {
+          drawEmptyChart(ctx, w, h, "暂无新增订阅数据");
+          return;
+        }
 
         // 按天聚合
         var byDay = {};
@@ -274,7 +354,10 @@ const monthlyPrices = {
           return d.slice(5);
         });
 
-        if (!values.length) return;
+        if (!values.length) {
+          drawEmptyChart(ctx, w, h, "暂无新增订阅数据");
+          return;
+        }
         var max = Math.max.apply(null, values) || 1;
         var padL = 40,
           padR = 20,
@@ -392,6 +475,26 @@ const monthlyPrices = {
           html += "</tr>";
         });
         tbody.innerHTML = html;
+      }
+
+      function drawEmptyChart(ctx, w, h, message) {
+        ctx.fillStyle = "#64748b";
+        ctx.font = "14px Inter, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(message, w / 2, h / 2);
+      }
+
+      function setStatus(type, message, retryable) {
+        if (!statusEl || !statusTextEl) return;
+        statusEl.className = "admin-status-banner" + (type ? " " + type : "");
+        statusEl.hidden = !type;
+        statusTextEl.textContent = message;
+        if (retryBtn) retryBtn.hidden = !retryable;
+      }
+
+      function setUpdatedAt(iso) {
+        var d = iso ? new Date(iso) : new Date();
+        if (updatedEl) updatedEl.textContent = d.toLocaleString("zh-CN");
       }
 
       function formatDate(iso) {

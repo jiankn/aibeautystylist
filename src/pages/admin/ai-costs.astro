@@ -22,8 +22,43 @@ if (!auth.authorized) {
 ---
 
 <AdminLayout title="AI 成本分析" activeNav="ai-costs">
+  <section class="admin-page-header">
+    <div>
+      <div class="admin-page-kicker">AI Cost Operations</div>
+      <h2 class="admin-page-title">AI 成本分析</h2>
+      <p class="admin-page-description">
+        按周期查看模型成本、调用量、成功率和耗时，定位影响成本与用户体验的模型或操作。
+      </p>
+    </div>
+    <button class="admin-btn" id="aiCostRefresh" type="button">刷新</button>
+  </section>
+
+  <div class="admin-meta-row">
+    <span
+      >数据口径：计量成本为 estimated_cost_micros 换算的
+      units；周期由下方按钮控制。</span
+    >
+    <span>最后更新：<b class="admin-last-updated" id="aiCostUpdated">—</b></span
+    >
+  </div>
+
+  <div class="admin-status-banner loading" id="aiCostStatus" role="status">
+    <span data-status-text>正在加载 AI 成本数据...</span>
+    <button
+      class="admin-btn admin-btn-sm"
+      id="aiCostRetry"
+      type="button"
+      hidden
+    >
+      重试
+    </button>
+  </div>
+
   <!-- KPI -->
-  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+  <div
+    class="kpi-grid"
+    style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))"
+  >
     <div class="kpi-card">
       <div class="kpi-label">AI 计量成本</div>
       <div class="kpi-value" id="acTotalCost">—</div>
@@ -164,7 +199,25 @@ if (!auth.authorized) {
 
   <script is:inline>
     (function () {
+      var refreshBtn = document.getElementById("aiCostRefresh");
+      var retryBtn = document.getElementById("aiCostRetry");
+      var statusEl = document.getElementById("aiCostStatus");
+      var statusTextEl = statusEl?.querySelector("[data-status-text]");
+      var updatedEl = document.getElementById("aiCostUpdated");
+      var currentDays = 30;
+      var hasLoaded = false;
+
+      refreshBtn?.addEventListener("click", function () {
+        loadData(currentDays);
+      });
+      retryBtn?.addEventListener("click", function () {
+        loadData(currentDays);
+      });
+
       function loadData(days) {
+        currentDays = days;
+        if (refreshBtn) refreshBtn.disabled = true;
+        setStatus("loading", "正在加载 AI 成本数据...", false);
         // 更新按钮状态
         document.querySelectorAll("[data-days]").forEach(function (btn) {
           btn.classList.toggle(
@@ -174,12 +227,18 @@ if (!auth.authorized) {
         });
 
         fetch("/api/admin/ai-costs?days=" + days)
-          .then(function (r) {
-            return r.json();
+          .then(function (response) {
+            return response.json().then(function (body) {
+              return { ok: response.ok, body: body };
+            });
           })
-          .then(function (res) {
-            if (!res.ok) return;
-            var d = res.data;
+          .then(function (payload) {
+            if (!payload.ok || !payload.body?.ok) {
+              throw new Error(
+                payload.body?.error?.message || "AI 成本数据加载失败。",
+              );
+            }
+            var d = payload.body.data;
 
             // KPI 计算
             var totalCost = 0,
@@ -212,6 +271,26 @@ if (!auth.authorized) {
             renderModelMatrix(d.byModel || []);
             renderOpMatrix(d.byOperation || []);
             renderRecentCalls(d.recentCalls || []);
+            setUpdatedAt(d.generatedAt);
+            setStatus("", "", false);
+            hasLoaded = true;
+          })
+          .catch(function (err) {
+            setStatus(
+              "error",
+              err?.message || "AI 成本数据加载失败，请稍后重试。",
+              true,
+            );
+            if (!hasLoaded) {
+              renderCostTrend([]);
+              renderModelDist([]);
+              renderModelMatrix([]);
+              renderOpMatrix([]);
+              renderRecentCalls([]);
+            }
+          })
+          .finally(function () {
+            if (refreshBtn) refreshBtn.disabled = false;
           });
       }
 
@@ -443,8 +522,8 @@ if (!auth.authorized) {
           return;
         }
         var opLabels = {
-          diagnosis: "🔬 妆容诊断",
-          image_generation: "🖼️ 图像生成",
+          diagnosis: "妆容诊断",
+          image_generation: "图像生成",
         };
         var html = "";
         data.forEach(function (op) {
@@ -483,7 +562,6 @@ if (!auth.authorized) {
             '<tr><td colspan="7" class="admin-empty">暂无数据</td></tr>';
           return;
         }
-        var opIcons = { diagnosis: "🔬", image_generation: "🖼️" };
         var html = "";
         calls.forEach(function (c) {
           var isSuccess = c.status === "succeeded";
@@ -492,12 +570,7 @@ if (!auth.authorized) {
             '<td style="font-size:12px;color:var(--admin-text-muted);white-space:nowrap">' +
             formatTime(c.created_at) +
             "</td>";
-          html +=
-            "<td>" +
-            escapeHtml(opIcons[c.operation] || "⚡") +
-            " " +
-            escapeHtml(c.operation) +
-            "</td>";
+          html += "<td>" + escapeHtml(c.operation) + "</td>";
           html +=
             '<td style="font-family:monospace;font-size:11px">' +
             escapeHtml(c.model || "—") +
@@ -506,7 +579,7 @@ if (!auth.authorized) {
           html +=
             '<td style="font-size:12px">' +
             (c.prompt_tokens || 0) +
-            " → " +
+            " / " +
             (c.output_tokens || 0) +
             "</td>";
           html +=
@@ -522,6 +595,19 @@ if (!auth.authorized) {
           html += "</tr>";
         });
         tbody.innerHTML = html;
+      }
+
+      function setStatus(type, message, retryable) {
+        if (!statusEl || !statusTextEl) return;
+        statusEl.className = "admin-status-banner" + (type ? " " + type : "");
+        statusEl.hidden = !type;
+        statusTextEl.textContent = message;
+        if (retryBtn) retryBtn.hidden = !retryable;
+      }
+
+      function setUpdatedAt(iso) {
+        var d = iso ? new Date(iso) : new Date();
+        if (updatedEl) updatedEl.textContent = d.toLocaleString("zh-CN");
       }
 
       function formatNum(n) {
