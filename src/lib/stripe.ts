@@ -81,6 +81,7 @@ export function createStripeClient(options: StripeClientOptions) {
       cancelUrl: string;
       clientReferenceId: string;
       customerId?: string;
+      customerEmail?: string;
       metadata?: Record<string, string>;
     }): Promise<{ id: string; url: string | null }> {
       const params: Record<string, string | number | boolean | undefined> = {
@@ -91,6 +92,7 @@ export function createStripeClient(options: StripeClientOptions) {
         cancel_url: input.cancelUrl,
         client_reference_id: input.clientReferenceId,
         customer: input.customerId,
+        customer_email: input.customerId ? undefined : input.customerEmail,
         allow_promotion_codes: true,
       };
       for (const [key, value] of Object.entries(input.metadata ?? {})) {
@@ -98,6 +100,19 @@ export function createStripeClient(options: StripeClientOptions) {
         params[`subscription_data[metadata][${key}]`] = value;
       }
       return request("POST", "/v1/checkout/sessions", params);
+    },
+
+    updateCustomer(input: {
+      customerId: string;
+      email: string;
+    }): Promise<{ id: string; email?: string }> {
+      return request(
+        "POST",
+        `/v1/customers/${encodeURIComponent(input.customerId)}`,
+        {
+          email: input.email,
+        },
+      );
     },
 
     createBillingPortalSession(input: {

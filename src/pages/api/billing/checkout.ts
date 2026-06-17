@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 
+import { getAccountByUserId } from "../../../lib/accounts";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import { apiError, apiSuccess } from "../../../lib/http";
 import {
@@ -72,12 +73,21 @@ export const POST: APIRoute = async ({ cookies, request }) => {
   });
 
   try {
+    const account = bindings.DB
+      ? await getAccountByUserId(userId, bindings.DB)
+      : undefined;
+    const customerId = await getStripeCustomerId(userId, bindings.DB);
+    if (customerId && account?.email) {
+      await stripe.updateCustomer({ customerId, email: account.email });
+    }
+
     const session = await stripe.createCheckoutSession({
       priceId,
       successUrl: `${baseUrl}/pricing?checkout=success`,
       cancelUrl: `${baseUrl}/pricing?checkout=cancel`,
       clientReferenceId: userId,
-      customerId: await getStripeCustomerId(userId, bindings.DB),
+      customerId,
+      customerEmail: account?.email,
       metadata: { userId, planCode: body.planCode, priceId },
     });
     return apiSuccess({ id: session.id, url: session.url });
