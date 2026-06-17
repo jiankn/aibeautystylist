@@ -992,39 +992,84 @@ const languageOptions = languageConfigs
     align-items: center;
   }
   :global(.account-menu-trigger) {
+    position: relative;
     min-width: 0;
-    min-height: 36px;
-    gap: 7px;
-    padding-inline: 8px 10px;
-    border-color: rgba(173, 49, 88, 0.72);
-    border-radius: 7px;
-    background: linear-gradient(135deg, #c83e68 0%, #a82a55 100%);
-    color: #fff8fb;
-    font-size: 11.5px;
-    font-weight: 750;
+    min-height: 34px;
+    gap: 6px;
+    padding-inline: 5px 8px;
+    border-color: color-mix(in srgb, var(--line) 78%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg-elevated) 88%, var(--rose-soft));
+    color: var(--nav-link);
+    font-size: 12px;
+    font-weight: 720;
     line-height: 1;
     cursor: pointer;
+    transform: none;
     box-shadow:
-      0 7px 16px rgba(184, 46, 92, 0.18),
-      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      0 1px 2px rgba(20, 39, 68, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    transition:
+      border-color 0.18s ease,
+      background-color 0.18s ease,
+      box-shadow 0.18s ease,
+      color 0.18s ease;
+  }
+  :global(.account-menu-trigger::after) {
+    position: absolute;
+    inset: -5px -4px;
+    border-radius: 999px;
+    content: "";
+  }
+  :global(.account-menu-trigger:hover),
+  :global(.account-menu-trigger:focus-visible),
+  :global(.account-menu.open .account-menu-trigger) {
+    border-color: color-mix(in srgb, var(--rose) 34%, var(--line));
+    background: color-mix(in srgb, var(--rose-soft) 62%, var(--bg-elevated));
+    color: var(--rose);
+    transform: none;
+    box-shadow:
+      0 5px 14px rgba(184, 46, 92, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  }
+  :global(.account-menu-trigger:active) {
+    transform: none;
   }
   :global(.account-avatar) {
     display: grid;
-    width: 22px;
-    height: 22px;
-    flex: 0 0 22px;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
     place-items: center;
+    border: 1px solid color-mix(in srgb, var(--rose) 20%, transparent);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    font-size: 11px;
+    background: var(--rose-soft);
+    color: var(--rose);
+    font-size: 10.5px;
     font-weight: 850;
     text-transform: uppercase;
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease,
+      border-color 0.18s ease;
+  }
+  :global(.account-menu-trigger:hover .account-avatar),
+  :global(.account-menu.open .account-avatar) {
+    border-color: var(--rose);
+    background: var(--rose);
+    color: #fff;
+  }
+  :global(.account-trigger-text) {
+    max-width: 76px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   :global(.account-chevron) {
-    width: 12px;
-    height: 12px;
-    flex: 0 0 12px;
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+    opacity: 0.72;
     transition: transform 0.18s ease;
   }
   :global(.account-menu.open .account-chevron) {
@@ -1110,16 +1155,33 @@ const languageOptions = languageConfigs
     line-height: 1.4;
   }
   :global([data-theme="dark"] .account-menu-trigger) {
-    border-color: rgba(232, 122, 152, 0.56);
-    background: linear-gradient(135deg, #d94b76 0%, #9d244e 100%);
-    color: #fff8fb;
+    border-color: color-mix(in srgb, var(--line) 84%, transparent);
+    background: color-mix(in srgb, var(--bg-elevated) 88%, var(--rose-soft));
+    color: var(--nav-link);
     box-shadow:
-      0 8px 18px rgba(0, 0, 0, 0.28),
-      0 0 18px rgba(200, 62, 104, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      0 1px 2px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  :global([data-theme="dark"] .account-menu-trigger:hover),
+  :global([data-theme="dark"] .account-menu-trigger:focus-visible),
+  :global([data-theme="dark"] .account-menu.open .account-menu-trigger) {
+    border-color: color-mix(in srgb, var(--rose) 38%, var(--line));
+    background: color-mix(in srgb, var(--rose-soft) 58%, var(--bg-elevated));
+    color: var(--rose);
+    box-shadow:
+      0 8px 18px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
   :global([data-theme="dark"] .account-avatar) {
-    background: rgba(255, 255, 255, 0.16);
+    border-color: color-mix(in srgb, var(--rose) 24%, transparent);
+    background: color-mix(in srgb, var(--rose-soft) 84%, var(--bg-elevated));
+    color: var(--rose);
+  }
+  :global([data-theme="dark"] .account-menu-trigger:hover .account-avatar),
+  :global([data-theme="dark"] .account-menu.open .account-avatar) {
+    border-color: var(--rose);
+    background: var(--rose);
+    color: #1b0d14;
   }
   :global([data-theme="dark"] .account-menu-panel) {
     background: var(--bg-elevated);
@@ -1251,19 +1313,37 @@ const languageOptions = languageConfigs
       display: inline;
     }
     :global(.account-menu-trigger) {
-      min-width: 44px;
-      min-height: 44px;
+      width: 36px;
+      min-width: 36px;
+      height: 36px;
+      min-height: 36px;
       gap: 0;
-      padding-inline: 8px;
+      justify-content: center;
+      padding: 0;
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+    :global(.account-menu-trigger::after) {
+      inset: -4px;
+    }
+    :global(.account-menu-trigger:hover),
+    :global(.account-menu-trigger:focus-visible),
+    :global(.account-menu.open .account-menu-trigger) {
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
     }
     :global(.account-trigger-text),
     :global(.account-chevron) {
       display: none;
     }
     :global(.account-avatar) {
-      width: 24px;
-      height: 24px;
-      flex-basis: 24px;
+      width: 28px;
+      height: 28px;
+      flex-basis: 28px;
+      font-size: 12px;
+      box-shadow: 0 3px 10px rgba(184, 46, 92, 0.12);
     }
     :global(.account-menu-panel) {
       right: -2px;
