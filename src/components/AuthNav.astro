@@ -214,6 +214,13 @@
         ?.setAttribute("aria-expanded", "false");
     }
 
+    function closeLanguageMenu() {
+      const dropdown = document.getElementById("lang-dropdown");
+      const toggle = document.getElementById("lang-toggle");
+      dropdown?.classList.remove("open");
+      toggle?.setAttribute("aria-expanded", "false");
+    }
+
     function createMenuItem({ href, label, isButton = false }) {
       const item = document.createElement(isButton ? "button" : "a");
       item.className = `account-menu-item${isButton ? " account-menu-logout" : ""}`;
@@ -322,6 +329,7 @@
         document
           .querySelectorAll("[data-account-menu].open")
           .forEach((openMenu) => closeAccountMenu(openMenu));
+        if (nextOpen) closeLanguageMenu();
         menu.classList.toggle("open", nextOpen);
         trigger.setAttribute("aria-expanded", String(nextOpen));
       });

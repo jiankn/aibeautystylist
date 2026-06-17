@@ -522,7 +522,17 @@ const languageOptions = languageConfigs
 
     const options = [...menu.querySelectorAll(".lang-option")];
 
+    const closeAccountMenus = () => {
+      document.querySelectorAll("[data-account-menu].open").forEach((menu) => {
+        menu.classList.remove("open");
+        menu
+          .querySelector("[data-account-menu-trigger]")
+          ?.setAttribute("aria-expanded", "false");
+      });
+    };
+
     const setOpen = (open, focusOption = false) => {
+      if (open) closeAccountMenus();
       dropdown.classList.toggle("open", open);
       toggle.setAttribute("aria-expanded", String(open));
       if (open && focusOption) {
