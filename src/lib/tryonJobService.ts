@@ -262,6 +262,7 @@ async function createGeminiDiagnosisFallbackJob(options: {
         mimeType: options.upload.contentType,
       },
       preferredLookSlug: options.look.slug,
+      locale: options.audienceContext?.locale,
       timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
       fetcher: proxyFetcher,
     });

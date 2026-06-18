@@ -38,6 +38,7 @@ const APP_MESSAGES = {
     timedOutRefunded: "生成超时，额度已自动返还，可重试",
     referenceEffect: "参考效果",
     tryonEffect: "试妆效果",
+    originalPhoto: "上传自拍",
     referenceAlt: "{look}参考效果",
     resultDisclaimer: "生成结果仅供参考，实际效果因个人条件而异。",
     referenceGenerated: "参考效果已生成",
@@ -95,6 +96,7 @@ const APP_MESSAGES = {
     timedOutRefunded: "Generation timed out. Quota was automatically refunded. You can retry.",
     referenceEffect: "Reference Result",
     tryonEffect: "Try-On Result",
+    originalPhoto: "Uploaded selfie",
     referenceAlt: "{look} reference result",
     resultDisclaimer: "Generated results are for reference only. Actual effects may vary by individual conditions.",
     referenceGenerated: "Reference result generated",
@@ -796,6 +798,40 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   let lastFile;
   let idempotencyKey;
   let activeJob;
+  let previewUrl;
+
+  const clearUploadPreview = () => {
+    uploadBox?.classList.remove("has-photo");
+    uploadBox?.closest(".upload-preview")?.classList.remove("has-photo-preview");
+    uploadBox?.querySelector("[data-upload-preview]")?.remove();
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      previewUrl = undefined;
+    }
+  };
+
+  const renderUploadPreview = (file) => {
+    if (!uploadBox || !file) return;
+    clearUploadPreview();
+    previewUrl = URL.createObjectURL(file);
+
+    const preview = document.createElement("div");
+    preview.className = "upload-original-preview";
+    preview.dataset.uploadPreview = "";
+
+    const image = document.createElement("img");
+    image.src = previewUrl;
+    image.alt = msg("originalPhoto");
+
+    const badge = document.createElement("span");
+    badge.className = "pill pill-neutral";
+    badge.textContent = msg("originalPhoto");
+
+    preview.append(image, badge);
+    uploadBox.prepend(preview);
+    uploadBox.classList.add("has-photo");
+    uploadBox.closest(".upload-preview")?.classList.add("has-photo-preview");
+  };
 
   const setUploadState = (
     message,
@@ -892,6 +928,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   const runUpload = async (file) => {
     if (!file) return;
     lastFile = file;
+    renderUploadPreview(file);
     idempotencyKey ||= crypto.randomUUID();
     activeJob = undefined;
     deleteResultButton.hidden = true;
@@ -1043,6 +1080,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       );
       delete button.dataset.uploadId;
       deleteButton.hidden = true;
+      clearUploadPreview();
       showToast(msg("originalDeleted"));
     } catch (error) {
       showToast(error.message);

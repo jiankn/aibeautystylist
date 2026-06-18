@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
-import { getCurrentLocale } from "../lib/i18n";
+import { getCurrentLocale, type SupportedLocale } from "../lib/i18n";
 
 const locale = getCurrentLocale();
 const isZh = locale.startsWith("zh");
@@ -195,6 +195,728 @@ const copy = isZh
       signInRequired: "Sign in to view your dashboard.",
       signIn: "Sign in",
     };
+
+const diagnosisDirectionRules = [
+  { key: "evenSkinTone", terms: ["even", "skin", "tone"] },
+  { key: "softDefinition", terms: ["definition"] },
+  { key: "softDefinition", terms: ["contour"] },
+  { key: "brightEye", terms: ["bright", "eye"] },
+  { key: "lipCheek", terms: ["lip"] },
+  { key: "lipCheek", terms: ["blush"] },
+  { key: "freshGlow", terms: ["glow"] },
+  { key: "naturalGlow", terms: ["natural"] },
+  { key: "matte", terms: ["matte"] },
+  { key: "dewy", terms: ["dewy"] },
+  { key: "warm", terms: ["warm"] },
+  { key: "cool", terms: ["cool"] },
+  { key: "neutral", terms: ["neutral"] },
+];
+
+const diagnosisDirectionTitleKeys = {
+  "balanced color": "balancedColor",
+  "daily polished": "dailyPolished",
+  "even out skin tone": "evenSkinTone",
+  "even skin tone": "evenSkinTone",
+  "fresh glow": "freshGlow",
+  "natural glow": "naturalGlow",
+  "office polished": "officePolished",
+  "soft definition": "softDefinition",
+  "soft glam": "softGlam",
+};
+
+type DiagnosisSummaryParts = {
+  skinDepth: string;
+  undertone: string;
+  season: string;
+  separator: string;
+  suffix: string;
+};
+
+type DiagnosisValueLabels = {
+  skinDepth: Record<string, string>;
+  undertone: Record<string, string>;
+  season: Record<string, string>;
+};
+
+type DiagnosisUiCopy = {
+  kicker: string;
+  panelTitle: string;
+  runDiagnosis: string;
+  loadingAccount: string;
+  loadFailed: string;
+  emptyDiagnosis: string;
+  confidence: string;
+  recommended: string;
+  noPreference: string;
+};
+
+type DiagnosisCopyOptions = {
+  ui: DiagnosisUiCopy;
+  summaryParts: DiagnosisSummaryParts;
+  labels: DiagnosisValueLabels;
+  directionLabels?: Record<string, string>;
+  seasonDirection: string;
+  useRawDirection?: boolean;
+  useStructuredSummary?: boolean;
+};
+
+type DiagnosisCopy = {
+  ui: DiagnosisUiCopy;
+  summaryParts: DiagnosisSummaryParts;
+  labels: DiagnosisValueLabels;
+  seasonDirection: string;
+  useRawDirection: boolean;
+  useStructuredSummary: boolean;
+  directionLabels: Record<string, string>;
+  directionKeywordLabels: Array<{ terms: string[]; label: string }>;
+};
+
+const makeDiagnosisCopy = ({
+  ui,
+  summaryParts,
+  labels,
+  directionLabels = {},
+  seasonDirection,
+  useRawDirection = false,
+  useStructuredSummary = true,
+}: DiagnosisCopyOptions): DiagnosisCopy => ({
+  ui,
+  summaryParts,
+  labels,
+  seasonDirection,
+  useRawDirection,
+  useStructuredSummary,
+  directionLabels: Object.fromEntries(
+    Object.entries(diagnosisDirectionTitleKeys)
+      .map(([title, key]) => [title, directionLabels[key]])
+      .filter(([, label]) => Boolean(label)),
+  ),
+  directionKeywordLabels: diagnosisDirectionRules
+    .map((rule) => ({
+      terms: rule.terms,
+      label: directionLabels[rule.key],
+    }))
+    .filter((rule) => Boolean(rule.label)),
+});
+
+const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
+  en: makeDiagnosisCopy({
+    ui: {
+      kicker: "AI diagnosis",
+      panelTitle: "AI diagnosis summary",
+      runDiagnosis: "Run diagnosis",
+      loadingAccount: "Loading account",
+      loadFailed: "Some data could not be loaded. Refresh later.",
+      emptyDiagnosis: "No AI diagnosis records yet.",
+      confidence: "Confidence",
+      recommended: "Recommended now",
+      noPreference: "Not set",
+    },
+    summaryParts: {
+      skinDepth: "Skin depth: {value}",
+      undertone: "undertone: {value}",
+      season: "color direction: {value}",
+      separator: "; ",
+      suffix: ".",
+    },
+    labels: {
+      skinDepth: {
+        fair: "fair",
+        light: "light",
+        medium: "medium",
+        tan: "tan",
+        deep: "deep",
+      },
+      undertone: {
+        cool: "cool",
+        warm: "warm",
+        neutral: "neutral",
+        olive: "olive",
+        uncertain: "uncertain",
+      },
+      season: {
+        "bright-spring": "bright spring",
+        "warm-spring": "warm spring",
+        "light-spring": "light spring",
+        "light-summer": "light summer",
+        "cool-summer": "cool summer",
+        "soft-summer": "soft summer",
+        "soft-autumn": "soft autumn",
+        "warm-autumn": "warm autumn",
+        "deep-autumn": "deep autumn",
+        "deep-winter": "deep winter",
+        "cool-winter": "cool winter",
+        "bright-winter": "bright winter",
+        uncertain: "uncertain",
+      },
+    },
+    seasonDirection: "{season} direction",
+    useRawDirection: true,
+    useStructuredSummary: false,
+  }),
+  "zh-CN": makeDiagnosisCopy({
+    ui: {
+      kicker: "AI 诊断",
+      panelTitle: "AI 诊断摘要",
+      runDiagnosis: "开始诊断",
+      loadingAccount: "正在读取账户",
+      loadFailed: "部分数据暂时无法读取，请稍后刷新。",
+      emptyDiagnosis: "还没有 AI 诊断记录。",
+      confidence: "置信度",
+      recommended: "当前推荐",
+      noPreference: "暂未设置",
+    },
+    summaryParts: {
+      skinDepth: "肤色深度偏{value}",
+      undertone: "肤调为{value}",
+      season: "色彩倾向为{value}",
+      separator: "，",
+      suffix: "。",
+    },
+    labels: {
+      skinDepth: {
+        fair: "白皙",
+        light: "浅色",
+        medium: "中等",
+        tan: "小麦色",
+        deep: "深色",
+      },
+      undertone: {
+        cool: "冷调",
+        warm: "暖调",
+        neutral: "中性",
+        olive: "橄榄调",
+        uncertain: "待确认",
+      },
+      season: {
+        "bright-spring": "明亮春季",
+        "warm-spring": "暖调春季",
+        "light-spring": "浅色春季",
+        "light-summer": "浅色夏季",
+        "cool-summer": "冷调夏季",
+        "soft-summer": "柔和夏季",
+        "soft-autumn": "柔和秋季",
+        "warm-autumn": "暖调秋季",
+        "deep-autumn": "深色秋季",
+        "deep-winter": "深色冬季",
+        "cool-winter": "冷调冬季",
+        "bright-winter": "明亮冬季",
+        uncertain: "待确认",
+      },
+    },
+    directionLabels: {
+      balancedColor: "均衡气色妆",
+      dailyPolished: "日常精致妆",
+      evenSkinTone: "均匀肤色",
+      freshGlow: "清透光泽妆",
+      naturalGlow: "自然光泽妆",
+      officePolished: "通勤精致妆",
+      softDefinition: "柔和修饰轮廓",
+      softGlam: "柔和精致妆",
+      brightEye: "提亮眼妆",
+      lipCheek: "唇颊提气色",
+      matte: "柔雾底妆",
+      dewy: "水光清透妆",
+      warm: "暖调气色妆",
+      cool: "冷调清透妆",
+      neutral: "中性日常妆",
+    },
+    seasonDirection: "{season}妆容方向",
+  }),
+  "zh-TW": makeDiagnosisCopy({
+    ui: {
+      kicker: "AI 診斷",
+      panelTitle: "AI 診斷摘要",
+      runDiagnosis: "開始診斷",
+      loadingAccount: "正在讀取帳戶",
+      loadFailed: "部分資料暫時無法讀取，請稍後重新整理。",
+      emptyDiagnosis: "還沒有 AI 診斷記錄。",
+      confidence: "可信度",
+      recommended: "目前推薦",
+      noPreference: "尚未設定",
+    },
+    summaryParts: {
+      skinDepth: "膚色深度偏{value}",
+      undertone: "膚調為{value}",
+      season: "色彩傾向為{value}",
+      separator: "，",
+      suffix: "。",
+    },
+    labels: {
+      skinDepth: {
+        fair: "白皙",
+        light: "淺色",
+        medium: "中等",
+        tan: "小麥色",
+        deep: "深色",
+      },
+      undertone: {
+        cool: "冷調",
+        warm: "暖調",
+        neutral: "中性",
+        olive: "橄欖調",
+        uncertain: "待確認",
+      },
+      season: {
+        "bright-spring": "明亮春季",
+        "warm-spring": "暖調春季",
+        "light-spring": "淺色春季",
+        "light-summer": "淺色夏季",
+        "cool-summer": "冷調夏季",
+        "soft-summer": "柔和夏季",
+        "soft-autumn": "柔和秋季",
+        "warm-autumn": "暖調秋季",
+        "deep-autumn": "深色秋季",
+        "deep-winter": "深色冬季",
+        "cool-winter": "冷調冬季",
+        "bright-winter": "明亮冬季",
+        uncertain: "待確認",
+      },
+    },
+    directionLabels: {
+      balancedColor: "均衡氣色妝",
+      dailyPolished: "日常精緻妝",
+      evenSkinTone: "均勻膚色",
+      freshGlow: "清透光澤妝",
+      naturalGlow: "自然光澤妝",
+      officePolished: "通勤精緻妝",
+      softDefinition: "柔和修飾輪廓",
+      softGlam: "柔和精緻妝",
+      brightEye: "提亮眼妝",
+      lipCheek: "唇頰提氣色",
+      matte: "柔霧底妝",
+      dewy: "水光清透妝",
+      warm: "暖調氣色妝",
+      cool: "冷調清透妝",
+      neutral: "中性日常妝",
+    },
+    seasonDirection: "{season}妝容方向",
+  }),
+  "ja-JP": makeDiagnosisCopy({
+    ui: {
+      kicker: "AI診断",
+      panelTitle: "AI診断サマリー",
+      runDiagnosis: "診断を開始",
+      loadingAccount: "アカウントを読み込み中",
+      loadFailed:
+        "一部のデータを読み込めませんでした。後でもう一度お試しください。",
+      emptyDiagnosis: "AI診断の記録はまだありません。",
+      confidence: "信頼度",
+      recommended: "現在のおすすめ",
+      noPreference: "未設定",
+    },
+    summaryParts: {
+      skinDepth: "肌色の明るさは{value}",
+      undertone: "アンダートーンは{value}",
+      season: "カラー傾向は{value}",
+      separator: "、",
+      suffix: "です。",
+    },
+    labels: {
+      skinDepth: {
+        fair: "色白",
+        light: "明るめ",
+        medium: "中間",
+        tan: "小麦色",
+        deep: "深め",
+      },
+      undertone: {
+        cool: "クール",
+        warm: "ウォーム",
+        neutral: "ニュートラル",
+        olive: "オリーブ",
+        uncertain: "要確認",
+      },
+      season: {
+        "bright-spring": "ブライトスプリング",
+        "warm-spring": "ウォームスプリング",
+        "light-spring": "ライトスプリング",
+        "light-summer": "ライトサマー",
+        "cool-summer": "クールサマー",
+        "soft-summer": "ソフトサマー",
+        "soft-autumn": "ソフトオータム",
+        "warm-autumn": "ウォームオータム",
+        "deep-autumn": "ディープオータム",
+        "deep-winter": "ディープウィンター",
+        "cool-winter": "クールウィンター",
+        "bright-winter": "ブライトウィンター",
+        uncertain: "要確認",
+      },
+    },
+    directionLabels: {
+      balancedColor: "血色バランスメイク",
+      dailyPolished: "日常のきちんとメイク",
+      evenSkinTone: "肌トーンを均一に",
+      freshGlow: "透明感のあるツヤメイク",
+      naturalGlow: "自然なツヤメイク",
+      officePolished: "通勤向け上品メイク",
+      softDefinition: "やわらかな立体感",
+      softGlam: "やわらかい華やかメイク",
+      brightEye: "目元を明るく",
+      lipCheek: "リップとチークで血色感",
+      matte: "ソフトマット肌",
+      dewy: "みずみずしいツヤ肌",
+      warm: "暖色血色メイク",
+      cool: "クールトーンの透明感メイク",
+      neutral: "ニュートラルな日常メイク",
+    },
+    seasonDirection: "{season}向けメイク",
+  }),
+  "ko-KR": makeDiagnosisCopy({
+    ui: {
+      kicker: "AI 진단",
+      panelTitle: "AI 진단 요약",
+      runDiagnosis: "진단 시작",
+      loadingAccount: "계정을 불러오는 중",
+      loadFailed:
+        "일부 데이터를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.",
+      emptyDiagnosis: "아직 AI 진단 기록이 없습니다.",
+      confidence: "신뢰도",
+      recommended: "현재 추천",
+      noPreference: "설정 안 됨",
+    },
+    summaryParts: {
+      skinDepth: "피부 밝기는 {value}",
+      undertone: "언더톤은 {value}",
+      season: "컬러 방향은 {value}",
+      separator: ", ",
+      suffix: "입니다.",
+    },
+    labels: {
+      skinDepth: {
+        fair: "매우 밝음",
+        light: "밝음",
+        medium: "중간",
+        tan: "탄",
+        deep: "딥",
+      },
+      undertone: {
+        cool: "쿨톤",
+        warm: "웜톤",
+        neutral: "뉴트럴",
+        olive: "올리브톤",
+        uncertain: "확인 필요",
+      },
+      season: {
+        "bright-spring": "브라이트 봄",
+        "warm-spring": "웜 봄",
+        "light-spring": "라이트 봄",
+        "light-summer": "라이트 여름",
+        "cool-summer": "쿨 여름",
+        "soft-summer": "소프트 여름",
+        "soft-autumn": "소프트 가을",
+        "warm-autumn": "웜 가을",
+        "deep-autumn": "딥 가을",
+        "deep-winter": "딥 겨울",
+        "cool-winter": "쿨 겨울",
+        "bright-winter": "브라이트 겨울",
+        uncertain: "확인 필요",
+      },
+    },
+    directionLabels: {
+      balancedColor: "균형 잡힌 생기 메이크업",
+      dailyPolished: "데일리 정돈 메이크업",
+      evenSkinTone: "피부 톤 보정",
+      freshGlow: "맑은 윤광 메이크업",
+      naturalGlow: "자연스러운 윤광 메이크업",
+      officePolished: "출근용 정돈 메이크업",
+      softDefinition: "부드러운 윤곽 보정",
+      softGlam: "부드러운 글램 메이크업",
+      brightEye: "눈가 밝히기",
+      lipCheek: "립과 치크 생기",
+      matte: "소프트 매트 베이스",
+      dewy: "촉촉한 광채 베이스",
+      warm: "웜톤 생기 메이크업",
+      cool: "쿨톤 맑은 메이크업",
+      neutral: "뉴트럴 데일리 메이크업",
+    },
+    seasonDirection: "{season} 메이크업 방향",
+  }),
+  "fr-FR": makeDiagnosisCopy({
+    ui: {
+      kicker: "Diagnostic IA",
+      panelTitle: "Résumé du diagnostic IA",
+      runDiagnosis: "Lancer le diagnostic",
+      loadingAccount: "Chargement du compte",
+      loadFailed:
+        "Certaines données n'ont pas pu être chargées. Réessayez plus tard.",
+      emptyDiagnosis: "Aucun diagnostic IA pour le moment.",
+      confidence: "Confiance",
+      recommended: "Recommandation actuelle",
+      noPreference: "Non défini",
+    },
+    summaryParts: {
+      skinDepth: "Profondeur de peau : {value}",
+      undertone: "sous-ton : {value}",
+      season: "direction couleur : {value}",
+      separator: " ; ",
+      suffix: ".",
+    },
+    labels: {
+      skinDepth: {
+        fair: "très claire",
+        light: "claire",
+        medium: "moyenne",
+        tan: "hâlée",
+        deep: "foncée",
+      },
+      undertone: {
+        cool: "froid",
+        warm: "chaud",
+        neutral: "neutre",
+        olive: "olive",
+        uncertain: "incertain",
+      },
+      season: {
+        "bright-spring": "printemps lumineux",
+        "warm-spring": "printemps chaud",
+        "light-spring": "printemps clair",
+        "light-summer": "été clair",
+        "cool-summer": "été froid",
+        "soft-summer": "été doux",
+        "soft-autumn": "automne doux",
+        "warm-autumn": "automne chaud",
+        "deep-autumn": "automne profond",
+        "deep-winter": "hiver profond",
+        "cool-winter": "hiver froid",
+        "bright-winter": "hiver lumineux",
+        uncertain: "incertain",
+      },
+    },
+    directionLabels: {
+      balancedColor: "Bonne mine équilibrée",
+      dailyPolished: "Maquillage quotidien soigné",
+      evenSkinTone: "Unifier le teint",
+      freshGlow: "Éclat frais",
+      naturalGlow: "Éclat naturel",
+      officePolished: "Maquillage bureau soigné",
+      softDefinition: "Définition douce",
+      softGlam: "Glam doux",
+      brightEye: "Regard lumineux",
+      lipCheek: "Couleur lèvres et joues",
+      matte: "Teint mat doux",
+      dewy: "Éclat hydraté",
+      warm: "Bonne mine chaude",
+      cool: "Fraîcheur tonalité froide",
+      neutral: "Look neutre du quotidien",
+    },
+    seasonDirection: "Orientation maquillage {season}",
+  }),
+  "de-DE": makeDiagnosisCopy({
+    ui: {
+      kicker: "KI-Diagnose",
+      panelTitle: "Zusammenfassung der KI-Diagnose",
+      runDiagnosis: "Diagnose starten",
+      loadingAccount: "Konto wird geladen",
+      loadFailed:
+        "Einige Daten konnten nicht geladen werden. Bitte später aktualisieren.",
+      emptyDiagnosis: "Noch keine KI-Diagnosen.",
+      confidence: "Konfidenz",
+      recommended: "Aktuelle Empfehlung",
+      noPreference: "Nicht festgelegt",
+    },
+    summaryParts: {
+      skinDepth: "Hauttiefe: {value}",
+      undertone: "Unterton: {value}",
+      season: "Farbrichtung: {value}",
+      separator: "; ",
+      suffix: ".",
+    },
+    labels: {
+      skinDepth: {
+        fair: "sehr hell",
+        light: "hell",
+        medium: "mittel",
+        tan: "gebräunt",
+        deep: "dunkel",
+      },
+      undertone: {
+        cool: "kühl",
+        warm: "warm",
+        neutral: "neutral",
+        olive: "oliv",
+        uncertain: "unsicher",
+      },
+      season: {
+        "bright-spring": "leuchtender Frühling",
+        "warm-spring": "warmer Frühling",
+        "light-spring": "heller Frühling",
+        "light-summer": "heller Sommer",
+        "cool-summer": "kühler Sommer",
+        "soft-summer": "sanfter Sommer",
+        "soft-autumn": "sanfter Herbst",
+        "warm-autumn": "warmer Herbst",
+        "deep-autumn": "tiefer Herbst",
+        "deep-winter": "tiefer Winter",
+        "cool-winter": "kühler Winter",
+        "bright-winter": "leuchtender Winter",
+        uncertain: "unsicher",
+      },
+    },
+    directionLabels: {
+      balancedColor: "Ausgewogene Frische",
+      dailyPolished: "Gepflegter Alltagslook",
+      evenSkinTone: "Hautton ausgleichen",
+      freshGlow: "Frischer Glow",
+      naturalGlow: "Natürlicher Glow",
+      officePolished: "Gepflegter Office-Look",
+      softDefinition: "Weiche Definition",
+      softGlam: "Sanfter Glam-Look",
+      brightEye: "Augenpartie aufhellen",
+      lipCheek: "Frische für Lippen und Wangen",
+      matte: "Weich-mattes Finish",
+      dewy: "Frischer Dewy Glow",
+      warm: "Warmer Frische-Look",
+      cool: "Kühle klare Frische",
+      neutral: "Neutraler Alltagslook",
+    },
+    seasonDirection: "Make-up-Richtung {season}",
+  }),
+  "es-ES": makeDiagnosisCopy({
+    ui: {
+      kicker: "Diagnóstico IA",
+      panelTitle: "Resumen del diagnóstico IA",
+      runDiagnosis: "Iniciar diagnóstico",
+      loadingAccount: "Cargando cuenta",
+      loadFailed: "No se pudieron cargar algunos datos. Actualiza más tarde.",
+      emptyDiagnosis: "Aún no hay diagnósticos IA.",
+      confidence: "Confianza",
+      recommended: "Recomendación actual",
+      noPreference: "Sin definir",
+    },
+    summaryParts: {
+      skinDepth: "Profundidad de piel: {value}",
+      undertone: "subtono: {value}",
+      season: "dirección de color: {value}",
+      separator: "; ",
+      suffix: ".",
+    },
+    labels: {
+      skinDepth: {
+        fair: "muy clara",
+        light: "clara",
+        medium: "media",
+        tan: "bronceada",
+        deep: "oscura",
+      },
+      undertone: {
+        cool: "frío",
+        warm: "cálido",
+        neutral: "neutro",
+        olive: "oliva",
+        uncertain: "incierto",
+      },
+      season: {
+        "bright-spring": "primavera brillante",
+        "warm-spring": "primavera cálida",
+        "light-spring": "primavera clara",
+        "light-summer": "verano claro",
+        "cool-summer": "verano frío",
+        "soft-summer": "verano suave",
+        "soft-autumn": "otoño suave",
+        "warm-autumn": "otoño cálido",
+        "deep-autumn": "otoño profundo",
+        "deep-winter": "invierno profundo",
+        "cool-winter": "invierno frío",
+        "bright-winter": "invierno brillante",
+        uncertain: "incierto",
+      },
+    },
+    directionLabels: {
+      balancedColor: "Color equilibrado",
+      dailyPolished: "Maquillaje diario pulido",
+      evenSkinTone: "Unificar el tono",
+      freshGlow: "Brillo fresco",
+      naturalGlow: "Brillo natural",
+      officePolished: "Maquillaje pulido de oficina",
+      softDefinition: "Definición suave",
+      softGlam: "Glam suave",
+      brightEye: "Iluminar la mirada",
+      lipCheek: "Color en labios y mejillas",
+      matte: "Acabado mate suave",
+      dewy: "Piel luminosa hidratada",
+      warm: "Vitalidad cálida",
+      cool: "Frescura de tono frío",
+      neutral: "Look neutro diario",
+    },
+    seasonDirection: "Dirección de maquillaje {season}",
+  }),
+  "pt-BR": makeDiagnosisCopy({
+    ui: {
+      kicker: "Diagnóstico IA",
+      panelTitle: "Resumo do diagnóstico IA",
+      runDiagnosis: "Iniciar diagnóstico",
+      loadingAccount: "Carregando conta",
+      loadFailed:
+        "Não foi possível carregar alguns dados. Atualize mais tarde.",
+      emptyDiagnosis: "Ainda não há registros de diagnóstico IA.",
+      confidence: "Confiança",
+      recommended: "Recomendação atual",
+      noPreference: "Não definido",
+    },
+    summaryParts: {
+      skinDepth: "Profundidade da pele: {value}",
+      undertone: "subtom: {value}",
+      season: "direção de cor: {value}",
+      separator: "; ",
+      suffix: ".",
+    },
+    labels: {
+      skinDepth: {
+        fair: "muito clara",
+        light: "clara",
+        medium: "média",
+        tan: "bronzeada",
+        deep: "escura",
+      },
+      undertone: {
+        cool: "frio",
+        warm: "quente",
+        neutral: "neutro",
+        olive: "oliva",
+        uncertain: "incerto",
+      },
+      season: {
+        "bright-spring": "primavera brilhante",
+        "warm-spring": "primavera quente",
+        "light-spring": "primavera clara",
+        "light-summer": "verão claro",
+        "cool-summer": "verão frio",
+        "soft-summer": "verão suave",
+        "soft-autumn": "outono suave",
+        "warm-autumn": "outono quente",
+        "deep-autumn": "outono profundo",
+        "deep-winter": "inverno profundo",
+        "cool-winter": "inverno frio",
+        "bright-winter": "inverno brilhante",
+        uncertain: "incerto",
+      },
+    },
+    directionLabels: {
+      balancedColor: "Cor equilibrada",
+      dailyPolished: "Maquiagem diária polida",
+      evenSkinTone: "Uniformizar o tom da pele",
+      freshGlow: "Viço fresco",
+      naturalGlow: "Viço natural",
+      officePolished: "Maquiagem polida para trabalho",
+      softDefinition: "Definição suave",
+      softGlam: "Glam suave",
+      brightEye: "Iluminar os olhos",
+      lipCheek: "Cor em lábios e bochechas",
+      matte: "Acabamento matte suave",
+      dewy: "Pele viçosa hidratada",
+      warm: "Vitalidade quente",
+      cool: "Frescor de tom frio",
+      neutral: "Look neutro diário",
+    },
+    seasonDirection: "Direção de maquiagem {season}",
+  }),
+};
+
+diagnosisCopyByLocale["es-419"] = diagnosisCopyByLocale["es-ES"];
+
+const defaultDiagnosisCopy = diagnosisCopyByLocale.en as DiagnosisCopy;
+const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
 ---
 
 <BaseLayout
@@ -375,13 +1097,13 @@ const copy = isZh
           <section class="panel dashboard-panel" id="diagnosis-panel">
             <div class="panel-head">
               <div>
-                <p class="section-kicker">{copy.diagnosis}</p>
-                <h2>{copy.diagnosisPanelTitle}</h2>
+                <p class="section-kicker">{diagnosisCopy.ui.kicker}</p>
+                <h2>{diagnosisCopy.ui.panelTitle}</h2>
               </div>
-              <a href={hrefs.diagnosis}>{copy.runDiagnosis}</a>
+              <a href={hrefs.diagnosis}>{diagnosisCopy.ui.runDiagnosis}</a>
             </div>
             <div class="diagnosis-summary" data-diagnosis-summary>
-              <p class="loading-line">{copy.loadingAccount}</p>
+              <p class="loading-line">{diagnosisCopy.ui.loadingAccount}</p>
             </div>
           </section>
 
@@ -875,7 +1597,10 @@ const copy = isZh
     }
   </style>
 
-  <script is:inline define:vars={{ copy, hrefs, recommendations }}>
+  <script
+    is:inline
+    define:vars={{ copy, diagnosisCopy, hrefs, recommendations }}
+  >
     (() => {
       const root = document.querySelector("[data-dashboard]");
       if (!root) return;
@@ -927,6 +1652,79 @@ const copy = isZh
         }
         return body.data;
       };
+      const formatDiagnosisPart = (template, value) =>
+        template && value ? template.replace("{value}", value) : "";
+      const labelDiagnosisValue = (group, value) =>
+        value ? diagnosisCopy.labels?.[group]?.[value] || value : "";
+      const normalizeDiagnosisText = (value) =>
+        String(value || "")
+          .toLowerCase()
+          .replace(/[\u2010-\u2015]/g, "-")
+          .replace(/[^a-z0-9\s-]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+
+      function formatDiagnosisSummary(diagnosis) {
+        const partsCopy = diagnosisCopy.summaryParts || {};
+        const parts = [
+          formatDiagnosisPart(
+            partsCopy.skinDepth,
+            labelDiagnosisValue("skinDepth", diagnosis.skinTone?.depth),
+          ),
+          formatDiagnosisPart(
+            partsCopy.undertone,
+            labelDiagnosisValue("undertone", diagnosis.skinTone?.undertone),
+          ),
+          formatDiagnosisPart(
+            partsCopy.season,
+            labelDiagnosisValue("season", diagnosis.colorSeason?.season),
+          ),
+        ].filter(Boolean);
+        if (diagnosisCopy.useStructuredSummary !== false && parts.length) {
+          return `${parts.join(partsCopy.separator || ", ")}${
+            partsCopy.suffix || ""
+          }`;
+        }
+        const rawSummary =
+          diagnosis.skinTone?.summary || diagnosis.colorSeason?.rationale || "";
+        if (rawSummary) return rawSummary;
+        if (parts.length) {
+          return `${parts.join(partsCopy.separator || ", ")}${
+            partsCopy.suffix || ""
+          }`;
+        }
+        return diagnosisCopy.ui.panelTitle;
+      }
+
+      function localizeDiagnosisDirection(title) {
+        const normalized = normalizeDiagnosisText(title);
+        if (!normalized) return "";
+        const direct = diagnosisCopy.directionLabels?.[normalized];
+        if (direct) return direct;
+        const keywordRules = Array.isArray(diagnosisCopy.directionKeywordLabels)
+          ? diagnosisCopy.directionKeywordLabels
+          : [];
+        const matchedRule = keywordRules.find((rule) =>
+          rule.terms?.every((term) => normalized.includes(term)),
+        );
+        if (matchedRule?.label) return matchedRule.label;
+        return diagnosisCopy.useRawDirection ? title : "";
+      }
+
+      function formatDiagnosisDirection(diagnosis) {
+        const title = localizeDiagnosisDirection(
+          diagnosis.makeupDirections?.[0]?.title,
+        );
+        if (title) return title;
+        const season = labelDiagnosisValue(
+          "season",
+          diagnosis.colorSeason?.season,
+        );
+        if (season && diagnosisCopy.seasonDirection) {
+          return diagnosisCopy.seasonDirection.replace("{season}", season);
+        }
+        return diagnosisCopy.ui.noPreference;
+      }
 
       function setWorkspaceLinks(plan) {
         workspaceHref = workspaceByPlan[plan] || hrefs.tryonFree;
@@ -1050,8 +1848,8 @@ const copy = isZh
         if (!records.length) {
           renderEmpty(
             target,
-            copy.emptyDiagnosis,
-            copy.runDiagnosis,
+            diagnosisCopy.ui.emptyDiagnosis,
+            diagnosisCopy.ui.runDiagnosis,
             hrefs.diagnosis,
           );
           return;
@@ -1062,10 +1860,7 @@ const copy = isZh
 
         const lead = document.createElement("div");
         const title = document.createElement("strong");
-        title.textContent =
-          diagnosis.skinTone?.summary ||
-          diagnosis.colorSeason?.rationale ||
-          copy.diagnosisPanelTitle;
+        title.textContent = formatDiagnosisSummary(diagnosis);
         const meta = document.createElement("span");
         meta.textContent = formatDate(latest?.createdAt);
         lead.append(title, meta);
@@ -1074,22 +1869,19 @@ const copy = isZh
         metrics.className = "diagnosis-metrics";
         const confidence = document.createElement("div");
         const confidenceLabel = document.createElement("span");
-        confidenceLabel.textContent = copy.confidence;
+        confidenceLabel.textContent = diagnosisCopy.ui.confidence;
         const confidenceValue = document.createElement("strong");
         const confidenceScore = Number(diagnosis.confidence?.overall);
         confidenceValue.textContent = Number.isFinite(confidenceScore)
           ? `${Math.round(confidenceScore * 100)}%`
-          : copy.noPreference;
+          : diagnosisCopy.ui.noPreference;
         confidence.append(confidenceLabel, confidenceValue);
 
         const direction = document.createElement("div");
         const directionLabel = document.createElement("span");
-        directionLabel.textContent = copy.recommended;
+        directionLabel.textContent = diagnosisCopy.ui.recommended;
         const directionValue = document.createElement("strong");
-        directionValue.textContent =
-          diagnosis.makeupDirections?.[0]?.title ||
-          diagnosis.colorSeason?.season ||
-          copy.noPreference;
+        directionValue.textContent = formatDiagnosisDirection(diagnosis);
         direction.append(directionLabel, directionValue);
 
         metrics.append(confidence, direction);
@@ -1178,7 +1970,11 @@ const copy = isZh
 
         if (diagnoses.status === "fulfilled")
           renderDiagnosis(diagnoses.value?.items);
-        else renderEmpty(query("[data-diagnosis-summary]"), copy.loadFailed);
+        else
+          renderEmpty(
+            query("[data-diagnosis-summary]"),
+            diagnosisCopy.ui.loadFailed,
+          );
 
         if (preferences.status === "fulfilled")
           renderPreferences(preferences.value);

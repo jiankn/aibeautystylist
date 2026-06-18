@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { lookCatalog } from "../data/lookCatalog";
+import type { AudienceContext } from "../data/makeup/audienceTypes";
 import { getMockAiCallLogs, resetMockAiCallLogs } from "./aiCallLogs";
 import { type DiagnosisResult } from "./diagnosis";
 import {
@@ -43,6 +44,13 @@ vi.mock("./geminiImage", async (importOriginal) => {
 });
 
 const look = lookCatalog.find((item) => item.slug === "commute")!;
+const jaAudienceContext: AudienceContext = {
+  locale: "ja-JP",
+  marketProfile: "east-asia",
+  beautyPreferences: [],
+  representationPreference: ["east-asian"],
+  source: "locale",
+};
 
 describe("createTryOnJob", () => {
   beforeEach(() => {
@@ -105,6 +113,7 @@ describe("createTryOnJob", () => {
         GEMINI_TIMEOUT_MS: "120000",
         USER_UPLOADS: bucketWithBytes([1, 2, 3]),
       },
+      audienceContext: jaAudienceContext,
     });
 
     expect(result.job).toMatchObject({
@@ -140,6 +149,7 @@ describe("createTryOnJob", () => {
         apiKey: "secret",
         model: "gemini-2.5-flash-lite",
         preferredLookSlug: look.slug,
+        locale: "ja-JP",
       }),
     );
     expect(generateGeminiMakeupImage).toHaveBeenCalled();

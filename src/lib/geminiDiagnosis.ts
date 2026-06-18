@@ -3,6 +3,7 @@ import {
   parseDiagnosisResult,
   type DiagnosisResult,
 } from "./diagnosis";
+import { normalizeLocale, type SupportedLocale } from "./i18n";
 
 export type DiagnosisProviderErrorCode =
   | "GEMINI_UNAVAILABLE"
@@ -27,6 +28,7 @@ export interface GeminiDiagnosisOptions {
     mimeType: string;
   };
   preferredLookSlug?: string;
+  locale?: string;
   timeoutMs?: number;
   fetcher?: typeof fetch;
 }
@@ -84,7 +86,12 @@ export async function generateGeminiDiagnosis(
             {
               role: "user",
               parts: [
-                { text: diagnosisPrompt(options.preferredLookSlug) },
+                {
+                  text: diagnosisPrompt({
+                    preferredLookSlug: options.preferredLookSlug,
+                    locale: options.locale,
+                  }),
+                },
                 {
                   inlineData: {
                     mimeType: options.photo.mimeType,
@@ -163,14 +170,45 @@ export async function generateGeminiDiagnosis(
   };
 }
 
-function diagnosisPrompt(preferredLookSlug?: string): string {
+const diagnosisOutputLanguages: Record<
+  SupportedLocale,
+  { name: string; writingSystem?: string }
+> = {
+  en: { name: "English" },
+  "zh-CN": { name: "Simplified Chinese", writingSystem: "简体中文" },
+  "de-DE": { name: "German", writingSystem: "Deutsch" },
+  "fr-FR": { name: "French", writingSystem: "français" },
+  "ja-JP": { name: "Japanese", writingSystem: "日本語" },
+  "ko-KR": { name: "Korean", writingSystem: "한국어" },
+  "zh-TW": { name: "Traditional Chinese", writingSystem: "繁體中文" },
+  "es-ES": { name: "Spanish", writingSystem: "español" },
+  "es-419": { name: "Latin American Spanish", writingSystem: "español" },
+  "pt-BR": {
+    name: "Brazilian Portuguese",
+    writingSystem: "português do Brasil",
+  },
+};
+
+function diagnosisPrompt(options: {
+  preferredLookSlug?: string;
+  locale?: string;
+}): string {
+  const locale = normalizeLocale(options.locale);
+  const outputLanguage = diagnosisOutputLanguages[locale];
+  const languageInstruction = outputLanguage.writingSystem
+    ? `${outputLanguage.name} (${outputLanguage.writingSystem})`
+    : outputLanguage.name;
+
   return [
     "Analyze only visible, non-medical beauty styling characteristics in this photo.",
     "Do not identify the person, infer health, ethnicity, age, or other sensitive traits.",
     "Be cautious about lighting and camera uncertainty. Use 'uncertain' when evidence is weak.",
+    `The active UI locale is "${locale}". Write every user-visible free-text field in ${languageInstruction}.`,
+    "User-visible free-text fields include confidence.limitations, skinTone.summary, faceShape.evidence, eyeShape.evidence, colorSeason.rationale, strengths, cautions, and every makeupDirections title, rationale, and palette entry.",
+    "Keep schema enum values exactly as defined in English, including depth, undertone, face shape, eye shape, color season, and confidence band.",
     "Return exactly three practical makeup directions and no product or shade guarantees.",
-    preferredLookSlug
-      ? `The user's selected style preference is "${preferredLookSlug}". Treat it as a preference, not a requirement.`
+    options.preferredLookSlug
+      ? `The user's selected style preference is "${options.preferredLookSlug}". Treat it as a preference, not a requirement.`
       : "",
   ]
     .filter(Boolean)

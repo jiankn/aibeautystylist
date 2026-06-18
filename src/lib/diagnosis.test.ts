@@ -34,6 +34,15 @@ describe("Gemini diagnosis provider", () => {
     const fetcher = vi.fn(async (_url: string, init?: RequestInit) => {
       const request = JSON.parse(String(init?.body));
       expect(init?.headers).toMatchObject({ "x-goog-api-key": "secret" });
+      expect(request.contents[0].parts[0].text).toContain(
+        'The active UI locale is "ja-JP"',
+      );
+      expect(request.contents[0].parts[0].text).toContain(
+        "Write every user-visible free-text field in Japanese",
+      );
+      expect(request.contents[0].parts[0].text).toContain(
+        "Keep schema enum values exactly as defined in English",
+      );
       expect(request.contents[0].parts[1].inlineData).toEqual({
         mimeType: "image/jpeg",
         data: "AQID",
@@ -62,6 +71,7 @@ describe("Gemini diagnosis provider", () => {
           data: new Uint8Array([1, 2, 3]).buffer,
           mimeType: "image/jpeg",
         },
+        locale: "ja-JP",
         fetcher: fetcher as typeof fetch,
       }),
     ).resolves.toMatchObject({
