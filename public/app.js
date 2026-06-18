@@ -66,6 +66,11 @@ const APP_MESSAGES = {
     resultDeletedDesc: "你可以重新上传自拍并生成新的试妆结果",
     openMenu: "打开导航菜单",
     closeMenu: "关闭导航菜单",
+    dialogAlertTitle: "提示",
+    dialogConfirmTitle: "确认操作",
+    dialogOk: "确定",
+    dialogCancel: "取消",
+    dialogConfirm: "确认",
   },
   en: {
     loginRequired: "Please sign in before uploading a selfie",
@@ -124,6 +129,11 @@ const APP_MESSAGES = {
     resultDeletedDesc: "You can upload a selfie again and generate a new result.",
     openMenu: "Open navigation menu",
     closeMenu: "Close navigation menu",
+    dialogAlertTitle: "Notice",
+    dialogConfirmTitle: "Confirm action",
+    dialogOk: "OK",
+    dialogCancel: "Cancel",
+    dialogConfirm: "Confirm",
   },
 };
 
@@ -145,6 +155,151 @@ function showToast(message) {
   window.clearTimeout(showToast.timer);
   showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
 }
+
+window.showToast = showToast;
+
+function ensureAppDialog() {
+  let root = document.querySelector("[data-app-dialog]");
+  if (!root) {
+    root = document.createElement("div");
+    root.className = "app-dialog-backdrop";
+    root.hidden = true;
+    root.dataset.appDialog = "";
+    root.innerHTML = `
+      <section class="app-dialog-panel" role="dialog" aria-modal="true" aria-labelledby="app-dialog-title" aria-describedby="app-dialog-message">
+        <div class="app-dialog-mark" aria-hidden="true">ABS</div>
+        <div class="app-dialog-copy">
+          <h2 id="app-dialog-title"></h2>
+          <p id="app-dialog-message"></p>
+        </div>
+        <div class="app-dialog-actions">
+          <button class="btn app-dialog-cancel" type="button" data-app-dialog-cancel></button>
+          <button class="btn btn-primary app-dialog-confirm" type="button" data-app-dialog-confirm></button>
+        </div>
+      </section>
+    `;
+    document.body.appendChild(root);
+  }
+
+  return {
+    root,
+    panel: root.querySelector(".app-dialog-panel"),
+    title: root.querySelector("#app-dialog-title"),
+    message: root.querySelector("#app-dialog-message"),
+    cancelButton: root.querySelector("[data-app-dialog-cancel]"),
+    confirmButton: root.querySelector("[data-app-dialog-confirm]"),
+  };
+}
+
+let appDialogQueue = Promise.resolve();
+
+function runAppDialog(options) {
+  return new Promise((resolve) => {
+    const {
+      root,
+      title,
+      message,
+      cancelButton,
+      confirmButton,
+    } = ensureAppDialog();
+    const showCancel = Boolean(options.showCancel);
+    const previousFocus = document.activeElement;
+    let settled = false;
+
+    title.textContent =
+      options.title ||
+      (showCancel ? msg("dialogConfirmTitle") : msg("dialogAlertTitle"));
+    message.textContent = String(options.message ?? "");
+    cancelButton.textContent = options.cancelLabel || msg("dialogCancel");
+    confirmButton.textContent =
+      options.confirmLabel || (showCancel ? msg("dialogConfirm") : msg("dialogOk"));
+    cancelButton.hidden = !showCancel;
+    root.dataset.variant = options.variant || (showCancel ? "confirm" : "notice");
+    root.hidden = false;
+
+    function finish(value) {
+      if (settled) return;
+      settled = true;
+      root.classList.remove("is-open");
+      root.removeEventListener("click", handleBackdrop);
+      document.removeEventListener("keydown", handleKeydown);
+      window.setTimeout(() => {
+        root.hidden = true;
+        if (previousFocus && typeof previousFocus.focus === "function") {
+          previousFocus.focus({ preventScroll: true });
+        }
+        resolve(value);
+      }, 180);
+    }
+
+    function handleBackdrop(event) {
+      if (event.target === root) finish(!showCancel);
+    }
+
+    function handleKeydown(event) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        finish(!showCancel);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = [cancelButton, confirmButton].filter(
+        (button) => button && !button.hidden,
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    cancelButton.onclick = () => finish(false);
+    confirmButton.onclick = () => finish(true);
+    root.addEventListener("click", handleBackdrop);
+    document.addEventListener("keydown", handleKeydown);
+    requestAnimationFrame(() => {
+      root.classList.add("is-open");
+      confirmButton.focus({ preventScroll: true });
+    });
+  });
+}
+
+function openAppDialog(options) {
+  const run = () => runAppDialog(options);
+  const next = appDialogQueue.then(run, run);
+  appDialogQueue = next.catch(() => undefined);
+  return next;
+}
+
+window.absAlert = async function absAlert(message, options = {}) {
+  await openAppDialog({
+    ...options,
+    message,
+    showCancel: false,
+  });
+};
+
+window.absConfirm = function absConfirm(message, options = {}) {
+  return openAppDialog({
+    ...options,
+    message,
+    showCancel: true,
+  });
+};
+
+const nativeAlert = window.alert.bind(window);
+window.alert = function absStyledAlert(message) {
+  if (!document.body) {
+    nativeAlert(message);
+    return;
+  }
+  void window.absAlert(message);
+};
 
 const PHOTO_CONSENT_VERSION = "2026-06-07";
 let currentSessionPromise;

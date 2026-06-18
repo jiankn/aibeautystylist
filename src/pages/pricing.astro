@@ -853,8 +853,26 @@ const checkoutCopy = {
       let pendingPlan = null;
 
       function toast(msg) {
-        if (window.showToast) window.showToast(msg);
-        else window.alert(msg);
+        if (window.showToast) {
+          window.showToast(msg);
+          return;
+        }
+        const toastEl =
+          document.querySelector(".toast") || document.createElement("div");
+        if (!toastEl.isConnected) {
+          toastEl.className = "toast";
+          toastEl.setAttribute("role", "status");
+          toastEl.setAttribute("aria-live", "polite");
+          toastEl.setAttribute("aria-atomic", "true");
+          document.body.appendChild(toastEl);
+        }
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        window.clearTimeout(toast.timer);
+        toast.timer = window.setTimeout(
+          () => toastEl.classList.remove("show"),
+          3000,
+        );
       }
 
       function priceFor(card) {

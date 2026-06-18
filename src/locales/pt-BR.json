@@ -2,6 +2,13 @@
   "base": {
     "defaultDescription": "AI Beauty Stylist ajuda você a encontrar maquiagens, teste virtual e recomendações de beleza que combinam com seu rosto."
   },
+  "dialog": {
+    "alertTitle": "Aviso",
+    "confirmTitle": "Confirmar ação",
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
+  },
   "brand": {
     "name": "AI Beauty Stylist",
     "tagline": "Encontre a maquiagem que combina com você"

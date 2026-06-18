@@ -1068,7 +1068,11 @@ const diagnosisClientCopy = {
 
     // 全局：删除诊断
     window.deleteDiagnosis = async function (jobId) {
-      if (!confirm(copy.confirmDelete)) return;
+      const confirmed =
+        typeof window.absConfirm === "function"
+          ? await window.absConfirm(copy.confirmDelete, { variant: "danger" })
+          : confirm(copy.confirmDelete);
+      if (!confirmed) return;
       try {
         await fetch("/api/tryon-jobs/" + jobId, { method: "DELETE" });
         loadHistory();

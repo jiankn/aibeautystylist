@@ -7,6 +7,27 @@ declare module "node:async_hooks" {
   }
 }
 
+interface Window {
+  showToast?: (message?: string) => void;
+  absAlert?: (
+    message?: unknown,
+    options?: {
+      title?: string;
+      confirmLabel?: string;
+      variant?: "notice" | "confirm" | "danger";
+    },
+  ) => Promise<void>;
+  absConfirm?: (
+    message?: unknown,
+    options?: {
+      title?: string;
+      confirmLabel?: string;
+      cancelLabel?: string;
+      variant?: "notice" | "confirm" | "danger";
+    },
+  ) => Promise<boolean>;
+}
+
 declare namespace App {
   interface Locals {
     /** 用户内容上下文 — 由 middleware 注入 */

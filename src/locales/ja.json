@@ -2,6 +2,13 @@
   "base": {
     "defaultDescription": "AI Beauty Stylistは、自分の顔に合うメイク、バーチャルメイク、ビューティー提案を見つけるためのAIツールです。"
   },
+  "dialog": {
+    "alertTitle": "お知らせ",
+    "confirmTitle": "操作を確認",
+    "ok": "OK",
+    "cancel": "キャンセル",
+    "confirm": "確認"
+  },
   "brand": {
     "name": "AI Beauty Stylist",
     "tagline": "自分に似合うメイクを見つける"

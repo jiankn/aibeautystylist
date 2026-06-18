@@ -2,6 +2,13 @@
   "base": {
     "defaultDescription": "AI Beauty Stylist 提供在线 AI 试妆、妆容推荐和自拍妆效预览，帮你先看上脸效果再做选择。"
   },
+  "dialog": {
+    "alertTitle": "提示",
+    "confirmTitle": "确认操作",
+    "ok": "确定",
+    "cancel": "取消",
+    "confirm": "确认"
+  },
   "brand": {
     "name": "AI Beauty Stylist",
     "tagline": "先看上脸效果，再选适合的妆"

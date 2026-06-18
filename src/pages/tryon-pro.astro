@@ -432,7 +432,13 @@ const proClientMessages = {
       const deleteBtn = document.getElementById("pro-delete-btn");
       if (deleteBtn) {
         deleteBtn.onclick = async () => {
-          if (!confirm(proClientMessages.confirmDeleteResult)) return;
+          const confirmed =
+            typeof window.absConfirm === "function"
+              ? await window.absConfirm(proClientMessages.confirmDeleteResult, {
+                  variant: "danger",
+                })
+              : confirm(proClientMessages.confirmDeleteResult);
+          if (!confirmed) return;
           await fetch("/api/tryon-jobs/" + jobId, { method: "DELETE" });
           location.reload();
         };

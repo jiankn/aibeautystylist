@@ -1528,6 +1528,125 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 }
 .toast.show { transform: translate(-50%, 0); opacity: 1; }
 
+.app-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(232, 122, 152, 0.18), transparent 32%),
+    rgba(13, 20, 32, 0.5);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.app-dialog-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.app-dialog-panel {
+  display: grid;
+  width: min(100%, 430px);
+  gap: 16px;
+  padding: 22px;
+  transform: translateY(10px) scale(0.98);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 248, 0.9)),
+    var(--bg-elevated);
+  color: var(--text);
+  box-shadow: 0 28px 76px rgba(23, 31, 46, 0.28);
+  transition: transform 0.18s ease;
+}
+.app-dialog-backdrop.is-open .app-dialog-panel {
+  transform: translateY(0) scale(1);
+}
+.app-dialog-mark {
+  display: inline-grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid rgba(217, 126, 145, 0.24);
+  border-radius: 14px;
+  background: var(--surface-rose);
+  color: var(--rose);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+.app-dialog-backdrop[data-variant="danger"] .app-dialog-mark {
+  border-color: rgba(200, 62, 104, 0.28);
+  background: rgba(200, 62, 104, 0.1);
+  color: #ad2d58;
+}
+.app-dialog-copy {
+  display: grid;
+  gap: 8px;
+}
+.app-dialog-copy h2 {
+  margin: 0;
+  color: var(--heading);
+  font-size: 21px;
+  line-height: 1.25;
+}
+.app-dialog-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.app-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+.app-dialog-actions .btn {
+  min-width: 92px;
+  min-height: 44px;
+}
+.app-dialog-cancel {
+  background: var(--bg-elevated);
+}
+.app-dialog-backdrop[data-variant="danger"] .app-dialog-confirm {
+  border-color: rgba(173, 45, 88, 0.72);
+  background: linear-gradient(135deg, #c83e68, #9f294f);
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(173, 45, 88, 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-dialog-backdrop,
+  .app-dialog-panel {
+    transition: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-dialog-backdrop {
+    align-items: end;
+    padding: 12px;
+  }
+  .app-dialog-panel {
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .app-dialog-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .app-dialog-actions .btn {
+    width: 100%;
+  }
+  .app-dialog-confirm {
+    order: -1;
+  }
+}
+
 @media (max-width: 1100px) {
   /* 汉堡按钮 */
   .mobile-menu-toggle {

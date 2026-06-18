@@ -491,7 +491,16 @@ const premiumClientMessages = {
       const deleteBtn = document.getElementById("prem-delete-btn");
       if (deleteBtn) {
         deleteBtn.onclick = async () => {
-          if (!confirm(premiumClientMessages.confirmDeleteResult)) return;
+          const confirmed =
+            typeof window.absConfirm === "function"
+              ? await window.absConfirm(
+                  premiumClientMessages.confirmDeleteResult,
+                  {
+                    variant: "danger",
+                  },
+                )
+              : confirm(premiumClientMessages.confirmDeleteResult);
+          if (!confirmed) return;
           await fetch("/api/tryon-jobs/" + jobId, { method: "DELETE" });
           location.reload();
         };

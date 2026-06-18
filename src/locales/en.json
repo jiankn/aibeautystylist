@@ -2,6 +2,13 @@
   "base": {
     "defaultDescription": "AI Beauty Stylist helps you find makeup looks, virtual try-on results, and beauty guidance that fit you."
   },
+  "dialog": {
+    "alertTitle": "Notice",
+    "confirmTitle": "Confirm action",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
   "brand": {
     "name": "AI Beauty Stylist",
     "tagline": "Find your perfect makeup look"

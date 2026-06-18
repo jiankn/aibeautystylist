@@ -2,6 +2,13 @@
   "base": {
     "defaultDescription": "AI Beauty Stylist vous aide à trouver des looks maquillage, des essais virtuels et des conseils beauté adaptés à votre visage."
   },
+  "dialog": {
+    "alertTitle": "Information",
+    "confirmTitle": "Confirmer l’action",
+    "ok": "OK",
+    "cancel": "Annuler",
+    "confirm": "Confirmer"
+  },
   "brand": {
     "name": "AI Beauty Stylist",
     "tagline": "Trouvez le maquillage qui vous va"

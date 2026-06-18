@@ -2,6 +2,13 @@
   "base": {
     "defaultDescription": "AI Beauty Stylist hilft dir, Make-up Looks, virtuelle Try-ons und Beauty-Empfehlungen zu finden, die zu deinem Gesicht passen."
   },
+  "dialog": {
+    "alertTitle": "Hinweis",
+    "confirmTitle": "Aktion bestätigen",
+    "ok": "OK",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen"
+  },
   "brand": {
     "name": "AI Beauty Stylist",
     "tagline": "Finde den Make-up Look, der zu dir passt"
