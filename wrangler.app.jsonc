@@ -6,16 +6,16 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
-    "directory": "dist/client"
+    "directory": "dist/client",
   },
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
   "kv_namespaces": [
     {
       "binding": "SESSION",
-      "id": "85c0b835a20847719af0256e50d7f726"
-    }
+      "id": "85c0b835a20847719af0256e50d7f726",
+    },
   ],
   // Astro adapter 在构建阶段使用此文件（不含 main）。
   // 部署配置见 wrangler.jsonc。
@@ -23,15 +23,23 @@
     {
       "binding": "DB",
       "database_name": "ai-beauty-stylist-db",
-      "database_id": "b4ca2fa7-49ea-410e-b802-bb710975d01a"
-    }
+      "database_id": "b4ca2fa7-49ea-410e-b802-bb710975d01a",
+    },
   ],
   "r2_buckets": [
     {
       "binding": "USER_UPLOADS",
-      "bucket_name": "ai-beauty-stylist-user-uploads"
-    }
+      "bucket_name": "ai-beauty-stylist-user-uploads",
+    },
   ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "TRYON_JOBS_QUEUE",
+        "queue": "aibeautystylist-tryon-jobs",
+      },
+    ],
+  },
   "vars": {
     "APP_ENV": "production",
     "APP_PUBLIC_URL": "https://aibeautystylist.com",
@@ -49,6 +57,6 @@
     "EVOLINK_IMAGE_SIZE": "1280x1280",
     "EVOLINK_IMAGE_QUALITY": "low",
     "EVOLINK_IMAGE_TIMEOUT_MS": "75000",
-    "SUPPORT_EMAIL": "support@aibeautystylist.com"
-  }
+    "SUPPORT_EMAIL": "support@aibeautystylist.com",
+  },
 }

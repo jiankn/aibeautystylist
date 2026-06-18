@@ -1,29 +1,13 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "aibeautystylist",
-  "main": "dist/server/entry.mjs",
+  "name": "aibeautystylist-tryon-queue-consumer",
+  "main": "src/workers/tryonQueueConsumer.ts",
   "account_id": "9679290d9ad455c63c2002a90d381bf7",
   "compatibility_date": "2026-06-07",
   "compatibility_flags": ["nodejs_compat"],
-  "no_bundle": true,
-  "rules": [{ "type": "ESModule", "globs": ["**/*.js", "**/*.mjs"] }],
-  "assets": {
-    "binding": "ASSETS",
-    "directory": "dist/client",
-  },
-  "images": {
-    "binding": "IMAGES",
-  },
   "observability": {
     "enabled": true,
   },
-  "kv_namespaces": [
-    {
-      "binding": "SESSION",
-      "id": "85c0b835a20847719af0256e50d7f726",
-    },
-  ],
-  // Local development uses these bindings with `.wrangler/state`.
   "d1_databases": [
     {
       "binding": "DB",
@@ -38,10 +22,13 @@
     },
   ],
   "queues": {
-    "producers": [
+    "consumers": [
       {
-        "binding": "TRYON_JOBS_QUEUE",
         "queue": "aibeautystylist-tryon-jobs",
+        "max_batch_size": 1,
+        "max_batch_timeout": 1,
+        "max_retries": 3,
+        "dead_letter_queue": "aibeautystylist-tryon-jobs-dlq",
       },
     ],
   },

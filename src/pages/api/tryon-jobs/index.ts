@@ -14,6 +14,7 @@ import {
 } from "../../../lib/jobs";
 import { isPlanCode, type PlanCode } from "../../../lib/plans";
 import { getRuntimeBindings } from "../../../lib/runtime";
+import { enqueueTryOnJob } from "../../../lib/tryonQueue";
 import {
   createTryOnJob,
   processTryOnJob,
@@ -120,12 +121,12 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
   );
   if (existingJob) {
     const replayLook = resolveBySnapshot(existingJob, audienceContext) ?? look;
-    scheduleTryOnJobProcessing(locals, existingJob, {
+    await scheduleTryOnJobProcessing(locals, existingJob, {
       userId,
       jobId: existingJob.id,
       look: replayLook,
       bindings,
-      audienceContext,
+      audienceContext: { locale: audienceContext.locale },
     });
     const { quota } = await getEntitlementContext(userId, bindings.DB);
     return apiSuccess({
@@ -144,12 +145,12 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       bindings,
       audienceContext,
     });
-    scheduleTryOnJobProcessing(locals, result.job, {
+    await scheduleTryOnJobProcessing(locals, result.job, {
       userId,
       jobId: result.job.id,
       look,
       bindings,
-      audienceContext,
+      audienceContext: { locale: audienceContext.locale },
     });
     return apiSuccess(
       {
@@ -191,15 +192,28 @@ interface WaitUntilLocals {
   };
 }
 
-function scheduleTryOnJobProcessing(
+async function scheduleTryOnJobProcessing(
   locals: WaitUntilLocals,
   job: StoredTryOnJob,
   options: ProcessTryOnJobOptions,
-): void {
+): Promise<void> {
   if (!shouldScheduleTryOnJob(job, options)) return;
 
+  try {
+    const queued = await enqueueTryOnJob({
+      userId: options.userId,
+      jobId: options.jobId,
+      look: options.look,
+      bindings: options.bindings,
+      locale: options.audienceContext?.locale,
+    });
+    if (queued) return;
+  } catch (error) {
+    console.error("TRYON_QUEUE_SEND_FAILED", error);
+  }
+
   const task = processTryOnJob(options).catch((error) => {
-    console.error("TRYON_BACKGROUND_PROCESSING_FAILED", error);
+    console.error("TRYON_WAITUNTIL_FALLBACK_FAILED", error);
   });
   if (locals.cfContext) {
     locals.cfContext.waitUntil(task);

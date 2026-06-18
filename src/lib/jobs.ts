@@ -26,7 +26,7 @@ export const retryableJobStatuses = [
   "timed_out",
 ] as const satisfies readonly JobStatus[];
 
-export const TRYON_JOB_TIMEOUT_MS = 90_000;
+export const TRYON_JOB_TIMEOUT_MS = 10 * 60_000;
 
 export type JobStatus = (typeof jobStatuses)[number];
 

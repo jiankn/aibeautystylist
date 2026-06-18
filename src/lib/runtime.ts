@@ -1,3 +1,5 @@
+import type { TryOnJobQueueMessage } from "./tryonJobQueueTypes";
+
 export interface D1StatementLike {
   bind(...values: unknown[]): D1StatementLike;
   first<T>(): Promise<T | null>;
@@ -28,6 +30,7 @@ export interface R2BucketLike {
 export interface RuntimeBindings {
   DB?: D1DatabaseLike;
   USER_UPLOADS?: R2BucketLike;
+  TRYON_JOBS_QUEUE?: Queue<TryOnJobQueueMessage>;
   AI_PROVIDER?: string;
   UPLOAD_PROVIDER?: string;
   TRYON_PROVIDER?: string;
