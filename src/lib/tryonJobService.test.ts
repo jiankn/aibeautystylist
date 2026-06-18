@@ -142,6 +142,8 @@ describe("createTryOnJob", () => {
       resultKind: "reference-fallback",
       resultImage: look.image,
     });
+    expect(result?.job.disclaimer).toContain("ABS");
+    expect(result?.job.disclaimer).not.toMatch(/Gemini|Evolink/);
     expect(result?.quota).toMatchObject({ remaining: 2 });
     await expect(
       getDiagnosisRecordByJobId(result!.job.id),
@@ -227,6 +229,8 @@ describe("createTryOnJob", () => {
       resultImage: `/api/tryon-jobs/${result!.job.id}/result`,
       resultR2Key: `results/visitor_1/${result!.job.id}/result.png`,
     });
+    expect(result?.job.disclaimer).toContain("ABS");
+    expect(result?.job.disclaimer).not.toMatch(/Gemini|Evolink/);
     expect(bucket.put).toHaveBeenCalledWith(
       `results/visitor_1/${result!.job.id}/result.png`,
       expect.any(ArrayBuffer),
