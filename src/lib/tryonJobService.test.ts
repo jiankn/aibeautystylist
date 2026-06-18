@@ -16,7 +16,12 @@ import {
 import { GeminiImageError, generateGeminiMakeupImage } from "./geminiImage";
 import { getStoredJobById, resetMockJobs } from "./jobs";
 import { getQuotaSnapshot, resetMockQuota } from "./quota";
-import { createTryOnJob, TryOnJobServiceError } from "./tryonJobService";
+import type { RuntimeBindings } from "./runtime";
+import {
+  createTryOnJob,
+  processTryOnJob,
+  TryOnJobServiceError,
+} from "./tryonJobService";
 import { resetMockUploads, saveUploadRecord } from "./uploadRecords";
 
 vi.mock("./geminiDiagnosis", async (importOriginal) => {
@@ -101,37 +106,53 @@ describe("createTryOnJob", () => {
       new GeminiImageError("GEMINI_IMAGE_UNAVAILABLE", "no image"),
     );
 
-    const result = await createTryOnJob({
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
+      GEMINI_TIMEOUT_MS: "120000",
+      USER_UPLOADS: bucketWithBytes([1, 2, 3]),
+    };
+    const created = await createTryOnJob({
       userId: "visitor_1",
       uploadId: "upload_1",
       look,
       idempotencyKey: "request_1",
-      bindings: {
-        TRYON_PROVIDER: "gemini",
-        GEMINI_API_KEY: "secret",
-        GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
-        GEMINI_TIMEOUT_MS: "120000",
-        USER_UPLOADS: bucketWithBytes([1, 2, 3]),
-      },
+      bindings,
       audienceContext: jaAudienceContext,
     });
 
-    expect(result.job).toMatchObject({
+    expect(created.job).toMatchObject({
+      status: "created",
+      locale: "ja-JP",
+    });
+    expect(created.quota).toMatchObject({ remaining: 2 });
+    expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look,
+      bindings,
+      audienceContext: jaAudienceContext,
+    });
+
+    expect(result?.job).toMatchObject({
       status: "succeeded",
       resultKind: "reference-fallback",
       resultImage: look.image,
     });
-    expect(result.quota).toMatchObject({ remaining: 2 });
+    expect(result?.quota).toMatchObject({ remaining: 2 });
     await expect(
-      getDiagnosisRecordByJobId(result.job.id),
+      getDiagnosisRecordByJobId(result!.job.id),
     ).resolves.toMatchObject({
-      jobId: result.job.id,
+      jobId: result!.job.id,
       result: { confidence: { band: "high" } },
     });
     expect(getMockAiCallLogs()).toMatchObject([
       {
         userId: "visitor_1",
-        jobId: result.job.id,
+        jobId: result!.job.id,
         provider: "gemini",
         operation: "diagnosis",
         status: "succeeded",
@@ -177,28 +198,37 @@ describe("createTryOnJob", () => {
     });
     const bucket = bucketWithBytes([1, 2, 3]);
 
-    const result = await createTryOnJob({
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
+      GEMINI_IMAGE_MODEL: "gemini-2.5-flash-image",
+      USER_UPLOADS: bucket,
+    };
+    const created = await createTryOnJob({
       userId: "visitor_1",
       uploadId: "upload_1",
       look,
       idempotencyKey: "request_1",
-      bindings: {
-        TRYON_PROVIDER: "gemini",
-        GEMINI_API_KEY: "secret",
-        GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
-        GEMINI_IMAGE_MODEL: "gemini-2.5-flash-image",
-        USER_UPLOADS: bucket,
-      },
+      bindings,
+    });
+    expect(created.job.status).toBe("created");
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look,
+      bindings,
     });
 
-    expect(result.job).toMatchObject({
+    expect(result?.job).toMatchObject({
       status: "succeeded",
       resultKind: "ai-generated",
-      resultImage: `/api/tryon-jobs/${result.job.id}/result`,
-      resultR2Key: `results/visitor_1/${result.job.id}/result.png`,
+      resultImage: `/api/tryon-jobs/${result!.job.id}/result`,
+      resultR2Key: `results/visitor_1/${result!.job.id}/result.png`,
     });
     expect(bucket.put).toHaveBeenCalledWith(
-      `results/visitor_1/${result.job.id}/result.png`,
+      `results/visitor_1/${result!.job.id}/result.png`,
       expect.any(ArrayBuffer),
       expect.objectContaining({
         httpMetadata: { contentType: "image/png" },
@@ -243,30 +273,39 @@ describe("createTryOnJob", () => {
     });
     const bucket = bucketWithBytes([1, 2, 3]);
 
-    const result = await createTryOnJob({
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
+      IMAGE_PROVIDER: "evolink",
+      EVOLINK_API_KEY: "evolink-secret",
+      EVOLINK_IMAGE_MODEL: "wan2.5-image-to-image",
+      USER_UPLOADS: bucket,
+    };
+    const created = await createTryOnJob({
       userId: "visitor_1",
       uploadId: "upload_1",
       look,
       idempotencyKey: "request_1",
-      bindings: {
-        TRYON_PROVIDER: "gemini",
-        GEMINI_API_KEY: "secret",
-        GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
-        IMAGE_PROVIDER: "evolink",
-        EVOLINK_API_KEY: "evolink-secret",
-        EVOLINK_IMAGE_MODEL: "wan2.5-image-to-image",
-        USER_UPLOADS: bucket,
-      },
+      bindings,
+    });
+    expect(created.job.status).toBe("created");
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look,
+      bindings,
     });
 
-    expect(result.job).toMatchObject({
+    expect(result?.job).toMatchObject({
       status: "succeeded",
       resultKind: "ai-generated",
-      resultImage: `/api/tryon-jobs/${result.job.id}/result`,
-      resultR2Key: `results/visitor_1/${result.job.id}/result.png`,
+      resultImage: `/api/tryon-jobs/${result!.job.id}/result`,
+      resultR2Key: `results/visitor_1/${result!.job.id}/result.png`,
     });
     expect(bucket.put).toHaveBeenCalledWith(
-      `results/visitor_1/${result.job.id}/result.png`,
+      `results/visitor_1/${result!.job.id}/result.png`,
       expect.any(ArrayBuffer),
       expect.objectContaining({
         httpMetadata: { contentType: "image/png" },
@@ -301,22 +340,30 @@ describe("createTryOnJob", () => {
       new EvolinkImageError("EVOLINK_TASK_FAILED", "policy"),
     );
 
-    const result = await createTryOnJob({
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
+      IMAGE_PROVIDER: "evolink",
+      EVOLINK_API_KEY: "evolink-secret",
+      USER_UPLOADS: bucketWithBytes([1]),
+    };
+    const created = await createTryOnJob({
       userId: "visitor_1",
       uploadId: "upload_1",
       look,
       idempotencyKey: "request_1",
-      bindings: {
-        TRYON_PROVIDER: "gemini",
-        GEMINI_API_KEY: "secret",
-        GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
-        IMAGE_PROVIDER: "evolink",
-        EVOLINK_API_KEY: "evolink-secret",
-        USER_UPLOADS: bucketWithBytes([1]),
-      },
+      bindings,
     });
 
-    expect(result.job).toMatchObject({
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look,
+      bindings,
+    });
+
+    expect(result?.job).toMatchObject({
       status: "succeeded",
       resultKind: "reference-fallback",
       resultImage: look.image,
@@ -340,24 +387,35 @@ describe("createTryOnJob", () => {
       new DiagnosisProviderError("GEMINI_BLOCKED", "SAFETY"),
     );
 
-    const result = await createTryOnJob({
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
+      USER_UPLOADS: bucketWithBytes([1]),
+    };
+    const created = await createTryOnJob({
       userId: "visitor_1",
       uploadId: "upload_1",
       look,
       idempotencyKey: "request_1",
-      bindings: {
-        TRYON_PROVIDER: "gemini",
-        GEMINI_API_KEY: "secret",
-        GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
-        USER_UPLOADS: bucketWithBytes([1]),
-      },
+      bindings,
     });
 
-    expect(result.job).toMatchObject({
+    expect(created.job.status).toBe("created");
+    expect(created.quota).toMatchObject({ remaining: 2 });
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look,
+      bindings,
+    });
+
+    expect(result?.job).toMatchObject({
       status: "failed",
       errorCode: "GEMINI_BLOCKED",
     });
-    expect(result.quota).toMatchObject({ remaining: 3 });
+    expect(result?.quota).toMatchObject({ remaining: 3 });
     await expect(getQuotaSnapshot("visitor_1")).resolves.toMatchObject({
       remaining: 3,
     });

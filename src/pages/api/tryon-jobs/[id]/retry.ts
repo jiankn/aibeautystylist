@@ -11,11 +11,14 @@ import {
   isRetryableJobStatus,
   timeoutStoredJobIfExpired,
   toJobResponse,
+  type StoredTryOnJob,
 } from "../../../../lib/jobs";
 import { refundQuota } from "../../../../lib/quota";
 import { getRuntimeBindings } from "../../../../lib/runtime";
 import {
   createTryOnJob,
+  processTryOnJob,
+  type ProcessTryOnJobOptions,
   TryOnJobServiceError,
 } from "../../../../lib/tryonJobService";
 
@@ -74,21 +77,6 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
     );
   }
 
-  const retryIdempotencyKey = `retry:${originalJob.id}:${body.idempotencyKey}`;
-  const existingRetry = await getStoredJobByIdempotencyKey(
-    userId,
-    retryIdempotencyKey,
-    bindings.DB,
-  );
-  if (existingRetry) {
-    const { quota } = await getEntitlementContext(userId, bindings.DB);
-    return apiSuccess({
-      ...toJobResponse(existingRetry),
-      idempotentReplay: true,
-      quota,
-    });
-  }
-
   const audienceContext = {
     ...locals.audienceContext,
     locale: originalJob.locale ?? locals.audienceContext.locale,
@@ -98,6 +86,31 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
         ? originalJob.marketProfile
         : locals.audienceContext.marketProfile,
   };
+  const retryIdempotencyKey = `retry:${originalJob.id}:${body.idempotencyKey}`;
+  const existingRetry = await getStoredJobByIdempotencyKey(
+    userId,
+    retryIdempotencyKey,
+    bindings.DB,
+  );
+  if (existingRetry) {
+    const retryLook = resolveBySnapshot(existingRetry, audienceContext);
+    if (retryLook) {
+      scheduleTryOnJobProcessing(locals, existingRetry, {
+        userId,
+        jobId: existingRetry.id,
+        look: retryLook,
+        bindings,
+        audienceContext,
+      });
+    }
+    const { quota } = await getEntitlementContext(userId, bindings.DB);
+    return apiSuccess({
+      ...toJobResponse(existingRetry),
+      idempotentReplay: true,
+      quota,
+    });
+  }
+
   const look = resolveBySnapshot(timeoutResult.job, audienceContext);
   if (!look) {
     return apiError(
@@ -117,6 +130,13 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
       look,
       idempotencyKey: retryIdempotencyKey,
       retryOfJobId: originalJob.id,
+      bindings,
+      audienceContext,
+    });
+    scheduleTryOnJobProcessing(locals, result.job, {
+      userId,
+      jobId: result.job.id,
+      look,
       bindings,
       audienceContext,
     });
@@ -148,3 +168,31 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
     );
   }
 };
+
+interface WaitUntilLocals {
+  cfContext?: {
+    waitUntil(promise: Promise<unknown>): void;
+  };
+}
+
+function scheduleTryOnJobProcessing(
+  locals: WaitUntilLocals,
+  job: StoredTryOnJob,
+  options: ProcessTryOnJobOptions,
+): void {
+  if (
+    (options.bindings.TRYON_PROVIDER ?? "mock") !== "gemini" ||
+    job.status !== "created"
+  ) {
+    return;
+  }
+
+  const task = processTryOnJob(options).catch((error) => {
+    console.error("TRYON_BACKGROUND_RETRY_FAILED", error);
+  });
+  if (locals.cfContext) {
+    locals.cfContext.waitUntil(task);
+    return;
+  }
+  void task;
+}

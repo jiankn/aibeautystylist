@@ -17,6 +17,8 @@ import { GeminiImageError, generateGeminiMakeupImage } from "./geminiImage";
 import { createProxyFetcher } from "./proxyFetch";
 import {
   createReferenceFallbackJob,
+  getStoredJobById,
+  isRunningJobStatus,
   saveStoredJob,
   transitionStoredJob,
   updateStoredJob,
@@ -42,6 +44,18 @@ export interface CreateTryOnJobOptions {
   bindings: RuntimeBindings;
   /** 区域化上下文（Phase 1 新增，可选） */
   audienceContext?: AudienceContext;
+}
+
+interface ProcessingAudienceContext {
+  locale?: string;
+}
+
+export interface ProcessTryOnJobOptions {
+  userId: string;
+  jobId: string;
+  look: LookCatalogItem | ResolvedLook;
+  bindings: RuntimeBindings;
+  audienceContext?: ProcessingAudienceContext;
 }
 
 export interface CreateTryOnJobResult {
@@ -104,7 +118,7 @@ export async function createTryOnJob(
   const monthlyQuota = getMonthlyQuota(plan.planCode);
 
   if (provider === "gemini") {
-    return createGeminiDiagnosisFallbackJob({
+    return createGeminiQueuedJob({
       userId,
       upload,
       look,
@@ -176,7 +190,7 @@ async function createMockReferenceJob(options: {
   return { job: storedJob, quota: reservation.snapshot };
 }
 
-async function createGeminiDiagnosisFallbackJob(options: {
+async function createGeminiQueuedJob(options: {
   userId: string;
   upload: StoredUploadRecord;
   look: LookCatalogItem | ResolvedLook;
@@ -222,9 +236,8 @@ async function createGeminiDiagnosisFallbackJob(options: {
     throw quotaError(reservation.duplicate);
   }
 
-  let currentJob = job;
   try {
-    await saveStoredJob(currentJob, options.bindings.DB);
+    await saveStoredJob(job, options.bindings.DB);
   } catch {
     await refundQuota(options.userId, job.id, options.bindings.DB);
     throw new TryOnJobServiceError(
@@ -234,12 +247,91 @@ async function createGeminiDiagnosisFallbackJob(options: {
     );
   }
 
+  return { job, quota: reservation.snapshot };
+}
+
+export async function processTryOnJob(
+  options: ProcessTryOnJobOptions,
+): Promise<CreateTryOnJobResult | undefined> {
+  const provider = options.bindings.TRYON_PROVIDER ?? "mock";
+  const existingJob = await getStoredJobById(
+    options.userId,
+    options.jobId,
+    options.bindings.DB,
+  );
+  if (!existingJob) return undefined;
+
+  if (provider !== "gemini" || !isRunningJobStatus(existingJob.status)) {
+    return {
+      job: existingJob,
+      quota: await quotaSnapshotFor(options.userId, options.bindings),
+    };
+  }
+
+  const plan = await getEffectivePlan(options.userId, options.bindings.DB);
+  const monthlyQuota = getMonthlyQuota(plan.planCode);
+  const upload = await getOwnedUpload(
+    options.userId,
+    existingJob.uploadId,
+    options.bindings.DB,
+  );
+  if (!upload || upload.deletedAt) {
+    return failRunningJob(existingJob, {
+      userId: options.userId,
+      errorCode: "UPLOAD_NOT_FOUND",
+      bindings: options.bindings,
+      monthlyQuota,
+    });
+  }
+  if (!upload.r2Key || !options.bindings.USER_UPLOADS) {
+    return failRunningJob(existingJob, {
+      userId: options.userId,
+      errorCode: "UPLOAD_STORAGE_REQUIRED",
+      bindings: options.bindings,
+      monthlyQuota,
+    });
+  }
+
+  return runGeminiDiagnosisFallbackJob({
+    userId: options.userId,
+    upload,
+    look: options.look,
+    job: existingJob,
+    bindings: options.bindings,
+    monthlyQuota,
+    audienceContext: {
+      locale: options.audienceContext?.locale ?? existingJob.locale,
+    },
+  });
+}
+
+async function runGeminiDiagnosisFallbackJob(options: {
+  userId: string;
+  upload: StoredUploadRecord;
+  look: LookCatalogItem | ResolvedLook;
+  job: StoredTryOnJob;
+  bindings: RuntimeBindings;
+  monthlyQuota: number;
+  audienceContext?: ProcessingAudienceContext;
+}): Promise<CreateTryOnJobResult> {
+  let currentJob = options.job;
+  if (!options.upload.r2Key || !options.bindings.USER_UPLOADS) {
+    return failRunningJob(currentJob, {
+      userId: options.userId,
+      errorCode: "UPLOAD_STORAGE_REQUIRED",
+      bindings: options.bindings,
+      monthlyQuota: options.monthlyQuota,
+    });
+  }
+
   try {
-    currentJob = await transitionStoredJob(
+    const diagnosisJob = await transitionIfRunning(
       currentJob,
       "diagnosis_running",
       options.bindings.DB,
     );
+    if (!diagnosisJob) return unchangedJobResult(currentJob, options);
+    currentJob = diagnosisJob;
 
     const object = await options.bindings.USER_UPLOADS.get(
       options.upload.r2Key,
@@ -262,7 +354,7 @@ async function createGeminiDiagnosisFallbackJob(options: {
         mimeType: options.upload.contentType,
       },
       preferredLookSlug: options.look.slug,
-      locale: options.audienceContext?.locale,
+      locale: options.audienceContext?.locale ?? currentJob.locale,
       timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
       fetcher: proxyFetcher,
     });
@@ -282,6 +374,16 @@ async function createGeminiDiagnosisFallbackJob(options: {
       },
       options.bindings.DB,
     );
+
+    const diagnosisStillRunning = await getRunningJob(
+      currentJob,
+      options.bindings.DB,
+    );
+    if (!diagnosisStillRunning) {
+      return unchangedJobResult(currentJob, options);
+    }
+    currentJob = diagnosisStillRunning;
+
     await saveDiagnosisRecord(
       {
         id: crypto.randomUUID(),
@@ -292,11 +394,13 @@ async function createGeminiDiagnosisFallbackJob(options: {
       options.bindings.DB,
     );
 
-    currentJob = await transitionStoredJob(
+    const imageJob = await transitionIfRunning(
       currentJob,
       "image_running",
       options.bindings.DB,
     );
+    if (!imageJob) return unchangedJobResult(currentJob, options);
+    currentJob = imageJob;
 
     const completed = await completeImageStage({
       job: currentJob,
@@ -307,6 +411,14 @@ async function createGeminiDiagnosisFallbackJob(options: {
       photoMimeType: options.upload.contentType,
       bindings: options.bindings,
     });
+
+    const imageStillRunning = await getRunningJob(
+      currentJob,
+      options.bindings.DB,
+    );
+    if (!imageStillRunning) {
+      return unchangedJobResult(currentJob, options);
+    }
     await updateStoredJob(completed, options.bindings.DB);
 
     return {
@@ -320,6 +432,15 @@ async function createGeminiDiagnosisFallbackJob(options: {
     };
   } catch (error) {
     const errorCode = providerErrorCode(error);
+    const latestRunningJob = await getRunningJob(
+      currentJob,
+      options.bindings.DB,
+    );
+    if (!latestRunningJob) {
+      return unchangedJobResult(currentJob, options);
+    }
+    currentJob = latestRunningJob;
+
     await recordAiCall(
       {
         userId: options.userId,
@@ -359,6 +480,90 @@ async function createGeminiDiagnosisFallbackJob(options: {
       ),
     };
   }
+}
+
+interface ProcessingContext {
+  userId: string;
+  bindings: RuntimeBindings;
+  monthlyQuota: number;
+}
+
+async function transitionIfRunning(
+  job: StoredTryOnJob,
+  status: StoredTryOnJob["status"],
+  DB?: RuntimeBindings["DB"],
+): Promise<StoredTryOnJob | undefined> {
+  const latest = await getRunningJob(job, DB);
+  return latest ? transitionStoredJob(latest, status, DB) : undefined;
+}
+
+async function getRunningJob(
+  job: StoredTryOnJob,
+  DB?: RuntimeBindings["DB"],
+): Promise<StoredTryOnJob | undefined> {
+  const latest = await getStoredJobById(job.userId, job.id, DB);
+  return latest && isRunningJobStatus(latest.status) ? latest : undefined;
+}
+
+async function failRunningJob(
+  job: StoredTryOnJob,
+  options: ProcessingContext & { errorCode: string },
+): Promise<CreateTryOnJobResult> {
+  const latest = await getRunningJob(job, options.bindings.DB);
+  if (!latest) return unchangedJobResult(job, options);
+
+  const failed = await transitionStoredJob(
+    latest,
+    "failed",
+    options.bindings.DB,
+    { errorCode: options.errorCode },
+  );
+  await refundQuota(
+    options.userId,
+    failed.id,
+    options.bindings.DB,
+    new Date(),
+    options.monthlyQuota,
+  );
+  return {
+    job: failed,
+    quota: await getQuotaSnapshot(
+      options.userId,
+      options.bindings.DB,
+      new Date(),
+      options.monthlyQuota,
+    ),
+  };
+}
+
+async function unchangedJobResult(
+  job: StoredTryOnJob,
+  options: ProcessingContext,
+): Promise<CreateTryOnJobResult> {
+  const latest =
+    (await getStoredJobById(job.userId, job.id, options.bindings.DB)) ?? job;
+  return {
+    job: latest,
+    quota: await getQuotaSnapshot(
+      options.userId,
+      options.bindings.DB,
+      new Date(),
+      options.monthlyQuota,
+    ),
+  };
+}
+
+async function quotaSnapshotFor(
+  userId: string,
+  bindings: RuntimeBindings,
+): Promise<QuotaSnapshot> {
+  const plan = await getEffectivePlan(userId, bindings.DB);
+  return getQuotaSnapshot(
+    userId,
+    bindings.DB,
+    new Date(),
+    getMonthlyQuota(plan.planCode),
+  );
 }
 
 async function completeImageStage(options: {

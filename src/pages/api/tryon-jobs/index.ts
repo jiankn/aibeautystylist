@@ -1,14 +1,23 @@
 import type { APIRoute } from "astro";
 
-import { resolveBySlug } from "../../../data/makeup/resolveCatalog";
+import {
+  resolveBySlug,
+  resolveBySnapshot,
+} from "../../../data/makeup/resolveCatalog";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import { getEntitlementContext, requirePlan } from "../../../lib/entitlements";
 import { apiError, apiSuccess } from "../../../lib/http";
-import { getStoredJobByIdempotencyKey, toJobResponse } from "../../../lib/jobs";
+import {
+  getStoredJobByIdempotencyKey,
+  toJobResponse,
+  type StoredTryOnJob,
+} from "../../../lib/jobs";
 import { isPlanCode, type PlanCode } from "../../../lib/plans";
 import { getRuntimeBindings } from "../../../lib/runtime";
 import {
   createTryOnJob,
+  processTryOnJob,
+  type ProcessTryOnJobOptions,
   TryOnJobServiceError,
 } from "../../../lib/tryonJobService";
 
@@ -110,6 +119,14 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     bindings.DB,
   );
   if (existingJob) {
+    const replayLook = resolveBySnapshot(existingJob, audienceContext) ?? look;
+    scheduleTryOnJobProcessing(locals, existingJob, {
+      userId,
+      jobId: existingJob.id,
+      look: replayLook,
+      bindings,
+      audienceContext,
+    });
     const { quota } = await getEntitlementContext(userId, bindings.DB);
     return apiSuccess({
       ...toJobResponse(existingJob),
@@ -124,6 +141,13 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       uploadId: body.uploadId,
       look,
       idempotencyKey: body.idempotencyKey,
+      bindings,
+      audienceContext,
+    });
+    scheduleTryOnJobProcessing(locals, result.job, {
+      userId,
+      jobId: result.job.id,
+      look,
       bindings,
       audienceContext,
     });
@@ -159,4 +183,37 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
 function normalizeRequiredPlan(value: unknown): PlanCode | undefined {
   if (value === undefined || value === null || value === "") return "free";
   return isPlanCode(value) ? value : undefined;
+}
+
+interface WaitUntilLocals {
+  cfContext?: {
+    waitUntil(promise: Promise<unknown>): void;
+  };
+}
+
+function scheduleTryOnJobProcessing(
+  locals: WaitUntilLocals,
+  job: StoredTryOnJob,
+  options: ProcessTryOnJobOptions,
+): void {
+  if (!shouldScheduleTryOnJob(job, options)) return;
+
+  const task = processTryOnJob(options).catch((error) => {
+    console.error("TRYON_BACKGROUND_PROCESSING_FAILED", error);
+  });
+  if (locals.cfContext) {
+    locals.cfContext.waitUntil(task);
+    return;
+  }
+  void task;
+}
+
+function shouldScheduleTryOnJob(
+  job: StoredTryOnJob,
+  options: ProcessTryOnJobOptions,
+): boolean {
+  return (
+    (options.bindings.TRYON_PROVIDER ?? "mock") === "gemini" &&
+    job.status === "created"
+  );
 }

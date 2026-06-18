@@ -15,5 +15,7 @@ declare namespace App {
     isLoggedIn: boolean;
     /** URL 级语言路由信息 — 由 middleware 注入 */
     localeRoute: import("./i18n/routing").LocaleRoute;
+    /** Cloudflare adapter runtime context，用于 waitUntil 后台任务 */
+    cfContext?: ExecutionContext;
   }
 }
