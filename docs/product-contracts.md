@@ -133,9 +133,11 @@
 | `GET /api/looks` | 获取妆容 catalog | 可公开读取 |
 | `POST /api/share-cards` | 创建分享卡 | 必须拥有成功结果 |
 | `POST /api/share-rewards` | 发放分享奖励 | Free 用户、每日幂等 |
-| `POST /api/stripe/checkout` | 创建 Checkout | 登录用户 |
-| `POST /api/stripe/portal` | 创建客户 Portal | 有 Stripe customer |
-| `POST /api/stripe/webhook` | 同步订阅状态 | 验证 Stripe 签名 |
+| `POST /api/billing/checkout` | 创建 Checkout | 登录用户，成功 URL 带 `session_id={CHECKOUT_SESSION_ID}` |
+| `POST /api/billing/sync-checkout` | 回跳后主动同步 Checkout Session | 登录用户，校验 session 属于当前账户 |
+| `POST /api/billing/portal` | 创建客户 Portal | 有 Stripe customer |
+| `POST /api/billing/webhook` | 同步订阅状态 | 验证 Stripe 签名 |
+| `POST /api/stripe/webhook` | Stripe Webhook 兼容入口 | 与 `/api/billing/webhook` 同处理器，避免后台旧路径 404 |
 | `DELETE /api/me/data` | 删除用户图片与诊断数据 | 二次确认后执行 |
 
 ## 6. 错误码

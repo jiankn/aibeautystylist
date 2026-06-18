@@ -71,4 +71,16 @@ describe("Stripe client", () => {
     );
     expect(body.get("email")).toBe("user@example.com");
   });
+
+  it("can retrieve a Checkout Session by id", async () => {
+    const { fetcher, requests } = createRecordingFetcher();
+    const stripe = createStripeClient({ apiKey: "sk_test", fetcher });
+
+    await stripe.retrieveCheckoutSession("cs_test_123");
+
+    expect(requests[0]?.url).toBe(
+      "https://api.stripe.com/v1/checkout/sessions/cs_test_123",
+    );
+    expect(requests[0]?.init?.method).toBe("GET");
+  });
 });

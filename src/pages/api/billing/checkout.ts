@@ -21,6 +21,11 @@ interface CheckoutBody {
   returnTo?: string;
 }
 
+function withCheckoutSessionId(url: string): string {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}session_id={CHECKOUT_SESSION_ID}`;
+}
+
 export const POST: APIRoute = async ({ cookies, request }) => {
   const body = (await request.json().catch(() => null)) as CheckoutBody | null;
   const interval: BillingInterval =
@@ -86,12 +91,14 @@ export const POST: APIRoute = async ({ cookies, request }) => {
 
     const session = await stripe.createCheckoutSession({
       priceId,
-      successUrl: buildCheckoutStatusUrl({
-        baseUrl,
-        pricingPath: body?.pricingPath,
-        status: "success",
-        returnTo: body?.returnTo,
-      }),
+      successUrl: withCheckoutSessionId(
+        buildCheckoutStatusUrl({
+          baseUrl,
+          pricingPath: body?.pricingPath,
+          status: "success",
+          returnTo: body?.returnTo,
+        }),
+      ),
       cancelUrl: buildCheckoutStatusUrl({
         baseUrl,
         pricingPath: body?.pricingPath,

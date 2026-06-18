@@ -925,6 +925,22 @@ const checkoutCopy = {
         );
       }
 
+      async function syncCheckoutSession() {
+        const sessionId = params.get("session_id");
+        if (!sessionId) return false;
+        try {
+          const res = await fetch("/api/billing/sync-checkout", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ sessionId }),
+          });
+          const body = await res.json().catch(() => null);
+          return Boolean(body?.ok);
+        } catch {
+          return false;
+        }
+      }
+
       async function showCheckoutSuccess() {
         for (let attempt = 0; attempt < 40; attempt += 1) {
           if (typeof window.absAlert === "function") {
@@ -1072,9 +1088,11 @@ const checkoutCopy = {
 
       if (params.get("checkout") === "success") {
         const destination = getCheckoutSuccessDestination();
-        showCheckoutSuccess().then(() => {
-          window.location.href = destination;
-        });
+        syncCheckoutSession()
+          .then(() => showCheckoutSuccess())
+          .then(() => {
+            window.location.href = destination;
+          });
       } else if (params.get("checkout") === "cancel") {
         toast(checkoutCopy.checkoutCancelNotice);
       }

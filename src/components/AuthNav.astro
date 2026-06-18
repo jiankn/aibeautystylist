@@ -194,6 +194,10 @@
     const authLabel = link.dataset.authLabel || authCopy.cta;
     const authShortLabel = link.dataset.authShortLabel || authCopy.shortCta;
     const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
+    const checkoutSucceeded =
+      new URLSearchParams(location.search).get("checkout") === "success";
+    const delay = (ms) =>
+      new Promise((resolve) => window.setTimeout(resolve, ms));
 
     function setAuthLabel(anchor) {
       const desktopLabel = anchor.querySelector(".auth-entry-label-desktop");
@@ -365,8 +369,19 @@
         .forEach((menu) => closeAccountMenu(menu));
     });
 
-    fetch("/api/session")
-      .then((res) => res.json())
+    async function fetchSessionWithCheckoutRefresh() {
+      let body = await fetch("/api/session").then((res) => res.json());
+      if (!checkoutSucceeded || body?.data?.plan !== "free") return body;
+
+      for (let attempt = 0; attempt < 6; attempt += 1) {
+        await delay(1500);
+        body = await fetch("/api/session").then((res) => res.json());
+        if (body?.data?.plan && body.data.plan !== "free") break;
+      }
+      return body;
+    }
+
+    fetchSessionWithCheckoutRefresh()
       .then((body) => {
         const data = body?.data;
         const email = data?.user?.email;

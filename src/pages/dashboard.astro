@@ -1629,6 +1629,8 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         recommendations.map((look) => [look.slug, look]),
       );
       let workspaceHref = hrefs.tryonFree;
+      const pageParams = new URLSearchParams(window.location.search);
+      const checkoutSucceeded = pageParams.get("checkout") === "success";
 
       const query = (selector) => root.querySelector(selector);
       const setText = (selector, value) => {
@@ -1660,6 +1662,20 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         }
         return body.data;
       };
+      const delay = (ms) =>
+        new Promise((resolve) => window.setTimeout(resolve, ms));
+      async function getSessionWithCheckoutRefresh() {
+        let session = await getJson("/api/session");
+        if (!checkoutSucceeded || session?.plan !== "free") return session;
+
+        for (let attempt = 0; attempt < 6; attempt += 1) {
+          await delay(1500);
+          const nextSession = await getJson("/api/session");
+          session = nextSession;
+          if (nextSession?.plan && nextSession.plan !== "free") break;
+        }
+        return session;
+      }
       const formatDiagnosisPart = (template, value) =>
         template && value ? template.replace("{value}", value) : "";
       const labelDiagnosisValue = (group, value) =>
@@ -1945,7 +1961,7 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
 
       async function hydrateDashboard() {
         try {
-          const session = await getJson("/api/session");
+          const session = await getSessionWithCheckoutRefresh();
           if (!session?.user || session.user.kind !== "account") {
             query("[data-dashboard-gate]")?.removeAttribute("hidden");
             window.location.href = hrefs.login;
@@ -2006,8 +2022,7 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         }
       });
 
-      const pageParams = new URLSearchParams(window.location.search);
-      if (pageParams.get("checkout") === "success") {
+      if (checkoutSucceeded) {
         const message = query("[data-dashboard-message]");
         if (message) message.textContent = copy.checkoutSuccess;
       }

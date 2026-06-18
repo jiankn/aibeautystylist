@@ -102,6 +102,13 @@ export function createStripeClient(options: StripeClientOptions) {
       return request("POST", "/v1/checkout/sessions", params);
     },
 
+    retrieveCheckoutSession(sessionId: string): Promise<StripeCheckoutSession> {
+      return request(
+        "GET",
+        `/v1/checkout/sessions/${encodeURIComponent(sessionId)}`,
+      );
+    },
+
     updateCustomer(input: {
       customerId: string;
       email: string;
@@ -144,6 +151,17 @@ export interface StripeSubscription {
   items?: {
     data?: Array<{ price?: { id?: string } }>;
   };
+}
+
+export interface StripeCheckoutSession {
+  id: string;
+  mode?: string;
+  status?: string;
+  payment_status?: string;
+  subscription?: string;
+  customer?: string;
+  client_reference_id?: string;
+  metadata?: Record<string, string>;
 }
 
 function encodeForm(
