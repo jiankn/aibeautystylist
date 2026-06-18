@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getLocalizedPricingContent } from "../data/pricingContent";
 import SiteHeader from "../components/SiteHeader.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
@@ -42,6 +43,11 @@ const recommendations = resolveLookCatalog(audienceContext)
     finish: look.finish.slice(0, 2),
   }));
 const primaryRecommendation = recommendations[0];
+const checkoutSuccessMessage =
+  getLocalizedPricingContent(locale)?.copy.checkoutSuccess ??
+  (isZh
+    ? "支付已完成，计划状态可能需要片刻同步。"
+    : "Checkout completed. Your plan may take a moment to update.");
 
 const copy = isZh
   ? {
@@ -118,6 +124,7 @@ const copy = isZh
       paidPlanNote: "订阅计划已启用，可直接进入对应工作台。",
       signInRequired: "需要登录后查看工作台。",
       signIn: "登录账户",
+      checkoutSuccess: checkoutSuccessMessage,
     }
   : {
       title: "Dashboard | AI Beauty Stylist",
@@ -194,6 +201,7 @@ const copy = isZh
       paidPlanNote: "Your subscription is active. Continue in your workspace.",
       signInRequired: "Sign in to view your dashboard.",
       signIn: "Sign in",
+      checkoutSuccess: checkoutSuccessMessage,
     };
 
 const diagnosisDirectionRules = [
@@ -1997,6 +2005,12 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
           if (message) message.textContent = error.message || copy.portalFailed;
         }
       });
+
+      const pageParams = new URLSearchParams(window.location.search);
+      if (pageParams.get("checkout") === "success") {
+        const message = query("[data-dashboard-message]");
+        if (message) message.textContent = copy.checkoutSuccess;
+      }
 
       hydrateDashboard();
     })();

@@ -16,6 +16,7 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
+const dashboardHref = localizeAppHref("/dashboard");
 const isEnglish = !currentLocale.startsWith("zh");
 const yearlyFactor = 10;
 const planOrder: PlanCode[] = ["free", "pro", "premium"];
@@ -496,6 +497,7 @@ const checkoutCopy = {
   toastPortalFailed: copy.toastPortalFailed,
   checkoutSuccess: copy.checkoutSuccess,
   checkoutCancelNotice: copy.checkoutCancelNotice,
+  dashboardHref,
 };
 ---
 
@@ -849,6 +851,7 @@ const checkoutCopy = {
       const summary = document.querySelector("[data-checkout-summary]");
       const confirmBtn = document.querySelector("[data-checkout-confirm]");
       const cancelBtn = document.querySelector("[data-checkout-cancel]");
+      const params = new URLSearchParams(window.location.search);
       let interval = "monthly";
       let pendingPlan = null;
 
@@ -873,6 +876,65 @@ const checkoutCopy = {
           () => toastEl.classList.remove("show"),
           3000,
         );
+      }
+
+      function delay(ms) {
+        return new Promise((resolve) => window.setTimeout(resolve, ms));
+      }
+
+      function safeInternalPath(value) {
+        if (
+          !value ||
+          !value.startsWith("/") ||
+          value.startsWith("//") ||
+          value.includes("\\") ||
+          /[\u0000-\u001f\u007f]/.test(value)
+        ) {
+          return "";
+        }
+        try {
+          const url = new URL(value, window.location.origin);
+          const pathname = url.pathname.replace(/\/+$/, "") || "/";
+          if (url.origin !== window.location.origin) return "";
+          if (pathname === "/api" || pathname.startsWith("/api/")) return "";
+          if (pathname === "/_astro" || pathname.startsWith("/_astro/"))
+            return "";
+          if (pathname === "/pricing" || pathname.endsWith("/pricing"))
+            return "";
+          return `${url.pathname}${url.search}${url.hash}`;
+        } catch {
+          return "";
+        }
+      }
+
+      function addCheckoutStatus(path, status) {
+        const target = safeInternalPath(path) || checkoutCopy.dashboardHref;
+        const url = new URL(target, window.location.origin);
+        url.searchParams.set("checkout", status);
+        return `${url.pathname}${url.search}${url.hash}`;
+      }
+
+      function getCheckoutReturnTo() {
+        return safeInternalPath(params.get("return_to"));
+      }
+
+      function getCheckoutSuccessDestination() {
+        return addCheckoutStatus(
+          getCheckoutReturnTo() || checkoutCopy.dashboardHref,
+          "success",
+        );
+      }
+
+      async function showCheckoutSuccess() {
+        for (let attempt = 0; attempt < 40; attempt += 1) {
+          if (typeof window.absAlert === "function") {
+            await window.absAlert(checkoutCopy.checkoutSuccess);
+            return;
+          }
+          await delay(50);
+        }
+        toast(checkoutCopy.checkoutSuccess);
+        await delay(1600);
       }
 
       function priceFor(card) {
@@ -931,10 +993,18 @@ const checkoutCopy = {
         if (!pendingPlan) return;
         if (confirmBtn) confirmBtn.disabled = true;
         try {
+          const payload = {
+            planCode: pendingPlan,
+            interval,
+            pricingPath: window.location.pathname,
+          };
+          const returnTo = getCheckoutReturnTo();
+          if (returnTo) payload.returnTo = returnTo;
+
           const res = await fetch("/api/billing/checkout", {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ planCode: pendingPlan, interval }),
+            body: JSON.stringify(payload),
           });
           const body = await res.json().catch(() => null);
           if (body?.ok && body.data?.url) {
@@ -1000,9 +1070,11 @@ const checkoutCopy = {
         })
         .catch(() => {});
 
-      const params = new URLSearchParams(window.location.search);
       if (params.get("checkout") === "success") {
-        toast(checkoutCopy.checkoutSuccess);
+        const destination = getCheckoutSuccessDestination();
+        showCheckoutSuccess().then(() => {
+          window.location.href = destination;
+        });
       } else if (params.get("checkout") === "cancel") {
         toast(checkoutCopy.checkoutCancelNotice);
       }

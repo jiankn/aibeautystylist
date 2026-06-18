@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 
 import { getAccountByUserId } from "../../../lib/accounts";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
+import { buildCheckoutStatusUrl } from "../../../lib/checkoutRedirect";
 import { apiError, apiSuccess } from "../../../lib/http";
 import {
   isPlanCode,
@@ -16,6 +17,8 @@ import { getStripeCustomerId } from "../../../lib/subscriptions";
 interface CheckoutBody {
   planCode?: string;
   interval?: string;
+  pricingPath?: string;
+  returnTo?: string;
 }
 
 export const POST: APIRoute = async ({ cookies, request }) => {
@@ -83,8 +86,18 @@ export const POST: APIRoute = async ({ cookies, request }) => {
 
     const session = await stripe.createCheckoutSession({
       priceId,
-      successUrl: `${baseUrl}/pricing?checkout=success`,
-      cancelUrl: `${baseUrl}/pricing?checkout=cancel`,
+      successUrl: buildCheckoutStatusUrl({
+        baseUrl,
+        pricingPath: body?.pricingPath,
+        status: "success",
+        returnTo: body?.returnTo,
+      }),
+      cancelUrl: buildCheckoutStatusUrl({
+        baseUrl,
+        pricingPath: body?.pricingPath,
+        status: "cancel",
+        returnTo: body?.returnTo,
+      }),
       clientReferenceId: userId,
       customerId,
       customerEmail: account?.email,

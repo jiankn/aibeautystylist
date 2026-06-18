@@ -15,6 +15,10 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
+const currentReturnPath = `${currentPathname}${Astro.url.search}`;
+const pricingHref = localizeAppHref(
+  `/pricing?return_to=${encodeURIComponent(currentReturnPath)}`,
+);
 const loginHref = localizeAppHref(
   `/login?mode=register&next=${encodeURIComponent(localizeAppHref("/tryon-free"))}`,
 );
@@ -187,9 +191,7 @@ const freeClientMessages = {
           </div>
           <div class="rule-strip">
             ▣&nbsp; {t("tryon", "ruleStrip")}
-            <a href={localizeAppHref("/pricing")}
-              >{t("tryon", "learnRules")} ›</a
-            >
+            <a href={pricingHref}>{t("tryon", "learnRules")} ›</a>
           </div>
           <section
             class="result-share-bar"
@@ -254,9 +256,9 @@ const freeClientMessages = {
           <h3>{t("tryon", "upgradeTitle")}</h3>
           <p>{t("tryon", "upgradeDesc")}</p>
         </div>
-        <a class="btn btn-primary" href={localizeAppHref("/pricing")}
-          >{t("tryon", "viewPlansShort")}</a
-        >
+        <a class="btn btn-primary" href={pricingHref}>
+          {t("tryon", "viewPlansShort")}
+        </a>
       </section>
     </div>
   </main>

@@ -14,7 +14,10 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
-const pricingHref = localizeAppHref("/pricing");
+const currentReturnPath = `${currentPathname}${Astro.url.search}`;
+const pricingHref = localizeAppHref(
+  `/pricing?return_to=${encodeURIComponent(currentReturnPath)}`,
+);
 const discoverHref = localizeAppHref("/discover");
 const loginHref = localizeAppHref("/login");
 const shareCardHref = localizeAppHref("/share-card");
