@@ -616,6 +616,10 @@ img { display: block; width: 100%; }
 .compare-half img { width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none; }
 .compare-half.left img,
 .compare-half.right img { filter: none; }
+.home-compare .compare-half.right img {
+  transform: translateY(-0.25%) scale(1.01);
+  transform-origin: center;
+}
 .compare-hero::after {
   content: "";
   position: absolute;
