@@ -49,7 +49,7 @@ export const DELETE: APIRoute = async ({ cookies, params }) => {
     return apiError(
       {
         code: "DELETE_FAILED",
-        message: "试妆结果与诊断记录删除失败，请稍后重试",
+        message: "试妆结果删除失败，请稍后重试",
         retryable: true,
       },
       503,

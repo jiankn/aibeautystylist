@@ -1,5 +1,6 @@
 import type { LookCatalogItem } from "../data/lookCatalog";
 import type { ResolvedLook } from "../data/makeup/audienceTypes";
+import type { TryOnJobPurpose } from "./jobs";
 
 export interface TryOnJobQueueMessage {
   version: 1;
@@ -7,6 +8,7 @@ export interface TryOnJobQueueMessage {
   jobId: string;
   look: LookCatalogItem | ResolvedLook;
   locale?: string;
+  purpose?: TryOnJobPurpose;
   enqueuedAt: string;
 }
 
@@ -23,6 +25,9 @@ export function isTryOnJobQueueMessage(
     candidate.jobId.length > 0 &&
     isQueueLook(candidate.look) &&
     (candidate.locale === undefined || typeof candidate.locale === "string") &&
+    (candidate.purpose === undefined ||
+      candidate.purpose === "tryon" ||
+      candidate.purpose === "diagnosis") &&
     typeof candidate.enqueuedAt === "string"
   );
 }

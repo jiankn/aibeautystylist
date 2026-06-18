@@ -29,10 +29,12 @@ export const retryableJobStatuses = [
 export const TRYON_JOB_TIMEOUT_MS = 10 * 60_000;
 
 export type JobStatus = (typeof jobStatuses)[number];
+export type TryOnJobPurpose = "tryon" | "diagnosis";
 
 export interface TryOnJobResult {
   id: string;
   status: JobStatus;
+  purpose?: TryOnJobPurpose;
   lookSlug: string;
   lookTitle: string;
   resultImage?: string;
@@ -125,6 +127,10 @@ export function isRetryableJobStatus(status: JobStatus): boolean {
   return retryableJobStatuses.includes(
     status as (typeof retryableJobStatuses)[number],
   );
+}
+
+export function getTryOnJobPurpose(job: Pick<StoredTryOnJob, "purpose">) {
+  return job.purpose === "diagnosis" ? "diagnosis" : "tryon";
 }
 
 export function toJobResponse(job: StoredTryOnJob): TryOnJobResult {

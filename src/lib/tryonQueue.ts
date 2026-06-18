@@ -1,5 +1,6 @@
 import type { LookCatalogItem } from "../data/lookCatalog";
 import type { ResolvedLook } from "../data/makeup/audienceTypes";
+import type { TryOnJobPurpose } from "./jobs";
 import type { RuntimeBindings } from "./runtime";
 import {
   isTryOnJobQueueMessage,
@@ -13,6 +14,7 @@ export interface EnqueueTryOnJobOptions {
   look: LookCatalogItem | ResolvedLook;
   bindings: RuntimeBindings;
   locale?: string;
+  purpose?: TryOnJobPurpose;
 }
 
 export async function enqueueTryOnJob(
@@ -26,6 +28,7 @@ export async function enqueueTryOnJob(
     jobId: options.jobId,
     look: options.look,
     locale: options.locale,
+    purpose: options.purpose,
     enqueuedAt: new Date().toISOString(),
   });
   return true;

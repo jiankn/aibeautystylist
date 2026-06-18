@@ -8,6 +8,7 @@ import { apiError, apiSuccess } from "../../../../lib/http";
 import {
   getStoredJobById,
   getStoredJobByIdempotencyKey,
+  getTryOnJobPurpose,
   isRetryableJobStatus,
   timeoutStoredJobIfExpired,
   toJobResponse,
@@ -133,6 +134,7 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
       retryOfJobId: originalJob.id,
       bindings,
       audienceContext,
+      purpose: getTryOnJobPurpose(originalJob),
     });
     await scheduleTryOnJobProcessing(locals, result.job, {
       userId,
@@ -195,6 +197,7 @@ async function scheduleTryOnJobProcessing(
       look: options.look,
       bindings: options.bindings,
       locale: options.audienceContext?.locale,
+      purpose: getTryOnJobPurpose(job),
     });
     if (queued) return;
   } catch (error) {

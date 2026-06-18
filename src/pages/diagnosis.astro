@@ -538,6 +538,7 @@ const diagnosisClientCopy = {
             const result = await createTryOnJob({
               file,
               lookSlug: "commute",
+              purpose: "diagnosis",
               idempotencyKey:
                 "diag-" +
                 Date.now() +

@@ -92,16 +92,10 @@ describe("createTryOnJob", () => {
     expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
   });
 
-  it("runs Gemini diagnosis, stores the diagnosis, and finishes with a reference image", async () => {
+  it("runs direct image generation for try-on jobs without storing diagnosis", async () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
     );
-    vi.mocked(generateGeminiDiagnosis).mockResolvedValue({
-      result: validDiagnosis(),
-      model: "gemini-2.5-flash-lite",
-      durationMs: 1200,
-      usage: { promptTokens: 10, outputTokens: 20, totalTokens: 30 },
-    });
     vi.mocked(generateGeminiMakeupImage).mockRejectedValue(
       new GeminiImageError("GEMINI_IMAGE_UNAVAILABLE", "no image"),
     );
@@ -125,6 +119,7 @@ describe("createTryOnJob", () => {
     expect(created.job).toMatchObject({
       status: "created",
       locale: "ja-JP",
+      purpose: "tryon",
     });
     expect(created.quota).toMatchObject({ remaining: 2 });
     expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
@@ -147,6 +142,75 @@ describe("createTryOnJob", () => {
     expect(result?.quota).toMatchObject({ remaining: 2 });
     await expect(
       getDiagnosisRecordByJobId(result!.job.id),
+    ).resolves.toBeUndefined();
+    expect(getMockAiCallLogs()).toMatchObject([
+      {
+        provider: "gemini",
+        operation: "image_generation",
+        status: "failed",
+        errorCode: "GEMINI_IMAGE_UNAVAILABLE",
+      },
+    ]);
+    expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
+    expect(generateGeminiMakeupImage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prompt: expect.stringContaining("Silently use visible cues"),
+      }),
+    );
+    const imagePrompt =
+      vi.mocked(generateGeminiMakeupImage).mock.calls[0]?.[0].prompt ?? "";
+    expect(imagePrompt).not.toContain("Beauty diagnosis context");
+    expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
+  });
+
+  it("runs professional diagnosis only for diagnosis-purpose jobs", async () => {
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(generateGeminiDiagnosis).mockResolvedValue({
+      result: validDiagnosis(),
+      model: "gemini-2.5-flash-lite",
+      durationMs: 1200,
+      usage: { promptTokens: 10, outputTokens: 20, totalTokens: 30 },
+    });
+
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
+      USER_UPLOADS: bucketWithBytes([1, 2, 3]),
+    };
+    const created = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look,
+      idempotencyKey: "diagnosis_request_1",
+      bindings,
+      audienceContext: jaAudienceContext,
+      purpose: "diagnosis",
+    });
+
+    expect(created.job).toMatchObject({
+      status: "created",
+      locale: "ja-JP",
+      purpose: "diagnosis",
+    });
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look,
+      bindings,
+      audienceContext: jaAudienceContext,
+    });
+
+    expect(result?.job).toMatchObject({
+      status: "succeeded",
+      purpose: "diagnosis",
+    });
+    expect(result?.job.resultImage).toBeUndefined();
+    await expect(
+      getDiagnosisRecordByJobId(result!.job.id),
     ).resolves.toMatchObject({
       jobId: result!.job.id,
       result: { confidence: { band: "high" } },
@@ -160,12 +224,6 @@ describe("createTryOnJob", () => {
         status: "succeeded",
         totalTokens: 30,
       },
-      {
-        provider: "gemini",
-        operation: "image_generation",
-        status: "failed",
-        errorCode: "GEMINI_IMAGE_UNAVAILABLE",
-      },
     ]);
     expect(generateGeminiDiagnosis).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -175,7 +233,7 @@ describe("createTryOnJob", () => {
         locale: "ja-JP",
       }),
     );
-    expect(generateGeminiMakeupImage).toHaveBeenCalled();
+    expect(generateGeminiMakeupImage).not.toHaveBeenCalled();
     expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
   });
 
@@ -183,12 +241,6 @@ describe("createTryOnJob", () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
     );
-    vi.mocked(generateGeminiDiagnosis).mockResolvedValue({
-      result: validDiagnosis(),
-      model: "gemini-2.5-flash-lite",
-      durationMs: 1200,
-      usage: { promptTokens: 10, outputTokens: 20, totalTokens: 30 },
-    });
     vi.mocked(generateGeminiMakeupImage).mockResolvedValue({
       image: {
         data: new Uint8Array([7, 8, 9]).buffer,
@@ -243,7 +295,6 @@ describe("createTryOnJob", () => {
       }),
     );
     expect(getMockAiCallLogs()).toMatchObject([
-      { provider: "gemini", operation: "diagnosis", status: "succeeded" },
       {
         provider: "gemini",
         operation: "image_generation",
@@ -251,6 +302,10 @@ describe("createTryOnJob", () => {
         totalTokens: 12,
       },
     ]);
+    await expect(
+      getDiagnosisRecordByJobId(result!.job.id),
+    ).resolves.toBeUndefined();
+    expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
     expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
   });
 
@@ -258,12 +313,6 @@ describe("createTryOnJob", () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
     );
-    vi.mocked(generateGeminiDiagnosis).mockResolvedValue({
-      result: validDiagnosis(),
-      model: "gemini-2.5-flash-lite",
-      durationMs: 1200,
-      usage: { promptTokens: 10, outputTokens: 20, totalTokens: 30 },
-    });
     vi.mocked(generateEvolinkMakeupImage).mockResolvedValue({
       image: {
         data: new Uint8Array([4, 5, 6]).buffer,
@@ -320,7 +369,6 @@ describe("createTryOnJob", () => {
       }),
     );
     expect(getMockAiCallLogs()).toMatchObject([
-      { provider: "gemini", operation: "diagnosis", status: "succeeded" },
       {
         provider: "evolink",
         operation: "image_generation",
@@ -328,18 +376,16 @@ describe("createTryOnJob", () => {
         estimatedCostMicros: 140_000,
       },
     ]);
+    await expect(
+      getDiagnosisRecordByJobId(result!.job.id),
+    ).resolves.toBeUndefined();
+    expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
   });
 
   it("falls back to a reference image when Evolink image generation fails", async () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
     );
-    vi.mocked(generateGeminiDiagnosis).mockResolvedValue({
-      result: validDiagnosis(),
-      model: "gemini-2.5-flash-lite",
-      durationMs: 1200,
-      usage: { promptTokens: 10, outputTokens: 20, totalTokens: 30 },
-    });
     vi.mocked(generateEvolinkMakeupImage).mockRejectedValue(
       new EvolinkImageError("EVOLINK_TASK_FAILED", "policy"),
     );
@@ -373,7 +419,6 @@ describe("createTryOnJob", () => {
       resultImage: look.image,
     });
     expect(getMockAiCallLogs()).toMatchObject([
-      { provider: "gemini", operation: "diagnosis", status: "succeeded" },
       {
         provider: "evolink",
         operation: "image_generation",
@@ -381,9 +426,13 @@ describe("createTryOnJob", () => {
         errorCode: "EVOLINK_TASK_FAILED",
       },
     ]);
+    await expect(
+      getDiagnosisRecordByJobId(result!.job.id),
+    ).resolves.toBeUndefined();
+    expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
   });
 
-  it("marks failed Gemini jobs and refunds quota once", async () => {
+  it("marks failed diagnosis jobs and refunds quota once", async () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
     );
@@ -401,8 +450,9 @@ describe("createTryOnJob", () => {
       userId: "visitor_1",
       uploadId: "upload_1",
       look,
-      idempotencyKey: "request_1",
+      idempotencyKey: "diagnosis_request_2",
       bindings,
+      purpose: "diagnosis",
     });
 
     expect(created.job.status).toBe("created");
@@ -417,6 +467,7 @@ describe("createTryOnJob", () => {
 
     expect(result?.job).toMatchObject({
       status: "failed",
+      purpose: "diagnosis",
       errorCode: "GEMINI_BLOCKED",
     });
     expect(result?.quota).toMatchObject({ remaining: 3 });
@@ -433,7 +484,7 @@ describe("createTryOnJob", () => {
     ]);
   });
 
-  it("requires private upload storage before real Gemini diagnosis", async () => {
+  it("requires private upload storage before real Gemini generation", async () => {
     await saveUploadRecord(uploadRecord({ status: "validated" }));
 
     await expect(

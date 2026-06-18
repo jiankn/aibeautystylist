@@ -9,8 +9,10 @@ import { getEntitlementContext, requirePlan } from "../../../lib/entitlements";
 import { apiError, apiSuccess } from "../../../lib/http";
 import {
   getStoredJobByIdempotencyKey,
+  getTryOnJobPurpose,
   toJobResponse,
   type StoredTryOnJob,
+  type TryOnJobPurpose,
 } from "../../../lib/jobs";
 import { isPlanCode, type PlanCode } from "../../../lib/plans";
 import { getRuntimeBindings } from "../../../lib/runtime";
@@ -27,6 +29,7 @@ interface CreateJobBody {
   lookSlug?: string;
   idempotencyKey?: string;
   requiredPlan?: string;
+  purpose?: string;
 }
 
 export const GET: APIRoute = async ({ cookies, url }) => {
@@ -53,7 +56,8 @@ export const GET: APIRoute = async ({ cookies, url }) => {
 
   const items = (rows.results ?? [])
     .map((row) => (row.result_json ? JSON.parse(row.result_json) : null))
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter((job) => getTryOnJobPurpose(job) === "tryon");
 
   return apiSuccess({ items });
 };
@@ -94,6 +98,17 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       {
         code: "INVALID_PLAN",
         message: "请求的计划等级无效",
+        retryable: false,
+      },
+      422,
+    );
+  }
+  const purpose = normalizeJobPurpose(body.purpose);
+  if (!purpose) {
+    return apiError(
+      {
+        code: "INVALID_JOB_PURPOSE",
+        message: "请求的任务类型无效",
         retryable: false,
       },
       422,
@@ -144,6 +159,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       idempotencyKey: body.idempotencyKey,
       bindings,
       audienceContext,
+      purpose,
     });
     await scheduleTryOnJobProcessing(locals, result.job, {
       userId,
@@ -186,6 +202,11 @@ function normalizeRequiredPlan(value: unknown): PlanCode | undefined {
   return isPlanCode(value) ? value : undefined;
 }
 
+function normalizeJobPurpose(value: unknown): TryOnJobPurpose | undefined {
+  if (value === undefined || value === null || value === "") return "tryon";
+  return value === "tryon" || value === "diagnosis" ? value : undefined;
+}
+
 interface WaitUntilLocals {
   cfContext?: {
     waitUntil(promise: Promise<unknown>): void;
@@ -206,6 +227,7 @@ async function scheduleTryOnJobProcessing(
       look: options.look,
       bindings: options.bindings,
       locale: options.audienceContext?.locale,
+      purpose: getTryOnJobPurpose(job),
     });
     if (queued) return;
   } catch (error) {

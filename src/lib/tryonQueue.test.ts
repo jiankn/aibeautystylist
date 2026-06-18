@@ -45,6 +45,7 @@ describe("try-on queue", () => {
         look,
         bindings,
         locale: "ja-JP",
+        purpose: "diagnosis",
       }),
     ).resolves.toBe(true);
 
@@ -55,6 +56,7 @@ describe("try-on queue", () => {
         jobId: "job_1",
         look,
         locale: "ja-JP",
+        purpose: "diagnosis",
         enqueuedAt: expect.any(String),
       }),
     );

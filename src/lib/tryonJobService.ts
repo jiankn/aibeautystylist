@@ -6,7 +6,6 @@ import type {
 import { getVariantById } from "../data/makeup/marketVariants";
 import { getRecipeById } from "../data/makeup/recipes";
 import { recordAiCall } from "./aiCallLogs";
-import type { DiagnosisResult } from "./diagnosis";
 import { saveDiagnosisRecord } from "./diagnosisRecords";
 import { EvolinkImageError, generateEvolinkMakeupImage } from "./evolinkImage";
 import {
@@ -18,12 +17,14 @@ import { normalizeLocale, type SupportedLocale } from "./i18n";
 import { createProxyFetcher } from "./proxyFetch";
 import {
   createReferenceFallbackJob,
+  getTryOnJobPurpose,
   getStoredJobById,
   isRunningJobStatus,
   saveStoredJob,
   transitionStoredJob,
   updateStoredJob,
   type StoredTryOnJob,
+  type TryOnJobPurpose,
 } from "./jobs";
 import {
   getQuotaSnapshot,
@@ -45,6 +46,7 @@ export interface CreateTryOnJobOptions {
   bindings: RuntimeBindings;
   /** 区域化上下文（Phase 1 新增，可选） */
   audienceContext?: AudienceContext;
+  purpose?: TryOnJobPurpose;
 }
 
 interface ProcessingAudienceContext {
@@ -94,6 +96,7 @@ export async function createTryOnJob(
     retryOfJobId,
     bindings,
     audienceContext,
+    purpose = "tryon",
   } = options;
   const provider = bindings.TRYON_PROVIDER ?? "mock";
 
@@ -128,6 +131,7 @@ export async function createTryOnJob(
       bindings,
       monthlyQuota,
       audienceContext,
+      purpose,
     });
   }
 
@@ -140,6 +144,7 @@ export async function createTryOnJob(
     bindings,
     monthlyQuota,
     audienceContext,
+    purpose,
   });
 }
 
@@ -152,6 +157,7 @@ async function createMockReferenceJob(options: {
   bindings: RuntimeBindings;
   monthlyQuota: number;
   audienceContext?: AudienceContext;
+  purpose: TryOnJobPurpose;
 }): Promise<CreateTryOnJobResult> {
   const job = createReferenceFallbackJob(options.look);
   const reservation = await reserveQuota(
@@ -172,6 +178,7 @@ async function createMockReferenceJob(options: {
     uploadId: options.upload.id,
     idempotencyKey: options.idempotencyKey,
     retryOfJobId: options.retryOfJobId,
+    purpose: options.purpose,
     ...lookSnapshot(options.look),
     locale: options.audienceContext?.locale,
     marketProfile: options.audienceContext?.marketProfile,
@@ -200,11 +207,12 @@ async function createGeminiQueuedJob(options: {
   bindings: RuntimeBindings;
   monthlyQuota: number;
   audienceContext?: AudienceContext;
+  purpose: TryOnJobPurpose;
 }): Promise<CreateTryOnJobResult> {
   if (!options.upload.r2Key || !options.bindings.USER_UPLOADS) {
     throw new TryOnJobServiceError(
       "UPLOAD_STORAGE_REQUIRED",
-      "AI 妆容诊断需要先安全保存原始自拍，请启用 R2 上传后重试",
+      "AI 生成需要先安全保存原始自拍，请启用 R2 上传后重试",
       true,
     );
   }
@@ -217,6 +225,7 @@ async function createGeminiQueuedJob(options: {
     idempotencyKey: options.idempotencyKey,
     retryOfJobId: options.retryOfJobId,
     status: "created",
+    purpose: options.purpose,
     lookSlug: options.look.slug,
     lookTitle: options.look.title,
     createdAt: timestamp,
@@ -293,7 +302,7 @@ export async function processTryOnJob(
     });
   }
 
-  return runGeminiDiagnosisFallbackJob({
+  const runOptions = {
     userId: options.userId,
     upload,
     look: options.look,
@@ -303,10 +312,128 @@ export async function processTryOnJob(
     audienceContext: {
       locale: options.audienceContext?.locale ?? existingJob.locale,
     },
-  });
+  };
+
+  return getTryOnJobPurpose(existingJob) === "diagnosis"
+    ? runGeminiDiagnosisJob(runOptions)
+    : runGeminiImageTryOnJob(runOptions);
 }
 
-async function runGeminiDiagnosisFallbackJob(options: {
+async function runGeminiImageTryOnJob(options: {
+  userId: string;
+  upload: StoredUploadRecord;
+  look: LookCatalogItem | ResolvedLook;
+  job: StoredTryOnJob;
+  bindings: RuntimeBindings;
+  monthlyQuota: number;
+  audienceContext?: ProcessingAudienceContext;
+}): Promise<CreateTryOnJobResult> {
+  let currentJob = options.job;
+  if (!options.upload.r2Key || !options.bindings.USER_UPLOADS) {
+    return failRunningJob(currentJob, {
+      userId: options.userId,
+      errorCode: "UPLOAD_STORAGE_REQUIRED",
+      bindings: options.bindings,
+      monthlyQuota: options.monthlyQuota,
+    });
+  }
+
+  try {
+    const imageJob = await transitionIfRunning(
+      currentJob,
+      "image_running",
+      options.bindings.DB,
+    );
+    if (!imageJob) return unchangedJobResult(currentJob, options);
+    currentJob = imageJob;
+
+    const object = await options.bindings.USER_UPLOADS.get(
+      options.upload.r2Key,
+    );
+    if (!object) throw new Error("UPLOAD_OBJECT_NOT_FOUND");
+
+    const photoData = await r2BodyToArrayBuffer(object.body);
+    const completed = await completeImageStage({
+      job: currentJob,
+      userId: options.userId,
+      look: options.look,
+      photoData,
+      photoMimeType: options.upload.contentType,
+      bindings: options.bindings,
+    });
+
+    const imageStillRunning = await getRunningJob(
+      currentJob,
+      options.bindings.DB,
+    );
+    if (!imageStillRunning) {
+      return unchangedJobResult(currentJob, options);
+    }
+    await updateStoredJob(completed, options.bindings.DB);
+
+    return {
+      job: completed,
+      quota: await getQuotaSnapshot(
+        options.userId,
+        options.bindings.DB,
+        new Date(),
+        options.monthlyQuota,
+      ),
+    };
+  } catch (error) {
+    const errorCode = providerErrorCode(error);
+    const latestRunningJob = await getRunningJob(
+      currentJob,
+      options.bindings.DB,
+    );
+    if (!latestRunningJob) {
+      return unchangedJobResult(currentJob, options);
+    }
+    currentJob = latestRunningJob;
+
+    await recordAiCall(
+      {
+        userId: options.userId,
+        jobId: currentJob.id,
+        provider:
+          options.bindings.IMAGE_PROVIDER === "evolink" ? "evolink" : "gemini",
+        operation: "image_generation",
+        model:
+          options.bindings.IMAGE_PROVIDER === "evolink"
+            ? (options.bindings.EVOLINK_IMAGE_MODEL ?? "wan2.5-image-to-image")
+            : (options.bindings.GEMINI_IMAGE_MODEL ?? "gemini-2.5-flash-image"),
+        status: "failed",
+        durationMs: Date.now() - new Date(currentJob.updatedAt).getTime(),
+        errorCode,
+      },
+      options.bindings.DB,
+    ).catch(() => undefined);
+    const failed = await transitionStoredJob(
+      currentJob,
+      "failed",
+      options.bindings.DB,
+      { errorCode },
+    );
+    await refundQuota(
+      options.userId,
+      failed.id,
+      options.bindings.DB,
+      new Date(),
+      options.monthlyQuota,
+    );
+    return {
+      job: failed,
+      quota: await getQuotaSnapshot(
+        options.userId,
+        options.bindings.DB,
+        new Date(),
+        options.monthlyQuota,
+      ),
+    };
+  }
+}
+
+async function runGeminiDiagnosisJob(options: {
   userId: string;
   upload: StoredUploadRecord;
   look: LookCatalogItem | ResolvedLook;
@@ -395,32 +522,12 @@ async function runGeminiDiagnosisFallbackJob(options: {
       options.bindings.DB,
     );
 
-    const imageJob = await transitionIfRunning(
+    const completed = await transitionIfRunning(
       currentJob,
-      "image_running",
+      "succeeded",
       options.bindings.DB,
     );
-    if (!imageJob) return unchangedJobResult(currentJob, options);
-    currentJob = imageJob;
-
-    const completed = await completeImageStage({
-      job: currentJob,
-      userId: options.userId,
-      look: options.look,
-      diagnosis: diagnosis.result,
-      photoData,
-      photoMimeType: options.upload.contentType,
-      bindings: options.bindings,
-    });
-
-    const imageStillRunning = await getRunningJob(
-      currentJob,
-      options.bindings.DB,
-    );
-    if (!imageStillRunning) {
-      return unchangedJobResult(currentJob, options);
-    }
-    await updateStoredJob(completed, options.bindings.DB);
+    if (!completed) return unchangedJobResult(currentJob, options);
 
     return {
       job: completed,
@@ -571,7 +678,6 @@ async function completeImageStage(options: {
   job: StoredTryOnJob;
   userId: string;
   look: LookCatalogItem | ResolvedLook;
-  diagnosis: DiagnosisResult;
   photoData: ArrayBuffer;
   photoMimeType: string;
   bindings: RuntimeBindings;
@@ -595,7 +701,6 @@ async function completeImageStageWithGemini(options: {
   job: StoredTryOnJob;
   userId: string;
   look: LookCatalogItem | ResolvedLook;
-  diagnosis: DiagnosisResult;
   photoData: ArrayBuffer;
   photoMimeType: string;
   bindings: RuntimeBindings;
@@ -614,7 +719,7 @@ async function completeImageStageWithGemini(options: {
     const generated = await generateGeminiMakeupImage({
       apiKey,
       model,
-      prompt: makeupImagePrompt(options.look, options.diagnosis),
+      prompt: makeupImagePrompt(options.look),
       photo: {
         data: options.photoData,
         mimeType: options.photoMimeType,
@@ -690,7 +795,6 @@ async function completeImageStageWithEvolink(options: {
   job: StoredTryOnJob;
   userId: string;
   look: LookCatalogItem | ResolvedLook;
-  diagnosis: DiagnosisResult;
   photoData: ArrayBuffer;
   photoMimeType: string;
   bindings: RuntimeBindings;
@@ -708,7 +812,7 @@ async function completeImageStageWithEvolink(options: {
     const generated = await generateEvolinkMakeupImage({
       apiKey: options.bindings.EVOLINK_API_KEY,
       model,
-      prompt: makeupImagePrompt(options.look, options.diagnosis),
+      prompt: makeupImagePrompt(options.look),
       photo: {
         data: options.photoData,
         mimeType: options.photoMimeType,
@@ -813,61 +917,61 @@ const tryOnDisclaimerCopy: Record<
     generated:
       "ABS has generated a makeup try-on preview from your selfie. Results are for beauty reference only and may vary with lighting, device, and personal features.",
     referenceFallback:
-      "AI diagnosis is complete; ABS preview is temporarily unavailable, so this result is showing the current makeup reference image. Actual results may vary with your personal features.",
+      "ABS preview is temporarily unavailable, so this result is showing the current makeup reference image. Actual results may vary with your personal features.",
   },
   "zh-CN": {
     generated:
       "ABS 已基于你的自拍生成妆效预览。结果仅供美妆参考，实际效果因光线、设备和个人条件而异。",
     referenceFallback:
-      "已完成 AI 妆容诊断；ABS 妆效预览暂不可用，当前先展示现有妆容参考图，实际效果因个人条件而异。",
+      "ABS 妆效预览暂不可用，当前先展示现有妆容参考图，实际效果因个人条件而异。",
   },
   "zh-TW": {
     generated:
       "ABS 已根據你的自拍生成妝效預覽。結果僅供美妝參考，實際效果會因光線、裝置與個人條件而異。",
     referenceFallback:
-      "已完成 AI 妝容診斷；ABS 妝效預覽暫不可用，目前先顯示現有妝容參考圖，實際效果會因個人條件而異。",
+      "ABS 妝效預覽暫不可用，目前先顯示現有妝容參考圖，實際效果會因個人條件而異。",
   },
   "ja-JP": {
     generated:
       "ABSがあなたのセルフィーをもとにメイクの試着プレビューを生成しました。結果は美容上の参考用であり、照明、デバイス、個人の条件によって実際の見え方は異なります。",
     referenceFallback:
-      "AIメイク診断は完了しました。ABSの試着プレビューは一時的に利用できないため、現在は既存のメイク参考画像を表示しています。実際の見え方は個人の条件によって異なります。",
+      "ABSの試着プレビューは一時的に利用できないため、現在は既存のメイク参考画像を表示しています。実際の見え方は個人の条件によって異なります。",
   },
   "ko-KR": {
     generated:
       "ABS가 셀피를 바탕으로 메이크업 미리보기를 생성했습니다. 결과는 뷰티 참고용이며 조명, 기기, 개인 조건에 따라 실제 표현은 달라질 수 있습니다.",
     referenceFallback:
-      "AI 메이크업 진단이 완료되었습니다. ABS 미리보기를 일시적으로 사용할 수 없어 현재는 기존 메이크업 참고 이미지를 표시합니다. 실제 표현은 개인 조건에 따라 달라질 수 있습니다.",
+      "ABS 미리보기를 일시적으로 사용할 수 없어 현재는 기존 메이크업 참고 이미지를 표시합니다. 실제 표현은 개인 조건에 따라 달라질 수 있습니다.",
   },
   "fr-FR": {
     generated:
       "ABS a genere un apercu de maquillage a partir de votre selfie. Le resultat est fourni a titre de reference beaute et peut varier selon la lumiere, l'appareil et vos caracteristiques personnelles.",
     referenceFallback:
-      "Le diagnostic maquillage IA est termine ; l'apercu ABS est temporairement indisponible. Le resultat affiche donc l'image de reference du maquillage actuel. Le rendu reel peut varier selon vos caracteristiques personnelles.",
+      "L'apercu ABS est temporairement indisponible. Le resultat affiche donc l'image de reference du maquillage actuel. Le rendu reel peut varier selon vos caracteristiques personnelles.",
   },
   "de-DE": {
     generated:
       "ABS hat aus deinem Selfie eine Make-up-Try-on-Vorschau erstellt. Das Ergebnis dient nur als Beauty-Referenz und kann je nach Licht, Geraet und individuellen Merkmalen variieren.",
     referenceFallback:
-      "Die KI-Make-up-Diagnose ist abgeschlossen; die ABS-Vorschau ist voruebergehend nicht verfuegbar. Daher wird aktuell das vorhandene Make-up-Referenzbild angezeigt. Das echte Ergebnis kann je nach individuellen Merkmalen variieren.",
+      "Die ABS-Vorschau ist voruebergehend nicht verfuegbar. Daher wird aktuell das vorhandene Make-up-Referenzbild angezeigt. Das echte Ergebnis kann je nach individuellen Merkmalen variieren.",
   },
   "es-ES": {
     generated:
       "ABS ha generado una vista previa de maquillaje a partir de tu selfie. El resultado es solo una referencia de belleza y puede variar segun la luz, el dispositivo y tus rasgos personales.",
     referenceFallback:
-      "El diagnostico de maquillaje con IA ha finalizado; la vista previa de ABS no esta disponible temporalmente, asi que se muestra la imagen de referencia del maquillaje actual. El resultado real puede variar segun tus rasgos personales.",
+      "La vista previa de ABS no esta disponible temporalmente, asi que se muestra la imagen de referencia del maquillaje actual. El resultado real puede variar segun tus rasgos personales.",
   },
   "es-419": {
     generated:
       "ABS genero una vista previa de maquillaje a partir de tu selfie. El resultado es solo una referencia de belleza y puede variar segun la luz, el dispositivo y tus rasgos personales.",
     referenceFallback:
-      "El diagnostico de maquillaje con IA termino; la vista previa de ABS no esta disponible temporalmente, asi que se muestra la imagen de referencia del maquillaje actual. El resultado real puede variar segun tus rasgos personales.",
+      "La vista previa de ABS no esta disponible temporalmente, asi que se muestra la imagen de referencia del maquillaje actual. El resultado real puede variar segun tus rasgos personales.",
   },
   "pt-BR": {
     generated:
       "ABS gerou uma previa de maquiagem a partir da sua selfie. O resultado serve apenas como referencia de beleza e pode variar conforme a luz, o aparelho e suas caracteristicas pessoais.",
     referenceFallback:
-      "O diagnostico de maquiagem por IA foi concluido; a previa da ABS esta temporariamente indisponivel, entao este resultado mostra a imagem de referencia da maquiagem atual. O efeito real pode variar conforme suas caracteristicas pessoais.",
+      "A previa da ABS esta temporariamente indisponivel, entao este resultado mostra a imagem de referencia da maquiagem atual. O efeito real pode variar conforme suas caracteristicas pessoais.",
   },
 };
 
@@ -942,10 +1046,7 @@ function evolinkQuality(value?: string): "low" | "medium" | "high" {
   return value === "medium" || value === "high" ? value : "low";
 }
 
-function makeupImagePrompt(
-  look: LookCatalogItem | ResolvedLook,
-  diagnosis: DiagnosisResult,
-): string {
+function makeupImagePrompt(look: LookCatalogItem | ResolvedLook): string {
   const recipe = isResolvedLook(look)
     ? getRecipeById(look.recipeId)
     : undefined;
@@ -958,6 +1059,9 @@ function makeupImagePrompt(
     "Critically preserve the original skin texture: keep visible pores, fine lines, natural skin grain, moles, freckles and real surface detail from the input photo.",
     "Do NOT beautify, smooth, retouch, airbrush, blur, or apply any skin-smoothing / face-slimming / 'beauty filter' effect. The skin must look like a real unfiltered photo, only with makeup added.",
     "Only change makeup: base finish, blush placement, eye makeup, brows, lip color, and subtle highlight/contour. Keep the base finish thin and natural so underlying skin texture stays visible.",
+    "Silently use visible cues from the input selfie to adapt the makeup placement and palette: apparent skin depth, undertone cues from lighting, face proportions, eye shape, brow shape, natural lip color, and contrast level.",
+    "Do not output, draw, or embed any diagnosis, labels, face-shape terms, skin-tone terms, color-season terms, captions, or analysis text in the image.",
+    "Do not infer sensitive attributes. Use only visible makeup-relevant appearance cues needed for a natural try-on.",
     "Do not change age, identity, face shape, body shape, hair color, clothing, background, or add extra people.",
     "No text, no watermark, no product packaging, no medical or cosmetic surgery effect.",
     `Selected makeup look: ${look.title}.`,
@@ -975,11 +1079,6 @@ function makeupImagePrompt(
     variant?.promptAdditions.length
       ? `Market styling context: ${variant.promptAdditions.join(", ")}.`
       : "",
-    `Beauty diagnosis context: skin depth ${diagnosis.skinTone.depth}, undertone ${diagnosis.skinTone.undertone}, face shape ${diagnosis.faceShape.primary}, eye shape ${diagnosis.eyeShape.primary}, color season ${diagnosis.colorSeason.season}.`,
-    `Preferred palette direction: ${diagnosis.makeupDirections
-      .flatMap((direction) => direction.palette)
-      .slice(0, 6)
-      .join(", ")}.`,
   ]
     .filter(Boolean)
     .join(" ");
