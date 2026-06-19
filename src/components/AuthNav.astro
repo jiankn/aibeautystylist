@@ -262,29 +262,7 @@
       avatar.setAttribute("aria-hidden", "true");
       avatar.textContent = initial;
 
-      const label = document.createElement("span");
-      label.className = "account-trigger-text";
-      label.textContent = authCopy.dashboard;
-
-      const chevron = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "svg",
-      );
-      chevron.setAttribute("class", "account-chevron");
-      chevron.setAttribute("viewBox", "0 0 24 24");
-      chevron.setAttribute("fill", "none");
-      chevron.setAttribute("stroke", "currentColor");
-      chevron.setAttribute("stroke-width", "2");
-      chevron.setAttribute("stroke-linecap", "round");
-      chevron.setAttribute("stroke-linejoin", "round");
-      chevron.setAttribute("aria-hidden", "true");
-      const path = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path",
-      );
-      path.setAttribute("d", "m6 9 6 6 6-6");
-      chevron.append(path);
-      trigger.append(avatar, label, chevron);
+      trigger.append(avatar);
 
       const panel = document.createElement("div");
       panel.className = "account-menu-panel";

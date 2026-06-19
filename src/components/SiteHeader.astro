@@ -1003,22 +1003,22 @@ const languageOptions = languageConfigs
   }
   :global(.account-menu-trigger) {
     position: relative;
-    min-width: 0;
-    min-height: 34px;
-    gap: 6px;
-    padding-inline: 5px 8px;
-    border-color: color-mix(in srgb, var(--line) 78%, transparent);
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    justify-content: center;
+    padding: 0;
+    border-color: transparent;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--bg-elevated) 88%, var(--rose-soft));
-    color: var(--nav-link);
+    background: transparent;
+    color: var(--rose);
     font-size: 12px;
     font-weight: 720;
     line-height: 1;
     cursor: pointer;
     transform: none;
-    box-shadow:
-      0 1px 2px rgba(20, 39, 68, 0.05),
-      inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    box-shadow: none;
     transition:
       border-color 0.18s ease,
       background-color 0.18s ease,
@@ -1027,60 +1027,62 @@ const languageOptions = languageConfigs
   }
   :global(.account-menu-trigger::after) {
     position: absolute;
-    inset: -5px -4px;
+    inset: -2px;
     border-radius: 999px;
     content: "";
   }
   :global(.account-menu-trigger:hover),
   :global(.account-menu-trigger:focus-visible),
   :global(.account-menu.open .account-menu-trigger) {
-    border-color: color-mix(in srgb, var(--rose) 34%, var(--line));
-    background: color-mix(in srgb, var(--rose-soft) 62%, var(--bg-elevated));
+    border-color: color-mix(in srgb, var(--rose) 24%, transparent);
+    background: var(--rose-soft);
     color: var(--rose);
     transform: none;
     box-shadow:
       0 5px 14px rgba(184, 46, 92, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.82);
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
   }
   :global(.account-menu-trigger:active) {
     transform: none;
   }
   :global(.account-avatar) {
+    position: relative;
     display: grid;
-    width: 20px;
-    height: 20px;
-    flex: 0 0 20px;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
     place-items: center;
-    border: 1px solid color-mix(in srgb, var(--rose) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--rose) 28%, transparent);
     border-radius: 999px;
     background: var(--rose-soft);
     color: var(--rose);
-    font-size: 10.5px;
+    font-size: 13px;
     font-weight: 850;
     text-transform: uppercase;
+    box-shadow:
+      0 3px 10px rgba(184, 46, 92, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.72);
     transition:
       background-color 0.18s ease,
       color 0.18s ease,
-      border-color 0.18s ease;
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      transform 0.18s ease;
   }
   :global(.account-menu-trigger:hover .account-avatar),
   :global(.account-menu.open .account-avatar) {
     border-color: var(--rose);
     background: var(--rose);
     color: #fff;
+    box-shadow:
+      0 6px 16px rgba(184, 46, 92, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.24);
   }
   :global(.account-trigger-text) {
-    max-width: 76px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    display: none;
   }
   :global(.account-chevron) {
-    width: 10px;
-    height: 10px;
-    flex: 0 0 10px;
-    opacity: 0.72;
-    transition: transform 0.18s ease;
+    display: none;
   }
   :global(.account-menu.open .account-chevron) {
     transform: rotate(180deg);
@@ -1165,18 +1167,16 @@ const languageOptions = languageConfigs
     line-height: 1.4;
   }
   :global([data-theme="dark"] .account-menu-trigger) {
-    border-color: color-mix(in srgb, var(--line) 84%, transparent);
-    background: color-mix(in srgb, var(--bg-elevated) 88%, var(--rose-soft));
-    color: var(--nav-link);
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.28),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border-color: transparent;
+    background: transparent;
+    color: var(--rose);
+    box-shadow: none;
   }
   :global([data-theme="dark"] .account-menu-trigger:hover),
   :global([data-theme="dark"] .account-menu-trigger:focus-visible),
   :global([data-theme="dark"] .account-menu.open .account-menu-trigger) {
-    border-color: color-mix(in srgb, var(--rose) 38%, var(--line));
-    background: color-mix(in srgb, var(--rose-soft) 58%, var(--bg-elevated));
+    border-color: color-mix(in srgb, var(--rose) 34%, transparent);
+    background: color-mix(in srgb, var(--rose-soft) 74%, transparent);
     color: var(--rose);
     box-shadow:
       0 8px 18px rgba(0, 0, 0, 0.2),
@@ -1186,6 +1186,9 @@ const languageOptions = languageConfigs
     border-color: color-mix(in srgb, var(--rose) 24%, transparent);
     background: color-mix(in srgb, var(--rose-soft) 84%, var(--bg-elevated));
     color: var(--rose);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
   :global([data-theme="dark"] .account-menu-trigger:hover .account-avatar),
   :global([data-theme="dark"] .account-menu.open .account-avatar) {
@@ -1323,10 +1326,10 @@ const languageOptions = languageConfigs
       display: inline;
     }
     :global(.account-menu-trigger) {
-      width: 36px;
-      min-width: 36px;
-      height: 36px;
-      min-height: 36px;
+      width: 44px;
+      min-width: 44px;
+      height: 44px;
+      min-height: 44px;
       gap: 0;
       justify-content: center;
       padding: 0;
@@ -1349,9 +1352,9 @@ const languageOptions = languageConfigs
       display: none;
     }
     :global(.account-avatar) {
-      width: 28px;
-      height: 28px;
-      flex-basis: 28px;
+      width: 30px;
+      height: 30px;
+      flex-basis: 30px;
       font-size: 12px;
       box-shadow: 0 3px 10px rgba(184, 46, 92, 0.12);
     }
