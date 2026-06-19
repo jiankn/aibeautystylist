@@ -345,7 +345,7 @@
     "loginCta": "Commencer",
     "loginDesc": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
     "freeBenefits": "Crédits gratuits mensuels · Historique · Diagnostic IA",
-    "quotaRemaining": "{remaining} / {total} crédits",
+    "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} crédits",
     "lowQuotaHint": "Passez à une offre supérieure",
     "refreshDate": "{date}",

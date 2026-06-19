@@ -300,11 +300,14 @@ const proClientMessages = {
         }
         // 更新额度条
         const q = data.data.quota;
-        const pct = Math.min(100, (q.used / q.total) * 100);
+        const total = Number(q.total) || 0;
+        const remaining = Number(q.remaining) || 0;
+        const used = Number(q.used) || 0;
+        const pct = total > 0 ? Math.min(100, (used / total) * 100) : 0;
         const label = document.querySelector("[data-quota-label]");
         const meter = document.querySelector("[data-quota-meter]");
         if (label) {
-          label.textContent = q.remaining + " / " + q.total + " 次";
+          label.textContent = remaining + "/" + total;
         }
         if (meter) {
           meter.style.width = pct + "%";

@@ -341,7 +341,7 @@
     "loginCta": "始める",
     "loginDesc": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
     "freeBenefits": "月間無料クレジット · 履歴保存 · AI診断",
-    "quotaRemaining": "{remaining} / {total} クレジット",
+    "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} クレジット",
     "lowQuotaHint": "アップグレードしてさらに比較",
     "refreshDate": "{date}",

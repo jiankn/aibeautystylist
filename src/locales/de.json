@@ -345,7 +345,7 @@
     "loginCta": "Loslegen",
     "loginDesc": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
     "freeBenefits": "Monatliche Gratis-Credits · Verlauf speichern · KI-Diagnose",
-    "quotaRemaining": "{remaining} / {total} Credits",
+    "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} Credits",
     "lowQuotaHint": "Upgrade für mehr Optionen",
     "refreshDate": "{date}",

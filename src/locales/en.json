@@ -359,7 +359,7 @@
     "loginCta": "Get Started for Credits",
     "loginDesc": "Sign in to claim free generation credits, then upload a selfie to see your real try-on result.",
     "freeBenefits": "Monthly free credits · Save history · AI facial diagnosis access",
-    "quotaRemaining": "{remaining} / {total} generations left this month",
+    "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} generation left this month",
     "lowQuotaHint": "Save it for the look you most want to confirm; upgrade for more credits and HD downloads.",
     "refreshDate": "Next refresh: {date}",

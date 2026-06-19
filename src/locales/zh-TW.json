@@ -341,7 +341,7 @@
     "loginCta": "開始使用",
     "loginDesc": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
     "freeBenefits": "每月免費額度 · 儲存歷史 · AI 診斷",
-    "quotaRemaining": "{remaining} / {total} 額度",
+    "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} 額度",
     "lowQuotaHint": "升級以比較更多妝容",
     "refreshDate": "{date}",

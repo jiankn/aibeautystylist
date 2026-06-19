@@ -359,7 +359,7 @@
     "loginCta": "开始使用并领取额度",
     "loginDesc": "登录后领取免费生成额度，上传自拍即可查看真实上脸效果。",
     "freeBenefits": "每月免费生成额度 · 可保存历史记录 · 支持 AI 妆容诊断入口",
-    "quotaRemaining": "本月还可生成 {remaining} / {total} 次",
+    "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "本月还剩 {remaining} 次生成机会",
     "lowQuotaHint": "建议用于最想确认的妆容；升级后可获得更多生成次数和高清下载。",
     "refreshDate": "下次额度刷新：{date}",

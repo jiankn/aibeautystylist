@@ -341,7 +341,7 @@
     "loginCta": "시작하기",
     "loginDesc": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
     "freeBenefits": "월간 무료 크레딧 · 기록 저장 · AI 진단",
-    "quotaRemaining": "{remaining} / {total} 크레딧",
+    "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} 크레딧",
     "lowQuotaHint": "업그레이드하고 더 비교",
     "refreshDate": "{date}",

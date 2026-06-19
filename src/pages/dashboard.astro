@@ -244,6 +244,7 @@ type DiagnosisValueLabels = {
   skinDepth: Record<string, string>;
   undertone: Record<string, string>;
   season: Record<string, string>;
+  faceShape?: Record<string, string>;
 };
 
 type DiagnosisUiCopy = {
@@ -253,9 +254,17 @@ type DiagnosisUiCopy = {
   loadingAccount: string;
   loadFailed: string;
   emptyDiagnosis: string;
+  emptyDiagnosisBody?: string;
   confidence: string;
   recommended: string;
   noPreference: string;
+  latestReport?: string;
+  skinTone?: string;
+  faceShape?: string;
+  colorDirection?: string;
+  viewFullReport?: string;
+  rerunDiagnosis?: string;
+  tryRecommendedLook?: string;
 };
 
 type DiagnosisCopyOptions = {
@@ -316,9 +325,18 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
       loadingAccount: "Loading account",
       loadFailed: "Some data could not be loaded. Refresh later.",
       emptyDiagnosis: "No AI diagnosis records yet.",
+      emptyDiagnosisBody:
+        "Complete one diagnosis and this card will keep your tone, face shape, color direction, and next recommended look.",
       confidence: "Confidence",
       recommended: "Recommended now",
       noPreference: "Not set",
+      latestReport: "Latest report",
+      skinTone: "Skin tone",
+      faceShape: "Face shape",
+      colorDirection: "Color direction",
+      viewFullReport: "View full report",
+      rerunDiagnosis: "Run again",
+      tryRecommendedLook: "Try recommended look",
     },
     summaryParts: {
       skinDepth: "Skin depth: {value}",
@@ -357,6 +375,15 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
         "bright-winter": "bright winter",
         uncertain: "uncertain",
       },
+      faceShape: {
+        oval: "oval",
+        round: "round",
+        square: "square",
+        heart: "heart",
+        oblong: "oblong",
+        diamond: "diamond",
+        uncertain: "uncertain",
+      },
     },
     seasonDirection: "{season} direction",
     useRawDirection: true,
@@ -370,9 +397,18 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
       loadingAccount: "正在读取账户",
       loadFailed: "部分数据暂时无法读取，请稍后刷新。",
       emptyDiagnosis: "还没有 AI 诊断记录。",
+      emptyDiagnosisBody:
+        "完成一次诊断后，这里会保存你的肤调、脸型、色彩方向和下一步推荐妆容。",
       confidence: "置信度",
       recommended: "当前推荐",
       noPreference: "暂未设置",
+      latestReport: "最新报告",
+      skinTone: "肤调",
+      faceShape: "脸型",
+      colorDirection: "色彩倾向",
+      viewFullReport: "查看完整报告",
+      rerunDiagnosis: "重新诊断",
+      tryRecommendedLook: "试推荐妆容",
     },
     summaryParts: {
       skinDepth: "肤色深度偏{value}",
@@ -411,6 +447,15 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
         "bright-winter": "明亮冬季",
         uncertain: "待确认",
       },
+      faceShape: {
+        oval: "椭圆形",
+        round: "圆形",
+        square: "方形",
+        heart: "心形",
+        oblong: "长形",
+        diamond: "菱形",
+        uncertain: "待确认",
+      },
     },
     directionLabels: {
       balancedColor: "均衡气色妆",
@@ -439,9 +484,18 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
       loadingAccount: "正在讀取帳戶",
       loadFailed: "部分資料暫時無法讀取，請稍後重新整理。",
       emptyDiagnosis: "還沒有 AI 診斷記錄。",
+      emptyDiagnosisBody:
+        "完成一次診斷後，這裡會保存你的膚調、臉型、色彩方向和下一步推薦妝容。",
       confidence: "可信度",
       recommended: "目前推薦",
       noPreference: "尚未設定",
+      latestReport: "最新報告",
+      skinTone: "膚調",
+      faceShape: "臉型",
+      colorDirection: "色彩傾向",
+      viewFullReport: "查看完整報告",
+      rerunDiagnosis: "重新診斷",
+      tryRecommendedLook: "試推薦妝容",
     },
     summaryParts: {
       skinDepth: "膚色深度偏{value}",
@@ -480,6 +534,15 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
         "bright-winter": "明亮冬季",
         uncertain: "待確認",
       },
+      faceShape: {
+        oval: "橢圓形",
+        round: "圓形",
+        square: "方形",
+        heart: "心形",
+        oblong: "長形",
+        diamond: "菱形",
+        uncertain: "待確認",
+      },
     },
     directionLabels: {
       balancedColor: "均衡氣色妝",
@@ -509,9 +572,18 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
       loadFailed:
         "一部のデータを読み込めませんでした。後でもう一度お試しください。",
       emptyDiagnosis: "AI診断の記録はまだありません。",
+      emptyDiagnosisBody:
+        "診断を完了すると、肌トーン、顔型、カラー傾向、次に試すおすすめメイクがここに保存されます。",
       confidence: "信頼度",
       recommended: "現在のおすすめ",
       noPreference: "未設定",
+      latestReport: "最新レポート",
+      skinTone: "肌トーン",
+      faceShape: "顔型",
+      colorDirection: "カラー傾向",
+      viewFullReport: "レポート全文を見る",
+      rerunDiagnosis: "もう一度診断",
+      tryRecommendedLook: "おすすめを試す",
     },
     summaryParts: {
       skinDepth: "肌色の明るさは{value}",
@@ -550,6 +622,15 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
         "bright-winter": "ブライトウィンター",
         uncertain: "要確認",
       },
+      faceShape: {
+        oval: "卵型",
+        round: "丸顔",
+        square: "四角顔",
+        heart: "ハート型",
+        oblong: "面長",
+        diamond: "ダイヤモンド型",
+        uncertain: "要確認",
+      },
     },
     directionLabels: {
       balancedColor: "血色バランスメイク",
@@ -579,9 +660,18 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
       loadFailed:
         "일부 데이터를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.",
       emptyDiagnosis: "아직 AI 진단 기록이 없습니다.",
+      emptyDiagnosisBody:
+        "진단을 완료하면 피부 톤, 얼굴형, 컬러 방향, 다음 추천 메이크업이 여기에 저장됩니다.",
       confidence: "신뢰도",
       recommended: "현재 추천",
       noPreference: "설정 안 됨",
+      latestReport: "최신 리포트",
+      skinTone: "피부 톤",
+      faceShape: "얼굴형",
+      colorDirection: "컬러 방향",
+      viewFullReport: "전체 리포트 보기",
+      rerunDiagnosis: "다시 진단",
+      tryRecommendedLook: "추천 룩 체험",
     },
     summaryParts: {
       skinDepth: "피부 밝기는 {value}",
@@ -620,6 +710,15 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
         "bright-winter": "브라이트 겨울",
         uncertain: "확인 필요",
       },
+      faceShape: {
+        oval: "계란형",
+        round: "둥근형",
+        square: "사각형",
+        heart: "하트형",
+        oblong: "긴형",
+        diamond: "다이아몬드형",
+        uncertain: "확인 필요",
+      },
     },
     directionLabels: {
       balancedColor: "균형 잡힌 생기 메이크업",
@@ -649,9 +748,18 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
       loadFailed:
         "Certaines données n'ont pas pu être chargées. Réessayez plus tard.",
       emptyDiagnosis: "Aucun diagnostic IA pour le moment.",
+      emptyDiagnosisBody:
+        "Après un diagnostic, cette carte conserve votre teint, la forme du visage, la direction couleur et le prochain look recommandé.",
       confidence: "Confiance",
       recommended: "Recommandation actuelle",
       noPreference: "Non défini",
+      latestReport: "Dernier rapport",
+      skinTone: "Teint",
+      faceShape: "Forme du visage",
+      colorDirection: "Direction couleur",
+      viewFullReport: "Voir le rapport complet",
+      rerunDiagnosis: "Refaire le diagnostic",
+      tryRecommendedLook: "Essayer le look recommandé",
     },
     summaryParts: {
       skinDepth: "Profondeur de peau : {value}",
@@ -690,6 +798,15 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
         "bright-winter": "hiver lumineux",
         uncertain: "incertain",
       },
+      faceShape: {
+        oval: "ovale",
+        round: "rond",
+        square: "carré",
+        heart: "cœur",
+        oblong: "allongé",
+        diamond: "diamant",
+        uncertain: "incertain",
+      },
     },
     directionLabels: {
       balancedColor: "Bonne mine équilibrée",
@@ -719,9 +836,18 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
       loadFailed:
         "Einige Daten konnten nicht geladen werden. Bitte später aktualisieren.",
       emptyDiagnosis: "Noch keine KI-Diagnosen.",
+      emptyDiagnosisBody:
+        "Nach einer Diagnose speichert diese Karte Hautton, Gesichtsform, Farbrichtung und den nächsten empfohlenen Look.",
       confidence: "Konfidenz",
       recommended: "Aktuelle Empfehlung",
       noPreference: "Nicht festgelegt",
+      latestReport: "Aktueller Bericht",
+      skinTone: "Hautton",
+      faceShape: "Gesichtsform",
+      colorDirection: "Farbrichtung",
+      viewFullReport: "Vollständigen Bericht ansehen",
+      rerunDiagnosis: "Diagnose wiederholen",
+      tryRecommendedLook: "Empfohlenen Look testen",
     },
     summaryParts: {
       skinDepth: "Hauttiefe: {value}",
@@ -760,6 +886,15 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
         "bright-winter": "leuchtender Winter",
         uncertain: "unsicher",
       },
+      faceShape: {
+        oval: "oval",
+        round: "rund",
+        square: "eckig",
+        heart: "herzförmig",
+        oblong: "länglich",
+        diamond: "diamantförmig",
+        uncertain: "unsicher",
+      },
     },
     directionLabels: {
       balancedColor: "Ausgewogene Frische",
@@ -788,9 +923,18 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
       loadingAccount: "Cargando cuenta",
       loadFailed: "No se pudieron cargar algunos datos. Actualiza más tarde.",
       emptyDiagnosis: "Aún no hay diagnósticos IA.",
+      emptyDiagnosisBody:
+        "Después de un diagnóstico, esta tarjeta guarda tu tono, forma del rostro, dirección de color y el siguiente look recomendado.",
       confidence: "Confianza",
       recommended: "Recomendación actual",
       noPreference: "Sin definir",
+      latestReport: "Último informe",
+      skinTone: "Tono de piel",
+      faceShape: "Forma del rostro",
+      colorDirection: "Dirección de color",
+      viewFullReport: "Ver informe completo",
+      rerunDiagnosis: "Repetir diagnóstico",
+      tryRecommendedLook: "Probar look recomendado",
     },
     summaryParts: {
       skinDepth: "Profundidad de piel: {value}",
@@ -829,6 +973,15 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
         "bright-winter": "invierno brillante",
         uncertain: "incierto",
       },
+      faceShape: {
+        oval: "ovalado",
+        round: "redondo",
+        square: "cuadrado",
+        heart: "corazón",
+        oblong: "alargado",
+        diamond: "diamante",
+        uncertain: "incierto",
+      },
     },
     directionLabels: {
       balancedColor: "Color equilibrado",
@@ -858,9 +1011,18 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
       loadFailed:
         "Não foi possível carregar alguns dados. Atualize mais tarde.",
       emptyDiagnosis: "Ainda não há registros de diagnóstico IA.",
+      emptyDiagnosisBody:
+        "Depois de um diagnóstico, este cartão guarda seu tom de pele, formato do rosto, direção de cor e o próximo look recomendado.",
       confidence: "Confiança",
       recommended: "Recomendação atual",
       noPreference: "Não definido",
+      latestReport: "Relatório mais recente",
+      skinTone: "Tom de pele",
+      faceShape: "Formato do rosto",
+      colorDirection: "Direção de cor",
+      viewFullReport: "Ver relatório completo",
+      rerunDiagnosis: "Refazer diagnóstico",
+      tryRecommendedLook: "Experimentar look recomendado",
     },
     summaryParts: {
       skinDepth: "Profundidade da pele: {value}",
@@ -897,6 +1059,15 @@ const diagnosisCopyByLocale: Partial<Record<SupportedLocale, DiagnosisCopy>> = {
         "deep-winter": "inverno profundo",
         "cool-winter": "inverno frio",
         "bright-winter": "inverno brilhante",
+        uncertain: "incerto",
+      },
+      faceShape: {
+        oval: "oval",
+        round: "redondo",
+        square: "quadrado",
+        heart: "coração",
+        oblong: "alongado",
+        diamond: "diamante",
         uncertain: "incerto",
       },
     },
@@ -1449,16 +1620,14 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       min-width: 0;
     }
     .history-copy strong,
-    .saved-look strong,
-    .diagnosis-summary strong {
+    .saved-look strong {
       display: block;
       color: var(--navy);
       font-size: 14px;
       line-height: 1.35;
     }
     .history-copy span,
-    .saved-look span,
-    .diagnosis-summary span {
+    .saved-look span {
       display: block;
       margin-top: 4px;
       color: var(--muted);
@@ -1498,32 +1667,116 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       background: var(--bg);
       text-decoration: none;
     }
-    .diagnosis-metrics {
+    .diagnosis-profile {
+      display: grid;
+      gap: 14px;
+    }
+    .diagnosis-profile-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .diagnosis-profile-badge {
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      padding: 0 10px;
+      border: 1px solid color-mix(in srgb, var(--teal) 36%, var(--line));
+      border-radius: 999px;
+      background: var(--teal-soft);
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .diagnosis-profile-date {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .diagnosis-profile-lead h3 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 18px;
+      line-height: 1.35;
+    }
+    .diagnosis-profile-lead p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .diagnosis-profile-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
-      margin-top: 12px;
     }
-    .diagnosis-metrics div,
+    .diagnosis-profile-metric,
     .preference-summary div {
       padding: 12px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--bg);
     }
-    .diagnosis-metrics span,
+    .diagnosis-profile-metric span,
     .preference-summary dt {
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
     }
-    .diagnosis-metrics strong,
+    .diagnosis-profile-metric strong,
     .preference-summary dd {
       display: block;
       margin: 6px 0 0;
       color: var(--navy);
       font-size: 14px;
       font-weight: 800;
+    }
+    .diagnosis-direction {
+      display: grid;
+      gap: 8px;
+      padding: 13px;
+      border: 1px solid color-mix(in srgb, var(--rose) 18%, var(--line));
+      border-radius: 8px;
+      background: var(--surface-rose);
+    }
+    .diagnosis-direction > span {
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .diagnosis-direction > strong {
+      color: var(--navy);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .diagnosis-direction p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .diagnosis-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .diagnosis-palette i {
+      display: inline-flex;
+      min-height: 26px;
+      align-items: center;
+      padding: 0 9px;
+      border: 1px solid var(--rose-border);
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      color: var(--rose);
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+    }
+    .diagnosis-actions {
+      margin-top: 2px;
     }
     .preference-summary {
       margin: 0;
@@ -1551,6 +1804,11 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       color: var(--rose);
       font-weight: 800;
       text-decoration: none;
+    }
+    .empty-state strong {
+      color: var(--navy);
+      font-size: 15px;
+      line-height: 1.35;
     }
     @media (max-width: 1060px) {
       .dashboard-shell {
@@ -1599,7 +1857,7 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         justify-self: start;
       }
       .saved-strip,
-      .diagnosis-metrics {
+      .diagnosis-profile-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -1628,6 +1886,29 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       const recommendationBySlug = new Map(
         recommendations.map((look) => [look.slug, look]),
       );
+      const fallbackDiagnosisLabels = {
+        faceShape: {
+          oval: "oval",
+          round: "round",
+          square: "square",
+          heart: "heart",
+          oblong: "oblong",
+          diamond: "diamond",
+          uncertain: "uncertain",
+        },
+      };
+      const diagnosisUi = {
+        latestReport: "Latest report",
+        emptyDiagnosisBody:
+          "Complete one diagnosis and this card will keep your tone, face shape, color direction, and next recommended look.",
+        skinTone: "Skin tone",
+        faceShape: "Face shape",
+        colorDirection: "Color direction",
+        viewFullReport: "View full report",
+        rerunDiagnosis: "Run again",
+        tryRecommendedLook: "Try recommended look",
+        ...diagnosisCopy.ui,
+      };
       let workspaceHref = hrefs.tryonFree;
       const pageParams = new URLSearchParams(window.location.search);
       const checkoutSucceeded = pageParams.get("checkout") === "success";
@@ -1679,7 +1960,11 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       const formatDiagnosisPart = (template, value) =>
         template && value ? template.replace("{value}", value) : "";
       const labelDiagnosisValue = (group, value) =>
-        value ? diagnosisCopy.labels?.[group]?.[value] || value : "";
+        value
+          ? diagnosisCopy.labels?.[group]?.[value] ||
+            fallbackDiagnosisLabels[group]?.[value] ||
+            value
+          : "";
       const normalizeDiagnosisText = (value) =>
         String(value || "")
           .toLowerCase()
@@ -1750,6 +2035,66 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         return diagnosisCopy.ui.noPreference;
       }
 
+      function formatDiagnosisSkinTone(diagnosis) {
+        const undertone = labelDiagnosisValue(
+          "undertone",
+          diagnosis.skinTone?.undertone,
+        );
+        const depth = labelDiagnosisValue(
+          "skinDepth",
+          diagnosis.skinTone?.depth,
+        );
+        return (
+          [undertone, depth].filter(Boolean).join(" / ") ||
+          diagnosisUi.noPreference
+        );
+      }
+
+      function formatDiagnosisConfidence(diagnosis) {
+        const confidenceScore = Number(diagnosis.confidence?.overall);
+        return Number.isFinite(confidenceScore)
+          ? `${Math.round(confidenceScore * 100)}%`
+          : diagnosisUi.noPreference;
+      }
+
+      function getRecommendedLook(record, diagnosis) {
+        const jobLook = recommendationBySlug.get(record?.lookSlug);
+        if (jobLook) return jobLook;
+
+        const directionText = normalizeDiagnosisText(
+          (diagnosis.makeupDirections || [])
+            .flatMap((direction) => [
+              direction.title,
+              direction.rationale,
+              ...(direction.palette || []),
+            ])
+            .join(" "),
+        );
+        if (!directionText) return recommendations[0] || {};
+
+        const scored = recommendations
+          .map((look) => {
+            const haystack = normalizeDiagnosisText(
+              [look.title, look.intent, ...(look.finish || [])].join(" "),
+            );
+            const score = directionText
+              .split(" ")
+              .filter(
+                (word) => word.length > 2 && haystack.includes(word),
+              ).length;
+            return { look, score };
+          })
+          .sort((a, b) => b.score - a.score);
+
+        return scored[0]?.look || recommendations[0] || {};
+      }
+
+      function makeLookHref(look) {
+        if (!look?.slug) return workspaceHref;
+        const separator = workspaceHref.includes("?") ? "&" : "?";
+        return `${workspaceHref}${separator}look=${encodeURIComponent(look.slug)}`;
+      }
+
       function setWorkspaceLinks(plan) {
         workspaceHref = workspaceByPlan[plan] || hrefs.tryonFree;
         root.querySelectorAll("[data-workspace-href]").forEach((link) => {
@@ -1771,6 +2116,22 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
           link.textContent = actionLabel;
           box.append(link);
         }
+        target?.append(box);
+      }
+
+      function renderDiagnosisEmpty(target) {
+        clear(target);
+        const box = document.createElement("div");
+        box.className = "empty-state diagnosis-empty";
+        const title = document.createElement("strong");
+        title.textContent = diagnosisUi.emptyDiagnosis;
+        const body = document.createElement("span");
+        body.textContent =
+          diagnosisUi.emptyDiagnosisBody || diagnosisUi.emptyDiagnosis;
+        const link = document.createElement("a");
+        link.href = hrefs.diagnosis;
+        link.textContent = diagnosisUi.runDiagnosis;
+        box.append(title, body, link);
         target?.append(box);
       }
 
@@ -1870,46 +2231,112 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         const records = Array.isArray(items) ? items : [];
         if (!target) return;
         if (!records.length) {
-          renderEmpty(
-            target,
-            diagnosisCopy.ui.emptyDiagnosis,
-            diagnosisCopy.ui.runDiagnosis,
-            hrefs.diagnosis,
-          );
+          renderDiagnosisEmpty(target);
           return;
         }
         const latest = records[0];
         const diagnosis = latest?.diagnosis || {};
+        const recommendedLook = getRecommendedLook(latest, diagnosis);
+        const primaryDirection = diagnosis.makeupDirections?.[0] || {};
         clear(target);
 
-        const lead = document.createElement("div");
-        const title = document.createElement("strong");
-        title.textContent = formatDiagnosisSummary(diagnosis);
+        const profile = document.createElement("article");
+        profile.className = "diagnosis-profile";
+
+        const head = document.createElement("div");
+        head.className = "diagnosis-profile-head";
+        const badge = document.createElement("span");
+        badge.className = "diagnosis-profile-badge";
+        badge.textContent = diagnosisUi.latestReport;
         const meta = document.createElement("span");
+        meta.className = "diagnosis-profile-date";
         meta.textContent = formatDate(latest?.createdAt);
-        lead.append(title, meta);
+        head.append(badge, meta);
+
+        const lead = document.createElement("div");
+        lead.className = "diagnosis-profile-lead";
+        const title = document.createElement("h3");
+        title.textContent = formatDiagnosisSummary(diagnosis);
+        const summary = document.createElement("p");
+        summary.textContent =
+          diagnosis.colorSeason?.rationale ||
+          diagnosis.skinTone?.summary ||
+          formatDiagnosisDirection(diagnosis);
+        lead.append(title, summary);
 
         const metrics = document.createElement("div");
-        metrics.className = "diagnosis-metrics";
-        const confidence = document.createElement("div");
-        const confidenceLabel = document.createElement("span");
-        confidenceLabel.textContent = diagnosisCopy.ui.confidence;
-        const confidenceValue = document.createElement("strong");
-        const confidenceScore = Number(diagnosis.confidence?.overall);
-        confidenceValue.textContent = Number.isFinite(confidenceScore)
-          ? `${Math.round(confidenceScore * 100)}%`
-          : diagnosisCopy.ui.noPreference;
-        confidence.append(confidenceLabel, confidenceValue);
+        metrics.className = "diagnosis-profile-grid";
+        [
+          [diagnosisUi.skinTone, formatDiagnosisSkinTone(diagnosis)],
+          [
+            diagnosisUi.faceShape,
+            labelDiagnosisValue("faceShape", diagnosis.faceShape?.primary) ||
+              diagnosisUi.noPreference,
+          ],
+          [
+            diagnosisUi.colorDirection,
+            labelDiagnosisValue("season", diagnosis.colorSeason?.season) ||
+              diagnosisUi.noPreference,
+          ],
+          [diagnosisUi.confidence, formatDiagnosisConfidence(diagnosis)],
+        ].forEach(([label, value]) => {
+          const tile = document.createElement("div");
+          tile.className = "diagnosis-profile-metric";
+          const tileLabel = document.createElement("span");
+          tileLabel.textContent = label;
+          const tileValue = document.createElement("strong");
+          tileValue.textContent = value;
+          tile.append(tileLabel, tileValue);
+          metrics.append(tile);
+        });
 
         const direction = document.createElement("div");
+        direction.className = "diagnosis-direction";
         const directionLabel = document.createElement("span");
-        directionLabel.textContent = diagnosisCopy.ui.recommended;
-        const directionValue = document.createElement("strong");
-        directionValue.textContent = formatDiagnosisDirection(diagnosis);
-        direction.append(directionLabel, directionValue);
+        directionLabel.textContent = diagnosisUi.recommended;
+        const directionTitle = document.createElement("strong");
+        directionTitle.textContent = formatDiagnosisDirection(diagnosis);
+        direction.append(directionLabel, directionTitle);
+        if (primaryDirection.rationale) {
+          const rationale = document.createElement("p");
+          rationale.textContent = primaryDirection.rationale;
+          direction.append(rationale);
+        }
+        if (primaryDirection.palette?.length) {
+          const palette = document.createElement("div");
+          palette.className = "diagnosis-palette";
+          primaryDirection.palette.slice(0, 5).forEach((color) => {
+            const tag = document.createElement("i");
+            tag.textContent = color;
+            palette.append(tag);
+          });
+          direction.append(palette);
+        }
 
-        metrics.append(confidence, direction);
-        target.append(lead, metrics);
+        const actions = document.createElement("div");
+        actions.className = "diagnosis-actions inline-actions";
+        [
+          [diagnosisUi.viewFullReport, hrefs.diagnosis, "btn btn-primary"],
+          [
+            diagnosisUi.rerunDiagnosis,
+            `${hrefs.diagnosis}#diagnosis-new`,
+            "btn btn-outline",
+          ],
+          [
+            diagnosisUi.tryRecommendedLook,
+            makeLookHref(recommendedLook),
+            "btn btn-outline-rose",
+          ],
+        ].forEach(([label, href, className]) => {
+          const link = document.createElement("a");
+          link.className = className;
+          link.href = href;
+          link.textContent = label;
+          actions.append(link);
+        });
+
+        profile.append(head, lead, metrics, direction, actions);
+        target.append(profile);
       }
 
       function renderPreferences(data) {

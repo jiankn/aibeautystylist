@@ -345,7 +345,7 @@
     "loginCta": "Comenzar",
     "loginDesc": "Elige looks por trabajo, cita, foto o evento y revisa una vista previa IA en tu propio rostro.",
     "freeBenefits": "Créditos gratis mensuales · Historial · Diagnóstico IA",
-    "quotaRemaining": "{remaining} / {total} créditos",
+    "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} créditos",
     "lowQuotaHint": "Actualiza para más opciones",
     "refreshDate": "{date}",

@@ -359,7 +359,7 @@ const diagnosisClientCopy = {
         <div class="diagnosis-credit" data-diagnosis-quota>
           <span aria-hidden="true">AI</span>
           <div>
-            <b data-diagnosis-quota-text>— / —</b>
+            <b data-diagnosis-quota-text>—</b>
             <div class="small muted" data-diagnosis-quota-note>
               {diagnosisCopy.quotaLoading}
             </div>
@@ -931,10 +931,11 @@ const diagnosisClientCopy = {
         if (uploadBtn) uploadBtn.disabled = !consentBox?.checked;
         if (uploadBtn) uploadBtn.textContent = copy.uploadCta;
         const q = data.data.quota;
-        if (quotaText) quotaText.textContent = q.used + " / " + q.total;
+        const quotaLabel = q.remaining + "/" + q.total;
+        if (quotaText) quotaText.textContent = quotaLabel;
         if (quotaNote)
           quotaNote.textContent =
-            copy.quotaRemainingPrefix + q.remaining + copy.quotaRemainingSuffix;
+            copy.quotaRemainingPrefix + quotaLabel + copy.quotaRemainingSuffix;
         return true;
       } catch {
         return false;

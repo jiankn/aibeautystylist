@@ -540,7 +540,7 @@ export function getLocalizedDiagnosisContent(locale: SupportedLocale) {
       quotaGuest: text("tryon", "loginToUseQuota"),
       quotaGuestNote: text("tryon", "loginToUseDesc"),
       quotaRemainingPrefix: `${text("workspace", "remaining")}: `,
-      quotaRemainingSuffix: " credits",
+      quotaRemainingSuffix: "",
       loginCta: text("tryon", "loginToUpload"),
       uploadCta: core.uploadTitle,
       tryLook: text("workspace", "startTryon"),

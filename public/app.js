@@ -439,11 +439,14 @@ function updateQuotaDisplay(quota) {
   const quotaBar = document.querySelector("[data-quota-live]");
   if (!quotaBar || !quota) return;
 
-  const pct = Math.max(0, Math.min(100, (quota.used / quota.total) * 100));
+  const total = Number(quota.total) || 0;
+  const remaining = Number(quota.remaining) || 0;
+  const used = Number(quota.used) || 0;
+  const pct = total > 0 ? Math.max(0, Math.min(100, (used / total) * 100)) : 0;
   const label = quotaBar.querySelector("[data-quota-label]");
   const meter = quotaBar.querySelector("[data-quota-meter]");
   if (label) {
-    label.textContent = quota.remaining + " / " + quota.total + " 次";
+    label.textContent = remaining + "/" + total;
   }
   if (meter) {
     meter.style.width = pct + "%";
