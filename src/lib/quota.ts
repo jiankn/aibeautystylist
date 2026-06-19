@@ -1,3 +1,4 @@
+import { getMonthlyQuota, getPlanRank, type PlanCode } from "./plans";
 import type { D1DatabaseLike } from "./runtime";
 
 export const FREE_MONTHLY_QUOTA = 3;
@@ -19,6 +20,13 @@ export interface QuotaReservation {
 export interface ShareRewardGrant {
   rewarded: boolean;
   duplicate: boolean;
+  snapshot: QuotaSnapshot;
+}
+
+export interface PlanQuotaReset {
+  reset: boolean;
+  duplicate: boolean;
+  amount: number;
   snapshot: QuotaSnapshot;
 }
 
@@ -142,6 +150,61 @@ export async function grantShareReward(
   };
 }
 
+export async function resetQuotaForPlanUpgrade(input: {
+  userId: string;
+  fromPlanCode: PlanCode;
+  toPlanCode: PlanCode;
+  sourceId: string;
+  DB?: D1DatabaseLike;
+  now?: Date;
+  allowSamePlan?: boolean;
+}): Promise<PlanQuotaReset> {
+  const now = input.now ?? new Date();
+  const monthlyQuota = getMonthlyQuota(input.toPlanCode);
+  const before = await getQuotaSnapshot(
+    input.userId,
+    input.DB,
+    now,
+    monthlyQuota,
+  );
+
+  const isUpgrade =
+    getPlanRank(input.toPlanCode) > getPlanRank(input.fromPlanCode);
+  if (!isUpgrade && !input.allowSamePlan) {
+    return { reset: false, duplicate: false, amount: 0, snapshot: before };
+  }
+
+  const usageKey = [
+    "plan_reset",
+    input.userId,
+    input.sourceId,
+    input.toPlanCode,
+    before.periodStart,
+  ].join(":");
+
+  if (await hasUsageRecord(input.userId, usageKey, input.DB)) {
+    return { reset: false, duplicate: true, amount: 0, snapshot: before };
+  }
+
+  const amount = Math.max(0, before.total - before.remaining);
+  await appendUsageRecord(
+    input.userId,
+    input.sourceId,
+    "plan_reset",
+    amount,
+    usageKey,
+    input.DB,
+    now,
+  );
+
+  return {
+    reset: amount > 0,
+    duplicate: false,
+    amount,
+    snapshot: await getQuotaSnapshot(input.userId, input.DB, now, monthlyQuota),
+  };
+}
+
 export function resetMockQuota(): void {
   mockUsage.clear();
 }
@@ -180,7 +243,7 @@ async function hasUsageRecord(
 async function appendUsageRecord(
   userId: string,
   jobId: string,
-  type: "reserve" | "refund" | "share_reward",
+  type: "reserve" | "refund" | "share_reward" | "plan_reset",
   amount: number,
   idempotencyKey: string,
   DB?: D1DatabaseLike,

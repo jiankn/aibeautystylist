@@ -91,6 +91,10 @@ export function getMonthlyQuota(code: PlanCode): number {
   return PLAN_DEFINITIONS[code].monthlyQuota;
 }
 
+export function getPlanRank(code: PlanCode): number {
+  return code === "premium" ? 3 : code === "pro" ? 2 : 1;
+}
+
 export function planHasFeature(
   code: PlanCode,
   feature: keyof PlanFeatures,

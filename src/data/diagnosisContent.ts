@@ -518,9 +518,29 @@ const text = (section: "workspace" | "tryon", key: string) =>
     ),
   );
 
+const quotaExhaustedCopy = (locale: SupportedLocale) => {
+  if (locale === "zh-CN") {
+    return {
+      label: "本月额度已用完",
+      note: "本月生成额度已用完，可分享或升级获取更多额度。",
+    };
+  }
+  if (locale === "zh-TW") {
+    return {
+      label: "本月額度已用完",
+      note: "本月生成額度已用完，可分享或升級取得更多額度。",
+    };
+  }
+  return {
+    label: "Monthly credits used up",
+    note: "Monthly generation credits are used up. Share or upgrade to get more credits.",
+  };
+};
+
 export function getLocalizedDiagnosisContent(locale: SupportedLocale) {
   const core = localized[locale];
   if (!core) return undefined;
+  const exhaustedCopy = quotaExhaustedCopy(locale);
   return {
     ...core,
     startCta: core.uploadTitle,
@@ -541,6 +561,9 @@ export function getLocalizedDiagnosisContent(locale: SupportedLocale) {
       quotaGuestNote: text("tryon", "loginToUseDesc"),
       quotaRemainingPrefix: `${text("workspace", "remaining")}: `,
       quotaRemainingSuffix: "",
+      quotaExhausted: exhaustedCopy.label,
+      quotaExhaustedNote: exhaustedCopy.note,
+      quotaExhaustedCta: exhaustedCopy.label,
       loginCta: text("tryon", "loginToUpload"),
       uploadCta: core.uploadTitle,
       tryLook: text("workspace", "startTryon"),

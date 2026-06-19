@@ -133,6 +133,10 @@ const fallbackDiagnosisCopy = isEnglish
         quotaGuestNote: "Sign in to use monthly generation credits",
         quotaRemainingPrefix: "Remaining this month: ",
         quotaRemainingSuffix: " credits",
+        quotaExhausted: "Monthly credits used up",
+        quotaExhaustedNote:
+          "Monthly generation credits are used up. Share or upgrade to get more credits.",
+        quotaExhaustedCta: "Monthly credits used up",
         loginCta: "Sign in to start diagnosis",
         uploadCta: "Upload selfie and diagnose",
         tryLook: "Try this look",
@@ -230,6 +234,9 @@ const fallbackDiagnosisCopy = isEnglish
         quotaGuestNote: "登录后可使用月度生成额度",
         quotaRemainingPrefix: "本月还可生成 ",
         quotaRemainingSuffix: " 次",
+        quotaExhausted: "本月额度已用完",
+        quotaExhaustedNote: "本月生成额度已用完，可分享或升级获取更多额度。",
+        quotaExhaustedCta: "本月额度已用完",
         loginCta: "登录后开始诊断",
         uploadCta: "上传自拍开始诊断",
         tryLook: "试这个妆",
@@ -544,6 +551,7 @@ const diagnosisClientCopy = {
       const resultChips = document.getElementById("diag-result-chips");
       const primaryLook = document.getElementById("diag-primary-look");
       const historyList = document.getElementById("diag-history-list");
+      const quotaCard = document.querySelector("[data-diagnosis-quota]");
       const quotaText = document.querySelector("[data-diagnosis-quota-text]");
       const quotaNote = document.querySelector("[data-diagnosis-quota-note]");
       const recommendsContainer = document.getElementById("diag-recommends");
@@ -594,10 +602,87 @@ const diagnosisClientCopy = {
         );
       }
 
+      function quotaRemainingValue() {
+        if (!quotaSnapshot) return null;
+        const remaining = Number(quotaSnapshot.remaining);
+        return Number.isFinite(remaining) ? remaining : null;
+      }
+
+      function isQuotaExhausted() {
+        const remaining = quotaRemainingValue();
+        return isAccountUser && remaining !== null && remaining <= 0;
+      }
+
+      function renderQuota(q) {
+        const remaining = Number(q?.remaining ?? 0);
+        const total = Number(q?.total ?? 0);
+        const safeRemaining = Number.isFinite(remaining)
+          ? Math.max(0, remaining)
+          : 0;
+        const safeTotal = Number.isFinite(total) ? Math.max(0, total) : 0;
+        const quotaLabel = safeRemaining + "/" + safeTotal;
+        const exhausted = safeRemaining <= 0;
+        if (quotaText) quotaText.textContent = quotaLabel;
+        if (quotaNote) {
+          quotaNote.textContent = exhausted
+            ? copy.quotaExhaustedNote ||
+              copy.quotaExhausted ||
+              copy.quotaLoading
+            : (copy.quotaRemainingPrefix || "") +
+              quotaLabel +
+              (copy.quotaRemainingSuffix || "");
+        }
+        quotaCard?.classList.toggle("is-exhausted", exhausted);
+      }
+
+      function syncUploadAvailability() {
+        if (!uploadBtn) return;
+        if (!isAccountUser) {
+          uploadBtn.disabled = false;
+          uploadBtn.textContent = copy.loginCta;
+          return;
+        }
+        if (isQuotaExhausted()) {
+          uploadBtn.disabled = true;
+          uploadBtn.textContent =
+            copy.quotaExhaustedCta || copy.quotaExhausted || copy.uploadCta;
+          return;
+        }
+        uploadBtn.disabled = !consentBox?.checked;
+        uploadBtn.textContent = copy.uploadCta;
+      }
+
+      function showQuotaExhaustedState() {
+        if (taskStatus) taskStatus.hidden = true;
+        quotaSnapshot = {
+          ...(quotaSnapshot || { total: 0 }),
+          remaining: 0,
+        };
+        renderQuota(quotaSnapshot);
+        syncUploadAvailability();
+      }
+
+      function isQuotaError(err) {
+        const value = String(
+          [
+            err?.code,
+            err?.errorCode,
+            err?.name,
+            err?.message,
+            typeof err === "string" ? err : "",
+          ]
+            .filter(Boolean)
+            .join(" "),
+        );
+        return /QUOTA_EXHAUSTED|额度已用完|額度已用完|credits? (exhausted|used up)/i.test(
+          value,
+        );
+      }
+
       // === 同意控制 ===
       if (consentBox && uploadBtn) {
         consentBox.addEventListener("change", () => {
-          uploadBtn.disabled = !isAccountUser || !consentBox.checked;
+          syncUploadAvailability();
         });
       }
 
@@ -607,6 +692,10 @@ const diagnosisClientCopy = {
         uploadBtn.addEventListener("click", async () => {
           if (!isAccountUser) {
             window.location.href = loginUrl();
+            return;
+          }
+          if (isQuotaExhausted()) {
+            showQuotaExhaustedState();
             return;
           }
           const input = document.createElement("input");
@@ -642,8 +731,14 @@ const diagnosisClientCopy = {
               // 3. 轮询
               pollJob(currentJobId);
             } catch (err) {
-              updateProgress(err.message, 0);
-              uploadBtn.disabled = false;
+              if (isQuotaError(err)) {
+                showQuotaExhaustedState();
+                return;
+              }
+              const message =
+                err instanceof Error ? err.message : String(err || "");
+              updateProgress(message || copy.failed, 0);
+              syncUploadAvailability();
             }
           };
           input.click();
@@ -663,6 +758,7 @@ const diagnosisClientCopy = {
           if (attempt > POLL_MAX) {
             clearInterval(interval);
             updateProgress(copy.timeout, 0);
+            syncUploadAvailability();
             return;
           }
           try {
@@ -687,7 +783,7 @@ const diagnosisClientCopy = {
                   : copy.failed,
                 0,
               );
-              uploadBtn.disabled = false;
+              syncUploadAvailability();
             }
           } catch {
             /* ignore */
@@ -1041,30 +1137,23 @@ const diagnosisClientCopy = {
           if (!data.ok) return false;
           isAccountUser = data.data.user?.kind === "account";
           if (!isAccountUser) {
+            quotaSnapshot = null;
+            quotaCard?.classList.remove("is-exhausted");
             if (quotaText) quotaText.textContent = copy.quotaGuest;
             if (quotaNote) quotaNote.textContent = copy.quotaGuestNote;
             if (consentBox) {
               consentBox.checked = false;
               consentBox.disabled = true;
             }
-            if (uploadBtn) {
-              uploadBtn.disabled = false;
-              uploadBtn.textContent = copy.loginCta;
-            }
+            syncUploadAvailability();
             return false;
           }
           if (consentBox) consentBox.disabled = false;
-          if (uploadBtn) uploadBtn.disabled = !consentBox?.checked;
-          if (uploadBtn) uploadBtn.textContent = copy.uploadCta;
           const q = data.data.quota;
           quotaSnapshot = q;
-          const quotaLabel = q.remaining + "/" + q.total;
-          if (quotaText) quotaText.textContent = quotaLabel;
-          if (quotaNote)
-            quotaNote.textContent =
-              copy.quotaRemainingPrefix +
-              quotaLabel +
-              copy.quotaRemainingSuffix;
+          renderQuota(q);
+          if (isQuotaExhausted() && taskStatus) taskStatus.hidden = true;
+          syncUploadAvailability();
           return true;
         } catch {
           return false;
@@ -1700,6 +1789,10 @@ const diagnosisClientCopy = {
       border-radius: 14px;
       background: var(--soft);
     }
+    .diagnosis-credit.is-exhausted {
+      border-color: var(--rose-border);
+      background: var(--surface-rose);
+    }
     .diagnosis-credit > span {
       display: grid;
       width: 44px;
@@ -1711,6 +1804,10 @@ const diagnosisClientCopy = {
       color: #0b7069;
       font-size: 12px;
       font-weight: 900;
+    }
+    .diagnosis-credit.is-exhausted > span {
+      background: var(--rose-soft);
+      color: var(--rose);
     }
     .diagnosis-credit b {
       color: var(--heading);
@@ -1732,6 +1829,14 @@ const diagnosisClientCopy = {
       border: 1px solid var(--line);
       border-radius: 14px;
       background: var(--soft);
+    }
+    .diagnosis-upload-area .btn:disabled {
+      border-color: var(--line);
+      background: color-mix(in srgb, var(--muted) 15%, var(--soft));
+      color: var(--muted);
+      cursor: not-allowed;
+      opacity: 1;
+      box-shadow: none;
     }
     .privacy-promise {
       display: grid;

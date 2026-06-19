@@ -4,8 +4,13 @@ import {
   type BillingInterval,
   type PlanCode,
 } from "./plans";
+import { resetQuotaForPlanUpgrade } from "./quota";
 import type { D1DatabaseLike, RuntimeBindings } from "./runtime";
-import { upsertSubscription, saveStripeCustomer } from "./subscriptions";
+import {
+  getEffectivePlan,
+  saveStripeCustomer,
+  upsertSubscription,
+} from "./subscriptions";
 import type { StripeEvent } from "./stripeWebhook";
 
 // 处理与订阅生命周期相关的 Stripe 事件，把订阅状态同步到本地 subscriptions 表。
@@ -56,6 +61,7 @@ export async function handleStripeEvent(
     await saveStripeCustomer(userId, customerId, bindings.DB, now);
   }
 
+  const previousPlan = await getEffectivePlan(userId, bindings.DB, now);
   await upsertSubscription(
     {
       userId,
@@ -67,6 +73,17 @@ export async function handleStripeEvent(
     bindings.DB,
     now,
   );
+  if (canResetQuotaForStatus(status)) {
+    await resetQuotaForPlanUpgrade({
+      userId,
+      fromPlanCode: previousPlan.planCode,
+      toPlanCode: planCode,
+      sourceId: stripeSubscriptionId,
+      DB: bindings.DB,
+      now,
+      allowSamePlan: event.type === "checkout.session.completed",
+    });
+  }
   return { handled: true, duplicate: false, planCode, status };
 }
 
@@ -192,4 +209,8 @@ function normalizeStatus(
   if (typeof status === "string" && status) return status;
   // checkout.session.completed 没有 subscription status，视为已激活。
   return "active";
+}
+
+function canResetQuotaForStatus(status: string): boolean {
+  return status === "active" || status === "trialing" || status === "past_due";
 }

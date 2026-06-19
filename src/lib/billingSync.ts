@@ -1,8 +1,13 @@
 import { getEntitlementContext } from "./entitlements";
+import { resetQuotaForPlanUpgrade } from "./quota";
 import type { RuntimeBindings } from "./runtime";
 import type { StripeCheckoutSession, StripeSubscription } from "./stripe";
 import { priceToPlan } from "./stripeEvents";
-import { saveStripeCustomer, upsertSubscription } from "./subscriptions";
+import {
+  getEffectivePlan,
+  saveStripeCustomer,
+  upsertSubscription,
+} from "./subscriptions";
 
 export type CheckoutSyncErrorCode =
   | "INVALID_CHECKOUT_SESSION"
@@ -102,6 +107,11 @@ export async function syncCheckoutSessionForUser(input: {
   }
 
   const now = input.now ?? new Date();
+  const previousPlan = await getEffectivePlan(
+    input.userId,
+    input.bindings.DB,
+    now,
+  );
   const customerId =
     typeof subscription.customer === "string"
       ? subscription.customer
@@ -122,6 +132,17 @@ export async function syncCheckoutSessionForUser(input: {
     input.bindings.DB,
     now,
   );
+  if (canResetQuotaForStatus(subscription.status || "active")) {
+    await resetQuotaForPlanUpgrade({
+      userId: input.userId,
+      fromPlanCode: previousPlan.planCode,
+      toPlanCode: planCode,
+      sourceId: subscription.id,
+      DB: input.bindings.DB,
+      now,
+      allowSamePlan: true,
+    });
+  }
 
   const { plan, quota } = await getEntitlementContext(
     input.userId,
@@ -137,4 +158,8 @@ export async function syncCheckoutSessionForUser(input: {
         : null,
     quota,
   };
+}
+
+function canResetQuotaForStatus(status: string): boolean {
+  return status === "active" || status === "trialing" || status === "past_due";
 }

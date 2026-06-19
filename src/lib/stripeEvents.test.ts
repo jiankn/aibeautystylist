@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
+import { getEntitlementContext } from "./entitlements";
+import { reserveQuota, resetMockQuota } from "./quota";
 import { getEffectivePlan, resetMockSubscriptions } from "./subscriptions";
 import {
   handleStripeEvent,
@@ -52,6 +54,7 @@ describe("priceToPlan", () => {
 
 describe("handleStripeEvent", () => {
   beforeEach(() => {
+    resetMockQuota();
     resetMockSubscriptions();
     resetMockStripeEvents();
   });
@@ -71,6 +74,25 @@ describe("handleStripeEvent", () => {
     await expect(
       getEffectivePlan("visitor_1", undefined, now),
     ).resolves.toMatchObject({ planCode: "pro" });
+  });
+
+  it("restores full quota from a webhook upgrade after free credits were used", async () => {
+    await reserveQuota("visitor_1", "job_1", "request_1", undefined, now);
+    await reserveQuota("visitor_1", "job_2", "request_2", undefined, now);
+    await reserveQuota("visitor_1", "job_3", "request_3", undefined, now);
+
+    await handleStripeEvent(
+      subscriptionEvent("evt_upgrade", "customer.subscription.updated"),
+      bindings,
+      now,
+    );
+
+    await expect(
+      getEntitlementContext("visitor_1", undefined, now),
+    ).resolves.toMatchObject({
+      plan: { planCode: "pro" },
+      quota: { total: 70, remaining: 70 },
+    });
   });
 
   it("ignores a duplicate event id (idempotent)", async () => {

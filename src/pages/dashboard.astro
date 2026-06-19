@@ -1201,16 +1201,18 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
             <div class="next-action-layout">
               {
                 primaryRecommendation && (
-                  <img
-                    src={primaryRecommendation.image}
-                    alt={primaryRecommendation.imageAlt}
-                    width="360"
-                    height="460"
-                    loading="eager"
-                  />
+                  <div class="next-action-media">
+                    <img
+                      src={primaryRecommendation.image}
+                      alt={primaryRecommendation.imageAlt}
+                      width="360"
+                      height="460"
+                      loading="eager"
+                    />
+                  </div>
                 )
               }
-              <div>
+              <div class="next-action-copy">
                 <span class="status-pill">{copy.recommended}</span>
                 <h3 data-recommended-title>
                   {primaryRecommendation?.title ?? copy.unknownLook}
@@ -1528,17 +1530,28 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
     }
     .next-action-layout {
       display: grid;
-      grid-template-columns: minmax(160px, 0.42fr) minmax(0, 1fr);
-      gap: 18px;
+      grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+      gap: 24px;
       align-items: center;
     }
-    .next-action-layout img {
+    .next-action-media {
       width: 100%;
-      aspect-ratio: 4 / 5;
-      object-fit: cover;
-      border-radius: 8px;
+      max-width: 320px;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      border-radius: 10px;
       border: 1px solid var(--line);
       background: var(--surface-neutral);
+    }
+    .next-action-media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 18%;
+    }
+    .next-action-copy {
+      min-width: 0;
     }
     .status-pill {
       display: inline-flex;
@@ -1835,6 +1848,10 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       .dashboard-metrics,
       .next-action-layout {
         grid-template-columns: 1fr;
+      }
+      .next-action-media {
+        max-width: none;
+        aspect-ratio: 4 / 3;
       }
       .dashboard-hero {
         padding: 22px;

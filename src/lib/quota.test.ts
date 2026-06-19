@@ -7,6 +7,7 @@ import {
   grantShareReward,
   refundQuota,
   reserveQuota,
+  resetQuotaForPlanUpgrade,
   resetMockQuota,
 } from "./quota";
 
@@ -96,6 +97,48 @@ describe("quota ledger", () => {
       rewarded: false,
       duplicate: true,
       snapshot: { remaining: 4 },
+    });
+  });
+
+  it("tops up quota once when a user upgrades plans", async () => {
+    await reserveQuota("visitor_1", "job_1", "request_1", undefined, now);
+    await reserveQuota("visitor_1", "job_2", "request_2", undefined, now);
+    await reserveQuota("visitor_1", "job_3", "request_3", undefined, now);
+
+    const reset = await resetQuotaForPlanUpgrade({
+      userId: "visitor_1",
+      fromPlanCode: "free",
+      toPlanCode: "pro",
+      sourceId: "sub_1",
+      now,
+    });
+    expect(reset).toMatchObject({
+      reset: true,
+      duplicate: false,
+      amount: 3,
+      snapshot: { total: 70, remaining: 70 },
+    });
+
+    await reserveQuota(
+      "visitor_1",
+      "job_pro",
+      "request_pro",
+      undefined,
+      now,
+      70,
+    );
+    const duplicate = await resetQuotaForPlanUpgrade({
+      userId: "visitor_1",
+      fromPlanCode: "free",
+      toPlanCode: "pro",
+      sourceId: "sub_1",
+      now,
+    });
+    expect(duplicate).toMatchObject({
+      reset: false,
+      duplicate: true,
+      amount: 0,
+      snapshot: { total: 70, remaining: 69 },
     });
   });
 });
