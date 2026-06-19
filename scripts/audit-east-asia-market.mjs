@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -8,6 +8,7 @@ const rootDir = path.resolve(
 );
 const looksDir = path.join(rootDir, "public", "images", "looks");
 const thumbsDir = path.join(looksDir, "thumbs");
+const imagesDir = path.join(rootDir, "public", "images");
 
 const allRecipeIds = [
   "beginner",
@@ -71,6 +72,24 @@ function missingFiles(recipeIds, suffix, dir) {
     .filter((fileName) => !existsSync(path.join(dir, fileName)));
 }
 
+function listFiles(dir) {
+  return readdirSync(dir)
+    .flatMap((entry) => {
+      const filePath = path.join(dir, entry);
+      if (statSync(filePath).isDirectory()) return listFiles(filePath);
+      return [filePath];
+    })
+    .sort();
+}
+
+function hasWebpSignature(filePath) {
+  const signature = readFileSync(filePath).subarray(0, 12);
+  return (
+    signature.toString("ascii", 0, 4) === "RIFF" &&
+    signature.toString("ascii", 8, 12) === "WEBP"
+  );
+}
+
 const missingEastAsiaAssets = missingFiles(allRecipeIds, "east-asia", looksDir);
 const missingEastAsiaThumbs = missingFiles(
   allRecipeIds,
@@ -87,6 +106,10 @@ const missingGlobalDiverseThumbs = missingFiles(
   "global-diverse",
   thumbsDir,
 );
+const mislabeledWebpFiles = listFiles(imagesDir)
+  .filter((filePath) => filePath.endsWith(".webp"))
+  .filter((filePath) => !hasWebpSignature(filePath))
+  .map((filePath) => path.relative(imagesDir, filePath));
 
 console.log("East Asia market audit");
 console.log(`East Asia looks checked: ${allRecipeIds.length}`);
@@ -101,12 +124,14 @@ console.log(
 console.log(
   `Missing global-diverse generated thumbnails: ${missingGlobalDiverseThumbs.length}`,
 );
+console.log(`Mislabeled .webp files: ${mislabeledWebpFiles.length}`);
 
 const failures = [
   ["Missing east-asia assets", missingEastAsiaAssets],
   ["Missing east-asia thumbnails", missingEastAsiaThumbs],
   ["Missing global-diverse generated assets", missingGlobalDiverseAssets],
   ["Missing global-diverse generated thumbnails", missingGlobalDiverseThumbs],
+  ["Mislabeled .webp files", mislabeledWebpFiles],
 ].filter(([, files]) => files.length > 0);
 
 if (failures.length > 0) {

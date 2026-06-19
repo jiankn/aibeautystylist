@@ -23,6 +23,59 @@ const getLookThumbnail = (image: string) =>
   image.startsWith("/images/looks/")
     ? image.replace("/images/looks/", "/images/looks/thumbs/")
     : image;
+const getLookPreviewImage = (image: string, width = 640) => {
+  if (image.startsWith("/images/looks/")) {
+    return image
+      .replace("/images/looks/", "/images/look-card/looks/")
+      .replace(/\.webp$/, `-${width}.webp`);
+  }
+  if (image.startsWith("/images/look-")) {
+    return image
+      .replace("/images/", "/images/look-card/")
+      .replace(/\.webp$/, `-${width}.webp`);
+  }
+  return image;
+};
+
+const heroImageAttributes: Record<
+  string,
+  { srcset: string; sizes: string; width: number; height: number }
+> = {
+  "/images/home-hero-global-commute-after.webp": {
+    srcset:
+      "/images/home-hero-global-commute-after-640.webp 640w, /images/home-hero-global-commute-after-960.webp 960w, /images/home-hero-global-commute-after.webp 1086w",
+    sizes:
+      "(max-width: 700px) calc(100vw - 28px), (max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
+    width: 1086,
+    height: 1448,
+  },
+  "/images/home-hero-global-commute-before.webp": {
+    srcset:
+      "/images/home-hero-global-commute-before-640.webp 640w, /images/home-hero-global-commute-before-960.webp 960w, /images/home-hero-global-commute-before.webp 1086w",
+    sizes:
+      "(max-width: 700px) calc(100vw - 28px), (max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
+    width: 1086,
+    height: 1448,
+  },
+  "/images/look-korean-dewy-makeup.webp": {
+    srcset:
+      "/images/look-korean-dewy-makeup-640.webp 640w, /images/look-korean-dewy-makeup.webp 1024w",
+    sizes:
+      "(max-width: 700px) calc(100vw - 28px), (max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
+    width: 1024,
+    height: 1024,
+  },
+  "/images/look-korean-dewy-makeup-before.webp": {
+    srcset:
+      "/images/look-korean-dewy-makeup-before-640.webp 640w, /images/look-korean-dewy-makeup-before.webp 1024w",
+    sizes:
+      "(max-width: 700px) calc(100vw - 28px), (max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
+    width: 1024,
+    height: 1024,
+  },
+};
+const heroImageAfterAttrs = heroImageAttributes[heroImageAfter];
+const heroImageBeforeAttrs = heroImageAttributes[heroImageBefore];
 
 const featuredSlugs = [
   "commute",
@@ -123,6 +176,15 @@ const homepageJsonLd = JSON.stringify({
   description={t("footer", "brandDesc")}
   bodyClass="home-main"
   jsonLd={homepageJsonLd}
+  preloadImages={[
+    {
+      href: heroImageAfter,
+      srcset: heroImageAfterAttrs?.srcset,
+      sizes: heroImageAfterAttrs?.sizes,
+      type: "image/webp",
+      fetchpriority: "high",
+    },
+  ]}
 >
   <SiteHeader active="tryOn" />
   <main>
@@ -187,6 +249,10 @@ const homepageJsonLd = JSON.stringify({
           <div class="compare-half right">
             <img
               src={heroImageAfter}
+              srcset={heroImageAfterAttrs?.srcset}
+              sizes={heroImageAfterAttrs?.sizes}
+              width={heroImageAfterAttrs?.width}
+              height={heroImageAfterAttrs?.height}
               alt={t("homepage", "heroImageAltAfter")}
               fetchpriority="high"
             />
@@ -194,8 +260,11 @@ const homepageJsonLd = JSON.stringify({
           <div class="compare-half left">
             <img
               src={heroImageBefore}
+              srcset={heroImageBeforeAttrs?.srcset}
+              sizes={heroImageBeforeAttrs?.sizes}
+              width={heroImageBeforeAttrs?.width}
+              height={heroImageBeforeAttrs?.height}
               alt={t("homepage", "heroImageAltBefore")}
-              fetchpriority="high"
             />
           </div>
           <span class="compare-label before">{t("homepage", "before")}</span>
@@ -359,7 +428,7 @@ const homepageJsonLd = JSON.stringify({
                 featuredLooks.slice(0, 3).map((look, index) => (
                   <div
                     class:list={["mockup-look", { active: index === 0 }]}
-                    data-image={look.image}
+                    data-image={getLookPreviewImage(look.image)}
                   >
                     <img
                       src={getLookThumbnail(look.image)}
@@ -374,8 +443,10 @@ const homepageJsonLd = JSON.stringify({
             <div class="mockup-preview">
               <img
                 id="mockup-preview-img"
-                src={featuredLooks[0].image}
+                src={getLookPreviewImage(featuredLooks[0].image)}
                 alt={t("homepage", "workflowPreviewAlt")}
+                width="640"
+                height="800"
                 loading="lazy"
               />
               <span
@@ -471,8 +542,10 @@ const homepageJsonLd = JSON.stringify({
             >
               <div class="decision-media">
                 <img
-                  src={item.look.image}
+                  src={getLookPreviewImage(item.look.image)}
                   alt={item.look.imageAlt}
+                  width="640"
+                  height="800"
                   loading="lazy"
                 />
                 <span>{item.eyebrow}</span>

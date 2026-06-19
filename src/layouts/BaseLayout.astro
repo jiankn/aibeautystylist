@@ -18,6 +18,13 @@ interface Props {
   ogType?: "website" | "article";
   jsonLd?: string;
   robots?: string;
+  preloadImages?: Array<{
+    href: string;
+    srcset?: string;
+    sizes?: string;
+    type?: string;
+    fetchpriority?: "high" | "low" | "auto";
+  }>;
 }
 
 const {
@@ -28,6 +35,7 @@ const {
   ogType = "website",
   jsonLd,
   robots = "index,follow",
+  preloadImages = [],
 } = Astro.props;
 
 const currentLocale = getCurrentLocale();
@@ -44,7 +52,7 @@ const htmlClass = /\/discover\/?$/i.test(requestedPathname)
   ? "filter-sheet-ready"
   : undefined;
 const fontStylesheet = currentLocale.startsWith("zh")
-  ? "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600&display=optional"
+  ? undefined
   : "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=optional";
 const clientMessages = {
   loginRequired: t("tryon", "loginToUseQuota"),
@@ -127,6 +135,19 @@ const clientMessages = {
     <meta property="og:image:height" content="630" />
     <link rel="canonical" href={canonicalUrl} />
     {
+      preloadImages.map((image) => (
+        <link
+          rel="preload"
+          as="image"
+          href={image.href}
+          imagesrcset={image.srcset}
+          imagesizes={image.sizes}
+          type={image.type}
+          fetchpriority={image.fetchpriority}
+        />
+      ))
+    }
+    {
       hreflangLinks.map((link) => (
         <link rel="alternate" hreflang={link.hreflang} href={link.href} />
       ))
@@ -142,9 +163,20 @@ const clientMessages = {
       type="font/woff2"
       crossorigin
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link id="font-stylesheet" rel="preload" as="style" href={fontStylesheet} />
+    {
+      fontStylesheet && (
+        <>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+          <link
+            id="font-stylesheet"
+            rel="preload"
+            as="style"
+            href={fontStylesheet}
+          />
+        </>
+      )
+    }
     <script is:inline>
       document
         .getElementById("font-stylesheet")
@@ -152,7 +184,13 @@ const clientMessages = {
           this.setAttribute("rel", "stylesheet");
         });
     </script>
-    <noscript><link rel="stylesheet" href={fontStylesheet} /></noscript>
+    {
+      fontStylesheet && (
+        <noscript>
+          <link rel="stylesheet" href={fontStylesheet} />
+        </noscript>
+      )
+    }
     {
       jsonLd && (
         <script type="application/ld+json" is:inline set:html={jsonLd} />
