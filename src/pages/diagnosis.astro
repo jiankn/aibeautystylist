@@ -466,7 +466,6 @@ const diagnosisClientCopy = {
       </section>
     </div>
   </main>
-</BaseLayout>
 
 <script
   is:inline
@@ -498,12 +497,18 @@ const diagnosisClientCopy = {
     const quotaText = document.querySelector("[data-diagnosis-quota-text]");
     const quotaNote = document.querySelector("[data-diagnosis-quota-note]");
     const recommendsContainer = document.getElementById("diag-recommends");
+    const START_HASH = "#diagnosis-new";
     let isAccountUser = false;
+    let wantsNewDiagnosis = location.hash === START_HASH;
 
     function scrollToDiagnosisStart() {
       if (!newSection) return;
+      wantsNewDiagnosis = true;
+      newSection.hidden = false;
+      if (resultSection) resultSection.hidden = true;
+      if (taskStatus) taskStatus.hidden = true;
       newSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.history.replaceState(null, "", "#diagnosis-new");
+      window.history.replaceState(null, "", START_HASH);
 
       const focusTarget =
         uploadBtn && !uploadBtn.disabled
@@ -524,7 +529,7 @@ const diagnosisClientCopy = {
       scrollToDiagnosisStart();
     });
 
-    if (location.hash === "#diagnosis-new") {
+    if (location.hash === START_HASH) {
       requestAnimationFrame(scrollToDiagnosisStart);
     }
 
@@ -705,6 +710,7 @@ const diagnosisClientCopy = {
 
     function renderDiagnosis(d) {
       if (!resultSection || !cardsContainer || !keywordsContainer) return;
+      wantsNewDiagnosis = false;
       newSection.hidden = true;
       resultSection.hidden = false;
 
@@ -1033,7 +1039,7 @@ const diagnosisClientCopy = {
 
         // 如果有最新的诊断，自动展示
         const latest = data.data.items[0];
-        if (latest?.diagnosis) {
+        if (!wantsNewDiagnosis && latest?.diagnosis) {
           renderDiagnosis(latest.diagnosis);
         }
       } catch {
@@ -1960,3 +1966,4 @@ const diagnosisClientCopy = {
     }
   }
 </style>
+</BaseLayout>
