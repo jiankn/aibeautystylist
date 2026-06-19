@@ -35,6 +35,14 @@ const globalContext: AudienceContext = {
   source: "locale",
 };
 
+const englishEastAsiaPreferenceContext: AudienceContext = {
+  locale: "en",
+  marketProfile: "east-asia",
+  beautyPreferences: [],
+  representationPreference: ["east-asian"],
+  source: "session",
+};
+
 describe("global makeup localization architecture", () => {
   it("maps regional locales and safely falls back for unknown locales", () => {
     expect(getDefaultMarketProfile("zh-CN")).toBe("east-asia");
@@ -129,6 +137,32 @@ describe("global makeup localization architecture", () => {
       marketVariantId: "commute--global-english",
       image: "/images/looks/commute--africa.webp",
     });
+  });
+
+  it("keeps non-east Asian page imagery on global assets despite east-asia preferences", () => {
+    const home = resolvePageAssets("home", englishEastAsiaPreferenceContext);
+    const login = resolvePageAssets("login", englishEastAsiaPreferenceContext);
+    const diagnosis = resolvePageAssets(
+      "diagnosis",
+      englishEastAsiaPreferenceContext,
+    );
+
+    expect(home.heroImages?.light).toBe(
+      "/images/home-hero-global-commute-after.webp",
+    );
+    expect(home.heroImagesBefore?.light).toBe(
+      "/images/home-hero-global-commute-before.webp",
+    );
+    expect(home.diagnosisPreviewImage).toBe(
+      "/images/diagnosis-preview-global.webp",
+    );
+    expect(home.scenarioImages?.commute).toBe(
+      "/images/home-scenario-commute-global.webp",
+    );
+    expect(login.heroImages?.light).toBe(
+      "/images/login-hero-global-light.webp",
+    );
+    expect(diagnosis.exampleImages?.[0]).not.toContain("--east-asia");
   });
 
   it("normalizes invalid or conflicting representation preferences", () => {

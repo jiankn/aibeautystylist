@@ -31,13 +31,20 @@ function resolveRegionalProfile(audienceContext: AudienceContext) {
   return "global";
 }
 
+function isEastAsianLocale(locale: string): boolean {
+  const language = locale.split("-")[0]?.toLowerCase();
+  return language === "zh" || language === "ja" || language === "ko";
+}
+
 /** 解析页面级资产，页面自身不再按语言或地区硬编码图片。 */
 export function resolvePageAssets(
   pageId: string,
   audienceContext: AudienceContext,
 ): ResolvedPageAssets {
   const regionalProfile = resolveRegionalProfile(audienceContext);
-  const isEastAsia = regionalProfile === "east-asia";
+  const isEastAsia =
+    isEastAsianLocale(audienceContext.locale) &&
+    regionalProfile === "east-asia";
 
   switch (pageId) {
     case "home":
@@ -100,7 +107,7 @@ export function resolvePageAssets(
       return {
         pageId,
         exampleImages: [
-          regionalProfile === "east-asia"
+          isEastAsia
             ? "/images/looks/rose-milk-date--east-asia.webp"
             : regionalProfile === "south-asia"
               ? "/images/looks/rose-milk-date--south-asia.webp"
