@@ -5,7 +5,10 @@ import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCurrentLocale } from "../lib/i18n";
-import { getLocalizedDiagnosisContent } from "../data/diagnosisContent";
+import {
+  getDiagnosisResultLabels,
+  getLocalizedDiagnosisContent,
+} from "../data/diagnosisContent";
 
 const currentLocale = getCurrentLocale();
 const currentPathname = Astro.originPathname || Astro.url.pathname;
@@ -262,6 +265,8 @@ const diagnosisCopy =
 
 const diagnosisClientCopy = {
   ...diagnosisCopy.client,
+  resultLabels: getDiagnosisResultLabels(currentLocale),
+  recommendMore: diagnosisCopy.recommendMore,
   historyEmptyTitle: diagnosisCopy.historyEmptyTitle,
   historyEmptyBody: diagnosisCopy.historyEmptyBody,
   historyEmptyCta: diagnosisCopy.historyEmptyCta,
@@ -806,59 +811,33 @@ const diagnosisClientCopy = {
         }
       }
 
-      // === 渲染诊断结果 ===
-      const SKIN_DEPTH_ZH = {
-        fair: "白皙",
-        light: "浅色",
-        medium: "中等",
-        tan: "小麦色",
-        deep: "深色",
-      };
-      const UNDERTONE_ZH = {
-        cool: "冷调",
-        warm: "暖调",
-        neutral: "中性",
-        olive: "橄榄调",
-        uncertain: "待确认",
-      };
-      const FACE_SHAPE_ZH = {
-        oval: "椭圆形",
-        round: "圆形",
-        square: "方形",
-        heart: "心形",
-        oblong: "长形",
-        diamond: "菱形",
-        uncertain: "待确认",
-      };
-      const EYE_SHAPE_ZH = {
-        almond: "杏仁眼",
-        round: "圆眼",
-        hooded: "内双",
-        monolid: "单眼皮",
-        upturned: "上扬眼",
-        downturned: "下垂眼",
-        uncertain: "待确认",
-      };
-      const SEASON_ZH = {
-        "bright-spring": "明亮春季",
-        "warm-spring": "暖调春季",
-        "light-spring": "浅色春季",
-        "light-summer": "浅色夏季",
-        "cool-summer": "冷调夏季",
-        "soft-summer": "柔和夏季",
-        "soft-autumn": "柔和秋季",
-        "warm-autumn": "暖调秋季",
-        "deep-autumn": "深色秋季",
-        "deep-winter": "深色冬季",
-        "cool-winter": "冷调冬季",
-        "bright-winter": "明亮冬季",
-        uncertain: "待确认",
-      };
-      const BAND_ZH = {
-        low: "置信度较低",
-        medium: "置信度中等",
-        high: "置信度较高",
-      };
+      const resultLabels = copy.resultLabels || {};
+      const valueMaps = resultLabels.valueMaps || {};
+      const keywordIcons = resultLabels.keywordIcons || {};
+
+      function labelFrom(map, key, fallback) {
+        return (key && map?.[key]) || fallback || key || "";
+      }
+
+      function joinEvidence(items) {
+        return Array.isArray(items)
+          ? items.join(resultLabels.paletteJoiner || ", ")
+          : "";
+      }
+
+      function titleWithValue(label, value) {
+        return value ? label + ": " + value : label;
+      }
+
+      function paletteSuffix(palette) {
+        if (!Array.isArray(palette) || palette.length === 0) return "";
+        return (
+          (resultLabels.paletteOpen || " (") +
+          (resultLabels.palettePrefix || "Palette: ") +
+          palette.join(resultLabels.paletteJoiner || ", ") +
+          (resultLabels.paletteClose || ")")
+        );
+      }
 
       function renderDiagnosis(d, record) {
         if (!resultSection || !cardsContainer || !keywordsContainer) return;
@@ -867,15 +846,29 @@ const diagnosisClientCopy = {
         newSection.hidden = true;
         resultSection.hidden = false;
 
-        const skinLabel =
-          (UNDERTONE_ZH[d.skinTone?.undertone] || "") +
-          (UNDERTONE_ZH[d.skinTone?.undertone] ? "肤调" : "肤色方向");
-        const faceLabel = FACE_SHAPE_ZH[d.faceShape?.primary] || "脸型";
-        const eyeLabel = EYE_SHAPE_ZH[d.eyeShape?.primary] || "眼型";
+        const skinLabel = labelFrom(
+          valueMaps.undertone,
+          d.skinTone?.undertone,
+          resultLabels.defaultSkinTone,
+        );
+        const faceLabel = labelFrom(
+          valueMaps.faceShape,
+          d.faceShape?.primary,
+          resultLabels.defaultFaceShape,
+        );
+        const eyeLabel = labelFrom(
+          valueMaps.eyeShape,
+          d.eyeShape?.primary,
+          resultLabels.defaultEyeShape,
+        );
         const seasonLabel =
           (d.colorSeason &&
-            (SEASON_ZH[d.colorSeason.season] || d.colorSeason.season)) ||
-          "色彩倾向";
+            labelFrom(
+              valueMaps.season,
+              d.colorSeason.season,
+              d.colorSeason.season,
+            )) ||
+          resultLabels.colorDirection;
         const primaryDirection = d.makeupDirections?.[0];
         const resultHeading =
           primaryDirection?.title || d.skinTone?.summary || copy.reportTitle;
@@ -893,32 +886,34 @@ const diagnosisClientCopy = {
               )
             : "";
           resultMeta.textContent = dateLabel
-            ? "最新诊断 · " + dateLabel
-            : "最新诊断";
+            ? (resultLabels.latestDiagnosis || copy.reportTitle) +
+              " · " +
+              dateLabel
+            : resultLabels.latestDiagnosis || copy.reportTitle;
         }
         if (resultTitle) resultTitle.textContent = resultHeading;
         if (resultSummary) resultSummary.textContent = summaryText;
         if (primaryLook) {
           primaryLook.href = discoverHref;
-          primaryLook.textContent = copy.recommendMore || "进入妆容库";
+          primaryLook.textContent = copy.recommendMore || copy.tryLook;
         }
 
         const resultChipRows = [
-          ["肤色方向", skinLabel],
-          ["五官重点", `${faceLabel} / ${eyeLabel}`],
-          ["色彩倾向", seasonLabel],
+          [resultLabels.skinTone, skinLabel],
+          [resultLabels.facialFocus, `${faceLabel} / ${eyeLabel}`],
+          [resultLabels.colorDirection, seasonLabel],
         ];
         if (d.confidence?.overall) {
           resultChipRows.push([
-            "置信度",
-            `${BAND_ZH[d.confidence.band] || d.confidence.band || ""} ${Math.round(
+            resultLabels.confidence,
+            `${labelFrom(valueMaps.band, d.confidence.band, d.confidence.band)} ${Math.round(
               d.confidence.overall * 100,
             )}%`.trim(),
           ]);
         }
         if (quotaSnapshot) {
           resultChipRows.push([
-            "本月额度",
+            resultLabels.monthlyQuota,
             `${quotaSnapshot.remaining}/${quotaSnapshot.total}`,
           ]);
         }
@@ -931,23 +926,20 @@ const diagnosisClientCopy = {
             .join("");
         }
 
-        // 关键词
         const kw = [
           {
-            icon: "肤",
-            title: (UNDERTONE_ZH[d.skinTone?.undertone] || "") + "肤调",
+            icon: keywordIcons.skin || "S",
+            title: skinLabel,
             desc: d.skinTone?.summary || "",
           },
           {
-            icon: "型",
-            title: (FACE_SHAPE_ZH[d.faceShape?.primary] || "") + "脸型",
-            desc: (d.faceShape?.evidence || []).join("，"),
+            icon: keywordIcons.face || "F",
+            title: faceLabel,
+            desc: joinEvidence(d.faceShape?.evidence),
           },
           {
-            icon: "色",
-            title: d.colorSeason
-              ? SEASON_ZH[d.colorSeason.season] || d.colorSeason.season
-              : "色彩倾向",
+            icon: keywordIcons.color || "C",
+            title: seasonLabel,
             desc: d.colorSeason?.rationale || "",
           },
         ];
@@ -959,66 +951,65 @@ const diagnosisClientCopy = {
           )
           .join("");
 
-        // 主分析：只保留能帮助用户马上判断和行动的内容。
         const insightCards = [];
 
         insightCards.push(
-          buildCard("为什么这样推荐", [
+          buildCard(resultLabels.sections?.whyRecommended, [
             {
-              icon: "脸",
-              title: "脸型：" + (FACE_SHAPE_ZH[d.faceShape?.primary] || ""),
-              desc: (d.faceShape?.evidence || []).join("，"),
+              icon: keywordIcons.face || "F",
+              title: titleWithValue(resultLabels.rows?.faceShape, faceLabel),
+              desc: joinEvidence(d.faceShape?.evidence),
             },
             {
-              icon: "眼",
-              title: "眼型：" + (EYE_SHAPE_ZH[d.eyeShape?.primary] || ""),
-              desc: (d.eyeShape?.evidence || []).join("，"),
+              icon: keywordIcons.eye || "E",
+              title: titleWithValue(resultLabels.rows?.eyeShape, eyeLabel),
+              desc: joinEvidence(d.eyeShape?.evidence),
             },
             ...(d.strengths || []).slice(0, 2).map((s) => ({
-              icon: "点",
-              title: "可强化点",
+              icon: keywordIcons.strength || "+",
+              title: resultLabels.rows?.strengthenPoint,
               desc: s,
             })),
           ]),
         );
 
         insightCards.push(
-          buildCard("肤色与色彩倾向", [
+          buildCard(resultLabels.sections?.skinAndColor, [
             {
-              icon: "深",
-              title: "肤色深度",
-              desc: SKIN_DEPTH_ZH[d.skinTone?.depth] || d.skinTone?.depth || "",
+              icon: keywordIcons.depth || "D",
+              title: resultLabels.rows?.skinDepth,
+              desc: labelFrom(
+                valueMaps.skinDepth,
+                d.skinTone?.depth,
+                d.skinTone?.depth,
+              ),
             },
             {
-              icon: "调",
-              title: "色调",
-              desc:
-                (UNDERTONE_ZH[d.skinTone?.undertone] || "") +
-                " — " +
-                (d.skinTone?.summary || ""),
+              icon: keywordIcons.tone || "T",
+              title: resultLabels.rows?.undertone,
+              desc: [skinLabel, d.skinTone?.summary]
+                .filter(Boolean)
+                .join(" - "),
             },
             {
-              icon: "季",
-              title: "色彩倾向",
-              desc:
-                (SEASON_ZH[d.colorSeason?.season] || "") +
-                "：" +
-                (d.colorSeason?.rationale || ""),
+              icon: keywordIcons.season || "C",
+              title: resultLabels.rows?.colorSeason,
+              desc: [seasonLabel, d.colorSeason?.rationale]
+                .filter(Boolean)
+                .join(": "),
             },
           ]),
         );
 
         if (d.makeupDirections?.length) {
           const rows = d.makeupDirections.map((dir) => ({
-            icon: "妆",
+            icon: keywordIcons.makeup || "M",
             title: dir.title,
-            desc:
-              dir.rationale +
-              (dir.palette?.length
-                ? "（推荐色：" + dir.palette.join("、") + "）"
-                : ""),
+            desc: (dir.rationale || "") + paletteSuffix(dir.palette),
           }));
-          insightCards.push(buildCard("可执行妆容方向", rows));
+          insightCards.push(
+            buildCard(resultLabels.sections?.makeupDirections, rows),
+          );
         }
 
         cardsContainer.innerHTML = insightCards.join("");
@@ -1027,16 +1018,19 @@ const diagnosisClientCopy = {
         const conf = d.confidence;
         if (conf) {
           detailCards.push(
-            buildCard("分析置信度", [
+            buildCard(resultLabels.sections?.analysisConfidence, [
               {
-                icon: "%",
-                title: BAND_ZH[conf.band] || conf.band,
+                icon: keywordIcons.percent || "%",
+                title: labelFrom(valueMaps.band, conf.band, conf.band),
                 desc:
-                  "综合置信度 " + Math.round((conf.overall || 0) * 100) + "%",
+                  resultLabels.rows?.overallConfidence +
+                  " " +
+                  Math.round((conf.overall || 0) * 100) +
+                  "%",
               },
               ...(conf.limitations || []).map((l) => ({
-                icon: "限",
-                title: "参考局限",
+                icon: keywordIcons.limit || "L",
+                title: resultLabels.rows?.limitation,
                 desc: l,
               })),
             ]),
@@ -1045,8 +1039,12 @@ const diagnosisClientCopy = {
         if (d.cautions?.length) {
           detailCards.push(
             buildCard(
-              "注意事项",
-              d.cautions.map((c) => ({ icon: "避", title: "建议", desc: c })),
+              resultLabels.sections?.cautions,
+              d.cautions.map((c) => ({
+                icon: keywordIcons.caution || "!",
+                title: resultLabels.rows?.suggestion,
+                desc: c,
+              })),
             ),
           );
         }
@@ -1054,7 +1052,6 @@ const diagnosisClientCopy = {
           detailCardsContainer.innerHTML = detailCards.join("");
         if (detailPanel) detailPanel.hidden = detailCards.length === 0;
 
-        // 推荐妆容（基于 makeupDirections 标题关键词匹配 catalog）
         if (d.makeupDirections?.length && recommendsContainer) {
           try {
             fetch("/api/looks")
@@ -1067,7 +1064,7 @@ const diagnosisClientCopy = {
                   const primary = matched[0];
                   if (primaryLook && primary) {
                     primaryLook.href = `${tryOnFreeHref}?look=${encodeURIComponent(primary.slug)}`;
-                    primaryLook.textContent = copy.tryLook || "试这个妆";
+                    primaryLook.textContent = copy.tryLook;
                   }
                   recommendsContainer.innerHTML = matched
                     .slice(0, 4)
@@ -1076,9 +1073,9 @@ const diagnosisClientCopy = {
               <article class="recommend">
                 <img src="${escapeHtml(m.image)}" alt="${escapeHtml(m.title)}" />
                 <div>
-                  <h3>${escapeHtml(m.title)}&nbsp; <span class="pill pill-rose">推荐度 ${escapeHtml(m.score)}%</span></h3>
+                  <h3>${escapeHtml(m.title)}&nbsp; <span class="pill pill-rose">${escapeHtml(resultLabels.recommendationScore)} ${escapeHtml(m.score)}%</span></h3>
                   <p>${escapeHtml(m.reason)}</p>
-                  <a class="btn btn-primary" href="${escapeHtml(tryOnFreeHref)}?look=${encodeURIComponent(m.slug)}">${escapeHtml(copy.tryLook || "试这个妆")}</a>
+                  <a class="btn btn-primary" href="${escapeHtml(tryOnFreeHref)}?look=${encodeURIComponent(m.slug)}">${escapeHtml(copy.tryLook)}</a>
                 </div>
               </article>
             `,
@@ -1203,7 +1200,6 @@ const diagnosisClientCopy = {
       `;
       }
 
-      // === 加载历史 ===
       async function loadHistory() {
         try {
           const res = await fetch("/api/diagnoses");
@@ -1219,12 +1215,26 @@ const diagnosisClientCopy = {
               .map((item) => {
                 const diagnosis = item.diagnosis;
                 const title = diagnosis?.skinTone?.summary || copy.reportTitle;
-                const date = new Date(item.createdAt).toLocaleDateString();
+                const date = new Date(item.createdAt).toLocaleDateString(
+                  document.documentElement.lang || "en",
+                );
                 const tags = diagnosis
                   ? [
-                      FACE_SHAPE_ZH[diagnosis.faceShape?.primary],
-                      EYE_SHAPE_ZH[diagnosis.eyeShape?.primary],
-                      SEASON_ZH[diagnosis.colorSeason?.season],
+                      labelFrom(
+                        valueMaps.faceShape,
+                        diagnosis.faceShape?.primary,
+                        "",
+                      ),
+                      labelFrom(
+                        valueMaps.eyeShape,
+                        diagnosis.eyeShape?.primary,
+                        "",
+                      ),
+                      labelFrom(
+                        valueMaps.season,
+                        diagnosis.colorSeason?.season,
+                        "",
+                      ),
                     ].filter(Boolean)
                   : [];
                 const note =
@@ -1257,7 +1267,6 @@ const diagnosisClientCopy = {
               .join("");
           }
 
-          // 如果有最新的诊断，自动展示
           const latest = data.data.items[0];
           if (!wantsNewDiagnosis && latest?.diagnosis) {
             renderDiagnosis(latest.diagnosis, latest);

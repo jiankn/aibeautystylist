@@ -1490,24 +1490,30 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   width: min(100%, 720px);
   overflow: hidden;
   border-radius: 20px;
-  background: #fffaf5;
+  border: 1px solid var(--line);
+  background: var(--bg-elevated);
+  color: var(--text);
   box-shadow: 0 25px 70px rgba(31,45,65,.18);
 }
-.share-top { padding: 54px 60px 16px; background: radial-gradient(circle at 76% 5%, #fff 0, #fffaf5 55%); }
-.share-top h1 { margin: 0; color: #102544; font-size: 58px; letter-spacing: .05em; }
-.share-look { display: inline-flex; margin: 18px 0 10px; padding: 9px 25px; border: 2px solid #e9a4a0; border-radius: 999px; color: #bd5655; font-size: 28px; font-weight: 700; }
-.share-brand { color: #20324a; font-size: 22px; }
+.share-top { padding: 48px 56px 18px; background: radial-gradient(circle at 76% 5%, var(--surface-rose) 0, var(--surface-warm) 56%, var(--bg-elevated) 100%); }
+.share-top h1 { margin: 0; color: var(--heading); font-size: 52px; letter-spacing: .02em; }
+.share-look { display: inline-flex; margin: 18px 0 10px; padding: 9px 25px; border: 2px solid var(--rose-border); border-radius: 999px; color: var(--rose); font-size: 26px; font-weight: 700; }
+.share-brand { color: var(--body-secondary); font-size: 20px; font-weight: 600; }
 .share-image { position: relative; margin: 0 8px; overflow: hidden; border-radius: 20px 20px 0 0; }
-.share-image img { height: 720px; object-fit: cover; filter: saturate(1.02); }
-.share-image::after { content: ""; position: absolute; inset: 0 50% 0 0; backdrop-filter: saturate(.55) brightness(1.04); border-right: 2px dashed #fff; }
+.share-image img { width: 100%; height: 720px; object-fit: cover; object-position: center top; filter: saturate(1.02); }
+.share-image.has-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: var(--compare-surface); }
+.share-image-panel { position: relative; min-width: 0; overflow: hidden; }
+.share-image-panel + .share-image-panel { border-left: 2px dashed rgba(255,255,255,.92); }
 .share-image .compare-label { top: 36px; }
-.benefit-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 8px; padding: 22px 30px; background: #fff; }
-.benefit { display: grid; grid-template-columns: 48px 1fr; gap: 10px; align-items: center; }
-.benefit i { display: grid; width: 45px; height: 45px; place-items: center; border-radius: 50%; background: #e78278; color: #fff; font-style: normal; }
-.benefit b { display: block; font-size: 14px; }
-.benefit span { color: var(--muted); font-size: 11px; }
-.share-cta { display: flex; align-items: center; gap: 20px; margin: 0 8px 8px; padding: 34px 42px; border-radius: 0 0 20px 20px; background: linear-gradient(135deg, #d7857c, #a94e58); color: #fff; }
-.share-cta h2 { margin: 0 0 20px; font-size: 31px; }
+.benefit-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 8px; padding: 24px 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg-elevated); }
+.benefit { display: grid; grid-template-columns: 48px 1fr; gap: 12px; align-items: center; min-width: 0; }
+.benefit i { display: grid; width: 44px; height: 44px; place-items: center; border-radius: 50%; background: var(--rose); color: #fff; font-size: 14px; font-style: normal; font-weight: 800; letter-spacing: .02em; }
+.benefit b { display: block; color: var(--heading); font-size: 15px; line-height: 1.35; }
+.benefit span { display: block; margin-top: 3px; color: var(--body-secondary); font-size: 13px; line-height: 1.45; }
+.share-cta { display: flex; align-items: center; gap: 20px; margin: 0 8px 8px; padding: 32px 42px; border-radius: 0 0 20px 20px; background: linear-gradient(135deg, var(--rose), var(--rose-dark)); color: #fff; }
+.share-cta h2 { display: grid; gap: 5px; margin: 0 0 10px; font-size: 24px; line-height: 1.2; }
+.share-cta h2 strong { color: #ffe78f; font-size: 34px; line-height: 1.15; }
+.share-cta p { margin: 0 0 18px; color: rgba(255,255,255,.88); font-size: 14px; line-height: 1.5; }
 .share-cta .brand { color: #fff; font-size: 20px; }
 .qr { display: grid; width: 130px; height: 130px; margin-left: auto; place-items: center; border: 10px solid #fff; border-radius: 12px; background: repeating-conic-gradient(#111 0 25%, #fff 0 50%) 0 / 16px 16px; color: #111; }
 

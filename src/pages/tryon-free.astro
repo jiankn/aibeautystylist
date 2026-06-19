@@ -19,10 +19,15 @@ const currentReturnPath = `${currentPathname}${Astro.url.search}`;
 const pricingHref = localizeAppHref(
   `/pricing?return_to=${encodeURIComponent(currentReturnPath)}`,
 );
+const discoverHref = localizeAppHref("/discover");
+const diagnosisHref = localizeAppHref("/diagnosis");
 const loginHref = localizeAppHref(
   `/login?mode=register&next=${encodeURIComponent(localizeAppHref("/tryon-free"))}`,
 );
 const shareCardHref = localizeAppHref("/share-card");
+const accountHref = localizeAppHref("/account");
+const tryonProHref = localizeAppHref("/tryon-pro");
+const tryonPremiumHref = localizeAppHref("/tryon-premium");
 const resolvedLooks = resolveLookCatalog(audienceContext);
 const featuredSlugs = ["commute", "no-makeup", "rose-milk-date", "photogenic"];
 const defaultFeaturedLooks = featuredSlugs
@@ -47,6 +52,78 @@ const freeClientMessages = {
   rewarded: t("tryon", "rewarded"),
   alreadyRewarded: t("tryon", "alreadyRewarded"),
   failed: t("tryon", "failed"),
+};
+const upgradeBannerCopy = {
+  free: {
+    title: t("tryon", "upgradeTitle"),
+    desc: t("tryon", "upgradeDesc"),
+    primary: t("tryon", "viewPlansShort"),
+  },
+  pro: {
+    title: t("tryon", "proActiveTitle"),
+    desc: t("tryon", "proActiveDesc"),
+    primary: t("tryon", "continuePro"),
+    secondary: t("tryon", "learnPremium"),
+  },
+  premium: {
+    title: t("tryon", "premiumActiveTitle"),
+    desc: t("tryon", "premiumActiveDesc"),
+    primary: t("tryon", "continuePremium"),
+  },
+  exhausted: {
+    title: t("tryon", "memberQuotaExhaustedTitle"),
+    desc: t("tryon", "memberQuotaExhaustedDesc"),
+    primary: t("tryon", "viewPlansShort"),
+    secondary: t("tryon", "manageSubscriptionShort"),
+  },
+};
+const upgradeBannerHrefs = {
+  pricing: pricingHref,
+  account: accountHref,
+  pro: tryonProHref,
+  premium: tryonPremiumHref,
+};
+const workspaceStatusCopy = {
+  planNames: {
+    free: "Free",
+    pro: "Pro",
+    premium: "Premium",
+  },
+  titles: {
+    free: t("tryon", "title"),
+    pro: t("tryon", "proTitle"),
+    premium: t("tryon", "premiumTitle"),
+  },
+  subtitles: {
+    free: t("tryon", "subtitle"),
+    pro: t("tryon", "proSubtitle"),
+    premium: t("tryon", "premiumSubtitle"),
+  },
+  perks: {
+    free: t("workspace", "freeBenefits"),
+    pro: t("workspace", "proPerks"),
+    premium: t("workspace", "premiumPerks"),
+  },
+  notes: {
+    free: t("tryon", "remainingPrefix"),
+    pro: t("tryon", "proNote"),
+    premium: t("tryon", "premiumNote"),
+  },
+  actions: {
+    startFree: t("workspace", "startTryon"),
+    continuePro: t("tryon", "continuePro"),
+    continuePremium: t("tryon", "continuePremium"),
+    diagnosis: t("workspace", "diagnosis"),
+    upgrade: t("workspace", "upgradeGetMore"),
+    learnPremium: t("tryon", "learnPremium"),
+  },
+};
+const workspaceStatusHrefs = {
+  free: localizeAppHref("/tryon-free"),
+  pro: tryonProHref,
+  premium: tryonPremiumHref,
+  diagnosis: diagnosisHref,
+  pricing: pricingHref,
 };
 ---
 
@@ -89,10 +166,7 @@ const freeClientMessages = {
               <a class="btn btn-primary workspace-status-link" href={loginHref}>
                 {t("workspace", "loginCta")}
               </a>
-              <a
-                class="btn workspace-status-link"
-                href={localizeAppHref("/discover")}
-              >
+              <a class="btn workspace-status-link" href={discoverHref}>
                 {t("workspace", "browseLooks")}
               </a>
             </div>
@@ -253,25 +327,281 @@ const freeClientMessages = {
       </div>
       <section class="panel upgrade-banner" id="free-upgrade" hidden>
         <div>
-          <h3>{t("tryon", "upgradeTitle")}</h3>
-          <p>{t("tryon", "upgradeDesc")}</p>
+          <h3 data-upgrade-title>{t("tryon", "upgradeTitle")}</h3>
+          <p data-upgrade-desc>{t("tryon", "upgradeDesc")}</p>
         </div>
-        <a class="btn btn-primary" href={pricingHref}>
-          {t("tryon", "viewPlansShort")}
-        </a>
+        <div class="upgrade-banner-actions">
+          <a class="btn btn-primary" href={pricingHref} data-upgrade-primary>
+            {t("tryon", "viewPlansShort")}
+          </a>
+          <a
+            class="btn btn-outline"
+            href={pricingHref}
+            data-upgrade-secondary
+            hidden
+          >
+            {t("tryon", "learnPremium")}
+          </a>
+        </div>
       </section>
     </div>
   </main>
 </BaseLayout>
 
-<script is:inline define:vars={{ freeClientMessages, shareCardHref }}>
+<script
+  is:inline
+  define:vars={{
+    freeClientMessages,
+    shareCardHref,
+    upgradeBannerCopy,
+    upgradeBannerHrefs,
+    workspaceStatusCopy,
+    workspaceStatusHrefs,
+  }}
+>
   (function () {
     let lastSucceededJobId = window.__absLastSucceededJobId || null;
+    const checkoutSucceeded =
+      new URLSearchParams(window.location.search).get("checkout") === "success";
+    const delay = (ms) =>
+      new Promise((resolve) => window.setTimeout(resolve, ms));
+
+    async function loadSession() {
+      try {
+        const res = await fetch("/api/session");
+        const data = await res.json();
+        return data.ok ? data.data : null;
+      } catch {
+        return null;
+      }
+    }
+
+    async function loadSessionWithCheckoutRefresh() {
+      let session = await loadSession();
+      if (!checkoutSucceeded || session?.plan !== "free") return session;
+      for (let attempt = 0; attempt < 6; attempt += 1) {
+        await delay(1500);
+        session = await loadSession();
+        if (session?.plan && session.plan !== "free") break;
+      }
+      return session;
+    }
+
+    function normalizePlan(plan) {
+      return plan === "premium" ? "premium" : plan === "pro" ? "pro" : "free";
+    }
+
+    function renderWorkspaceQuota(quota) {
+      if (!quota) return;
+      const total = Number(quota.total);
+      const remaining = Number(quota.remaining);
+      const used = Number.isFinite(Number(quota.used))
+        ? Number(quota.used)
+        : total - remaining;
+      const safeTotal = Number.isFinite(total) ? Math.max(0, total) : 0;
+      const safeRemaining = Number.isFinite(remaining)
+        ? Math.max(0, remaining)
+        : 0;
+      const safeUsed = Number.isFinite(used) ? Math.max(0, used) : 0;
+      const label = document.querySelector("[data-quota-label]");
+      const meter = document.querySelector("[data-quota-meter]");
+      if (label) label.textContent = safeRemaining + "/" + safeTotal;
+      if (meter) {
+        meter.style.width =
+          safeTotal > 0
+            ? Math.min(100, (safeUsed / safeTotal) * 100) + "%"
+            : "0%";
+      }
+    }
+
+    function ensurePerksNode(status) {
+      let perks = status.querySelector(".workspace-status-perks");
+      if (perks) return perks;
+      const subtitle = status.querySelector("[data-workspace-subtitle]");
+      if (!subtitle) return null;
+      perks = document.createElement("p");
+      perks.className = "workspace-status-perks";
+      subtitle.insertAdjacentElement("afterend", perks);
+      return perks;
+    }
+
+    function updateWorkspaceLinks(status, plan) {
+      const actions = status.querySelector(".workspace-status-actions");
+      if (!actions) return;
+      const links = Array.from(
+        actions.querySelectorAll(".workspace-status-link"),
+      );
+      const configs =
+        plan === "premium"
+          ? [
+              {
+                label: workspaceStatusCopy.actions.continuePremium,
+                href: workspaceStatusHrefs.premium,
+                primary: true,
+                hidden: false,
+              },
+              {
+                label: workspaceStatusCopy.actions.diagnosis,
+                href: workspaceStatusHrefs.diagnosis,
+                primary: false,
+                hidden: false,
+              },
+              { hidden: true },
+            ]
+          : plan === "pro"
+            ? [
+                {
+                  label: workspaceStatusCopy.actions.continuePro,
+                  href: workspaceStatusHrefs.pro,
+                  primary: true,
+                  hidden: false,
+                },
+                {
+                  label: workspaceStatusCopy.actions.diagnosis,
+                  href: workspaceStatusHrefs.diagnosis,
+                  primary: false,
+                  hidden: false,
+                },
+                {
+                  label: workspaceStatusCopy.actions.learnPremium,
+                  href: workspaceStatusHrefs.pricing,
+                  primary: false,
+                  hidden: false,
+                },
+              ]
+            : [
+                {
+                  label: workspaceStatusCopy.actions.startFree,
+                  href: workspaceStatusHrefs.free,
+                  primary: true,
+                  hidden: false,
+                },
+                {
+                  label: workspaceStatusCopy.actions.diagnosis,
+                  href: workspaceStatusHrefs.diagnosis,
+                  primary: false,
+                  hidden: false,
+                },
+                {
+                  label: workspaceStatusCopy.actions.upgrade,
+                  href: workspaceStatusHrefs.pricing,
+                  primary: false,
+                  hidden: false,
+                },
+              ];
+
+      configs.forEach((config, index) => {
+        const link = links[index];
+        if (!link) return;
+        if (config.hidden) {
+          link.hidden = true;
+          return;
+        }
+        link.hidden = false;
+        link.textContent = config.label;
+        link.href = config.href;
+        link.classList.toggle("btn-primary", Boolean(config.primary));
+        link.classList.toggle("btn-outline", !config.primary);
+        link.classList.remove("active");
+      });
+    }
+
+    function renderWorkspaceStatus(session) {
+      if (session?.user?.kind !== "account") return;
+      const status = document.querySelector(".workspace-status");
+      if (!status) return;
+      const plan = normalizePlan(session.plan);
+      const planLabel = workspaceStatusCopy.planNames[plan] || plan;
+      const planNode = status.querySelector(".workspace-status-plan");
+      const title = status.querySelector(".workspace-status-main h1");
+      const subtitle = status.querySelector("[data-workspace-subtitle]");
+      const perks = ensurePerksNode(status);
+      const refresh = status.querySelector("[data-quota-refresh]");
+
+      status.dataset.plan = planLabel;
+      if (planNode) {
+        planNode.textContent = planLabel;
+        planNode.classList.toggle("workspace-status-plan-teal", plan === "pro");
+        planNode.classList.toggle(
+          "workspace-status-plan-gold",
+          plan === "premium",
+        );
+      }
+      if (title) title.textContent = workspaceStatusCopy.titles[plan];
+      if (subtitle) subtitle.textContent = workspaceStatusCopy.subtitles[plan];
+      if (perks) {
+        perks.textContent = workspaceStatusCopy.perks[plan] || "";
+        perks.hidden = plan === "free";
+      }
+      status.querySelector(".workspace-status-low")?.remove();
+      if (refresh) refresh.textContent = workspaceStatusCopy.notes[plan];
+      renderWorkspaceQuota(session.quota);
+      updateWorkspaceLinks(status, plan);
+    }
+
+    window.updateQuotaDisplay = renderWorkspaceQuota;
+
+    function renderUpgradeBanner(session) {
+      const upgrade = document.getElementById("free-upgrade");
+      if (!upgrade) return;
+      const plan = normalizePlan(session?.plan);
+      const remaining = Number(session?.quota?.remaining);
+      const exhausted = Number.isFinite(remaining) && remaining <= 0;
+      const state = plan;
+      const copy =
+        state !== "free" && exhausted
+          ? upgradeBannerCopy.exhausted
+          : upgradeBannerCopy[state] || upgradeBannerCopy.free;
+      const title = upgrade.querySelector("[data-upgrade-title]");
+      const desc = upgrade.querySelector("[data-upgrade-desc]");
+      const primary = upgrade.querySelector("[data-upgrade-primary]");
+      const secondary = upgrade.querySelector("[data-upgrade-secondary]");
+
+      upgrade.dataset.plan = state;
+      upgrade.dataset.exhausted = exhausted ? "true" : "false";
+      if (title) title.textContent = copy.title;
+      if (desc) desc.textContent = copy.desc;
+      if (primary) {
+        primary.textContent = copy.primary;
+        primary.href =
+          state === "premium" && !exhausted
+            ? upgradeBannerHrefs.premium
+            : state === "pro" && !exhausted
+              ? upgradeBannerHrefs.pro
+              : upgradeBannerHrefs.pricing;
+      }
+      if (secondary) {
+        if (state === "pro" && !exhausted) {
+          secondary.hidden = false;
+          secondary.textContent = copy.secondary;
+          secondary.href = upgradeBannerHrefs.pricing;
+        } else if (state !== "free" && exhausted) {
+          secondary.hidden = false;
+          secondary.textContent = copy.secondary;
+          secondary.href = upgradeBannerHrefs.account;
+        } else {
+          secondary.hidden = true;
+        }
+      }
+      upgrade.hidden = false;
+    }
+
+    async function refreshUpgradeBanner() {
+      const session = await loadSession();
+      if (!session) return;
+      renderUpgradeBanner(session);
+    }
+
+    async function refreshWorkspaceStatus() {
+      const session = await loadSessionWithCheckoutRefresh();
+      if (!session) return;
+      renderWorkspaceStatus(session);
+    }
+
     function activateShareActions(jobId) {
       if (!jobId) return;
       lastSucceededJobId = jobId;
-      const upgrade = document.getElementById("free-upgrade");
-      if (upgrade) upgrade.hidden = false;
+      refreshUpgradeBanner();
       const shareActions = document.getElementById("free-share-actions");
       if (shareActions) shareActions.hidden = false;
       ["free-share-card", "free-copy-link", "free-share-reward"].forEach(
@@ -283,8 +613,10 @@ const freeClientMessages = {
     }
     document.addEventListener("abs:tryon-succeeded", function (event) {
       activateShareActions(event.detail?.job?.id);
+      if (event.detail?.quota) renderWorkspaceQuota(event.detail.quota);
     });
     if (lastSucceededJobId) activateShareActions(lastSucceededJobId);
+    refreshWorkspaceStatus();
 
     const copyBtn = document.getElementById("free-copy-link");
     if (copyBtn) {
@@ -349,10 +681,29 @@ const freeClientMessages = {
   .upgrade-banner {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
     gap: 20px;
     margin-top: 16px;
     padding: 20px 24px;
     background: linear-gradient(135deg, var(--rose-soft), var(--teal-soft));
+  }
+  .upgrade-banner[data-plan="pro"] {
+    background: linear-gradient(
+      135deg,
+      var(--teal-soft),
+      var(--surface-neutral)
+    );
+  }
+  .upgrade-banner[data-plan="premium"] {
+    background: linear-gradient(
+      135deg,
+      var(--surface-gold),
+      var(--surface-rose)
+    );
+  }
+  .upgrade-banner[data-exhausted="true"] {
+    background: linear-gradient(135deg, var(--surface-rose), var(--soft));
   }
   .upgrade-banner h3 {
     margin: 0 0 4px;
@@ -361,5 +712,14 @@ const freeClientMessages = {
     margin: 0;
     font-size: 13px;
     color: var(--muted);
+  }
+  .upgrade-banner-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .upgrade-banner-actions .btn {
+    min-height: 44px;
   }
 </style>

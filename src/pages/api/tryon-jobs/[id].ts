@@ -11,6 +11,7 @@ import {
 } from "../../../lib/jobs";
 import { refundQuota } from "../../../lib/quota";
 import { getRuntimeBindings } from "../../../lib/runtime";
+import { getOwnedUpload } from "../../../lib/uploadRecords";
 
 export const GET: APIRoute = async ({ cookies, params }) => {
   const { DB } = getRuntimeBindings();
@@ -28,9 +29,16 @@ export const GET: APIRoute = async ({ cookies, params }) => {
     await refundQuota(userId, job.id, DB);
   }
   const { quota } = await getEntitlementContext(userId, DB);
+  const latestJob = timeoutResult.job;
+  const upload = await getOwnedUpload(userId, latestJob.uploadId, DB);
+  const originalImage =
+    upload?.r2Key && !upload.deletedAt
+      ? `/api/tryon-jobs/${latestJob.id}/original`
+      : undefined;
 
   return apiSuccess({
-    ...toJobResponse(timeoutResult.job),
+    ...toJobResponse(latestJob),
+    originalImage,
     quota,
   });
 };
