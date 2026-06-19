@@ -143,6 +143,19 @@ const copy = getLocalizedLoginContent(currentLocale) ?? fallbackCopy;
 
 const authMessages = copy.messages;
 const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-global"}`;
+const posterLightDesktop =
+  posterLight === "/images/login-hero-global-light.webp"
+    ? "/images/login-hero-global-light-desktop.webp"
+    : undefined;
+const posterStyle = [
+  `--auth-poster-light: url("${posterLight}")`,
+  `--auth-poster-dark: url("${posterDark}")`,
+  posterLightDesktop
+    ? `--auth-poster-light-desktop: url("${posterLightDesktop}")`
+    : "",
+]
+  .filter(Boolean)
+  .join("; ");
 ---
 
 <BaseLayout
@@ -152,10 +165,7 @@ const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-glo
   robots="noindex,follow"
 >
   <SiteHeader showAuth={false} minimal />
-  <main
-    class="auth-main"
-    style={`--auth-poster-light: url("${posterLight}"); --auth-poster-dark: url("${posterDark}");`}
-  >
+  <main class="auth-main" style={posterStyle}>
     <section class="auth-poster" aria-label={copy.posterAria}>
       <div class="auth-poster-copy">
         <span class="poster-kicker">{copy.posterKicker}</span>
@@ -360,7 +370,11 @@ const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-glo
       background: rgba(12, 11, 14, 0.7);
     }
     .auth-main {
-      --auth-poster-image: var(--auth-poster-light);
+      --auth-mobile-poster-image: var(--auth-poster-light);
+      --auth-poster-image: var(
+        --auth-poster-light-desktop,
+        var(--auth-poster-light)
+      );
       position: relative;
       display: grid;
       min-height: 100dvh;
@@ -371,6 +385,7 @@ const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-glo
       isolation: isolate;
     }
     :global([data-theme="dark"]) .auth-main {
+      --auth-mobile-poster-image: var(--auth-poster-dark);
       --auth-poster-image: var(--auth-poster-dark);
     }
     :global([data-theme="dark"]) .auth-poster-copy {
@@ -403,6 +418,9 @@ const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-glo
     :global(.auth-east-asian) .auth-poster {
       --auth-poster-position: 50% 31%;
     }
+    :global([data-theme="dark"] .auth-east-asian) .auth-poster {
+      --auth-poster-position: 50% 64%;
+    }
     .auth-poster::before {
       position: absolute;
       inset: 0;
@@ -428,6 +446,26 @@ const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-glo
       );
       content: "";
       pointer-events: none;
+    }
+    :global([data-theme="dark"] .auth-east-asian) .auth-poster::before {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(5, 6, 10, 0.78) 0%,
+          rgba(5, 6, 10, 0.58) 25%,
+          rgba(5, 6, 10, 0.18) 52%,
+          rgba(5, 6, 10, 0.32) 100%
+        ),
+        linear-gradient(180deg, rgba(5, 6, 10, 0.1) 0%, transparent 40%);
+    }
+    :global([data-theme="dark"] .auth-east-asian) .auth-poster::after {
+      inset: 38% 0 0;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(8, 9, 12, 0.2) 42%,
+        rgba(8, 9, 12, 0.72) 100%
+      );
     }
     .auth-poster-copy {
       position: relative;
@@ -740,6 +778,7 @@ const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-glo
         background: rgba(12, 11, 14, 0.7);
       }
       :global(:root:not([data-theme="light"])) .auth-main {
+        --auth-mobile-poster-image: var(--auth-poster-dark);
         --auth-poster-image: var(--auth-poster-dark);
       }
       :global(:root:not([data-theme="light"])) .auth-main::before {
@@ -753,7 +792,10 @@ const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-glo
         min-height: 100dvh;
         overflow: visible;
         /* 人脸居中、按宽度铺满、顶部对齐头部 */
-        background-image: var(--auth-poster-image);
+        background-image: var(
+          --auth-mobile-poster-image,
+          var(--auth-poster-image)
+        );
         background-position: center top;
         background-size: 100% auto;
         background-repeat: no-repeat;
@@ -882,10 +924,16 @@ const bodyClass = `auth-body ${isEastAsianLocale ? "auth-east-asian" : "auth-glo
     }
     /* ── 东亚语言排版微调（CJK 标题 line-height 与 letter-spacing） ── */
     :global(.auth-east-asian) .auth-poster h1 {
+      max-width: 510px;
+      font-size: clamp(34px, 3.8vw, 58px);
       line-height: 1.32;
       letter-spacing: 0.02em;
     }
+    :global([data-theme="dark"] .auth-east-asian) .auth-poster-copy {
+      width: min(100%, 455px);
+    }
     :global(.auth-east-asian) .auth-poster p {
+      max-width: 455px;
       line-height: 1.85;
       letter-spacing: 0.01em;
     }

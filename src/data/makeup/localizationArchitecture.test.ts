@@ -281,6 +281,7 @@ describe("global makeup localization architecture", () => {
       "/images/home-hero-global-commute-before-960.webp",
       "/images/look-korean-dewy-makeup-640.webp",
       "/images/look-korean-dewy-makeup-before-640.webp",
+      "/images/login-hero-global-light-desktop.webp",
       ...Object.values(eastHome.scenarioImages ?? {}),
       ...Object.values(globalHome.scenarioImages ?? {}),
       eastLogin.heroImages?.light,
