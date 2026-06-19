@@ -1626,6 +1626,7 @@ const checkoutCopy = {
       border-color: var(--pro-card-border);
       background: var(--pro-card-bg);
       box-shadow: var(--pro-card-shadow);
+      padding-top: 72px;
     }
     .pricing-plan-card.recommended::before,
     .pricing-plan-card.recommended::after {
@@ -1653,6 +1654,7 @@ const checkoutCopy = {
       border-color: var(--premium-card-border);
       background: var(--premium-card-bg);
       box-shadow: var(--premium-card-shadow);
+      padding-top: 72px;
     }
     .pricing-plan-card.premium::before,
     .pricing-plan-card.premium::after {
@@ -1684,6 +1686,18 @@ const checkoutCopy = {
       text-align: center;
       font-size: 13px;
       font-weight: 900;
+    }
+    .pricing-plan-card.recommended .plan-ribbon,
+    .pricing-plan-card.premium .plan-ribbon {
+      position: absolute;
+      inset: 0 0 auto;
+      z-index: 2;
+      display: grid;
+      min-height: 46px;
+      place-items: center;
+      margin: 0;
+      padding: 10px 14px;
+      border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
     }
     .recommended .plan-ribbon {
       background: var(--pro-ribbon-bg);

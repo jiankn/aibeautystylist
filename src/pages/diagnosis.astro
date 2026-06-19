@@ -295,6 +295,16 @@ const diagnosisClientCopy = {
           >
           <a class="btn" href={pricingHref}>{diagnosisCopy.plansCta}</a>
         </div>
+        <div class="diagnosis-hero-trust" aria-label={diagnosisCopy.kicker}>
+          {
+            diagnosisCopy.trust.map(([title, text]) => (
+              <div>
+                <b>{title}</b>
+                <span>{text}</span>
+              </div>
+            ))
+          }
+        </div>
       </div>
       <aside class="diagnosis-report-preview panel">
         <div class="report-preview-media">
@@ -323,24 +333,14 @@ const diagnosisClientCopy = {
         <div class="report-preview-summary">
           <h2>{diagnosisCopy.previewTitle}</h2>
           <ul>
-            {diagnosisCopy.previewNotes.map((item) => <li>{item}</li>)}
+            {
+              diagnosisCopy.previewNotes
+                .slice(0, 2)
+                .map((item) => <li>{item}</li>)
+            }
           </ul>
         </div>
       </aside>
-    </section>
-
-    <section
-      class="diagnosis-trust-row shell"
-      aria-label={diagnosisCopy.kicker}
-    >
-      {
-        diagnosisCopy.trust.map(([title, text]) => (
-          <div>
-            <b>{title}</b>
-            <span>{text}</span>
-          </div>
-        ))
-      }
     </section>
 
     <section class="diagnosis-outcomes shell" aria-labelledby="outcome-title">
@@ -1469,15 +1469,15 @@ const diagnosisClientCopy = {
     }
     .diagnosis-hero {
       display: grid;
-      grid-template-columns: minmax(0, 0.95fr) minmax(420px, 0.72fr);
-      gap: clamp(28px, 5vw, 68px);
+      grid-template-columns: minmax(0, 0.98fr) minmax(360px, 0.62fr);
+      gap: clamp(24px, 4vw, 54px);
       align-items: center;
-      padding: clamp(30px, 5vw, 58px) 0 16px;
+      padding: clamp(24px, 4vw, 46px) 0 10px;
     }
     .diagnosis-hero-copy {
       display: grid;
-      max-width: 720px;
-      gap: 20px;
+      max-width: 700px;
+      gap: 16px;
       align-content: center;
     }
     .diagnosis-hero-copy h1 {
@@ -1485,8 +1485,8 @@ const diagnosisClientCopy = {
       max-width: 760px;
       color: var(--heading);
       font-family: var(--font-display);
-      font-size: clamp(46px, 5.4vw, 76px);
-      line-height: 1.04;
+      font-size: clamp(42px, 5vw, 68px);
+      line-height: 1.05;
       letter-spacing: 0;
     }
     .diagnosis-hero-copy h1 span {
@@ -1496,39 +1496,34 @@ const diagnosisClientCopy = {
       margin: 0;
       max-width: 660px;
       color: var(--text);
-      font-size: 17px;
-      line-height: 1.8;
+      font-size: 16px;
+      line-height: 1.7;
     }
     .diagnosis-hero-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
-    .diagnosis-trust-row {
+    .diagnosis-hero-trust {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0;
-      margin-top: 10px;
-      padding: 18px 0 24px;
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
+      gap: 10px;
+      max-width: 700px;
     }
-    .diagnosis-trust-row > div {
+    .diagnosis-hero-trust > div {
       min-width: 0;
-      padding: 0 20px;
-      border-left: 1px solid var(--line);
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--bg-elevated) 84%, transparent);
     }
-    .diagnosis-trust-row > div:first-child {
-      padding-left: 0;
-      border-left: 0;
-    }
-    .diagnosis-trust-row b {
+    .diagnosis-hero-trust b {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       color: var(--heading);
       font-size: 13px;
     }
-    .diagnosis-trust-row span {
+    .diagnosis-hero-trust span {
       color: var(--muted);
       font-size: 12px;
       line-height: 1.55;
@@ -1537,15 +1532,15 @@ const diagnosisClientCopy = {
       position: relative;
       display: grid;
       justify-self: end;
-      width: min(100%, 560px);
+      width: min(100%, 500px);
       overflow: hidden;
-      border-radius: 24px;
+      border-radius: 22px;
       background: var(--bg-elevated);
-      box-shadow: 0 24px 70px rgba(82, 38, 48, 0.16);
+      box-shadow: 0 20px 54px rgba(82, 38, 48, 0.14);
     }
     .report-preview-media {
       position: relative;
-      aspect-ratio: 4 / 4.65;
+      aspect-ratio: 4 / 3.25;
       overflow: hidden;
       background: var(--soft);
     }
@@ -1569,13 +1564,13 @@ const diagnosisClientCopy = {
     }
     .report-preview-overlay {
       position: absolute;
-      right: 18px;
-      bottom: 18px;
-      left: 18px;
+      right: 14px;
+      bottom: 14px;
+      left: 14px;
       z-index: 1;
       display: grid;
-      gap: 11px;
-      padding: 14px;
+      gap: 9px;
+      padding: 12px;
       border: 1px solid rgba(255, 255, 255, 0.54);
       border-radius: 16px;
       background: rgba(255, 255, 255, 0.84);
@@ -1591,8 +1586,8 @@ const diagnosisClientCopy = {
     }
     .report-preview-summary {
       display: grid;
-      gap: 12px;
-      padding: 18px;
+      gap: 10px;
+      padding: 16px;
       border-top: 1px solid var(--line);
       background:
         linear-gradient(135deg, rgba(255, 244, 248, 0.82), transparent 52%),
@@ -1601,8 +1596,8 @@ const diagnosisClientCopy = {
     .report-preview-summary h2 {
       margin: 0;
       color: var(--heading);
-      font-size: 20px;
-      line-height: 1.2;
+      font-size: 18px;
+      line-height: 1.25;
     }
     .report-preview-stats {
       display: grid;
@@ -1611,9 +1606,9 @@ const diagnosisClientCopy = {
     }
     .report-preview-stats div {
       min-width: 0;
-      padding: 9px;
+      padding: 8px;
       border: 1px solid rgba(255, 255, 255, 0.62);
-      border-radius: 999px;
+      border-radius: 14px;
       background: rgba(255, 255, 255, 0.7);
     }
     .report-preview-stats small {
@@ -1629,7 +1624,7 @@ const diagnosisClientCopy = {
     }
     .report-preview-summary ul {
       display: grid;
-      gap: 7px;
+      gap: 6px;
       margin: 0;
       padding: 0;
       list-style: none;
@@ -1639,7 +1634,7 @@ const diagnosisClientCopy = {
       padding-left: 18px;
       color: var(--text);
       font-size: 12px;
-      line-height: 1.55;
+      line-height: 1.5;
     }
     .report-preview-summary li::before {
       content: "";
@@ -1890,7 +1885,6 @@ const diagnosisClientCopy = {
       font-size: 13px;
     }
     .diagnosis-main.has-account-result .diagnosis-hero,
-    .diagnosis-main.has-account-result .diagnosis-trust-row,
     .diagnosis-main.has-account-result .diagnosis-outcomes,
     .diagnosis-main.has-account-result .diagnosis-banner {
       display: none;
@@ -2263,23 +2257,10 @@ const diagnosisClientCopy = {
       }
       .diagnosis-report-preview {
         justify-self: start;
-        max-width: 560px;
+        max-width: 500px;
       }
-      .diagnosis-outcome-grid,
-      .diagnosis-trust-row {
+      .diagnosis-outcome-grid {
         grid-template-columns: 1fr;
-      }
-      .diagnosis-trust-row {
-        gap: 0;
-        padding: 0;
-      }
-      .diagnosis-trust-row > div {
-        padding: 14px 0;
-        border-top: 1px solid var(--line);
-        border-left: 0;
-      }
-      .diagnosis-trust-row > div:first-child {
-        border-top: 0;
       }
       .diagnosis-credit {
         width: 100%;
@@ -2321,6 +2302,13 @@ const diagnosisClientCopy = {
       .diagnosis-hero-actions {
         display: grid;
         grid-template-columns: 1fr;
+      }
+      .diagnosis-hero-trust {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .diagnosis-hero-trust > div {
+        padding: 10px 12px;
       }
       .diagnosis-report-preview {
         width: 100%;
@@ -2382,7 +2370,7 @@ const diagnosisClientCopy = {
         padding: 0 18px 18px;
       }
       .report-preview-media {
-        aspect-ratio: 4 / 4.2;
+        aspect-ratio: 4 / 3.45;
       }
       .report-preview-media img {
         display: block;
@@ -2411,9 +2399,6 @@ const diagnosisClientCopy = {
       }
       .report-preview-stats b {
         font-size: 12px;
-      }
-      .diagnosis-trust-row > div {
-        padding: 11px 0;
       }
       .diagnosis-outcomes .home-section-head-split {
         grid-template-columns: 1fr;
