@@ -194,6 +194,15 @@
     const authLabel = link.dataset.authLabel || authCopy.cta;
     const authShortLabel = link.dataset.authShortLabel || authCopy.shortCta;
     const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
+    const mobileAuthCtas = Array.from(
+      document.querySelectorAll("[data-mobile-menu-auth-cta]"),
+    );
+    const mobileAccountSummaries = Array.from(
+      document.querySelectorAll("[data-mobile-account-summary]"),
+    );
+    const mobileTopAccounts = Array.from(
+      document.querySelectorAll("[data-mobile-top-account]"),
+    );
     const checkoutSucceeded =
       new URLSearchParams(location.search).get("checkout") === "success";
     const delay = (ms) =>
@@ -209,6 +218,146 @@
         anchor.textContent = authLabel;
       }
       anchor.setAttribute("aria-label", `${authLabel}. ${authShortLabel}`);
+    }
+
+    function fillTemplate(template, values) {
+      return String(template || "").replace(/\{(\w+)\}/g, (_, key) =>
+        values[key] == null ? "" : String(values[key]),
+      );
+    }
+
+    function setMobileAccountSummarySignedOut() {
+      mobileAccountSummaries.forEach((summary) => {
+        const avatar = summary.querySelector(
+          "[data-mobile-account-summary-avatar]",
+        );
+        const title = summary.querySelector(
+          "[data-mobile-account-summary-title]",
+        );
+        const note = summary.querySelector(
+          "[data-mobile-account-summary-note]",
+        );
+        const action = summary.querySelector(
+          "[data-mobile-account-summary-action]",
+        );
+        const nextTitle = summary.dataset.authTitle || authLabel;
+        const nextNote = summary.dataset.authNote || "";
+        const nextAction = summary.dataset.authAction || authShortLabel;
+        summary.href = summary.dataset.authHref || authHref;
+        if (avatar) avatar.textContent = "AI";
+        if (title) title.textContent = nextTitle;
+        if (note) note.textContent = nextNote;
+        if (action) action.textContent = nextAction;
+        summary.setAttribute("aria-label", `${nextTitle}. ${nextAction}`);
+      });
+    }
+
+    function setMobileAccountSummarySignedIn(session) {
+      const email = session?.user?.email || "";
+      const normalizedPlan = String(session?.plan || "").toLowerCase();
+      const plan = planNames[normalizedPlan] || session?.plan || "Free";
+      const initial = (email.trim()[0] || "A").toUpperCase();
+      const quota = session?.quota;
+      mobileAccountSummaries.forEach((summary) => {
+        const avatar = summary.querySelector(
+          "[data-mobile-account-summary-avatar]",
+        );
+        const title = summary.querySelector(
+          "[data-mobile-account-summary-title]",
+        );
+        const note = summary.querySelector(
+          "[data-mobile-account-summary-note]",
+        );
+        const action = summary.querySelector(
+          "[data-mobile-account-summary-action]",
+        );
+        const planLabel = summary.dataset.planLabel || authCopy.plan;
+        const quotaTemplate = summary.dataset.quotaTemplate || "";
+        const quotaText =
+          Number.isFinite(Number(quota?.remaining)) &&
+          Number.isFinite(Number(quota?.total))
+            ? fillTemplate(quotaTemplate, {
+                remaining: quota.remaining,
+                total: quota.total,
+              })
+            : summary.dataset.quotaUnavailable || "";
+        const noteText = quotaText
+          ? `${planLabel}: ${plan} · ${quotaText}`
+          : `${planLabel}: ${plan}`;
+        summary.href = summary.dataset.accountHref || localized("/account");
+        if (avatar) avatar.textContent = initial;
+        if (title) title.textContent = email || authCopy.accountMenu;
+        if (note) note.textContent = noteText;
+        if (action) {
+          action.textContent = summary.dataset.manageLabel || authCopy.account;
+        }
+        summary.setAttribute(
+          "aria-label",
+          `${authCopy.accountMenu}: ${email}. ${noteText}`,
+        );
+      });
+    }
+
+    function setMobileAuthSignedOut() {
+      mobileAuthCtas.forEach((anchor) => {
+        const label = anchor.querySelector("[data-mobile-menu-auth-label]");
+        const avatar = anchor.querySelector("[data-mobile-menu-auth-avatar]");
+        const nextLabel = anchor.dataset.authLabel || authLabel;
+        const nextShortLabel = anchor.dataset.authShortLabel || authShortLabel;
+        anchor.href = anchor.dataset.authHref || authHref;
+        anchor.classList.remove("mobile-menu-auth-cta-account");
+        if (label) label.textContent = nextLabel;
+        else anchor.textContent = nextLabel;
+        if (avatar) {
+          avatar.textContent = "";
+          avatar.setAttribute("hidden", "");
+        }
+        anchor.setAttribute("aria-label", `${nextLabel}. ${nextShortLabel}`);
+      });
+      setMobileAccountSummarySignedOut();
+      mobileTopAccounts.forEach((anchor) => {
+        const plan = anchor.querySelector("[data-mobile-top-plan]");
+        const avatar = anchor.querySelector("[data-mobile-top-avatar]");
+        anchor.href = anchor.dataset.authHref || authHref;
+        if (plan) plan.textContent = authShortLabel;
+        if (avatar) avatar.textContent = "AI";
+        anchor.setAttribute("aria-label", `${authLabel}. ${authShortLabel}`);
+      });
+    }
+
+    function setMobileAuthSignedIn(session) {
+      const email = session?.user?.email || "";
+      const normalizedPlan = String(session?.plan || "").toLowerCase();
+      const plan = planNames[normalizedPlan] || session?.plan || "Free";
+      const initial = (email.trim()[0] || "A").toUpperCase();
+      mobileAuthCtas.forEach((anchor) => {
+        const label = anchor.querySelector("[data-mobile-menu-auth-label]");
+        const avatar = anchor.querySelector("[data-mobile-menu-auth-avatar]");
+        anchor.href = anchor.dataset.accountHref || localized("/account");
+        anchor.classList.add("mobile-menu-auth-cta-account");
+        if (label) label.textContent = plan;
+        else anchor.textContent = plan;
+        if (avatar) {
+          avatar.textContent = initial;
+          avatar.removeAttribute("hidden");
+        }
+        anchor.setAttribute(
+          "aria-label",
+          `${authCopy.accountMenu}: ${email}. ${authCopy.plan}: ${plan}`,
+        );
+      });
+      setMobileAccountSummarySignedIn(session);
+      mobileTopAccounts.forEach((anchor) => {
+        const label = anchor.querySelector("[data-mobile-top-plan]");
+        const avatar = anchor.querySelector("[data-mobile-top-avatar]");
+        anchor.href = anchor.dataset.accountHref || localized("/account");
+        if (label) label.textContent = plan;
+        if (avatar) avatar.textContent = initial;
+        anchor.setAttribute(
+          "aria-label",
+          `${authCopy.accountMenu}: ${email}. ${authCopy.plan}: ${plan}`,
+        );
+      });
     }
 
     function closeAccountMenu(menu) {
@@ -333,6 +482,7 @@
 
     link.href = authHref;
     setAuthLabel(link);
+    setMobileAuthSignedOut();
 
     document.addEventListener("click", () => {
       document
@@ -365,9 +515,11 @@
         const email = data?.user?.email;
         if (email) {
           renderAccountMenu(link, data);
+          setMobileAuthSignedIn(data);
         } else {
           link.href = authHref;
           setAuthLabel(link);
+          setMobileAuthSignedOut();
         }
       })
       .catch(() => {});

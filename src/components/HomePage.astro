@@ -1,5 +1,7 @@
 ---
 import SiteHeader from "../components/SiteHeader.astro";
+import MobileAppTopBar from "../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../components/MobileBottomNav.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
@@ -186,7 +188,8 @@ const homepageJsonLd = JSON.stringify({
     },
   ]}
 >
-  <SiteHeader active="tryOn" />
+  <SiteHeader active="tryOn" mobileHidden />
+  <MobileAppTopBar brand />
   <main>
     <section class="home-hero shell" data-hero-copy-sync>
       <div class="home-copy">
@@ -632,6 +635,7 @@ const homepageJsonLd = JSON.stringify({
       </div>
     </section>
   </main>
+  <MobileBottomNav active="home" />
 </BaseLayout>
 
 <style>

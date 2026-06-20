@@ -7,7 +7,19 @@ import { getRuntimeBindings } from "../../../lib/runtime";
 import { createStripeClient, StripeError } from "../../../lib/stripe";
 import { getStripeCustomerId } from "../../../lib/subscriptions";
 
+interface PortalBody {
+  returnPath?: string;
+}
+
+function safePortalReturnPath(value: unknown): string {
+  if (typeof value !== "string") return "/pricing";
+  if (!value.startsWith("/") || value.startsWith("//")) return "/pricing";
+  if (value.startsWith("/api/") || value === "/api") return "/pricing";
+  return value;
+}
+
 export const POST: APIRoute = async ({ cookies, request }) => {
+  const body = (await request.json().catch(() => null)) as PortalBody | null;
   const bindings = getRuntimeBindings();
   if (!bindings.STRIPE_SECRET_KEY) {
     return apiError(
@@ -34,7 +46,9 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     );
   }
 
-  const baseUrl = bindings.APP_PUBLIC_URL ?? new URL(request.url).origin;
+  const baseUrl = (bindings.APP_PUBLIC_URL ?? new URL(request.url).origin)
+    .replace(/\/+$/, "");
+  const returnPath = safePortalReturnPath(body?.returnPath);
   const stripe = createStripeClient({
     apiKey: bindings.STRIPE_SECRET_KEY,
     fetcher: bindings.OUTBOUND_PROXY_URL
@@ -45,7 +59,7 @@ export const POST: APIRoute = async ({ cookies, request }) => {
   try {
     const session = await stripe.createBillingPortalSession({
       customerId,
-      returnUrl: `${baseUrl}/pricing`,
+      returnUrl: `${baseUrl}${returnPath}`,
     });
     return apiSuccess({ url: session.url });
   } catch (error) {

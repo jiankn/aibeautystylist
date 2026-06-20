@@ -654,12 +654,129 @@ function setActiveFilterChip(group, activeChip) {
   });
 }
 
+function findFilterGroup(groupId) {
+  return [...document.querySelectorAll("[data-filter-group]")].find(
+    (group) => group.dataset.filterGroup === groupId,
+  );
+}
+
+function setFilterChipValue(groupId, value) {
+  const group = findFilterGroup(groupId);
+  if (!group || !value) return false;
+  const activeChip = [...group.querySelectorAll(".filter-chip")].find(
+    (chip) => chip.dataset.filterValue === value,
+  );
+  if (!activeChip) return false;
+  setActiveFilterChip(group, activeChip);
+  return true;
+}
+
+function syncMobileFilterTabs(selections) {
+  const activeValues = Object.fromEntries(
+    Object.entries(selections).map(([groupId, selection]) => [
+      groupId,
+      selection?.value || "",
+    ]),
+  );
+  document.querySelectorAll("[data-mobile-tab-filter-group]").forEach((tab) => {
+    const groupId = tab.dataset.mobileTabFilterGroup;
+    const isActive =
+      Boolean(groupId) &&
+      activeValues[groupId] === tab.dataset.mobileTabFilterValue;
+    tab.classList.toggle("active", isActive);
+    if (isActive) {
+      tab.setAttribute("aria-current", "page");
+    } else {
+      tab.removeAttribute("aria-current");
+    }
+  });
+}
+
+function applyMobileFilterTabsFromUrl() {
+  const tabs = [...document.querySelectorAll("[data-mobile-tab-filter-group]")];
+  if (!tabs.length) return;
+  const params = new URLSearchParams(window.location.search);
+  const handledGroups = new Set();
+  tabs.forEach((tab) => {
+    const groupId = tab.dataset.mobileTabFilterGroup;
+    const filterValue = tab.dataset.mobileTabFilterValue;
+    const queryParam = tab.dataset.mobileTabQueryParam;
+    const queryValue = tab.dataset.mobileTabQueryValue;
+    if (
+      !groupId ||
+      !filterValue ||
+      !queryParam ||
+      !queryValue ||
+      handledGroups.has(groupId)
+    ) {
+      return;
+    }
+    const requestedValue = params.get(queryParam) || "recommended";
+    const matchedTab = tabs.find(
+      (item) =>
+        item.dataset.mobileTabFilterGroup === groupId &&
+        item.dataset.mobileTabQueryValue === requestedValue,
+    );
+    if (!matchedTab) return;
+    if (setFilterChipValue(groupId, matchedTab.dataset.mobileTabFilterValue)) {
+      handledGroups.add(groupId);
+    }
+  });
+}
+
 const filterPanel = document.querySelector("[data-filter-panel]");
 const filterOpenButton = document.querySelector("[data-filter-open]");
 const filterBackdrop = document.querySelector("[data-filter-backdrop]");
 const filterApplyButton = document.querySelector("[data-filter-apply]");
 const filterSheetMedia = window.matchMedia("(max-width: 700px)");
+const discoverSearchPanel = document.querySelector("[data-discover-search-panel]");
+const discoverSearchInput = document.querySelector("[data-look-search]");
+const discoverSearchClear = document.querySelector("[data-look-search-clear]");
+const mobileSearchToggleButtons = document.querySelectorAll(
+  "[data-mobile-search-toggle]",
+);
 let filterLastFocus = null;
+
+function normalizeLookSearch(value) {
+  return String(value || "")
+    .trim()
+    .toLocaleLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function getLookSearchQuery() {
+  return normalizeLookSearch(discoverSearchInput?.value);
+}
+
+function updateDiscoverSearchControl() {
+  if (discoverSearchClear) {
+    discoverSearchClear.hidden = getLookSearchQuery().length === 0;
+  }
+}
+
+function openDiscoverSearch({ focus = true } = {}) {
+  if (!discoverSearchPanel) return;
+  discoverSearchPanel.hidden = false;
+  mobileSearchToggleButtons.forEach((button) => {
+    button.setAttribute("aria-expanded", "true");
+  });
+  discoverSearchPanel.scrollIntoView({
+    block: "nearest",
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth",
+  });
+  if (focus) {
+    discoverSearchInput?.focus({ preventScroll: true });
+    window.setTimeout(() => discoverSearchInput?.focus(), 60);
+  }
+}
+
+function matchesLookSearch(card, query) {
+  if (!query) return true;
+  return normalizeLookSearch(card.dataset.searchIndex).includes(query);
+}
 
 function readLookFilterSelections() {
   return Object.fromEntries(
@@ -766,6 +883,20 @@ function updateMobileFilterSummary(selections, visibleCount) {
 }
 
 filterOpenButton?.addEventListener("click", openFilterSheet);
+mobileSearchToggleButtons.forEach((button) => {
+  button.addEventListener("click", openDiscoverSearch);
+});
+discoverSearchInput?.addEventListener("input", () => {
+  updateDiscoverSearchControl();
+  applyLookFilters();
+});
+discoverSearchClear?.addEventListener("click", () => {
+  if (!discoverSearchInput) return;
+  discoverSearchInput.value = "";
+  updateDiscoverSearchControl();
+  applyLookFilters({ track: true });
+  discoverSearchInput.focus();
+});
 document.querySelectorAll("[data-filter-close]").forEach((button) => {
   button.addEventListener("click", closeFilterSheet);
 });
@@ -797,6 +928,7 @@ function includesFilterValue(values, selection) {
 
 function applyLookFilters({ track = false } = {}) {
   const selections = readLookFilterSelections();
+  const searchQuery = getLookSearchQuery();
 
   let visibleCount = 0;
   document.querySelectorAll("[data-look-card]").forEach((card) => {
@@ -807,7 +939,9 @@ function applyLookFilters({ track = false } = {}) {
     const matchesExperience =
       selections.experience?.isAll ||
       card.dataset.experience === selections.experience?.value;
-    const visible = matchesScenario && matchesFinish && matchesExperience;
+    const matchesSearch = matchesLookSearch(card, searchQuery);
+    const visible =
+      matchesScenario && matchesFinish && matchesExperience && matchesSearch;
     card.classList.toggle("hidden", !visible);
     if (visible) visibleCount += 1;
   });
@@ -819,6 +953,8 @@ function applyLookFilters({ track = false } = {}) {
     summary.textContent = template.replace("{count}", String(visibleCount));
   }
   updateMobileFilterSummary(selections, visibleCount);
+  syncMobileFilterTabs(selections);
+  updateDiscoverSearchControl();
 
   const emptyState = document.getElementById("empty-state");
   if (emptyState) emptyState.hidden = visibleCount > 0;
@@ -829,6 +965,7 @@ function applyLookFilters({ track = false } = {}) {
       scenario: selections.scenario?.value,
       finish: selections.finish?.value,
       experience: selections.experience?.value,
+      search: searchQuery || undefined,
       resultCount: visibleCount,
     });
     if (visibleCount === 0) {
@@ -847,6 +984,40 @@ document.querySelectorAll("[data-clear-filters]").forEach((button) => {
   });
 });
 
+document.querySelectorAll("[data-mobile-tab-filter-group]").forEach((tab) => {
+  tab.addEventListener("click", (event) => {
+    const groupId = tab.dataset.mobileTabFilterGroup;
+    const filterValue = tab.dataset.mobileTabFilterValue;
+    if (!groupId || !filterValue) return;
+
+    const didSelect = setFilterChipValue(groupId, filterValue);
+    if (!didSelect) return;
+
+    event.preventDefault();
+
+    const queryParam = tab.dataset.mobileTabQueryParam;
+    const queryValue = tab.dataset.mobileTabQueryValue;
+    if (queryParam && queryValue) {
+      const url = new URL(window.location.href);
+      url.searchParams.set(queryParam, queryValue);
+      const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+      const currentUrl =
+        `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      if (nextUrl !== currentUrl) {
+        window.history.pushState({}, "", nextUrl);
+      }
+    }
+
+    applyLookFilters({ track: true });
+  });
+});
+
+window.addEventListener("popstate", () => {
+  applyMobileFilterTabsFromUrl();
+  applyLookFilters();
+});
+
+applyMobileFilterTabsFromUrl();
 applyLookFilters();
 
 const inspirationDialog = document.querySelector("[data-inspiration-dialog]");

@@ -1,0 +1,882 @@
+---
+import { languageConfigs } from "../i18n/config";
+import {
+  getLanguageSwitchPathname,
+  getLocalizedAppHref,
+  getLocalizedPathname,
+  resolveLocaleRoute,
+} from "../i18n/routing";
+import { getCurrentLocale } from "../lib/i18n";
+
+type RightAction = "account" | "search" | "help" | "settings" | "bell" | "none";
+type ActionItem = Exclude<RightAction, "none"> | "language" | "theme" | "menu";
+type TabItem = {
+  label: string;
+  href?: string;
+  active?: boolean;
+  filterGroup?: string;
+  filterValue?: string;
+  queryParam?: string;
+  queryValue?: string;
+};
+
+interface Props {
+  title?: string;
+  brand?: boolean;
+  backHref?: string;
+  rightAction?: RightAction;
+  rightHref?: string;
+  tabs?: TabItem[];
+  compact?: boolean;
+  showMenu?: boolean;
+  showSearch?: boolean;
+  showLanguage?: boolean;
+  showTheme?: boolean;
+  searchControls?: string;
+}
+
+const {
+  title,
+  brand = true,
+  backHref,
+  rightAction = "none",
+  rightHref,
+  tabs = [],
+  compact = false,
+  showMenu = true,
+  showSearch = false,
+  showLanguage = true,
+  showTheme = true,
+  searchControls,
+} = Astro.props as Props;
+
+const locale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const activeLanguageSlug = currentRoute.language.slug;
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const localizeHref = (href: string) =>
+  getLocalizedPathname(href, currentRoute.language.slug);
+const appRoutePathnames = new Set([
+  "/tryon-free",
+  "/discover",
+  "/diagnosis",
+  "/pricing",
+  "/faq",
+  "/history",
+  "/login",
+  "/account",
+  "/dashboard",
+  "/support",
+  "/tryon-pro",
+  "/tryon-premium",
+]);
+const languageSwitchHref = (languageSlug: string) => {
+  if (appRoutePathnames.has(currentRoute.routePathname)) {
+    return getLocalizedAppHref(
+      `${currentRoute.routePathname}${Astro.url.search}${Astro.url.hash}`,
+      languageSlug,
+    );
+  }
+  return `${getLanguageSwitchPathname(currentPathname, languageSlug)}${Astro.url.search}${Astro.url.hash}`;
+};
+const languageOptions = languageConfigs
+  .filter((language) => language.includeInLanguageSwitcher)
+  .map((language) => ({
+    ...language,
+    active: language.slug === activeLanguageSlug,
+    href: languageSwitchHref(language.slug),
+  }));
+const accountHref = localizeAppHref("/account");
+const authTarget = localizeAppHref(
+  `/login?mode=register&next=${encodeURIComponent(accountHref)}`,
+);
+const accountTarget = Astro.locals.isLoggedIn
+  ? accountHref
+  : localizeAppHref(
+      `/login?mode=login&next=${encodeURIComponent(accountHref)}`,
+    );
+const resolvedRightHref =
+  rightHref ??
+  (rightAction === "account"
+    ? accountTarget
+    : rightAction === "help"
+      ? localizeAppHref("/faq")
+      : rightAction === "settings"
+        ? localizeAppHref("/account#settings")
+        : rightAction === "search"
+          ? localizeAppHref("/discover")
+          : rightAction === "bell"
+            ? localizeAppHref("/account")
+            : undefined);
+const resolvedBackHref = backHref ?? localizeHref("/");
+
+const copy = {
+  en: {
+    account: "Account",
+    back: "Back",
+    bell: "Notifications",
+    help: "Help",
+    language: "Select language",
+    menu: "More",
+    search: "Search",
+    settings: "Settings",
+    theme: "Change display mode",
+    pro: "Pro",
+  },
+  "zh-CN": {
+    account: "我的",
+    back: "返回",
+    bell: "通知",
+    help: "帮助",
+    language: "选择语言",
+    menu: "更多",
+    search: "搜索",
+    settings: "设置",
+    theme: "切换显示模式",
+    pro: "Pro",
+  },
+  "zh-TW": {
+    account: "我的",
+    back: "返回",
+    bell: "通知",
+    help: "幫助",
+    language: "選擇語言",
+    menu: "更多",
+    search: "搜尋",
+    settings: "設定",
+    theme: "切換顯示模式",
+    pro: "Pro",
+  },
+  "de-DE": {
+    account: "Konto",
+    back: "Zurück",
+    bell: "Mitteilungen",
+    help: "Hilfe",
+    language: "Sprache wählen",
+    menu: "Mehr",
+    search: "Suchen",
+    settings: "Einstellungen",
+    theme: "Anzeige wechseln",
+    pro: "Pro",
+  },
+  "fr-FR": {
+    account: "Compte",
+    back: "Retour",
+    bell: "Notifications",
+    help: "Aide",
+    language: "Choisir la langue",
+    menu: "Plus",
+    search: "Rechercher",
+    settings: "Réglages",
+    theme: "Changer l'affichage",
+    pro: "Pro",
+  },
+  "ja-JP": {
+    account: "アカウント",
+    back: "戻る",
+    bell: "通知",
+    help: "ヘルプ",
+    language: "言語を選択",
+    menu: "その他",
+    search: "検索",
+    settings: "設定",
+    theme: "表示を切り替える",
+    pro: "Pro",
+  },
+  "ko-KR": {
+    account: "계정",
+    back: "뒤로",
+    bell: "알림",
+    help: "도움말",
+    language: "언어 선택",
+    menu: "더보기",
+    search: "검색",
+    settings: "설정",
+    theme: "화면 모드 변경",
+    pro: "Pro",
+  },
+  "es-ES": {
+    account: "Cuenta",
+    back: "Volver",
+    bell: "Notificaciones",
+    help: "Ayuda",
+    language: "Seleccionar idioma",
+    menu: "Más",
+    search: "Buscar",
+    settings: "Ajustes",
+    theme: "Cambiar modo de visualización",
+    pro: "Pro",
+  },
+  "es-419": {
+    account: "Cuenta",
+    back: "Volver",
+    bell: "Notificaciones",
+    help: "Ayuda",
+    language: "Seleccionar idioma",
+    menu: "Más",
+    search: "Buscar",
+    settings: "Ajustes",
+    theme: "Cambiar modo de visualización",
+    pro: "Pro",
+  },
+  "pt-BR": {
+    account: "Conta",
+    back: "Voltar",
+    bell: "Notificações",
+    help: "Ajuda",
+    language: "Selecionar idioma",
+    menu: "Mais",
+    search: "Buscar",
+    settings: "Configurações",
+    theme: "Alterar modo de exibição",
+    pro: "Pro",
+  },
+}[locale] ?? {
+  account: "Account",
+  back: "Back",
+  bell: "Notifications",
+  help: "Help",
+  language: "Select language",
+  menu: "More",
+  search: "Search",
+  settings: "Settings",
+  theme: "Change display mode",
+  pro: "Pro",
+};
+
+const actionItems: ActionItem[] = [];
+if (rightAction !== "none") {
+  actionItems.push(rightAction);
+} else if (showSearch) {
+  actionItems.push("search");
+}
+if (showLanguage) actionItems.push("language");
+if (showTheme) actionItems.push("theme");
+if (showMenu) actionItems.push("menu");
+
+const uniqueActionItems = actionItems.filter(
+  (item, index) => actionItems.indexOf(item) === index,
+);
+
+const getActionHref = (item: ActionItem) => {
+  if (item === "account") return accountTarget;
+  if (item === "help")
+    return rightAction === "help" ? resolvedRightHref : localizeAppHref("/faq");
+  if (item === "settings")
+    return rightAction === "settings"
+      ? resolvedRightHref
+      : localizeAppHref("/account#settings");
+  if (item === "search")
+    return rightAction === "search"
+      ? resolvedRightHref
+      : localizeAppHref("/discover");
+  if (item === "bell") return localizeAppHref("/account");
+  return undefined;
+};
+
+const getActionLabel = (item: ActionItem) => {
+  if (item === "account") return copy.account;
+  if (item === "help") return copy.help;
+  if (item === "settings") return copy.settings;
+  if (item === "bell") return copy.bell;
+  if (item === "language") return copy.language;
+  if (item === "theme") return copy.theme;
+  if (item === "menu") return copy.menu;
+  return copy.search;
+};
+---
+
+<header
+  class:list={["mobile-app-topbar", compact && "mobile-app-topbar-compact"]}
+  data-mobile-app-topbar
+>
+  <div class="mobile-app-topbar-row">
+    <div class="mobile-app-leading">
+      {
+        brand && (
+          <a class="mobile-app-brand" href={localizeHref("/")}>
+            <img src="/images/logo-ui.webp" alt="" width="30" height="30" />
+          </a>
+        )
+      }
+      {
+        backHref ? (
+          <a
+            class="mobile-app-icon-btn"
+            href={resolvedBackHref}
+            aria-label={copy.back}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 5-7 7 7 7" />
+            </svg>
+          </a>
+        ) : (
+          <span aria-hidden="true" />
+        )
+      }
+    </div>
+
+    {
+      title ? (
+        <h1>{title}</h1>
+      ) : (
+        <span class="mobile-app-title-spacer" aria-hidden="true" />
+      )
+    }
+
+    <div class="mobile-app-actions">
+      {
+        uniqueActionItems.map((item) =>
+          item === "account" ? (
+            <a
+              class="mobile-app-account"
+              href={accountTarget}
+              aria-label={copy.account}
+              data-mobile-top-account
+              data-auth-href={authTarget}
+              data-account-href={accountHref}
+            >
+              <span class="mobile-app-plan" data-mobile-top-plan>
+                {Astro.locals.isLoggedIn ? "AI" : copy.account}
+              </span>
+              <span
+                class="mobile-app-avatar"
+                data-mobile-top-avatar
+                aria-hidden="true"
+              >
+                A
+              </span>
+            </a>
+          ) : item === "menu" ? (
+            <button
+              class="mobile-app-icon-btn mobile-app-menu-btn"
+              type="button"
+              aria-label={copy.menu}
+              aria-controls="mobile-nav"
+              aria-expanded="false"
+              data-mobile-top-menu
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4.5 7h15" />
+                <path d="M4.5 12h15" />
+                <path d="M4.5 17h15" />
+              </svg>
+            </button>
+          ) : item === "language" ? (
+            <div class="mobile-app-lang-dropdown" data-mobile-top-lang>
+              <button
+                class="mobile-app-icon-btn mobile-app-lang-btn"
+                type="button"
+                aria-label={copy.language}
+                aria-expanded="false"
+                aria-haspopup="true"
+                aria-controls="mobile-app-lang-menu"
+                data-mobile-top-lang-toggle
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m5 8 6 6" />
+                  <path d="m4 14 6-6 2-3" />
+                  <path d="M2 5h12" />
+                  <path d="M7 2h1" />
+                  <path d="m22 22-5-10-5 10" />
+                  <path d="M14 18h6" />
+                </svg>
+              </button>
+              <div
+                class="mobile-app-lang-menu"
+                id="mobile-app-lang-menu"
+                role="menu"
+              >
+                {languageOptions.map((language) => (
+                  <button
+                    class:list={[
+                      "mobile-app-lang-option",
+                      language.active && "active",
+                    ]}
+                    type="button"
+                    data-locale={language.locale}
+                    data-href={language.href}
+                    role="menuitemradio"
+                    aria-checked={language.active ? "true" : "false"}
+                  >
+                    <span>{language.nativeLabel}</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="m20 6-11 11-5-5" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : item === "theme" ? (
+            <button
+              class="mobile-app-icon-btn mobile-app-theme-btn"
+              type="button"
+              aria-label={copy.theme}
+              data-mobile-top-theme-toggle
+            >
+              <svg
+                class="mobile-theme-icon mobile-theme-icon-moon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+              </svg>
+              <svg
+                class="mobile-theme-icon mobile-theme-icon-sun"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" />
+                <path d="M12 20v2" />
+                <path d="m4.93 4.93 1.42 1.42" />
+                <path d="m17.66 17.66 1.41 1.41" />
+                <path d="M2 12h2" />
+                <path d="M20 12h2" />
+                <path d="m6.34 17.66-1.41 1.41" />
+                <path d="m19.07 4.93-1.41 1.42" />
+              </svg>
+            </button>
+          ) : item === "search" && searchControls ? (
+            <button
+              class="mobile-app-icon-btn"
+              type="button"
+              aria-label={getActionLabel(item)}
+              aria-controls={searchControls}
+              aria-expanded="false"
+              data-mobile-search-toggle
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="10.8" cy="10.8" r="6.2" />
+                <path d="m16 16 4.2 4.2" />
+              </svg>
+            </button>
+          ) : getActionHref(item) ? (
+            <a
+              class="mobile-app-icon-btn"
+              href={getActionHref(item)}
+              aria-label={getActionLabel(item)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                {item === "search" && (
+                  <>
+                    <circle cx="10.8" cy="10.8" r="6.2" />
+                    <path d="m16 16 4.2 4.2" />
+                  </>
+                )}
+                {item === "help" && (
+                  <>
+                    <circle cx="12" cy="12" r="8.3" />
+                    <path d="M9.8 9.4a2.4 2.4 0 0 1 4.4 1.4c0 1.8-2.2 2-2.2 3.4" />
+                    <path d="M12 17.4h.01" />
+                  </>
+                )}
+                {item === "settings" && (
+                  <>
+                    <circle cx="12" cy="12" r="3.2" />
+                    <path d="M19.4 13.5a7.7 7.7 0 0 0 0-3l2-1.4-2-3.4-2.4 1a8.2 8.2 0 0 0-2.6-1.5L12 2.6H8l-.4 2.6A8.2 8.2 0 0 0 5 6.7l-2.4-1-2 3.4 2 1.4a7.7 7.7 0 0 0 0 3l-2 1.4 2 3.4 2.4-1a8.2 8.2 0 0 0 2.6 1.5L8 21.4h4l.4-2.6a8.2 8.2 0 0 0 2.6-1.5l2.4 1 2-3.4-2-1.4Z" />
+                  </>
+                )}
+                {item === "bell" && (
+                  <>
+                    <path d="M18 9.8a6 6 0 0 0-12 0c0 7-2.1 6.2-2.1 8h16.2c0-1.8-2.1-1-2.1-8Z" />
+                    <path d="M9.8 20a2.5 2.5 0 0 0 4.4 0" />
+                  </>
+                )}
+              </svg>
+            </a>
+          ) : null,
+        )
+      }
+    </div>
+  </div>
+
+  {
+    tabs.length > 0 && (
+      <nav class="mobile-app-tabs" aria-label={title}>
+        {tabs.map((tab) =>
+          tab.href ? (
+            <a
+              class:list={[tab.active && "active"]}
+              href={tab.href}
+              aria-current={tab.active ? "page" : undefined}
+              data-mobile-tab-filter-group={tab.filterGroup}
+              data-mobile-tab-filter-value={tab.filterValue}
+              data-mobile-tab-query-param={tab.queryParam}
+              data-mobile-tab-query-value={tab.queryValue}
+            >
+              {tab.label}
+            </a>
+          ) : (
+            <span
+              class:list={[tab.active && "active"]}
+              aria-current={tab.active ? "page" : undefined}
+            >
+              {tab.label}
+            </span>
+          ),
+        )}
+      </nav>
+    )
+  }
+</header>
+
+<script is:inline>
+  (() => {
+    const menuButtons = document.querySelectorAll("[data-mobile-top-menu]");
+    const siteToggle = document.querySelector("[data-mobile-toggle]");
+    const nav = document.querySelector("[data-mobile-nav]");
+    const themeButtons = document.querySelectorAll(
+      "[data-mobile-top-theme-toggle]",
+    );
+    const langDropdowns = document.querySelectorAll("[data-mobile-top-lang]");
+
+    function syncExpanded() {
+      const isOpen = nav?.classList.contains("mobile-open") || false;
+      menuButtons.forEach((button) => {
+        button.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+
+    if (menuButtons.length) {
+      menuButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          siteToggle?.click();
+          window.setTimeout(syncExpanded, 0);
+        });
+      });
+
+      if (nav) {
+        new MutationObserver(syncExpanded).observe(nav, {
+          attributes: true,
+          attributeFilter: ["class"],
+        });
+      }
+      syncExpanded();
+    }
+
+    themeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        document.getElementById("theme-toggle")?.click();
+      });
+    });
+
+    function closeLanguageDropdowns(except) {
+      langDropdowns.forEach((dropdown) => {
+        if (dropdown === except) return;
+        dropdown.classList.remove("open");
+        dropdown
+          .querySelector("[data-mobile-top-lang-toggle]")
+          ?.setAttribute("aria-expanded", "false");
+      });
+    }
+
+    langDropdowns.forEach((dropdown) => {
+      const toggle = dropdown.querySelector("[data-mobile-top-lang-toggle]");
+      const options = dropdown.querySelectorAll("[data-href][data-locale]");
+      toggle?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const nextOpen = !dropdown.classList.contains("open");
+        closeLanguageDropdowns(dropdown);
+        dropdown.classList.toggle("open", nextOpen);
+        toggle.setAttribute("aria-expanded", String(nextOpen));
+      });
+      options.forEach((option) => {
+        option.addEventListener("click", () => {
+          const locale = option.getAttribute("data-locale");
+          const href = option.getAttribute("data-href") || "/";
+          if (locale) {
+            document.cookie = `abs_locale=${encodeURIComponent(locale)};path=/;max-age=31536000;SameSite=Lax`;
+          }
+          window.location.assign(new URL(href, window.location.origin).href);
+        });
+      });
+    });
+
+    document.addEventListener("click", () => closeLanguageDropdowns());
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeLanguageDropdowns();
+    });
+  })();
+</script>
+
+<style>
+  .mobile-app-topbar {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    .mobile-app-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 115;
+      display: block;
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+      background: color-mix(in srgb, var(--bg-elevated) 96%, transparent);
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+    }
+    .mobile-app-topbar-row {
+      display: grid;
+      min-height: 56px;
+      grid-template-columns:
+        minmax(44px, max-content) minmax(0, 1fr)
+        max-content;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+    }
+    .mobile-app-topbar h1 {
+      display: -webkit-box;
+      width: 100%;
+      min-width: 0;
+      max-width: none;
+      overflow: hidden;
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(14px, 3.8vw, 16px);
+      font-weight: 900;
+      line-height: 1.12;
+      text-align: center;
+      text-wrap: balance;
+      white-space: normal;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+    .mobile-app-leading,
+    .mobile-app-actions {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+    }
+    .mobile-app-actions {
+      justify-content: flex-end;
+      gap: 0;
+      justify-self: end;
+      white-space: nowrap;
+    }
+    .mobile-app-brand {
+      display: inline-flex;
+      min-width: 44px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: flex-start;
+      color: var(--navy);
+      text-decoration: none;
+    }
+    .mobile-app-brand img {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      object-fit: contain;
+    }
+    .mobile-app-icon-btn {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      text-decoration: none;
+      touch-action: manipulation;
+      transition:
+        background-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+    }
+    .mobile-app-icon-btn:active {
+      transform: scale(0.96);
+    }
+    .mobile-app-icon-btn:hover,
+    .mobile-app-icon-btn:focus-visible,
+    .mobile-app-icon-btn[aria-expanded="true"] {
+      background: color-mix(in srgb, var(--rose-soft) 82%, transparent);
+      color: var(--rose);
+      outline: 0;
+    }
+    .mobile-app-icon-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.1;
+    }
+    .mobile-app-lang-dropdown {
+      position: relative;
+      display: grid;
+    }
+    .mobile-app-lang-menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      z-index: 260;
+      display: none;
+      width: max-content;
+      min-width: 176px;
+      max-height: min(58vh, 360px);
+      overflow-y: auto;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      box-shadow: 0 16px 36px rgba(18, 39, 66, 0.16);
+    }
+    .mobile-app-lang-dropdown.open .mobile-app-lang-menu {
+      display: grid;
+      gap: 2px;
+    }
+    .mobile-app-lang-option {
+      display: flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 9px 0 10px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .mobile-app-lang-option:hover,
+    .mobile-app-lang-option:focus-visible,
+    .mobile-app-lang-option.active {
+      background: var(--rose-soft);
+      color: var(--rose);
+      outline: 0;
+    }
+    .mobile-app-lang-option svg {
+      width: 15px;
+      height: 15px;
+      opacity: 0;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.1;
+    }
+    .mobile-app-lang-option.active svg {
+      opacity: 1;
+    }
+    .mobile-app-theme-btn {
+      position: relative;
+    }
+    .mobile-theme-icon {
+      position: absolute;
+      inset: 11px;
+      width: 22px;
+      height: 22px;
+    }
+    .mobile-theme-icon-sun {
+      display: none;
+    }
+    :global([data-theme="dark"]) .mobile-theme-icon-moon {
+      display: none;
+    }
+    :global([data-theme="dark"]) .mobile-theme-icon-sun {
+      display: block;
+    }
+    .mobile-app-account {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      gap: 7px;
+      color: var(--navy);
+      text-decoration: none;
+    }
+    .mobile-app-plan {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--rose-soft) 82%, var(--bg-elevated));
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .mobile-app-avatar {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--rose) 18%, var(--line));
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: 0 5px 14px rgba(184, 46, 92, 0.12);
+    }
+    .mobile-app-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 14px 8px;
+      scrollbar-width: none;
+    }
+    .mobile-app-tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .mobile-app-tabs a,
+    .mobile-app-tabs span {
+      position: relative;
+      display: inline-flex;
+      flex: 0 0 auto;
+      min-height: 44px;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 760;
+      line-height: 1.2;
+      text-decoration: none;
+      white-space: nowrap;
+      transition:
+        background-color 0.18s ease,
+        color 0.18s ease;
+    }
+    .mobile-app-tabs a:hover,
+    .mobile-app-tabs a:focus-visible {
+      background: color-mix(in srgb, var(--rose-soft) 72%, transparent);
+      color: var(--rose);
+      outline: 0;
+    }
+    .mobile-app-tabs .active {
+      background: color-mix(in srgb, var(--rose-soft) 82%, var(--bg-elevated));
+      color: var(--rose);
+      font-weight: 900;
+    }
+    .mobile-app-tabs .active::after {
+      position: absolute;
+      right: 12px;
+      bottom: 5px;
+      left: 12px;
+      height: 3px;
+      border-radius: 999px;
+      background: currentColor;
+      content: "";
+    }
+    .mobile-app-topbar-compact .mobile-app-topbar-row {
+      min-height: 52px;
+    }
+    :global([data-theme="dark"]) .mobile-app-topbar {
+      border-bottom-color: rgba(255, 255, 255, 0.08);
+      background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
+    }
+  }
+</style>

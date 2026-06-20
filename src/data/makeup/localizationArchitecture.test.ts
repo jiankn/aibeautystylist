@@ -163,6 +163,7 @@ describe("global makeup localization architecture", () => {
       "/images/login-hero-global-light.webp",
     );
     expect(diagnosis.exampleImages?.[0]).not.toContain("--east-asia");
+    expect(diagnosis.exampleImages?.[0]).not.toContain("/images/looks/");
   });
 
   it("normalizes invalid or conflicting representation preferences", () => {
@@ -282,6 +283,7 @@ describe("global makeup localization architecture", () => {
       "/images/look-korean-dewy-makeup-640.webp",
       "/images/look-korean-dewy-makeup-before-640.webp",
       "/images/login-hero-global-light-desktop.webp",
+      "/images/diagnosis-preview-full-face.webp",
       ...Object.values(eastHome.scenarioImages ?? {}),
       ...Object.values(globalHome.scenarioImages ?? {}),
       eastLogin.heroImages?.light,

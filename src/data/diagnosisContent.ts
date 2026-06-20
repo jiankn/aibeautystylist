@@ -1444,6 +1444,7 @@ export function getLocalizedDiagnosisContent(locale: SupportedLocale) {
     recommendMore: text("workspace", "openFullCatalog"),
     tryLook: text("workspace", "startTryon"),
     historyLoading: text("tryon", "loading"),
+    historyNewCta: core.uploadTitle,
     historyEmptyCta: core.uploadTitle,
     historyEmptySecondary: text("workspace", "browseLooks"),
     client: {

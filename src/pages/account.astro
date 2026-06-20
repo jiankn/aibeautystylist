@@ -1,222 +1,779 @@
 ---
+import {
+  buildAccountMobileMenu,
+  getAccountCenterCopy,
+} from "../data/accountCenterContent";
+import AppIconBadge from "../components/AppIconBadge.astro";
+import MobileAppTopBar from "../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../components/MobileBottomNav.astro";
+import { getMarketProfileOptions } from "../data/makeup/audienceProfiles";
+import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/SiteHeader.astro";
-import { getMarketProfileOptions } from "../data/makeup/audienceProfiles";
-import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import { getCurrentLocale } from "../lib/i18n";
 
 const locale = getCurrentLocale();
-const isZh = locale.startsWith("zh");
 const audienceContext = Astro.locals.audienceContext;
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
-const pricingHref = localizeAppHref("/pricing");
-const loginHref = localizeAppHref("/login");
-const homeHref = localizeAppHref("/");
-const dashboardHref = localizeAppHref("/dashboard");
+
+const accountHref = localizeAppHref("/account");
+const hrefs = {
+  about: localizeAppHref("/about"),
+  account: accountHref,
+  dashboard: localizeAppHref("/dashboard"),
+  diagnosis: localizeAppHref("/diagnosis"),
+  faq: localizeAppHref("/faq"),
+  history: localizeAppHref("/history"),
+  home: localizeAppHref("/"),
+  login: localizeAppHref(
+    `/login?mode=login&next=${encodeURIComponent(accountHref)}`,
+  ),
+  pricing: localizeAppHref("/pricing"),
+  privacy: localizeAppHref("/privacy"),
+  resetPassword: localizeAppHref("/reset-password"),
+  support: localizeAppHref("/support"),
+  subscription: localizeAppHref("/subscription"),
+  terms: localizeAppHref("/terms"),
+  tryonFree: localizeAppHref("/tryon-free"),
+};
+
+const copy = getAccountCenterCopy(locale);
+const mobileAccountTitle =
+  {
+    "zh-CN": "我的",
+    "zh-TW": "我的",
+    "de-DE": "Ich",
+    "fr-FR": "Moi",
+    "ja-JP": "マイ",
+    "ko-KR": "내 정보",
+    "es-ES": "Yo",
+    "es-419": "Yo",
+    "pt-BR": "Eu",
+    en: "Me",
+  }[locale] ?? copy.pageTitle;
+const accountMobileMenu = buildAccountMobileMenu(
+  copy,
+  {
+    account: hrefs.account,
+    dashboard: hrefs.dashboard,
+    diagnosis: hrefs.diagnosis,
+    faq: hrefs.faq,
+    history: hrefs.history,
+    home: hrefs.home,
+    pricing: hrefs.subscription,
+    workspace: hrefs.tryonFree,
+  },
+  "account",
+);
 const marketOptions = getMarketProfileOptions(locale);
-const copy = isZh
-  ? {
-      title: "账户中心 | AI Beauty Stylist",
-      description: "管理你的 AI Beauty Stylist 账户、会员与订阅。",
-      heading: "账户中心",
-      email: "邮箱",
-      plan: "当前计划",
-      quota: "本月额度",
-      manage: "管理订阅",
-      upgrade: "升级会员",
-      logout: "退出登录",
-      quotaRemaining: "{remaining}/{total}",
-      portalFailed: "无法打开管理页面",
-    }
-  : {
-      title: "Account | AI Beauty Stylist",
-      description:
-        "Manage your AI Beauty Stylist account, membership, and subscription.",
-      heading: "Account",
-      email: "Email",
-      plan: "Current plan",
-      quota: "Monthly quota",
-      manage: "Manage subscription",
-      upgrade: "Upgrade",
-      logout: "Sign out",
-      quotaRemaining: "{remaining}/{total}",
-      portalFailed: "Unable to open the management page",
-    };
-const representationOptions = [
-  { value: "diverse", zh: "多元模特混合展示", en: "Diverse model rotation" },
-  {
-    value: "east-asian",
-    zh: "东亚面部特征参考",
-    en: "East Asian reference features",
-  },
-  { value: "black", zh: "深肤色参考", en: "Deep skin tone references" },
-  {
-    value: "south-asian",
-    zh: "南亚面部特征参考",
-    en: "South Asian reference features",
-  },
-  { value: "latina", zh: "拉美风格参考", en: "Latina style references" },
-  {
-    value: "middle-eastern",
-    zh: "中东面部特征参考",
-    en: "Middle Eastern reference features",
-  },
-  { value: "white", zh: "浅肤色参考", en: "Fair skin tone references" },
-  { value: "mixed", zh: "混合背景参考", en: "Mixed-background references" },
-];
+const representationKeys = [
+  "diverse",
+  "east-asian",
+  "black",
+  "south-asian",
+  "latina",
+  "middle-eastern",
+  "white",
+  "mixed",
+] as const;
+const representationOptions = representationKeys.map((value) => ({
+  value,
+  label: copy.preferences.representationLabels[value] ?? value,
+}));
+const recommendations = resolveLookCatalog(audienceContext)
+  .slice(0, 4)
+  .map((look) => ({
+    slug: look.slug,
+    title: look.title,
+    image: look.image,
+    imageAlt: look.imageAlt,
+  }));
 ---
 
 <BaseLayout
   title={copy.title}
   description={copy.description}
-  bodyClass="auth-body"
+  bodyClass="account-center-body"
   robots="noindex,follow"
 >
-  <SiteHeader />
-  <main class="auth-main">
-    <div class="auth-card panel" data-account>
-      <h1 class="auth-heading">{copy.heading}</h1>
-      <div class="account-row">
-        <span>{copy.email}</span><b data-account-email>—</b>
-      </div>
-      <div class="account-row">
-        <span>{copy.plan}</span><b data-account-plan>—</b>
-      </div>
-      <div class="account-row">
-        <span>{copy.quota}</span><b data-account-quota>—</b>
-      </div>
-      <div class="account-actions">
-        <button class="btn btn-primary" type="button" data-account-manage hidden
-          >{copy.manage}</button
-        >
-        <a
-          class="btn btn-outline-rose"
-          href={pricingHref}
-          data-account-upgrade
-          hidden>{copy.upgrade}</a
-        >
-        <button class="btn" type="button" data-account-logout>
-          {copy.logout}
-        </button>
-      </div>
-      <p class="auth-message" data-account-message role="status"></p>
-      <form class="content-preference-form" data-content-preferences>
-        <div class="content-preference-head">
-          <h2>{isZh ? "妆容内容偏好" : "Makeup content preferences"}</h2>
-          <p>
-            {
-              isZh
-                ? "偏好只影响推荐顺序与参考图展示，不代表你的身份，也不会限制可访问内容。"
-                : "Preferences affect recommendations and reference images, not your identity."
-            }
-          </p>
+  <SiteHeader
+    mobileMenuSection={accountMobileMenu}
+    mobileSmartHide
+    mobileHidden
+  />
+  <MobileAppTopBar title={mobileAccountTitle} />
+  <main class="account-main" data-account>
+    <div class="account-shell">
+      <section class="account-hero panel" aria-labelledby="account-title">
+        <div class="account-mobile-toolbar" aria-label={copy.pageTitle}>
+          <button
+            class="account-icon-btn"
+            type="button"
+            aria-label={copy.menuLabel}
+            data-account-open-menu
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16"></path>
+            </svg>
+          </button>
+          <h1>{copy.pageTitle}</h1>
+          <button
+            class="account-icon-btn"
+            type="button"
+            aria-label={copy.settings}
+            data-account-settings-shortcut
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"></path>
+              <path
+                d="M19.4 13.5a7.7 7.7 0 0 0 0-3l2-1.4-2-3.4-2.4 1a8.2 8.2 0 0 0-2.6-1.5L12 2.6H8l-.4 2.6A8.2 8.2 0 0 0 5 6.7l-2.4-1-2 3.4 2 1.4a7.7 7.7 0 0 0 0 3l-2 1.4 2 3.4 2.4-1a8.2 8.2 0 0 0 2.6 1.5L8 21.4h4l.4-2.6a8.2 8.2 0 0 0 2.6-1.5l2.4 1 2-3.4-2-1.4Z"
+              ></path>
+            </svg>
+          </button>
         </div>
-        <label class="preference-field">
-          <span>{isZh ? "妆容灵感来源" : "Makeup inspiration source"}</span>
-          <select name="marketProfile">
-            {
-              marketOptions.map((option) => (
-                <option
-                  value={option.value}
-                  selected={option.value === audienceContext.marketProfile}
-                >
-                  {option.label}
-                </option>
-              ))
-            }
-          </select>
-        </label>
-        <fieldset class="representation-field">
-          <legend>
-            {isZh ? "参考图展示偏好" : "Reference image display preference"}
-          </legend>
-          <div class="representation-options">
-            {
-              representationOptions.map((option) => (
-                <label>
-                  <input
-                    type="checkbox"
-                    name="representationPreference"
-                    value={option.value}
-                    checked={audienceContext.representationPreference.some(
-                      (preference) => preference === option.value,
-                    )}
-                  />
-                  <span>{isZh ? option.zh : option.en}</span>
-                </label>
-              ))
-            }
+
+        <div class="account-user-card">
+          <button
+            class="account-avatar"
+            type="button"
+            aria-label={copy.avatarEditLabel}
+            data-avatar-edit
+          >
+            <span data-account-initial aria-hidden="true">A</span>
+          </button>
+          <div class="account-user-copy">
+            <p class="section-kicker">{copy.pageTitle}</p>
+            <h2 id="account-title" data-account-name>{copy.userFallback}</h2>
+            <p data-account-email>{copy.email}</p>
           </div>
-        </fieldset>
-        <button class="btn btn-primary" type="submit">
-          {isZh ? "保存内容偏好" : "Save preferences"}
+        </div>
+
+        <div class="account-member-card">
+          <div>
+            <b data-member-badge>
+              {copy.memberStatus.replace("{plan}", "Free")}
+            </b>
+            <p data-member-quota>
+              {
+                copy.memberQuota
+                  .replace("{remaining}", "--")
+                  .replace("{total}", "--")
+              }
+            </p>
+          </div>
+          <button
+            class="member-manage-btn"
+            type="button"
+            data-account-manage
+            hidden
+          >
+            {copy.manage}
+          </button>
+          <a
+            class="member-manage-btn"
+            href={hrefs.subscription}
+            data-account-upgrade
+            hidden
+          >
+            {copy.upgrade}
+          </a>
+        </div>
+      </section>
+
+      <nav class="account-tabs" role="tablist" aria-label={copy.pageTitle}>
+        <button
+          class="account-tab active"
+          id="account-tab-profile"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="account-panel-profile"
+          data-account-tab="profile"
+        >
+          {copy.tabs.profile}
         </button>
-        <p class="preference-status" data-preference-status role="status"></p>
-      </form>
+        <button
+          class="account-tab"
+          id="account-tab-history"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="account-panel-history"
+          data-account-tab="history"
+        >
+          {copy.tabs.history}
+        </button>
+        <button
+          class="account-tab"
+          id="account-tab-data"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="account-panel-data"
+          data-account-tab="data"
+        >
+          {copy.tabs.data}
+        </button>
+        <button
+          class="account-tab"
+          id="account-tab-settings"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="account-panel-settings"
+          data-account-tab="settings"
+        >
+          {copy.tabs.settings}
+        </button>
+      </nav>
+
+      <section
+        class="account-panel active"
+        id="account-panel-profile"
+        role="tabpanel"
+        aria-labelledby="account-tab-profile"
+        data-account-panel="profile"
+      >
+        <div class="account-detail-grid">
+          <div>
+            <span>{copy.email}</span>
+            <b data-account-email-detail>--</b>
+          </div>
+          <div>
+            <span>{copy.plan}</span>
+            <b data-account-plan>--</b>
+          </div>
+          <div>
+            <span>{copy.quota}</span>
+            <b data-account-quota>--</b>
+          </div>
+        </div>
+
+        <div class="account-card-list">
+          <a class="account-action-card" href={hrefs.privacy}>
+            <AppIconBadge icon="privacy" />
+            <div>
+              <b>{copy.actions.privacyTitle}</b>
+              <p>{copy.actions.privacyDesc}</p>
+            </div>
+            <i aria-hidden="true">›</i>
+          </a>
+          <a class="account-action-card" href={hrefs.resetPassword}>
+            <AppIconBadge icon="security" />
+            <div>
+              <b>{copy.actions.securityTitle}</b>
+              <p>{copy.actions.securityDesc}</p>
+            </div>
+            <i aria-hidden="true">›</i>
+          </a>
+        </div>
+
+        <form class="content-preference-form" data-content-preferences>
+          <div class="content-preference-head">
+            <h2>{copy.preferences.title}</h2>
+            <p>{copy.preferences.body}</p>
+          </div>
+          <label class="preference-field">
+            <span>{copy.preferences.marketProfile}</span>
+            <select name="marketProfile">
+              {
+                marketOptions.map((option) => (
+                  <option
+                    value={option.value}
+                    selected={option.value === audienceContext.marketProfile}
+                  >
+                    {option.label}
+                  </option>
+                ))
+              }
+            </select>
+          </label>
+          <fieldset class="representation-field">
+            <legend>{copy.preferences.representation}</legend>
+            <div class="representation-options">
+              {
+                representationOptions.map((option) => (
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="representationPreference"
+                      value={option.value}
+                      checked={audienceContext.representationPreference.some(
+                        (preference) => preference === option.value,
+                      )}
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+          <button class="btn btn-primary" type="submit">
+            {copy.preferences.save}
+          </button>
+          <p class="preference-status" data-preference-status role="status"></p>
+        </form>
+      </section>
+
+      <section
+        class="account-panel"
+        id="account-panel-history"
+        role="tabpanel"
+        aria-labelledby="account-tab-history"
+        data-account-panel="history"
+        hidden
+      >
+        <div class="account-filter-row" aria-label={copy.tabs.history}>
+          <button
+            class="account-filter active"
+            type="button"
+            data-history-filter="all"
+          >
+            {copy.history.all}
+          </button>
+          <button
+            class="account-filter"
+            type="button"
+            data-history-filter="completed"
+          >
+            {copy.history.completed}
+          </button>
+          <button
+            class="account-filter"
+            type="button"
+            data-history-filter="incomplete"
+          >
+            {copy.history.incomplete}
+          </button>
+        </div>
+        <div class="account-history-grid" data-account-history>
+          <p class="loading-line">{copy.history.loading}</p>
+        </div>
+        <a class="btn btn-primary account-wide-action" href={hrefs.history}>
+          {copy.history.viewAll}
+        </a>
+      </section>
+
+      <section
+        class="account-panel"
+        id="account-panel-data"
+        role="tabpanel"
+        aria-labelledby="account-tab-data"
+        data-account-panel="data"
+        hidden
+      >
+        <div class="account-stats-card">
+          <h2>{copy.data.usageStats}</h2>
+          <div class="account-stats-grid">
+            <div>
+              <b data-stat-total>0</b>
+              <span>{copy.data.totalTryons}</span>
+            </div>
+            <div>
+              <b data-stat-completed>0</b>
+              <span>{copy.data.completedTryons}</span>
+            </div>
+            <div>
+              <b data-stat-remaining>--</b>
+              <span>{copy.data.remainingQuota}</span>
+            </div>
+          </div>
+        </div>
+        <div class="account-card-list">
+          <button
+            class="account-action-card"
+            type="button"
+            data-account-tab-jump="profile"
+          >
+            <AppIconBadge icon="preferences" />
+            <div>
+              <b>{copy.actions.preferencesTitle}</b>
+              <p>{copy.actions.preferencesDesc}</p>
+            </div>
+            <i aria-hidden="true">›</i>
+          </button>
+          <a class="account-action-card" href={hrefs.support}>
+            <AppIconBadge icon="export" />
+            <div>
+              <b>{copy.actions.exportTitle}</b>
+              <p>{copy.actions.exportDesc}</p>
+            </div>
+            <i aria-hidden="true">›</i>
+          </a>
+        </div>
+      </section>
+
+      <section
+        class="account-panel"
+        id="account-panel-settings"
+        role="tabpanel"
+        aria-labelledby="account-tab-settings"
+        data-account-panel="settings"
+        hidden
+      >
+        <div class="account-card-list">
+          <a class="account-action-card" href={hrefs.subscription}>
+            <AppIconBadge icon="membership" />
+            <div>
+              <b>{copy.actions.membershipTitle}</b>
+              <p>{copy.actions.membershipDesc}</p>
+            </div>
+            <i aria-hidden="true">›</i>
+          </a>
+          <a class="account-action-card" href={hrefs.faq}>
+            <AppIconBadge icon="help" />
+            <div>
+              <b>{copy.actions.helpTitle}</b>
+              <p>{copy.actions.helpDesc}</p>
+            </div>
+            <i aria-hidden="true">›</i>
+          </a>
+          <a class="account-action-card" href={hrefs.support}>
+            <AppIconBadge icon="support" />
+            <div>
+              <b>{copy.actions.supportTitle}</b>
+              <p>{copy.actions.supportDesc}</p>
+            </div>
+            <i aria-hidden="true">›</i>
+          </a>
+          <a class="account-action-card" href={hrefs.about}>
+            <AppIconBadge icon="about" />
+            <div>
+              <b>{copy.actions.aboutTitle}</b>
+              <p>{copy.actions.aboutDesc}</p>
+            </div>
+            <i aria-hidden="true">›</i>
+          </a>
+          <div class="account-action-card account-action-card-static">
+            <AppIconBadge icon="theme" />
+            <div>
+              <b>{copy.actions.appearanceTitle}</b>
+              <p>{copy.actions.appearanceDesc}</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="account-logout-btn" type="button" data-account-logout>
+          {copy.signOut}
+        </button>
+        <p class="account-message" data-account-message role="status"></p>
+      </section>
     </div>
   </main>
+  <MobileBottomNav active="account" />
 
   <style>
-    .auth-main {
+    .account-main {
+      min-height: 100vh;
+      padding: 28px 16px 56px;
+      background:
+        radial-gradient(
+          circle at 14% 0,
+          rgba(199, 49, 103, 0.08),
+          transparent 34%
+        ),
+        var(--bg);
+    }
+    .account-shell {
+      display: grid;
+      gap: 14px;
+      width: min(100%, 720px);
+      margin: 0 auto;
+    }
+    .account-hero,
+    .account-panel {
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .account-mobile-toolbar {
+      display: none;
+    }
+    .account-user-card {
       display: flex;
-      justify-content: center;
-      padding: 48px 16px;
+      align-items: center;
+      gap: 16px;
     }
-    .auth-card {
-      width: 100%;
-      max-width: 480px;
-      padding: 28px;
+    .account-avatar {
+      display: grid;
+      width: 76px;
+      height: 76px;
+      flex: 0 0 76px;
+      place-items: center;
+      border: 3px solid var(--bg-elevated);
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--rose), #a82a55);
+      box-shadow: 0 10px 24px rgba(184, 46, 92, 0.18);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 28px;
+      font-weight: 900;
     }
-    .auth-heading {
-      font-size: 20px;
-      margin: 0 0 18px;
+    .account-user-copy {
+      min-width: 0;
     }
-    .account-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--line);
-      font-size: 15px;
+    .account-user-copy h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(24px, 4vw, 34px);
+      line-height: 1.1;
     }
-    .account-row span {
+    .account-user-copy p:not(.section-kicker) {
+      overflow-wrap: anywhere;
+      margin: 7px 0 0;
       color: var(--muted);
-    }
-    .account-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-    .auth-message {
-      margin-top: 14px;
       font-size: 14px;
-      min-height: 20px;
-      color: var(--danger-text);
+      line-height: 1.5;
+    }
+    .account-member-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px 10px;
+      margin-top: 12px;
+      padding: 9px 10px;
+      border: 1px solid color-mix(in srgb, var(--gold-border) 72%, var(--line));
+      border-radius: 8px;
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--gold-soft) 86%, var(--bg-elevated)),
+          color-mix(in srgb, var(--rose-soft) 58%, var(--bg-elevated))
+        ),
+        var(--bg-elevated);
+    }
+    .account-member-card > div:first-child {
+      display: flex;
+      min-width: 0;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 8px;
+    }
+    .account-member-card b {
+      display: inline-flex;
+      min-height: 24px;
+      align-items: center;
+      padding: 0 8px;
+      border: 1px solid color-mix(in srgb, var(--rose) 22%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--rose-soft) 64%, var(--bg-elevated));
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .account-member-card p {
+      min-width: 0;
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+    .member-manage-btn {
+      position: relative;
+      display: inline-flex;
+      min-height: 32px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 11px;
+      border: 1px solid rgba(255, 255, 255, 0.74);
+      border-radius: 7px;
+      background: var(--bg-elevated);
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 850;
+      text-decoration: none;
+      touch-action: manipulation;
+      white-space: nowrap;
+    }
+    .member-manage-btn::after {
+      position: absolute;
+      inset: -6px;
+      content: "";
+    }
+    .member-manage-btn:hover,
+    .member-manage-btn:focus-visible {
+      border-color: color-mix(in srgb, var(--rose) 28%, var(--line));
+      background: color-mix(in srgb, var(--bg-elevated) 82%, var(--rose-soft));
+      outline: 0;
+    }
+    .account-tabs {
+      position: sticky;
+      top: 52px;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
+      box-shadow: 0 12px 28px rgba(18, 39, 66, 0.08);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      scrollbar-width: none;
+    }
+    .account-tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .account-tab {
+      position: relative;
+      min-height: 48px;
+      min-width: 78px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .account-tab.active {
+      color: var(--rose);
+    }
+    .account-tab.active::after {
+      position: absolute;
+      right: 18%;
+      bottom: 0;
+      left: 18%;
+      height: 3px;
+      border-radius: 999px 999px 0 0;
+      background: var(--rose);
+      content: "";
+    }
+    .account-panel {
+      display: grid;
+      gap: 16px;
+      border: 1px solid var(--line);
+      background: var(--bg-elevated);
+      box-shadow: 0 12px 30px rgba(18, 39, 66, 0.06);
+    }
+    .account-panel[hidden] {
+      display: none;
+    }
+    .account-detail-grid,
+    .account-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .account-detail-grid div,
+    .account-stats-grid div {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+    .account-detail-grid span,
+    .account-stats-grid span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .account-detail-grid b,
+    .account-stats-grid b {
+      overflow: hidden;
+      color: var(--navy);
+      font-size: 16px;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .account-stats-grid b {
+      color: var(--rose);
+      font-size: 28px;
+      line-height: 1;
+    }
+    .account-card-list {
+      display: grid;
+      gap: 10px;
+    }
+    .account-action-card {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 72px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      text-decoration: none;
+      transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+    }
+    .account-action-card:hover,
+    .account-action-card:focus-visible {
+      border-color: color-mix(in srgb, var(--rose) 36%, var(--line));
+      box-shadow: 0 12px 26px rgba(18, 39, 66, 0.09);
+      outline: 0;
+      transform: translateY(-1px);
+    }
+    .account-action-card-static {
+      cursor: default;
+    }
+    .account-action-card-static:hover {
+      border-color: var(--line);
+      box-shadow: none;
+      transform: none;
+    }
+    .account-action-card b {
+      display: block;
+      color: var(--navy);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .account-action-card p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .account-action-card i {
+      color: var(--muted);
+      font-size: 22px;
+      font-style: normal;
     }
     .content-preference-form {
       display: grid;
       gap: 18px;
-      margin-top: 26px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
+      padding-top: 4px;
     }
-    .content-preference-head h2 {
+    .content-preference-head h2,
+    .account-stats-card h2 {
       margin: 0;
+      color: var(--navy);
       font-size: 18px;
+      line-height: 1.3;
     }
     .content-preference-head p {
       margin: 6px 0 0;
       color: var(--muted);
+      font-size: 13px;
       line-height: 1.55;
     }
     .preference-field {
       display: grid;
       gap: 7px;
-      font-weight: 700;
+      color: var(--navy);
+      font-weight: 800;
     }
     .preference-field select {
       min-height: 44px;
@@ -233,7 +790,8 @@ const representationOptions = [
     }
     .representation-field legend {
       margin-bottom: 9px;
-      font-weight: 700;
+      color: var(--navy);
+      font-weight: 800;
     }
     .representation-options {
       display: grid;
@@ -242,76 +800,522 @@ const representationOptions = [
     }
     .representation-options label {
       display: flex;
+      min-width: 0;
+      min-height: 44px;
       align-items: center;
       gap: 8px;
-      min-height: 44px;
       padding: 8px 10px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--bg);
+      color: var(--text);
       cursor: pointer;
+      font-size: 13px;
+      line-height: 1.35;
     }
-    .preference-status {
+    .preference-status,
+    .account-message,
+    .loading-line {
       min-height: 20px;
       margin: 0;
       color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
     }
-    @media (max-width: 520px) {
+    .account-filter-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+    .account-filter {
+      min-height: 36px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .account-filter.active {
+      border-color: color-mix(in srgb, var(--rose) 34%, var(--line));
+      background: var(--rose-soft);
+      color: var(--rose);
+    }
+    .account-history-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .account-history-grid > .loading-line,
+    .account-history-grid > .empty-state {
+      grid-column: 1 / -1;
+    }
+    .history-item {
+      position: relative;
+      display: grid;
+      grid-template-rows: 60% minmax(0, 1fr);
+      gap: 0;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--bg);
+    }
+    .history-item img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: var(--surface-neutral);
+    }
+    .history-copy {
+      min-width: 0;
+      padding: 8px;
+    }
+    .history-copy strong {
+      display: block;
+      overflow: hidden;
+      color: var(--navy);
+      font-size: 12px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .history-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .history-status {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: inline-flex;
+      min-height: 24px;
+      align-items: center;
+      padding: 0 8px;
+      border: 1px solid color-mix(in srgb, var(--line) 62%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      backdrop-filter: blur(10px) saturate(130%);
+      -webkit-backdrop-filter: blur(10px) saturate(130%);
+    }
+    .history-status[data-state="succeeded"] {
+      background: color-mix(in srgb, var(--teal-soft) 88%, var(--bg-elevated));
+      color: var(--teal);
+    }
+    .history-status[data-state="failed"] {
+      background: color-mix(
+        in srgb,
+        var(--surface-danger) 88%,
+        var(--bg-elevated)
+      );
+      color: var(--danger-text);
+    }
+    .account-wide-action {
+      justify-content: center;
+      width: 100%;
+    }
+    .empty-state {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .account-stats-card {
+      display: grid;
+      gap: 16px;
+    }
+    .account-logout-btn {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid color-mix(in srgb, var(--danger-text) 28%, var(--line));
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--danger-text);
+      cursor: pointer;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 850;
+    }
+    .account-logout-btn:hover,
+    .account-logout-btn:focus-visible {
+      background: var(--surface-danger);
+      outline: 0;
+    }
+    @media (min-width: 768px) {
+      .account-history-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 760px) {
+      .account-main {
+        padding: 12px 12px 44px;
+      }
+      .account-shell {
+        gap: 12px;
+      }
+      .account-mobile-toolbar {
+        display: none;
+      }
+      .account-mobile-toolbar h1 {
+        margin: 0;
+        color: var(--navy);
+        font-size: 18px;
+        line-height: 1.2;
+      }
+      .account-icon-btn {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--navy);
+        cursor: pointer;
+      }
+      .account-icon-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2;
+      }
+      .account-hero,
+      .account-panel {
+        padding: 16px;
+      }
+      .account-user-card {
+        display: grid;
+        justify-items: center;
+        text-align: center;
+      }
+      .account-avatar {
+        width: 78px;
+        height: 78px;
+      }
+      .account-member-card {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        margin-top: 12px;
+        padding: 10px;
+      }
+      .account-tabs {
+        top: 52px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .account-tab[data-account-tab="history"],
+      .account-panel[data-account-panel="history"] {
+        display: none;
+      }
+      .account-detail-grid,
+      .account-stats-grid {
+        grid-template-columns: 1fr;
+      }
       .representation-options {
         grid-template-columns: 1fr;
       }
     }
+    @media (max-width: 380px) {
+      .account-member-card {
+        grid-template-columns: 1fr;
+      }
+      .member-manage-btn {
+        justify-self: start;
+        min-width: 76px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .account-action-card {
+        transition: none;
+      }
+      .account-action-card:hover,
+      .account-action-card:focus-visible {
+        transform: none;
+      }
+    }
   </style>
 
-  <script is:inline define:vars={{ copy, homeHref, loginHref, dashboardHref }}>
+  <script is:inline define:vars={{ copy, hrefs, recommendations }}>
     (() => {
       const root = document.querySelector("[data-account]");
       if (!root) return;
-      const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
 
-      fetch("/api/session")
-        .then((res) => res.json())
-        .then((body) => {
-          const data = body?.data;
-          if (!data || data.user?.kind !== "account") {
-            window.location.href = loginHref;
+      const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
+      const runningStatuses = new Set([
+        "created",
+        "upload_validating",
+        "diagnosis_running",
+        "image_running",
+      ]);
+      const recommendationBySlug = new Map(
+        recommendations.map((look) => [look.slug, look]),
+      );
+      let latestHistoryJobs = [];
+      let activeHistoryFilter = "all";
+      const compactAccountQuery = window.matchMedia("(max-width: 760px)");
+
+      const query = (selector) => root.querySelector(selector);
+      const queryAll = (selector) => [...root.querySelectorAll(selector)];
+      const setText = (selector, value) => {
+        const node = query(selector);
+        if (node) node.textContent = value;
+      };
+      const clear = (node) => {
+        if (node) node.replaceChildren();
+      };
+      const getJson = async (url) => {
+        const response = await fetch(url);
+        const body = await response.json().catch(() => null);
+        if (!response.ok || !body?.ok) {
+          throw new Error(body?.error?.message || "REQUEST_FAILED");
+        }
+        return body.data;
+      };
+      const formatDate = (value) => {
+        if (!value) return "";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "";
+        return new Intl.DateTimeFormat(
+          document.documentElement.lang || undefined,
+          { month: "short", day: "numeric" },
+        ).format(date);
+      };
+      const fallbackLook = (slug) =>
+        recommendationBySlug.get(slug) || recommendations[0] || {};
+      const statusStateForJob = (job) =>
+        job?.status === "succeeded"
+          ? "succeeded"
+          : runningStatuses.has(job?.status)
+            ? "running"
+            : "failed";
+
+      function switchTab(tabName, updateHash = true) {
+        if (tabName === "history" && compactAccountQuery.matches) {
+          tabName = "profile";
+          updateHash = false;
+        }
+        queryAll("[data-account-tab]").forEach((button) => {
+          const isActive = button.dataset.accountTab === tabName;
+          button.classList.toggle("active", isActive);
+          button.setAttribute("aria-selected", String(isActive));
+        });
+        queryAll("[data-account-panel]").forEach((panel) => {
+          const isActive = panel.dataset.accountPanel === tabName;
+          panel.classList.toggle("active", isActive);
+          panel.toggleAttribute("hidden", !isActive);
+        });
+        if (updateHash) {
+          history.replaceState(null, "", `#${tabName}`);
+        }
+      }
+
+      function renderEmpty(target, message) {
+        clear(target);
+        const box = document.createElement("div");
+        box.className = "empty-state";
+        box.textContent = message;
+        target?.append(box);
+      }
+
+      function renderHistory() {
+        const target = query("[data-account-history]");
+        if (!target) return;
+        const filtered = latestHistoryJobs.filter((job) => {
+          const state = statusStateForJob(job);
+          if (activeHistoryFilter === "completed") return state === "succeeded";
+          if (activeHistoryFilter === "incomplete")
+            return state !== "succeeded";
+          return true;
+        });
+        if (!filtered.length) {
+          renderEmpty(target, copy.history.empty);
+          return;
+        }
+        clear(target);
+        filtered.forEach((job) => {
+          const fallback = fallbackLook(job?.lookSlug);
+          const item = document.createElement("article");
+          item.className = "history-item";
+
+          const image = document.createElement("img");
+          image.src = job?.resultImage || fallback.image || "";
+          image.alt =
+            job?.lookTitle || fallback.title || copy.history.unknownLook;
+          image.loading = "lazy";
+
+          const copyNode = document.createElement("div");
+          copyNode.className = "history-copy";
+          const title = document.createElement("strong");
+          title.textContent =
+            job?.lookTitle || fallback.title || copy.history.unknownLook;
+          const meta = document.createElement("span");
+          meta.textContent = formatDate(job?.createdAt);
+          copyNode.append(title, meta);
+
+          const status = document.createElement("span");
+          const state = statusStateForJob(job);
+          status.className = "history-status";
+          status.dataset.state = state;
+          status.textContent =
+            state === "succeeded"
+              ? copy.history.statusSucceeded
+              : state === "running"
+                ? copy.history.statusRunning
+                : copy.history.statusFailed;
+
+          item.append(image, copyNode, status);
+          target.append(item);
+        });
+      }
+
+      function updateStats(jobs, quota) {
+        setText("[data-stat-total]", String(jobs.length));
+        setText(
+          "[data-stat-completed]",
+          String(
+            jobs.filter((job) => statusStateForJob(job) === "succeeded").length,
+          ),
+        );
+        setText(
+          "[data-stat-remaining]",
+          quota ? String(quota.remaining ?? 0) : copy.quotaUnavailable,
+        );
+      }
+
+      function applySession(data) {
+        const email = data?.user?.email || "";
+        const name = email ? email.split("@")[0] : copy.userFallback;
+        const initial = (
+          email.trim()[0] ||
+          name.trim()[0] ||
+          "A"
+        ).toUpperCase();
+        const plan = data?.plan || "free";
+        const planLabel = planNames[plan] || plan;
+        const quota = data?.quota;
+        const quotaLabel = quota
+          ? copy.quotaRemaining
+              .replace("{remaining}", quota.remaining ?? 0)
+              .replace("{total}", quota.total ?? 0)
+          : copy.quotaUnavailable;
+        const memberQuota = quota
+          ? copy.memberQuota
+              .replace("{remaining}", quota.remaining ?? 0)
+              .replace("{total}", quota.total ?? 0)
+          : copy.memberQuota
+              .replace("{remaining}", "--")
+              .replace("{total}", "--");
+
+        setText("[data-account-name]", name || copy.userFallback);
+        setText("[data-account-initial]", initial);
+        setText("[data-account-email]", email || copy.email);
+        setText("[data-account-email-detail]", email || "--");
+        setText("[data-account-plan]", planLabel);
+        setText("[data-account-quota]", quotaLabel);
+        setText(
+          "[data-member-badge]",
+          copy.memberStatus.replace("{plan}", planLabel),
+        );
+        setText("[data-member-quota]", memberQuota);
+        setText(
+          "[data-stat-remaining]",
+          quota ? String(quota.remaining ?? 0) : copy.quotaUnavailable,
+        );
+
+        const isPaid = plan === "pro" || plan === "premium";
+        query("[data-account-manage]")?.toggleAttribute("hidden", !isPaid);
+        query("[data-account-upgrade]")?.toggleAttribute("hidden", isPaid);
+      }
+
+      queryAll("[data-account-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          switchTab(button.dataset.accountTab || "profile");
+        });
+      });
+      compactAccountQuery.addEventListener("change", (event) => {
+        if (!event.matches) return;
+        const activeTab = query("[data-account-tab].active")?.dataset
+          .accountTab;
+        if (activeTab === "history") switchTab("profile", false);
+      });
+      query("[data-account-settings-shortcut]")?.addEventListener(
+        "click",
+        () => {
+          switchTab("settings");
+        },
+      );
+      query("[data-account-open-menu]")?.addEventListener("click", () => {
+        document.querySelector("[data-mobile-toggle]")?.click();
+      });
+      queryAll("[data-account-tab-jump]").forEach((button) => {
+        button.addEventListener("click", () => {
+          switchTab(button.dataset.accountTabJump || "profile");
+        });
+      });
+      queryAll("[data-history-filter]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeHistoryFilter = button.dataset.historyFilter || "all";
+          queryAll("[data-history-filter]").forEach((candidate) => {
+            candidate.classList.toggle("active", candidate === button);
+          });
+          renderHistory();
+        });
+      });
+
+      query("[data-account-manage]")?.addEventListener("click", async () => {
+        const message = query("[data-account-message]");
+        if (message) message.textContent = "";
+        try {
+          const response = await fetch("/api/billing/portal", {
+            method: "POST",
+          });
+          const body = await response.json().catch(() => null);
+          if (body?.ok && body.data?.url) {
+            window.location.href = body.data.url;
             return;
           }
-          root.querySelector("[data-account-email]").textContent =
-            data.user.email ?? "—";
-          root.querySelector("[data-account-plan]").textContent =
-            planNames[data.plan] ?? data.plan;
-          const q = data.quota;
-          root.querySelector("[data-account-quota]").textContent = q
-            ? copy.quotaRemaining
-                .replace("{remaining}", q.remaining)
-                .replace("{total}", q.total)
-            : "—";
-          if (data.plan === "pro" || data.plan === "premium") {
-            root.querySelector("[data-account-manage]").hidden = false;
-          } else {
-            root.querySelector("[data-account-upgrade]").hidden = false;
-          }
-        })
-        .catch(() => {});
+          throw new Error(body?.error?.message || copy.portalFailed);
+        } catch (error) {
+          if (message) message.textContent = error.message || copy.portalFailed;
+        }
+      });
 
-      root
-        .querySelector("[data-account-manage]")
-        ?.addEventListener("click", async () => {
-          const res = await fetch("/api/billing/portal", { method: "POST" });
-          const body = await res.json().catch(() => null);
-          if (body?.ok && body.data?.url) window.location.href = body.data.url;
-          else
-            root.querySelector("[data-account-message]").textContent =
-              body?.error?.message ?? copy.portalFailed;
-        });
+      query("[data-account-logout]")?.addEventListener("click", async () => {
+        const button = query("[data-account-logout]");
+        const message = query("[data-account-message]");
+        if (button) button.disabled = true;
+        if (message) message.textContent = copy.signingOut;
+        try {
+          const response = await fetch("/api/auth/logout", { method: "POST" });
+          if (!response.ok) throw new Error("LOGOUT_FAILED");
+          window.location.href = hrefs.home;
+        } catch {
+          if (button) button.disabled = false;
+          if (message) message.textContent = copy.signOutFailed;
+        }
+      });
 
-      const preferenceForm = document.querySelector(
-        "[data-content-preferences]",
-      );
-      const preferenceStatus = document.querySelector(
-        "[data-preference-status]",
-      );
+      const preferenceForm = query("[data-content-preferences]");
+      const preferenceStatus = query("[data-preference-status]");
       const representationInputs = preferenceForm
         ? [
             ...preferenceForm.querySelectorAll(
@@ -355,10 +1359,8 @@ const representationOptions = [
           representationPreferences = ["diverse"];
         }
         submit.disabled = true;
-        preferenceStatus.textContent =
-          !document.documentElement.lang.startsWith("zh")
-            ? "Saving preferences…"
-            : "正在保存偏好…";
+        if (preferenceStatus)
+          preferenceStatus.textContent = copy.preferences.saving;
         try {
           const response = await fetch("/api/content-preferences", {
             method: "POST",
@@ -369,26 +1371,47 @@ const representationOptions = [
             }),
           });
           if (!response.ok) throw new Error("SAVE_FAILED");
-          preferenceStatus.textContent =
-            !document.documentElement.lang.startsWith("zh")
-              ? "Preferences saved. Opening your dashboard…"
-              : "偏好已保存，正在进入工作台…";
-          window.location.href = dashboardHref;
+          if (preferenceStatus)
+            preferenceStatus.textContent = copy.preferences.saved;
         } catch {
+          if (preferenceStatus)
+            preferenceStatus.textContent = copy.preferences.saveFailed;
+        } finally {
           submit.disabled = false;
-          preferenceStatus.textContent =
-            !document.documentElement.lang.startsWith("zh")
-              ? "Could not save preferences. Try again."
-              : "偏好保存失败，请重试。";
         }
       });
 
-      root
-        .querySelector("[data-account-logout]")
-        ?.addEventListener("click", async () => {
-          await fetch("/api/auth/logout", { method: "POST" });
-          window.location.href = homeHref;
-        });
+      async function hydrateAccount() {
+        let session;
+        try {
+          session = await getJson("/api/session");
+          if (!session?.user || session.user.kind !== "account") {
+            window.location.href = hrefs.login;
+            return;
+          }
+          applySession(session);
+        } catch {
+          window.location.href = hrefs.login;
+          return;
+        }
+
+        try {
+          const data = await getJson("/api/tryon-jobs?limit=100");
+          latestHistoryJobs = Array.isArray(data?.items) ? data.items : [];
+          renderHistory();
+          updateStats(latestHistoryJobs, session?.quota);
+        } catch {
+          latestHistoryJobs = [];
+          renderEmpty(query("[data-account-history]"), copy.history.loadFailed);
+          updateStats([], session?.quota);
+        }
+      }
+
+      const initialTab = window.location.hash.replace("#", "");
+      if (["profile", "history", "data", "settings"].includes(initialTab)) {
+        switchTab(initialTab, false);
+      }
+      hydrateAccount();
     })();
   </script>
 </BaseLayout>

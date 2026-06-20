@@ -1,5 +1,10 @@
 ---
 import BrandWordmark from "./BrandWordmark.astro";
+import AppIconBadge from "./AppIconBadge.astro";
+import {
+  buildAccountMobileMenu,
+  getAccountCenterCopy,
+} from "../data/accountCenterContent";
 import { languageConfigs } from "../i18n/config";
 import { getLocalizedPathForRoute } from "../i18n/localizedSeoPages";
 import {
@@ -9,7 +14,7 @@ import {
   getLocalizedPathname,
   resolveLocaleRoute,
 } from "../i18n/routing";
-import { t } from "../lib/i18n";
+import { t, type SupportedLocale } from "../lib/i18n";
 
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
@@ -35,9 +40,12 @@ const appRoutePathnames = new Set([
   "/discover",
   "/diagnosis",
   "/pricing",
+  "/faq",
+  "/history",
   "/login",
   "/account",
   "/dashboard",
+  "/support",
   "/tryon-pro",
   "/tryon-premium",
 ]);
@@ -51,13 +59,36 @@ const languageSwitchHref = (languageSlug: string) => {
   return getLanguageSwitchPathname(currentPathname, languageSlug);
 };
 
+type MobileMenuItem = {
+  href?: string;
+  label: string;
+  icon?: string;
+  action?: "logout";
+  pendingLabel?: string;
+  failedLabel?: string;
+};
+
+type MobileMenuSection = {
+  label: string;
+  items: MobileMenuItem[];
+};
+
 interface Props {
-  active?: "tryOn" | "discover" | "blog" | "diagnosis" | "pricing";
+  active?:
+    | "tryOn"
+    | "discover"
+    | "blog"
+    | "diagnosis"
+    | "pricing"
+    | "dashboard";
   mark?: string;
   markClass?: string;
   showAuth?: boolean;
   userLabel?: string;
   minimal?: boolean;
+  mobileMenuSection?: MobileMenuSection;
+  mobileSmartHide?: boolean;
+  mobileHidden?: boolean;
 }
 
 const {
@@ -67,6 +98,9 @@ const {
   showAuth = true,
   userLabel,
   minimal = false,
+  mobileMenuSection,
+  mobileSmartHide = false,
+  mobileHidden = false,
 } = Astro.props as Props;
 
 const links = [
@@ -130,11 +164,26 @@ const featuredGuide = {
   image: "/images/article-ai-tryon-comparison.webp",
   title: t("navigation", "guideFeaturedTitle"),
 };
+const mobileGuidesSummary = [
+  t("footer", "makeupStyles"),
+  t("footer", "scenarios"),
+  t("footer", "featureGuides"),
+].join(" / ");
 
 const authEntryHref = localizeAppHref("/login?mode=register");
 const authAccountHref = localizeAppHref("/dashboard");
+const mobileAccountHref = localizeAppHref("/account");
 const authEntryLabel = t("navigation", "login");
 const authEntryShortLabel = t("navigation", "loginShort");
+const mobileDiagnosisHref = localizeAppHref("/diagnosis");
+const mobilePricingHref = localizeAppHref("/pricing");
+const mobileFaqHref = localizeAppHref("/faq");
+const mobileHistoryHref = localizeAppHref("/history");
+const mobileWorkspaceHref = localizeAppHref("/tryon-free");
+const mobileDashboardHref = localizeAppHref("/dashboard");
+const accountMenuCopy = getAccountCenterCopy(
+  currentRoute.language.locale as SupportedLocale,
+);
 
 const languageOptions = languageConfigs
   .filter((language) => language.includeInLanguageSwitcher)
@@ -143,9 +192,72 @@ const languageOptions = languageConfigs
     active: language.slug === activeLanguageSlug,
     href: languageSwitchHref(language.slug),
   }));
+
+const defaultMobileMenuSection = Astro.locals.isLoggedIn
+  ? buildAccountMobileMenu(
+      accountMenuCopy,
+      {
+        account: mobileAccountHref,
+        dashboard: mobileDashboardHref,
+        diagnosis: mobileDiagnosisHref,
+        faq: mobileFaqHref,
+        history: mobileHistoryHref,
+        home: localizeHref("/"),
+        pricing: mobilePricingHref,
+        workspace: mobileWorkspaceHref,
+      },
+      "workspace",
+    )
+  : {
+      label: accountMenuCopy.menuLabel,
+      items: [
+        {
+          href: mobileDiagnosisHref,
+          icon: "diagnosis",
+          label: t("navigation", "diagnosis"),
+        },
+        {
+          href: mobilePricingHref,
+          icon: "membership",
+          label: accountMenuCopy.memberCenter,
+        },
+        {
+          href: mobileFaqHref,
+          icon: "help",
+          label: accountMenuCopy.helpCenter,
+        },
+      ],
+    };
+const baseMobileMenuSection = mobileMenuSection ?? defaultMobileMenuSection;
+const hasDiagnosisMobileItem = baseMobileMenuSection.items.some(
+  (item) => item.href === mobileDiagnosisHref,
+);
+const resolvedMobileMenuSection = {
+  ...baseMobileMenuSection,
+  items: hasDiagnosisMobileItem
+    ? baseMobileMenuSection.items
+    : [
+        {
+          href: mobileDiagnosisHref,
+          icon: "diagnosis",
+          label: t("navigation", "diagnosis"),
+        },
+        ...baseMobileMenuSection.items,
+      ],
+};
 ---
 
-<header class:list={["site-header", { "site-header-minimal": minimal }]}>
+<header
+  class:list={[
+    "site-header",
+    {
+      "site-header-minimal": minimal,
+      "site-header-smart": mobileSmartHide,
+      "site-header-mobile-hidden": mobileHidden,
+    },
+  ]}
+  data-smart-hide={mobileSmartHide ? "" : undefined}
+>
   <nav class="site-nav shell" aria-label={t("navigation", "mainNav")}>
     <a class="brand" href={localizeHref("/")} aria-label={t("brand", "name")}>
       {
@@ -404,14 +516,11 @@ const languageOptions = languageConfigs
                   height="29"
                   aria-hidden="true"
                 />
-                <BrandWordmark variant="header" />
+                <span class="mobile-root-title">
+                  {t("navigation", "mainNav")}
+                </span>
               </a>
               <div class="mobile-root-actions">
-                {showAuth && !userLabel ? (
-                  <a class="mobile-menu-auth-cta" href={authEntryHref}>
-                    {authEntryLabel}
-                  </a>
-                ) : null}
                 <button
                   class="mobile-subnav-close"
                   type="button"
@@ -422,26 +531,92 @@ const languageOptions = languageConfigs
                 </button>
               </div>
             </div>
-            {links.slice(0, 2).map((link) => (
-              <a class:list={{ active: active === link.id }} href={link.href}>
-                {link.label}
+            {showAuth ? (
+              <a
+                class="mobile-account-summary"
+                href={authEntryHref}
+                data-mobile-account-summary
+                data-auth-href={authEntryHref}
+                data-account-href={mobileAccountHref}
+                data-auth-title={authEntryLabel}
+                data-auth-note={t("brand", "tagline")}
+                data-auth-action={authEntryShortLabel}
+                data-plan-label={t("plans", "currentPlan")}
+                data-quota-template={accountMenuCopy.memberQuota}
+                data-quota-unavailable={accountMenuCopy.quotaUnavailable}
+                data-manage-label={accountMenuCopy.profile}
+              >
+                <span
+                  class="mobile-account-summary-avatar"
+                  data-mobile-account-summary-avatar
+                  aria-hidden="true"
+                >
+                  AI
+                </span>
+                <span class="mobile-account-summary-copy">
+                  <b data-mobile-account-summary-title>{authEntryLabel}</b>
+                  <small data-mobile-account-summary-note>
+                    {t("brand", "tagline")}
+                  </small>
+                </span>
+                <span
+                  class="mobile-account-summary-action"
+                  data-mobile-account-summary-action
+                >
+                  {authEntryShortLabel}
+                </span>
               </a>
-            ))}
-            <button
-              class:list={["mobile-nav-row", { active: active === "blog" }]}
-              type="button"
-              data-mobile-guides-open
-              aria-expanded="false"
-              aria-controls="mobile-guides-page"
+            ) : null}
+            <section
+              class="mobile-app-section mobile-account-section"
+              aria-label={resolvedMobileMenuSection.label}
             >
-              <span>{t("navigation", "guides")}</span>
-              <span class="mobile-row-chevron" aria-hidden="true" />
-            </button>
-            {links.slice(2).map((link) => (
-              <a class:list={{ active: active === link.id }} href={link.href}>
-                {link.label}
-              </a>
-            ))}
+              <button
+                class:list={[
+                  "mobile-guides-entry-card",
+                  { active: active === "blog" },
+                ]}
+                type="button"
+                data-mobile-guides-open
+                aria-expanded="false"
+                aria-controls="mobile-guides-page"
+              >
+                <AppIconBadge icon="guides" size="menu" />
+                <span>
+                  <strong>{t("navigation", "guides")}</strong>
+                  <small>{mobileGuidesSummary}</small>
+                </span>
+                <i aria-hidden="true">→</i>
+              </button>
+              <p>{resolvedMobileMenuSection.label}</p>
+              <div class="mobile-app-links">
+                {resolvedMobileMenuSection.items.map((item) =>
+                  item.action === "logout" ? (
+                    <button
+                      class="mobile-app-link mobile-app-link-danger"
+                      type="button"
+                      data-mobile-logout
+                      data-logout-redirect={localizeHref("/")}
+                      data-pending-label={item.pendingLabel}
+                      data-failed-label={item.failedLabel}
+                    >
+                      {item.icon && (
+                        <AppIconBadge icon={item.icon} size="menu" />
+                      )}
+                      <b>{item.label}</b>
+                    </button>
+                  ) : (
+                    <a class="mobile-app-link" href={item.href || "#"}>
+                      {item.icon && (
+                        <AppIconBadge icon={item.icon} size="menu" />
+                      )}
+                      <b>{item.label}</b>
+                    </a>
+                  ),
+                )}
+              </div>
+              <span class="mobile-app-status" data-mobile-logout-status />
+            </section>
           </div>
           <div
             class="mobile-nav-page mobile-guides-page"
@@ -460,11 +635,6 @@ const languageOptions = languageConfigs
                 <span>{t("navigation", "back")}</span>
               </button>
               <div class="mobile-root-actions">
-                {showAuth && !userLabel ? (
-                  <a class="mobile-menu-auth-cta" href={authEntryHref}>
-                    {authEntryLabel}
-                  </a>
-                ) : null}
                 <button
                   class="mobile-subnav-close"
                   type="button"
@@ -645,6 +815,15 @@ const languageOptions = languageConfigs
   const guidesPage = document.querySelector<HTMLElement>(
     "[data-mobile-guides-page]",
   );
+  const mobileLogout = document.querySelector<HTMLButtonElement>(
+    "[data-mobile-logout]",
+  );
+  const mobileLogoutStatus = document.querySelector<HTMLElement>(
+    "[data-mobile-logout-status]",
+  );
+  const mobileThemeToggle = document.querySelector<HTMLButtonElement>(
+    "[data-mobile-theme-toggle]",
+  );
 
   if (toggle && nav) {
     const mobileToggle = toggle;
@@ -721,6 +900,26 @@ const languageOptions = languageConfigs
       link.addEventListener("click", closeMenu);
     });
 
+    mobileThemeToggle?.addEventListener("click", () => {
+      document.getElementById("theme-toggle")?.click();
+    });
+
+    mobileLogout?.addEventListener("click", async () => {
+      const pendingLabel =
+        mobileLogout.dataset.pendingLabel || mobileLogout.textContent || "";
+      const failedLabel = mobileLogout.dataset.failedLabel || "";
+      mobileLogout.disabled = true;
+      if (mobileLogoutStatus) mobileLogoutStatus.textContent = pendingLabel;
+      try {
+        const response = await fetch("/api/auth/logout", { method: "POST" });
+        if (!response.ok) throw new Error("LOGOUT_FAILED");
+        window.location.href = mobileLogout.dataset.logoutRedirect || "/";
+      } catch {
+        mobileLogout.disabled = false;
+        if (mobileLogoutStatus) mobileLogoutStatus.textContent = failedLabel;
+      }
+    });
+
     document.addEventListener("keydown", (event) => {
       if (event.key !== "Escape" || !isOpen()) return;
       if (mobileNav.classList.contains("guides-open")) {
@@ -741,6 +940,43 @@ const languageOptions = languageConfigs
   }
 </script>
 
+<script is:inline>
+  (() => {
+    const header = document.querySelector("[data-smart-hide]");
+    if (!header) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 767px)");
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const updateHeader = () => {
+      ticking = false;
+      if (!mobileQuery.matches || document.body.style.overflow === "hidden") {
+        header.classList.remove("site-header-hidden");
+        lastScrollY = window.scrollY;
+        return;
+      }
+
+      const currentScrollY = window.scrollY;
+      const shouldHide = currentScrollY > lastScrollY && currentScrollY > 80;
+      header.classList.toggle("site-header-hidden", shouldHide);
+      lastScrollY = Math.max(currentScrollY, 0);
+    };
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateHeader);
+      },
+      { passive: true },
+    );
+    mobileQuery.addEventListener("change", updateHeader);
+    updateHeader();
+  })();
+</script>
+
 <style>
   .site-header-minimal {
     border-bottom-color: color-mix(in srgb, var(--line) 58%, transparent);
@@ -748,6 +984,11 @@ const languageOptions = languageConfigs
   }
   .site-header-minimal .site-nav {
     width: min(calc(100% - 40px), 1500px);
+  }
+  @media (max-width: 767px) {
+    .site-header-mobile-hidden {
+      display: none;
+    }
   }
   .site-header .brand {
     gap: 5px;
@@ -1394,20 +1635,27 @@ const languageOptions = languageConfigs
   }
   @media (max-width: 1100px) {
     .mobile-nav-panel {
-      z-index: 120;
+      position: fixed;
+      z-index: 240;
       top: 0;
       right: 0;
-      width: 100vw;
+      bottom: 0;
+      left: 0;
+      display: block;
+      width: 100%;
       height: 100dvh;
       gap: 0;
       padding: 0;
-      box-shadow: none;
+      border: 0;
+      border-radius: 0;
+      background: var(--bg-elevated);
+      box-shadow: 0 -22px 54px rgba(18, 39, 66, 0.16);
       overflow: hidden;
-      transform: translateX(100%);
-      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateY(105%);
+      transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .mobile-nav-panel.mobile-open {
-      transform: translateX(0);
+      transform: translateY(0);
     }
     .mobile-nav-track {
       display: grid;
@@ -1427,7 +1675,8 @@ const languageOptions = languageConfigs
       height: 100%;
       overflow-y: auto;
       overscroll-behavior: contain;
-      padding: 18px clamp(20px, 5vw, 32px) 40px;
+      padding: calc(14px + env(safe-area-inset-top)) clamp(18px, 5vw, 28px)
+        calc(28px + env(safe-area-inset-bottom));
     }
     .mobile-nav-root {
       display: flex;
@@ -1440,7 +1689,7 @@ const languageOptions = languageConfigs
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
     .mobile-nav-panel .mobile-root-brand {
       display: inline-flex;
@@ -1461,18 +1710,23 @@ const languageOptions = languageConfigs
     }
     .mobile-nav-panel .mobile-root-brand img {
       display: block;
-      width: 29px;
-      height: 29px;
-      flex: 0 0 29px;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
       object-fit: contain;
     }
     .mobile-root-brand :global(.brand-wordmark-header) {
-      display: inline-block;
-      font-size: 18px;
-      max-width: min(42vw, 170px);
+      display: none;
+    }
+    .mobile-root-title {
+      min-width: 0;
       overflow: hidden;
+      color: var(--heading);
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.2;
       text-overflow: ellipsis;
-      vertical-align: middle;
+      white-space: nowrap;
     }
     .mobile-root-actions {
       display: inline-flex;
@@ -1486,6 +1740,7 @@ const languageOptions = languageConfigs
       min-height: 34px;
       align-items: center;
       justify-content: center;
+      gap: 7px;
       padding: 0 12px;
       border: 1px solid rgba(173, 49, 88, 0.62);
       border-radius: 7px;
@@ -1496,9 +1751,34 @@ const languageOptions = languageConfigs
       line-height: 1;
       text-decoration: none;
       white-space: nowrap;
+      max-width: 138px;
       box-shadow:
         0 5px 12px rgba(184, 46, 92, 0.16),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    .mobile-menu-auth-cta [data-mobile-menu-auth-label] {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mobile-menu-auth-avatar {
+      display: grid;
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+    .mobile-menu-auth-avatar[hidden] {
+      display: none;
+    }
+    .mobile-menu-auth-cta-account {
+      padding-inline: 8px 11px;
     }
     .mobile-menu-auth-cta:hover {
       color: #fff8fb;
@@ -1511,6 +1791,70 @@ const languageOptions = languageConfigs
       box-shadow:
         0 8px 18px rgba(0, 0, 0, 0.24),
         inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+    .mobile-account-summary {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      min-height: 58px;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0 12px;
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .mobile-account-summary:hover,
+    .mobile-account-summary:focus-visible {
+      color: var(--rose);
+      outline: 0;
+    }
+    .mobile-account-summary-avatar {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--rose) 24%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--rose-soft) 76%, var(--bg-elevated));
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .mobile-account-summary-copy {
+      display: grid;
+      min-width: 0;
+      gap: 3px;
+    }
+    .mobile-account-summary-copy b {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--heading);
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mobile-account-summary-copy small {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--body-secondary);
+      font-size: 12px;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mobile-account-summary-action {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      padding: 0 10px;
+      border: 1px solid color-mix(in srgb, var(--rose) 28%, transparent);
+      border-radius: 999px;
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
     }
     .mobile-nav-panel .mobile-nav-root > a,
     .mobile-nav-row {
@@ -1539,6 +1883,268 @@ const languageOptions = languageConfigs
     .mobile-nav-row.active {
       color: var(--rose);
       font-weight: 800;
+    }
+    .mobile-app-section {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .mobile-account-section {
+      margin-top: 10px;
+      padding-top: 0;
+      border-top: 0;
+    }
+    .mobile-app-section p {
+      margin: 0;
+      color: var(--body-secondary);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .mobile-guides-entry-card {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      min-height: 74px;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      border: 1px solid color-mix(in srgb, var(--rose) 22%, var(--line));
+      border-radius: 12px;
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--rose-soft) 78%, var(--bg-elevated)),
+          color-mix(in srgb, var(--teal-soft) 34%, var(--bg-elevated))
+        ),
+        var(--bg-elevated);
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      touch-action: manipulation;
+      transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+    }
+    .mobile-guides-entry-card:active {
+      transform: scale(0.985);
+    }
+    .mobile-guides-entry-card:hover,
+    .mobile-guides-entry-card:focus-visible,
+    .mobile-guides-entry-card.active {
+      border-color: color-mix(in srgb, var(--rose) 42%, var(--line));
+      box-shadow: 0 12px 28px rgba(184, 46, 92, 0.12);
+      outline: 0;
+    }
+    .mobile-guides-entry-card :global(.app-icon-badge) {
+      --app-icon-size: 34px;
+      --app-icon-bg: color-mix(
+        in srgb,
+        var(--bg-elevated) 86%,
+        var(--rose-soft)
+      );
+      --app-icon-border: color-mix(in srgb, var(--rose) 28%, var(--line));
+      --app-icon-fg: var(--rose);
+    }
+    .mobile-guides-entry-card > span {
+      display: grid;
+      min-width: 0;
+      gap: 4px;
+    }
+    .mobile-guides-entry-card strong {
+      overflow: hidden;
+      color: inherit;
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.15;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mobile-guides-entry-card small {
+      overflow: hidden;
+      color: var(--body-secondary);
+      font-size: 12px;
+      font-weight: 720;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mobile-guides-entry-card i {
+      color: var(--rose);
+      font-style: normal;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .mobile-app-links {
+      display: grid;
+      gap: 6px;
+    }
+    .mobile-nav-panel .mobile-app-link,
+    .mobile-app-link {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      min-height: 48px;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border: 0;
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      border-radius: 0;
+      background: transparent;
+      color: var(--nav-link);
+      font: inherit;
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition:
+        color 0.18s ease,
+        background-color 0.18s ease;
+    }
+    .mobile-app-link span {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--rose);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .mobile-app-link :global(.app-icon-badge) {
+      --app-icon-size: 28px;
+      --app-icon-bg: color-mix(
+        in srgb,
+        var(--rose-soft) 74%,
+        var(--bg-elevated)
+      );
+      --app-icon-border: color-mix(in srgb, var(--rose) 24%, var(--line));
+      --app-icon-fg: var(--rose);
+    }
+    .mobile-app-link b {
+      min-width: 0;
+      overflow: hidden;
+      color: inherit;
+      font-size: 15px;
+      font-weight: 750;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mobile-nav-panel .mobile-app-link:hover,
+    .mobile-nav-panel .mobile-app-link:focus-visible,
+    .mobile-app-link:hover,
+    .mobile-app-link:focus-visible,
+    .mobile-app-link.active {
+      background: color-mix(in srgb, var(--rose-soft) 58%, transparent);
+      color: var(--rose);
+      outline: 0;
+    }
+    .mobile-app-link:hover :global(.app-icon-badge),
+    .mobile-app-link:focus-visible :global(.app-icon-badge),
+    .mobile-app-link.active :global(.app-icon-badge) {
+      --app-icon-bg: color-mix(
+        in srgb,
+        var(--rose-soft) 88%,
+        var(--bg-elevated)
+      );
+      --app-icon-border: color-mix(in srgb, var(--rose) 42%, var(--line));
+    }
+    .mobile-app-link-danger {
+      color: var(--danger-text);
+    }
+    .mobile-app-link-danger span {
+      color: var(--danger-text);
+    }
+    .mobile-app-link-danger :global(.app-icon-badge) {
+      --app-icon-bg: color-mix(
+        in srgb,
+        var(--surface-danger) 84%,
+        var(--bg-elevated)
+      );
+      --app-icon-border: color-mix(
+        in srgb,
+        var(--danger-text) 32%,
+        var(--line)
+      );
+      --app-icon-fg: var(--danger-text);
+    }
+    .mobile-app-link:disabled {
+      cursor: wait;
+      opacity: 0.64;
+    }
+    .mobile-app-status {
+      min-height: 18px;
+      color: var(--body-secondary);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .mobile-language-switcher {
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+    }
+    .mobile-language-switcher summary {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      min-height: 48px;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      color: var(--nav-link);
+      cursor: pointer;
+      list-style: none;
+    }
+    .mobile-language-switcher summary::-webkit-details-marker {
+      display: none;
+    }
+    .mobile-language-switcher summary span,
+    .mobile-theme-link span {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--rose);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .mobile-language-switcher summary b {
+      color: inherit;
+      font-size: 15px;
+      font-weight: 750;
+    }
+    .mobile-language-list {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 0 12px 42px;
+      scrollbar-width: none;
+    }
+    .mobile-language-list::-webkit-scrollbar {
+      display: none;
+    }
+    .mobile-language-option {
+      display: inline-flex;
+      min-height: 32px;
+      flex: 0 0 auto;
+      align-items: center;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--nav-link);
+      font-size: 12px;
+      font-weight: 750;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .mobile-language-option.active {
+      border-color: color-mix(in srgb, var(--rose) 34%, transparent);
+      background: var(--rose-soft);
+      color: var(--rose);
     }
     .mobile-row-chevron,
     .mobile-back-chevron {
@@ -1604,8 +2210,8 @@ const languageOptions = languageConfigs
       .mobile-root-actions {
         gap: 6px;
       }
-      .mobile-root-brand :global(.brand-wordmark-header) {
-        max-width: min(36vw, 128px);
+      .mobile-root-title {
+        max-width: 48vw;
         font-size: 16px;
       }
       .mobile-menu-auth-cta {
@@ -1687,7 +2293,28 @@ const languageOptions = languageConfigs
       font-weight: 650;
     }
     .mobile-nav-backdrop {
-      display: none;
+      position: fixed;
+      z-index: 230;
+      inset: 0;
+      display: block;
+      background: rgba(11, 20, 35, 0.42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.24s ease;
+    }
+    .mobile-nav-backdrop.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    :global([data-theme="dark"]) .mobile-nav-panel {
+      border-color: rgba(255, 255, 255, 0.08);
+      background: var(--bg-elevated);
+      box-shadow:
+        0 -24px 58px rgba(0, 0, 0, 0.46),
+        0 -2px 12px rgba(0, 0, 0, 0.24);
+    }
+    :global([data-theme="dark"]) .mobile-nav-backdrop {
+      background: rgba(0, 0, 0, 0.56);
     }
   }
   @media (prefers-reduced-motion: reduce) {

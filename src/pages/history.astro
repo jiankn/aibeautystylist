@@ -1,0 +1,2484 @@
+---
+import SiteHeader from "../components/SiteHeader.astro";
+import MobileAppTopBar from "../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../components/MobileBottomNav.astro";
+import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCurrentLocale } from "../lib/i18n";
+
+const locale = getCurrentLocale();
+const audienceContext = Astro.locals.audienceContext;
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+
+const historyHref = localizeAppHref("/history");
+const hrefs = {
+  dashboard: localizeAppHref("/dashboard"),
+  discover: localizeAppHref("/discover"),
+  login: localizeAppHref(
+    `/login?mode=login&next=${encodeURIComponent(historyHref)}`,
+  ),
+  tryonFree: localizeAppHref("/tryon-free"),
+};
+
+const recommendations = resolveLookCatalog(audienceContext)
+  .slice(0, 4)
+  .map((look) => ({
+    slug: look.slug,
+    title: look.title,
+    image: look.image,
+    imageAlt: look.imageAlt,
+  }));
+
+const copyByLocale = {
+  en: {
+    title: "History | AI Beauty Stylist",
+    description: "Review your AI try-on history and recent generated looks.",
+    eyebrow: "History",
+    heading: "All try-on history",
+    subtitle:
+      "Review generated results, compare completed looks, and keep refining your makeup direction.",
+    backDashboard: "Dashboard",
+    startTryon: "Start try-on",
+    browseLooks: "Browse looks",
+    loading: "Loading history...",
+    emptyHistoryTitle: "No try-on results yet",
+    emptyHistoryHint:
+      "Generated results will be saved here automatically for review, comparison, and future adjustments.",
+    noResultsTitle: "No matching history",
+    noResultsHint: "Try another keyword, status, or sort option.",
+    loadFailedTitle: "History could not be loaded",
+    loadFailedHint: "Sign in to view history, or refresh this page later.",
+    signIn: "Sign in",
+    searchLabel: "Search history",
+    searchPlaceholder: "Search look name or date",
+    clearSearch: "Clear search",
+    filtersLabel: "Filter history",
+    filterAll: "All",
+    filterSucceeded: "Completed",
+    filterFailed: "Incomplete",
+    filterFavorited: "Saved",
+    sortLabel: "Sort",
+    sortNewest: "Newest",
+    sortOldest: "Oldest",
+    sortName: "Name",
+    select: "Select",
+    selectMode: "Select results",
+    exitSelect: "Done",
+    selected: "selected",
+    totalLabel: "Total",
+    visibleLabel: "Showing",
+    statusSucceeded: "Completed",
+    statusRunning: "Processing",
+    statusFailed: "Incomplete",
+    favorite: "Save",
+    unfavorite: "Saved",
+    saveFailed: "Saved-look operation failed.",
+    savedLimitReached:
+      "Your saved-look limit is full. Remove one saved result or upgrade to save more.",
+    more: "Open result",
+    delete: "Delete",
+    compare: "Compare",
+    share: "Share",
+    cancel: "Cancel",
+    clearFilters: "Clear filters",
+    dateToday: "Today",
+    dateYesterday: "Yesterday",
+    dateUnknown: "Unknown date",
+    unknownLook: "Makeup result",
+    deleteConfirm: "Delete {count} selected result(s)?",
+    deleteSuccess: "Selected history deleted.",
+    deleteFailed: "Some selected results could not be deleted.",
+    compareNeedTwo: "Select at least 2 results to compare.",
+    comparePending: "Comparison view is not available yet.",
+    shareCopied: "Result link copied.",
+    shareFailed: "Sharing is not available for this result.",
+  },
+  "zh-CN": {
+    title: "历史记录 | AI Beauty Stylist",
+    description: "查看你的 AI 试妆历史记录和最近生成结果。",
+    eyebrow: "历史记录",
+    heading: "全部试妆历史",
+    subtitle:
+      "回看最近生成的试妆结果，对比已完成妆容，继续调整适合自己的妆容方向。",
+    backDashboard: "工作台",
+    startTryon: "开始试妆",
+    browseLooks: "浏览妆容库",
+    loading: "正在读取历史记录...",
+    emptyHistoryTitle: "还没有试妆结果",
+    emptyHistoryHint:
+      "生成后的试妆结果会自动保存在这里，方便你回看、对比和继续调整妆容方向。",
+    noResultsTitle: "没有匹配的历史记录",
+    noResultsHint: "换一个关键词、状态筛选或排序方式试试。",
+    loadFailedTitle: "历史记录暂时无法读取",
+    loadFailedHint: "请登录后查看历史记录，或稍后刷新页面重试。",
+    signIn: "登录账户",
+    searchLabel: "搜索历史记录",
+    searchPlaceholder: "搜索妆容名称或日期",
+    clearSearch: "清除搜索",
+    filtersLabel: "筛选历史记录",
+    filterAll: "全部",
+    filterSucceeded: "已完成",
+    filterFailed: "未完成",
+    filterFavorited: "已收藏",
+    sortLabel: "排序",
+    sortNewest: "最新",
+    sortOldest: "最早",
+    sortName: "名称",
+    select: "多选",
+    selectMode: "选择记录",
+    exitSelect: "完成",
+    selected: "已选",
+    totalLabel: "总数",
+    visibleLabel: "当前显示",
+    statusSucceeded: "已完成",
+    statusRunning: "处理中",
+    statusFailed: "未完成",
+    favorite: "收藏",
+    unfavorite: "已收藏",
+    saveFailed: "操作收藏失败。",
+    savedLimitReached: "当前计划收藏数量已满，请取消一个收藏或升级后继续保存。",
+    more: "查看结果",
+    delete: "删除",
+    compare: "对比",
+    share: "分享",
+    cancel: "取消",
+    clearFilters: "清除筛选",
+    dateToday: "今天",
+    dateYesterday: "昨天",
+    dateUnknown: "未知日期",
+    unknownLook: "妆容结果",
+    deleteConfirm: "确认删除已选的 {count} 条试妆记录？",
+    deleteSuccess: "已删除所选历史记录。",
+    deleteFailed: "部分记录删除失败，请稍后重试。",
+    compareNeedTwo: "至少选择 2 条结果才能对比。",
+    comparePending: "对比视图暂未开放。",
+    shareCopied: "结果链接已复制。",
+    shareFailed: "当前结果暂时无法分享。",
+  },
+  "zh-TW": {
+    title: "歷史記錄 | AI Beauty Stylist",
+    description: "查看你的 AI 試妝歷史記錄和最近生成結果。",
+    eyebrow: "歷史記錄",
+    heading: "全部試妝歷史",
+    subtitle: "回看生成結果、對比已完成妝容，持續調整適合自己的妝容方向。",
+    backDashboard: "工作台",
+    startTryon: "開始試妝",
+    browseLooks: "瀏覽妝容庫",
+    loading: "正在讀取歷史記錄...",
+    emptyHistoryTitle: "還沒有試妝結果",
+    emptyHistoryHint:
+      "生成後的試妝結果會自動保存在這裡，方便回看、對比和調整。",
+    noResultsTitle: "沒有符合的歷史記錄",
+    noResultsHint: "換一個關鍵字、狀態篩選或排序方式試試。",
+    loadFailedTitle: "歷史記錄暫時無法讀取",
+    loadFailedHint: "請登入後查看歷史記錄，或稍後重新整理頁面。",
+    signIn: "登入帳戶",
+    searchLabel: "搜尋歷史記錄",
+    searchPlaceholder: "搜尋妝容名稱或日期",
+    clearSearch: "清除搜尋",
+    filtersLabel: "篩選歷史記錄",
+    filterAll: "全部",
+    filterSucceeded: "已完成",
+    filterFailed: "未完成",
+    filterFavorited: "已收藏",
+    sortLabel: "排序",
+    sortNewest: "最新",
+    sortOldest: "最早",
+    sortName: "名稱",
+    select: "多選",
+    selectMode: "選擇記錄",
+    exitSelect: "完成",
+    selected: "已選",
+    totalLabel: "總數",
+    visibleLabel: "目前顯示",
+    statusSucceeded: "已完成",
+    statusRunning: "處理中",
+    statusFailed: "未完成",
+    favorite: "收藏",
+    unfavorite: "已收藏",
+    saveFailed: "操作收藏失敗。",
+    savedLimitReached: "目前方案的收藏數量已滿，請取消一個收藏或升級後繼續保存。",
+    more: "查看結果",
+    delete: "刪除",
+    compare: "對比",
+    share: "分享",
+    cancel: "取消",
+    clearFilters: "清除篩選",
+    dateToday: "今天",
+    dateYesterday: "昨天",
+    dateUnknown: "未知日期",
+    unknownLook: "妝容結果",
+    deleteConfirm: "確認刪除已選的 {count} 筆試妝記錄？",
+    deleteSuccess: "已刪除所選歷史記錄。",
+    deleteFailed: "部分記錄刪除失敗，請稍後再試。",
+    compareNeedTwo: "至少選擇 2 筆結果才能對比。",
+    comparePending: "對比視圖暫未開放。",
+    shareCopied: "結果連結已複製。",
+    shareFailed: "目前結果暫時無法分享。",
+  },
+  "de-DE": {
+    title: "Verlauf | AI Beauty Stylist",
+    description: "Pruefe deinen AI-Make-up-Verlauf und neue Ergebnisse.",
+    eyebrow: "Verlauf",
+    heading: "Gesamter Try-on-Verlauf",
+    subtitle:
+      "Pruefe erzeugte Ergebnisse, vergleiche fertige Looks und verfeinere deine Make-up-Richtung.",
+    backDashboard: "Dashboard",
+    startTryon: "Try-on starten",
+    browseLooks: "Looks ansehen",
+    loading: "Verlauf wird geladen...",
+    emptyHistoryTitle: "Noch keine Try-on-Ergebnisse",
+    emptyHistoryHint:
+      "Erzeugte Ergebnisse erscheinen hier automatisch zum Pruefen, Vergleichen und Anpassen.",
+    noResultsTitle: "Keine passenden Eintraege",
+    noResultsHint:
+      "Versuche ein anderes Stichwort, einen Status oder eine Sortierung.",
+    loadFailedTitle: "Verlauf konnte nicht geladen werden",
+    loadFailedHint: "Melde dich an oder aktualisiere die Seite spaeter erneut.",
+    signIn: "Anmelden",
+    searchLabel: "Verlauf suchen",
+    searchPlaceholder: "Look-Name oder Datum suchen",
+    clearSearch: "Suche loeschen",
+    filtersLabel: "Verlauf filtern",
+    filterAll: "Alle",
+    filterSucceeded: "Fertig",
+    filterFailed: "Unvollstaendig",
+    filterFavorited: "Gespeichert",
+    sortLabel: "Sortieren",
+    sortNewest: "Neueste",
+    sortOldest: "Aelteste",
+    sortName: "Name",
+    select: "Auswaehlen",
+    selectMode: "Ergebnisse auswaehlen",
+    exitSelect: "Fertig",
+    selected: "ausgewaehlt",
+    totalLabel: "Gesamt",
+    visibleLabel: "Angezeigt",
+    statusSucceeded: "Fertig",
+    statusRunning: "In Bearbeitung",
+    statusFailed: "Unvollstaendig",
+    favorite: "Speichern",
+    unfavorite: "Gespeichert",
+    saveFailed: "Die Aktion konnte nicht gespeichert werden.",
+    savedLimitReached:
+      "Dein Speicherlimit ist erreicht. Entferne ein Ergebnis oder upgrade, um mehr zu speichern.",
+    more: "Ergebnis oeffnen",
+    delete: "Loeschen",
+    compare: "Vergleichen",
+    share: "Teilen",
+    cancel: "Abbrechen",
+    clearFilters: "Filter loeschen",
+    dateToday: "Heute",
+    dateYesterday: "Gestern",
+    dateUnknown: "Unbekanntes Datum",
+    unknownLook: "Make-up-Ergebnis",
+    deleteConfirm: "{count} ausgewaehlte Ergebnis(se) loeschen?",
+    deleteSuccess: "Ausgewaehlter Verlauf geloescht.",
+    deleteFailed: "Einige Ergebnisse konnten nicht geloescht werden.",
+    compareNeedTwo: "Waehle mindestens 2 Ergebnisse zum Vergleichen.",
+    comparePending: "Die Vergleichsansicht ist noch nicht verfuegbar.",
+    shareCopied: "Ergebnislink kopiert.",
+    shareFailed: "Teilen ist fuer dieses Ergebnis nicht verfuegbar.",
+  },
+  "fr-FR": {
+    title: "Historique | AI Beauty Stylist",
+    description: "Consultez votre historique d'essais maquillage AI.",
+    eyebrow: "Historique",
+    heading: "Tout l'historique d'essais",
+    subtitle:
+      "Revoyez les resultats generes, comparez les looks finalises et affinez votre direction maquillage.",
+    backDashboard: "Tableau de bord",
+    startTryon: "Demarrer l'essai",
+    browseLooks: "Explorer les looks",
+    loading: "Chargement de l'historique...",
+    emptyHistoryTitle: "Aucun resultat d'essai",
+    emptyHistoryHint:
+      "Les resultats generes seront sauvegardes ici pour les revoir, les comparer et les ajuster.",
+    noResultsTitle: "Aucun resultat correspondant",
+    noResultsHint: "Essayez un autre mot-cle, statut ou tri.",
+    loadFailedTitle: "Impossible de charger l'historique",
+    loadFailedHint: "Connectez-vous ou actualisez la page plus tard.",
+    signIn: "Se connecter",
+    searchLabel: "Rechercher dans l'historique",
+    searchPlaceholder: "Nom du look ou date",
+    clearSearch: "Effacer la recherche",
+    filtersLabel: "Filtrer l'historique",
+    filterAll: "Tous",
+    filterSucceeded: "Termines",
+    filterFailed: "Incomplets",
+    filterFavorited: "Enregistres",
+    sortLabel: "Trier",
+    sortNewest: "Recents",
+    sortOldest: "Anciens",
+    sortName: "Nom",
+    select: "Selection",
+    selectMode: "Selectionner",
+    exitSelect: "Termine",
+    selected: "selectionnes",
+    totalLabel: "Total",
+    visibleLabel: "Affiches",
+    statusSucceeded: "Termine",
+    statusRunning: "En cours",
+    statusFailed: "Incomplet",
+    favorite: "Enregistrer",
+    unfavorite: "Enregistre",
+    saveFailed: "Impossible d’enregistrer l’action.",
+    savedLimitReached:
+      "La limite de looks enregistrés est atteinte. Supprimez un résultat ou passez à une offre supérieure.",
+    more: "Ouvrir le resultat",
+    delete: "Supprimer",
+    compare: "Comparer",
+    share: "Partager",
+    cancel: "Annuler",
+    clearFilters: "Effacer les filtres",
+    dateToday: "Aujourd'hui",
+    dateYesterday: "Hier",
+    dateUnknown: "Date inconnue",
+    unknownLook: "Resultat maquillage",
+    deleteConfirm: "Supprimer {count} resultat(s) selectionne(s) ?",
+    deleteSuccess: "Historique selectionne supprime.",
+    deleteFailed: "Certains resultats n'ont pas pu etre supprimes.",
+    compareNeedTwo: "Selectionnez au moins 2 resultats pour comparer.",
+    comparePending: "La vue de comparaison n'est pas encore disponible.",
+    shareCopied: "Lien du resultat copie.",
+    shareFailed: "Le partage n'est pas disponible pour ce resultat.",
+  },
+  "ja-JP": {
+    title: "履歴 | AI Beauty Stylist",
+    description: "AIメイク試着の履歴と最近の生成結果を確認できます。",
+    eyebrow: "履歴",
+    heading: "すべての試着履歴",
+    subtitle:
+      "生成結果を見返し、完成したメイクを比較して、自分に合う方向性を調整できます。",
+    backDashboard: "ダッシュボード",
+    startTryon: "試着を始める",
+    browseLooks: "メイクを見る",
+    loading: "履歴を読み込み中...",
+    emptyHistoryTitle: "試着結果はまだありません",
+    emptyHistoryHint:
+      "生成された結果はここに自動保存され、見返しや比較、調整に使えます。",
+    noResultsTitle: "一致する履歴がありません",
+    noResultsHint: "別のキーワード、ステータス、並び替えを試してください。",
+    loadFailedTitle: "履歴を読み込めません",
+    loadFailedHint: "ログインするか、しばらくしてから更新してください。",
+    signIn: "ログイン",
+    searchLabel: "履歴を検索",
+    searchPlaceholder: "メイク名または日付を検索",
+    clearSearch: "検索をクリア",
+    filtersLabel: "履歴を絞り込む",
+    filterAll: "すべて",
+    filterSucceeded: "完了",
+    filterFailed: "未完了",
+    filterFavorited: "保存済み",
+    sortLabel: "並び替え",
+    sortNewest: "新しい順",
+    sortOldest: "古い順",
+    sortName: "名前",
+    select: "選択",
+    selectMode: "結果を選択",
+    exitSelect: "完了",
+    selected: "選択中",
+    totalLabel: "合計",
+    visibleLabel: "表示中",
+    statusSucceeded: "完了",
+    statusRunning: "処理中",
+    statusFailed: "未完了",
+    favorite: "保存",
+    unfavorite: "保存済み",
+    saveFailed: "保存操作に失敗しました。",
+    savedLimitReached:
+      "保存上限に達しました。保存済み結果を1つ削除するか、アップグレードしてください。",
+    more: "結果を開く",
+    delete: "削除",
+    compare: "比較",
+    share: "共有",
+    cancel: "キャンセル",
+    clearFilters: "絞り込みを解除",
+    dateToday: "今日",
+    dateYesterday: "昨日",
+    dateUnknown: "日付不明",
+    unknownLook: "メイク結果",
+    deleteConfirm: "選択した {count} 件の結果を削除しますか？",
+    deleteSuccess: "選択した履歴を削除しました。",
+    deleteFailed: "一部の結果を削除できませんでした。",
+    compareNeedTwo: "比較するには2件以上選択してください。",
+    comparePending: "比較ビューはまだ利用できません。",
+    shareCopied: "結果リンクをコピーしました。",
+    shareFailed: "この結果は共有できません。",
+  },
+  "ko-KR": {
+    title: "히스토리 | AI Beauty Stylist",
+    description: "AI 메이크업 가상 체험 기록과 최근 생성 결과를 확인하세요.",
+    eyebrow: "히스토리",
+    heading: "전체 체험 기록",
+    subtitle:
+      "생성 결과를 다시 보고 완료된 룩을 비교하면서 나에게 맞는 메이크업 방향을 조정하세요.",
+    backDashboard: "대시보드",
+    startTryon: "체험 시작",
+    browseLooks: "룩 둘러보기",
+    loading: "기록을 불러오는 중...",
+    emptyHistoryTitle: "아직 체험 결과가 없습니다",
+    emptyHistoryHint:
+      "생성된 결과는 자동으로 이곳에 저장되어 다시 보기, 비교, 조정에 사용할 수 있습니다.",
+    noResultsTitle: "일치하는 기록이 없습니다",
+    noResultsHint: "다른 키워드, 상태 또는 정렬을 시도해 보세요.",
+    loadFailedTitle: "기록을 불러올 수 없습니다",
+    loadFailedHint: "로그인 후 확인하거나 나중에 새로고침해 주세요.",
+    signIn: "로그인",
+    searchLabel: "기록 검색",
+    searchPlaceholder: "룩 이름 또는 날짜 검색",
+    clearSearch: "검색 지우기",
+    filtersLabel: "기록 필터",
+    filterAll: "전체",
+    filterSucceeded: "완료",
+    filterFailed: "미완료",
+    filterFavorited: "저장됨",
+    sortLabel: "정렬",
+    sortNewest: "최신순",
+    sortOldest: "오래된순",
+    sortName: "이름",
+    select: "선택",
+    selectMode: "결과 선택",
+    exitSelect: "완료",
+    selected: "선택됨",
+    totalLabel: "총",
+    visibleLabel: "표시",
+    statusSucceeded: "완료",
+    statusRunning: "처리 중",
+    statusFailed: "미완료",
+    favorite: "저장",
+    unfavorite: "저장됨",
+    saveFailed: "저장 작업에 실패했습니다.",
+    savedLimitReached:
+      "저장 한도에 도달했습니다. 저장된 결과를 하나 삭제하거나 업그레이드하세요.",
+    more: "결과 열기",
+    delete: "삭제",
+    compare: "비교",
+    share: "공유",
+    cancel: "취소",
+    clearFilters: "필터 지우기",
+    dateToday: "오늘",
+    dateYesterday: "어제",
+    dateUnknown: "날짜 없음",
+    unknownLook: "메이크업 결과",
+    deleteConfirm: "선택한 결과 {count}개를 삭제할까요?",
+    deleteSuccess: "선택한 기록을 삭제했습니다.",
+    deleteFailed: "일부 결과를 삭제하지 못했습니다.",
+    compareNeedTwo: "비교하려면 최소 2개를 선택하세요.",
+    comparePending: "비교 화면은 아직 사용할 수 없습니다.",
+    shareCopied: "결과 링크를 복사했습니다.",
+    shareFailed: "이 결과는 공유할 수 없습니다.",
+  },
+  "es-ES": {
+    title: "Historial | AI Beauty Stylist",
+    description: "Revisa tu historial de pruebas de maquillaje con IA.",
+    eyebrow: "Historial",
+    heading: "Todo el historial de pruebas",
+    subtitle:
+      "Revisa resultados generados, compara looks completados y ajusta tu direccion de maquillaje.",
+    backDashboard: "Panel",
+    startTryon: "Iniciar prueba",
+    browseLooks: "Explorar looks",
+    loading: "Cargando historial...",
+    emptyHistoryTitle: "Aun no hay resultados",
+    emptyHistoryHint:
+      "Los resultados generados se guardaran aqui para revisarlos, compararlos y seguir ajustando.",
+    noResultsTitle: "No hay resultados coincidentes",
+    noResultsHint: "Prueba otra palabra clave, estado u orden.",
+    loadFailedTitle: "No se pudo cargar el historial",
+    loadFailedHint: "Inicia sesion o actualiza la pagina mas tarde.",
+    signIn: "Iniciar sesion",
+    searchLabel: "Buscar historial",
+    searchPlaceholder: "Buscar look o fecha",
+    clearSearch: "Borrar busqueda",
+    filtersLabel: "Filtrar historial",
+    filterAll: "Todo",
+    filterSucceeded: "Completados",
+    filterFailed: "Incompletos",
+    filterFavorited: "Guardados",
+    sortLabel: "Ordenar",
+    sortNewest: "Recientes",
+    sortOldest: "Antiguos",
+    sortName: "Nombre",
+    select: "Seleccionar",
+    selectMode: "Seleccionar resultados",
+    exitSelect: "Listo",
+    selected: "seleccionados",
+    totalLabel: "Total",
+    visibleLabel: "Mostrando",
+    statusSucceeded: "Completado",
+    statusRunning: "Procesando",
+    statusFailed: "Incompleto",
+    favorite: "Guardar",
+    unfavorite: "Guardado",
+    saveFailed: "No se pudo guardar la operación.",
+    savedLimitReached:
+      "Has alcanzado el límite de looks guardados. Elimina un resultado o mejora tu plan para guardar más.",
+    more: "Abrir resultado",
+    delete: "Eliminar",
+    compare: "Comparar",
+    share: "Compartir",
+    cancel: "Cancelar",
+    clearFilters: "Borrar filtros",
+    dateToday: "Hoy",
+    dateYesterday: "Ayer",
+    dateUnknown: "Fecha desconocida",
+    unknownLook: "Resultado de maquillaje",
+    deleteConfirm: "Eliminar {count} resultado(s) seleccionado(s)?",
+    deleteSuccess: "Historial seleccionado eliminado.",
+    deleteFailed: "No se pudieron eliminar algunos resultados.",
+    compareNeedTwo: "Selecciona al menos 2 resultados para comparar.",
+    comparePending: "La vista de comparacion aun no esta disponible.",
+    shareCopied: "Enlace del resultado copiado.",
+    shareFailed: "No se puede compartir este resultado.",
+  },
+  "es-419": {
+    title: "Historial | AI Beauty Stylist",
+    description: "Revisa tu historial de pruebas de maquillaje con IA.",
+    eyebrow: "Historial",
+    heading: "Todo el historial de pruebas",
+    subtitle:
+      "Revisa resultados generados, compara looks terminados y ajusta tu direccion de maquillaje.",
+    backDashboard: "Panel",
+    startTryon: "Iniciar prueba",
+    browseLooks: "Explorar looks",
+    loading: "Cargando historial...",
+    emptyHistoryTitle: "Aun no hay resultados",
+    emptyHistoryHint:
+      "Los resultados generados se guardaran aqui para revisarlos, compararlos y seguir ajustando.",
+    noResultsTitle: "No hay resultados coincidentes",
+    noResultsHint: "Prueba otra palabra clave, estado u orden.",
+    loadFailedTitle: "No se pudo cargar el historial",
+    loadFailedHint: "Inicia sesion o actualiza la pagina mas tarde.",
+    signIn: "Iniciar sesion",
+    searchLabel: "Buscar historial",
+    searchPlaceholder: "Buscar look o fecha",
+    clearSearch: "Borrar busqueda",
+    filtersLabel: "Filtrar historial",
+    filterAll: "Todo",
+    filterSucceeded: "Completados",
+    filterFailed: "Incompletos",
+    filterFavorited: "Guardados",
+    sortLabel: "Ordenar",
+    sortNewest: "Recientes",
+    sortOldest: "Antiguos",
+    sortName: "Nombre",
+    select: "Seleccionar",
+    selectMode: "Seleccionar resultados",
+    exitSelect: "Listo",
+    selected: "seleccionados",
+    totalLabel: "Total",
+    visibleLabel: "Mostrando",
+    statusSucceeded: "Completado",
+    statusRunning: "Procesando",
+    statusFailed: "Incompleto",
+    favorite: "Guardar",
+    unfavorite: "Guardado",
+    saveFailed: "No se pudo guardar la operación.",
+    savedLimitReached:
+      "Has alcanzado el límite de looks guardados. Elimina un resultado o mejora tu plan para guardar más.",
+    more: "Abrir resultado",
+    delete: "Eliminar",
+    compare: "Comparar",
+    share: "Compartir",
+    cancel: "Cancelar",
+    clearFilters: "Borrar filtros",
+    dateToday: "Hoy",
+    dateYesterday: "Ayer",
+    dateUnknown: "Fecha desconocida",
+    unknownLook: "Resultado de maquillaje",
+    deleteConfirm: "Eliminar {count} resultado(s) seleccionado(s)?",
+    deleteSuccess: "Historial seleccionado eliminado.",
+    deleteFailed: "No se pudieron eliminar algunos resultados.",
+    compareNeedTwo: "Selecciona al menos 2 resultados para comparar.",
+    comparePending: "La vista de comparacion aun no esta disponible.",
+    shareCopied: "Enlace del resultado copiado.",
+    shareFailed: "No se puede compartir este resultado.",
+  },
+  "pt-BR": {
+    title: "Historico | AI Beauty Stylist",
+    description: "Revise seu historico de provas de maquiagem com IA.",
+    eyebrow: "Historico",
+    heading: "Todo o historico de provas",
+    subtitle:
+      "Revise resultados gerados, compare looks concluídos e ajuste sua direção de maquiagem.",
+    backDashboard: "Painel",
+    startTryon: "Iniciar prova",
+    browseLooks: "Explorar looks",
+    loading: "Carregando historico...",
+    emptyHistoryTitle: "Ainda nao ha resultados",
+    emptyHistoryHint:
+      "Os resultados gerados serão salvos aqui automaticamente para revisar, comparar e ajustar.",
+    noResultsTitle: "Nenhum historico encontrado",
+    noResultsHint: "Tente outra palavra-chave, status ou ordenacao.",
+    loadFailedTitle: "Nao foi possivel carregar o historico",
+    loadFailedHint: "Entre na sua conta ou atualize a pagina mais tarde.",
+    signIn: "Entrar",
+    searchLabel: "Buscar no historico",
+    searchPlaceholder: "Buscar look ou data",
+    clearSearch: "Limpar busca",
+    filtersLabel: "Filtrar historico",
+    filterAll: "Todos",
+    filterSucceeded: "Concluidos",
+    filterFailed: "Incompletos",
+    filterFavorited: "Salvos",
+    sortLabel: "Ordenar",
+    sortNewest: "Recentes",
+    sortOldest: "Antigos",
+    sortName: "Nome",
+    select: "Selecionar",
+    selectMode: "Selecionar resultados",
+    exitSelect: "Concluir",
+    selected: "selecionados",
+    totalLabel: "Total",
+    visibleLabel: "Exibindo",
+    statusSucceeded: "Concluido",
+    statusRunning: "Processando",
+    statusFailed: "Incompleto",
+    favorite: "Salvar",
+    unfavorite: "Salvo",
+    saveFailed: "Não foi possível salvar a operação.",
+    savedLimitReached:
+      "Seu limite de looks salvos foi atingido. Remova um resultado ou faça upgrade para salvar mais.",
+    more: "Abrir resultado",
+    delete: "Excluir",
+    compare: "Comparar",
+    share: "Compartilhar",
+    cancel: "Cancelar",
+    clearFilters: "Limpar filtros",
+    dateToday: "Hoje",
+    dateYesterday: "Ontem",
+    dateUnknown: "Data desconhecida",
+    unknownLook: "Resultado de maquiagem",
+    deleteConfirm: "Excluir {count} resultado(s) selecionado(s)?",
+    deleteSuccess: "Historico selecionado excluido.",
+    deleteFailed: "Alguns resultados nao puderam ser excluidos.",
+    compareNeedTwo: "Selecione pelo menos 2 resultados para comparar.",
+    comparePending: "A visualizacao de comparacao ainda nao esta disponivel.",
+    shareCopied: "Link do resultado copiado.",
+    shareFailed: "Nao e possivel compartilhar este resultado.",
+  },
+} as const;
+
+const copy =
+  copyByLocale[locale as keyof typeof copyByLocale] ?? copyByLocale.en;
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  bodyClass="history-body"
+>
+  <SiteHeader active="dashboard" mobileHidden />
+  <MobileAppTopBar title={copy.eyebrow} rightAction="none" />
+  <main class="history-main" data-history-page>
+    <div class="history-shell">
+      <section
+        class="panel history-command-panel"
+        aria-labelledby="history-title"
+      >
+        <div class="history-page-head">
+          <a class="history-back-link" href={hrefs.dashboard}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 5-7 7 7 7"></path>
+            </svg>
+            <span>{copy.backDashboard}</span>
+          </a>
+          <div class="history-title-block">
+            <p class="section-kicker">{copy.eyebrow}</p>
+            <h1 id="history-title">{copy.heading}</h1>
+            <p>{copy.subtitle}</p>
+          </div>
+          <button
+            class="history-select-toggle"
+            type="button"
+            data-history-select-toggle
+            aria-pressed="false"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 7h14"></path>
+              <path d="M5 12h14"></path>
+              <path d="M5 17h10"></path>
+              <path d="m16.5 16.5 1.8 1.8 3.2-3.8"></path>
+            </svg>
+            <span data-history-select-label>{copy.select}</span>
+          </button>
+        </div>
+
+        <div class="history-search-row">
+          <label class="history-search-field">
+            <span class="history-sr-only">{copy.searchLabel}</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="10.8" cy="10.8" r="6.2"></circle>
+              <path d="m16 16 4.2 4.2"></path>
+            </svg>
+            <input
+              type="search"
+              inputmode="search"
+              autocomplete="off"
+              data-history-search
+              placeholder={copy.searchPlaceholder}
+            />
+            <button
+              type="button"
+              data-history-search-clear
+              aria-label={copy.clearSearch}
+              hidden
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 6 12 12"></path>
+                <path d="M18 6 6 18"></path>
+              </svg>
+            </button>
+          </label>
+        </div>
+
+        <div class="history-filter-row">
+          <div
+            class="history-chip-group"
+            role="group"
+            aria-label={copy.filtersLabel}
+          >
+            <button
+              class="history-chip active"
+              type="button"
+              data-history-filter="all"
+              aria-pressed="true"
+            >
+              <span>{copy.filterAll}</span>
+              <b data-history-count="all">0</b>
+            </button>
+            <button
+              class="history-chip"
+              type="button"
+              data-history-filter="succeeded"
+              aria-pressed="false"
+            >
+              <span>{copy.filterSucceeded}</span>
+              <b data-history-count="succeeded">0</b>
+            </button>
+            <button
+              class="history-chip"
+              type="button"
+              data-history-filter="failed"
+              aria-pressed="false"
+            >
+              <span>{copy.filterFailed}</span>
+              <b data-history-count="failed">0</b>
+            </button>
+            <button
+              class="history-chip"
+              type="button"
+              data-history-filter="favorited"
+              aria-pressed="false"
+            >
+              <span>{copy.filterFavorited}</span>
+              <b data-history-count="favorited">0</b>
+            </button>
+          </div>
+
+          <label class="history-sort-control">
+            <span>{copy.sortLabel}</span>
+            <select data-history-sort>
+              <option value="newest">{copy.sortNewest}</option>
+              <option value="oldest">{copy.sortOldest}</option>
+              <option value="name">{copy.sortName}</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="history-stats-row" aria-live="polite">
+          <span><b data-history-total>0</b> {copy.totalLabel}</span>
+          <span><b data-history-visible>0</b> {copy.visibleLabel}</span>
+          <span><b data-history-selected>0</b> {copy.selected}</span>
+        </div>
+      </section>
+
+      <section class="panel history-full-panel" aria-label={copy.heading}>
+        <div class="history-list" data-history-list>
+          <div class="history-loading-state">
+            <p class="loading-line">{copy.loading}</p>
+            <div class="history-skeleton-grid" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div
+      class="history-selection-bar"
+      data-history-selection-bar
+      aria-live="polite"
+      hidden
+    >
+      <span><b data-selection-count>0</b> {copy.selected}</span>
+      <div class="history-selection-actions">
+        <button type="button" data-history-delete disabled>{copy.delete}</button
+        >
+        <button type="button" data-history-compare disabled
+          >{copy.compare}</button
+        >
+        <button type="button" data-history-share disabled>{copy.share}</button>
+        <button type="button" data-history-cancel>{copy.cancel}</button>
+      </div>
+    </div>
+
+    <div
+      class="history-feedback"
+      data-history-feedback
+      role="status"
+      aria-live="polite"
+      hidden
+    >
+    </div>
+  </main>
+  <MobileBottomNav active="history" />
+
+  <style is:global>
+    .history-body .history-main {
+      min-height: 100dvh;
+      padding: 28px 20px 92px;
+      background:
+        radial-gradient(
+          circle at 8% 0,
+          color-mix(in srgb, var(--rose) 10%, transparent),
+          transparent 34%
+        ),
+        var(--bg);
+    }
+
+    .history-body .history-shell {
+      display: grid;
+      gap: 16px;
+      width: min(100%, 1160px);
+      margin: 0 auto;
+    }
+
+    .history-body .history-command-panel,
+    .history-body .history-full-panel {
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .history-body .history-command-panel {
+      display: grid;
+      gap: 16px;
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--rose-soft) 70%, transparent),
+          transparent 52%
+        ),
+        var(--bg-elevated);
+    }
+
+    .history-body .history-page-head {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .history-body .history-back-link,
+    .history-body .history-select-toggle,
+    .history-body .history-chip,
+    .history-body .history-sort-control,
+    .history-body .history-empty-actions a,
+    .history-body .history-selection-actions button,
+    .history-body .history-card-icon,
+    .history-body .history-card-more,
+    .history-body .history-no-results button {
+      touch-action: manipulation;
+    }
+
+    .history-body .history-back-link {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      gap: 7px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .history-body .history-back-link svg,
+    .history-body .history-select-toggle svg,
+    .history-body .history-search-field svg,
+    .history-body .history-card-icon svg,
+    .history-body .history-card-more svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2;
+    }
+
+    .history-body .history-title-block {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .history-body .history-title-block h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(26px, 4vw, 42px);
+      line-height: 1.1;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .history-body .history-title-block p:not(.section-kicker) {
+      max-width: 680px;
+      margin: 8px auto 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .history-body .history-select-toggle {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .history-body .history-select-toggle[aria-pressed="true"] {
+      border-color: color-mix(in srgb, var(--rose) 55%, var(--line));
+      background: var(--rose);
+      color: #fff;
+    }
+
+    .history-body .history-search-row {
+      display: grid;
+      justify-items: center;
+    }
+
+    .history-body .history-search-field {
+      display: grid;
+      width: min(100%, 720px);
+      min-height: 50px;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg-elevated) 76%, var(--bg));
+      color: var(--muted);
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.04);
+    }
+
+    .history-body .history-search-field:focus-within {
+      border-color: color-mix(in srgb, var(--rose) 46%, var(--line));
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--rose) 14%, transparent);
+    }
+
+    .history-body .history-search-field input {
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--navy);
+      font: inherit;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .history-body .history-search-field input::placeholder {
+      color: color-mix(in srgb, var(--muted) 76%, transparent);
+    }
+
+    .history-body .history-search-field button {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--surface-neutral) 80%, transparent);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .history-body .history-search-field button svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .history-body .history-filter-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .history-body .history-chip-group {
+      display: flex;
+      min-width: 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .history-body .history-chip {
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .history-body .history-chip b {
+      display: inline-grid;
+      min-width: 24px;
+      height: 24px;
+      place-items: center;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--surface-neutral);
+      color: var(--navy);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .history-body .history-chip.active {
+      border-color: color-mix(in srgb, var(--rose) 58%, var(--line));
+      background: color-mix(in srgb, var(--rose-soft) 78%, var(--bg));
+      color: var(--rose);
+    }
+
+    .history-body .history-chip.active b {
+      background: var(--rose);
+      color: #fff;
+    }
+
+    .history-body .history-sort-control {
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .history-body .history-sort-control select {
+      max-width: 160px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 900;
+    }
+
+    .history-body .history-stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .history-body .history-stats-row span {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      gap: 5px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+    }
+
+    .history-body .history-stats-row b {
+      color: var(--navy);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .history-body .history-list {
+      min-height: 220px;
+    }
+
+    .history-body .history-loading-state {
+      display: grid;
+      gap: 14px;
+    }
+
+    .history-body .loading-line {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .history-body .history-skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .history-body .history-skeleton-grid span {
+      display: block;
+      min-height: 210px;
+      border-radius: 8px;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--surface-neutral) 70%, transparent),
+        color-mix(in srgb, var(--bg-elevated) 92%, transparent),
+        color-mix(in srgb, var(--surface-neutral) 70%, transparent)
+      );
+      background-size: 240% 100%;
+      animation: history-skeleton 1.2s ease-in-out infinite;
+    }
+
+    @keyframes history-skeleton {
+      from {
+        background-position: 100% 0;
+      }
+      to {
+        background-position: -100% 0;
+      }
+    }
+
+    .history-body .history-date-group {
+      display: grid;
+      gap: 12px;
+    }
+
+    .history-body .history-date-group + .history-date-group {
+      margin-top: 22px;
+    }
+
+    .history-body .history-date-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      color: var(--navy);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .history-body .history-date-heading::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    .history-body .history-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .history-body .history-card {
+      position: relative;
+      display: grid;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+      transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+    }
+
+    .history-body .history-card:hover {
+      border-color: color-mix(in srgb, var(--rose) 34%, var(--line));
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .history-body .history-card.is-selected {
+      border-color: var(--rose);
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--rose) 16%, transparent),
+        0 16px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .history-body .history-card-media {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1 / 1.08;
+      background: var(--surface-neutral);
+    }
+
+    .history-body .history-card-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .history-body .history-card-placeholder {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      place-items: center;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .history-body .history-status {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg-elevated) 90%, transparent);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    }
+
+    .history-body .history-status[data-state="succeeded"] {
+      background: color-mix(in srgb, var(--teal-soft) 88%, var(--bg-elevated));
+      color: var(--teal);
+    }
+
+    .history-body .history-status[data-state="failed"] {
+      background: color-mix(
+        in srgb,
+        var(--surface-danger) 88%,
+        var(--bg-elevated)
+      );
+      color: var(--danger-text);
+    }
+
+    .history-body .history-card-top-actions {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .history-body .history-card-icon,
+    .history-body .history-card-more {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--bg-elevated) 72%, transparent);
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+      color: var(--navy);
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    .history-body .history-card-icon[aria-pressed="true"] {
+      border-color: color-mix(in srgb, var(--rose) 58%, transparent);
+      background: var(--rose);
+      color: #fff;
+    }
+
+    .history-body .history-card-icon:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      transform: none;
+    }
+
+    .history-body .history-card-check {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      display: none;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+      backdrop-filter: blur(10px);
+    }
+
+    .history-body .history-card-check input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--rose);
+      cursor: pointer;
+    }
+
+    .history-body .history-card.is-selectable .history-card-check {
+      display: grid;
+    }
+
+    .history-body .history-card-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .history-body .history-card-copy {
+      min-width: 0;
+    }
+
+    .history-body .history-card-copy strong {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .history-body .history-card-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .history-body .history-card-more {
+      width: 34px;
+      height: 34px;
+      border-color: var(--line);
+      background: var(--bg);
+      backdrop-filter: none;
+    }
+
+    .history-body .history-empty-state,
+    .history-body .history-no-results {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      align-items: center;
+      gap: 16px;
+      min-height: 210px;
+      padding: 22px;
+      border: 1px dashed color-mix(in srgb, var(--rose) 34%, var(--line));
+      border-radius: 8px;
+      background:
+        radial-gradient(
+          circle at 0 0,
+          color-mix(in srgb, var(--rose) 10%, transparent),
+          transparent 46%
+        ),
+        var(--bg);
+    }
+
+    .history-body .history-empty-mark {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--rose-soft) 82%, var(--bg-elevated));
+      color: var(--rose);
+      font-size: 16px;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .history-body .history-empty-copy,
+    .history-body .history-no-results-copy {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .history-body .history-empty-copy strong,
+    .history-body .history-no-results-copy strong {
+      color: var(--navy);
+      font-size: 21px;
+      line-height: 1.25;
+      text-wrap: balance;
+    }
+
+    .history-body .history-empty-copy span,
+    .history-body .history-no-results-copy span {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .history-body .history-empty-actions {
+      display: flex;
+      grid-column: 2;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .history-body .history-empty-actions a,
+    .history-body .history-no-results button {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .history-body .history-empty-actions a:first-child,
+    .history-body .history-no-results button {
+      border-color: var(--rose);
+      background: linear-gradient(135deg, var(--rose) 0%, #b02758 100%);
+      color: #fff;
+      box-shadow:
+        0 12px 24px rgba(190, 48, 92, 0.18),
+        var(--btn-shadow);
+    }
+
+    .history-body .history-selection-bar {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      z-index: 70;
+      display: flex;
+      width: min(calc(100% - 28px), 760px);
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid color-mix(in srgb, var(--rose) 34%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg-elevated) 96%, transparent);
+      color: var(--navy);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.18);
+      transform: translateX(-50%);
+      backdrop-filter: blur(18px);
+    }
+
+    .history-body .history-selection-bar[hidden] {
+      display: none;
+    }
+
+    .history-body .history-selection-bar > span {
+      display: inline-flex;
+      min-width: max-content;
+      align-items: center;
+      gap: 5px;
+      padding-left: 8px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .history-body .history-selection-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      justify-content: flex-end;
+    }
+
+    .history-body .history-selection-actions button {
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .history-body .history-selection-actions button[data-history-delete] {
+      border-color: color-mix(in srgb, var(--danger-text) 46%, var(--line));
+      color: var(--danger-text);
+    }
+
+    .history-body .history-selection-actions button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .history-body .history-feedback {
+      position: fixed;
+      left: 50%;
+      bottom: 88px;
+      z-index: 80;
+      max-width: min(92vw, 420px);
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--navy);
+      color: var(--bg);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.45;
+      text-align: center;
+      transform: translateX(-50%);
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.22);
+    }
+
+    .history-body .history-feedback[hidden] {
+      display: none;
+    }
+
+    .history-body .history-sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .history-body .history-card,
+      .history-body .history-skeleton-grid span {
+        animation: none;
+        transition: none;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .history-body .history-skeleton-grid,
+      .history-body .history-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1120px) {
+      .history-body .history-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .history-body .history-main {
+        padding: 12px 12px calc(108px + env(safe-area-inset-bottom));
+      }
+
+      .history-body .history-shell {
+        gap: 12px;
+      }
+
+      .history-body .history-command-panel,
+      .history-body .history-full-panel {
+        padding: 14px;
+      }
+
+      .history-body .history-page-head {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+      }
+
+      .history-body .history-back-link {
+        display: none;
+      }
+
+      .history-body .history-title-block {
+        text-align: left;
+      }
+
+      .history-body .history-title-block h1 {
+        font-size: 25px;
+      }
+
+      .history-body .history-title-block p:not(.section-kicker) {
+        margin-right: -4px;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .history-body .history-select-toggle {
+        min-width: 44px;
+        padding: 0 10px;
+      }
+
+      .history-body .history-select-toggle span {
+        display: none;
+      }
+
+      .history-body .history-search-field {
+        min-height: 48px;
+        border-radius: 8px;
+      }
+
+      .history-body .history-filter-row {
+        display: grid;
+        gap: 10px;
+      }
+
+      .history-body .history-chip-group {
+        flex-wrap: nowrap;
+        margin-inline: -14px;
+        padding: 0 14px 2px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .history-body .history-chip-group::-webkit-scrollbar {
+        display: none;
+      }
+
+      .history-body .history-chip {
+        min-height: 38px;
+        padding: 0 10px;
+        font-size: 12px;
+      }
+
+      .history-body .history-sort-control {
+        justify-content: space-between;
+        width: 100%;
+        border-radius: 8px;
+      }
+
+      .history-body .history-sort-control select {
+        max-width: 58%;
+      }
+
+      .history-body .history-stats-row {
+        gap: 6px;
+      }
+
+      .history-body .history-stats-row span {
+        min-height: 28px;
+        padding: 0 8px;
+        font-size: 11px;
+      }
+
+      .history-body .history-grid,
+      .history-body .history-skeleton-grid {
+        gap: 10px;
+      }
+
+      .history-body .history-card-media {
+        aspect-ratio: 1 / 1.12;
+      }
+
+      .history-body .history-status {
+        left: 7px;
+        top: 7px;
+        min-height: 24px;
+        padding: 0 7px;
+        font-size: 10px;
+      }
+
+      .history-body .history-card-top-actions {
+        right: 6px;
+        top: 6px;
+      }
+
+      .history-body .history-card-icon {
+        width: 32px;
+        height: 32px;
+      }
+
+      .history-body .history-card-icon svg,
+      .history-body .history-card-more svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .history-body .history-card-body {
+        gap: 6px;
+        padding: 9px;
+      }
+
+      .history-body .history-card-copy strong {
+        font-size: 12px;
+      }
+
+      .history-body .history-card-copy span {
+        font-size: 10px;
+      }
+
+      .history-body .history-card-more {
+        width: 30px;
+        height: 30px;
+      }
+
+      .history-body .history-empty-state,
+      .history-body .history-no-results {
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 12px;
+        min-height: 188px;
+        padding: 16px;
+      }
+
+      .history-body .history-empty-mark {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        font-size: 14px;
+      }
+
+      .history-body .history-empty-copy strong,
+      .history-body .history-no-results-copy strong {
+        font-size: 18px;
+      }
+
+      .history-body .history-empty-copy span,
+      .history-body .history-no-results-copy span {
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .history-body .history-empty-actions {
+        grid-column: 1 / -1;
+      }
+
+      .history-body .history-empty-actions a,
+      .history-body .history-no-results button {
+        flex: 1 1 140px;
+      }
+
+      .history-body .history-selection-bar {
+        bottom: calc(76px + env(safe-area-inset-bottom));
+        width: calc(100% - 20px);
+        align-items: stretch;
+        border-radius: 8px;
+        padding: 10px;
+      }
+
+      .history-body .history-selection-bar > span {
+        align-items: center;
+        padding-left: 2px;
+      }
+
+      .history-body .history-selection-actions {
+        flex: 1;
+      }
+
+      .history-body .history-selection-actions button {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding: 0 9px;
+        font-size: 12px;
+      }
+
+      .history-body .history-feedback {
+        bottom: calc(150px + env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+
+  <script is:inline define:vars={{ copy, hrefs, recommendations }}>
+    (() => {
+      const root = document.querySelector("[data-history-page]");
+      if (!root) return;
+
+      const runningStatuses = new Set([
+        "created",
+        "upload_validating",
+        "diagnosis_running",
+        "image_running",
+      ]);
+      const locale = document.documentElement.lang || undefined;
+      const recommendationBySlug = new Map(
+        recommendations.map((look) => [look.slug, look]),
+      );
+      const state = {
+        jobs: [],
+        query: "",
+        filter: "all",
+        sort: "newest",
+        selectMode: false,
+        selectedIds: new Set(),
+        favoriteIds: new Set(),
+      };
+
+      const controls = {
+        list: root.querySelector("[data-history-list]"),
+        search: root.querySelector("[data-history-search]"),
+        clearSearch: root.querySelector("[data-history-search-clear]"),
+        filterButtons: Array.from(
+          root.querySelectorAll("[data-history-filter]"),
+        ),
+        sort: root.querySelector("[data-history-sort]"),
+        selectToggle: root.querySelector("[data-history-select-toggle]"),
+        selectLabel: root.querySelector("[data-history-select-label]"),
+        total: root.querySelector("[data-history-total]"),
+        visible: root.querySelector("[data-history-visible]"),
+        selected: root.querySelector("[data-history-selected]"),
+        selectionBar: root.querySelector("[data-history-selection-bar]"),
+        selectionCount: root.querySelector("[data-selection-count]"),
+        delete: root.querySelector("[data-history-delete]"),
+        compare: root.querySelector("[data-history-compare]"),
+        share: root.querySelector("[data-history-share]"),
+        cancel: root.querySelector("[data-history-cancel]"),
+        feedback: root.querySelector("[data-history-feedback]"),
+      };
+
+      const icons = {
+        heart:
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.7a5.5 5.5 0 0 0-7.8 0L12 5.8l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.5a5.5 5.5 0 0 0 0-7.8Z"></path></svg>',
+        more: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="1.3"></circle><circle cx="12" cy="12" r="1.3"></circle><circle cx="18" cy="12" r="1.3"></circle></svg>',
+      };
+
+      function clear(node) {
+        if (node) node.replaceChildren();
+      }
+
+      async function getJson(url) {
+        const response = await fetch(url);
+        const body = await response.json().catch(() => null);
+        if (!response.ok || !body?.ok) {
+          throw new Error(body?.error?.message || "REQUEST_FAILED");
+        }
+        return body.data;
+      }
+
+      function fallbackLook(slug) {
+        return recommendationBySlug.get(slug) || recommendations[0] || {};
+      }
+
+      function formatDate(value, options) {
+        if (!value) return "";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "";
+        return new Intl.DateTimeFormat(locale, options).format(date);
+      }
+
+      function getDateKey(date) {
+        if (!date || Number.isNaN(date.getTime())) return "unknown";
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      function getDateGroup(value) {
+        if (!value) return copy.dateUnknown;
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return copy.dateUnknown;
+        const today = new Date();
+        const todayStart = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate(),
+        );
+        const dateStart = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+        );
+        const diff = Math.round((todayStart - dateStart) / 86400000);
+        if (diff === 0) return copy.dateToday;
+        if (diff === 1) return copy.dateYesterday;
+        return formatDate(value, { month: "long", day: "numeric" });
+      }
+
+      function getStatusState(status) {
+        if (status === "succeeded") return "succeeded";
+        if (runningStatuses.has(status)) return "running";
+        return "failed";
+      }
+
+      function getStatusLabel(statusState) {
+        if (statusState === "succeeded") return copy.statusSucceeded;
+        if (statusState === "running") return copy.statusRunning;
+        return copy.statusFailed;
+      }
+
+      function normalizeJob(job, index) {
+        const fallback = fallbackLook(job?.lookSlug);
+        const createdAt = job?.createdAt || job?.updatedAt || "";
+        const createdDate = createdAt ? new Date(createdAt) : null;
+        const statusState = getStatusState(job?.status);
+        const id =
+          job?.id ||
+          `${job?.lookSlug || "look"}-${createdAt || "unknown"}-${index}`;
+        const title = job?.lookTitle || fallback.title || copy.unknownLook;
+        const timeLabel =
+          formatDate(createdAt, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }) || copy.dateUnknown;
+
+        return {
+          id,
+          lookSlug: job?.lookSlug || fallback.slug || "",
+          title,
+          image: job?.resultImage || fallback.image || "",
+          imageAlt: title,
+          resultImage: job?.resultImage || "",
+          status: job?.status || "failed",
+          statusState,
+          statusLabel: getStatusLabel(statusState),
+          createdAt,
+          createdTime:
+            createdDate && !Number.isNaN(createdDate.getTime())
+              ? createdDate.getTime()
+              : 0,
+          dateKey: getDateKey(createdDate),
+          dateGroup: getDateGroup(createdAt),
+          timeLabel,
+          searchText: [
+            title,
+            job?.lookSlug,
+            getStatusLabel(statusState),
+            timeLabel,
+            createdAt,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLocaleLowerCase(locale),
+        };
+      }
+
+      function getFilteredJobs() {
+        const query = state.query.trim().toLocaleLowerCase(locale);
+        const filtered = state.jobs.filter((job) => {
+          if (state.filter === "succeeded" && job.statusState !== "succeeded") {
+            return false;
+          }
+          if (state.filter === "failed" && job.statusState === "succeeded") {
+            return false;
+          }
+          if (state.filter === "favorited" && !state.favoriteIds.has(job.id)) {
+            return false;
+          }
+          return !query || job.searchText.includes(query);
+        });
+
+        return filtered.sort((a, b) => {
+          if (state.sort === "oldest") return a.createdTime - b.createdTime;
+          if (state.sort === "name") {
+            return a.title.localeCompare(b.title, locale, {
+              sensitivity: "base",
+            });
+          }
+          return b.createdTime - a.createdTime;
+        });
+      }
+
+      function updateCounts(visibleJobs) {
+        const counts = {
+          all: state.jobs.length,
+          succeeded: state.jobs.filter((job) => job.statusState === "succeeded")
+            .length,
+          failed: state.jobs.filter((job) => job.statusState !== "succeeded")
+            .length,
+          favorited: state.jobs.filter((job) => state.favoriteIds.has(job.id))
+            .length,
+        };
+
+        Object.entries(counts).forEach(([key, count]) => {
+          const node = root.querySelector(`[data-history-count="${key}"]`);
+          if (node) node.textContent = String(count);
+        });
+        if (controls.total)
+          controls.total.textContent = String(state.jobs.length);
+        if (controls.visible)
+          controls.visible.textContent = String(visibleJobs.length);
+        updateSelectionUi();
+      }
+
+      function renderEmpty() {
+        clear(controls.list);
+        const box = document.createElement("div");
+        box.className = "history-empty-state";
+
+        const mark = document.createElement("span");
+        mark.className = "history-empty-mark";
+        mark.setAttribute("aria-hidden", "true");
+        mark.textContent = "AI";
+
+        const copyBox = document.createElement("div");
+        copyBox.className = "history-empty-copy";
+        const title = document.createElement("strong");
+        title.textContent = copy.emptyHistoryTitle;
+        const hint = document.createElement("span");
+        hint.textContent = copy.emptyHistoryHint;
+        copyBox.append(title, hint);
+
+        const actions = document.createElement("div");
+        actions.className = "history-empty-actions";
+        const primary = document.createElement("a");
+        primary.href = hrefs.tryonFree;
+        primary.textContent = copy.startTryon;
+        const secondary = document.createElement("a");
+        secondary.href = hrefs.discover;
+        secondary.textContent = copy.browseLooks;
+        actions.append(primary, secondary);
+
+        box.append(mark, copyBox, actions);
+        controls.list?.append(box);
+      }
+
+      function renderNoResults() {
+        clear(controls.list);
+        const box = document.createElement("div");
+        box.className = "history-no-results";
+
+        const mark = document.createElement("span");
+        mark.className = "history-empty-mark";
+        mark.setAttribute("aria-hidden", "true");
+        mark.textContent = "AI";
+
+        const copyBox = document.createElement("div");
+        copyBox.className = "history-no-results-copy";
+        const title = document.createElement("strong");
+        title.textContent = copy.noResultsTitle;
+        const hint = document.createElement("span");
+        hint.textContent = copy.noResultsHint;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = copy.clearFilters;
+        button.addEventListener("click", () => {
+          state.query = "";
+          state.filter = "all";
+          state.sort = "newest";
+          if (controls.search) controls.search.value = "";
+          if (controls.sort) controls.sort.value = "newest";
+          render();
+        });
+        copyBox.append(title, hint, button);
+        box.append(mark, copyBox);
+        controls.list?.append(box);
+      }
+
+      function renderFailure() {
+        clear(controls.list);
+        const box = document.createElement("div");
+        box.className = "history-empty-state";
+
+        const mark = document.createElement("span");
+        mark.className = "history-empty-mark";
+        mark.setAttribute("aria-hidden", "true");
+        mark.textContent = "AI";
+
+        const copyBox = document.createElement("div");
+        copyBox.className = "history-empty-copy";
+        const title = document.createElement("strong");
+        title.textContent = copy.loadFailedTitle;
+        const hint = document.createElement("span");
+        hint.textContent = copy.loadFailedHint;
+        copyBox.append(title, hint);
+
+        const actions = document.createElement("div");
+        actions.className = "history-empty-actions";
+        const link = document.createElement("a");
+        link.href = hrefs.login;
+        link.textContent = copy.signIn;
+        actions.append(link);
+
+        box.append(mark, copyBox, actions);
+        controls.list?.append(box);
+      }
+
+      function createFavoriteButton(job) {
+        const button = document.createElement("button");
+        const isFavorite = state.favoriteIds.has(job.id);
+        button.className = "history-card-icon";
+        button.type = "button";
+        button.setAttribute("aria-pressed", String(isFavorite));
+        button.setAttribute(
+          "aria-label",
+          isFavorite ? copy.unfavorite : copy.favorite,
+        );
+        button.innerHTML = icons.heart;
+        if (job.statusState !== "succeeded") {
+          button.disabled = true;
+          button.setAttribute("aria-disabled", "true");
+        }
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          toggleFavorite(job, button);
+        });
+        return button;
+      }
+
+      async function toggleFavorite(job, button) {
+        if (!job?.id || button?.disabled) return;
+        button.disabled = true;
+        const wasFavorite = state.favoriteIds.has(job.id);
+        try {
+          if (wasFavorite) {
+            const response = await fetch(
+              `/api/saved-looks/${encodeURIComponent(job.id)}`,
+              { method: "DELETE" },
+            );
+            const body = await response.json().catch(() => null);
+            if (!response.ok || !body?.ok) throw new Error("UNSAVE_FAILED");
+            state.favoriteIds.delete(job.id);
+          } else {
+            const response = await fetch("/api/saved-looks", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                jobId: job.id,
+                lookSlug: job.lookSlug || "commute",
+              }),
+            });
+            const body = await response.json().catch(() => null);
+            if (!response.ok || !body?.ok) {
+              if (body?.error?.code === "SAVED_LOOK_LIMIT_REACHED") {
+                showFeedback(copy.savedLimitReached);
+                return;
+              }
+              throw new Error(body?.error?.message || "SAVE_FAILED");
+            }
+            state.favoriteIds.add(job.id);
+          }
+          render();
+        } catch (error) {
+          console.error(copy.saveFailed, error);
+          showFeedback(copy.saveFailed);
+        } finally {
+          button.disabled = false;
+        }
+      }
+
+      function createCard(job) {
+        const card = document.createElement("article");
+        card.className = "history-card";
+        card.dataset.historyId = job.id;
+        card.dataset.status = job.statusState;
+        if (state.selectMode) card.classList.add("is-selectable");
+        if (state.selectedIds.has(job.id)) card.classList.add("is-selected");
+
+        const media = document.createElement("div");
+        media.className = "history-card-media";
+        if (job.image) {
+          const image = document.createElement("img");
+          image.className = "history-card-image";
+          image.src = job.image;
+          image.alt = job.imageAlt;
+          image.loading = "lazy";
+          media.append(image);
+        } else {
+          const placeholder = document.createElement("span");
+          placeholder.className = "history-card-placeholder";
+          placeholder.textContent = copy.unknownLook;
+          media.append(placeholder);
+        }
+
+        const status = document.createElement("span");
+        status.className = "history-status";
+        status.dataset.state = job.statusState;
+        status.textContent = job.statusLabel;
+
+        const topActions = document.createElement("div");
+        topActions.className = "history-card-top-actions";
+        topActions.append(createFavoriteButton(job));
+
+        const checkboxLabel = document.createElement("label");
+        checkboxLabel.className = "history-card-check";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = state.selectedIds.has(job.id);
+        checkbox.setAttribute("aria-label", `${copy.selectMode}: ${job.title}`);
+        checkbox.addEventListener("change", () => toggleSelected(job.id));
+        checkboxLabel.append(checkbox);
+
+        media.append(status, topActions, checkboxLabel);
+
+        const body = document.createElement("div");
+        body.className = "history-card-body";
+        const copyNode = document.createElement("div");
+        copyNode.className = "history-card-copy";
+        const title = document.createElement("strong");
+        title.textContent = job.title;
+        const meta = document.createElement("span");
+        meta.textContent = job.timeLabel;
+        copyNode.append(title, meta);
+
+        const more = document.createElement("button");
+        more.className = "history-card-more";
+        more.type = "button";
+        more.setAttribute("aria-label", `${copy.more}: ${job.title}`);
+        more.innerHTML = icons.more;
+        more.addEventListener("click", () => {
+          if (job.resultImage) {
+            window.open(job.resultImage, "_blank", "noopener,noreferrer");
+          } else {
+            showFeedback(copy.shareFailed);
+          }
+        });
+
+        body.append(copyNode, more);
+        card.append(media, body);
+        card.addEventListener("click", (event) => {
+          if (!state.selectMode) return;
+          if (event.target?.closest("button, a, input, select, label")) return;
+          toggleSelected(job.id);
+        });
+        return card;
+      }
+
+      function renderGroups(jobs) {
+        clear(controls.list);
+        const groups = new Map();
+        jobs.forEach((job) => {
+          const groupKey = `${job.dateKey}:${job.dateGroup}`;
+          if (!groups.has(groupKey)) groups.set(groupKey, []);
+          groups.get(groupKey).push(job);
+        });
+
+        groups.forEach((groupJobs) => {
+          const section = document.createElement("section");
+          section.className = "history-date-group";
+          const heading = document.createElement("h2");
+          heading.className = "history-date-heading";
+          heading.textContent = groupJobs[0]?.dateGroup || copy.dateUnknown;
+          const grid = document.createElement("div");
+          grid.className = "history-grid";
+          groupJobs.forEach((job) => grid.append(createCard(job)));
+          section.append(heading, grid);
+          controls.list?.append(section);
+        });
+      }
+
+      function render() {
+        const filteredJobs = getFilteredJobs();
+        controls.filterButtons.forEach((button) => {
+          const active = button.dataset.historyFilter === state.filter;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+        if (controls.clearSearch) {
+          controls.clearSearch.hidden = state.query.trim().length === 0;
+        }
+        updateCounts(filteredJobs);
+
+        if (!state.jobs.length) {
+          renderEmpty();
+          return;
+        }
+        if (!filteredJobs.length) {
+          renderNoResults();
+          return;
+        }
+        renderGroups(filteredJobs);
+        updateSelectionUi();
+      }
+
+      function toggleSelected(id) {
+        if (state.selectedIds.has(id)) {
+          state.selectedIds.delete(id);
+        } else {
+          state.selectedIds.add(id);
+        }
+        render();
+      }
+
+      function setSelectMode(enabled) {
+        state.selectMode = enabled;
+        if (!enabled) state.selectedIds.clear();
+        controls.selectToggle?.setAttribute("aria-pressed", String(enabled));
+        if (controls.selectLabel) {
+          controls.selectLabel.textContent = enabled
+            ? copy.exitSelect
+            : copy.select;
+        }
+        render();
+      }
+
+      function updateSelectionUi() {
+        const count = state.selectedIds.size;
+        if (controls.selected) controls.selected.textContent = String(count);
+        if (controls.selectionCount) {
+          controls.selectionCount.textContent = String(count);
+        }
+        if (controls.selectionBar) {
+          controls.selectionBar.hidden = !state.selectMode;
+        }
+        if (controls.delete) controls.delete.disabled = count === 0;
+        if (controls.compare) controls.compare.disabled = count < 2;
+        if (controls.share) controls.share.disabled = count !== 1;
+      }
+
+      function selectedJobs() {
+        return state.jobs.filter((job) => state.selectedIds.has(job.id));
+      }
+
+      async function deleteSelected() {
+        const targets = selectedJobs();
+        if (!targets.length) return;
+        const message = copy.deleteConfirm.replace(
+          "{count}",
+          String(targets.length),
+        );
+        if (!window.confirm(message)) return;
+        controls.delete.disabled = true;
+        const results = await Promise.allSettled(
+          targets.map(async (job) => {
+            const response = await fetch(
+              `/api/tryon-jobs/${encodeURIComponent(job.id)}`,
+              { method: "DELETE" },
+            );
+            const body = await response.json().catch(() => null);
+            if (!response.ok || !body?.ok) throw new Error("DELETE_FAILED");
+            return job.id;
+          }),
+        );
+        const deletedIds = new Set(
+          results
+            .filter((result) => result.status === "fulfilled")
+            .map((result) => result.value),
+        );
+        if (deletedIds.size) {
+          state.jobs = state.jobs.filter((job) => !deletedIds.has(job.id));
+          deletedIds.forEach((id) => {
+            state.selectedIds.delete(id);
+            state.favoriteIds.delete(id);
+          });
+        }
+        setSelectMode(false);
+        showFeedback(
+          deletedIds.size === targets.length
+            ? copy.deleteSuccess
+            : copy.deleteFailed,
+        );
+      }
+
+      function compareSelected() {
+        if (state.selectedIds.size < 2) {
+          showFeedback(copy.compareNeedTwo);
+          return;
+        }
+        showFeedback(copy.comparePending);
+      }
+
+      async function shareSelected() {
+        const [job] = selectedJobs();
+        if (!job?.resultImage) {
+          showFeedback(copy.shareFailed);
+          return;
+        }
+        const url = new URL(job.resultImage, window.location.origin).toString();
+        try {
+          if (navigator.share) {
+            await navigator.share({ title: job.title, url });
+          } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(url);
+            showFeedback(copy.shareCopied);
+          } else {
+            showFeedback(copy.shareFailed);
+          }
+        } catch {
+          showFeedback(copy.shareFailed);
+        }
+      }
+
+      let feedbackTimer;
+      function showFeedback(message) {
+        if (!controls.feedback) return;
+        controls.feedback.textContent = message;
+        controls.feedback.hidden = false;
+        window.clearTimeout(feedbackTimer);
+        feedbackTimer = window.setTimeout(() => {
+          controls.feedback.hidden = true;
+        }, 3600);
+      }
+
+      function bindControls() {
+        controls.search?.addEventListener("input", (event) => {
+          state.query = event.currentTarget.value;
+          render();
+        });
+        controls.clearSearch?.addEventListener("click", () => {
+          state.query = "";
+          if (controls.search) {
+            controls.search.value = "";
+            controls.search.focus();
+          }
+          render();
+        });
+        controls.filterButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            state.filter = button.dataset.historyFilter || "all";
+            render();
+          });
+        });
+        controls.sort?.addEventListener("change", (event) => {
+          state.sort = event.currentTarget.value || "newest";
+          render();
+        });
+        controls.selectToggle?.addEventListener("click", () => {
+          setSelectMode(!state.selectMode);
+        });
+        controls.cancel?.addEventListener("click", () => setSelectMode(false));
+        controls.delete?.addEventListener("click", deleteSelected);
+        controls.compare?.addEventListener("click", compareSelected);
+        controls.share?.addEventListener("click", shareSelected);
+      }
+
+      async function hydrateHistory() {
+        try {
+          const [data, savedData] = await Promise.all([
+            getJson("/api/tryon-jobs?limit=100"),
+            getJson("/api/saved-looks"),
+          ]);
+          const savedItems = Array.isArray(savedData?.items)
+            ? savedData.items
+            : [];
+          state.favoriteIds = new Set(
+            savedItems.map((item) => item.jobId).filter(Boolean),
+          );
+          const jobs = Array.isArray(data?.items) ? data.items : [];
+          state.jobs = jobs.map(normalizeJob);
+          render();
+        } catch {
+          state.jobs = [];
+          updateCounts([]);
+          renderFailure();
+        }
+      }
+
+      bindControls();
+      hydrateHistory();
+    })();
+  </script>
+</BaseLayout>

@@ -446,6 +446,7 @@
     "complete": "미리보기 준비됨",
     "loadSavedFailed": "기록을 불러오지 못했습니다.",
     "operationSavedFailed": "작업을 저장하지 못했습니다.",
+    "savedLimitReached": "저장 한도에 도달했습니다. 저장된 결과를 하나 삭제하거나 업그레이드하세요.",
     "confirmDeleteResult": "이 결과를 삭제할까요?",
     "noSuccessHistory": "성공한 Try-on 기록이 아직 없습니다",
     "noHistory": "Try-on 기록이 아직 없습니다",

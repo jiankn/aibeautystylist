@@ -1,5 +1,7 @@
 ---
 import LookSelector from "../components/LookSelector.astro";
+import MobileAppTopBar from "../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../components/MobileBottomNav.astro";
 import ProductRecommend from "../components/ProductRecommend.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import TutorialSteps from "../components/TutorialSteps.astro";
@@ -66,6 +68,7 @@ const proClientMessages = {
   operationSavedFailed: t("tryon", "operationSavedFailed"),
   confirmDeleteResult: t("tryon", "confirmDeleteResult"),
   saveResult: t("tryon", "saveResult"),
+  savedLimitReached: t("tryon", "savedLimitReached"),
   savedResult: t("tryon", "savedResult"),
   noSuccessHistory: t("tryon", "noSuccessHistory"),
   noHistory: t("tryon", "noHistory"),
@@ -81,7 +84,12 @@ const proClientMessages = {
   bodyClass="workspace-body"
   robots="noindex,follow"
 >
-  <SiteHeader active="tryOn" />
+  <SiteHeader active="tryOn" mobileHidden />
+  <MobileAppTopBar
+    title={t("tryon", "proTitle")}
+    backHref={discoverHref}
+    rightAction="help"
+  />
   <main class="workspace-main">
     <div class="shell">
       <WorkspaceStatusBar
@@ -247,6 +255,7 @@ const proClientMessages = {
       </div>
     </div>
   </main>
+  <MobileBottomNav active="tryon" />
 </BaseLayout>
 
 <script is:inline define:vars={{ proClientMessages, loginHref, shareCardHref }}>
@@ -482,10 +491,23 @@ const proClientMessages = {
               if (postData.ok) {
                 savedJobIds.add(jobId);
                 saveBtn.innerHTML = "★ " + proClientMessages.savedResult;
+              } else if (postData.error?.code === "SAVED_LOOK_LIMIT_REACHED") {
+                saveBtn.innerHTML = "× " + proClientMessages.savedLimitReached;
+                setTimeout(() => {
+                  saveBtn.innerHTML = "☆ " + proClientMessages.saveResult;
+                }, 2400);
+              } else {
+                throw new Error(postData.error?.message || "SAVE_LOOK_FAILED");
               }
             }
           } catch (e) {
             console.error(proClientMessages.operationSavedFailed, e);
+            saveBtn.innerHTML = "× " + proClientMessages.operationSavedFailed;
+            setTimeout(() => {
+              saveBtn.innerHTML = savedJobIds.has(jobId)
+                ? "★ " + proClientMessages.savedResult
+                : "☆ " + proClientMessages.saveResult;
+            }, 2400);
           } finally {
             saveBtn.disabled = false;
           }

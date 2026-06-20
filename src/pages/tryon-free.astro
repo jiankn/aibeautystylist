@@ -1,5 +1,7 @@
 ---
 import LookSelector from "../components/LookSelector.astro";
+import MobileAppTopBar from "../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../components/MobileBottomNav.astro";
 import ResultState from "../components/ResultState.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
@@ -15,6 +17,19 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
+const mobileTryonTitle =
+  {
+    "zh-CN": "AI 试妆",
+    "zh-TW": "AI 試妝",
+    "de-DE": "AI Try-on",
+    "fr-FR": "Essayage IA",
+    "ja-JP": "AIメイク試着",
+    "ko-KR": "AI 시착",
+    "es-ES": "Prueba IA",
+    "es-419": "Prueba IA",
+    "pt-BR": "Teste IA",
+    en: "AI Try-On",
+  }[currentRoute.language.locale] ?? "AI Try-On";
 const currentReturnPath = `${currentPathname}${Astro.url.search}`;
 const pricingHref = localizeAppHref(
   `/pricing?return_to=${encodeURIComponent(currentReturnPath)}`,
@@ -52,6 +67,11 @@ const freeClientMessages = {
   rewarded: t("tryon", "rewarded"),
   alreadyRewarded: t("tryon", "alreadyRewarded"),
   failed: t("tryon", "failed"),
+  loadSavedFailed: t("tryon", "loadSavedFailed"),
+  operationSavedFailed: t("tryon", "operationSavedFailed"),
+  saveResult: t("tryon", "saveResult"),
+  savedLimitReached: t("tryon", "savedLimitReached"),
+  savedResult: t("tryon", "savedResult"),
 };
 const upgradeBannerCopy = {
   free: {
@@ -132,7 +152,13 @@ const workspaceStatusHrefs = {
   description={t("tryon", "subtitle")}
   bodyClass="workspace-body"
 >
-  <SiteHeader active="tryOn" />
+  <SiteHeader active="tryOn" mobileHidden />
+  <MobileAppTopBar
+    title={mobileTryonTitle}
+    backHref={localizeAppHref("/discover")}
+    rightAction="help"
+    rightHref={diagnosisHref}
+  />
   <main class="workspace-main">
     <div class="shell">
       {
@@ -280,6 +306,9 @@ const workspaceStatusHrefs = {
             <button class="btn" id="free-share-card" disabled
               >▧&nbsp; {t("tryon", "saveShareCard")}</button
             >
+            <button class="btn" id="free-save-result" disabled
+              >☆&nbsp; {t("tryon", "saveResult")}</button
+            >
             <button class="btn" id="free-copy-link" disabled
               >⌘&nbsp; {t("tryon", "copyLink")}</button
             >
@@ -346,6 +375,7 @@ const workspaceStatusHrefs = {
       </section>
     </div>
   </main>
+  <MobileBottomNav active="tryon" />
 </BaseLayout>
 
 <script
@@ -353,6 +383,7 @@ const workspaceStatusHrefs = {
   define:vars={{
     freeClientMessages,
     shareCardHref,
+    selectedLookSlug: selected.slug,
     upgradeBannerCopy,
     upgradeBannerHrefs,
     workspaceStatusCopy,
@@ -361,6 +392,8 @@ const workspaceStatusHrefs = {
 >
   (function () {
     let lastSucceededJobId = window.__absLastSucceededJobId || null;
+    let lastSucceededLookSlug = selectedLookSlug || null;
+    let savedJobIds = new Set();
     const checkoutSucceeded =
       new URLSearchParams(window.location.search).get("checkout") === "success";
     const delay = (ms) =>
@@ -521,7 +554,8 @@ const workspaceStatusHrefs = {
       status.dataset.plan = planLabel;
       if (planNode) {
         planNode.textContent = planLabel;
-        planNode.classList.toggle("workspace-status-plan-teal", plan === "pro");
+        planNode.classList.toggle("workspace-status-plan-pro", plan === "pro");
+        planNode.classList.remove("workspace-status-plan-teal");
         planNode.classList.toggle(
           "workspace-status-plan-gold",
           plan === "premium",
@@ -540,6 +574,39 @@ const workspaceStatusHrefs = {
     }
 
     window.updateQuotaDisplay = renderWorkspaceQuota;
+
+    async function loadSavedLooks() {
+      try {
+        const res = await fetch("/api/saved-looks");
+        const data = await res.json();
+        if (data.ok && data.data?.items) {
+          savedJobIds = new Set(data.data.items.map((item) => item.jobId));
+        }
+      } catch (error) {
+        console.error(freeClientMessages.loadSavedFailed, error);
+      }
+    }
+
+    function renderSaveButton() {
+      const saveBtn = document.getElementById("free-save-result");
+      if (!saveBtn || !lastSucceededJobId) return;
+      const isSaved = savedJobIds.has(lastSucceededJobId);
+      saveBtn.textContent =
+        (isSaved ? "★ " : "☆ ") +
+        (isSaved ? freeClientMessages.savedResult : freeClientMessages.saveResult);
+      saveBtn.disabled = false;
+      saveBtn.setAttribute("aria-pressed", String(isSaved));
+    }
+
+    function flashSaveButton(message) {
+      const saveBtn = document.getElementById("free-save-result");
+      if (!saveBtn) return;
+      const previous = saveBtn.textContent;
+      saveBtn.textContent = message;
+      window.setTimeout(() => {
+        saveBtn.textContent = previous;
+      }, 2400);
+    }
 
     function renderUpgradeBanner(session) {
       const upgrade = document.getElementById("free-upgrade");
@@ -598,21 +665,23 @@ const workspaceStatusHrefs = {
       renderWorkspaceStatus(session);
     }
 
-    function activateShareActions(jobId) {
+    function activateShareActions(jobId, lookSlug) {
       if (!jobId) return;
       lastSucceededJobId = jobId;
+      lastSucceededLookSlug = lookSlug || lastSucceededLookSlug || selectedLookSlug;
       refreshUpgradeBanner();
       const shareActions = document.getElementById("free-share-actions");
       if (shareActions) shareActions.hidden = false;
-      ["free-share-card", "free-copy-link", "free-share-reward"].forEach(
+      ["free-share-card", "free-save-result", "free-copy-link", "free-share-reward"].forEach(
         (id) => {
           const btn = document.getElementById(id);
           if (btn) btn.disabled = false;
         },
       );
+      loadSavedLooks().then(renderSaveButton);
     }
     document.addEventListener("abs:tryon-succeeded", function (event) {
-      activateShareActions(event.detail?.job?.id);
+      activateShareActions(event.detail?.job?.id, event.detail?.job?.lookSlug);
       if (event.detail?.quota) renderWorkspaceQuota(event.detail.quota);
     });
     if (lastSucceededJobId) activateShareActions(lastSucceededJobId);
@@ -672,6 +741,48 @@ const workspaceStatusHrefs = {
       shareCardBtn.addEventListener("click", () => {
         if (!lastSucceededJobId) return;
         window.location.href = shareCardHref + "?jobId=" + lastSucceededJobId;
+      });
+    }
+
+    const saveResultBtn = document.getElementById("free-save-result");
+    if (saveResultBtn) {
+      saveResultBtn.addEventListener("click", async () => {
+        if (!lastSucceededJobId) return;
+        saveResultBtn.disabled = true;
+        try {
+          if (savedJobIds.has(lastSucceededJobId)) {
+            const res = await fetch("/api/saved-looks/" + lastSucceededJobId, {
+              method: "DELETE",
+            });
+            const data = await res.json().catch(() => null);
+            if (!res.ok || !data?.ok) throw new Error("DELETE_SAVED_FAILED");
+            savedJobIds.delete(lastSucceededJobId);
+          } else {
+            const res = await fetch("/api/saved-looks", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                jobId: lastSucceededJobId,
+                lookSlug: lastSucceededLookSlug || selectedLookSlug || "commute",
+              }),
+            });
+            const data = await res.json().catch(() => null);
+            if (!res.ok || !data?.ok) {
+              if (data?.error?.code === "SAVED_LOOK_LIMIT_REACHED") {
+                flashSaveButton(freeClientMessages.savedLimitReached);
+                return;
+              }
+              throw new Error(data?.error?.message || "SAVE_LOOK_FAILED");
+            }
+            savedJobIds.add(lastSucceededJobId);
+          }
+          renderSaveButton();
+        } catch (error) {
+          console.error(freeClientMessages.operationSavedFailed, error);
+          flashSaveButton(freeClientMessages.operationSavedFailed);
+        } finally {
+          saveResultBtn.disabled = false;
+        }
       });
     }
   })();

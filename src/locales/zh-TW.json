@@ -446,6 +446,7 @@
     "complete": "生成預覽已就緒",
     "loadSavedFailed": "無法載入歷史紀錄。",
     "operationSavedFailed": "無法儲存這次操作。",
+    "savedLimitReached": "目前方案的收藏數量已滿，請取消一個收藏或升級後繼續保存。",
     "confirmDeleteResult": "要刪除此結果嗎？",
     "noSuccessHistory": "尚無成功試妝記錄",
     "noHistory": "尚無試妝記錄",

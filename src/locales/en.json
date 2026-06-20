@@ -473,6 +473,7 @@
     "complete": "Complete!",
     "loadSavedFailed": "Failed to load saved looks",
     "operationSavedFailed": "Saved-look operation failed",
+    "savedLimitReached": "Your saved-look limit is full. Remove one saved result or upgrade to save more.",
     "confirmDeleteResult": "Delete this try-on result?",
     "noSuccessHistory": "No successful try-on history yet",
     "noHistory": "No try-on records yet",

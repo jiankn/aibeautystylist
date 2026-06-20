@@ -1,5 +1,7 @@
 ---
 import LookCard from "../components/LookCard.astro";
+import MobileAppTopBar from "../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../components/MobileBottomNav.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
@@ -161,6 +163,9 @@ const copy = isKo
       chooseInspiration: "메이크업 영감 선택",
       inspirationHint:
         "추천 순서와 참고 이미지만 바꾸며, 사용자의 정체성을 의미하지 않습니다.",
+      inspirationControlLabel: "추천 기준",
+      inspirationControlNote: "추천 순서와 참고 이미지만 조정합니다.",
+      inspirationSwitchShort: "변경",
       close: "닫기",
       closeFilters: "필터 닫기",
       currentSelection: "현재 선택",
@@ -173,6 +178,10 @@ const copy = isKo
         chooseInspiration: "Make-up Inspiration wählen",
         inspirationHint:
           "Dies ändert nur die Reihenfolge der Empfehlungen und Referenzbilder, nicht deine Identität.",
+        inspirationControlLabel: "Referenz-Inspiration",
+        inspirationControlNote:
+          "Passt Empfehlungen und Referenzbilder an, ohne alle Looks zu begrenzen.",
+        inspirationSwitchShort: "Ändern",
         close: "Schließen",
         closeFilters: "Filter schließen",
         currentSelection: "Aktuelle Auswahl",
@@ -185,6 +194,10 @@ const copy = isKo
           chooseInspiration: "Choisir une inspiration maquillage",
           inspirationHint:
             "Cela modifie seulement l’ordre des recommandations et les images de référence, pas votre identité.",
+          inspirationControlLabel: "Inspiration de référence",
+          inspirationControlNote:
+            "Ajuste les recommandations et les images sans limiter tous les looks.",
+          inspirationSwitchShort: "Changer",
           close: "Fermer",
           closeFilters: "Fermer les filtres",
           currentSelection: "Sélection actuelle",
@@ -197,6 +210,9 @@ const copy = isKo
             chooseInspiration: "メイクの表示基準を選ぶ",
             inspirationHint:
               "おすすめ順と参考画像だけが変わり、あなたの属性を示すものではありません。",
+            inspirationControlLabel: "参考インスピレーション",
+            inspirationControlNote: "おすすめ順と参考画像だけを調整します。",
+            inspirationSwitchShort: "変更",
             close: "閉じる",
             closeFilters: "絞り込みを閉じる",
             currentSelection: "現在の選択",
@@ -208,6 +224,10 @@ const copy = isKo
           ? {
               chooseInspiration: "選擇妝容靈感",
               inspirationHint: "這只會影響推薦順序和參考圖，不代表你的身份。",
+              inspirationControlLabel: "參考靈感",
+              inspirationControlNote:
+                "只調整推薦順序和參考圖，不限制全部妝容。",
+              inspirationSwitchShort: "切換",
               close: "關閉",
               closeFilters: "關閉篩選",
               currentSelection: "目前選擇",
@@ -219,6 +239,10 @@ const copy = isKo
             ? {
                 chooseInspiration: "选择妆容灵感",
                 inspirationHint: "这只影响推荐顺序和参考图，不代表你的身份。",
+                inspirationControlLabel: "参考灵感",
+                inspirationControlNote:
+                  "只调整推荐顺序和参考图，不限制全部妆容。",
+                inspirationSwitchShort: "切换",
                 close: "关闭",
                 closeFilters: "关闭筛选",
                 currentSelection: "当前选择",
@@ -231,6 +255,10 @@ const copy = isKo
                   chooseInspiration: "Elegir inspiración de maquillaje",
                   inspirationHint:
                     "Esto solo cambia el orden de recomendaciones y las imágenes de referencia; no define tu identidad.",
+                  inspirationControlLabel: "Inspiración de referencia",
+                  inspirationControlNote:
+                    "Ajusta recomendaciones e imágenes sin limitar todos los looks.",
+                  inspirationSwitchShort: "Cambiar",
                   close: "Cerrar",
                   closeFilters: "Cerrar filtros",
                   currentSelection: "Selección actual",
@@ -243,6 +271,10 @@ const copy = isKo
                     chooseInspiration: "Escolher inspiração de maquiagem",
                     inspirationHint:
                       "Isso só altera a ordem das recomendações e as imagens de referência; não define sua identidade.",
+                    inspirationControlLabel: "Inspiração de referência",
+                    inspirationControlNote:
+                      "Ajusta recomendações e imagens sem limitar todos os looks.",
+                    inspirationSwitchShort: "Trocar",
                     close: "Fechar",
                     closeFilters: "Fechar filtros",
                     currentSelection: "Seleção atual",
@@ -254,6 +286,10 @@ const copy = isKo
                     chooseInspiration: "Choose makeup inspiration",
                     inspirationHint:
                       "This changes recommendations and reference images, not your identity.",
+                    inspirationControlLabel: "Reference inspiration",
+                    inspirationControlNote:
+                      "Adjusts recommendations and reference images without limiting all looks.",
+                    inspirationSwitchShort: "Change",
                     close: "Close",
                     closeFilters: "Close filters",
                     currentSelection: "Current selection",
@@ -434,13 +470,174 @@ const filterGroups = [
   { id: "experience", label: ui.filterExperience, options: experienceFilters },
 ] as const;
 
+const recommendedTabLabel = isKo
+  ? "추천"
+  : isDe
+    ? "Empfohlen"
+    : isFr
+      ? "Recommandés"
+      : isJa
+        ? "おすすめ"
+        : isZhTW
+          ? "推薦"
+          : isZh
+            ? "推荐"
+            : isEs || isPt
+              ? "Recomendados"
+              : "Recommended";
+const scenarioTabSlugs = ["recommended", "commute", "date", "photo"] as const;
+type ScenarioTabSlug = (typeof scenarioTabSlugs)[number];
+const requestedScenarioSlug =
+  Astro.url.searchParams.get("scenario")?.toLowerCase() ?? "recommended";
+const activeScenarioSlug: ScenarioTabSlug = scenarioTabSlugs.includes(
+  requestedScenarioSlug as ScenarioTabSlug,
+)
+  ? (requestedScenarioSlug as ScenarioTabSlug)
+  : "recommended";
+const scenarioTabValues: Record<ScenarioTabSlug, string> = {
+  recommended: allLabel,
+  commute: scenarioL.commute,
+  date: scenarioL.date,
+  photo: scenarioL.photo,
+};
+const discoverPath = Astro.url.pathname;
+const scenarioTabHref = (slug: ScenarioTabSlug) => {
+  const params = new URLSearchParams(Astro.url.search);
+  params.set("scenario", slug);
+  return `${discoverPath}?${params.toString()}`;
+};
+const mobileTopTabs = [
+  {
+    label: recommendedTabLabel,
+    href: scenarioTabHref("recommended"),
+    active: activeScenarioSlug === "recommended",
+    filterGroup: "scenario",
+    filterValue: scenarioTabValues.recommended,
+    queryParam: "scenario",
+    queryValue: "recommended",
+  },
+  {
+    label: scenarioL.commute,
+    href: scenarioTabHref("commute"),
+    active: activeScenarioSlug === "commute",
+    filterGroup: "scenario",
+    filterValue: scenarioTabValues.commute,
+    queryParam: "scenario",
+    queryValue: "commute",
+  },
+  {
+    label: scenarioL.date,
+    href: scenarioTabHref("date"),
+    active: activeScenarioSlug === "date",
+    filterGroup: "scenario",
+    filterValue: scenarioTabValues.date,
+    queryParam: "scenario",
+    queryValue: "date",
+  },
+  {
+    label: scenarioL.photo,
+    href: scenarioTabHref("photo"),
+    active: activeScenarioSlug === "photo",
+    filterGroup: "scenario",
+    filterValue: scenarioTabValues.photo,
+    queryParam: "scenario",
+    queryValue: "photo",
+  },
+];
+const mobileDiscoverTitle = isKo
+  ? "룩 탐색"
+  : isDe
+    ? "Looks entdecken"
+    : isFr
+      ? "Explorer les looks"
+      : isJa
+        ? "メイクを探す"
+        : isZhTW
+          ? "探索妝容"
+          : isZh
+            ? "探索妆容"
+            : isEs
+              ? "Explorar looks"
+              : isPt
+                ? "Explorar looks"
+                : "Discover Looks";
+const searchCopy = isKo
+  ? {
+      label: "룩 검색",
+      placeholder: "룩, 상황, 효과 검색",
+      clear: "검색어 지우기",
+    }
+  : isDe
+    ? {
+        label: "Looks suchen",
+        placeholder: "Look, Anlass oder Effekt suchen",
+        clear: "Suche leeren",
+      }
+    : isFr
+      ? {
+          label: "Rechercher des looks",
+          placeholder: "Rechercher un look, une occasion ou un effet",
+          clear: "Effacer la recherche",
+        }
+      : isJa
+        ? {
+            label: "メイクを検索",
+            placeholder: "メイク・シーン・効果で検索",
+            clear: "検索をクリア",
+          }
+        : isZhTW
+          ? {
+              label: "搜尋妝容",
+              placeholder: "搜尋妝容、場景或效果",
+              clear: "清除搜尋",
+            }
+          : isZh
+            ? {
+                label: "搜索妆容",
+                placeholder: "搜索妆容、场景或效果",
+                clear: "清除搜索",
+              }
+            : isEs
+              ? {
+                  label: "Buscar looks",
+                  placeholder: "Busca por look, ocasión o efecto",
+                  clear: "Borrar búsqueda",
+                }
+              : isPt
+                ? {
+                    label: "Buscar looks",
+                    placeholder: "Busque por look, ocasião ou efeito",
+                    clear: "Limpar busca",
+                  }
+                : {
+                    label: "Search looks",
+                    placeholder: "Search looks, scenarios, or effects",
+                    clear: "Clear search",
+                  };
+
 function matchValues(option: { value: string; match?: string[] }) {
   return (option.match ?? [option.value]).join("|");
+}
+
+function isActiveFilterOption(groupId: string, option: { value: string }) {
+  if (groupId === "scenario") {
+    return option.value === scenarioTabValues[activeScenarioSlug];
+  }
+  return option.value === allLabel;
 }
 ---
 
 <BaseLayout title={ui.discoverTitle} description={ui.discoverDescription}>
-  <SiteHeader active="discover" />
+  <SiteHeader active="discover" mobileHidden />
+  <MobileAppTopBar
+    brand
+    title={mobileDiscoverTitle}
+    rightAction="search"
+    searchControls="discover-search-panel"
+    showLanguage={false}
+    showTheme={false}
+    tabs={mobileTopTabs}
+  />
   <main class="discover-main">
     <div class="shell">
       <div class="page-heading">
@@ -448,20 +645,6 @@ function matchValues(option: { value: string; match?: string[] }) {
           <h1>{ui.pageTitle}</h1>
           <p>{ui.pageSubtitle}</p>
         </div>
-      </div>
-      <!-- 灵感地区提示 -->
-      <div class="inspiration-bar" data-inspiration-bar>
-        <span class="inspiration-label">
-          {ui.inspirationLabel}：<strong>{marketLabel}</strong>
-        </span>
-        <button
-          class="btn btn-sm inspiration-switch"
-          type="button"
-          data-switch-inspiration
-          hidden={marketOptions.length <= 1}
-        >
-          {ui.switchInspiration}
-        </button>
       </div>
       <dialog
         class="inspiration-dialog"
@@ -517,6 +700,39 @@ function matchValues(option: { value: string; match?: string[] }) {
         >
         </p>
       </dialog>
+      <div
+        class="discover-search-panel"
+        id="discover-search-panel"
+        data-discover-search-panel
+        hidden
+      >
+        <label class="sr-only" for="discover-search-input">
+          {searchCopy.label}
+        </label>
+        <div class="discover-search-control">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.2"></circle>
+            <path d="m16 16 4.2 4.2"></path>
+          </svg>
+          <input
+            id="discover-search-input"
+            type="search"
+            inputmode="search"
+            autocomplete="off"
+            placeholder={searchCopy.placeholder}
+            data-look-search
+          />
+          <button
+            class="discover-search-clear"
+            type="button"
+            aria-label={searchCopy.clear}
+            data-look-search-clear
+            hidden
+          >
+            ×
+          </button>
+        </div>
+      </div>
       <div class="mobile-filter-bar" data-mobile-filter-bar>
         <button
           class="mobile-filter-trigger"
@@ -565,28 +781,49 @@ function matchValues(option: { value: string; match?: string[] }) {
             </button>
           </div>
           <div class="filter-sheet-body">
+            <div class="filter-inspiration" data-inspiration-bar>
+              <div class="filter-inspiration-main">
+                <div class="filter-inspiration-text">
+                  <span class="filter-inspiration-label">
+                    {copy.inspirationControlLabel}
+                  </span>
+                  <strong class="filter-inspiration-value">{marketLabel}</strong
+                  >
+                </div>
+                <button
+                  class="btn btn-sm filter-inspiration-switch"
+                  type="button"
+                  data-switch-inspiration
+                  aria-label={`${ui.switchInspiration}: ${marketLabel}`}
+                  hidden={marketOptions.length <= 1}
+                >
+                  {copy.inspirationSwitchShort}
+                </button>
+              </div>
+              <p>{copy.inspirationControlNote}</p>
+            </div>
             {
               filterGroups.map((group) => (
                 <fieldset class="filter-group" data-filter-group={group.id}>
                   <legend class="filter-title">{group.label}</legend>
                   <div class="filter-options">
-                    {group.options.map((option) => (
-                      <button
-                        type="button"
-                        class:list={[
-                          "filter-chip",
-                          option.value === allLabel && "active",
-                        ]}
-                        data-filter-value={option.value}
-                        data-filter-match={matchValues(option)}
-                        data-filter-all={option.value === allLabel || undefined}
-                        aria-pressed={
-                          option.value === allLabel ? "true" : "false"
-                        }
-                      >
-                        {option.label}
-                      </button>
-                    ))}
+                    {group.options.map((option) => {
+                      const isActive = isActiveFilterOption(group.id, option);
+                      return (
+                        <button
+                          type="button"
+                          class:list={["filter-chip", isActive && "active"]}
+                          data-filter-value={option.value}
+                          data-filter-match={matchValues(option)}
+                          data-filter-all={
+                            option.value === allLabel || undefined
+                          }
+                          aria-pressed={isActive ? "true" : "false"}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </fieldset>
               ))
@@ -644,4 +881,27 @@ function matchValues(option: { value: string; match?: string[] }) {
       </div>
     </div>
   </main>
+  <MobileBottomNav active="discover" />
+  <style>
+    @media (max-width: 767px) {
+      .discover-main {
+        padding-top: 12px;
+      }
+      .page-heading {
+        display: none;
+      }
+      .look-library.panel {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      .look-grid {
+        gap: 10px;
+      }
+      .library-footer {
+        margin-bottom: 8px;
+      }
+    }
+  </style>
 </BaseLayout>

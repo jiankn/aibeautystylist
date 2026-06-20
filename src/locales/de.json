@@ -450,6 +450,7 @@
     "complete": "Vorschau bereit",
     "loadSavedFailed": "Der Verlauf konnte nicht geladen werden.",
     "operationSavedFailed": "Die Aktion konnte nicht gespeichert werden.",
+    "savedLimitReached": "Dein Speicherlimit ist erreicht. Entferne ein Ergebnis oder upgrade, um mehr zu speichern.",
     "confirmDeleteResult": "Dieses Ergebnis löschen?",
     "noSuccessHistory": "Noch keine erfolgreichen Try-ons",
     "noHistory": "Noch keine Try-on-Einträge",

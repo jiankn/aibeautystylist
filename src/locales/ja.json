@@ -446,6 +446,7 @@
     "complete": "プレビュー準備完了",
     "loadSavedFailed": "履歴を読み込めませんでした。",
     "operationSavedFailed": "操作を保存できませんでした。",
+    "savedLimitReached": "保存上限に達しました。保存済み結果を1つ削除するか、アップグレードしてください。",
     "confirmDeleteResult": "この結果を削除しますか？",
     "noSuccessHistory": "成功した試着はまだありません",
     "noHistory": "試着記録はまだありません",

@@ -450,6 +450,7 @@
     "complete": "Vista previa lista",
     "loadSavedFailed": "No se pudo cargar el historial.",
     "operationSavedFailed": "No se pudo guardar la operación.",
+    "savedLimitReached": "Has alcanzado el límite de looks guardados. Elimina un resultado o mejora tu plan para guardar más.",
     "confirmDeleteResult": "¿Eliminar este resultado?",
     "noSuccessHistory": "Aún no hay pruebas completadas",
     "noHistory": "Aún no hay registros de prueba",

@@ -18,6 +18,7 @@ export interface PlanDefinition {
   code: PlanCode;
   title: string;
   monthlyQuota: number;
+  savedLookLimit: number;
   monthlyPriceUsd: number;
   features: PlanFeatures;
   // Stripe Price 环境变量键名（运行时从 bindings 读取真实 price id）。
@@ -38,6 +39,7 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
     code: "free",
     title: "Free",
     monthlyQuota: 3,
+    savedLookLimit: 10,
     monthlyPriceUsd: 0,
     features: { ...NO_FEATURES, shareReward: true },
     priceEnvKeys: { monthly: null, yearly: null },
@@ -46,6 +48,7 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
     code: "pro",
     title: "Pro",
     monthlyQuota: 70,
+    savedLookLimit: 30,
     monthlyPriceUsd: 19.99,
     features: {
       ...NO_FEATURES,
@@ -61,6 +64,7 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
     code: "premium",
     title: "Premium",
     monthlyQuota: 150,
+    savedLookLimit: 100,
     monthlyPriceUsd: 39.99,
     features: {
       ...NO_FEATURES,
@@ -89,6 +93,10 @@ export function getPlanDefinition(code: PlanCode): PlanDefinition {
 
 export function getMonthlyQuota(code: PlanCode): number {
   return PLAN_DEFINITIONS[code].monthlyQuota;
+}
+
+export function getSavedLookLimit(code: PlanCode): number {
+  return PLAN_DEFINITIONS[code].savedLookLimit;
 }
 
 export function getPlanRank(code: PlanCode): number {

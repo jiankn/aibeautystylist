@@ -450,6 +450,7 @@
     "complete": "Aperçu prêt",
     "loadSavedFailed": "Impossible de charger l’historique.",
     "operationSavedFailed": "Impossible d’enregistrer l’action.",
+    "savedLimitReached": "La limite de looks enregistrés est atteinte. Supprimez un résultat ou passez à une offre supérieure.",
     "confirmDeleteResult": "Supprimer ce résultat ?",
     "noSuccessHistory": "Aucun essai réussi pour le moment",
     "noHistory": "Aucun essai enregistré",

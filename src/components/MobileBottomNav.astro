@@ -1,0 +1,363 @@
+---
+import {
+  getLocalizedAppHref,
+  getLocalizedPathname,
+  resolveLocaleRoute,
+} from "../i18n/routing";
+import { getCurrentLocale } from "../lib/i18n";
+
+type ActiveItem = "home" | "discover" | "tryon" | "history" | "account";
+
+interface Props {
+  active: ActiveItem;
+}
+
+const { active } = Astro.props as Props;
+const locale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const localizeHref = (href: string) =>
+  getLocalizedPathname(href, currentRoute.language.slug);
+const accountHref = localizeAppHref("/account");
+const accountTarget = Astro.locals.isLoggedIn
+  ? accountHref
+  : localizeAppHref(
+      `/login?mode=login&next=${encodeURIComponent(accountHref)}`,
+    );
+
+const copy = {
+  en: {
+    nav: "Mobile primary navigation",
+    home: "Home",
+    discover: "Discover",
+    tryon: "Try On",
+    history: "History",
+    account: "Me",
+  },
+  "zh-CN": {
+    nav: "移动端主导航",
+    home: "首页",
+    discover: "探索",
+    tryon: "试妆",
+    history: "历史",
+    account: "我的",
+  },
+  "zh-TW": {
+    nav: "行動端主導覽",
+    home: "首頁",
+    discover: "探索",
+    tryon: "試妝",
+    history: "歷史",
+    account: "我的",
+  },
+  "de-DE": {
+    nav: "Primäre Mobilnavigation",
+    home: "Start",
+    discover: "Entdecken",
+    tryon: "Testen",
+    history: "Verlauf",
+    account: "Ich",
+  },
+  "fr-FR": {
+    nav: "Navigation mobile principale",
+    home: "Accueil",
+    discover: "Explorer",
+    tryon: "Essayer",
+    history: "Historique",
+    account: "Moi",
+  },
+  "ja-JP": {
+    nav: "モバイル主ナビゲーション",
+    home: "ホーム",
+    discover: "探す",
+    tryon: "試す",
+    history: "履歴",
+    account: "マイ",
+  },
+  "ko-KR": {
+    nav: "모바일 기본 탐색",
+    home: "홈",
+    discover: "탐색",
+    tryon: "시착",
+    history: "기록",
+    account: "내 정보",
+  },
+  "es-ES": {
+    nav: "Navegación móvil principal",
+    home: "Inicio",
+    discover: "Explorar",
+    tryon: "Probar",
+    history: "Historial",
+    account: "Yo",
+  },
+  "es-419": {
+    nav: "Navegación móvil principal",
+    home: "Inicio",
+    discover: "Explorar",
+    tryon: "Probar",
+    history: "Historial",
+    account: "Yo",
+  },
+  "pt-BR": {
+    nav: "Navegação móvel principal",
+    home: "Início",
+    discover: "Explorar",
+    tryon: "Testar",
+    history: "Histórico",
+    account: "Eu",
+  },
+}[locale] ?? {
+  nav: "Mobile primary navigation",
+  home: "Home",
+  discover: "Discover",
+  tryon: "Try On",
+  history: "History",
+  account: "Me",
+};
+
+const items = [
+  {
+    id: "home",
+    href: localizeHref("/"),
+    label: copy.home,
+    icon: "home",
+    primary: false,
+  },
+  {
+    id: "discover",
+    href: localizeAppHref("/discover"),
+    label: copy.discover,
+    icon: "search",
+    primary: false,
+  },
+  {
+    id: "tryon",
+    href: localizeAppHref("/tryon-free"),
+    label: copy.tryon,
+    icon: "camera",
+    primary: true,
+  },
+  {
+    id: "history",
+    href: localizeAppHref("/history"),
+    label: copy.history,
+    icon: "history",
+    primary: false,
+  },
+  {
+    id: "account",
+    href: accountTarget,
+    label: copy.account,
+    icon: "user",
+    primary: false,
+  },
+] as const;
+---
+
+<nav class="mobile-bottom-nav" aria-label={copy.nav} data-mobile-bottom-nav>
+  <div class="mobile-bottom-nav-inner">
+    {
+      items.map((item) => (
+        <a
+          class:list={[
+            "mobile-bottom-item",
+            item.primary && "mobile-bottom-item-primary",
+            active === item.id && "active",
+          ]}
+          href={item.href}
+          aria-current={active === item.id ? "page" : undefined}
+        >
+          <span class="mobile-bottom-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              {item.icon === "home" && (
+                <>
+                  <path d="M3.5 11.2 12 4l8.5 7.2" />
+                  <path d="M5.5 10.5V20h5v-5.2h3V20h5v-9.5" />
+                </>
+              )}
+              {item.icon === "search" && (
+                <>
+                  <circle cx="10.8" cy="10.8" r="6.2" />
+                  <path d="m16 16 4.2 4.2" />
+                </>
+              )}
+              {item.icon === "camera" && (
+                <>
+                  <path d="M7.2 8.2 8.8 6h6.4l1.6 2.2H20v10.3H4V8.2h3.2Z" />
+                  <circle cx="12" cy="13.4" r="3.4" />
+                  <path d="M18.2 5.2v2.1" />
+                  <path d="M19.2 6.2h-2.1" />
+                </>
+              )}
+              {item.icon === "history" && (
+                <>
+                  <path d="M4.3 12a7.7 7.7 0 1 0 2.2-5.4" />
+                  <path d="M4 5.2v4h4" />
+                  <path d="M12 8.2V12l2.8 1.7" />
+                </>
+              )}
+              {item.icon === "user" && (
+                <>
+                  <circle cx="12" cy="8.2" r="3.3" />
+                  <path d="M5.5 20c.8-4.2 3-6.2 6.5-6.2s5.7 2 6.5 6.2" />
+                </>
+              )}
+            </svg>
+          </span>
+          <span>{item.label}</span>
+        </a>
+      ))
+    }
+  </div>
+</nav>
+
+<script is:inline>
+  document.body.classList.add("mobile-bottom-nav-ready");
+</script>
+
+<style>
+  .mobile-bottom-nav {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    :global(body.mobile-bottom-nav-ready) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+    .mobile-bottom-nav {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 130;
+      display: block;
+      padding: 7px 12px calc(7px + env(safe-area-inset-bottom));
+      border-top: 1px solid color-mix(in srgb, var(--line) 86%, transparent);
+      background: color-mix(in srgb, var(--bg-elevated) 96%, transparent);
+      box-shadow: 0 -12px 34px rgba(18, 39, 66, 0.11);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+    }
+    .mobile-bottom-nav-inner {
+      display: grid;
+      max-width: 460px;
+      min-height: 58px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      align-items: end;
+      gap: 2px;
+      margin: 0 auto;
+    }
+    .mobile-bottom-item {
+      display: inline-flex;
+      min-width: 0;
+      min-height: 50px;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      flex-direction: column;
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 720;
+      line-height: 1;
+      text-decoration: none;
+      touch-action: manipulation;
+      transition:
+        color 0.18s ease,
+        background 0.18s ease,
+        transform 0.18s ease;
+    }
+    .mobile-bottom-item:active {
+      transform: scale(0.96);
+    }
+    .mobile-bottom-item span:last-child {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mobile-bottom-icon {
+      display: grid;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+    }
+    .mobile-bottom-icon svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.1;
+    }
+    .mobile-bottom-item.active {
+      color: var(--rose);
+    }
+    .mobile-bottom-item-primary {
+      position: relative;
+      min-height: 58px;
+      margin-top: -20px;
+      color: #fff8fb;
+      font-weight: 850;
+    }
+    .mobile-bottom-item-primary .mobile-bottom-icon {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      border: 4px solid var(--bg-elevated);
+      border-radius: 999px;
+      background: linear-gradient(135deg, #e13c72 0%, #bd245c 100%);
+      box-shadow:
+        0 12px 28px rgba(199, 49, 103, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    }
+    .mobile-bottom-item-primary .mobile-bottom-icon::before {
+      position: absolute;
+      inset: 9px;
+      border-radius: inherit;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        0 4px 10px rgba(112, 16, 54, 0.16);
+      opacity: 0;
+      content: "";
+      transition: opacity 0.18s ease;
+    }
+    .mobile-bottom-item-primary .mobile-bottom-icon svg {
+      position: relative;
+      z-index: 1;
+      width: 24px;
+      height: 24px;
+      stroke-width: 2.2;
+    }
+    .mobile-bottom-item-primary span:last-child {
+      color: var(--rose);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .mobile-bottom-item-primary.active .mobile-bottom-icon {
+      background: linear-gradient(135deg, #f04c83 0%, #c71f61 100%);
+    }
+    .mobile-bottom-item-primary.active .mobile-bottom-icon::before {
+      opacity: 1;
+    }
+    .mobile-bottom-item-primary.active .mobile-bottom-icon svg {
+      color: #b51f57;
+      stroke-width: 2.35;
+    }
+    :global([data-theme="dark"]) .mobile-bottom-nav {
+      border-top-color: rgba(255, 255, 255, 0.08);
+      background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
+      box-shadow: 0 -14px 34px rgba(0, 0, 0, 0.34);
+    }
+    :global([data-theme="dark"])
+      .mobile-bottom-item-primary
+      .mobile-bottom-icon {
+      border-color: var(--bg-elevated);
+    }
+  }
+</style>

@@ -1,5 +1,7 @@
 ---
 import SiteHeader from "../components/SiteHeader.astro";
+import MobileAppTopBar from "../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../components/MobileBottomNav.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
@@ -118,6 +120,7 @@ const fallbackDiagnosisCopy = isEnglish
       historyEmptyTitle: "No saved diagnosis reports yet",
       historyEmptyBody:
         "Complete one diagnosis and this area will become your personal reference shelf for undertone, structure, color direction, and matched looks.",
+      historyNewCta: "New diagnosis",
       historyEmptyCta: "Start a diagnosis",
       historyEmptySecondary: "Browse looks first",
       historyEmptyMeta: [
@@ -225,6 +228,7 @@ const fallbackDiagnosisCopy = isEnglish
       historyEmptyTitle: "还没有可回看的诊断报告",
       historyEmptyBody:
         "完成一次诊断后，这里会保留肤色方向、妆容重点和匹配妆容，方便下次直接对照。",
+      historyNewCta: "新建诊断",
       historyEmptyCta: "开始一次诊断",
       historyEmptySecondary: "先看妆容库",
       historyEmptyMeta: [
@@ -280,7 +284,12 @@ const diagnosisClientCopy = {
   description={diagnosisCopy.metaDescription}
   bodyClass="diagnosis-body"
 >
-  <SiteHeader active="diagnosis" />
+  <SiteHeader active="diagnosis" mobileHidden />
+  <MobileAppTopBar
+    title={diagnosisCopy.kicker}
+    backHref={tryOnFreeHref}
+    rightAction="help"
+  />
   <main class="diagnosis-main" data-diagnosis-main>
     <section class="diagnosis-hero shell" aria-labelledby="diagnosis-title">
       <div class="diagnosis-hero-copy">
@@ -314,25 +323,23 @@ const diagnosisClientCopy = {
             width="720"
             height="720"
           />
-          <div class="report-preview-overlay">
-            <span class="report-preview-label"
-              >{diagnosisCopy.previewLabel}</span
-            >
-            <div class="report-preview-stats">
-              {
-                diagnosisCopy.previewStats.map(([label, value]) => (
-                  <div>
-                    <small>{label}</small>
-                    <b>{value}</b>
-                  </div>
-                ))
-              }
-            </div>
-          </div>
         </div>
         <div class="report-preview-summary">
-          <h2>{diagnosisCopy.previewTitle}</h2>
-          <ul>
+          <div class="report-preview-copy">
+            <span class="report-preview-label">{diagnosisCopy.previewLabel}</span>
+            <h2>{diagnosisCopy.previewTitle}</h2>
+          </div>
+          <div class="report-preview-stats">
+            {
+              diagnosisCopy.previewStats.map(([label, value]) => (
+                <div>
+                  <small>{label}</small>
+                  <b>{value}</b>
+                </div>
+              ))
+            }
+          </div>
+          <ul class="report-preview-notes">
             {
               diagnosisCopy.previewNotes
                 .slice(0, 2)
@@ -502,8 +509,13 @@ const diagnosisClientCopy = {
             <h2 id="diagnosis-history-title">{diagnosisCopy.historyTitle}</h2>
             <p>{diagnosisCopy.historySubtitle}</p>
           </div>
-          <a class="btn btn-primary" href="#diagnosis-new">
-            {diagnosisCopy.historyEmptyCta}
+          <a
+            class="btn btn-primary"
+            href="#diagnosis-new"
+            data-diagnosis-history-cta
+            hidden
+          >
+            {diagnosisCopy.historyNewCta}
           </a>
         </div>
         <div
@@ -520,6 +532,7 @@ const diagnosisClientCopy = {
       </section>
     </div>
   </main>
+  <MobileBottomNav active="tryon" />
 
   <script
     is:inline
@@ -556,6 +569,9 @@ const diagnosisClientCopy = {
       const resultChips = document.getElementById("diag-result-chips");
       const primaryLook = document.getElementById("diag-primary-look");
       const historyList = document.getElementById("diag-history-list");
+      const historyHeaderCta = document.querySelector(
+        "[data-diagnosis-history-cta]",
+      );
       const quotaCard = document.querySelector("[data-diagnosis-quota]");
       const quotaText = document.querySelector("[data-diagnosis-quota-text]");
       const quotaNote = document.querySelector("[data-diagnosis-quota-note]");
@@ -1166,8 +1182,15 @@ const diagnosisClientCopy = {
           .replaceAll("'", "&#39;");
       }
 
+      function setHistoryHeaderCtaVisible(isVisible) {
+        if (historyHeaderCta instanceof HTMLElement) {
+          historyHeaderCta.hidden = !isVisible;
+        }
+      }
+
       function renderHistoryEmpty() {
         if (!historyList) return;
+        setHistoryHeaderCtaVisible(false);
         diagnosisMain?.classList.remove("has-account-result");
         historyList.classList.remove("has-items");
         historyList.classList.add("is-empty");
@@ -1209,6 +1232,7 @@ const diagnosisClientCopy = {
             return;
           }
           if (historyList) {
+            setHistoryHeaderCtaVisible(true);
             historyList.classList.remove("is-empty");
             historyList.classList.add("has-items");
             historyList.innerHTML = data.data.items
@@ -1273,6 +1297,7 @@ const diagnosisClientCopy = {
           }
         } catch {
           if (historyList) {
+            setHistoryHeaderCtaVisible(false);
             historyList.classList.remove("has-items");
             historyList.classList.add("is-empty");
             historyList.innerHTML = `
@@ -1544,39 +1569,11 @@ const diagnosisClientCopy = {
       overflow: hidden;
       background: var(--soft);
     }
-    .report-preview-media::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(8, 18, 34, 0.02) 38%,
-        rgba(8, 18, 34, 0.32) 66%,
-        rgba(8, 18, 34, 0.58)
-      );
-      pointer-events: none;
-    }
     .report-preview-media img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: 50% 34%;
-    }
-    .report-preview-overlay {
-      position: absolute;
-      right: 14px;
-      bottom: 14px;
-      left: 14px;
-      z-index: 1;
-      display: grid;
-      gap: 9px;
-      padding: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.54);
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.84);
-      box-shadow: 0 16px 34px rgba(9, 20, 35, 0.16);
-      backdrop-filter: blur(18px) saturate(150%);
-      -webkit-backdrop-filter: blur(18px) saturate(150%);
     }
     .report-preview-label {
       width: fit-content;
@@ -1586,27 +1583,34 @@ const diagnosisClientCopy = {
     }
     .report-preview-summary {
       display: grid;
-      gap: 10px;
+      gap: 12px;
       padding: 16px;
       border-top: 1px solid var(--line);
       background:
         linear-gradient(135deg, rgba(255, 244, 248, 0.82), transparent 52%),
         var(--bg-elevated);
     }
-    .report-preview-summary h2 {
+    .report-preview-copy {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+    .report-preview-copy h2 {
       margin: 0;
       color: var(--heading);
-      font-size: 18px;
-      line-height: 1.25;
+      font-size: clamp(16px, 3vw, 18px);
+      line-height: 1.22;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
     .report-preview-stats {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
+      gap: 7px;
     }
     .report-preview-stats div {
       min-width: 0;
-      padding: 8px;
+      padding: 8px 9px;
       border: 1px solid rgba(255, 255, 255, 0.62);
       border-radius: 14px;
       background: rgba(255, 255, 255, 0.7);
@@ -1615,41 +1619,44 @@ const diagnosisClientCopy = {
       display: block;
       color: var(--muted);
       font-size: 11px;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
     .report-preview-stats b {
       display: block;
       margin-top: 4px;
       color: var(--heading);
       font-size: 13px;
+      line-height: 1.18;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
-    .report-preview-summary ul {
+    .report-preview-notes {
       display: grid;
-      gap: 6px;
+      gap: 5px;
       margin: 0;
       padding: 0;
       list-style: none;
     }
-    .report-preview-summary li {
+    .report-preview-notes li {
       position: relative;
-      padding-left: 18px;
+      padding-left: 15px;
       color: var(--text);
       font-size: 12px;
-      line-height: 1.5;
+      line-height: 1.38;
+      overflow-wrap: anywhere;
+      hyphens: auto;
     }
-    .report-preview-summary li::before {
+    .report-preview-notes li::before {
       content: "";
       position: absolute;
-      top: 0.72em;
+      top: 0.58em;
       left: 0;
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--teal);
-    }
-    :global([data-theme="dark"]) .report-preview-overlay {
-      border-color: rgba(255, 255, 255, 0.16);
-      background: rgba(15, 23, 35, 0.84);
-      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.34);
     }
     :global([data-theme="dark"]) .report-preview-stats div {
       border-color: rgba(255, 255, 255, 0.13);
@@ -1665,11 +1672,6 @@ const diagnosisClientCopy = {
       background: rgba(255, 255, 255, 0.07);
     }
     @media (prefers-color-scheme: dark) {
-      :global(:root:not([data-theme="light"])) .report-preview-overlay {
-        border-color: rgba(255, 255, 255, 0.16);
-        background: rgba(15, 23, 35, 0.84);
-        box-shadow: 0 20px 44px rgba(0, 0, 0, 0.34);
-      }
       :global(:root:not([data-theme="light"])) .report-preview-stats div {
         border-color: rgba(255, 255, 255, 0.13);
         background: rgba(255, 255, 255, 0.07);
@@ -2377,25 +2379,26 @@ const diagnosisClientCopy = {
         height: 100%;
         object-position: 50% 31%;
       }
-      .report-preview-media::after {
-        top: auto;
-        height: 46%;
-      }
-      .report-preview-overlay {
-        right: 12px;
-        bottom: 12px;
-        left: 12px;
-        padding: 12px;
-        border-radius: 16px;
-      }
       .report-preview-summary {
-        padding: 16px;
+        gap: 10px;
+        padding: 15px;
       }
-      .report-preview-summary h2 {
-        font-size: 18px;
+      .report-preview-copy {
+        gap: 6px;
+      }
+      .report-preview-copy h2 {
+        font-size: 16px;
+        line-height: 1.22;
+      }
+      .report-preview-notes {
+        gap: 4px;
+      }
+      .report-preview-notes li {
+        font-size: 11px;
+        line-height: 1.32;
       }
       .report-preview-stats div {
-        padding: 8px;
+        padding: 7px;
       }
       .report-preview-stats b {
         font-size: 12px;

@@ -64,11 +64,25 @@ const cardImageSrc = toCardImageSrc(look.image, cardImageFallbackWidth);
 const cardImageSrcSet = cardImageWidths
   .map((width) => `${toCardImageSrc(look.image, width)} ${width}w`)
   .join(", ");
+const searchIndex = [
+  look.title,
+  look.imageAlt,
+  ...look.scenarios,
+  ...look.finish,
+  look.experience,
+  look.intent,
+  look.advisor.fit,
+  look.advisor.effect,
+  ...look.advisor.anchors,
+  look.advisor.caution,
+  ...look.advisor.judge,
+].join(" ");
 const filterData = {
   "data-look-card": "",
   "data-scenarios": look.scenarios.join("|"),
   "data-finishes": look.finish.join("|"),
   "data-experience": look.experience,
+  "data-search-index": searchIndex,
 };
 const selectData = {
   "data-look-select": "",

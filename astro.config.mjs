@@ -32,6 +32,9 @@ export default defineConfig({
   output: "server",
   site: "https://aibeautystylist.com",
   trailingSlash: "ignore",
+  devToolbar: {
+    enabled: false,
+  },
   vite: {
     cacheDir: fileURLToPath(new URL("./node_modules/.vite/", import.meta.url)),
     server: {

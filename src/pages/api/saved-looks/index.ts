@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
+import { getEntitlementContext } from "../../../lib/entitlements";
 import { apiError, apiSuccess } from "../../../lib/http";
+import { getSavedLookLimit } from "../../../lib/plans";
 import { getRuntimeBindings } from "../../../lib/runtime";
 import { getStoredJobById } from "../../../lib/jobs";
 
@@ -117,6 +119,28 @@ export const POST: APIRoute = async ({ cookies, request }) => {
       alreadySaved: true,
       message: "已经收藏过该妆容",
     });
+  }
+
+  const { plan } = await getEntitlementContext(userId, DB);
+  const savedLimit = getSavedLookLimit(plan.planCode);
+  const savedCount = await DB.prepare(
+    `SELECT COUNT(*) as count
+     FROM saved_looks s
+     INNER JOIN tryon_jobs j ON s.job_id = j.id
+     WHERE s.user_id = ? AND j.deleted_at IS NULL`,
+  )
+    .bind(userId)
+    .first<{ count: number }>();
+  const currentCount = Number(savedCount?.count ?? 0);
+  if (currentCount >= savedLimit) {
+    return apiError(
+      {
+        code: "SAVED_LOOK_LIMIT_REACHED",
+        message: `当前计划最多可收藏 ${savedLimit} 个妆容结果。`,
+        retryable: false,
+      },
+      403,
+    );
   }
 
   const id = crypto.randomUUID();

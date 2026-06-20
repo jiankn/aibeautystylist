@@ -1,0 +1,396 @@
+---
+type IconSize = "xs" | "sm" | "md" | "menu";
+type IconTone = "rose" | "gold" | "teal" | "navy" | "danger";
+
+interface Props {
+  icon: string;
+  size?: IconSize;
+  tone?: IconTone;
+  class?: string;
+}
+
+const props = Astro.props as Props;
+const aliases: Record<string, string> = {
+  "?": "help",
+  A: "account",
+  B: "billing",
+  D: "diagnosis",
+  H: "history",
+  M: "membership",
+  O: "overview",
+  P: "profile",
+  R: "history",
+  S: "settings",
+  T: "tryon",
+  X: "logout",
+};
+const iconName = aliases[props.icon] ?? props.icon;
+const size = props.size ?? "md";
+const tone =
+  props.tone ??
+  ({
+    billing: "gold",
+    credits: "gold",
+    membership: "gold",
+    support: "teal",
+    logout: "danger",
+  }[iconName] as IconTone | undefined) ??
+  "rose";
+const className = props.class;
+---
+
+<span
+  class:list={[
+    "app-icon-badge",
+    `app-icon-badge-${size}`,
+    `app-icon-badge-${tone}`,
+    `app-icon-badge-icon-${iconName}`,
+    className,
+  ]}
+  aria-hidden="true"
+>
+  <svg viewBox="0 0 24 24" focusable="false">
+    {
+      iconName === "account" || iconName === "profile" ? (
+        <>
+          <circle cx="12" cy="8.1" r="3.2" class="app-icon-soft-fill" />
+          <path d="M5.7 20.1c.8-3.8 3-5.7 6.3-5.7s5.5 1.9 6.3 5.7" />
+        </>
+      ) : iconName === "privacy" ? (
+        <>
+          <path d="M12 3.5 18.6 6v5.2c0 4.2-2.5 7.7-6.6 9.3-4.1-1.6-6.6-5.1-6.6-9.3V6L12 3.5Z" />
+          <path d="M8.6 12.2c.9-1.5 2-2.2 3.4-2.2s2.5.7 3.4 2.2c-.9 1.5-2 2.2-3.4 2.2s-2.5-.7-3.4-2.2Z" />
+          <circle cx="12" cy="12.2" r="1.2" class="app-icon-accent-fill" />
+        </>
+      ) : iconName === "security" ? (
+        <>
+          <rect x="6.4" y="10" width="11.2" height="9.2" rx="2.1" />
+          <path d="M8.7 10V7.8a3.3 3.3 0 0 1 6.6 0V10" />
+          <path d="M12 13.3v2.4" />
+        </>
+      ) : iconName === "preferences" || iconName === "settings" ? (
+        <>
+          <path d="M5 7h14" />
+          <path d="M5 12h14" />
+          <path d="M5 17h14" />
+          <circle cx="9" cy="7" r="1.8" class="app-icon-accent-fill" />
+          <circle cx="15" cy="12" r="1.8" class="app-icon-soft-fill" />
+          <circle cx="11.2" cy="17" r="1.8" class="app-icon-accent-fill" />
+        </>
+      ) : iconName === "export" ? (
+        <>
+          <path d="M7 4.5h7l3 3V19a1.8 1.8 0 0 1-1.8 1.8H7A1.8 1.8 0 0 1 5.2 19V6.3A1.8 1.8 0 0 1 7 4.5Z" />
+          <path d="M13.8 4.7V8h3.3" />
+          <path d="M11.2 10.4v5.2" />
+          <path d="m8.9 13.5 2.3 2.3 2.3-2.3" />
+        </>
+      ) : iconName === "membership" ? (
+        <>
+          <path d="M5.8 16.2h12.4" />
+          <path
+            d="m6.8 8.2 3.2 3.1 2-5 2 5 3.2-3.1-1.4 7.1H8.2L6.8 8.2Z"
+            class="app-icon-highlight-fill"
+          />
+          <path d="M7.2 7.7c1.1-2.1 2.9-3.2 4.8-3.2 2.6 0 4.7 1.7 5.3 4" />
+          <circle cx="7.2" cy="7.7" r="1" class="app-icon-accent-fill" />
+          <circle cx="17.3" cy="8.5" r="1" class="app-icon-accent-fill" />
+        </>
+      ) : iconName === "help" ? (
+        <>
+          <circle cx="12" cy="12" r="8.2" class="app-icon-soft-fill" />
+          <path d="M9.6 9.5a2.5 2.5 0 0 1 4.8 1.1c0 1.9-2.3 2.2-2.3 4" />
+          <path d="M12 17.5h.01" />
+        </>
+      ) : iconName === "support" ? (
+        <>
+          <path d="M5 12a7 7 0 0 1 14 0" />
+          <path d="M5 12.3v2.6a2 2 0 0 0 2 2h1v-5.4H7a2 2 0 0 0-2 2Z" />
+          <path d="M19 12.3v2.6a2 2 0 0 1-2 2h-1v-5.4h1a2 2 0 0 1 2 2Z" />
+          <path d="M15.8 18.2c-.9.9-2.1 1.3-3.8 1.3" />
+        </>
+      ) : iconName === "about" ? (
+        <>
+          <rect
+            x="5"
+            y="5"
+            width="14"
+            height="14"
+            rx="4"
+            class="app-icon-soft-fill"
+          />
+          <path d="M12 10.8v5.2" />
+          <path d="M12 8h.01" />
+        </>
+      ) : iconName === "theme" ? (
+        <>
+          <path
+            d="M12 3.8a5 5 0 0 0 7 7A7.2 7.2 0 1 1 12 3.8Z"
+            class="app-icon-soft-fill"
+          />
+          <path d="M18.4 4.5v1.8" />
+          <path d="M17.5 5.4h1.8" />
+        </>
+      ) : iconName === "overview" || iconName === "dashboard" ? (
+        <>
+          <rect
+            x="5"
+            y="5"
+            width="5.6"
+            height="5.6"
+            rx="1.5"
+            class="app-icon-soft-fill"
+          />
+          <rect x="13.4" y="5" width="5.6" height="5.6" rx="1.5" />
+          <rect x="5" y="13.4" width="5.6" height="5.6" rx="1.5" />
+          <rect
+            x="13.4"
+            y="13.4"
+            width="5.6"
+            height="5.6"
+            rx="1.5"
+            class="app-icon-soft-fill"
+          />
+        </>
+      ) : iconName === "data" ? (
+        <>
+          <path d="M5 19h14" />
+          <rect
+            x="6.4"
+            y="11.2"
+            width="3.2"
+            height="5.9"
+            rx="1"
+            class="app-icon-soft-fill"
+          />
+          <rect x="10.4" y="7.3" width="3.2" height="9.8" rx="1" />
+          <rect
+            x="14.4"
+            y="9.4"
+            width="3.2"
+            height="7.7"
+            rx="1"
+            class="app-icon-accent-fill"
+          />
+        </>
+      ) : iconName === "tryon" || iconName === "workspace" ? (
+        <>
+          <path d="M6.8 8.2h2.3l1.2-1.8h3.4l1.2 1.8h2.3a2 2 0 0 1 2 2v6.2a2 2 0 0 1-2 2H6.8a2 2 0 0 1-2-2v-6.2a2 2 0 0 1 2-2Z" />
+          <circle cx="12" cy="13.2" r="2.7" class="app-icon-soft-fill" />
+          <path d="M18.5 5.2v1.7" />
+          <path d="M17.7 6h1.7" />
+        </>
+      ) : iconName === "diagnosis" ? (
+        <>
+          <path d="M7.2 5.2h9.6a2 2 0 0 1 2 2v9.6a2 2 0 0 1-2 2H7.2a2 2 0 0 1-2-2V7.2a2 2 0 0 1 2-2Z" />
+          <path d="M8 10c.9-1.2 2.2-1.8 4-1.8s3.1.6 4 1.8" />
+          <path d="M8.4 14.7c1 1.1 2.2 1.6 3.6 1.6s2.6-.5 3.6-1.6" />
+          <circle cx="9.5" cy="12.2" r=".8" class="app-icon-accent-fill" />
+          <circle cx="14.5" cy="12.2" r=".8" class="app-icon-accent-fill" />
+        </>
+      ) : iconName === "history" ? (
+        <>
+          <circle cx="12" cy="12" r="7.5" class="app-icon-soft-fill" />
+          <path d="M12 8v4.4l3 1.7" />
+          <path d="M5.2 9.2 4.3 6.5h2.8" />
+        </>
+      ) : iconName === "saved" ? (
+        <>
+          <path
+            d="M19 6.2a4.6 4.6 0 0 0-6.5 0L12 6.7l-.5-.5A4.6 4.6 0 1 0 5 12.7L12 19l7-6.3a4.6 4.6 0 0 0 0-6.5Z"
+            class="app-icon-soft-fill"
+          />
+        </>
+      ) : iconName === "billing" ? (
+        <>
+          <rect
+            x="4.7"
+            y="6.6"
+            width="14.6"
+            height="10.8"
+            rx="2.2"
+            class="app-icon-soft-fill"
+          />
+          <path d="M5.2 10h13.6" />
+          <path d="M7.8 14.2h3" />
+          <path d="M14 14.2h2.2" />
+        </>
+      ) : iconName === "credits" ? (
+        <>
+          <ellipse
+            cx="12"
+            cy="7"
+            rx="5.8"
+            ry="2.5"
+            class="app-icon-highlight-fill"
+          />
+          <path d="M6.2 7v4.2c0 1.4 2.6 2.5 5.8 2.5s5.8-1.1 5.8-2.5V7" />
+          <path d="M6.2 11.2v4.2c0 1.4 2.6 2.5 5.8 2.5s5.8-1.1 5.8-2.5v-4.2" />
+          <path d="M18.8 5.1v1.8" />
+          <path d="M17.9 6h1.8" />
+        </>
+      ) : iconName === "logout" ? (
+        <>
+          <path d="M10.4 5.2H6.8a1.8 1.8 0 0 0-1.8 1.8v10a1.8 1.8 0 0 0 1.8 1.8h3.6" />
+          <path d="M13.3 8.2 17.1 12l-3.8 3.8" />
+          <path d="M9.4 12h7.3" />
+        </>
+      ) : iconName === "guides" ? (
+        <>
+          <path
+            d="M6.3 5.2h6.1a3 3 0 0 1 3 3v10.6H9.3a3 3 0 0 1-3-3V5.2Z"
+            class="app-icon-soft-fill"
+          />
+          <path d="M15.4 8.2h2.3v10.6h-2.3" />
+          <path d="M8.8 9h3.9" />
+          <path d="M8.8 12.2h3.9" />
+        </>
+      ) : (
+        <>
+          <path d="M12 4.4v15.2" />
+          <path d="M4.4 12h15.2" />
+          <circle cx="12" cy="12" r="6.7" class="app-icon-soft-fill" />
+        </>
+      )
+    }
+  </svg>
+</span>
+
+<style>
+  .app-icon-badge {
+    --app-icon-size: 42px;
+    --app-icon-bg: color-mix(
+      in srgb,
+      var(--rose-soft, #fff1f6) 82%,
+      var(--bg-elevated, #fff)
+    );
+    --app-icon-border: color-mix(
+      in srgb,
+      var(--rose, #c73167) 24%,
+      var(--line, #d8e2ee)
+    );
+    --app-icon-fg: var(--rose, #c73167);
+    --app-icon-soft: color-mix(in srgb, currentColor 16%, transparent);
+    --app-icon-accent: color-mix(in srgb, currentColor 72%, #fff);
+    --app-icon-highlight: color-mix(
+      in srgb,
+      var(--gold-soft, #fff2c2) 80%,
+      #d39b2d
+    );
+    display: grid;
+    width: var(--app-icon-size);
+    height: var(--app-icon-size);
+    flex: 0 0 var(--app-icon-size);
+    place-items: center;
+    border: 1px solid var(--app-icon-border);
+    border-radius: max(8px, calc(var(--app-icon-size) * 0.24));
+    background: var(--app-icon-bg);
+    color: var(--app-icon-fg);
+    line-height: 1;
+  }
+
+  .app-icon-badge-xs {
+    --app-icon-size: 22px;
+    border-radius: 7px;
+  }
+
+  .app-icon-badge-sm {
+    --app-icon-size: 28px;
+  }
+
+  .app-icon-badge-menu {
+    --app-icon-size: 28px;
+  }
+
+  .app-icon-badge-md {
+    --app-icon-size: 42px;
+  }
+
+  .app-icon-badge-gold {
+    --app-icon-bg: color-mix(
+      in srgb,
+      var(--gold-soft, #fff2c2) 78%,
+      var(--bg-elevated, #fff)
+    );
+    --app-icon-border: color-mix(in srgb, #c28618 32%, var(--line, #d8e2ee));
+    --app-icon-fg: #9b6514;
+    --app-icon-accent: var(--rose, #c73167);
+  }
+
+  .app-icon-badge-teal {
+    --app-icon-bg: color-mix(
+      in srgb,
+      var(--teal-soft, #e8fbf8) 82%,
+      var(--bg-elevated, #fff)
+    );
+    --app-icon-border: color-mix(
+      in srgb,
+      var(--teal, #0f8c81) 28%,
+      var(--line, #d8e2ee)
+    );
+    --app-icon-fg: var(--teal, #0f8c81);
+  }
+
+  .app-icon-badge-navy {
+    --app-icon-bg: color-mix(
+      in srgb,
+      var(--surface-neutral, #edf2f7) 84%,
+      var(--bg-elevated, #fff)
+    );
+    --app-icon-border: color-mix(
+      in srgb,
+      var(--navy, #122742) 18%,
+      var(--line, #d8e2ee)
+    );
+    --app-icon-fg: var(--navy, #122742);
+  }
+
+  .app-icon-badge-danger {
+    --app-icon-bg: color-mix(
+      in srgb,
+      var(--surface-danger, #fff0f1) 84%,
+      var(--bg-elevated, #fff)
+    );
+    --app-icon-border: color-mix(
+      in srgb,
+      var(--danger-text, #b42318) 28%,
+      var(--line, #d8e2ee)
+    );
+    --app-icon-fg: var(--danger-text, #b42318);
+  }
+
+  .app-icon-badge svg {
+    width: calc(var(--app-icon-size) * 0.62);
+    height: calc(var(--app-icon-size) * 0.62);
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.75;
+  }
+
+  .app-icon-badge-xs svg,
+  .app-icon-badge-sm svg,
+  .app-icon-badge-menu svg {
+    stroke-width: 1.9;
+  }
+
+  .app-icon-soft-fill {
+    fill: var(--app-icon-soft);
+  }
+
+  .app-icon-accent-fill {
+    fill: var(--app-icon-accent);
+    stroke: none;
+  }
+
+  .app-icon-highlight-fill {
+    fill: var(--app-icon-highlight);
+  }
+
+  :global([data-theme="dark"]) .app-icon-badge {
+    --app-icon-bg: color-mix(in srgb, currentColor 16%, transparent);
+    --app-icon-border: color-mix(in srgb, currentColor 32%, transparent);
+    --app-icon-soft: color-mix(in srgb, currentColor 24%, transparent);
+  }
+</style>

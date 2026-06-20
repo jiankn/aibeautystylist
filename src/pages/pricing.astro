@@ -57,6 +57,7 @@ const fallbackCopy = isEnglish
       yearlyUnit: "/ year",
       popular: "Best value",
       premiumRibbon: "For frequent users",
+      freeRibbon: "Free experience",
       decisionHelperTitle: "Not sure which plan fits?",
       decisionHelperLead: "Most regular users start with Pro.",
       decisionHelperItems: [
@@ -220,6 +221,7 @@ const fallbackCopy = isEnglish
       yearlyUnit: "/ 年",
       popular: "推荐选择",
       premiumRibbon: "适合高频使用",
+      freeRibbon: "免费体验",
       decisionHelperTitle: "不确定选哪个？",
       decisionHelperLead: "先用 Free 验证流程，需要连续试妆时再看 Pro。",
       decisionHelperItems: [
@@ -545,11 +547,15 @@ const checkoutCopy = {
               class:list={[
                 "pricing-plan-card",
                 "panel",
+                plan.code === "free" && "free-plan",
                 plan.code === "pro" && "recommended",
                 plan.code === "premium" && "premium",
               ]}
               data-plan={plan.code}
             >
+              {plan.code === "free" && (
+                <div class="plan-ribbon">{copy.freeRibbon}</div>
+              )}
               {plan.code === "pro" && (
                 <div class="plan-ribbon">{copy.popular}</div>
               )}
@@ -575,7 +581,7 @@ const checkoutCopy = {
               <p class="plan-reason">{plan.content.reason}</p>
               {plan.code === "free" ? (
                 <a
-                  class="btn btn-wide btn-outline-rose"
+                  class="btn btn-wide btn-free"
                   href={localizeAppHref("/tryon-free")}
                 >
                   {featureText.freeCta}
@@ -668,6 +674,7 @@ const checkoutCopy = {
               <article
                 class:list={[
                   "mobile-plan-compare-card",
+                  plan.code === "free" && "free-plan",
                   plan.code === "pro" && "recommended",
                   plan.code === "premium" && "premium",
                 ]}
@@ -689,7 +696,10 @@ const checkoutCopy = {
                   ))}
                 </ul>
                 {plan.code === "free" ? (
-                  <a class="btn btn-wide" href={localizeAppHref("/tryon-free")}>
+                  <a
+                    class="btn btn-wide btn-free"
+                    href={localizeAppHref("/tryon-free")}
+                  >
                     {copy.mobilePlanCta[plan.code]}
                   </a>
                 ) : (
@@ -714,7 +724,20 @@ const checkoutCopy = {
       <div class="comparison-table panel">
         <div class="compare-row heading">
           <span>{copy.compareTitle}</span>
-          {planOrder.map((code) => <span>{PLAN_DEFINITIONS[code].title}</span>)}
+          {
+            planOrder.map((code) => (
+              <span
+                class:list={[
+                  "compare-plan-label",
+                  code === "free" && "compare-plan-free",
+                  code === "pro" && "compare-plan-pro",
+                  code === "premium" && "compare-plan-premium",
+                ]}
+              >
+                {PLAN_DEFINITIONS[code].title}
+              </span>
+            ))
+          }
         </div>
         {
           comparisonRows.map((row) => (
@@ -1621,6 +1644,45 @@ const checkoutCopy = {
       padding: 26px;
       overflow: hidden;
     }
+    .pricing-plan-card.free-plan {
+      isolation: isolate;
+      border-color: color-mix(in srgb, var(--teal) 30%, var(--line));
+      background:
+        radial-gradient(
+          circle at 88% 10%,
+          rgba(35, 183, 169, 0.16),
+          transparent 32%
+        ),
+        linear-gradient(135deg, rgba(246, 255, 253, 0.98), var(--bg-elevated));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        0 18px 42px rgba(10, 81, 83, 0.08);
+      padding-top: 64px;
+    }
+    .pricing-plan-card.free-plan::before,
+    .pricing-plan-card.free-plan::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .pricing-plan-card.free-plan::before {
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(15, 118, 110, 0.07),
+        transparent 46%
+      );
+    }
+    .pricing-plan-card.free-plan::after {
+      inset: 1px;
+      border: 1px solid rgba(15, 118, 110, 0.12);
+      border-radius: calc(var(--radius) - 1px);
+    }
+    .pricing-plan-card.free-plan > * {
+      position: relative;
+      z-index: 1;
+    }
     .pricing-plan-card.recommended {
       isolation: isolate;
       border-color: var(--pro-card-border);
@@ -1688,6 +1750,7 @@ const checkoutCopy = {
       font-weight: 900;
     }
     .pricing-plan-card.recommended .plan-ribbon,
+    .pricing-plan-card.free-plan .plan-ribbon,
     .pricing-plan-card.premium .plan-ribbon {
       position: absolute;
       inset: 0 0 auto;
@@ -1706,6 +1769,15 @@ const checkoutCopy = {
       box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.24),
         inset 0 -1px 0 rgba(70, 8, 30, 0.3);
+    }
+    .free-plan .plan-ribbon {
+      min-height: 40px;
+      background: linear-gradient(135deg, #dffbf7, #9ce9df);
+      color: #084f4d;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.42);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        inset 0 -1px 0 rgba(15, 118, 110, 0.18);
     }
     .premium .plan-ribbon {
       background: var(--premium-ribbon-bg);
@@ -1744,6 +1816,12 @@ const checkoutCopy = {
       color: var(--heading);
       font-size: 12px;
       font-weight: 800;
+    }
+    .free-plan .plan-head > span {
+      border-color: rgba(15, 118, 110, 0.2);
+      background: color-mix(in srgb, var(--teal-soft) 72%, #ffffff);
+      color: #075c57;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
     .recommended .plan-head > span {
       border-color: var(--pro-pill-border);
@@ -1785,6 +1863,9 @@ const checkoutCopy = {
       gap: 8px;
       margin: 28px 0 14px;
       color: var(--heading);
+    }
+    .free-plan .plan-price {
+      color: #075c57;
     }
     .recommended .plan-price {
       color: var(--pro-price-color);
@@ -1829,6 +1910,9 @@ const checkoutCopy = {
     .feature-list b {
       color: var(--heading);
     }
+    .free-plan .feature-list {
+      border-top-color: rgba(15, 118, 110, 0.2);
+    }
     .recommended .feature-list {
       border-top-color: rgba(200, 62, 104, 0.24);
     }
@@ -1850,6 +1934,10 @@ const checkoutCopy = {
       height: 8px;
       border-radius: 50%;
       background: var(--rose);
+    }
+    .free-plan .feature-list span::before {
+      background: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
     }
     .recommended .feature-list span::before {
       background: var(--pro-dot-bg);
@@ -1884,6 +1972,54 @@ const checkoutCopy = {
         0 18px 34px rgba(179, 115, 21, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.68),
         inset 0 -1px 0 rgba(92, 53, 5, 0.34);
+    }
+    .pricing-plan-card .btn-free,
+    .mobile-plan-compare-card .btn-free {
+      border-color: rgba(15, 118, 110, 0.32);
+      background: color-mix(in srgb, var(--teal-soft) 42%, transparent);
+      color: #075c57;
+      box-shadow:
+        0 10px 22px rgba(15, 118, 110, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+    .pricing-plan-card .btn-free:hover,
+    .mobile-plan-compare-card .btn-free:hover {
+      border-color: rgba(15, 118, 110, 0.54);
+      background: linear-gradient(135deg, #e8fbf8, #c9f4ee);
+      color: #064d49;
+      box-shadow:
+        0 14px 28px rgba(15, 118, 110, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    }
+    :global([data-theme="dark"]) .pricing-plan-card.free-plan {
+      border-color: rgba(45, 212, 191, 0.32);
+      background:
+        radial-gradient(
+          circle at 88% 10%,
+          rgba(45, 212, 191, 0.14),
+          transparent 32%
+        ),
+        linear-gradient(135deg, rgba(10, 33, 35, 0.98), var(--bg-elevated));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 18px 44px rgba(0, 0, 0, 0.26);
+    }
+    :global([data-theme="dark"]) .free-plan .plan-ribbon {
+      background: linear-gradient(135deg, #0f766e, #134e4a);
+      color: #d7fffb;
+      text-shadow: none;
+    }
+    :global([data-theme="dark"]) .free-plan .plan-head > span,
+    :global([data-theme="dark"]) .free-plan .plan-price,
+    :global([data-theme="dark"]) .pricing-plan-card .btn-free,
+    :global([data-theme="dark"]) .mobile-plan-compare-card .btn-free {
+      color: #b7f7ef;
+    }
+    :global([data-theme="dark"]) .pricing-plan-card .btn-free,
+    :global([data-theme="dark"]) .mobile-plan-compare-card .btn-free {
+      border-color: rgba(45, 212, 191, 0.34);
+      background: rgba(20, 184, 166, 0.12);
+      box-shadow: none;
     }
     .pricing-proof {
       display: grid;
@@ -2008,6 +2144,66 @@ const checkoutCopy = {
     }
     .compare-row.heading > * {
       color: var(--heading);
+    }
+    .compare-row.heading > .compare-plan-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom-color: rgba(255, 255, 255, 0.28);
+      color: var(--heading);
+      font-weight: 950;
+      letter-spacing: 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36);
+    }
+    .compare-row.heading > .compare-plan-free {
+      background: linear-gradient(135deg, #e8fbf8 0%, #bdeee8 100%);
+      color: #075c57;
+    }
+    .compare-row.heading > .compare-plan-pro {
+      background: var(--pro-ribbon-bg);
+      color: var(--pro-ribbon-text);
+      text-shadow: 0 1px 0 rgba(54, 8, 26, 0.28);
+    }
+    .compare-row.heading > .compare-plan-premium {
+      background: var(--premium-ribbon-bg);
+      color: var(--premium-ribbon-text);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.34);
+    }
+    :global([data-theme="dark"])
+      .compare-row.heading
+      > .compare-plan-free {
+      background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+      color: #d7fffb;
+    }
+    :global([data-theme="dark"]) .compare-row.heading > .compare-plan-pro {
+      text-shadow: none;
+    }
+    :global([data-theme="dark"])
+      .compare-row.heading
+      > .compare-plan-premium {
+      color: #1d1304;
+      text-shadow: none;
+    }
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"]))
+        .compare-row.heading
+        > .compare-plan-free {
+        background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+        color: #d7fffb;
+      }
+      :global(:root:not([data-theme="light"]))
+        .compare-row.heading
+        > .compare-plan-pro,
+      :global(:root:not([data-theme="light"]))
+        .compare-row.heading
+        > .compare-plan-premium {
+        text-shadow: none;
+      }
+      :global(:root:not([data-theme="light"]))
+        .compare-row.heading
+        > .compare-plan-premium {
+        color: #1d1304;
+      }
     }
     .compare-yes,
     .compare-no {
@@ -2343,6 +2539,21 @@ const checkoutCopy = {
         background: var(--bg-elevated);
         box-shadow: 0 12px 30px rgba(18, 32, 48, 0.06);
       }
+      .mobile-plan-compare-card.free-plan {
+        border-color: color-mix(in srgb, var(--teal) 30%, var(--line));
+        background:
+          radial-gradient(
+            circle at 88% 10%,
+            rgba(35, 183, 169, 0.14),
+            transparent 34%
+          ),
+          linear-gradient(
+            135deg,
+            rgba(246, 255, 253, 0.98),
+            var(--bg-elevated)
+          );
+        box-shadow: 0 12px 30px rgba(10, 81, 83, 0.08);
+      }
       .mobile-plan-compare-card.recommended {
         border-color: var(--pro-card-border);
         background: var(--pro-card-bg);
@@ -2380,6 +2591,67 @@ const checkoutCopy = {
         color: var(--heading);
         font-size: 11px;
         font-weight: 800;
+      }
+      .mobile-plan-compare-card.free-plan .mobile-plan-compare-head > span {
+        border-color: rgba(15, 118, 110, 0.2);
+        background: linear-gradient(135deg, #e8fbf8, #bdeee8);
+        color: #075c57;
+      }
+      .mobile-plan-compare-card.recommended .mobile-plan-compare-head > span {
+        border-color: var(--pro-pill-border);
+        background: var(--pro-pill-bg);
+        color: var(--pro-pill-color);
+      }
+      .mobile-plan-compare-card.premium .mobile-plan-compare-head > span {
+        border-color: var(--premium-pill-border);
+        background: var(--premium-pill-bg);
+        color: var(--premium-pill-color);
+      }
+      :global([data-theme="dark"])
+        .mobile-plan-compare-card.free-plan {
+        border-color: rgba(45, 212, 191, 0.32);
+        background:
+          radial-gradient(
+            circle at 88% 10%,
+            rgba(45, 212, 191, 0.14),
+            transparent 34%
+          ),
+          linear-gradient(135deg, rgba(10, 33, 35, 0.98), var(--bg-elevated));
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.26);
+      }
+      :global([data-theme="dark"])
+        .mobile-plan-compare-card.free-plan
+        .mobile-plan-compare-head
+        > span {
+        border-color: rgba(45, 212, 191, 0.34);
+        background: linear-gradient(135deg, #0f766e, #134e4a);
+        color: #d7fffb;
+      }
+      @media (prefers-color-scheme: dark) {
+        :global(:root:not([data-theme="light"]))
+          .mobile-plan-compare-card.free-plan {
+          border-color: rgba(45, 212, 191, 0.32);
+          background:
+            radial-gradient(
+              circle at 88% 10%,
+              rgba(45, 212, 191, 0.14),
+              transparent 34%
+            ),
+            linear-gradient(
+              135deg,
+              rgba(10, 33, 35, 0.98),
+              var(--bg-elevated)
+            );
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.26);
+        }
+        :global(:root:not([data-theme="light"]))
+          .mobile-plan-compare-card.free-plan
+          .mobile-plan-compare-head
+          > span {
+          border-color: rgba(45, 212, 191, 0.34);
+          background: linear-gradient(135deg, #0f766e, #134e4a);
+          color: #d7fffb;
+        }
       }
       .mobile-plan-quota {
         display: flex;

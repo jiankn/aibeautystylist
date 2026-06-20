@@ -1,4 +1,5 @@
 ---
+import AppIconBadge from "../components/AppIconBadge.astro";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCurrentLocale } from "../lib/i18n";
@@ -106,17 +107,17 @@ const copy = isZh
       </div>
       <section class="benefit-row" id="share-benefits">
         <div class="benefit">
-          <i>AI</i><div>
+          <AppIconBadge icon="tryon" tone="rose" /><div>
             <b>{copy.benefitTryon}</b><span>{copy.benefitTryonDesc}</span>
           </div>
         </div>
         <div class="benefit">
-          <i>S</i><div>
+          <AppIconBadge icon="guides" tone="teal" /><div>
             <b>{copy.benefitScenario}</b><span>{copy.benefitScenarioDesc}</span>
           </div>
         </div>
         <div class="benefit">
-          <i>3</i><div>
+          <AppIconBadge icon="credits" tone="gold" /><div>
             <b>{copy.benefitFree}</b><span>{copy.benefitFreeDesc}</span>
           </div>
         </div>

@@ -1,0 +1,1049 @@
+---
+import { buildAccountMobileMenu, getAccountCenterCopy } from "../data/accountCenterContent";
+import AppIconBadge from "../components/AppIconBadge.astro";
+import MobileAppTopBar from "../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../components/MobileBottomNav.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCurrentLocale } from "../lib/i18n";
+import { PLAN_DEFINITIONS } from "../lib/plans";
+
+const locale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+
+const subscriptionHref = localizeAppHref("/subscription");
+const hrefs = {
+  account: localizeAppHref("/account"),
+  dashboard: localizeAppHref("/dashboard"),
+  diagnosis: localizeAppHref("/diagnosis"),
+  faq: localizeAppHref("/faq"),
+  history: localizeAppHref("/history"),
+  home: localizeAppHref("/"),
+  login: localizeAppHref(
+    `/login?mode=login&next=${encodeURIComponent(subscriptionHref)}`,
+  ),
+  pricing: `${localizeAppHref("/pricing")}?return_to=${encodeURIComponent(
+    subscriptionHref,
+  )}`,
+  support: localizeAppHref("/support"),
+  subscription: subscriptionHref,
+  workspace: localizeAppHref("/tryon-free"),
+};
+
+const accountCopy = getAccountCenterCopy(locale);
+const accountMobileMenu = buildAccountMobileMenu(
+  accountCopy,
+  {
+    account: hrefs.account,
+    dashboard: hrefs.dashboard,
+    diagnosis: hrefs.diagnosis,
+    faq: hrefs.faq,
+    history: hrefs.history,
+    home: hrefs.home,
+    pricing: hrefs.subscription,
+    workspace: hrefs.workspace,
+  },
+  "account",
+);
+
+type SubscriptionCopy = {
+  title: string;
+  description: string;
+  mobileTitle: string;
+  eyebrow: string;
+  heading: string;
+  subtitle: string;
+  loading: string;
+  signInTitle: string;
+  signInBody: string;
+  signIn: string;
+  currentPlan: string;
+  quotaTitle: string;
+  quotaDesc: string;
+  remaining: string;
+  nextRefresh: string;
+  renewsOn: string;
+  activeUntil: string;
+  status: string;
+  statusLabels: Record<string, string>;
+  savedLimit: string;
+  price: string;
+  priceUnit: string;
+  actionsTitle: string;
+  manage: string;
+  upgrade: string;
+  upgradePremium: string;
+  comparePlans: string;
+  support: string;
+  included: string;
+  featureQuota: string;
+  featureSaved: string;
+  featureHd: string;
+  featurePriority: string;
+  featureHistory: string;
+  featureLibrary: string;
+  includedYes: string;
+  includedNo: string;
+  planNotes: Record<string, string>;
+  loadFailed: string;
+  portalFailed: string;
+};
+
+const enCopy: SubscriptionCopy = {
+  title: "Subscription center | AI Beauty Stylist",
+  description:
+    "Review your current plan, monthly quota, saved-look limit, renewal status, and subscription actions.",
+  mobileTitle: "Subscription",
+  eyebrow: "Subscription",
+  heading: "Manage your membership and usage",
+  subtitle:
+    "See the plan that is active on this account, how much monthly quota remains, and where to manage billing.",
+  loading: "Loading subscription details...",
+  signInTitle: "Sign in to view your subscription",
+  signInBody: "Your plan, quota, renewal status, and billing actions are tied to your account.",
+  signIn: "Sign in",
+  currentPlan: "Current plan",
+  quotaTitle: "Monthly quota",
+  quotaDesc: "Try-on and diagnosis share the same monthly quota.",
+  remaining: "{remaining}/{total} remaining",
+  nextRefresh: "Next quota refresh: {date}",
+  renewsOn: "Renews on {date}",
+  activeUntil: "Active until {date}",
+  status: "Status",
+  statusLabels: {
+    active: "Active",
+    trialing: "Trialing",
+    canceled: "Canceled",
+    past_due: "Past due",
+    incomplete: "Incomplete",
+    none: "No paid subscription",
+  },
+  savedLimit: "Saved looks",
+  price: "Monthly price",
+  priceUnit: "/ month",
+  actionsTitle: "Subscription actions",
+  manage: "Manage subscription",
+  upgrade: "Upgrade plan",
+  upgradePremium: "Upgrade to Premium",
+  comparePlans: "Compare plans",
+  support: "Contact support",
+  included: "Included in this plan",
+  featureQuota: "Monthly generations",
+  featureSaved: "Saved looks",
+  featureHd: "HD downloads",
+  featurePriority: "Priority queue",
+  featureHistory: "Long-term history",
+  featureLibrary: "Full look library",
+  includedYes: "Included",
+  includedNo: "Not included",
+  planNotes: {
+    free: "Free is best for checking the workflow before committing to a paid plan.",
+    pro: "Pro is designed for regular weekly try-ons and diagnosis-backed choices.",
+    premium: "Premium is for frequent creation, deeper history, and complete look-library access.",
+  },
+  loadFailed: "Unable to load subscription details. Refresh and try again.",
+  portalFailed: "Unable to open subscription management.",
+};
+
+const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
+  en: enCopy,
+  "zh-CN": {
+    ...enCopy,
+    title: "会员中心 | AI Beauty Stylist",
+    description: "查看当前套餐、本月额度、收藏上限、续费状态和订阅管理操作。",
+    mobileTitle: "会员中心",
+    eyebrow: "会员订阅",
+    heading: "管理你的会员与额度",
+    subtitle: "查看此账户当前生效的套餐、本月剩余额度，以及账单管理入口。",
+    loading: "正在加载会员信息...",
+    signInTitle: "登录后查看会员订阅",
+    signInBody: "套餐、额度、续费状态和账单操作都绑定在你的账户下。",
+    signIn: "登录",
+    currentPlan: "当前套餐",
+    quotaTitle: "本月额度",
+    quotaDesc: "试妆和 AI 诊断共用同一套月度额度。",
+    remaining: "剩余 {remaining}/{total}",
+    nextRefresh: "下次额度刷新：{date}",
+    renewsOn: "下次续费：{date}",
+    activeUntil: "权益保留至：{date}",
+    status: "状态",
+    statusLabels: {
+      active: "有效",
+      trialing: "试用中",
+      canceled: "已取消",
+      past_due: "付款逾期",
+      incomplete: "未完成",
+      none: "暂无付费订阅",
+    },
+    savedLimit: "收藏上限",
+    price: "月付价格",
+    priceUnit: "/ 月",
+    actionsTitle: "订阅操作",
+    manage: "管理订阅",
+    upgrade: "升级套餐",
+    upgradePremium: "升级 Premium",
+    comparePlans: "比较方案",
+    support: "联系支持",
+    included: "当前套餐权益",
+    featureQuota: "每月生成额度",
+    featureSaved: "可收藏妆容",
+    featureHd: "高清下载",
+    featurePriority: "优先队列",
+    featureHistory: "长期历史记录",
+    featureLibrary: "完整妆容库",
+    includedYes: "已包含",
+    includedNo: "未包含",
+    planNotes: {
+      free: "Free 适合先确认上传流程、生成效果和照片处理方式。",
+      pro: "Pro 适合经常进行日常试妆，并结合诊断结果继续选择妆容。",
+      premium: "Premium 适合高频创作、长期复盘和完整妆容库使用。",
+    },
+    loadFailed: "无法加载会员信息，请刷新后重试。",
+    portalFailed: "无法打开订阅管理。",
+  },
+  "zh-TW": {
+    ...enCopy,
+    title: "會員中心 | AI Beauty Stylist",
+    description: "查看目前方案、本月額度、收藏上限、續費狀態和訂閱管理操作。",
+    mobileTitle: "會員中心",
+    eyebrow: "會員訂閱",
+    heading: "管理你的會員與額度",
+    subtitle: "查看此帳戶目前生效的方案、本月剩餘額度，以及帳單管理入口。",
+    loading: "正在載入會員資訊...",
+    signInTitle: "登入後查看會員訂閱",
+    signInBody: "方案、額度、續費狀態和帳單操作都綁定在你的帳戶下。",
+    signIn: "登入",
+    currentPlan: "目前方案",
+    quotaTitle: "本月額度",
+    quotaDesc: "試妝和 AI 診斷共用同一套月度額度。",
+    remaining: "剩餘 {remaining}/{total}",
+    nextRefresh: "下次額度刷新：{date}",
+    renewsOn: "下次續費：{date}",
+    activeUntil: "權益保留至：{date}",
+    status: "狀態",
+    savedLimit: "收藏上限",
+    price: "月付價格",
+    priceUnit: "/ 月",
+    actionsTitle: "訂閱操作",
+    manage: "管理訂閱",
+    upgrade: "升級方案",
+    upgradePremium: "升級 Premium",
+    comparePlans: "比較方案",
+    support: "聯絡支援",
+    included: "目前方案權益",
+    featureQuota: "每月生成額度",
+    featureSaved: "可收藏妝容",
+    featureHd: "高清下載",
+    featurePriority: "優先佇列",
+    featureHistory: "長期歷史記錄",
+    featureLibrary: "完整妝容庫",
+    includedYes: "已包含",
+    includedNo: "未包含",
+    planNotes: {
+      free: "Free 適合先確認上傳流程、生成效果和照片處理方式。",
+      pro: "Pro 適合經常進行日常試妝，並結合診斷結果繼續選擇妝容。",
+      premium: "Premium 適合高頻創作、長期複盤和完整妝容庫使用。",
+    },
+    loadFailed: "無法載入會員資訊，請刷新後重試。",
+    portalFailed: "無法開啟訂閱管理。",
+  },
+  "ja-JP": {
+    ...enCopy,
+    title: "サブスクリプション | AI Beauty Stylist",
+    mobileTitle: "契約管理",
+    eyebrow: "サブスクリプション",
+    heading: "プランと利用枠を管理",
+    subtitle: "現在のプラン、月間残数、保存上限、請求管理の入口を確認できます。",
+    loading: "契約情報を読み込んでいます...",
+    signInTitle: "ログインして契約を確認",
+    signInBody: "プラン、利用枠、更新状況、請求操作はアカウントに紐づきます。",
+    signIn: "ログイン",
+    currentPlan: "現在のプラン",
+    quotaTitle: "月間枠",
+    quotaDesc: "試着とAI診断は同じ月間枠を共有します。",
+    remaining: "残り {remaining}/{total}",
+    nextRefresh: "次回リセット：{date}",
+    renewsOn: "次回更新：{date}",
+    activeUntil: "有効期限：{date}",
+    savedLimit: "保存上限",
+    price: "月額",
+    actionsTitle: "契約操作",
+    manage: "契約を管理",
+    upgrade: "プランをアップグレード",
+    upgradePremium: "Premiumへアップグレード",
+    comparePlans: "プランを比較",
+    support: "サポートへ連絡",
+    included: "このプランの内容",
+    featureQuota: "月間生成数",
+    featureSaved: "保存できるメイク",
+    includedYes: "含まれる",
+    includedNo: "対象外",
+    loadFailed: "契約情報を読み込めませんでした。",
+    portalFailed: "契約管理を開けませんでした。",
+  },
+  "ko-KR": {
+    ...enCopy,
+    title: "구독 센터 | AI Beauty Stylist",
+    mobileTitle: "구독",
+    eyebrow: "구독",
+    heading: "멤버십과 사용량 관리",
+    subtitle: "현재 플랜, 월간 잔여 한도, 저장 한도, 결제 관리入口를 확인하세요.",
+    loading: "구독 정보를 불러오는 중...",
+    signInTitle: "로그인 후 구독 확인",
+    signInBody: "플랜, 한도, 갱신 상태와 결제 작업은 계정에 연결됩니다.",
+    signIn: "로그인",
+    currentPlan: "현재 플랜",
+    quotaTitle: "월간 한도",
+    quotaDesc: "가상 메이크업과 AI 진단은 같은 월간 한도를 사용합니다.",
+    remaining: "{remaining}/{total} 남음",
+    nextRefresh: "다음 한도 갱신: {date}",
+    renewsOn: "다음 결제: {date}",
+    activeUntil: "이용 가능 기간: {date}",
+    savedLimit: "저장 한도",
+    price: "월 요금",
+    actionsTitle: "구독 작업",
+    manage: "구독 관리",
+    upgrade: "플랜 업그레이드",
+    upgradePremium: "Premium으로 업그레이드",
+    comparePlans: "플랜 비교",
+    support: "지원 문의",
+    included: "현재 플랜 혜택",
+    featureQuota: "월간 생성",
+    featureSaved: "저장 가능한 룩",
+    includedYes: "포함",
+    includedNo: "미포함",
+    loadFailed: "구독 정보를 불러오지 못했습니다.",
+    portalFailed: "구독 관리를 열 수 없습니다.",
+  },
+  "fr-FR": {
+    ...enCopy,
+    title: "Abonnement | AI Beauty Stylist",
+    mobileTitle: "Abonnement",
+    eyebrow: "Abonnement",
+    heading: "Gérer votre offre et vos quotas",
+    subtitle: "Consultez l'offre active, le quota mensuel restant, la limite de sauvegarde et la gestion de facturation.",
+    loading: "Chargement de l'abonnement...",
+    signInTitle: "Connectez-vous pour voir votre abonnement",
+    signInBody: "L'offre, le quota, le renouvellement et la facturation sont liés à votre compte.",
+    signIn: "Se connecter",
+    currentPlan: "Offre actuelle",
+    quotaTitle: "Quota mensuel",
+    quotaDesc: "L'essai maquillage et le diagnostic IA partagent le même quota.",
+    remaining: "{remaining}/{total} restants",
+    nextRefresh: "Prochain renouvellement du quota : {date}",
+    renewsOn: "Renouvelle le {date}",
+    activeUntil: "Actif jusqu'au {date}",
+    savedLimit: "Looks sauvegardés",
+    price: "Prix mensuel",
+    actionsTitle: "Actions d'abonnement",
+    manage: "Gérer l'abonnement",
+    upgrade: "Mettre à niveau",
+    upgradePremium: "Passer à Premium",
+    comparePlans: "Comparer les offres",
+    support: "Contacter le support",
+    included: "Inclus dans cette offre",
+    featureQuota: "Générations mensuelles",
+    featureSaved: "Looks sauvegardés",
+    includedYes: "Inclus",
+    includedNo: "Non inclus",
+    loadFailed: "Impossible de charger l'abonnement.",
+    portalFailed: "Impossible d'ouvrir la gestion de l'abonnement.",
+  },
+  "de-DE": {
+    ...enCopy,
+    title: "Abo-Center | AI Beauty Stylist",
+    mobileTitle: "Abo",
+    eyebrow: "Abonnement",
+    heading: "Mitgliedschaft und Nutzung verwalten",
+    subtitle: "Prüfen Sie aktiven Tarif, Monatskontingent, Speicherlimit und Rechnungsverwaltung.",
+    loading: "Abo-Daten werden geladen...",
+    signInTitle: "Einloggen, um das Abo zu sehen",
+    signInBody: "Tarif, Kontingent, Verlängerung und Abrechnung sind mit Ihrem Konto verknüpft.",
+    signIn: "Einloggen",
+    currentPlan: "Aktueller Tarif",
+    quotaTitle: "Monatskontingent",
+    quotaDesc: "Try-on und KI-Diagnose nutzen dasselbe Monatskontingent.",
+    remaining: "{remaining}/{total} übrig",
+    nextRefresh: "Nächste Aktualisierung: {date}",
+    renewsOn: "Verlängert sich am {date}",
+    activeUntil: "Aktiv bis {date}",
+    savedLimit: "Gespeicherte Looks",
+    price: "Monatspreis",
+    actionsTitle: "Abo-Aktionen",
+    manage: "Abo verwalten",
+    upgrade: "Tarif upgraden",
+    upgradePremium: "Auf Premium upgraden",
+    comparePlans: "Tarife vergleichen",
+    support: "Support kontaktieren",
+    included: "In diesem Tarif enthalten",
+    featureQuota: "Monatliche Generierungen",
+    featureSaved: "Gespeicherte Looks",
+    includedYes: "Enthalten",
+    includedNo: "Nicht enthalten",
+    loadFailed: "Abo-Daten konnten nicht geladen werden.",
+    portalFailed: "Abo-Verwaltung konnte nicht geöffnet werden.",
+  },
+  "es-ES": {
+    ...enCopy,
+    title: "Centro de suscripción | AI Beauty Stylist",
+    mobileTitle: "Suscripción",
+    eyebrow: "Suscripción",
+    heading: "Gestiona tu plan y uso",
+    subtitle: "Consulta el plan activo, el cupo mensual, el límite de guardados y la gestión de facturación.",
+    loading: "Cargando suscripción...",
+    signInTitle: "Inicia sesión para ver tu suscripción",
+    signInBody: "El plan, el cupo, la renovación y la facturación están vinculados a tu cuenta.",
+    signIn: "Iniciar sesión",
+    currentPlan: "Plan actual",
+    quotaTitle: "Cupo mensual",
+    quotaDesc: "La prueba de maquillaje y el diagnóstico IA comparten el mismo cupo.",
+    remaining: "{remaining}/{total} restantes",
+    nextRefresh: "Próxima recarga: {date}",
+    renewsOn: "Se renueva el {date}",
+    activeUntil: "Activo hasta {date}",
+    savedLimit: "Looks guardados",
+    price: "Precio mensual",
+    actionsTitle: "Acciones de suscripción",
+    manage: "Gestionar suscripción",
+    upgrade: "Mejorar plan",
+    upgradePremium: "Mejorar a Premium",
+    comparePlans: "Comparar planes",
+    support: "Contactar soporte",
+    included: "Incluido en este plan",
+    featureQuota: "Generaciones mensuales",
+    featureSaved: "Looks guardados",
+    includedYes: "Incluido",
+    includedNo: "No incluido",
+    loadFailed: "No se pudo cargar la suscripción.",
+    portalFailed: "No se pudo abrir la gestión de suscripción.",
+  },
+  "pt-BR": {
+    ...enCopy,
+    title: "Central de assinatura | AI Beauty Stylist",
+    mobileTitle: "Assinatura",
+    eyebrow: "Assinatura",
+    heading: "Gerencie seu plano e uso",
+    subtitle: "Veja o plano ativo, cota mensal, limite de salvos e gestão de cobrança.",
+    loading: "Carregando assinatura...",
+    signInTitle: "Entre para ver sua assinatura",
+    signInBody: "Plano, cota, renovação e cobrança ficam vinculados à sua conta.",
+    signIn: "Entrar",
+    currentPlan: "Plano atual",
+    quotaTitle: "Cota mensal",
+    quotaDesc: "Teste de maquiagem e diagnóstico IA usam a mesma cota mensal.",
+    remaining: "{remaining}/{total} restantes",
+    nextRefresh: "Próxima recarga: {date}",
+    renewsOn: "Renova em {date}",
+    activeUntil: "Ativo até {date}",
+    savedLimit: "Looks salvos",
+    price: "Preço mensal",
+    actionsTitle: "Ações da assinatura",
+    manage: "Gerenciar assinatura",
+    upgrade: "Fazer upgrade",
+    upgradePremium: "Fazer upgrade para Premium",
+    comparePlans: "Comparar planos",
+    support: "Falar com suporte",
+    included: "Incluído neste plano",
+    featureQuota: "Gerações mensais",
+    featureSaved: "Looks salvos",
+    includedYes: "Incluído",
+    includedNo: "Não incluído",
+    loadFailed: "Não foi possível carregar a assinatura.",
+    portalFailed: "Não foi possível abrir a gestão da assinatura.",
+  },
+};
+copyByLocale["es-419"] = copyByLocale["es-ES"];
+
+const copy = copyByLocale[locale] ?? enCopy;
+const planMeta = Object.fromEntries(
+  Object.values(PLAN_DEFINITIONS).map((plan) => [
+    plan.code,
+    {
+      title: plan.title,
+      monthlyQuota: plan.monthlyQuota,
+      savedLookLimit: plan.savedLookLimit,
+      monthlyPriceUsd: plan.monthlyPriceUsd,
+      features: plan.features,
+    },
+  ]),
+);
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  bodyClass="subscription-body"
+  robots="noindex,follow"
+>
+  <SiteHeader
+    active="dashboard"
+    mobileMenuSection={accountMobileMenu}
+    mobileSmartHide
+    mobileHidden
+  />
+  <MobileAppTopBar title={copy.mobileTitle} />
+  <main class="subscription-main" data-subscription>
+    <div class="subscription-shell">
+      <section class="subscription-hero panel">
+        <div>
+          <p class="section-kicker">{copy.eyebrow}</p>
+          <h1>{copy.heading}</h1>
+          <p>{copy.subtitle}</p>
+        </div>
+        <a class="btn btn-outline" href={hrefs.dashboard}>{accountCopy.workspace}</a>
+      </section>
+
+      <section class="subscription-loading panel" data-subscription-loading>
+        {copy.loading}
+      </section>
+
+      <section class="subscription-gate panel" data-auth-gate hidden>
+        <AppIconBadge icon="membership" tone="gold" />
+        <div>
+          <h2>{copy.signInTitle}</h2>
+          <p>{copy.signInBody}</p>
+        </div>
+        <a class="btn btn-primary" href={hrefs.login}>{copy.signIn}</a>
+      </section>
+
+      <div class="subscription-content" data-subscription-content hidden>
+        <section class="subscription-grid">
+          <article class="subscription-plan panel" data-plan-card data-plan="free">
+            <div class="subscription-plan-head">
+              <div>
+                <p class="section-kicker">{copy.currentPlan}</p>
+                <h2 data-plan-title>--</h2>
+              </div>
+              <span class="subscription-plan-chip" data-plan-chip>--</span>
+            </div>
+            <p class="subscription-plan-note" data-plan-note></p>
+            <div class="subscription-price">
+              <span>$</span><b data-plan-price>--</b><small>{copy.priceUnit}</small>
+            </div>
+            <div class="subscription-meter-block">
+              <div>
+                <span>{copy.quotaTitle}</span>
+                <b data-quota-value>--</b>
+              </div>
+              <div class="meter"><i data-quota-meter style="width:0%"></i></div>
+              <small data-quota-refresh>--</small>
+            </div>
+          </article>
+
+          <article class="subscription-actions panel">
+            <p class="section-kicker">{copy.actionsTitle}</p>
+            <div class="subscription-action-list">
+              <button class="btn btn-primary" type="button" data-manage-billing hidden>
+                {copy.manage}
+              </button>
+              <a class="btn btn-primary" href={hrefs.pricing} data-upgrade-plan>
+                {copy.upgrade}
+              </a>
+              <a class="btn btn-outline" href={hrefs.pricing}>{copy.comparePlans}</a>
+              <a class="btn btn-outline-rose" href={hrefs.support}>{copy.support}</a>
+            </div>
+            <dl class="subscription-status">
+              <div>
+                <dt>{copy.status}</dt>
+                <dd data-subscription-status>--</dd>
+              </div>
+              <div>
+                <dt>{copy.savedLimit}</dt>
+                <dd data-saved-limit>--</dd>
+              </div>
+            </dl>
+            <p class="subscription-message" data-subscription-message role="status"></p>
+          </article>
+        </section>
+
+        <section class="subscription-benefits panel">
+          <div class="subscription-section-head">
+            <p class="section-kicker">{copy.included}</p>
+            <h2 data-included-title>--</h2>
+          </div>
+          <div class="subscription-feature-grid">
+            <article>
+              <AppIconBadge icon="tryon" tone="teal" />
+              <span>{copy.featureQuota}</span>
+              <b data-feature-quota>--</b>
+            </article>
+            <article>
+              <AppIconBadge icon="saved" tone="rose" />
+              <span>{copy.featureSaved}</span>
+              <b data-feature-saved>--</b>
+            </article>
+            <article>
+              <AppIconBadge icon="billing" tone="gold" />
+              <span>{copy.featureHd}</span>
+              <b data-feature-hd>--</b>
+            </article>
+            <article>
+              <AppIconBadge icon="membership" tone="gold" />
+              <span>{copy.featurePriority}</span>
+              <b data-feature-priority>--</b>
+            </article>
+            <article>
+              <AppIconBadge icon="history" tone="navy" />
+              <span>{copy.featureHistory}</span>
+              <b data-feature-history>--</b>
+            </article>
+            <article>
+              <AppIconBadge icon="discover" tone="teal" />
+              <span>{copy.featureLibrary}</span>
+              <b data-feature-library>--</b>
+            </article>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <MobileBottomNav active="account" />
+
+  <script is:inline define:vars={{ copy, planMeta, hrefs }}>
+    (() => {
+      const root = document.querySelector("[data-subscription]");
+      if (!root) return;
+      const query = (selector) => root.querySelector(selector);
+      const setText = (selector, value) => {
+        const node = query(selector);
+        if (node) node.textContent = value;
+      };
+      const normalizePlan = (plan) =>
+        plan === "premium" ? "premium" : plan === "pro" ? "pro" : "free";
+      const formatDate = (value) => {
+        if (!value) return "--";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "--";
+        return new Intl.DateTimeFormat(
+          document.documentElement.lang || undefined,
+          { year: "numeric", month: "short", day: "numeric" },
+        ).format(date);
+      };
+      const formatTemplate = (template, values) =>
+        Object.entries(values).reduce(
+          (text, [key, value]) => text.replace(`{${key}}`, value),
+          template,
+        );
+      const yesNo = (enabled) => (enabled ? copy.includedYes : copy.includedNo);
+
+      function showState(kind) {
+        query("[data-subscription-loading]")?.toggleAttribute(
+          "hidden",
+          kind !== "loading",
+        );
+        query("[data-auth-gate]")?.toggleAttribute("hidden", kind !== "gate");
+        query("[data-subscription-content]")?.toggleAttribute(
+          "hidden",
+          kind !== "content",
+        );
+      }
+
+      function renderSubscription(data) {
+        const plan = normalizePlan(data?.plan);
+        const meta = planMeta[plan] || planMeta.free;
+        const quota = data?.quota || {};
+        const subscription = data?.subscription;
+        const remaining = Number(quota.remaining ?? 0);
+        const total = Number(quota.total ?? meta.monthlyQuota ?? 0);
+        const remainingPercent = total
+          ? Math.max(0, Math.min(100, (remaining / total) * 100))
+          : 0;
+        const statusKey = subscription?.status || "none";
+        const statusLabel = copy.statusLabels?.[statusKey] || statusKey;
+        const planCard = query("[data-plan-card]");
+        if (planCard) planCard.dataset.plan = plan;
+
+        setText("[data-plan-title]", meta.title);
+        setText("[data-plan-chip]", meta.title);
+        setText("[data-plan-note]", copy.planNotes?.[plan] || "");
+        setText("[data-plan-price]", String(meta.monthlyPriceUsd));
+        setText(
+          "[data-quota-value]",
+          formatTemplate(copy.remaining, { remaining, total }),
+        );
+        const meter = query("[data-quota-meter]");
+        if (meter) meter.style.width = `${remainingPercent}%`;
+        const dateText = subscription?.currentPeriodEnd
+          ? formatTemplate(
+              statusKey === "canceled" ? copy.activeUntil : copy.renewsOn,
+              { date: formatDate(subscription.currentPeriodEnd) },
+            )
+          : formatTemplate(copy.nextRefresh, {
+              date: formatDate(quota.nextRefreshAt),
+            });
+        setText("[data-quota-refresh]", dateText);
+        setText("[data-subscription-status]", statusLabel);
+        setText("[data-saved-limit]", String(meta.savedLookLimit));
+        setText("[data-included-title]", meta.title);
+        setText("[data-feature-quota]", String(meta.monthlyQuota));
+        setText("[data-feature-saved]", String(meta.savedLookLimit));
+        setText("[data-feature-hd]", yesNo(meta.features?.hdDownload));
+        setText("[data-feature-priority]", yesNo(meta.features?.priorityQueue));
+        setText("[data-feature-history]", yesNo(meta.features?.longTermHistory));
+        setText("[data-feature-library]", yesNo(meta.features?.fullLookLibrary));
+
+        const manage = query("[data-manage-billing]");
+        const upgrade = query("[data-upgrade-plan]");
+        manage?.toggleAttribute("hidden", plan === "free");
+        if (upgrade) {
+          upgrade.toggleAttribute("hidden", plan === "premium");
+          upgrade.textContent =
+            plan === "pro" ? copy.upgradePremium : copy.upgrade;
+        }
+      }
+
+      async function loadSubscription() {
+        showState("loading");
+        try {
+          const res = await fetch("/api/session");
+          const body = await res.json().catch(() => null);
+          if (!body?.ok) throw new Error(copy.loadFailed);
+          if (body.data?.user?.kind !== "account") {
+            showState("gate");
+            return;
+          }
+          renderSubscription(body.data);
+          showState("content");
+        } catch (error) {
+          showState("loading");
+          const loading = query("[data-subscription-loading]");
+          if (loading) loading.textContent = error?.message || copy.loadFailed;
+        }
+      }
+
+      query("[data-manage-billing]")?.addEventListener("click", async () => {
+        const button = query("[data-manage-billing]");
+        const message = query("[data-subscription-message]");
+        if (button) button.disabled = true;
+        if (message) message.textContent = "";
+        try {
+          const res = await fetch("/api/billing/portal", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ returnPath: window.location.pathname }),
+          });
+          const body = await res.json().catch(() => null);
+          if (body?.ok && body.data?.url) {
+            window.location.href = body.data.url;
+            return;
+          }
+          throw new Error(body?.error?.message || copy.portalFailed);
+        } catch (error) {
+          if (message) message.textContent = error?.message || copy.portalFailed;
+        } finally {
+          if (button) button.disabled = false;
+        }
+      });
+
+      loadSubscription();
+    })();
+  </script>
+
+  <style>
+    .subscription-main {
+      min-height: calc(100vh - 64px);
+      padding: 32px 16px 64px;
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--rose-soft) 40%, transparent),
+          transparent 340px
+        ),
+        var(--page-surface);
+    }
+    .subscription-shell {
+      display: grid;
+      gap: 18px;
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+    .subscription-hero {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 28px;
+    }
+    .subscription-hero h1 {
+      margin: 0;
+      color: var(--heading);
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+    .subscription-hero p:not(.section-kicker) {
+      max-width: 720px;
+      margin: 12px 0 0;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .subscription-loading,
+    .subscription-gate {
+      padding: 22px;
+      color: var(--muted);
+    }
+    .subscription-gate {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+    }
+    .subscription-gate h2 {
+      margin: 0 0 5px;
+      color: var(--heading);
+      font-size: 20px;
+    }
+    .subscription-gate p {
+      margin: 0;
+      line-height: 1.6;
+    }
+    .subscription-content {
+      display: grid;
+      gap: 18px;
+    }
+    .subscription-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+      gap: 18px;
+    }
+    .subscription-plan,
+    .subscription-actions,
+    .subscription-benefits {
+      padding: 22px;
+    }
+    .subscription-plan {
+      display: grid;
+      gap: 18px;
+      overflow: hidden;
+      border-color: color-mix(in srgb, var(--teal) 24%, var(--line));
+      background:
+        radial-gradient(
+          circle at 92% 0,
+          color-mix(in srgb, var(--teal-soft) 70%, transparent),
+          transparent 34%
+        ),
+        var(--bg-elevated);
+    }
+    .subscription-plan[data-plan="pro"] {
+      border-color: color-mix(in srgb, var(--rose) 38%, var(--line));
+      background:
+        radial-gradient(
+          circle at 92% 0,
+          color-mix(in srgb, var(--rose-soft) 76%, transparent),
+          transparent 36%
+        ),
+        var(--bg-elevated);
+    }
+    .subscription-plan[data-plan="premium"] {
+      border-color: color-mix(in srgb, var(--gold) 44%, var(--line));
+      background:
+        radial-gradient(
+          circle at 92% 0,
+          color-mix(in srgb, var(--gold-soft) 82%, transparent),
+          transparent 36%
+        ),
+        var(--bg-elevated);
+    }
+    .subscription-plan-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .subscription-plan h2 {
+      margin: 0;
+      color: var(--heading);
+      font-size: 34px;
+      line-height: 1;
+    }
+    .subscription-plan-chip {
+      display: inline-flex;
+      min-height: 32px;
+      align-items: center;
+      padding: 0 12px;
+      border: 1px solid color-mix(in srgb, var(--teal) 28%, var(--line));
+      border-radius: 999px;
+      background: var(--teal-soft);
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .subscription-plan[data-plan="pro"] .subscription-plan-chip {
+      border-color: color-mix(in srgb, var(--rose) 34%, var(--line));
+      background: var(--rose-soft);
+      color: var(--rose);
+    }
+    .subscription-plan[data-plan="premium"] .subscription-plan-chip {
+      border-color: color-mix(in srgb, var(--gold) 40%, var(--line));
+      background: var(--gold-soft);
+      color: var(--gold-text);
+    }
+    .subscription-plan-note {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .subscription-price {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      color: var(--heading);
+    }
+    .subscription-price span {
+      font-size: 18px;
+    }
+    .subscription-price b {
+      font-size: 54px;
+      line-height: 0.95;
+    }
+    .subscription-price small {
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .subscription-meter-block {
+      display: grid;
+      gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .subscription-meter-block > div:first-child {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .subscription-meter-block b {
+      color: var(--heading);
+    }
+    .meter {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--surface-neutral);
+    }
+    .meter i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--teal), var(--rose));
+    }
+    .subscription-meter-block small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .subscription-actions {
+      display: grid;
+      align-content: start;
+      gap: 16px;
+    }
+    .subscription-action-list {
+      display: grid;
+      gap: 10px;
+    }
+    .subscription-action-list .btn {
+      justify-content: center;
+      min-height: 42px;
+    }
+    .subscription-status {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0;
+    }
+    .subscription-status div {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg);
+    }
+    .subscription-status dt {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .subscription-status dd {
+      margin: 5px 0 0;
+      color: var(--heading);
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .subscription-message {
+      min-height: 20px;
+      margin: 0;
+      color: var(--danger-text);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .subscription-section-head {
+      display: grid;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+    .subscription-section-head h2 {
+      margin: 0;
+      color: var(--heading);
+      font-size: 24px;
+    }
+    .subscription-feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .subscription-feature-grid article {
+      display: grid;
+      gap: 9px;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--bg);
+    }
+    .subscription-feature-grid span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+    .subscription-feature-grid b {
+      color: var(--heading);
+      font-size: 16px;
+      line-height: 1.3;
+    }
+    @media (max-width: 860px) {
+      .subscription-main {
+        padding: 18px 12px 76px;
+      }
+      .subscription-hero,
+      .subscription-gate,
+      .subscription-grid {
+        grid-template-columns: 1fr;
+      }
+      .subscription-hero {
+        display: grid;
+        padding: 22px;
+      }
+      .subscription-hero .btn {
+        width: 100%;
+      }
+      .subscription-grid,
+      .subscription-feature-grid {
+        grid-template-columns: 1fr;
+      }
+      .subscription-status {
+        grid-template-columns: 1fr;
+      }
+      .subscription-price b {
+        font-size: 44px;
+      }
+    }
+  </style>
+</BaseLayout>

@@ -52,11 +52,6 @@ const privacyHref = getLocalizedAppHref(
       );
     } catch {}
     if (cookieConsent) cookieConsent.hidden = true;
-    window.showToast?.(
-      choice === "all"
-        ? window.msg?.("cookieAllSaved")
-        : window.msg?.("cookieNecessarySaved"),
-    );
   }
 
   if (cookieConsent) {

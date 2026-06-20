@@ -102,7 +102,9 @@ export const POST: APIRoute = async ({ cookies, locals, request, url }) => {
           }
         : undefined,
     ),
+    marketOptions: getMarketProfileOptions(locale),
     persistedToAccount: user.authenticated,
+    representationOptions: ["diverse", ...validRepresentationGroups],
   });
 };
 

@@ -473,6 +473,7 @@
     "complete": "完成！",
     "loadSavedFailed": "加载收藏失败",
     "operationSavedFailed": "操作收藏失败",
+    "savedLimitReached": "当前计划收藏数量已满，请取消一个收藏或升级后继续保存。",
     "confirmDeleteResult": "确定删除此试妆结果？",
     "noSuccessHistory": "暂无历史成功试妆记录",
     "noHistory": "暂无试妆记录",

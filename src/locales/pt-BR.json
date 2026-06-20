@@ -450,6 +450,7 @@
     "complete": "Prévia pronta",
     "loadSavedFailed": "Não foi possível carregar o histórico.",
     "operationSavedFailed": "Não foi possível salvar a operação.",
+    "savedLimitReached": "Seu limite de looks salvos foi atingido. Remova um resultado ou faça upgrade para salvar mais.",
     "confirmDeleteResult": "Excluir este resultado?",
     "noSuccessHistory": "Ainda não há testes concluídos",
     "noHistory": "Ainda não há registros de teste",

@@ -1,7 +1,15 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  buildAccountMobileMenu,
+  getAccountCenterCopy,
+} from "../data/accountCenterContent";
 import { getLocalizedPricingContent } from "../data/pricingContent";
+import AppIconBadge from "../components/AppIconBadge.astro";
+import MobileAppTopBar from "../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../components/MobileBottomNav.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import { getMarketProfileOptions } from "../data/makeup/audienceProfiles";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import { getCurrentLocale, type SupportedLocale } from "../lib/i18n";
@@ -21,16 +29,37 @@ const loginHref = localizeAppHref(
 );
 const hrefs = {
   dashboard: dashboardHref,
+  home: localizeAppHref("/"),
   login: loginHref,
   account: localizeAppHref("/account"),
   pricing: localizeAppHref("/pricing"),
+  subscription: localizeAppHref("/subscription"),
   discover: localizeAppHref("/discover"),
   diagnosis: localizeAppHref("/diagnosis"),
+  faq: localizeAppHref("/faq"),
+  history: localizeAppHref("/history"),
   shareCard: localizeAppHref("/share-card"),
+  support: localizeAppHref("/support"),
   tryonFree: localizeAppHref("/tryon-free"),
   tryonPro: localizeAppHref("/tryon-pro"),
   tryonPremium: localizeAppHref("/tryon-premium"),
 };
+const accountCenterCopy = getAccountCenterCopy(locale);
+const marketOptions = getMarketProfileOptions(locale);
+const representationKeys = [
+  "diverse",
+  "east-asian",
+  "black",
+  "south-asian",
+  "latina",
+  "middle-eastern",
+  "white",
+  "mixed",
+] as const;
+const representationOptions = representationKeys.map((value) => ({
+  value,
+  label: accountCenterCopy.preferences.representationLabels[value] ?? value,
+}));
 
 const recommendations = resolveLookCatalog(audienceContext)
   .slice(0, 4)
@@ -55,6 +84,10 @@ const copy = isZh
       description:
         "查看你的 AI 试妆额度、最近结果、收藏妆容、AI 诊断和内容偏好。",
       railLabel: "工作台导航",
+      menuLabel: "菜单",
+      currentSection: "当前模块",
+      openMenu: "打开工作台菜单",
+      closeMenu: "关闭工作台菜单",
       overview: "总览",
       workspace: "开始试妆",
       diagnosis: "AI 诊断",
@@ -67,6 +100,7 @@ const copy = isZh
       heading: "我的美妆工作台",
       subtitle:
         "从这里继续试妆、查看最近结果、保存灵感，并把诊断建议转成下一次可执行的妆容选择。",
+      quickActions: "快捷操作",
       startTryon: "开始试妆",
       openDiagnosis: "查看 AI 诊断",
       signedInAs: "已登录",
@@ -87,7 +121,9 @@ const copy = isZh
       allLooks: "浏览妆容库",
       recentHistory: "最近试妆",
       viewWorkspace: "打开工作台",
+      viewAllHistory: "查看全部历史",
       savedPanelTitle: "收藏板",
+      removeSaved: "取消收藏",
       viewShareCard: "分享卡片",
       diagnosisPanelTitle: "AI 诊断摘要",
       runDiagnosis: "开始诊断",
@@ -131,6 +167,10 @@ const copy = isZh
       description:
         "Review your AI try-on quota, recent results, saved looks, diagnosis, and content preferences.",
       railLabel: "Dashboard navigation",
+      menuLabel: "Menu",
+      currentSection: "Current section",
+      openMenu: "Open dashboard menu",
+      closeMenu: "Close dashboard menu",
       overview: "Overview",
       workspace: "Start try-on",
       diagnosis: "AI diagnosis",
@@ -143,6 +183,7 @@ const copy = isZh
       heading: "My beauty dashboard",
       subtitle:
         "Continue try-ons, review recent results, save ideas, and turn diagnosis guidance into the next look choice.",
+      quickActions: "Quick actions",
       startTryon: "Start try-on",
       openDiagnosis: "Open AI diagnosis",
       signedInAs: "Signed in",
@@ -163,7 +204,9 @@ const copy = isZh
       allLooks: "Browse looks",
       recentHistory: "Recent try-ons",
       viewWorkspace: "Open workspace",
+      viewAllHistory: "View all history",
       savedPanelTitle: "Saved board",
+      removeSaved: "Remove",
       viewShareCard: "Share card",
       diagnosisPanelTitle: "AI diagnosis summary",
       runDiagnosis: "Run diagnosis",
@@ -203,6 +246,269 @@ const copy = isZh
       signIn: "Sign in",
       checkoutSuccess: checkoutSuccessMessage,
     };
+
+const currentMarketProfileLabel =
+  marketOptions.find((option) => option.value === audienceContext.marketProfile)
+    ?.label ?? copy.noPreference;
+
+const dashboardModuleCopy = isZh
+  ? {
+      accountActions: "账户操作",
+      currentPreference: "当前偏好",
+      preferenceHint: "这些偏好只影响推荐顺序和参考图展示，不限制你访问全部妆容。",
+      diagnosisCapabilities: "诊断会整理",
+      diagnosisCapabilityTone: "肤色方向",
+      diagnosisCapabilityFace: "五官重点",
+      diagnosisCapabilityLook: "推荐妆容",
+      diagnosisEmptyTitle: "先完成一次 AI 妆容诊断",
+      billingCurrentPlan: "当前套餐",
+      billingUsage: "本月额度",
+      billingSavedLimit: "收藏上限",
+      billingSavedUnit: "个妆容",
+      billingRefresh: "下次刷新",
+      billingRefreshFallback: "按月自动刷新",
+      billingIncluded: "当前权益",
+      billingFreeBenefit: "标准预览",
+      billingPaidBenefit: "高清下载",
+      billingSharedBenefit: "试妆和诊断共用额度",
+    }
+  : {
+      accountActions: "Account actions",
+      currentPreference: "Current preference",
+      preferenceHint:
+        "Preferences only adjust recommendation order and reference images. They do not limit the full look library.",
+      diagnosisCapabilities: "Diagnosis covers",
+      diagnosisCapabilityTone: "Tone direction",
+      diagnosisCapabilityFace: "Feature focus",
+      diagnosisCapabilityLook: "Recommended look",
+      diagnosisEmptyTitle: "Start with one AI makeup diagnosis",
+      billingCurrentPlan: "Current plan",
+      billingUsage: "Monthly quota",
+      billingSavedLimit: "Saved limit",
+      billingSavedUnit: "looks",
+      billingRefresh: "Next refresh",
+      billingRefreshFallback: "Refreshes monthly",
+      billingIncluded: "Included now",
+      billingFreeBenefit: "Standard preview",
+      billingPaidBenefit: "HD download",
+      billingSharedBenefit: "Try-on and diagnosis share quota",
+    };
+
+type DashboardNavCopy = {
+  overview: string;
+  workspace: string;
+  diagnosis: string;
+  history: string;
+  saved: string;
+  preferences: string;
+  billing: string;
+  settings: string;
+};
+
+const dashboardNavCopyByLocale: Record<SupportedLocale, DashboardNavCopy> = {
+  en: {
+    overview: "Overview",
+    workspace: "Start try-on",
+    diagnosis: "AI diagnosis",
+    history: "History",
+    saved: "Saved",
+    preferences: "Preferences",
+    billing: "Billing",
+    settings: "Account",
+  },
+  "zh-CN": {
+    overview: "总览",
+    workspace: "开始试妆",
+    diagnosis: "AI 诊断",
+    history: "历史",
+    saved: "收藏",
+    preferences: "偏好",
+    billing: "订阅",
+    settings: "账户",
+  },
+  "zh-TW": {
+    overview: "總覽",
+    workspace: "開始試妝",
+    diagnosis: "AI 診斷",
+    history: "歷史",
+    saved: "收藏",
+    preferences: "偏好",
+    billing: "訂閱",
+    settings: "帳戶",
+  },
+  "ja-JP": {
+    overview: "概要",
+    workspace: "試着開始",
+    diagnosis: "AI診断",
+    history: "履歴",
+    saved: "保存",
+    preferences: "好み",
+    billing: "サブスク",
+    settings: "アカウント",
+  },
+  "ko-KR": {
+    overview: "개요",
+    workspace: "메이크업 체험",
+    diagnosis: "AI 진단",
+    history: "기록",
+    saved: "저장",
+    preferences: "취향",
+    billing: "구독",
+    settings: "계정",
+  },
+  "fr-FR": {
+    overview: "Vue d’ensemble",
+    workspace: "Essayer",
+    diagnosis: "Diagnostic IA",
+    history: "Historique",
+    saved: "Favoris",
+    preferences: "Préférences",
+    billing: "Abonnement",
+    settings: "Compte",
+  },
+  "de-DE": {
+    overview: "Übersicht",
+    workspace: "Try-on starten",
+    diagnosis: "KI-Diagnose",
+    history: "Verlauf",
+    saved: "Gespeichert",
+    preferences: "Präferenzen",
+    billing: "Abo",
+    settings: "Konto",
+  },
+  "es-ES": {
+    overview: "Resumen",
+    workspace: "Probar look",
+    diagnosis: "Diagnóstico IA",
+    history: "Historial",
+    saved: "Guardados",
+    preferences: "Preferencias",
+    billing: "Suscripción",
+    settings: "Cuenta",
+  },
+  "es-419": {
+    overview: "Resumen",
+    workspace: "Probar look",
+    diagnosis: "Diagnóstico IA",
+    history: "Historial",
+    saved: "Guardados",
+    preferences: "Preferencias",
+    billing: "Suscripción",
+    settings: "Cuenta",
+  },
+  "pt-BR": {
+    overview: "Visão geral",
+    workspace: "Testar look",
+    diagnosis: "Diagnóstico IA",
+    history: "Histórico",
+    saved: "Salvos",
+    preferences: "Preferências",
+    billing: "Assinatura",
+    settings: "Conta",
+  },
+};
+const dashboardNavCopy = dashboardNavCopyByLocale[locale];
+
+type DashboardNavTone = "rose" | "gold" | "teal" | "navy" | "danger";
+type DashboardNavItem = {
+  href: string;
+  icon: string;
+  label: string;
+  tone: DashboardNavTone;
+  active?: boolean;
+  workspace?: boolean;
+};
+
+const dashboardNavItems: DashboardNavItem[] = [
+  {
+    href: "#overview",
+    icon: "overview",
+    label: dashboardNavCopy.overview,
+    tone: "navy",
+    active: true,
+  },
+  {
+    href: hrefs.tryonFree,
+    icon: "tryon",
+    label: dashboardNavCopy.workspace,
+    tone: "teal",
+    workspace: true,
+  },
+  {
+    href: hrefs.diagnosis,
+    icon: "diagnosis",
+    label: dashboardNavCopy.diagnosis,
+    tone: "rose",
+  },
+  {
+    href: "#history-panel",
+    icon: "history",
+    label: dashboardNavCopy.history,
+    tone: "navy",
+  },
+  { href: "#saved-panel", icon: "saved", label: dashboardNavCopy.saved, tone: "rose" },
+  {
+    href: "#preferences-panel",
+    icon: "preferences",
+    label: dashboardNavCopy.preferences,
+    tone: "teal",
+  },
+  {
+    href: "#billing-panel",
+    icon: "billing",
+    label: dashboardNavCopy.billing,
+    tone: "gold",
+  },
+  {
+    href: "#account-panel",
+    icon: "account",
+    label: dashboardNavCopy.settings,
+    tone: "navy",
+  },
+];
+
+const dashboardMobileTabs = [
+  {
+    href: "#overview",
+    label: dashboardNavCopy.overview,
+    active: true,
+  },
+  {
+    href: "#history-panel",
+    label: dashboardNavCopy.history,
+  },
+  {
+    href: "#saved-panel",
+    label: dashboardNavCopy.saved,
+  },
+  {
+    href: "#preferences-panel",
+    label: dashboardNavCopy.preferences,
+  },
+  {
+    href: "#billing-panel",
+    label: dashboardNavCopy.billing,
+  },
+  {
+    href: "#account-panel",
+    label: dashboardNavCopy.settings,
+  },
+];
+
+const dashboardMobileMenu = buildAccountMobileMenu(
+  accountCenterCopy,
+  {
+    account: hrefs.account,
+    dashboard: hrefs.dashboard,
+    diagnosis: hrefs.diagnosis,
+    faq: hrefs.faq,
+    history: hrefs.history,
+    home: hrefs.home,
+    pricing: hrefs.subscription,
+    workspace: hrefs.tryonFree,
+  },
+  "workspace",
+);
 
 const diagnosisDirectionRules = [
   { key: "evenSkinTone", terms: ["even", "skin", "tone"] },
@@ -1096,6 +1402,132 @@ diagnosisCopyByLocale["es-419"] = diagnosisCopyByLocale["es-ES"];
 
 const defaultDiagnosisCopy = diagnosisCopyByLocale.en as DiagnosisCopy;
 const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
+
+const diagnosisValueAliasesByLocale: Partial<
+  Record<SupportedLocale, Partial<DiagnosisValueLabels>>
+> = {
+  en: {
+    skinDepth: {
+      "light-medium": "light to medium",
+    },
+    undertone: {
+      "neutral-warm": "neutral warm",
+      "neutral-cool": "neutral cool",
+    },
+    season: {
+      "soft-warm": "soft warm",
+      "soft-cool": "soft cool",
+    },
+  },
+  "zh-CN": {
+    skinDepth: {
+      "light-medium": "浅中等",
+    },
+    undertone: {
+      "neutral-warm": "中性偏暖",
+      "neutral-cool": "中性偏冷",
+    },
+    season: {
+      "soft-warm": "柔和暖调",
+      "soft-cool": "柔和冷调",
+    },
+  },
+  "zh-TW": {
+    skinDepth: {
+      "light-medium": "淺中等",
+    },
+    undertone: {
+      "neutral-warm": "中性偏暖",
+      "neutral-cool": "中性偏冷",
+    },
+    season: {
+      "soft-warm": "柔和暖調",
+      "soft-cool": "柔和冷調",
+    },
+  },
+  "ja-JP": {
+    skinDepth: {
+      "light-medium": "明るめから中間",
+    },
+    undertone: {
+      "neutral-warm": "ニュートラル寄りウォーム",
+      "neutral-cool": "ニュートラル寄りクール",
+    },
+    season: {
+      "soft-warm": "ソフトウォーム",
+      "soft-cool": "ソフトクール",
+    },
+  },
+  "ko-KR": {
+    skinDepth: {
+      "light-medium": "밝음-중간",
+    },
+    undertone: {
+      "neutral-warm": "뉴트럴 웜",
+      "neutral-cool": "뉴트럴 쿨",
+    },
+    season: {
+      "soft-warm": "소프트 웜",
+      "soft-cool": "소프트 쿨",
+    },
+  },
+  "fr-FR": {
+    skinDepth: {
+      "light-medium": "claire à moyenne",
+    },
+    undertone: {
+      "neutral-warm": "neutre chaud",
+      "neutral-cool": "neutre froid",
+    },
+    season: {
+      "soft-warm": "doux chaud",
+      "soft-cool": "doux froid",
+    },
+  },
+  "de-DE": {
+    skinDepth: {
+      "light-medium": "hell bis mittel",
+    },
+    undertone: {
+      "neutral-warm": "neutral warm",
+      "neutral-cool": "neutral kühl",
+    },
+    season: {
+      "soft-warm": "sanft warm",
+      "soft-cool": "sanft kühl",
+    },
+  },
+  "es-ES": {
+    skinDepth: {
+      "light-medium": "clara a media",
+    },
+    undertone: {
+      "neutral-warm": "neutro cálido",
+      "neutral-cool": "neutro frío",
+    },
+    season: {
+      "soft-warm": "suave cálido",
+      "soft-cool": "suave frío",
+    },
+  },
+  "pt-BR": {
+    skinDepth: {
+      "light-medium": "clara a média",
+    },
+    undertone: {
+      "neutral-warm": "neutro quente",
+      "neutral-cool": "neutro frio",
+    },
+    season: {
+      "soft-warm": "suave quente",
+      "soft-cool": "suave frio",
+    },
+  },
+};
+diagnosisValueAliasesByLocale["es-419"] =
+  diagnosisValueAliasesByLocale["es-ES"];
+const diagnosisValueAliases =
+  diagnosisValueAliasesByLocale[locale] ?? diagnosisValueAliasesByLocale.en;
 ---
 
 <BaseLayout
@@ -1104,34 +1536,30 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
   bodyClass="dashboard-body"
   robots="noindex,follow"
 >
-  <SiteHeader active="tryOn" />
+  <SiteHeader
+    active="dashboard"
+    mobileMenuSection={dashboardMobileMenu}
+    mobileSmartHide
+    mobileHidden
+  />
+  <MobileAppTopBar title={copy.heading} tabs={dashboardMobileTabs} />
   <main class="dashboard-main" data-dashboard>
     <div class="dashboard-shell">
       <aside class="dashboard-rail" aria-label={copy.railLabel}>
-        <a class="rail-link active" href="#overview">
-          <span aria-hidden="true">O</span>{copy.overview}
-        </a>
-        <a class="rail-link" href="#workspace" data-workspace-href>
-          <span aria-hidden="true">T</span>{copy.workspace}
-        </a>
-        <a class="rail-link" href="#diagnosis-panel">
-          <span aria-hidden="true">D</span>{copy.diagnosis}
-        </a>
-        <a class="rail-link" href="#history-panel">
-          <span aria-hidden="true">H</span>{copy.history}
-        </a>
-        <a class="rail-link" href="#saved-panel">
-          <span aria-hidden="true">S</span>{copy.saved}
-        </a>
-        <a class="rail-link" href="#preferences-panel">
-          <span aria-hidden="true">P</span>{copy.preferences}
-        </a>
-        <a class="rail-link" href="#billing-panel">
-          <span aria-hidden="true">B</span>{copy.billing}
-        </a>
-        <a class="rail-link" href={hrefs.account}>
-          <span aria-hidden="true">A</span>{copy.settings}
-        </a>
+        {
+          dashboardNavItems.map((item) => (
+            <a
+              class:list={["rail-link", item.active && "active"]}
+              href={item.href}
+              data-workspace-href={item.workspace || undefined}
+              data-dashboard-label={item.label}
+              data-dashboard-nav-link
+            >
+              <AppIconBadge icon={item.icon} size="sm" tone={item.tone} />
+              {item.label}
+            </a>
+          ))
+        }
       </aside>
 
       <div class="dashboard-content">
@@ -1140,12 +1568,11 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
           id="overview"
           aria-labelledby="dashboard-title"
         >
-          <div>
+          <div class="dashboard-hero-content">
             <p class="dashboard-eyebrow" data-dashboard-email>
               {copy.loadingAccount}
             </p>
             <h1 id="dashboard-title">{copy.heading}</h1>
-            <p>{copy.subtitle}</p>
           </div>
           <div class="dashboard-hero-actions">
             <a
@@ -1167,36 +1594,57 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         </section>
 
         <section class="dashboard-metrics" aria-label={copy.overview}>
-          <article class="metric-card">
-            <span>{copy.plan}</span>
-            <strong data-plan-value>--</strong>
-            <small data-plan-note>{copy.planNote}</small>
+          <article class="metric-card metric-card-primary">
+            <div class="metric-icon">
+              <AppIconBadge icon="membership" size="sm" tone="gold" />
+            </div>
+            <div class="metric-content">
+              <span>{copy.plan}</span>
+              <strong data-plan-value>--</strong>
+            </div>
           </article>
-          <article class="metric-card">
-            <span>{copy.quota}</span>
-            <strong data-quota-value>--</strong>
-            <small>{copy.quotaNote}</small>
+          <article class="metric-card metric-card-primary">
+            <div class="metric-icon">
+              <AppIconBadge icon="tryon" size="sm" tone="teal" />
+            </div>
+            <div class="metric-content">
+              <span>{copy.quota}</span>
+              <strong data-quota-value>--</strong>
+            </div>
           </article>
-          <article class="metric-card">
-            <span>{copy.looks}</span>
-            <strong data-result-count>--</strong>
-            <small>{copy.looksNote}</small>
-          </article>
-          <article class="metric-card">
-            <span>{copy.savedLooks}</span>
-            <strong data-saved-count>--</strong>
-            <small>{copy.savedNote}</small>
+          <article class="metric-card metric-card-dual">
+            <div class="metric-dual-item">
+              <div class="metric-icon">
+                <AppIconBadge icon="history" size="sm" tone="navy" />
+              </div>
+              <div class="metric-content">
+                <span>{copy.looks}</span>
+                <strong data-result-count>--</strong>
+              </div>
+            </div>
+            <div class="metric-dual-divider"></div>
+            <div class="metric-dual-item">
+              <div class="metric-icon">
+                <AppIconBadge icon="saved" size="sm" tone="rose" />
+              </div>
+              <div class="metric-content">
+                <span>{copy.savedLooks}</span>
+                <strong data-saved-count>--</strong>
+              </div>
+            </div>
           </article>
         </section>
 
-        <div class="dashboard-grid">
-          <section class="panel dashboard-panel next-panel" id="workspace">
+        <section
+          class="panel dashboard-panel next-action-card"
+          id="workspace"
+          data-dashboard-view="overview"
+        >
             <div class="panel-head">
               <div>
                 <p class="section-kicker">{copy.nextAction}</p>
                 <h2>{copy.nextActionTitle}</h2>
               </div>
-              <a href={hrefs.discover}>{copy.allLooks}</a>
             </div>
             <div class="next-action-layout">
               {
@@ -1244,105 +1692,285 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
             </div>
           </section>
 
+        <div class="dashboard-grid">
           <section
             class="panel dashboard-panel history-panel"
             id="history-panel"
+            data-dashboard-view="history"
           >
             <div class="panel-head">
               <div>
                 <p class="section-kicker">{copy.history}</p>
                 <h2>{copy.recentHistory}</h2>
               </div>
-              <a href={hrefs.tryonFree} data-workspace-href>
-                {copy.viewWorkspace}
-              </a>
             </div>
             <div class="history-list" data-history-list>
               <p class="loading-line">{copy.loadingAccount}</p>
             </div>
-          </section>
-
-          <section class="panel dashboard-panel" id="saved-panel">
-            <div class="panel-head">
-              <div>
-                <p class="section-kicker">{copy.saved}</p>
-                <h2>{copy.savedPanelTitle}</h2>
-              </div>
-              <a href={hrefs.shareCard}>{copy.viewShareCard}</a>
-            </div>
-            <div class="saved-strip" data-saved-list>
-              <p class="loading-line">{copy.loadingAccount}</p>
-            </div>
-          </section>
-
-          <section class="panel dashboard-panel" id="diagnosis-panel">
-            <div class="panel-head">
-              <div>
-                <p class="section-kicker">{diagnosisCopy.ui.kicker}</p>
-                <h2>{diagnosisCopy.ui.panelTitle}</h2>
-              </div>
-              <a href={hrefs.diagnosis}>{diagnosisCopy.ui.runDiagnosis}</a>
-            </div>
-            <div class="diagnosis-summary" data-diagnosis-summary>
-              <p class="loading-line">{diagnosisCopy.ui.loadingAccount}</p>
-            </div>
-          </section>
-
-          <section class="panel dashboard-panel" id="preferences-panel">
-            <div class="panel-head">
-              <div>
-                <p class="section-kicker">{copy.preferences}</p>
-                <h2>{copy.preferencesTitle}</h2>
-              </div>
-              <a href={hrefs.account}>{copy.editPreferences}</a>
-            </div>
-            <dl class="preference-summary">
-              <div>
-                <dt>{copy.marketProfile}</dt>
-                <dd data-market-profile>{copy.noPreference}</dd>
-              </div>
-              <div>
-                <dt>{copy.representation}</dt>
-                <dd data-representation-preference>{copy.noPreference}</dd>
-              </div>
-            </dl>
-          </section>
-
-          <section class="panel dashboard-panel" id="billing-panel">
-            <div class="panel-head">
-              <div>
-                <p class="section-kicker">{copy.billing}</p>
-                <h2>{copy.billingTitle}</h2>
-              </div>
-              <a href={hrefs.pricing} data-upgrade-link hidden>
-                {copy.upgrade}
+            <div class="history-actions" data-history-actions hidden>
+              <a class="btn btn-primary" href={hrefs.history}>
+                {copy.viewAllHistory}
               </a>
             </div>
-            <p class="billing-note" data-billing-note>{copy.planNote}</p>
-            <div class="inline-actions">
-              <button
-                class="btn btn-primary"
-                type="button"
-                data-manage-billing
-                hidden
-              >
-                {copy.manageBilling}
-              </button>
-              <a
-                class="btn btn-outline-rose"
-                href={hrefs.pricing}
-                data-plan-upgrade
-              >
-                {copy.upgrade}
-              </a>
-            </div>
-            <p class="dashboard-message" data-dashboard-message role="status">
-            </p>
           </section>
+
+          <aside class="dashboard-quick-links">
+            <section
+              class="panel dashboard-panel dashboard-panel-compact"
+              id="saved-panel"
+              data-dashboard-view="saved"
+            >
+              <div class="panel-head">
+                <div>
+                  <p class="section-kicker">{copy.saved}</p>
+                  <h2>{copy.savedPanelTitle}</h2>
+                </div>
+                <a
+                  class="btn btn-outline-rose dashboard-panel-action dashboard-share-cta"
+                  href={hrefs.shareCard}
+                >
+                  {copy.viewShareCard}
+                </a>
+              </div>
+              <div class="saved-strip" data-saved-list>
+                <p class="loading-line">{copy.loadingAccount}</p>
+              </div>
+            </section>
+
+            <section
+              class="panel dashboard-panel dashboard-panel-compact"
+              id="diagnosis-panel"
+              data-dashboard-view="overview"
+            >
+              <div class="panel-head">
+                <div>
+                  <p class="section-kicker">{diagnosisCopy.ui.kicker}</p>
+                  <h2>{diagnosisCopy.ui.panelTitle}</h2>
+                </div>
+                <a
+                  class="btn btn-primary dashboard-diagnosis-cta"
+                  href={`${hrefs.diagnosis}#diagnosis-new`}
+                  data-diagnosis-head-action
+                  hidden
+                >
+                  {diagnosisCopy.ui.rerunDiagnosis ?? diagnosisCopy.ui.runDiagnosis}
+                </a>
+              </div>
+              <div class="diagnosis-summary" data-diagnosis-summary>
+                <p class="loading-line">{diagnosisCopy.ui.loadingAccount}</p>
+              </div>
+            </section>
+
+            <section
+              class="panel dashboard-panel dashboard-panel-compact"
+              id="preferences-panel"
+              data-dashboard-view="preferences"
+            >
+              <div class="panel-head">
+                <div>
+                  <p class="section-kicker">{copy.preferences}</p>
+                  <h2>{copy.preferencesTitle}</h2>
+                </div>
+              </div>
+              <div class="dashboard-module-intro">
+                <div>
+                  <span>{dashboardModuleCopy.currentPreference}</span>
+                  <p>{dashboardModuleCopy.preferenceHint}</p>
+                </div>
+                <dl class="preference-summary">
+                  <div>
+                    <dt>{copy.marketProfile}</dt>
+                    <dd data-market-profile>{currentMarketProfileLabel}</dd>
+                  </div>
+                  <div>
+                    <dt>{copy.representation}</dt>
+                    <dd data-representation-preference>{copy.noPreference}</dd>
+                  </div>
+                </dl>
+              </div>
+              <form class="dashboard-preference-form" data-dashboard-preferences>
+                <div class="dashboard-preference-card">
+                  <label class="dashboard-preference-field">
+                    <span>{accountCenterCopy.preferences.marketProfile}</span>
+                    <select name="marketProfile" data-dashboard-market-select>
+                      {
+                        marketOptions.map((option) => (
+                          <option
+                            value={option.value}
+                            selected={
+                              option.value === audienceContext.marketProfile
+                            }
+                          >
+                            {option.label}
+                          </option>
+                        ))
+                      }
+                    </select>
+                  </label>
+                </div>
+                <fieldset class="dashboard-representation-field">
+                  <legend>{accountCenterCopy.preferences.representation}</legend>
+                  <div class="dashboard-representation-options">
+                    {
+                      representationOptions.map((option) => (
+                        <label class="dashboard-representation-chip">
+                          <input
+                            type="checkbox"
+                            name="representationPreference"
+                            value={option.value}
+                            checked={audienceContext.representationPreference.some(
+                              (preference) => preference === option.value,
+                            )}
+                          />
+                          <span>{option.label}</span>
+                        </label>
+                      ))
+                    }
+                  </div>
+                </fieldset>
+                <div class="dashboard-form-footer">
+                  <button class="btn btn-primary" type="submit">
+                    {accountCenterCopy.preferences.save}
+                  </button>
+                </div>
+                <p
+                  class="dashboard-message"
+                  data-dashboard-preference-status
+                  role="status"
+                >
+                </p>
+              </form>
+            </section>
+
+            <section
+              class="panel dashboard-panel dashboard-panel-compact"
+              id="billing-panel"
+              data-dashboard-view="billing"
+            >
+              <div class="panel-head">
+                <div>
+                  <p class="section-kicker">{copy.billing}</p>
+                  <h2>{copy.billingTitle}</h2>
+                </div>
+              </div>
+              <div class="dashboard-billing-status" data-billing-plan-card>
+                <article class="dashboard-billing-plan">
+                  <span>{dashboardModuleCopy.billingCurrentPlan}</span>
+                  <strong data-billing-plan>--</strong>
+                  <p data-billing-note>{copy.planNote}</p>
+                </article>
+                <article class="dashboard-billing-quota">
+                  <div>
+                    <span>{dashboardModuleCopy.billingUsage}</span>
+                    <strong data-billing-quota>--</strong>
+                  </div>
+                  <div class="meter">
+                    <i data-billing-meter style="width: 0%;"></i>
+                  </div>
+                  <small data-billing-refresh>
+                    {dashboardModuleCopy.billingRefreshFallback}
+                  </small>
+                </article>
+                <article class="dashboard-billing-limit">
+                  <span>{dashboardModuleCopy.billingSavedLimit}</span>
+                  <strong>
+                    <span data-billing-saved-limit>--</span>
+                    <small>{dashboardModuleCopy.billingSavedUnit}</small>
+                  </strong>
+                </article>
+              </div>
+              <div class="dashboard-billing-benefits">
+                <span>{dashboardModuleCopy.billingIncluded}</span>
+                <div>
+                  <b data-billing-benefit-main>{dashboardModuleCopy.billingFreeBenefit}</b>
+                  <b>{dashboardModuleCopy.billingSharedBenefit}</b>
+                </div>
+              </div>
+              <div class="inline-actions dashboard-billing-actions">
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  data-manage-billing
+                  hidden
+                >
+                  {copy.manageBilling}
+                </button>
+                <a
+                  class="btn btn-outline-rose"
+                  href={hrefs.subscription}
+                  data-plan-upgrade
+                >
+                  {copy.upgrade}
+                </a>
+              </div>
+              <p class="dashboard-message" data-dashboard-message role="status">
+              </p>
+            </section>
+
+            <section
+              class="panel dashboard-panel dashboard-panel-compact dashboard-account-panel"
+              id="account-panel"
+              data-dashboard-view="account"
+            >
+              <div class="panel-head">
+                <div>
+                  <p class="section-kicker">{accountCenterCopy.menuLabel}</p>
+                  <h2>{accountCenterCopy.pageTitle}</h2>
+                </div>
+              </div>
+              <div class="dashboard-account-layout">
+                <article class="dashboard-account-card">
+                  <div class="dashboard-account-identity">
+                    <AppIconBadge icon="account" tone="navy" />
+                    <div>
+                      <span>{accountCenterCopy.email}</span>
+                      <strong data-dashboard-account-email>--</strong>
+                    </div>
+                  </div>
+                  <div class="dashboard-account-stats">
+                    <div>
+                      <span>{accountCenterCopy.plan}</span>
+                      <strong data-dashboard-account-plan>--</strong>
+                    </div>
+                    <div>
+                      <span>{accountCenterCopy.quota}</span>
+                      <strong data-dashboard-account-quota>--</strong>
+                    </div>
+                  </div>
+                </article>
+                <div class="dashboard-account-actions">
+                  <span>{dashboardModuleCopy.accountActions}</span>
+                  <a href={hrefs.account}>
+                    <AppIconBadge icon="account" size="sm" />
+                    <span>{accountCenterCopy.profile}</span>
+                  </a>
+                  <a href="#billing-panel" data-dashboard-module-link="billing">
+                    <AppIconBadge icon="membership" size="sm" tone="gold" />
+                    <span>{accountCenterCopy.memberCenter}</span>
+                  </a>
+                  <a href={hrefs.faq}>
+                    <AppIconBadge icon="help" size="sm" tone="teal" />
+                    <span>{accountCenterCopy.helpCenter}</span>
+                  </a>
+                  <button type="button" data-dashboard-logout>
+                    <AppIconBadge icon="logout" size="sm" tone="danger" />
+                    <span>{accountCenterCopy.signOut}</span>
+                  </button>
+                </div>
+              </div>
+              <p
+                class="dashboard-message"
+                data-dashboard-account-message
+                role="status"
+              >
+              </p>
+            </section>
+          </aside>
         </div>
       </div>
     </div>
   </main>
+  <MobileBottomNav active="account" />
 
   <style>
     .dashboard-main {
@@ -1358,7 +1986,7 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
     }
     .dashboard-shell {
       display: grid;
-      grid-template-columns: 220px minmax(0, 1fr);
+      grid-template-columns: 236px minmax(0, 1fr);
       gap: 20px;
       width: min(1280px, 100%);
       margin: 0 auto;
@@ -1368,44 +1996,248 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       top: 82px;
       display: grid;
       align-self: start;
-      gap: 6px;
-      padding: 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--bg-elevated);
-      box-shadow: 0 12px 32px rgba(18, 39, 66, 0.06);
+      height: min(680px, calc(100vh - 104px));
+      min-height: min(560px, calc(100vh - 104px));
+      align-content: start;
+      gap: 8px;
+      overflow-y: auto;
+      padding: 16px;
+      border: 1px solid color-mix(in srgb, var(--line) 86%, transparent);
+      border-radius: 12px;
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--rose-soft) 34%, transparent),
+          transparent 44%
+        ),
+        var(--bg-elevated);
+      box-shadow:
+        0 18px 42px rgba(18, 39, 66, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62);
+      scrollbar-width: thin;
+    }
+    @supports (height: 100dvh) {
+      .dashboard-rail {
+        height: min(680px, calc(100dvh - 104px));
+        min-height: min(560px, calc(100dvh - 104px));
+      }
     }
     .rail-link {
+      position: relative;
       display: grid;
-      grid-template-columns: 28px 1fr;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 12px;
       align-items: center;
-      min-height: 44px;
-      padding: 0 10px;
-      border-radius: 8px;
+      min-height: 54px;
+      padding: 0 12px;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 12px;
       color: var(--muted);
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1.2;
       text-decoration: none;
+      transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease,
+        box-shadow 180ms ease;
     }
-    .rail-link span {
-      display: grid;
-      width: 22px;
-      height: 22px;
-      place-items: center;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      color: var(--navy);
-      font-size: 11px;
+    .rail-link::before {
+      position: absolute;
+      inset: 10px auto 10px 0;
+      width: 3px;
+      border-radius: 0 999px 999px 0;
+      background: linear-gradient(180deg, var(--rose), var(--teal));
+      opacity: 0;
+      content: "";
+      transition: opacity 180ms ease;
+    }
+    .rail-link :global(.app-icon-badge) {
+      --app-icon-size: 34px;
+      position: relative;
+      z-index: 1;
+      box-shadow:
+        0 8px 18px color-mix(in srgb, currentColor 12%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62);
+      transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
     }
     .rail-link:hover,
     .rail-link.active {
-      background: var(--rose-soft);
-      color: var(--rose);
+      border-color: color-mix(in srgb, var(--rose) 22%, var(--line));
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--rose-soft) 72%, var(--bg-elevated)),
+          color-mix(in srgb, var(--teal-soft) 34%, var(--bg-elevated))
+        );
+      color: var(--navy);
+      box-shadow: 0 10px 22px rgba(18, 39, 66, 0.07);
     }
-    .rail-link:hover span,
-    .rail-link.active span {
-      border-color: color-mix(in srgb, var(--rose) 38%, var(--line));
-      color: var(--rose);
+    .rail-link:hover::before,
+    .rail-link.active::before {
+      opacity: 1;
+    }
+    .rail-link:hover :global(.app-icon-badge),
+    .rail-link.active :global(.app-icon-badge) {
+      --app-icon-bg: color-mix(
+        in srgb,
+        currentColor 18%,
+        var(--bg-elevated)
+      );
+      --app-icon-border: color-mix(in srgb, currentColor 42%, var(--line));
+      transform: translateY(-1px);
+      box-shadow:
+        0 10px 22px color-mix(in srgb, currentColor 18%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+    :global([data-theme="dark"]) .dashboard-rail {
+      border-color: rgba(255, 255, 255, 0.08);
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 151, 184, 0.08),
+          transparent 44%
+        ),
+        var(--bg-elevated);
+      box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    :global([data-theme="dark"]) .dashboard-hero {
+      border-color: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    :global([data-theme="dark"]) .metric-card {
+      border-color: rgba(255, 255, 255, 0.06);
+      background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
+    }
+    :global([data-theme="dark"]) .metric-card:hover {
+      border-color: rgba(255, 151, 184, 0.24);
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    :global([data-theme="dark"]) .next-action-card {
+      border-color: rgba(255, 151, 184, 0.2);
+      background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--rose-soft) 16%, var(--bg-elevated)),
+        color-mix(in srgb, var(--teal-soft) 10%, var(--bg-elevated))
+      );
+      box-shadow:
+        0 20px 48px rgba(0, 0, 0, 0.4),
+        0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    :global([data-theme="dark"]) .next-action-card:hover {
+      border-color: rgba(255, 151, 184, 0.28);
+      box-shadow:
+        0 24px 56px rgba(0, 0, 0, 0.5),
+        0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+    :global([data-theme="dark"]) .dashboard-panel {
+      border-color: rgba(255, 255, 255, 0.06);
+      background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+    }
+    :global([data-theme="dark"]) .dashboard-panel:hover {
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.35),
+        0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+    :global([data-theme="dark"]) .rail-link:hover,
+    :global([data-theme="dark"]) .rail-link.active {
+      border-color: rgba(255, 151, 184, 0.22);
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255, 151, 184, 0.12),
+          rgba(45, 212, 191, 0.08)
+        );
+      color: var(--heading);
+      box-shadow: none;
+    }
+    :global([data-theme="dark"]) .rail-link :global(.app-icon-badge) {
+      box-shadow: none;
+    }
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"])) .dashboard-rail {
+        border-color: rgba(255, 255, 255, 0.08);
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 151, 184, 0.08),
+            transparent 44%
+          ),
+          var(--bg-elevated);
+        box-shadow:
+          0 18px 42px rgba(0, 0, 0, 0.28),
+          inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      }
+      :global(:root:not([data-theme="light"])) .dashboard-hero {
+        border-color: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      }
+      :global(:root:not([data-theme="light"])) .metric-card {
+        border-color: rgba(255, 255, 255, 0.06);
+        background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
+      }
+      :global(:root:not([data-theme="light"])) .metric-card:hover {
+        border-color: rgba(255, 151, 184, 0.24);
+        box-shadow:
+          0 8px 24px rgba(0, 0, 0, 0.3),
+          0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+      :global(:root:not([data-theme="light"])) .next-action-card {
+        border-color: rgba(255, 151, 184, 0.2);
+        background: linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--rose-soft) 16%, var(--bg-elevated)),
+          color-mix(in srgb, var(--teal-soft) 10%, var(--bg-elevated))
+        );
+        box-shadow:
+          0 20px 48px rgba(0, 0, 0, 0.4),
+          0 8px 20px rgba(0, 0, 0, 0.3);
+      }
+      :global(:root:not([data-theme="light"])) .next-action-card:hover {
+        border-color: rgba(255, 151, 184, 0.28);
+        box-shadow:
+          0 24px 56px rgba(0, 0, 0, 0.5),
+          0 10px 24px rgba(0, 0, 0, 0.35);
+      }
+      :global(:root:not([data-theme="light"])) .dashboard-panel {
+        border-color: rgba(255, 255, 255, 0.06);
+        background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+      }
+      :global(:root:not([data-theme="light"])) .dashboard-panel:hover {
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow:
+          0 12px 32px rgba(0, 0, 0, 0.35),
+          0 4px 12px rgba(0, 0, 0, 0.25);
+      }
+      :global(:root:not([data-theme="light"])) .rail-link:hover,
+      :global(:root:not([data-theme="light"])) .rail-link.active {
+        border-color: rgba(255, 151, 184, 0.22);
+        background:
+          linear-gradient(
+            135deg,
+            rgba(255, 151, 184, 0.12),
+            rgba(45, 212, 191, 0.08)
+          );
+        color: var(--heading);
+        box-shadow: none;
+      }
+      :global(:root:not([data-theme="light"]))
+        .rail-link
+        :global(.app-icon-badge) {
+        box-shadow: none;
+      }
     }
     .dashboard-content {
       display: grid;
@@ -1413,15 +2245,19 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       min-width: 0;
     }
     .dashboard-hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: end;
-      gap: 18px;
-      padding: 28px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 24px 28px;
+      border: 1px solid color-mix(in srgb, var(--line) 68%, transparent);
+      border-radius: 12px;
       background: var(--bg-elevated);
-      box-shadow: 0 14px 36px rgba(18, 39, 66, 0.07);
+      box-shadow: 0 8px 24px rgba(18, 39, 66, 0.04);
+    }
+    .dashboard-hero-content {
+      min-width: 0;
+      flex: 1;
     }
     .dashboard-eyebrow,
     .section-kicker {
@@ -1434,16 +2270,12 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
     .dashboard-hero h1 {
       margin: 0;
       color: var(--navy);
-      font-size: clamp(30px, 4vw, 48px);
-      line-height: 1.06;
-      letter-spacing: 0;
+      font-size: clamp(28px, 3.5vw, 42px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
     }
     .dashboard-hero p:not(.dashboard-eyebrow) {
-      max-width: 760px;
-      margin: 12px 0 0;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.65;
+      display: none;
     }
     .dashboard-hero-actions,
     .inline-actions {
@@ -1465,48 +2297,206 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
     }
     .dashboard-metrics {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
     }
-    .metric-card,
-    .dashboard-panel {
-      border-radius: 8px;
-    }
     .metric-card {
-      display: grid;
-      gap: 6px;
-      min-height: 132px;
-      padding: 18px;
-      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 80px;
+      padding: 16px;
+      border: 1px solid color-mix(in srgb, var(--line) 56%, transparent);
+      border-radius: 12px;
       background: var(--bg-elevated);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .metric-card span {
+    .metric-card:hover {
+      border-color: color-mix(in srgb, var(--rose) 28%, var(--line));
+      box-shadow:
+        0 8px 24px rgba(18, 39, 66, 0.06),
+        0 2px 8px rgba(18, 39, 66, 0.04);
+      transform: translateY(-2px);
+    }
+    .metric-icon {
+      flex: 0 0 auto;
+    }
+    .metric-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .metric-content span {
+      display: block;
       color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
     }
-    .metric-card strong {
+    .metric-content strong {
+      display: block;
       color: var(--navy);
       font-size: 26px;
-      line-height: 1.1;
+      font-weight: 900;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
     }
-    .metric-card small {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
+    .metric-card-dual {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      padding: 14px 16px;
+    }
+    .metric-card-dual:hover {
+      transform: translateY(-2px);
+    }
+    .metric-dual-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .metric-dual-divider {
+      width: 1px;
+      background: color-mix(in srgb, var(--line) 48%, transparent);
+    }
+    .metric-dual-item .metric-icon {
+      flex: 0 0 auto;
+    }
+    .metric-dual-item .metric-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .metric-dual-item .metric-content span {
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+    .metric-dual-item .metric-content strong {
+      font-size: 22px;
+    }
+    .dashboard-panel {
+      border-radius: 12px;
     }
     .dashboard-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.75fr);
-      gap: 18px;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 20px;
       align-items: start;
+    }
+    .dashboard-quick-links {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 100px;
+    }
+    @media (min-width: 1061px) {
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        .dashboard-hero,
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        .dashboard-gate,
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        .dashboard-metrics,
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        [data-dashboard-view] {
+        display: none;
+      }
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        .dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .dashboard-main[data-active-view="history"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="history"],
+      .dashboard-main[data-active-view="saved"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="saved"],
+      .dashboard-main[data-active-view="preferences"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="preferences"],
+      .dashboard-main[data-active-view="billing"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="billing"],
+      .dashboard-main[data-active-view="account"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="account"] {
+        display: block;
+        grid-column: 1 / -1;
+      }
+      .dashboard-main[data-active-view="history"] .history-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .dashboard-main[data-active-view="overview"] #preferences-panel,
+      .dashboard-main[data-active-view="overview"] #billing-panel,
+      .dashboard-main[data-active-view="overview"] #account-panel {
+        display: none;
+      }
+      .dashboard-main[data-active-view="saved"] .saved-strip,
+      .dashboard-main[data-active-view="preferences"] .dashboard-module-intro,
+      .dashboard-main[data-active-view="preferences"] .dashboard-preference-form,
+      .dashboard-main[data-active-view="billing"] .dashboard-billing-status,
+      .dashboard-main[data-active-view="billing"] .dashboard-billing-benefits,
+      .dashboard-main[data-active-view="billing"] .inline-actions,
+      .dashboard-main[data-active-view="account"] .dashboard-account-layout {
+        max-width: 900px;
+      }
     }
     .dashboard-panel {
       padding: 20px;
+      border: 1px solid color-mix(in srgb, var(--line) 58%, transparent);
+      background: var(--bg-elevated);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .next-panel,
-    .history-panel {
+    .dashboard-panel:hover {
+      border-color: color-mix(in srgb, var(--line) 82%, transparent);
+      box-shadow:
+        0 12px 32px rgba(18, 39, 66, 0.07),
+        0 4px 12px rgba(18, 39, 66, 0.04);
+    }
+    .dashboard-panel-compact {
+      padding: 18px;
+    }
+    .next-action-card {
+      position: relative;
+      grid-column: 1 / -1;
+      padding: 32px;
+      border: 1px solid color-mix(in srgb, var(--rose) 16%, var(--line));
+      background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--rose-soft) 22%, var(--bg-elevated)),
+        color-mix(in srgb, var(--teal-soft) 14%, var(--bg-elevated))
+      );
+      box-shadow:
+        0 20px 48px rgba(225, 60, 114, 0.09),
+        0 8px 20px rgba(225, 60, 114, 0.05);
+      overflow: hidden;
+    }
+    .next-action-card::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--rose), var(--teal));
+      content: "";
+    }
+    .next-action-card:hover {
+      border-color: color-mix(in srgb, var(--rose) 24%, var(--line));
+      box-shadow:
+        0 24px 56px rgba(225, 60, 114, 0.12),
+        0 10px 24px rgba(225, 60, 114, 0.07);
+      transform: translateY(-2px);
+    }
+    .next-panel {
       grid-column: span 1;
+    }
+    .history-panel {
+      grid-column: 1;
     }
     .panel-head {
       display: flex;
@@ -1527,6 +2517,57 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       font-size: 13px;
       font-weight: 800;
       text-decoration: none;
+    }
+    .panel-head a.dashboard-panel-action {
+      display: inline-flex;
+      min-height: 36px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .panel-head a.dashboard-share-cta {
+      border-color: color-mix(in srgb, var(--rose) 34%, var(--line));
+      background: color-mix(in srgb, var(--rose) 8%, var(--bg-elevated));
+      color: var(--rose);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.58);
+    }
+    .panel-head a.dashboard-share-cta:hover {
+      border-color: color-mix(in srgb, var(--rose) 58%, var(--line));
+      background: color-mix(in srgb, var(--rose) 12%, var(--bg-elevated));
+      color: var(--rose-dark);
+    }
+    :global([data-theme="dark"]) .panel-head a.dashboard-share-cta {
+      border-color: rgba(255, 151, 184, 0.36);
+      background: rgba(255, 151, 184, 0.1);
+      color: #ffabc3;
+      box-shadow: none;
+    }
+    :global([data-theme="dark"]) .panel-head a.dashboard-share-cta:hover {
+      border-color: rgba(255, 151, 184, 0.54);
+      background: rgba(255, 151, 184, 0.15);
+      color: #ffd6e2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"]))
+        .panel-head
+        a.dashboard-share-cta {
+        border-color: rgba(255, 151, 184, 0.36);
+        background: rgba(255, 151, 184, 0.1);
+        color: #ffabc3;
+        box-shadow: none;
+      }
+      :global(:root:not([data-theme="light"]))
+        .panel-head
+        a.dashboard-share-cta:hover {
+        border-color: rgba(255, 151, 184, 0.54);
+        background: rgba(255, 151, 184, 0.15);
+        color: #ffd6e2;
+      }
     }
     .next-action-layout {
       display: grid;
@@ -1604,18 +2645,514 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
     .dashboard-note {
       margin-top: 14px !important;
     }
-    .history-list,
     .saved-strip,
     .diagnosis-summary,
     .preference-summary {
       display: grid;
       gap: 10px;
     }
+    .dashboard-module-intro {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+      gap: 12px;
+      align-items: stretch;
+      padding: 14px;
+      border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+      border-radius: 12px;
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--rose-soft) 26%, transparent),
+          color-mix(in srgb, var(--teal-soft) 16%, transparent)
+        ),
+        var(--bg);
+    }
+    .dashboard-module-intro > div:first-child {
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      min-width: 0;
+    }
+    .dashboard-module-intro > div:first-child > span {
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .dashboard-module-intro p {
+      max-width: 54ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .dashboard-preference-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .dashboard-preference-card,
+    .dashboard-representation-field {
+      padding: 14px;
+      border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      border-radius: 12px;
+      background: var(--bg);
+    }
+    .dashboard-preference-field,
+    .dashboard-representation-field {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+    .dashboard-preference-field span,
+    .dashboard-representation-field legend {
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+    .dashboard-preference-field select {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--navy);
+      font: inherit;
+      font-size: 14px;
+    }
+    .dashboard-representation-field {
+      margin: 0;
+    }
+    .dashboard-representation-options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .dashboard-representation-chip {
+      display: flex;
+      min-width: 0;
+      min-height: 44px;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+      transition:
+        border-color 180ms ease,
+        background-color 180ms ease,
+        color 180ms ease;
+    }
+    .dashboard-representation-chip input {
+      flex: 0 0 auto;
+      accent-color: var(--rose);
+    }
+    .dashboard-representation-chip:has(input:checked) {
+      border-color: color-mix(in srgb, var(--rose) 48%, var(--line));
+      background: color-mix(in srgb, var(--rose-soft) 70%, var(--bg-elevated));
+      color: var(--navy);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rose) 16%, transparent);
+    }
+    .dashboard-form-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .dashboard-form-footer .btn {
+      min-width: min(100%, 180px);
+      justify-content: center;
+    }
+    .dashboard-diagnosis-entry {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(160px, 0.72fr);
+      gap: 14px;
+      align-items: stretch;
+      padding: 14px;
+      border: 1px solid color-mix(in srgb, var(--rose) 16%, var(--line));
+      border-radius: 12px;
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--rose-soft) 28%, var(--bg)),
+          var(--bg)
+        );
+    }
+    .dashboard-diagnosis-main {
+      display: grid;
+      gap: 9px;
+      align-content: center;
+      min-width: 0;
+    }
+    .dashboard-diagnosis-badge {
+      display: inline-grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--rose) 34%, var(--line));
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--rose-soft) 70%, var(--bg-elevated));
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 950;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+    .dashboard-diagnosis-main h3 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 17px;
+      line-height: 1.3;
+    }
+    .dashboard-diagnosis-main p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .dashboard-diagnosis-capabilities {
+      display: grid;
+      align-content: center;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--bg-elevated) 86%, transparent);
+    }
+    .dashboard-diagnosis-capabilities > span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .dashboard-diagnosis-capabilities > div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .dashboard-diagnosis-capabilities b {
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      padding: 0 9px;
+      border: 1px solid color-mix(in srgb, var(--teal) 28%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--teal-soft) 66%, var(--bg));
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .dashboard-quick-links .dashboard-diagnosis-entry {
+      grid-template-columns: 1fr;
+    }
+    .dashboard-quick-links .dashboard-diagnosis-capabilities {
+      padding: 10px;
+    }
+    .diagnosis-summary :global(.dashboard-diagnosis-entry) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(160px, 0.72fr);
+      gap: 14px;
+      align-items: stretch;
+      padding: 14px;
+      border: 1px solid color-mix(in srgb, var(--rose) 16%, var(--line));
+      border-radius: 12px;
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--rose-soft) 28%, var(--bg)),
+          var(--bg)
+        );
+    }
+    .dashboard-quick-links .diagnosis-summary :global(.dashboard-diagnosis-entry) {
+      grid-template-columns: 1fr;
+    }
+    .diagnosis-summary :global(.dashboard-diagnosis-main) {
+      display: grid;
+      gap: 9px;
+      align-content: center;
+      min-width: 0;
+    }
+    .diagnosis-summary :global(.dashboard-diagnosis-badge) {
+      display: inline-grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--rose) 34%, var(--line));
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--rose-soft) 70%, var(--bg-elevated));
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 950;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+    .diagnosis-summary :global(.dashboard-diagnosis-main h3) {
+      margin: 0;
+      color: var(--navy);
+      font-size: 17px;
+      line-height: 1.3;
+    }
+    .diagnosis-summary :global(.dashboard-diagnosis-main p) {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .diagnosis-summary :global(.dashboard-diagnosis-capabilities) {
+      display: grid;
+      align-content: center;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--bg-elevated) 86%, transparent);
+    }
+    .dashboard-quick-links .diagnosis-summary :global(.dashboard-diagnosis-capabilities) {
+      padding: 10px;
+    }
+    .diagnosis-summary :global(.dashboard-diagnosis-capabilities > span) {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .diagnosis-summary :global(.dashboard-diagnosis-capabilities > div) {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .diagnosis-summary :global(.dashboard-diagnosis-capabilities b) {
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      padding: 0 9px;
+      border: 1px solid color-mix(in srgb, var(--teal) 28%, var(--line));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--teal-soft) 66%, var(--bg));
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .dashboard-billing-status {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(240px, 1fr) minmax(180px, 0.7fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+    .dashboard-billing-status article,
+    .dashboard-billing-benefits {
+      border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      border-radius: 12px;
+      background: var(--bg);
+    }
+    .dashboard-billing-status article {
+      display: grid;
+      gap: 8px;
+      align-content: center;
+      min-width: 0;
+      padding: 14px;
+    }
+    .dashboard-billing-plan {
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--teal-soft) 42%, var(--bg)),
+          var(--bg)
+        ) !important;
+    }
+    .dashboard-billing-status[data-plan="pro"] .dashboard-billing-plan {
+      border-color: color-mix(in srgb, var(--rose) 38%, var(--line));
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--rose-soft) 68%, var(--bg)),
+          var(--bg)
+        ) !important;
+    }
+    .dashboard-billing-status[data-plan="premium"] .dashboard-billing-plan {
+      border-color: color-mix(in srgb, var(--gold) 42%, var(--line));
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--gold-soft) 76%, var(--bg)),
+          var(--bg)
+        ) !important;
+    }
+    .dashboard-billing-status span,
+    .dashboard-billing-benefits > span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .dashboard-billing-status strong {
+      color: var(--navy);
+      font-size: 26px;
+      line-height: 1.05;
+    }
+    .dashboard-billing-plan p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .dashboard-billing-quota .meter {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--surface-neutral);
+    }
+    .dashboard-billing-quota .meter i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--rose), var(--teal));
+    }
+    .dashboard-billing-quota small,
+    .dashboard-billing-limit small {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .dashboard-billing-benefits {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 12px 14px;
+    }
+    .dashboard-billing-benefits div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .dashboard-billing-benefits b {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--teal-soft) 72%, var(--bg-elevated));
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .dashboard-billing-actions {
+      margin-top: 14px;
+    }
+    .dashboard-account-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr);
+      gap: 14px;
+      align-items: start;
+    }
+    .dashboard-account-card,
+    .dashboard-account-actions {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg);
+    }
+    .dashboard-account-card {
+      display: grid;
+      gap: 16px;
+      padding: 16px;
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--teal-soft) 28%, var(--bg)),
+          var(--bg)
+        );
+    }
+    .dashboard-account-identity {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 12px;
+    }
+    .dashboard-account-identity :global(.app-icon-badge) {
+      --app-icon-size: 42px;
+      flex: 0 0 auto;
+    }
+    .dashboard-account-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .dashboard-account-card div div,
+    .dashboard-account-stats div {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+    .dashboard-account-card span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .dashboard-account-card strong {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      color: var(--navy);
+      font-size: 16px;
+      line-height: 1.35;
+    }
+    .dashboard-account-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px;
+      background: transparent;
+      overflow: visible;
+    }
+    .dashboard-account-actions > span {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .dashboard-account-actions a,
+    .dashboard-account-actions button {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      min-height: 54px;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+      text-align: left;
+      text-decoration: none;
+    }
+    .dashboard-account-actions a:hover,
+    .dashboard-account-actions button:hover,
+    .dashboard-account-actions a:focus-visible,
+    .dashboard-account-actions button:focus-visible {
+      background: color-mix(in srgb, var(--rose-soft) 58%, transparent);
+      outline: none;
+    }
+    .dashboard-account-actions button {
+      color: var(--danger-text);
+    }
+    .history-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .history-list > .loading-line,
+    .history-list > .empty-state {
+      grid-column: 1 / -1;
+    }
     .history-item {
       display: grid;
-      grid-template-columns: 74px minmax(0, 1fr) auto;
-      gap: 12px;
-      align-items: center;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      align-items: start;
       padding: 10px;
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -1628,6 +3165,9 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       object-fit: cover;
       border-radius: 8px;
       background: var(--surface-neutral);
+    }
+    .history-item img {
+      display: block;
     }
     .history-copy {
       min-width: 0;
@@ -1658,6 +3198,7 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       font-size: 12px;
       font-weight: 800;
       white-space: nowrap;
+      justify-self: start;
     }
     .history-status[data-state="succeeded"] {
       background: var(--teal-soft);
@@ -1666,6 +3207,31 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
     .history-status[data-state="failed"] {
       background: var(--surface-danger);
       color: var(--danger-text);
+    }
+    .history-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 16px;
+    }
+    .history-actions .btn {
+      min-width: min(100%, 220px);
+      justify-content: center;
+    }
+    @media (min-width: 768px) {
+      .history-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .history-item {
+        grid-template-columns: 74px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+      }
+      .history-item img {
+        grid-row: span 2;
+      }
+      .history-status {
+        grid-column: 2;
+      }
     }
     .saved-strip {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1678,7 +3244,133 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--bg);
+    }
+    .saved-look-open {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
       text-decoration: none;
+    }
+    .saved-look-remove {
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .saved-look-remove:hover {
+      border-color: var(--rose-border);
+      color: var(--rose);
+    }
+    .saved-look-remove:disabled {
+      cursor: not-allowed;
+      opacity: 0.52;
+    }
+    .saved-strip :global(.saved-look) {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg);
+    }
+    .saved-strip :global(.saved-look-open) {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      text-decoration: none;
+    }
+    .saved-strip :global(.saved-look img) {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 8px;
+      background: var(--surface-neutral);
+    }
+    .saved-strip :global(.saved-look strong) {
+      display: block;
+      color: var(--navy);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .saved-strip :global(.saved-look span) {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .saved-strip :global(.saved-look-remove) {
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .saved-strip :global(.saved-look-remove:hover) {
+      border-color: var(--rose-border);
+      color: var(--rose);
+    }
+    .saved-strip :global(.saved-look-remove:disabled) {
+      cursor: not-allowed;
+      opacity: 0.52;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .saved-strip {
+      grid-template-columns: 1fr;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .saved-strip
+      :global(.saved-look) {
+      grid-template-columns: 76px minmax(0, 1fr);
+      gap: 10px 12px;
+      align-items: center;
+      padding: 8px;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .saved-strip
+      :global(.saved-look-open) {
+      grid-template-columns: 76px minmax(0, 1fr);
+      grid-column: 1 / -1;
+      align-items: center;
+      gap: 10px;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .saved-strip
+      :global(.saved-look img) {
+      width: 76px;
+      aspect-ratio: 1;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .saved-strip
+      :global(.saved-look strong),
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .saved-strip
+      :global(.saved-look span) {
+      grid-column: 2;
+      margin-top: 0;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .saved-strip
+      :global(.saved-look-remove) {
+      grid-column: 2;
+      justify-self: start;
+      min-height: 30px;
+      padding: 0 10px;
     }
     .diagnosis-profile {
       display: grid;
@@ -1791,6 +3483,65 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
     .diagnosis-actions {
       margin-top: 2px;
     }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .diagnosis-summary
+      :global(.diagnosis-profile) {
+      gap: 12px;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .diagnosis-summary
+      :global(.diagnosis-profile-grid) {
+      display: none;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .diagnosis-summary
+      :global(.diagnosis-profile-lead h3) {
+      font-size: 16px;
+      line-height: 1.42;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .diagnosis-summary
+      :global(.diagnosis-profile-lead p) {
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .diagnosis-summary
+      :global(.diagnosis-direction) {
+      gap: 5px;
+      padding: 10px;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .diagnosis-summary
+      :global(.diagnosis-direction p),
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .diagnosis-summary
+      :global(.diagnosis-palette) {
+      display: none;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .diagnosis-summary
+      :global(.diagnosis-actions) {
+      gap: 8px;
+    }
+    .dashboard-main[data-active-view="overview"]
+      .dashboard-quick-links
+      .diagnosis-summary
+      :global(.diagnosis-actions .btn) {
+      flex: 1 1 140px;
+      min-height: 38px;
+      padding-inline: 10px;
+      font-size: 12px;
+    }
     .preference-summary {
       margin: 0;
     }
@@ -1818,10 +3569,95 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       font-weight: 800;
       text-decoration: none;
     }
+    .empty-state a.empty-state-action {
+      justify-self: start;
+      min-height: 38px;
+      padding-inline: 14px;
+      color: #ffffff;
+      line-height: 1;
+    }
     .empty-state strong {
       color: var(--navy);
       font-size: 15px;
       line-height: 1.35;
+    }
+    .panel-head a.dashboard-diagnosis-cta,
+    .empty-state a.dashboard-diagnosis-cta {
+      min-height: 38px;
+      padding: 0 12px 0 10px;
+      border-color: color-mix(in srgb, var(--rose-dark) 86%, #ffffff);
+      border-radius: 999px;
+      background:
+        linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--rose) 94%, #ffffff),
+          var(--rose-dark)
+        );
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0;
+      box-shadow:
+        0 10px 22px rgba(200, 62, 104, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.32);
+    }
+    .panel-head a.dashboard-diagnosis-cta::before,
+    .empty-state a.dashboard-diagnosis-cta::before {
+      display: grid;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+      content: "AI";
+    }
+    .panel-head a.dashboard-diagnosis-cta::after,
+    .empty-state a.dashboard-diagnosis-cta::after {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+      line-height: 1;
+      content: "→";
+    }
+    .panel-head a.dashboard-diagnosis-cta:hover,
+    .empty-state a.dashboard-diagnosis-cta:hover {
+      border-color: color-mix(in srgb, var(--rose) 82%, #ffffff);
+      color: #ffffff;
+      box-shadow:
+        0 14px 28px rgba(200, 62, 104, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38);
+    }
+    .empty-state a.dashboard-diagnosis-cta {
+      justify-self: start;
+      margin-top: 2px;
+    }
+    :global([data-theme="dark"]) .panel-head a.dashboard-diagnosis-cta,
+    :global([data-theme="dark"]) .empty-state a.dashboard-diagnosis-cta {
+      border-color: rgba(255, 151, 184, 0.45);
+      background: linear-gradient(135deg, #de5b86, #9f294f);
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.34),
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"]))
+        .panel-head
+        a.dashboard-diagnosis-cta,
+      :global(:root:not([data-theme="light"]))
+        .empty-state
+        a.dashboard-diagnosis-cta {
+        border-color: rgba(255, 151, 184, 0.45);
+        background: linear-gradient(135deg, #de5b86, #9f294f);
+        box-shadow:
+          0 12px 28px rgba(0, 0, 0, 0.34),
+          0 0 0 1px rgba(255, 255, 255, 0.04),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      }
     }
     @media (max-width: 1060px) {
       .dashboard-shell {
@@ -1830,7 +3666,11 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       .dashboard-rail {
         position: static;
         display: flex;
+        height: auto;
+        min-height: 0;
         overflow-x: auto;
+        overflow-y: hidden;
+        padding: 12px;
       }
       .rail-link {
         flex: 0 0 auto;
@@ -1839,42 +3679,285 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       .dashboard-grid {
         grid-template-columns: 1fr;
       }
+      .dashboard-billing-status {
+        grid-template-columns: minmax(0, 1fr) minmax(220px, 0.9fr);
+      }
+      .dashboard-billing-limit {
+        grid-column: 1 / -1;
+      }
+      .dashboard-module-intro {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .dashboard-quick-links {
+        position: static;
+      }
+      .next-action-card {
+        grid-column: 1;
+      }
+      .history-panel {
+        grid-column: 1;
+      }
     }
     @media (max-width: 760px) {
       .dashboard-main {
         padding: 18px 12px 44px;
       }
-      .dashboard-hero,
-      .dashboard-metrics,
+      .dashboard-shell {
+        gap: 12px;
+      }
+      .dashboard-rail {
+        display: none;
+      }
+      .dashboard-content,
+      .dashboard-grid {
+        gap: 14px;
+      }
+      .dashboard-hero {
+        order: 1;
+      }
+      .dashboard-metrics {
+        order: 2;
+      }
+      .next-action-card {
+        order: 3;
+      }
+      .dashboard-grid {
+        order: 4;
+      }
+      .dashboard-quick-links {
+        gap: 14px;
+        order: 2;
+      }
+      .dashboard-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 18px;
+      }
+      .dashboard-hero h1 {
+        font-size: clamp(24px, 6vw, 28px);
+        line-height: 1.15;
+      }
+      .dashboard-hero-actions {
+        width: 100%;
+      }
+      .dashboard-hero-actions .btn {
+        flex: 1;
+        min-width: 0;
+      }
+      .dashboard-metrics {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .metric-card {
+        min-height: 72px;
+        padding: 14px;
+      }
+      .metric-content strong {
+        font-size: 24px;
+      }
+      .metric-card-dual {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        gap: 12px;
+        padding: 14px;
+      }
+      .metric-dual-divider {
+        display: none;
+      }
+      .metric-dual-item {
+        gap: 10px;
+      }
+      .next-action-card {
+        padding: 20px;
+      }
       .next-action-layout {
         grid-template-columns: 1fr;
+        gap: 18px;
       }
       .next-action-media {
         max-width: none;
         aspect-ratio: 4 / 3;
       }
-      .dashboard-hero {
-        padding: 22px;
+      .dashboard-panel {
+        padding: 16px;
       }
-      .dashboard-hero-actions {
-        width: 100%;
+      .dashboard-panel-compact {
+        padding: 16px;
       }
-      .dashboard-hero-actions .btn,
+      .history-panel {
+        order: 1;
+      }
+      #saved-panel {
+        order: 3;
+      }
+      #diagnosis-panel {
+        order: 4;
+      }
+      #preferences-panel {
+        order: 5;
+      }
+      #billing-panel {
+        order: 6;
+      }
+      #account-panel {
+        order: 7;
+      }
       .inline-actions .btn {
         flex: 1 1 160px;
       }
-      .dashboard-metrics {
-        gap: 10px;
+      .history-list {
+        gap: 12px;
+      }
+      .dashboard-account-layout,
+      .dashboard-billing-status,
+      .dashboard-diagnosis-entry,
+      .dashboard-representation-options {
+        grid-template-columns: 1fr;
+      }
+      .diagnosis-summary :global(.dashboard-diagnosis-entry) {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-module-intro,
+      .dashboard-diagnosis-entry,
+      .dashboard-billing-status article,
+      .dashboard-billing-benefits,
+      .dashboard-account-card,
+      .dashboard-account-actions {
+        border-radius: 12px;
+      }
+      .dashboard-billing-limit {
+        grid-column: auto;
+      }
+      .dashboard-billing-status strong {
+        font-size: 22px;
+      }
+      .dashboard-billing-benefits {
+        align-items: flex-start;
+      }
+      .dashboard-billing-benefits div {
+        width: 100%;
+      }
+      .dashboard-representation-chip {
+        border-radius: 12px;
+      }
+      .dashboard-diagnosis-main .btn {
+        justify-self: start;
+      }
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        .dashboard-hero,
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        .dashboard-gate,
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        .dashboard-metrics,
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        [data-dashboard-view] {
+        display: none;
+      }
+      .dashboard-main[data-active-view]:not([data-active-view="overview"])
+        .dashboard-grid {
+        order: 1;
+      }
+      .dashboard-main[data-active-view="history"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="history"],
+      .dashboard-main[data-active-view="saved"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="saved"],
+      .dashboard-main[data-active-view="preferences"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="preferences"],
+      .dashboard-main[data-active-view="billing"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="billing"],
+      .dashboard-main[data-active-view="account"]:not(
+          [data-active-view="overview"]
+        )
+        [data-dashboard-view="account"] {
+        display: block;
+      }
+      .dashboard-main[data-active-view="overview"] #preferences-panel,
+      .dashboard-main[data-active-view="overview"] #billing-panel,
+      .dashboard-main[data-active-view="overview"] #account-panel {
+        display: none;
+      }
+      .dashboard-main[data-active-view="overview"]
+        .dashboard-quick-links
+        .saved-look {
+        grid-template-columns: 72px minmax(0, 1fr);
+      }
+      .dashboard-main[data-active-view="overview"]
+        .dashboard-quick-links
+        .saved-look-open {
+        grid-template-columns: 72px minmax(0, 1fr);
+      }
+      .dashboard-main[data-active-view="overview"]
+        .dashboard-quick-links
+        .saved-look img {
+        width: 72px;
       }
       .history-item {
-        grid-template-columns: 64px minmax(0, 1fr);
+        position: relative;
+        grid-template-rows: 60% minmax(0, 1fr);
+        gap: 0;
+        aspect-ratio: 3 / 4;
+        overflow: hidden;
+        padding: 0;
+        border-radius: 12px;
+      }
+      .history-item img {
+        height: 100%;
+        aspect-ratio: auto;
+        border-radius: 0;
+      }
+      .history-copy {
+        padding: 8px;
       }
       .history-status {
-        grid-column: 2;
-        justify-self: start;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        min-height: 26px;
+        padding: 0 8px;
+        border: 1px solid color-mix(in srgb, var(--line) 62%, transparent);
+        font-size: 11px;
+        backdrop-filter: blur(10px) saturate(130%);
+        -webkit-backdrop-filter: blur(10px) saturate(130%);
+      }
+      .history-status[data-state="succeeded"] {
+        background: color-mix(
+          in srgb,
+          var(--teal-soft) 88%,
+          var(--bg-elevated)
+        );
+      }
+      .history-status[data-state="failed"] {
+        background: color-mix(
+          in srgb,
+          var(--surface-danger) 88%,
+          var(--bg-elevated)
+        );
+      }
+      .history-copy strong {
+        font-size: 12px;
+      }
+      .history-copy span {
+        font-size: 11px;
       }
       .saved-strip,
       .diagnosis-profile-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 520px) {
+      .dashboard-account-actions {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-account-stats {
         grid-template-columns: 1fr;
       }
     }
@@ -1882,13 +3965,26 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
 
   <script
     is:inline
-    define:vars={{ copy, diagnosisCopy, hrefs, recommendations }}
+    define:vars={{
+      accountCenterCopy,
+      copy,
+      dashboardModuleCopy,
+      diagnosisCopy,
+      diagnosisValueAliases,
+      hrefs,
+      marketOptions,
+      recommendations,
+    }}
   >
     (() => {
       const root = document.querySelector("[data-dashboard]");
       if (!root) return;
 
       const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
+      const savedLookLimitByPlan = { free: 10, pro: 30, premium: 100 };
+      const defaultMarketOptions = Array.isArray(marketOptions)
+        ? marketOptions
+        : [];
       const workspaceByPlan = {
         free: hrefs.tryonFree,
         pro: hrefs.tryonPro,
@@ -1929,6 +4025,10 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       let workspaceHref = hrefs.tryonFree;
       const pageParams = new URLSearchParams(window.location.search);
       const checkoutSucceeded = pageParams.get("checkout") === "success";
+      const dashboardWideQuery = window.matchMedia("(min-width: 1061px)");
+      const historyDesktopQuery = window.matchMedia("(min-width: 768px)");
+      let latestHistoryJobs = [];
+      let hasRenderedHistory = false;
 
       const query = (selector) => root.querySelector(selector);
       const setText = (selector, value) => {
@@ -1938,6 +4038,22 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       const clear = (node) => {
         if (node) node.replaceChildren();
       };
+      const dashboardNavLinks = Array.from(
+        root.querySelectorAll("[data-dashboard-nav-link]"),
+      );
+      const dashboardViewByHash = new Map([
+        ["#overview", "overview"],
+        ["#history-panel", "history"],
+        ["#saved-panel", "saved"],
+        ["#preferences-panel", "preferences"],
+        ["#billing-panel", "billing"],
+        ["#account-panel", "account"],
+      ]);
+      const dashboardMobileTabLinks = Array.from(
+        document.querySelectorAll('[data-mobile-app-topbar] .mobile-app-tabs a[href^="#"]'),
+      ).filter((link) =>
+        dashboardViewByHash.has(link.getAttribute("href") || ""),
+      );
       const formatDate = (value) => {
         if (!value) return "";
         const date = new Date(value);
@@ -1962,6 +4078,80 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       };
       const delay = (ms) =>
         new Promise((resolve) => window.setTimeout(resolve, ms));
+
+      function setActiveDashboardSection(hash) {
+        if (!hash) return;
+        [...dashboardNavLinks, ...dashboardMobileTabLinks].forEach((link) => {
+          const isActive = link.getAttribute("href") === hash;
+          link.classList.toggle("active", isActive);
+          if (isActive) {
+            link.setAttribute("aria-current", "page");
+          } else {
+            link.removeAttribute("aria-current");
+          }
+        });
+      }
+
+      function normalizeDashboardHash(hash) {
+        return dashboardViewByHash.has(hash) ? hash : "#overview";
+      }
+
+      function setDashboardView(hash, options = {}) {
+        const normalizedHash = normalizeDashboardHash(hash);
+        const view = dashboardViewByHash.get(normalizedHash) || "overview";
+        root.dataset.activeView = view;
+        setActiveDashboardSection(normalizedHash);
+        if (options.updateHash !== false && window.location.hash !== normalizedHash) {
+          history.replaceState(null, "", normalizedHash);
+        }
+        if (options.scroll) {
+          root.scrollIntoView({ block: "start", behavior: "smooth" });
+        }
+      }
+
+      dashboardNavLinks.forEach((link) => {
+        link.addEventListener("click", (event) => {
+          const href = link.getAttribute("href") || "";
+          if (dashboardViewByHash.has(href)) {
+            if (dashboardWideQuery.matches) {
+              event.preventDefault();
+              setDashboardView(href, { scroll: true });
+            } else {
+              setDashboardView(href, { updateHash: false });
+            }
+          }
+        });
+      });
+      dashboardMobileTabLinks.forEach((link) => {
+        link.addEventListener("click", (event) => {
+          const href = link.getAttribute("href") || "";
+          if (!dashboardViewByHash.has(href)) return;
+          event.preventDefault();
+          setDashboardView(href, { scroll: true });
+        });
+      });
+      root.querySelectorAll("[data-dashboard-module-link]").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          const href = link.getAttribute("href") || "";
+          if (!dashboardViewByHash.has(href)) return;
+          if (dashboardWideQuery.matches) {
+            event.preventDefault();
+            setDashboardView(href, { scroll: true });
+          }
+        });
+      });
+      window.addEventListener("hashchange", () => {
+        setDashboardView(window.location.hash, { updateHash: false });
+      });
+      dashboardWideQuery.addEventListener("change", (event) => {
+        if (event.matches) {
+          setDashboardView(window.location.hash, { updateHash: false });
+        } else {
+          setDashboardView(window.location.hash, { updateHash: false });
+        }
+      });
+      setDashboardView(window.location.hash, { updateHash: false });
+
       async function getSessionWithCheckoutRefresh() {
         let session = await getJson("/api/session");
         if (!checkoutSucceeded || session?.plan !== "free") return session;
@@ -1976,12 +4166,29 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       }
       const formatDiagnosisPart = (template, value) =>
         template && value ? template.replace("{value}", value) : "";
-      const labelDiagnosisValue = (group, value) =>
-        value
-          ? diagnosisCopy.labels?.[group]?.[value] ||
-            fallbackDiagnosisLabels[group]?.[value] ||
-            value
-          : "";
+      function labelDiagnosisValue(group, value) {
+        const rawValue = String(value || "").trim();
+        if (!rawValue) return "";
+        const normalizedValue = rawValue.toLowerCase().replace(/_/g, "-");
+        const labelMap = diagnosisCopy.labels?.[group] || {};
+        const aliasMap = diagnosisValueAliases?.[group] || {};
+        const direct =
+          labelMap[rawValue] ||
+          labelMap[normalizedValue] ||
+          aliasMap[rawValue] ||
+          aliasMap[normalizedValue] ||
+          fallbackDiagnosisLabels[group]?.[rawValue] ||
+          fallbackDiagnosisLabels[group]?.[normalizedValue];
+        if (direct) return direct;
+        if (normalizedValue.includes("-")) {
+          const parts = normalizedValue
+            .split("-")
+            .map((part) => labelMap[part] || aliasMap[part])
+            .filter(Boolean);
+          if (parts.length >= 2) return parts.join(" / ");
+        }
+        return rawValue;
+      }
       const normalizeDiagnosisText = (value) =>
         String(value || "")
           .toLowerCase()
@@ -2068,7 +4275,11 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       }
 
       function formatDiagnosisConfidence(diagnosis) {
-        const confidenceScore = Number(diagnosis.confidence?.overall);
+        const confidenceScore = Number(
+          typeof diagnosis.confidence === "number"
+            ? diagnosis.confidence
+            : diagnosis.confidence?.overall,
+        );
         return Number.isFinite(confidenceScore)
           ? `${Math.round(confidenceScore * 100)}%`
           : diagnosisUi.noPreference;
@@ -2117,7 +4328,20 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         root.querySelectorAll("[data-workspace-href]").forEach((link) => {
           link.setAttribute("href", workspaceHref);
         });
-        query("[data-primary-workspace]")?.setAttribute("href", workspaceHref);
+        root.querySelectorAll("[data-primary-workspace]").forEach((link) => {
+          link.setAttribute("href", workspaceHref);
+        });
+      }
+
+      function setDiagnosisHeadAction(visible) {
+        const action = query("[data-diagnosis-head-action]");
+        if (!action) return;
+        action.toggleAttribute("hidden", !visible);
+        if (visible) {
+          action.setAttribute("href", `${hrefs.diagnosis}#diagnosis-new`);
+          action.textContent =
+            diagnosisUi.rerunDiagnosis || diagnosisUi.runDiagnosis;
+        }
       }
 
       function renderEmpty(target, message, actionLabel, actionHref) {
@@ -2130,6 +4354,7 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         if (actionLabel && actionHref) {
           const link = document.createElement("a");
           link.href = actionHref;
+          link.className = "btn btn-primary empty-state-action";
           link.textContent = actionLabel;
           box.append(link);
         }
@@ -2137,40 +4362,65 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
       }
 
       function renderDiagnosisEmpty(target) {
+        setDiagnosisHeadAction(false);
         clear(target);
-        const box = document.createElement("div");
-        box.className = "empty-state diagnosis-empty";
-        const title = document.createElement("strong");
-        title.textContent = diagnosisUi.emptyDiagnosis;
-        const body = document.createElement("span");
+        const box = document.createElement("article");
+        box.className = "dashboard-diagnosis-entry";
+        const main = document.createElement("div");
+        main.className = "dashboard-diagnosis-main";
+        const badge = document.createElement("span");
+        badge.className = "dashboard-diagnosis-badge";
+        badge.textContent = "AI";
+        const title = document.createElement("h3");
+        title.textContent =
+          dashboardModuleCopy.diagnosisEmptyTitle || diagnosisUi.emptyDiagnosis;
+        const body = document.createElement("p");
         body.textContent =
           diagnosisUi.emptyDiagnosisBody || diagnosisUi.emptyDiagnosis;
         const link = document.createElement("a");
         link.href = hrefs.diagnosis;
+        link.className = "btn btn-primary dashboard-diagnosis-cta";
         link.textContent = diagnosisUi.runDiagnosis;
-        box.append(title, body, link);
+        main.append(badge, title, body, link);
+        const capability = document.createElement("div");
+        capability.className = "dashboard-diagnosis-capabilities";
+        const capabilityTitle = document.createElement("span");
+        capabilityTitle.textContent = dashboardModuleCopy.diagnosisCapabilities;
+        const capabilityList = document.createElement("div");
+        [
+          dashboardModuleCopy.diagnosisCapabilityTone,
+          dashboardModuleCopy.diagnosisCapabilityFace,
+          dashboardModuleCopy.diagnosisCapabilityLook,
+        ].forEach((item) => {
+          const pill = document.createElement("b");
+          pill.textContent = item;
+          capabilityList.append(pill);
+        });
+        capability.append(capabilityTitle, capabilityList);
+        box.append(main, capability);
         target?.append(box);
       }
 
       function renderHistory(items) {
         const target = query("[data-history-list]");
+        const actions = query("[data-history-actions]");
         const jobs = Array.isArray(items) ? items : [];
+        latestHistoryJobs = jobs;
+        hasRenderedHistory = true;
         setText(
           "[data-result-count]",
           String(jobs.filter((job) => job?.status === "succeeded").length),
         );
         if (!target) return;
         if (!jobs.length) {
-          renderEmpty(
-            target,
-            copy.emptyHistory,
-            copy.startTryon,
-            workspaceHref,
-          );
+          if (actions) actions.hidden = true;
+          renderEmpty(target, copy.emptyHistory);
           return;
         }
+        if (actions) actions.hidden = false;
         clear(target);
-        jobs.slice(0, 5).forEach((job) => {
+        const visibleLimit = historyDesktopQuery.matches ? 6 : 4;
+        jobs.slice(0, visibleLimit).forEach((job) => {
           const fallback = fallbackLook(job?.lookSlug);
           const item = document.createElement("article");
           item.className = "history-item";
@@ -2210,6 +4460,15 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         });
       }
 
+      const rerenderHistoryForViewport = () => {
+        if (hasRenderedHistory) renderHistory(latestHistoryJobs);
+      };
+
+      historyDesktopQuery.addEventListener(
+        "change",
+        rerenderHistoryForViewport,
+      );
+
       function renderSaved(items) {
         const target = query("[data-saved-list]");
         const saved = Array.isArray(items) ? items : [];
@@ -2223,9 +4482,15 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         saved.slice(0, 4).forEach((item) => {
           const job = item?.jobDetails || {};
           const fallback = fallbackLook(item?.lookSlug || job.lookSlug);
+          const card = document.createElement("article");
+          card.className = "saved-look";
           const link = document.createElement("a");
-          link.className = "saved-look";
-          link.href = workspaceHref;
+          link.className = "saved-look-open";
+          link.href = job.resultImage || workspaceHref;
+          if (job.resultImage) {
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+          }
 
           const image = document.createElement("img");
           image.src = job.resultImage || fallback.image || "";
@@ -2238,8 +4503,27 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
           const meta = document.createElement("span");
           meta.textContent = formatDate(item?.createdAt);
 
+          const remove = document.createElement("button");
+          remove.className = "saved-look-remove";
+          remove.type = "button";
+          remove.textContent = copy.removeSaved;
+          remove.addEventListener("click", async () => {
+            remove.disabled = true;
+            try {
+              const res = await fetch("/api/saved-looks/" + item.jobId, {
+                method: "DELETE",
+              });
+              const data = await res.json().catch(() => null);
+              if (!res.ok || !data?.ok) throw new Error("UNSAVE_FAILED");
+              hydrateDashboard();
+            } catch {
+              remove.disabled = false;
+            }
+          });
+
           link.append(image, title, meta);
-          target.append(link);
+          card.append(link, remove);
+          target.append(card);
         });
       }
 
@@ -2255,6 +4539,7 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         const diagnosis = latest?.diagnosis || {};
         const recommendedLook = getRecommendedLook(latest, diagnosis);
         const primaryDirection = diagnosis.makeupDirections?.[0] || {};
+        setDiagnosisHeadAction(true);
         clear(target);
 
         const profile = document.createElement("article");
@@ -2335,11 +4620,6 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         [
           [diagnosisUi.viewFullReport, hrefs.diagnosis, "btn btn-primary"],
           [
-            diagnosisUi.rerunDiagnosis,
-            `${hrefs.diagnosis}#diagnosis-new`,
-            "btn btn-outline",
-          ],
-          [
             diagnosisUi.tryRecommendedLook,
             makeLookHref(recommendedLook),
             "btn btn-outline-rose",
@@ -2358,45 +4638,102 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
 
       function renderPreferences(data) {
         const audience = data?.audienceContext || {};
-        const marketOptions = Array.isArray(data?.marketOptions)
+        const responseMarketOptions = Array.isArray(data?.marketOptions)
           ? data.marketOptions
           : [];
+        const effectiveMarketOptions =
+          responseMarketOptions.length > 0
+            ? responseMarketOptions
+            : defaultMarketOptions;
         const marketLabel =
-          marketOptions.find(
+          effectiveMarketOptions.find(
             (option) => option.value === audience.marketProfile,
           )?.label ||
-          audience.marketProfile ||
           copy.noPreference;
         const representation = Array.isArray(audience.representationPreference)
           ? audience.representationPreference
-              .map((value) => copy.representationLabels?.[value] || value)
+              .map(
+                (value) =>
+                  accountCenterCopy.preferences?.representationLabels?.[
+                    value
+                  ] ||
+                  copy.representationLabels?.[value] ||
+                  value,
+              )
               .join(", ")
           : copy.noPreference;
         setText("[data-market-profile]", marketLabel);
         setText("[data-representation-preference]", representation);
+
+        const marketSelect = query("[data-dashboard-market-select]");
+        if (marketSelect && audience.marketProfile) {
+          marketSelect.value = audience.marketProfile;
+        }
+        const preferences = Array.isArray(audience.representationPreference)
+          ? audience.representationPreference
+          : ["diverse"];
+        root
+          .querySelectorAll(
+            '[data-dashboard-preferences] input[name="representationPreference"]',
+          )
+          .forEach((input) => {
+            input.checked = preferences.includes(input.value);
+          });
       }
 
       function applySession(data) {
         const plan =
           data?.plan === "pro" || data?.plan === "premium" ? data.plan : "free";
         setWorkspaceLinks(plan);
+        const email = data?.user?.email || "";
+        const planLabel = planNames[plan] || plan;
+        const isPaid = plan === "pro" || plan === "premium";
         setText(
           "[data-dashboard-email]",
-          data?.user?.email
-            ? `${copy.signedInAs} ${data.user.email}`
-            : copy.signedInAs,
+          email ? `${copy.signedInAs} ${email}` : copy.signedInAs,
         );
-        setText("[data-plan-value]", planNames[plan] || plan);
+        setText("[data-plan-value]", planLabel);
         const quota = data?.quota;
+        const quotaLabel = quota
+          ? `${quota.remaining ?? 0}/${quota.total ?? 0}`
+          : "--";
         setText(
           "[data-quota-value]",
-          quota ? `${quota.remaining ?? 0}/${quota.total ?? 0}` : "--",
+          quotaLabel,
+        );
+        setText("[data-dashboard-account-email]", email || "--");
+        setText("[data-dashboard-account-plan]", planLabel);
+        setText("[data-dashboard-account-quota]", quotaLabel);
+        setText("[data-billing-plan]", planLabel);
+        setText("[data-billing-quota]", quotaLabel);
+        setText(
+          "[data-billing-saved-limit]",
+          String(savedLookLimitByPlan[plan] ?? savedLookLimitByPlan.free),
         );
 
-        const isPaid = plan === "pro" || plan === "premium";
+        const billingCard = query("[data-billing-plan-card]");
+        if (billingCard) billingCard.dataset.plan = plan;
+        const billingMeter = query("[data-billing-meter]");
+        if (billingMeter) {
+          const total = Number(quota?.total ?? 0);
+          const remaining = Number(quota?.remaining ?? 0);
+          const percent =
+            total > 0 ? Math.max(0, Math.min(100, (remaining / total) * 100)) : 0;
+          billingMeter.style.width = `${percent}%`;
+        }
+        const refreshText = quota?.nextRefreshAt
+          ? `${dashboardModuleCopy.billingRefresh}: ${formatDate(quota.nextRefreshAt)}`
+          : dashboardModuleCopy.billingRefreshFallback;
+        setText("[data-billing-refresh]", refreshText);
+        setText(
+          "[data-billing-benefit-main]",
+          isPaid
+            ? dashboardModuleCopy.billingPaidBenefit
+            : dashboardModuleCopy.billingFreeBenefit,
+        );
+
         query("[data-manage-billing]")?.toggleAttribute("hidden", !isPaid);
         query("[data-plan-upgrade]")?.toggleAttribute("hidden", isPaid);
-        query("[data-upgrade-link]")?.toggleAttribute("hidden", isPaid);
         setText(
           "[data-billing-note]",
           isPaid ? copy.paidPlanNote : copy.freePlanNote,
@@ -2427,6 +4764,7 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         if (jobs.status === "fulfilled") renderHistory(jobs.value?.items);
         else {
           setText("[data-result-count]", "0");
+          query("[data-history-actions]")?.setAttribute("hidden", "");
           renderEmpty(query("[data-history-list]"), copy.loadFailed);
         }
 
@@ -2438,11 +4776,13 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
 
         if (diagnoses.status === "fulfilled")
           renderDiagnosis(diagnoses.value?.items);
-        else
+        else {
+          setDiagnosisHeadAction(false);
           renderEmpty(
             query("[data-diagnosis-summary]"),
             diagnosisCopy.ui.loadFailed,
           );
+        }
 
         if (preferences.status === "fulfilled")
           renderPreferences(preferences.value);
@@ -2454,6 +4794,12 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
         try {
           const response = await fetch("/api/billing/portal", {
             method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              returnPath: `${window.location.pathname}${
+                window.location.hash || "#billing-panel"
+              }`,
+            }),
           });
           const body = await response.json().catch(() => null);
           if (body?.ok && body.data?.url) {
@@ -2463,6 +4809,94 @@ const diagnosisCopy = diagnosisCopyByLocale[locale] ?? defaultDiagnosisCopy;
           throw new Error(body?.error?.message || copy.portalFailed);
         } catch (error) {
           if (message) message.textContent = error.message || copy.portalFailed;
+        }
+      });
+
+      query("[data-dashboard-logout]")?.addEventListener("click", async () => {
+        const button = query("[data-dashboard-logout]");
+        const message = query("[data-dashboard-account-message]");
+        if (button) button.disabled = true;
+        if (message) message.textContent = accountCenterCopy.signingOut;
+        try {
+          const response = await fetch("/api/auth/logout", { method: "POST" });
+          if (!response.ok) throw new Error("LOGOUT_FAILED");
+          window.location.href = hrefs.home;
+        } catch {
+          if (button) button.disabled = false;
+          if (message) message.textContent = accountCenterCopy.signOutFailed;
+        }
+      });
+
+      const preferenceForm = query("[data-dashboard-preferences]");
+      const preferenceStatus = query("[data-dashboard-preference-status]");
+      const representationInputs = preferenceForm
+        ? [
+            ...preferenceForm.querySelectorAll(
+              'input[name="representationPreference"]',
+            ),
+          ]
+        : [];
+      const diverseRepresentationInput = representationInputs.find(
+        (input) => input.value === "diverse",
+      );
+      representationInputs.forEach((input) => {
+        input.addEventListener("change", () => {
+          if (input.value === "diverse" && input.checked) {
+            representationInputs.forEach((candidate) => {
+              if (candidate !== input) candidate.checked = false;
+            });
+            return;
+          }
+          if (input.checked && diverseRepresentationInput) {
+            diverseRepresentationInput.checked = false;
+          }
+          if (
+            diverseRepresentationInput &&
+            !representationInputs.some((candidate) => candidate.checked)
+          ) {
+            diverseRepresentationInput.checked = true;
+          }
+        });
+      });
+      preferenceForm?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const submit = preferenceForm.querySelector('[type="submit"]');
+        const formData = new FormData(preferenceForm);
+        let representationPreferences = formData.getAll(
+          "representationPreference",
+        );
+        if (representationPreferences.length === 0) {
+          representationPreferences = ["diverse"];
+        }
+        if (representationPreferences.includes("diverse")) {
+          representationPreferences = ["diverse"];
+        }
+        if (submit) submit.disabled = true;
+        if (preferenceStatus) {
+          preferenceStatus.textContent = accountCenterCopy.preferences.saving;
+        }
+        try {
+          const response = await fetch("/api/content-preferences", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              marketProfile: formData.get("marketProfile"),
+              representationPreferences,
+            }),
+          });
+          const body = await response.json().catch(() => null);
+          if (!response.ok || !body?.ok) throw new Error("SAVE_FAILED");
+          renderPreferences(body.data);
+          if (preferenceStatus) {
+            preferenceStatus.textContent = accountCenterCopy.preferences.saved;
+          }
+        } catch {
+          if (preferenceStatus) {
+            preferenceStatus.textContent =
+              accountCenterCopy.preferences.saveFailed;
+          }
+        } finally {
+          if (submit) submit.disabled = false;
         }
       });
 

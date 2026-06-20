@@ -108,10 +108,8 @@ export function resolvePageAssets(
         pageId,
         exampleImages: [
           isEastAsia
-            ? "/images/looks/rose-milk-date--east-asia.webp"
-            : regionalProfile === "south-asia"
-              ? "/images/looks/rose-milk-date--south-asia.webp"
-              : "/images/looks/rose-milk-date--africa.webp",
+            ? "/images/diagnosis-preview-full-face.webp"
+            : "/images/diagnosis-preview-global.webp",
         ],
       };
 
