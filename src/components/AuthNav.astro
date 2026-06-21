@@ -194,6 +194,7 @@
     const authLabel = link.dataset.authLabel || authCopy.cta;
     const authShortLabel = link.dataset.authShortLabel || authCopy.shortCta;
     const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
+    const knownPlanCodes = new Set(Object.keys(planNames));
     const mobileAuthCtas = Array.from(
       document.querySelectorAll("[data-mobile-menu-auth-cta]"),
     );
@@ -226,6 +227,45 @@
       );
     }
 
+    function getPlanState(rawPlan) {
+      const planCode = String(rawPlan || "free").toLowerCase();
+      const normalizedPlan = knownPlanCodes.has(planCode) ? planCode : "free";
+      return {
+        code: normalizedPlan,
+        label: planNames[normalizedPlan] || String(rawPlan || "Free"),
+      };
+    }
+
+    function createPlanBadge(planState) {
+      const badge = document.createElement("span");
+      badge.className = "account-plan-badge";
+      badge.dataset.plan = planState.code;
+      badge.textContent = planState.label;
+      return badge;
+    }
+
+    function renderPlanLine(node, { label, planState, quotaText = "" }) {
+      const labelNode = document.createElement("span");
+      labelNode.className = "account-plan-label";
+      labelNode.textContent = `${label}:`;
+
+      node.dataset.plan = planState.code;
+      node.setAttribute(
+        "aria-label",
+        quotaText
+          ? `${label}: ${planState.label}, ${quotaText}`
+          : `${label}: ${planState.label}`,
+      );
+      node.replaceChildren(labelNode, createPlanBadge(planState));
+
+      if (quotaText) {
+        const quotaNode = document.createElement("span");
+        quotaNode.className = "account-plan-quota";
+        quotaNode.textContent = quotaText;
+        node.append(quotaNode);
+      }
+    }
+
     function setMobileAccountSummarySignedOut() {
       mobileAccountSummaries.forEach((summary) => {
         const avatar = summary.querySelector(
@@ -246,7 +286,11 @@
         summary.href = summary.dataset.authHref || authHref;
         if (avatar) avatar.textContent = "AI";
         if (title) title.textContent = nextTitle;
-        if (note) note.textContent = nextNote;
+        if (note) {
+          note.classList.remove("mobile-account-plan-line");
+          delete note.dataset.plan;
+          note.textContent = nextNote;
+        }
         if (action) action.textContent = nextAction;
         summary.setAttribute("aria-label", `${nextTitle}. ${nextAction}`);
       });
@@ -254,8 +298,8 @@
 
     function setMobileAccountSummarySignedIn(session) {
       const email = session?.user?.email || "";
-      const normalizedPlan = String(session?.plan || "").toLowerCase();
-      const plan = planNames[normalizedPlan] || session?.plan || "Free";
+      const planState = getPlanState(session?.plan);
+      const plan = planState.label;
       const initial = (email.trim()[0] || "A").toUpperCase();
       const quota = session?.quota;
       mobileAccountSummaries.forEach((summary) => {
@@ -287,7 +331,10 @@
         summary.href = summary.dataset.accountHref || localized("/account");
         if (avatar) avatar.textContent = initial;
         if (title) title.textContent = email || authCopy.accountMenu;
-        if (note) note.textContent = noteText;
+        if (note) {
+          note.classList.add("mobile-account-plan-line");
+          renderPlanLine(note, { label: planLabel, planState, quotaText });
+        }
         if (action) {
           action.textContent = summary.dataset.manageLabel || authCopy.account;
         }
@@ -327,8 +374,8 @@
 
     function setMobileAuthSignedIn(session) {
       const email = session?.user?.email || "";
-      const normalizedPlan = String(session?.plan || "").toLowerCase();
-      const plan = planNames[normalizedPlan] || session?.plan || "Free";
+      const planState = getPlanState(session?.plan);
+      const plan = planState.label;
       const initial = (email.trim()[0] || "A").toUpperCase();
       mobileAuthCtas.forEach((anchor) => {
         const label = anchor.querySelector("[data-mobile-menu-auth-label]");
@@ -386,7 +433,7 @@
 
     function renderAccountMenu(anchor, session) {
       const email = session?.user?.email || "";
-      const plan = planNames[session?.plan] || session?.plan || "Free";
+      const planState = getPlanState(session?.plan);
       const initial = (email.trim()[0] || "A").toUpperCase();
       let menu = actions.querySelector("[data-account-menu]");
 
@@ -425,7 +472,11 @@
       const emailNode = document.createElement("strong");
       emailNode.textContent = email;
       const planNode = document.createElement("small");
-      planNode.textContent = `${authCopy.plan}: ${plan}`;
+      planNode.className = "account-plan-line";
+      renderPlanLine(planNode, {
+        label: authCopy.plan,
+        planState,
+      });
       identity.append(signedIn, emailNode, planNode);
 
       const list = document.createElement("div");
