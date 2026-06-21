@@ -99,6 +99,45 @@ const anchorsLabel = ui.makeupAnchors;
 const cautionLabel = ui.cautionTitle;
 const tryLabel = ui.tryThisLook;
 const friendlyLabel = ui.experienceFriendly;
+const favoriteCopy = locale.startsWith("zh")
+  ? {
+      favorite: "收藏妆容",
+      favorited: "已收藏妆容",
+    }
+  : locale.startsWith("ja")
+    ? {
+        favorite: "メイクを保存",
+        favorited: "保存済み",
+      }
+    : locale.startsWith("ko")
+      ? {
+          favorite: "룩 저장",
+          favorited: "저장됨",
+        }
+      : locale.startsWith("fr")
+        ? {
+            favorite: "Enregistrer le look",
+            favorited: "Look enregistré",
+          }
+        : locale.startsWith("de")
+          ? {
+              favorite: "Look speichern",
+              favorited: "Gespeichert",
+            }
+          : locale.startsWith("es")
+            ? {
+                favorite: "Guardar look",
+                favorited: "Look guardado",
+              }
+            : locale.startsWith("pt")
+              ? {
+                  favorite: "Salvar look",
+                  favorited: "Look salvo",
+                }
+              : {
+                  favorite: "Save look",
+                  favorited: "Saved look",
+                };
 const uploadAria = `${tryLabel}: ${look.title}`;
 const listSeparator =
   locale.startsWith("zh") || locale.startsWith("ja") ? "、" : ", ";
@@ -143,6 +182,21 @@ function toCardImageSrc(image: string, width: number): string {
           </span>
         </span>
       </a>
+      <button
+        class="look-favorite-button"
+        type="button"
+        data-look-favorite
+        data-favorite-look-slug={look.slug}
+        data-favorite-look-title={look.title}
+        data-favorite-label={favoriteCopy.favorite}
+        data-favorited-label={favoriteCopy.favorited}
+        aria-label={`${favoriteCopy.favorite}: ${look.title}`}
+        aria-pressed="false"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 20.2s-7.4-4.4-9.1-9.1C1.7 7.7 4 4 7.6 4c1.8 0 3.5 1 4.4 2.4C12.9 5 14.6 4 16.4 4c3.6 0 5.9 3.7 4.7 7.1C19.4 15.8 12 20.2 12 20.2Z" />
+        </svg>
+      </button>
       <div class="look-copy">
         <div class="look-title-row">
           <h3>{look.title}</h3>

@@ -6,6 +6,7 @@ export type AnalyticsEvent =
   | "home_start_tryon_click"
   | "discover_filter_apply"
   | "look_selected"
+  | "favorite_look_toggled"
   | "photo_consent_accepted"
   | "photo_upload_success"
   | "diagnosis_generated"

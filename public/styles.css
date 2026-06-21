@@ -922,6 +922,7 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .look-tile {
   content-visibility: auto;
   contain-intrinsic-size: auto 620px;
+  position: relative;
   display: flex;
   height: 100%;
   overflow: hidden;
@@ -953,9 +954,50 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   transition: transform .25s ease;
 }
 .look-image-link:hover img { transform: scale(1.025); }
+.look-favorite-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .76);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .92);
+  color: var(--rose);
+  box-shadow: 0 10px 22px rgba(8, 16, 28, .16);
+  transition: transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease;
+}
+.look-favorite-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(200, 62, 104, .5);
+  background: #fff;
+}
+.look-favorite-button:disabled {
+  cursor: wait;
+  opacity: .72;
+}
+.look-favorite-button svg {
+  width: 22px;
+  height: 22px;
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.look-favorite-button[aria-pressed="true"] {
+  border-color: rgba(200, 62, 104, .32);
+  background: var(--rose);
+  color: #fff;
+}
+.look-favorite-button[aria-pressed="true"] svg {
+  fill: currentColor;
+}
 .look-media-tags {
   position: absolute;
-  inset: 12px 12px auto;
+  inset: 12px 60px auto 12px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;

@@ -11,6 +11,11 @@ const LOCALIZED_MESSAGES = window.__absMessages || {};
 const APP_MESSAGES = {
   "zh-CN": {
     loginRequired: "请先登录后再上传自拍",
+    favoriteLoginRequired: "请先登录后再收藏妆容",
+    favoriteSaved: "已收藏妆容",
+    favoriteRemoved: "已取消收藏",
+    favoriteSaveFailed: "收藏操作失败，请稍后重试",
+    favoriteLimitReached: "收藏数量已满，请先取消一个收藏",
     loginToUpload: "登录后上传自拍",
     uploadButton: "上传自拍试这个妆",
     chooseFile: "请选择 JPG、PNG、WebP 或 HEIC 自拍",
@@ -74,6 +79,11 @@ const APP_MESSAGES = {
   },
   en: {
     loginRequired: "Please sign in before uploading a selfie",
+    favoriteLoginRequired: "Please sign in to save looks",
+    favoriteSaved: "Look saved",
+    favoriteRemoved: "Saved look removed",
+    favoriteSaveFailed: "Could not update saved looks. Try again later.",
+    favoriteLimitReached: "Your saved-look list is full. Remove one first.",
     loginToUpload: "Sign in to upload photo",
     uploadButton: "Upload & Try This Look",
     chooseFile: "Please choose a JPG, PNG, WebP, or HEIC selfie",
@@ -773,6 +783,129 @@ function openDiscoverSearch({ focus = true } = {}) {
   }
 }
 
+const favoriteLookButtons = document.querySelectorAll("[data-look-favorite]");
+let favoriteLookSlugs = new Set();
+
+function setFavoriteLookButtonState(button, isFavorite) {
+  if (!button) return;
+  const label = isFavorite
+    ? button.dataset.favoritedLabel || "Saved look"
+    : button.dataset.favoriteLabel || "Save look";
+  const title = button.dataset.favoriteLookTitle || "";
+  button.setAttribute("aria-pressed", String(isFavorite));
+  button.setAttribute("aria-label", title ? `${label}: ${title}` : label);
+  const card = button.closest("[data-look-card]");
+  if (card) card.dataset.favorite = String(isFavorite);
+}
+
+function syncFavoriteLookButtons() {
+  favoriteLookButtons.forEach((button) => {
+    setFavoriteLookButtonState(
+      button,
+      favoriteLookSlugs.has(button.dataset.favoriteLookSlug),
+    );
+  });
+}
+
+async function hydrateFavoriteLooks() {
+  if (!favoriteLookButtons.length) return;
+  favoriteLookButtons.forEach((button) =>
+    setFavoriteLookButtonState(button, false),
+  );
+
+  const session = await getCurrentSession().catch(() => undefined);
+  if (!isAccountSession(session)) {
+    applyLookFilters();
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/favorite-looks");
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !payload?.ok) return;
+    favoriteLookSlugs = new Set(
+      (payload.data?.items || [])
+        .map((item) => item.lookSlug)
+        .filter(Boolean),
+    );
+    syncFavoriteLookButtons();
+    applyLookFilters();
+  } catch {
+    /* 收藏状态加载失败不影响浏览妆容。 */
+  }
+}
+
+async function toggleFavoriteLook(button) {
+  const lookSlug = button?.dataset.favoriteLookSlug;
+  if (!lookSlug || button.disabled) return;
+
+  const session = await getCurrentSession({ refresh: true }).catch(
+    () => undefined,
+  );
+  if (!isAccountSession(session)) {
+    redirectToLogin(msg("favoriteLoginRequired"));
+    return;
+  }
+
+  const wasFavorite = favoriteLookSlugs.has(lookSlug);
+  button.disabled = true;
+  try {
+    const response = await fetch(
+      wasFavorite
+        ? `/api/favorite-looks/${encodeURIComponent(lookSlug)}`
+        : "/api/favorite-looks",
+      wasFavorite
+        ? { method: "DELETE" }
+        : {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lookSlug }),
+          },
+    );
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !payload?.ok) {
+      if (response.status === 401 || payload.error?.code === "AUTH_REQUIRED") {
+        redirectToLogin(msg("favoriteLoginRequired"));
+        return;
+      }
+      if (payload.error?.code === "FAVORITE_LOOK_LIMIT_REACHED") {
+        showToast(msg("favoriteLimitReached"));
+        return;
+      }
+      throw new Error(payload.error?.message || "FAVORITE_LOOK_FAILED");
+    }
+
+    if (wasFavorite) {
+      favoriteLookSlugs.delete(lookSlug);
+    } else {
+      favoriteLookSlugs.add(lookSlug);
+    }
+    setFavoriteLookButtonState(button, !wasFavorite);
+    applyLookFilters({ track: true });
+    showToast(wasFavorite ? msg("favoriteRemoved") : msg("favoriteSaved"));
+    window.__track?.("favorite_look_toggled", {
+      lookSlug,
+      saved: !wasFavorite,
+      placement: "discover_library",
+    });
+  } catch (error) {
+    console.error("Favorite look update failed", error);
+    showToast(msg("favoriteSaveFailed"));
+  } finally {
+    button.disabled = false;
+  }
+}
+
+favoriteLookButtons.forEach((button) => {
+  setFavoriteLookButtonState(button, false);
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleFavoriteLook(button);
+  });
+});
+hydrateFavoriteLooks();
+
 function matchesLookSearch(card, query) {
   if (!query) return true;
   return normalizeLookSearch(card.dataset.searchIndex).includes(query);
@@ -859,7 +992,7 @@ function closeFilterSheet() {
 }
 
 function updateMobileFilterSummary(selections, visibleCount) {
-  const activeLabels = ["scenario", "finish", "experience"]
+  const activeLabels = ["scenario", "finish", "experience", "favorite"]
     .map((key) => selections[key])
     .filter((selection) => selection && !selection.isAll)
     .map((selection) => selection.label);
@@ -939,9 +1072,17 @@ function applyLookFilters({ track = false } = {}) {
     const matchesExperience =
       selections.experience?.isAll ||
       card.dataset.experience === selections.experience?.value;
+    const matchesFavorite =
+      !selections.favorite?.value ||
+      selections.favorite?.isAll ||
+      card.dataset.favorite === "true";
     const matchesSearch = matchesLookSearch(card, searchQuery);
     const visible =
-      matchesScenario && matchesFinish && matchesExperience && matchesSearch;
+      matchesScenario &&
+      matchesFinish &&
+      matchesExperience &&
+      matchesFavorite &&
+      matchesSearch;
     card.classList.toggle("hidden", !visible);
     if (visible) visibleCount += 1;
   });
@@ -965,6 +1106,7 @@ function applyLookFilters({ track = false } = {}) {
       scenario: selections.scenario?.value,
       finish: selections.finish?.value,
       experience: selections.experience?.value,
+      favoriteOnly: selections.favorite?.isAll ? undefined : true,
       search: searchQuery || undefined,
       resultCount: visibleCount,
     });

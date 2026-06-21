@@ -464,10 +464,48 @@ const experienceFilters = [
   { value: experienceL.advanced, label: experienceL.advanced },
 ];
 
+const favoriteFilterLabel = isKo
+  ? "저장"
+  : isDe
+    ? "Gespeichert"
+    : isFr
+      ? "Favoris"
+      : isJa
+        ? "保存済み"
+        : isZhTW
+          ? "收藏"
+          : isZh
+            ? "收藏"
+            : isEs || isPt
+              ? "Guardados"
+              : "Saved";
+const favoriteOnlyLabel = isKo
+  ? "저장한 룩만"
+  : isDe
+    ? "Nur gespeicherte Looks"
+    : isFr
+      ? "Looks enregistrés"
+      : isJa
+        ? "保存したメイクのみ"
+        : isZhTW
+          ? "只看收藏"
+          : isZh
+            ? "只看收藏"
+            : isEs
+              ? "Solo guardados"
+              : isPt
+                ? "Somente salvos"
+                : "Saved only";
+const favoriteFilters = [
+  { value: allLabel, label: allLabel },
+  { value: "favorites", label: favoriteOnlyLabel },
+];
+
 const filterGroups = [
   { id: "scenario", label: ui.filterScenario, options: scenarioFilters },
   { id: "finish", label: ui.filterFinish, options: finishFilters },
   { id: "experience", label: ui.filterExperience, options: experienceFilters },
+  { id: "favorite", label: favoriteFilterLabel, options: favoriteFilters },
 ] as const;
 
 const recommendedTabLabel = isKo

@@ -131,6 +131,9 @@
 | `POST /api/tryon-jobs/:id/retry` | 重试失败任务 | 创建新任务并关联旧任务 |
 | `DELETE /api/tryon-jobs/:id` | 删除结果与诊断 | 仅资源所有者 |
 | `GET /api/looks` | 获取妆容 catalog | 可公开读取 |
+| `GET /api/favorite-looks` | 获取已收藏的妆容模板 | 登录用户，返回当前语言和灵感画像下的妆容详情 |
+| `POST /api/favorite-looks` | 收藏妆容模板 | 登录用户，按 `lookSlug` 去重 |
+| `DELETE /api/favorite-looks/:slug` | 取消收藏妆容模板 | 登录用户，仅资源所有者 |
 | `POST /api/share-cards` | 创建分享卡 | 必须拥有成功结果 |
 | `POST /api/share-rewards` | 发放分享奖励 | Free 用户、每日幂等 |
 | `POST /api/billing/checkout` | 创建 Checkout | 登录用户，成功 URL 带 `session_id={CHECKOUT_SESSION_ID}` |
@@ -158,6 +161,7 @@
 | `LOW_CONFIDENCE` | 200 | 否 | 结果仅供参考，并展示低置信度说明 |
 | `PAYMENT_STATE_PENDING` | 409 | 是 | 支付状态正在同步 |
 | `RATE_LIMITED` | 429 | 是 | 请求过于频繁，请稍后再试 |
+| `FAVORITE_LOOK_LIMIT_REACHED` | 403 | 否 | 收藏妆容模板数量已满，请先取消一个 |
 
 ## 7. 数据模型
 
@@ -172,6 +176,7 @@
 | `tryon_jobs` | `id`、`userId`、`uploadId`、`lookSlug`、`status`、`confidence`、`idempotencyKey`、`retryOfJobId`、`resultJson`、`resultR2Key`、`errorCode`、`completedAt`、`deletedAt` |
 | `diagnoses` | `id`、`jobId`、`resultJson`、`createdAt` |
 | `saved_looks` | `id`、`userId`、`jobId`、`lookSlug`、`createdAt` |
+| `favorite_looks` | `id`、`userId`、`lookSlug`、`createdAt` |
 | `tutorials` | `id`、`jobId`、`stepsJson`、`version` |
 | `recommended_kits` | `id`、`jobId`、`budgetTier`、`itemsJson` |
 | `share_cards` | `id`、`userId`、`jobId`、`r2Key`、`sourceCode` |
@@ -187,6 +192,7 @@
 - `tryon_jobs.idempotencyKey` 唯一。
 - `subscriptions.stripeSubscriptionId` 唯一。
 - 分享奖励对 `userId + rewardDate + type` 唯一。
+- 妆容模板收藏对 `userId + lookSlug` 唯一；`saved_looks` 仍表示成功试妆结果收藏，二者不是同一对象。
 - 所有用户资源表按 `userId` 建索引。
 
 ## 8. R2 文件生命周期
