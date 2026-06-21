@@ -3,11 +3,14 @@ import { describe, expect, it } from "vitest";
 import { getOAuthLoginStatusUrl } from "./oauth";
 import {
   createPkceChallenge,
+  decodeMicrosoftIdToken,
   getMicrosoftAuthorizeUrl,
   getMicrosoftOAuthCallbackUrl,
   getMicrosoftTokenUrl,
   getMicrosoftUserInfoUrl,
   isMicrosoftOAuthConfigured,
+  isUsableMicrosoftIdTokenClaims,
+  resolveMicrosoftEmail,
 } from "./microsoftOAuth";
 
 describe("Microsoft OAuth helpers", () => {
@@ -57,4 +60,83 @@ describe("Microsoft OAuth helpers", () => {
       createPkceChallenge("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"),
     ).resolves.toBe("E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM");
   });
+
+  it("decodes Microsoft ID token payload claims", () => {
+    const token = createJwt({
+      aud: "client",
+      exp: 4_102_444_800,
+      preferred_username: "person@hotmail.com",
+      sub: "subject",
+    });
+
+    expect(decodeMicrosoftIdToken(token)).toEqual({
+      aud: "client",
+      exp: 4_102_444_800,
+      preferred_username: "person@hotmail.com",
+      sub: "subject",
+    });
+    expect(decodeMicrosoftIdToken("not-a-jwt")).toBeUndefined();
+  });
+
+  it("accepts only current ID token claims for the configured client", () => {
+    const now = new Date("2026-06-21T00:00:00.000Z");
+    expect(
+      isUsableMicrosoftIdTokenClaims(
+        { aud: "client", exp: 1_783_555_200, sub: "subject" },
+        "client",
+        now,
+      ),
+    ).toBe(true);
+    expect(
+      isUsableMicrosoftIdTokenClaims(
+        { aud: "other", exp: 1_783_555_200, sub: "subject" },
+        "client",
+        now,
+      ),
+    ).toBe(false);
+    expect(
+      isUsableMicrosoftIdTokenClaims(
+        { aud: "client", exp: 1_735_689_600, sub: "subject" },
+        "client",
+        now,
+      ),
+    ).toBe(false);
+  });
+
+  it("falls back to preferred_username when Microsoft omits email", () => {
+    expect(
+      resolveMicrosoftEmail(
+        { sub: "subject" },
+        { preferred_username: "person@hotmail.com" },
+      ),
+    ).toBe("person@hotmail.com");
+    expect(
+      resolveMicrosoftEmail(
+        { email: "primary@example.com" },
+        { preferred_username: "person@hotmail.com" },
+      ),
+    ).toBe("primary@example.com");
+    expect(
+      resolveMicrosoftEmail(
+        { sub: "subject" },
+        { preferred_username: "not-an-email" },
+      ),
+    ).toBeUndefined();
+  });
 });
+
+function createJwt(payload: Record<string, unknown>): string {
+  return ["header", encodeBase64Url(JSON.stringify(payload)), "signature"].join(
+    ".",
+  );
+}
+
+function encodeBase64Url(value: string): string {
+  const bytes = new TextEncoder().encode(value);
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}

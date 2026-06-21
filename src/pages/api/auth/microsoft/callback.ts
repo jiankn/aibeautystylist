@@ -16,6 +16,7 @@ import {
   safeAuthNextPath,
 } from "../../../../lib/oauth";
 import {
+  decodeMicrosoftIdToken,
   getMicrosoftOAuthCallbackUrl,
   getMicrosoftTokenUrl,
   getMicrosoftUserInfoUrl,
@@ -23,21 +24,18 @@ import {
   MICROSOFT_OAUTH_PKCE_COOKIE,
   MICROSOFT_OAUTH_STATE_COOKIE,
   isMicrosoftOAuthConfigured,
+  isUsableMicrosoftIdTokenClaims,
+  resolveMicrosoftEmail,
+  type MicrosoftProfileClaims,
 } from "../../../../lib/microsoftOAuth";
 import { createProxyFetcher } from "../../../../lib/proxyFetch";
 import { getRuntimeBindings } from "../../../../lib/runtime";
 
 interface MicrosoftTokenResponse {
   access_token?: string;
+  id_token?: string;
   error?: string;
 }
-
-interface MicrosoftUserInfo {
-  sub?: string;
-  email?: string;
-}
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const GET: APIRoute = async ({ cookies, request, redirect }) => {
   const url = new URL(request.url);
@@ -102,26 +100,33 @@ export const GET: APIRoute = async ({ cookies, request, redirect }) => {
     if (!tokenRes.ok || !tokenData?.access_token) {
       return redirect(getOAuthLoginStatusUrl("failed", next, "microsoft"), 302);
     }
+    const idTokenClaims = decodeMicrosoftIdToken(tokenData.id_token);
+    const usableIdTokenClaims = isUsableMicrosoftIdTokenClaims(
+      idTokenClaims,
+      bindings.MICROSOFT_OAUTH_CLIENT_ID!,
+    )
+      ? idTokenClaims
+      : undefined;
 
     const infoRes = await fetcher(getMicrosoftUserInfoUrl(), {
       headers: { authorization: `Bearer ${tokenData.access_token}` },
     });
     const info = (await infoRes
       .json()
-      .catch(() => null)) as MicrosoftUserInfo | null;
-    if (
-      !infoRes.ok ||
-      !info?.sub ||
-      !info.email ||
-      !EMAIL_RE.test(info.email)
-    ) {
+      .catch(() => null)) as MicrosoftProfileClaims | null;
+    const providerUserId = info?.sub ?? usableIdTokenClaims?.sub;
+    const resolvedEmail = resolveMicrosoftEmail(
+      info ?? undefined,
+      usableIdTokenClaims,
+    );
+    if (!infoRes.ok || !providerUserId || !resolvedEmail) {
       return redirect(
         getOAuthLoginStatusUrl("unverified", next, "microsoft"),
         302,
       );
     }
 
-    const email = normalizeEmail(info.email);
+    const email = normalizeEmail(resolvedEmail);
     if (isPrimaryAdminEmail(email)) {
       return redirect(
         getOAuthLoginStatusUrl("conflict", next, "microsoft"),
@@ -129,7 +134,7 @@ export const GET: APIRoute = async ({ cookies, request, redirect }) => {
       );
     }
 
-    const identity = await getOAuthIdentity("microsoft", info.sub, DB);
+    const identity = await getOAuthIdentity("microsoft", providerUserId, DB);
     let userId = identity?.userId;
 
     if (userId) {
@@ -153,10 +158,14 @@ export const GET: APIRoute = async ({ cookies, request, redirect }) => {
         );
       }
       await linkOAuthIdentity(
-        { userId, provider: "microsoft", providerUserId: info.sub, email },
+        { userId, provider: "microsoft", providerUserId, email },
         DB,
       );
-      const linkedIdentity = await getOAuthIdentity("microsoft", info.sub, DB);
+      const linkedIdentity = await getOAuthIdentity(
+        "microsoft",
+        providerUserId,
+        DB,
+      );
       if (!linkedIdentity || linkedIdentity.userId !== userId) {
         return redirect(
           getOAuthLoginStatusUrl("conflict", next, "microsoft"),
