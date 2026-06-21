@@ -1,0 +1,170 @@
+lang,tier,keyword,category,kd,kdLevel,landing,reason
+en,core,AI makeup try-on,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+en,core,what makeup suits me,ai_tech,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+en,core,personal color analysis,core,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+en,core,before and after makeup,ai_tech,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+en,core,makeup tutorial for beginners,tutorial,1,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+en,next-page,office makeup look,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,nighttime makeup look,scenario,1,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,work makeup tutorial,scenario,10,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,makeup for oval face,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,makeup for square face,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,makeup for heart shaped face,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,contouring for face shape,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,how to apply makeup step by step,tutorial,0,very_low,guide-or-blog-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,what makeup looks good on me,ai_tech,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,virtual makeover,ai_tech,6,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,best lipstick 2026,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,next-page,makeup brushes for beginners,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+en,support-module,photo makeup / photoshoot makeup,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+en,support-module,quick 5-minute makeup,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+en,support-module,best lipstick for warm undertone,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+en,support-module,best lipstick for cool undertone,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+en,support-module,makeup for big eyes / small eyes,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+en,support-module,10 minute makeup tutorial,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+en,support-module,AI makeup app,ai_tech,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+en,support-module,makeup filter AI,ai_tech,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+de,core,KI Make-up Test,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+de,core,welches Make-up passt zu mir,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+de,core,Farbsaison bestimmen,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+de,core,Make-up Vorher-Nachher,core,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+de,core,Make-up für Anfänger,tutorial,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+de,support-module,Bewerbungsfoto Make-up,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+de,support-module,Foto-Make-up,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+de,support-module,Reisepass-Foto Make-up,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+de,support-module,Make-up für den Alltag,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+de,support-module,festliches Make-up,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+de,support-module,Make-up für ovale Gesichter,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+de,support-module,passende Lippenstiftfarbe finden,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+de,support-module,Make-up für warme Hauttöne,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+fr,core,test maquillage virtuel,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+fr,core,quel maquillage pour moi,ai_tech,49,medium,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+fr,core,diagnostic teint,core,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+fr,core,avant après maquillage,core,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+fr,core,maquillage pour débutantes,tutorial,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+fr,next-page,maquillage entretien d'embauche,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+fr,next-page,maquillage soirée,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+fr,next-page,maquillage peau sensible,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+fr,next-page,quelle couleur me va,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+fr,next-page,apprendre à se maquiller,tutorial,0,very_low,guide-or-blog-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+fr,next-page,rouge à lèvres longue tenue,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+fr,next-page,dupes maquillage,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+fr,support-module,maquillage rapide matin,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+fr,support-module,maquillage bal,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+fr,support-module,maquillage vacances,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+fr,support-module,rouge à lèvres pour teint chaud,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+fr,support-module,rouge à lèvres pour teint froid,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+fr,support-module,maquillage en 5 minutes,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+fr,support-module,ordre maquillage étapes,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+fr,support-module,maquillage naturel pas à pas,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ja,core,AIメイク診断,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ja,core,似合うメイク,demographic,3,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ja,core,パーソナルカラー診断,ai_tech,2,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ja,core,ビフォアアフターメイク,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ja,core,メイク 初心者,tutorial,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ja,next-page,卒業式メイク,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,パーティーメイク,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,イエベ メイク,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,ブルベ メイク,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,丸顔 メイク,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,面長 メイク,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,奥二重 メイク,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,40代 メイク,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,パーソナルカラー,demographic,1,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,メイクの基本,tutorial,0,very_low,guide-or-blog-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,メイクのコツ,tutorial,0,very_low,guide-or-blog-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,next-page,アイメイク やり方,tutorial,0,very_low,guide-or-blog-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ja,support-module,通勤メイク,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ja,support-module,大人世代メイク,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ja,support-module,肌悩み別メイク,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ja,support-module,似合うリップカラー,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ja,support-module,似合うチーク,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ja,support-module,簡単なメイク 初心者,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ja,support-module,自然なメイク やり方,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ja,support-module,デイリーメイク 手順,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ko,core,AI 메이크업 진단,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ko,core,나에게 어울리는 메이크업,ai_tech,54,high,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ko,core,퍼스널컬러 진단,core,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ko,core,비포 애프터 메이크업,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ko,core,메이크업 초보,tutorial,53,high,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+ko,next-page,퍼스널컬러 메이크업,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ko,next-page,웜톤 메이크업,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ko,next-page,웜톤 립,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ko,next-page,퍼스널컬러 테스트,ai_tech,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ko,next-page,올리브영 추천,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ko,next-page,립글로스 추천,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ko,next-page,쿠션 파데 추천,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ko,next-page,아이섀도우 팔레트 추천,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+ko,support-module,여행 메이크업,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ko,support-module,겨울쿨 메이크업,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ko,support-module,여름쿨 메이크업,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ko,support-module,얼굴형 메이크업,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ko,support-module,둥근 얼굴 메이크업,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ko,support-module,눈 작은 얼굴 메이크업,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ko,support-module,피부톤 메이크업,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+ko,support-module,매일 메이크업 루틴,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+zh-TW,core,AI 妝容診斷,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+zh-TW,core,什麼妝適合我,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+zh-TW,core,個人色彩診斷,ai_tech,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+zh-TW,core,妝前妝後對比,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+zh-TW,core,新手化妝教學,tutorial,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+zh-TW,next-page,開架口紅推薦,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+zh-TW,next-page,寶雅口紅,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+zh-TW,next-page,不沾杯口紅,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+zh-TW,support-module,出遊妝容,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+zh-TW,support-module,年夜飯妝容,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+zh-TW,support-module,情人節妝容,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+zh-TW,support-module,面試化妝技巧,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+zh-TW,support-module,冷調膚色彩妝,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+zh-TW,support-module,暖調膚色彩妝,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+zh-TW,support-module,圓臉彩妝,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+zh-TW,support-module,長臉彩妝,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+es,core,prueba de maquillaje virtual,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+es,core,qué maquillaje me queda,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+es,core,análisis de color personal,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+es,core,antes y después maquillaje,ai_tech,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+es,core,maquillaje para principiantes,tutorial,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+es,next-page,maquillaje para fiesta,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,maquillaje para cara redonda,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,maquillaje para piel morena,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,maquillaje para piel seca,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,maquillaje para ojos pequeños,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,maquillaje para párpados caídos,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,orden de maquillaje,tutorial,0,very_low,guide-or-blog-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,maquillaje natural para principiantes,tutorial,0,very_low,guide-or-blog-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,maquillaje de ojos fácil,tutorial,3,very_low,guide-or-blog-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,maquillaje fácil y rápido,tutorial,7,very_low,guide-or-blog-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,next-page,rubor en crema,product,0,very_low,product-or-tool-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+es,support-module,maquillaje para una cita,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+es,support-module,maquillaje para primer encuentro,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+es,support-module,maquillaje para boda de invitada,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+es,support-module,maquillaje rápido para todos los días,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+es,support-module,labial para tono cálido,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+es,support-module,labial para tono frío,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+es,support-module,qué labial me queda,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+es,support-module,maquillaje según forma de tu rostro,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+pt-BR,core,teste de maquiagem virtual,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+pt-BR,core,qual maquiagem combina comigo,ai_tech,,no_data,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+pt-BR,core,colorimetria pessoal,demographic,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+pt-BR,core,antes e depois maquiagem,ai_tech,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+pt-BR,core,maquiagem para iniciantes,tutorial,0,very_low,independent-page-or-existing-core,PRD/core matrix keyword; must be represented in title/H1/body or adjacent page.
+pt-BR,next-page,maquiagem para o trabalho,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,maquiagem para entrevista de emprego,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,maquiagem para fotos,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,maquiagem rápida,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,maquiagem para balada,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,make para o dia,scenario,0,very_low,scenario-landing-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,maquiagem para rosto redondo,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,maquiagem para rosto oval,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,maquiagem para pele oleosa,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,maquiagem para pele clara,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,batom para pele morena,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,next-page,batom para pele clara,demographic,0,very_low,feature-or-for-page,Trusted CSV KD <= 10 and not exactly represented by current localized SEO page keyword.
+pt-BR,support-module,maquiagem para encontro / primeiro encontro,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+pt-BR,support-module,maquiagem para casamento (convidada),scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+pt-BR,support-module,maquiagem para Réveillon / Ano Novo,scenario,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+pt-BR,support-module,qual batom combina comigo,demographic,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+pt-BR,support-module,maquiagem em 15 minutos,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+pt-BR,support-module,rotina de maquiagem,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+pt-BR,support-module,maquiagem com poucos produtos,tutorial,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."
+pt-BR,support-module,provador virtual de maquiagem,ai_tech,,no_data,section-faq-related-link,"No KD in trusted CSV; use inside stronger pages, not as standalone doorway pages."

@@ -1,0 +1,1145 @@
+{
+  "summary": {
+    "total": 42,
+    "thinRisk": 0,
+    "watch": 0,
+    "ok": 42,
+    "maxSimilarity": 0.5721017907634307
+  },
+  "results": [
+    {
+      "phase": "P0",
+      "lang": "ja",
+      "url": "/ja/for/パーソナルカラー",
+      "action": "create-or-repurpose",
+      "keyword": "パーソナルカラー診断",
+      "status": 200,
+      "effectiveWords": 994,
+      "h1": [
+        "パーソナルカラー診断: タイプ名だけで決めず、肌が明るく見える方向を比べる"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 37,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.14240506329113925,
+      "maxSimilarityUrl": "/ja/for/一重",
+      "severity": "ok"
+    },
+    {
+      "phase": "P0",
+      "lang": "ja",
+      "url": "/ja/for/顔タイプ",
+      "action": "create-page",
+      "keyword": "顔タイプ診断",
+      "status": 200,
+      "effectiveWords": 990,
+      "h1": [
+        "顔タイプ診断: 顔タイプ名をそのまま信じず、眉、目元、唇の位置で調整する"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 38,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.14563106796116504,
+      "maxSimilarityUrl": "/ja/for/一重",
+      "severity": "ok"
+    },
+    {
+      "phase": "P0",
+      "lang": "ja",
+      "url": "/ja/for/一重",
+      "action": "create-page",
+      "keyword": "一重 メイク",
+      "status": 200,
+      "effectiveWords": 925,
+      "h1": [
+        "一重 メイク: 線よりまつ毛と影で見せる"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.17770034843205576,
+      "maxSimilarityUrl": "/ja/guides/順番",
+      "severity": "ok"
+    },
+    {
+      "phase": "P0",
+      "lang": "ja",
+      "url": "/ja/guides/順番",
+      "action": "optimize-existing",
+      "keyword": "メイク 順番",
+      "status": 200,
+      "effectiveWords": 912,
+      "h1": [
+        "メイク 順番: 先に整える場所を決める"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.17770034843205576,
+      "maxSimilarityUrl": "/ja/for/一重",
+      "severity": "ok"
+    },
+    {
+      "phase": "P0",
+      "lang": "en",
+      "url": "/for/hooded-eyes",
+      "action": "optimize-existing",
+      "keyword": "makeup for hooded eyes",
+      "status": 200,
+      "effectiveWords": 1887,
+      "h1": [
+        "Makeup for Hooded Eyes: Techniques That Actually Show"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.028528528528528527,
+      "maxSimilarityUrl": "/ai-makeup-try-on",
+      "severity": "ok"
+    },
+    {
+      "phase": "P0",
+      "lang": "pt-BR",
+      "url": "/pt-br/scenarios/formatura",
+      "action": "create-page",
+      "keyword": "maquiagem para formatura",
+      "status": 200,
+      "effectiveWords": 723,
+      "h1": [
+        "maquiagem para formatura"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.39903264812575573,
+      "maxSimilarityUrl": "/pt-br/scenarios/casamento-convidada",
+      "severity": "ok"
+    },
+    {
+      "phase": "P0",
+      "lang": "ko",
+      "url": "/ko/for/퍼스널컬러",
+      "action": "optimize-existing",
+      "keyword": "퍼스널컬러 자가진단",
+      "status": 200,
+      "effectiveWords": 788,
+      "h1": [
+        "퍼스널컬러 자가진단: 타입명보다 얼굴빛과 립, 치크 조화를 먼저 보기"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.4299706170421156,
+      "maxSimilarityUrl": "/ko/membership",
+      "severity": "ok"
+    },
+    {
+      "phase": "P0",
+      "lang": "pt-BR",
+      "url": "/pt-br/for/colorimetria",
+      "action": "create-page",
+      "keyword": "colorimetria pessoal",
+      "status": 200,
+      "effectiveWords": 864,
+      "h1": [
+        "colorimetria pessoal: usar a cartela como ponto de partida, não como regra rígida"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 38,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.4961165048543689,
+      "maxSimilarityUrl": "/pt-br/for/pele-madura",
+      "severity": "ok"
+    },
+    {
+      "phase": "P0",
+      "lang": "en",
+      "url": "/ai-makeup-try-on",
+      "action": "optimize-existing",
+      "keyword": "what makeup looks good on me",
+      "status": 200,
+      "effectiveWords": 818,
+      "h1": [
+        "What Makeup Looks Good on Me? Try It on Your Face First"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.03832576903681291,
+      "maxSimilarityUrl": "/looks/natural-makeup",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "en",
+      "url": "/looks/natural-makeup",
+      "action": "optimize-existing",
+      "keyword": "natural makeup look",
+      "status": 200,
+      "effectiveWords": 1206,
+      "h1": [
+        "Natural Makeup Look: The 'No-Makeup' Guide for Real Life"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.03832576903681291,
+      "maxSimilarityUrl": "/ai-makeup-try-on",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "pt-BR",
+      "url": "/pt-br/guides/passo-a-passo",
+      "action": "optimize-existing",
+      "keyword": "maquiagem passo a passo",
+      "status": 200,
+      "effectiveWords": 838,
+      "h1": [
+        "maquiagem passo a passo: parar de aplicar produtos sem critério"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5212240868706811,
+      "maxSimilarityUrl": "/pt-br/for/pele-madura",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "zh-TW",
+      "url": "/zh-tw/guides/步驟",
+      "action": "optimize-existing",
+      "keyword": "化妝步驟",
+      "status": 200,
+      "effectiveWords": 783,
+      "h1": [
+        "化妝步驟: 不要邊塗邊猜"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.16265060240963855,
+      "maxSimilarityUrl": "/zh-tw/for/個人色彩",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "ja",
+      "url": "/ja/scenarios/証明写真",
+      "action": "optimize-existing",
+      "keyword": "証明写真メイク",
+      "status": 200,
+      "effectiveWords": 879,
+      "h1": [
+        "証明写真メイク"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.06402439024390244,
+      "maxSimilarityUrl": "/ja/for/一重",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "es",
+      "url": "/es/scenarios/dia",
+      "action": "create-page",
+      "keyword": "maquillaje de día",
+      "status": 200,
+      "effectiveWords": 938,
+      "h1": [
+        "maquillaje de día: priorizar piel fresca, cejas ordenadas y color suave"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 38,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5451162790697675,
+      "maxSimilarityUrl": "/es/scenarios/noche",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "pt-BR",
+      "url": "/pt-br/for/pele-morena",
+      "action": "create-page",
+      "keyword": "maquiagem para pele morena",
+      "status": 200,
+      "effectiveWords": 932,
+      "h1": [
+        "maquiagem para pele morena: comparar subtom, contraste e intensidade antes de comprar produto"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.537328094302554,
+      "maxSimilarityUrl": "/pt-br/for/pele-madura",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "es",
+      "url": "/es/looks/maquillaje-natural",
+      "action": "optimize-existing",
+      "keyword": "maquillaje natural",
+      "status": 200,
+      "effectiveWords": 755,
+      "h1": [
+        "maquillaje natural"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.3542654028436019,
+      "maxSimilarityUrl": "/es/looks/piel-luminosa",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "en",
+      "url": "/for/mature-skin",
+      "action": "optimize-existing",
+      "keyword": "makeup for mature skin",
+      "status": 200,
+      "effectiveWords": 1507,
+      "h1": [
+        "Makeup for Mature Skin: Techniques That Don't Settle Into Lines"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.033318719859710653,
+      "maxSimilarityUrl": "/ai-makeup-try-on",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "en",
+      "url": "/for/olive-skin",
+      "action": "optimize-existing",
+      "keyword": "makeup for olive skin tone",
+      "status": 200,
+      "effectiveWords": 1449,
+      "h1": [
+        "Makeup for Olive Skin Tone: Find Your Most Flattering Shades"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.03409600717810678,
+      "maxSimilarityUrl": "/ai-makeup-try-on",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "fr",
+      "url": "/fr/scenarios/mariage",
+      "action": "create-page",
+      "keyword": "maquillage invité mariage",
+      "status": 200,
+      "effectiveWords": 811,
+      "h1": [
+        "maquillage invité mariage"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.3757094211123723,
+      "maxSimilarityUrl": "/fr/looks/maquillage-naturel",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "de",
+      "url": "/de/scenarios/braut",
+      "action": "create-page",
+      "keyword": "Braut Make-up",
+      "status": 200,
+      "effectiveWords": 848,
+      "h1": [
+        "Braut Make-up: vor dem Termin prüfen, welche Intensität auf dem eigenen Gesicht elegant wirkt"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 38,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5047801147227533,
+      "maxSimilarityUrl": "/de/for/hauttyp-bestimmen",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "pt-BR",
+      "url": "/pt-br/scenarios/casamento-convidada",
+      "action": "optimize-existing",
+      "keyword": "maquiagem para casamento convidada",
+      "status": 200,
+      "effectiveWords": 767,
+      "h1": [
+        "maquiagem para casamento convidada"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.39903264812575573,
+      "maxSimilarityUrl": "/pt-br/scenarios/formatura",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "en",
+      "url": "/guides/apply-step-by-step",
+      "action": "optimize-existing",
+      "keyword": "makeup order of application",
+      "status": 200,
+      "effectiveWords": 1470,
+      "h1": [
+        "Makeup Order of Application: How to Apply Makeup Step by Step"
+      ],
+      "h2Count": 6,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.03244444444444444,
+      "maxSimilarityUrl": "/ai-makeup-try-on",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "fr",
+      "url": "/fr/looks/maquillage-naturel",
+      "action": "optimize-existing",
+      "keyword": "maquillage naturel",
+      "status": 200,
+      "effectiveWords": 727,
+      "h1": [
+        "maquillage naturel"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.3757094211123723,
+      "maxSimilarityUrl": "/fr/scenarios/mariage",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "pt-BR",
+      "url": "/pt-br/for/pele-madura",
+      "action": "optimize-existing",
+      "keyword": "maquiagem para pele madura",
+      "status": 200,
+      "effectiveWords": 802,
+      "h1": [
+        "maquiagem para pele madura: valorizar em vez de cobrir demais"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.537328094302554,
+      "maxSimilarityUrl": "/pt-br/for/pele-morena",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "ja",
+      "url": "/ja",
+      "action": "optimize-existing",
+      "keyword": "AIメイク診断",
+      "status": 200,
+      "effectiveWords": 995,
+      "h1": [
+        "AIメイク診断で、 似合うメイクの方向を確認"
+      ],
+      "h2Count": 6,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 44,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.05223880597014925,
+      "maxSimilarityUrl": "/ja/for/一重",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "en",
+      "url": "/scenarios/passport-photo",
+      "action": "optimize-existing",
+      "keyword": "passport photo makeup",
+      "status": 200,
+      "effectiveWords": 1499,
+      "h1": [
+        "Passport Photo Makeup: Look Like Yourself, But Your Best Self"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 33,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.036395916555703504,
+      "maxSimilarityUrl": "/ai-makeup-try-on",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "de",
+      "url": "/de/for/reife-haut",
+      "action": "optimize-existing",
+      "keyword": "Make-up für reife Haut",
+      "status": 200,
+      "effectiveWords": 785,
+      "h1": [
+        "Make-up für reife Haut: Leuchtkraft statt Deckkraft priorisieren"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.547713717693837,
+      "maxSimilarityUrl": "/de/tutorial",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "de",
+      "url": "/de/for/hauttyp-bestimmen",
+      "action": "optimize-existing",
+      "keyword": "welche Farbe steht mir",
+      "status": 200,
+      "effectiveWords": 846,
+      "h1": [
+        "welche Farbe steht mir: Farben nach kühl, warm oder neutral praktisch einordnen"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5234833659491194,
+      "maxSimilarityUrl": "/de/for/reife-haut",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "fr",
+      "url": "/fr/for/paupieres-tombantes",
+      "action": "optimize-existing",
+      "keyword": "maquillage pour paupières tombantes",
+      "status": 200,
+      "effectiveWords": 908,
+      "h1": [
+        "maquillage pour paupières tombantes: dessiner une zone ouverte au-dessus du pli naturel"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5271889400921659,
+      "maxSimilarityUrl": "/fr/for/peau-mature",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "es",
+      "url": "/es/guides/paso-a-paso",
+      "action": "optimize-existing",
+      "keyword": "maquillaje paso a paso",
+      "status": 200,
+      "effectiveWords": 884,
+      "h1": [
+        "maquillaje paso a paso: dejar de aplicar productos sin criterio"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5240295748613678,
+      "maxSimilarityUrl": "/es/for/piel-madura",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "es",
+      "url": "/es/scenarios/noche",
+      "action": "create-page",
+      "keyword": "maquillaje de noche",
+      "status": 200,
+      "effectiveWords": 913,
+      "h1": [
+        "maquillaje de noche: subir contraste sin perder equilibrio"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 38,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5451162790697675,
+      "maxSimilarityUrl": "/es/scenarios/dia",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "de",
+      "url": "/de/tutorial",
+      "action": "optimize-existing",
+      "keyword": "Make-up für Anfänger",
+      "status": 200,
+      "effectiveWords": 819,
+      "h1": [
+        "Make-up für Anfänger: ohne überfüllte Routine starten"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 37,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.547713717693837,
+      "maxSimilarityUrl": "/de/for/reife-haut",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "es",
+      "url": "/es/looks/piel-luminosa",
+      "action": "optimize-existing",
+      "keyword": "maquillaje glow",
+      "status": 200,
+      "effectiveWords": 753,
+      "h1": [
+        "maquillaje glow"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.3542654028436019,
+      "maxSimilarityUrl": "/es/looks/maquillaje-natural",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "ko",
+      "url": "/ko/for/웜톤",
+      "action": "optimize-existing",
+      "keyword": "봄웜 메이크업",
+      "status": 200,
+      "effectiveWords": 736,
+      "h1": [
+        "봄웜 메이크업: 봄웜 특유의 맑은 온기를 탁하게 만들지 않기"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.43158953722334004,
+      "maxSimilarityUrl": "/ko/guides/메이크업-순서",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "ko",
+      "url": "/ko/membership",
+      "action": "optimize-existing",
+      "keyword": "얼굴형 분석",
+      "status": 200,
+      "effectiveWords": 810,
+      "h1": [
+        "얼굴형 분석: 얼굴형 분석 결과를 실제 룩 추천으로 연결하기"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 37,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.4299706170421156,
+      "maxSimilarityUrl": "/ko/for/퍼스널컬러",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "fr",
+      "url": "/fr/for/peau-mature",
+      "action": "optimize-existing",
+      "keyword": "maquillage peau mature",
+      "status": 200,
+      "effectiveWords": 885,
+      "h1": [
+        "maquillage peau mature: privilégier l'hydratation, la lumière douce et les couches fines"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5271889400921659,
+      "maxSimilarityUrl": "/fr/for/paupieres-tombantes",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "zh-TW",
+      "url": "/zh-tw/for/個人色彩",
+      "action": "optimize-existing",
+      "keyword": "個人色彩",
+      "status": 200,
+      "effectiveWords": 814,
+      "h1": [
+        "個人色彩: 看臉色而不是只看分類"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.16265060240963855,
+      "maxSimilarityUrl": "/zh-tw/guides/步驟",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "es",
+      "url": "/es/scenarios/graduacion",
+      "action": "create-page",
+      "keyword": "maquillaje para graduación",
+      "status": 200,
+      "effectiveWords": 731,
+      "h1": [
+        "maquillaje para graduación"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 34,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.3537015276145711,
+      "maxSimilarityUrl": "/es/looks/maquillaje-natural",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "es",
+      "url": "/es/for/piel-grasa",
+      "action": "create-page",
+      "keyword": "maquillaje para piel grasa",
+      "status": 200,
+      "effectiveWords": 944,
+      "h1": [
+        "maquillaje para piel grasa: separar preparación, textura y sellado por zonas"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 38,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5721017907634307,
+      "maxSimilarityUrl": "/es/for/piel-madura",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "ko",
+      "url": "/ko/guides/메이크업-순서",
+      "action": "optimize-existing",
+      "keyword": "메이크업 순서",
+      "status": 200,
+      "effectiveWords": 730,
+      "h1": [
+        "메이크업 순서: 먼저 정리할 부분을 결정하기"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.43158953722334004,
+      "maxSimilarityUrl": "/ko/for/웜톤",
+      "severity": "ok"
+    },
+    {
+      "phase": "P1",
+      "lang": "es",
+      "url": "/es/for/piel-madura",
+      "action": "optimize-existing",
+      "keyword": "maquillaje para piel madura",
+      "status": 200,
+      "effectiveWords": 865,
+      "h1": [
+        "maquillaje para piel madura: favorecer en lugar de cubrir de más"
+      ],
+      "h2Count": 7,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 38,
+      "keywordPlacement": {
+        "title": true,
+        "h1": true,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.5721017907634307,
+      "maxSimilarityUrl": "/es/for/piel-grasa",
+      "severity": "ok"
+    },
+    {
+      "phase": "P2",
+      "lang": "zh-TW",
+      "url": "/zh-tw/for/適合我",
+      "action": "module-only",
+      "keyword": "開架口紅推薦",
+      "status": 200,
+      "effectiveWords": 922,
+      "h1": [
+        "適合我的口紅: 先判斷顏色方向,再看寶雅口紅或熱門色號"
+      ],
+      "h2Count": 8,
+      "hasFaq": true,
+      "hasCta": true,
+      "internalLinks": 35,
+      "keywordPlacement": {
+        "title": false,
+        "h1": false,
+        "firstViewport": true,
+        "body": true
+      },
+      "reasons": [],
+      "watchReasons": [],
+      "maxSimilarity": 0.15472779369627507,
+      "maxSimilarityUrl": "/zh-tw/for/個人色彩",
+      "severity": "ok"
+    }
+  ]
+}

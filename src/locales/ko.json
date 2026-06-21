@@ -120,211 +120,211 @@
     "copyright": "모든 권리 보유."
   },
   "homepage": {
-    "jsonLdDescription": "셀피를 업로드하고 AI 메이크업 룩을 미리보며 상황, 피부 톤, 마무리감에 맞춰 선택하는 온라인 도구입니다.",
+    "jsonLdDescription": "셀피로 메이크업 방향을 비교하고 피부 톤, 얼굴형, 상황에 맞는 룩을 미리 확인하는 AI 메이크업 도구입니다.",
     "heroKicker": "AI 가상 메이크업",
     "heroKickerSub": "미리보기 준비됨",
     "heroTitle": "사진을 업로드하고, ",
     "heroTitleSpan": "어울리는 메이크업 방향을 확인하세요",
-    "heroSubtitle": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
+    "heroSubtitle": "셀피에서 색감, 질감, 눈매 강도를 비교하고 오늘 상황에 맞는 메이크업 방향을 먼저 확인하세요.",
     "startTryOn": "체험 시작",
     "howItWorks": "사용 방법",
     "pricingRule": "무료로 시작 · 더 필요할 때만 크레딧 추가",
-    "trustNaturalTitle": "결과",
-    "trustNaturalDesc": "결과 비교",
-    "trustRecommendTitle": "상황",
-    "trustRecommendDesc": "카탈로그",
+    "trustNaturalTitle": "전후 비교",
+    "trustNaturalDesc": "얼굴에서 방향 확인",
+    "trustRecommendTitle": "상황별 선택",
+    "trustRecommendDesc": "출근·사진·행사 대응",
     "trustPrivacyTitle": "사진 직접 관리",
-    "trustPrivacyDesc": "삭제",
-    "before": "전",
-    "after": "후",
-    "heroImageAltAfter": "결과",
-    "heroImageAltBefore": "원본",
-    "dragSlider": "결과 비교",
-    "statsTryons": "3",
-    "statsTryonsLabel": "룩 선택 · 셀피 업로드 · 결과 비교",
-    "statsRealism": "1",
+    "trustPrivacyDesc": "업로드 후에도 관리 가능",
+    "before": "업로드 전",
+    "after": "미리보기 후",
+    "heroImageAltAfter": "메이크업 미리보기 후 자연스러운 인상",
+    "heroImageAltBefore": "업로드 전 셀피",
+    "dragSlider": "전후 미리보기 비교",
+    "statsTryons": "3단계",
+    "statsTryonsLabel": "룩 선택, 업로드, 비교",
+    "statsRealism": "1회",
     "statsRealismLabel": "진단 또는 Try-on 1회에 1크레딧 사용",
-    "statsPrivacy": "삭제",
-    "statsPrivacyLabel": "사진 직접 관리",
-    "howKicker": "3",
-    "howTitle": "룩 선택, 셀피 업로드, 결과 비교",
-    "howSubtitle": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
+    "statsPrivacy": "관리 가능",
+    "statsPrivacyLabel": "사진과 결과를 직접 관리",
+    "howKicker": "3단계",
+    "howTitle": "어울리는 방향을 빠르게 확인",
+    "howSubtitle": "먼저 룩을 고르고, 셀피를 업로드한 뒤 얼굴색·눈매·피부 표현이 어떻게 달라지는지 비교합니다.",
     "howSteps": [
       {
         "icon": "1",
         "title": "룩 선택",
-        "copy": "상황"
+        "copy": "출근, 사진, 데이트, 행사처럼 실제 상황에 가까운 룩부터 고릅니다."
       },
       {
         "icon": "2",
         "title": "셀피 업로드",
-        "copy": "사진 직접 관리"
+        "copy": "정면이 보이는 사진을 사용하고, 처리 안내를 확인한 뒤 업로드합니다."
       },
       {
         "icon": "3",
-        "title": "결과 비교",
-        "copy": "결과"
+        "title": "미리보기 비교",
+        "copy": "얼굴색, 눈매 강도, 피부 표현을 보고 저장할지 다른 방향을 시도할지 정합니다."
       }
     ],
     "workflowWorkspace": "체험 작업공간",
     "workflowStatus": "미리보기 준비됨",
-    "workflowPreview": "AI 결과",
+    "workflowPreview": "AI 미리보기",
     "workflowUploaded": "셀피 업로드",
     "workflowReady": "미리보기 준비됨",
     "workflowScanning": "AI가 조명과 얼굴 위치를 분석 중...",
     "workflowSelected": "룩 선택",
-    "workflowPreviewAlt": "결과",
-    "featuredTitle": "카탈로그",
-    "featuredSubtitle": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-    "featuredLink": "카탈로그",
+    "workflowPreviewAlt": "선택한 룩의 AI 미리보기",
+    "featuredTitle": "추천 룩",
+    "featuredSubtitle": "상황이 분명한 룩부터 고르면 내 얼굴에서 비교하기 쉽습니다.",
+    "featuredLink": "룩 보기",
     "aiKicker": "AI 가상 메이크업",
     "aiTitle": "어울리는 메이크업 방향을 확인하세요",
-    "aiSubtitle": "셀피를 업로드하고 AI 메이크업 룩을 미리보며 상황, 피부 톤, 마무리감에 맞춰 선택하는 온라인 도구입니다.",
+    "aiSubtitle": "유행하는 이름보다 내 피부 톤, 얼굴형, 오늘 상황에 맞는지를 셀피에서 먼저 비교합니다.",
     "aiFeatures": [
       {
         "icon": "1",
-        "title": "결과",
-        "copy": "결과 비교"
+        "title": "얼굴빛 확인",
+        "copy": "립과 치크가 피부를 칙칙하게 만들지 않는지 봅니다."
       },
       {
         "icon": "2",
-        "title": "상황",
-        "copy": "카탈로그"
+        "title": "상황에 맞추기",
+        "copy": "출근, 사진, 행사에 필요한 메이크업 강도를 나눠 선택합니다."
       },
       {
         "icon": "3",
         "title": "사진 직접 관리",
-        "copy": "삭제"
+        "copy": "업로드 후에도 사진과 결과를 관리할 수 있습니다."
       },
       {
         "icon": "4",
-        "title": "요금제",
-        "copy": "진단 또는 Try-on 1회에 1크레딧 사용"
+        "title": "필요한 만큼 비교",
+        "copy": "진단 또는 Try-on 1회에 1크레딧을 사용합니다."
       }
     ],
-    "aiVisualAlt": "결과",
-    "aiVisualCaption": "셀피를 업로드하고 AI 메이크업 룩을 미리보며 상황, 피부 톤, 마무리감에 맞춰 선택하는 온라인 도구입니다.",
-    "scenarioKicker": "상황",
-    "scenarioTitle": "어울리는 메이크업 방향을 확인하세요",
-    "scenarioSubtitle": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-    "scenarioLink": "카탈로그",
+    "aiVisualAlt": "셀피에서 비교하는 메이크업 미리보기",
+    "aiVisualCaption": "미리보기는 메이크업 방향을 비교하기 위한 참고입니다. 실제 질감과 지속력은 제품과 손기술에 따라 달라집니다.",
+    "scenarioKicker": "상황별 룩",
+    "scenarioTitle": "오늘 일정에 맞춰 고르기",
+    "scenarioSubtitle": "출근, 사진, 면접, 행사는 필요한 농도가 다릅니다. 먼저 상황에 맞는 방향을 좁혀보세요.",
+    "scenarioLink": "룩 보기",
     "scenarioTryPrefix": "체험 시작",
     "scenarioCardCta": "체험 시작",
     "scenarioAriaPrefix": "체험 시작",
     "scenarioHighlights": [
       {
         "slug": "commute",
-        "label": "상황",
-        "moment": "상황",
-        "reason": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-        "scenario": "상황"
+        "label": "출근 혈색 보정",
+        "moment": "아침 준비 · 화상 회의",
+        "reason": "얇은 베이스와 은은한 혈색으로 피곤해 보이기 쉬운 얼굴을 정돈합니다.",
+        "scenario": "출근"
       },
       {
         "slug": "interview-ready",
-        "label": "가상 메이크업",
-        "moment": "가상 메이크업",
-        "reason": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-        "scenario": "가상 메이크업"
+        "label": "면접용 단정함",
+        "moment": "면접 · 고객 미팅",
+        "reason": "눈썹과 눈매를 정리하되 색과 펄이 말하는 내용을 방해하지 않게 합니다.",
+        "scenario": "면접"
       },
       {
         "slug": "rose-milk-date",
-        "label": "결과",
-        "moment": "결과",
-        "reason": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-        "scenario": "결과"
+        "label": "데이트의 부드러움",
+        "moment": "저녁 약속 · 가까운 거리",
+        "reason": "로즈 계열 립과 치크로 가까이서 봐도 무겁지 않은 인상을 만듭니다.",
+        "scenario": "데이트"
       },
       {
         "slug": "flash-proof-satin",
-        "label": "결과 비교",
-        "moment": "결과 비교",
-        "reason": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-        "scenario": "결과 비교"
+        "label": "사진에서 날아가지 않는 질감",
+        "moment": "단체 사진 · 저녁 행사",
+        "reason": "플래시에서 하얗게 뜨는 부분을 줄이고 눈과 입술의 존재감을 남깁니다.",
+        "scenario": "사진"
       },
       {
         "slug": "mature-skin-radiance",
-        "label": "사진 직접 관리",
-        "moment": "사진 직접 관리",
-        "reason": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-        "scenario": "사진 직접 관리"
+        "label": "성숙한 피부의 생기",
+        "moment": "일상 · 중요한 자리",
+        "reason": "두껍게 가리기보다 얇은 윤기와 혈색으로 표정이 어두워 보이지 않게 합니다.",
+        "scenario": "일상"
       },
       {
         "slug": "wedding-guest",
-        "label": "카탈로그",
-        "moment": "카탈로그",
-        "reason": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-        "scenario": "카탈로그"
+        "label": "하객 메이크업",
+        "moment": "결혼식 · 장시간 사진",
+        "reason": "화사함은 더하되 주인공보다 강해 보이지 않는 균형을 확인합니다.",
+        "scenario": "행사"
       }
     ],
-    "proofKicker": "결과 비교",
-    "proofTitle": "어울리는 메이크업 방향을 확인하세요",
-    "proofSubtitle": "셀피를 업로드하고 AI 메이크업 룩을 미리보며 상황, 피부 톤, 마무리감에 맞춰 선택하는 온라인 도구입니다.",
+    "proofKicker": "선택 기준",
+    "proofTitle": "무엇을 보고 고를지 정하기",
+    "proofSubtitle": "단순히 예쁜지보다 얼굴빛, 질감, 사진에서의 인상이 어떻게 달라지는지 확인합니다.",
     "proofCases": [
       {
         "slug": "olive-undertone-rose",
-        "eyebrow": "결과 비교",
-        "need": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-        "title": "결과",
-        "copy": "셀피를 업로드하고 AI 메이크업 룩을 미리보며 상황, 피부 톤, 마무리감에 맞춰 선택하는 온라인 도구입니다.",
-        "outcome": "결과 비교"
+        "eyebrow": "판단 예시 · 피부 톤",
+        "need": "혈색은 필요하지만 핑크가 떠 보이기 쉬움",
+        "title": "올리브 톤 피부에 로즈 계열이 어울리는지 확인",
+        "copy": "입술과 볼 색이 피부에서 따로 놀지 않도록 채도를 낮춰 비교합니다.",
+        "outcome": "볼 것: 피부가 칙칙해지는지, 립과 치크가 이어지는지"
       },
       {
         "slug": "flash-proof-satin",
-        "eyebrow": "결과 비교",
-        "need": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-        "title": "상황",
-        "copy": "셀피를 업로드하고 AI 메이크업 룩을 미리보며 상황, 피부 톤, 마무리감에 맞춰 선택하는 온라인 도구입니다.",
-        "outcome": "결과 비교"
+        "eyebrow": "판단 예시 · 사진",
+        "need": "플래시에서 얼굴색이 날아가기 쉬움",
+        "title": "밤 사진에서는 반사와 윤곽을 먼저 확인",
+        "copy": "윤기는 남기되 하얗게 뜨기 쉬운 T존과 입술의 존재감을 함께 봅니다.",
+        "outcome": "볼 것: 반사, 윤곽, 입술 농도"
       },
       {
         "slug": "mature-skin-radiance",
-        "eyebrow": "결과 비교",
-        "need": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
-        "title": "사진 직접 관리",
-        "copy": "셀피를 업로드하고 AI 메이크업 룩을 미리보며 상황, 피부 톤, 마무리감에 맞춰 선택하는 온라인 도구입니다.",
-        "outcome": "결과 비교"
+        "eyebrow": "판단 예시 · 성숙한 피부",
+        "need": "밝아 보이고 싶지만 두꺼운 베이스는 피하고 싶음",
+        "title": "질감은 남기고 생기를 더하기",
+        "copy": "가루 느낌보다 볼 위쪽의 윤기와 입술 혈색이 자연스러운지 확인합니다.",
+        "outcome": "볼 것: 피부 질감, 눈매 무게, 얼굴 전체 밝기"
       }
     ],
     "proofPrinciples": [
       {
-        "title": "상황",
-        "copy": "카탈로그"
+        "title": "상황부터 보기",
+        "copy": "출근, 사진, 행사는 필요한 메이크업 강도가 다릅니다."
       },
       {
-        "title": "결과",
-        "copy": "결과 비교"
+        "title": "얼굴빛 우선",
+        "copy": "유행색보다 피부가 맑아 보이는지를 먼저 봅니다."
       },
       {
-        "title": "사진 직접 관리",
-        "copy": "삭제"
+        "title": "참고로 활용",
+        "copy": "AI 미리보기는 방향 확인용이며 실제 질감은 제품과 손기술에 따라 달라집니다."
       }
     ],
     "assuranceKicker": "사진 직접 관리",
-    "assuranceTitle": "사진 직접 관리",
-    "assuranceSubtitle": "셀피를 업로드하고 AI 메이크업 룩을 미리보며 상황, 피부 톤, 마무리감에 맞춰 선택하는 온라인 도구입니다.",
-    "decisionFlow": ["룩 선택", "셀피 업로드", "결과 비교"],
+    "assuranceTitle": "업로드 전 확인하고, 이후에도 관리",
+    "assuranceSubtitle": "룩을 둘러보는 데는 업로드가 필요 없습니다. 생성 전 사진 처리 안내를 확인하고, 결과는 워크스페이스에서 관리할 수 있습니다.",
+    "decisionFlow": ["룩 선택", "확인 후 업로드", "미리보기 확인"],
     "assuranceCta": "체험 시작",
     "uploadConcerns": [
       {
         "index": "01",
-        "title": "셀피 업로드",
-        "copy": "사진 직접 관리"
+        "title": "업로드 전 확인",
+        "copy": "사진 처리 내용을 확인한 뒤 이번 미리보기에 사용합니다."
       },
       {
         "index": "02",
-        "title": "결과",
-        "copy": "삭제"
+        "title": "사진과 결과 관리",
+        "copy": "원본 사진, 미리보기, 진단 기록을 워크스페이스에서 확인할 수 있습니다."
       },
       {
         "index": "03",
-        "title": "요금제",
-        "copy": "진단 또는 Try-on 1회에 1크레딧 사용"
+        "title": "생성할 때만 차감",
+        "copy": "업로드를 확인하고 생성을 시작한 경우에만 크레딧을 사용합니다."
       }
     ],
     "upgradeTitle": "업그레이드하고 더 비교",
     "upgradeCopy": "요금제 · 크레딧 · HD",
     "upgradeLink": "요금제",
     "finalCtaTitle": "내 얼굴에서 한 번 체험",
-    "finalCtaSubtitle": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
+    "finalCtaSubtitle": "룩을 고르고 셀피에서 메이크업 방향을 먼저 확인하세요.",
     "finalCtaCta": "체험 시작"
   },
   "workspace": {
@@ -339,7 +339,7 @@
     "quickActions": "워크스페이스 빠른 작업",
     "viewPlans": "요금제 보기",
     "loginCta": "시작하기",
-    "loginDesc": "출근, 데이트, 사진, 행사별 룩을 고르고 내 얼굴에서 AI 미리보기를 확인하세요.",
+    "loginDesc": "로그인하면 무료 크레딧을 받고 셀피에서 메이크업 방향을 미리 확인할 수 있습니다.",
     "freeBenefits": "월간 무료 크레딧 · 기록 저장 · AI 진단",
     "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} 크레딧",

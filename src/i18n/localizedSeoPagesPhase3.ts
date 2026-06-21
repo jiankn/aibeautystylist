@@ -1,6 +1,7 @@
 import type {
   LocalizedSeoCategory,
   LocalizedSeoPage,
+  LocalizedSeoSection,
 } from "./localizedSeoPages";
 
 type Phase3LanguageSlug = "ko" | "zh-tw";
@@ -38,6 +39,10 @@ interface LanguageCopy {
   rows(
     seed: PageSeed,
   ): readonly { label: string; good: string; avoid: string }[];
+  decisionTitle(seed: PageSeed): string;
+  decisionRows(
+    seed: PageSeed,
+  ): readonly { label: string; good: string; avoid: string }[];
   highlight(seed: PageSeed): string;
   ctaTitle(seed: PageSeed): string;
   ctaText(seed: PageSeed): string;
@@ -73,7 +78,7 @@ const koCopy: LanguageCopy = {
   steps: (s) => [
     {
       title: "사진 조건을 맞추기",
-      body: `강한 필터를 피하고 얼굴 전체가 밝게 보이는 사진을 사용하세요. ${s.topic}은 조명이 안정적일수록 정확하게 판단할 수 있습니다.`,
+      body: `강한 필터를 피하고 얼굴 전체가 밝게 보이는 사진을 사용하세요. ${s.topic}은 조명이 안정적일수록 더 안정적으로 비교할 수 있습니다.`,
     },
     {
       title: "처음에는 얇게 보기",
@@ -119,6 +124,26 @@ const koCopy: LanguageCopy = {
       label: "혈색",
       good: `${s.finish}를 같은 톤 안에서 정리`,
       avoid: "볼과 입술을 모두 강한 포인트로 만드는 방식",
+    },
+  ],
+  decisionTitle: () => "시작 전에 정하는 기준",
+  decisionRows: (s) => [
+    {
+      label: "시간이 적을 때",
+      good: `${s.finish}를 기준으로 잡고 얼굴에서 바로 달라 보이는 부분만 확인하세요.`,
+      avoid:
+        "새 색상과 새 질감을 한 번에 더해서 어떤 선택이 효과였는지 모르게 만드는 것.",
+    },
+    {
+      label: "사진이나 일정이 있을 때",
+      good: `${s.proof}을 먼저 보고 색, 광, 범위 중 하나만 조정하세요.`,
+      avoid:
+        "거울 앞 가까운 거리만 보고 결정해서 카메라나 실내 조명에서 과해지는 것.",
+    },
+    {
+      label: "어색함이 보일 때",
+      good: `${s.technique}를 단순하게 만들고 경계와 채도를 한 단계 낮추세요.`,
+      avoid: `${s.caution}를 그대로 두고 제품을 더 얹어 해결하려는 것.`,
     },
   ],
   highlight: (s) =>
@@ -209,6 +234,24 @@ const zhTwCopy: LanguageCopy = {
       avoid: "頰色和唇色都搶主角",
     },
   ],
+  decisionTitle: () => "上妝前先做三個判斷",
+  decisionRows: (s) => [
+    {
+      label: "時間有限時",
+      good: `先保留${s.finish}，只調整臉上最影響精神感的位置。`,
+      avoid: "同時更換太多顏色與質地，最後分不清真正適合的是哪一個改動。",
+    },
+    {
+      label: "要拍照或出席場合時",
+      good: `先看${s.proof}，再只改強度、光澤或範圍其中一項。`,
+      avoid: "只看近距離鏡子效果，忽略鏡頭、室內光和遠距離會放大妝感。",
+    },
+    {
+      label: "出現違和感時",
+      good: `把${s.technique}簡化，先降低邊界、飽和度或面積。`,
+      avoid: `看見${s.caution}還繼續疊加產品，讓問題變得更明顯。`,
+    },
+  ],
   highlight: (s) =>
     `判斷 ${s.keyword} 是否成功，可以看妝容是否先讓臉變得協調。如果${s.caution}先被注意到，就該降低顏色、範圍或質地。`,
   ctaTitle: (s) => `用自己的臉試試 ${s.keyword}`,
@@ -275,6 +318,30 @@ function buildRelatedLinks(seed: PageSeed) {
   }));
 }
 
+function buildReviewSection(seed: PageSeed): LocalizedSeoSection {
+  if (seed.languageSlug === "ko") {
+    return {
+      kind: "paragraphs",
+      title: `${seed.keyword} 저장 전 마지막 확인`,
+      paragraphs: [
+        `${seed.keyword}를 저장하거나 제품 구매로 넘기기 전에 같은 사진에서 낮은 강도, 중간 강도, 조금 더 선명한 버전을 나눠 보세요. ${seed.proof}이 유지되는 쪽이 실제 일정에서 실패가 적고, ${seed.caution}가 보이는 쪽은 후보에서 빼는 편이 낫습니다.`,
+        `특히 ${seed.topic}은 화면에서만 예뻐 보이는 결과와 실제로 매일 쓰기 쉬운 결과가 다를 수 있습니다. ${seed.finish}가 얼굴 전체와 연결되는지, ${seed.technique}가 선명하지만 과하지 않은지, 목과 원래 입술색까지 함께 확인하세요.`,
+        `마지막으로 저장할 후보는 하나만 남기지 말고 출근, 사진, 약속처럼 자주 쓰는 상황별로 구분해 두면 좋습니다. 같은 ${seed.keyword}라도 조명과 옷 색이 바뀌면 필요한 색감과 범위가 달라지기 때문입니다.`,
+      ],
+    };
+  }
+
+  return {
+    kind: "paragraphs",
+    title: `${seed.keyword}儲存前最後確認`,
+    paragraphs: [
+      `在把 ${seed.keyword} 當成固定方向前，先用同一張自拍比較低強度、中等強度和稍微明顯的版本。能維持${seed.proof}的方向，通常比看起來很流行但容易出現${seed.caution}的方向更值得保留。`,
+      `${seed.topic}不能只看截圖是否好看，也要看日常能不能重複。確認${seed.finish}是否和脖子、原生唇色、髮色連在一起，再看${seed.technique}有沒有讓五官更清楚，而不是讓妝感先被看到。`,
+      `最後不要只存一個答案。可以依上班、拍照、聚會或快速出門分成不同強度，這樣下次需要調整 ${seed.keyword} 時，不必重新從熱門色號或教學影片開始猜。`,
+    ],
+  };
+}
+
 function makePage(seed: PageSeed): LocalizedSeoPage {
   const copy = copyByLanguage[seed.languageSlug];
   return {
@@ -315,6 +382,12 @@ function makePage(seed: PageSeed): LocalizedSeoPage {
         title: copy.tableTitle(seed),
         rows: copy.rows(seed),
       },
+      {
+        kind: "table",
+        title: copy.decisionTitle(seed),
+        rows: copy.decisionRows(seed),
+      },
+      buildReviewSection(seed),
       {
         kind: "highlight",
         text: copy.highlight(seed),
@@ -364,7 +437,7 @@ const seeds: readonly PageSeed[] = [
     path: "/pricing",
     englishPath: "/pricing",
     category: "product",
-    keyword: "퍼스널컬러 진단 AI",
+    keyword: "AI 메이크업 플랜",
     topic: "진단, 저장, 비교를 위한 플랜 선택",
     angle: "필요한 사용량에 맞춰 고르기",
     finish: "불필요한 구매를 줄이는 컬러 선택",
@@ -394,14 +467,14 @@ const seeds: readonly PageSeed[] = [
     path: "/membership",
     englishPath: "/personalized-makeup-recommendation",
     category: "product",
-    keyword: "AI 피부 분석",
-    topic: "피부 톤과 어울리는 제품 방향 저장",
-    angle: "반복해서 비교할 기준 만들기",
-    finish: "칙칙해 보이지 않는 컬러 조합",
-    technique: "같은 사진으로 여러 색을 비교하기",
-    caution: "유행색만 기준으로 고르는 것",
-    proof: "립, 치크, 아이 컬러가 함께 자연스러운 것",
-    related: ["/ai-beauty-advisor", "/pricing"],
+    keyword: "얼굴형 분석",
+    topic: "얼굴형과 피부 톤에 맞는 메이크업 방향 저장",
+    angle: "얼굴형 분석 결과를 실제 룩 추천으로 연결하기",
+    finish: "얼굴 여백, 눈매, 립 포인트가 균형 잡힌 조합",
+    technique: "같은 사진에서 얼굴형, 톤, 상황별 룩을 나눠 비교하기",
+    caution: "얼굴형 이름만 보고 모든 메이크업을 고정하는 것",
+    proof: "추천 룩을 바꿔도 얼굴의 장점이 먼저 보이는 것",
+    related: ["/ai-beauty-advisor", "/for/퍼스널컬러", "/try-on"],
   },
   {
     languageSlug: "ko",
@@ -605,13 +678,13 @@ const seeds: readonly PageSeed[] = [
     path: "/for/퍼스널컬러",
     englishPath: "/blog/how-to-determine-skin-undertone",
     category: "feature",
-    keyword: "퍼스널컬러 메이크업",
-    topic: "피부 톤에 맞는 색 방향 찾기",
-    angle: "타입명보다 얼굴빛을 먼저 보기",
-    finish: "칙칙함 없이 밝아 보이는 컬러",
-    technique: "같은 밝기에서 여러 색을 비교하기",
-    caution: "진단명만 보고 제품을 고르는 것",
-    proof: "립과 치크를 바꿔도 조화로운 것",
+    keyword: "퍼스널컬러 자가진단",
+    topic: "내 얼굴에서 어울리는 컬러 방향을 확인하기",
+    angle: "타입명보다 얼굴빛과 립, 치크 조화를 먼저 보기",
+    finish: "칙칙함 없이 밝아 보이는 컬러 조합",
+    technique: "같은 셀피에서 웜톤, 쿨톤, 명도, 채도를 나눠 비교하기",
+    caution: "자가진단 결과만 보고 제품을 바로 고르는 것",
+    proof: "립과 치크를 바꿔도 얼굴색이 자연스럽게 살아나는 것",
   },
   {
     languageSlug: "ko",
@@ -619,9 +692,9 @@ const seeds: readonly PageSeed[] = [
     path: "/for/웜톤",
     englishPath: "/blog/how-to-determine-skin-undertone",
     category: "feature",
-    keyword: "웜톤 메이크업",
-    topic: "따뜻한 피부 톤에 맞는 색 선택",
-    angle: "온기를 탁하게 만들지 않기",
+    keyword: "봄웜 메이크업",
+    topic: "밝은 웜톤 피부에 맞는 색 선택",
+    angle: "봄웜 특유의 맑은 온기를 탁하게 만들지 않기",
     finish: "코랄, 베이지, 브라운의 통일감",
     technique: "립과 치크의 온도를 맞추기",
     caution: "푸른 기가 얼굴색을 죽이는 것",
@@ -647,7 +720,7 @@ const seeds: readonly PageSeed[] = [
     path: "/for/봄웜",
     englishPath: "/looks/date-night",
     category: "feature",
-    keyword: "봄웜 메이크업",
+    keyword: "봄웜 데일리 메이크업",
     topic: "밝고 따뜻한 혈색을 살리는 메이크업",
     angle: "생기를 주되 과하게 달아 보이지 않기",
     finish: "피치, 코랄, 라이트 브라운",
@@ -975,12 +1048,12 @@ const seeds: readonly PageSeed[] = [
     englishPath: "/blog/lipstick-color-comparison",
     category: "feature",
     keyword: "適合我的口紅",
-    topic: "依照膚色和唇色挑口紅",
-    angle: "避免只看熱門色號",
-    finish: "讓牙齒、膚色和氣色都乾淨的唇色",
-    technique: "薄擦和厚擦都一起比較",
-    caution: "口紅比五官更先被注意",
-    proof: "素顏和完整妝容都能使用",
+    topic: "依照膚色、原生唇色和開架口紅推薦挑口紅",
+    angle: "先判斷顏色方向，再看寶雅口紅或熱門色號",
+    finish: "讓牙齒、膚色和氣色都乾淨的日常唇色",
+    technique: "把不沾杯口紅、霧面唇釉和潤色護唇膏放在同一光線比較",
+    caution: "只因排行榜或開架口紅推薦就買下整支",
+    proof: "素顏、完整妝容和補妝後都能使用",
   },
   {
     languageSlug: "zh-tw",

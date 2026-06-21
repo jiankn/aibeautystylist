@@ -2,15 +2,19 @@
 import SeoLandingLayout from "../components/SeoLandingLayout.astro";
 
 const page = {
-  title: "AI Makeup Try-On — See How Any Style Looks on Your Face",
+  title: "What Makeup Looks Good on Me? AI Makeup Try-On",
   description:
-    "Upload a selfie and get a personalized AI makeup try-on in seconds. See before-and-after results for any style before you buy products or follow a tutorial.",
+    "Upload a selfie to preview makeup directions for your face. Use AI makeup try-on to compare colors, styles, and before-and-after references before buying products.",
   heroImage: "/images/article-ai-tryon-comparison.webp",
   ogImage: "/images/article-ai-tryon-comparison.webp",
   faq: [
     {
       q: "How does AI makeup try-on work?",
-      a: "ABS analyzes your skin tone, face shape, and facial features, then generates a realistic try-on image showing how the selected makeup style would look on you — not a filter overlay, but a genuine adaptation to your unique face.",
+      a: "AI Beauty Stylist uses your selfie and selected style to create a visual makeup preview. It is best used as a decision aid for color, intensity, and placement, not as a guarantee of the exact result you will get with real products.",
+    },
+    {
+      q: "What makeup looks good on me?",
+      a: "Start by comparing your skin tone, undertone, eye shape, face shape, and the situation you are dressing for. The try-on preview helps you narrow the direction before you follow a tutorial or buy a product.",
     },
     {
       q: "Is my photo stored or shared?",
@@ -22,7 +26,7 @@ const page = {
     },
     {
       q: "Is the try-on realistic?",
-      a: "The AI adapts the selected makeup style to your actual face shape, skin tone, and feature proportions. It is not a one-size-fits-all filter — a soft glam look will look different on your face than on someone else's, just like in real life.",
+      a: "The preview is designed to reflect your face shape, skin tone, and feature proportions more closely than a generic filter. Real product texture, lighting, skin prep, and application skill can still change the final look.",
     },
   ],
   relatedLinks: [
@@ -37,10 +41,11 @@ const page = {
 
 <SeoLandingLayout {...page}>
   <Fragment slot="hero">
-    <h1>AI Makeup Try-On: See the Look Before You Apply It</h1>
+    <h1>What Makeup Looks Good on Me? Try It on Your Face First</h1>
     <p>
-      Upload a selfie and watch any makeup style come alive on your actual face
-      — personalized, realistic, and tailored to your skin tone and features.
+      Upload a selfie and compare makeup directions on your own face before you
+      buy products or copy a tutorial. Use the preview to decide color,
+      intensity, and placement with less guessing.
     </p>
   </Fragment>
 
@@ -54,11 +59,10 @@ const page = {
       "maybe someday" products.
     </p>
     <p>
-      AI makeup try-on eliminates that guesswork. Before you buy anything or
-      spend twenty minutes on a tutorial, you see exactly how the style looks on <strong
-        >your</strong
-      >
-      face. Not a filter. Not a stock model. Your face.
+      AI makeup try-on reduces that guesswork. Before you buy anything or spend
+      twenty minutes on a tutorial, you can compare how a style direction reads
+      on <strong>your</strong> face. It is a preview for decision-making, not a promise
+      that every product will apply the same way in real life.
     </p>
 
     <h2>How It Works</h2>
@@ -78,8 +82,9 @@ const page = {
         <div>
           <h4>AI Analyzes Your Features</h4>
           <p>
-            The AI assesses your skin tone, undertone, face shape, eye shape,
-            and feature proportions.
+            The AI uses your visible features to estimate useful makeup
+            directions: tone, contrast, eye shape, face shape, and feature
+            balance.
           </p>
         </div>
       </div>
@@ -98,8 +103,8 @@ const page = {
         <div>
           <h4>See Your Personalized Result</h4>
           <p>
-            The AI generates a realistic try-on image showing how that style
-            looks on your face.
+            The AI generates a visual reference showing how that style direction
+            could read on your face.
           </p>
         </div>
       </div>
@@ -109,9 +114,9 @@ const page = {
     <div class="highlight-box">
       <p>
         Filters apply the same overlay to every face. AI try-on adapts the
-        makeup to your unique bone structure, skin texture, and natural coloring
-        — the same way a real makeup artist would adjust their technique for
-        each client.
+        makeup direction to your face shape, skin tone, and natural coloring. It
+        still needs real-world judgment for product texture, lighting, and
+        application.
       </p>
     </div>
 
@@ -135,8 +140,8 @@ const page = {
           <td>No</td>
         </tr>
         <tr>
-          <td>Shows realistic finish</td>
-          <td>Yes</td>
+          <td>Helps compare finish direction</td>
+          <td>Yes — as a visual reference</td>
           <td>Often exaggerated</td>
         </tr>
         <tr>
@@ -164,8 +169,8 @@ const page = {
         tone and budget (drugstore to high-end).
       </li>
       <li>
-        <strong>Before-and-after image</strong> — a shareable comparison you can save
-        or post on social media.
+        <strong>Before-and-after preview</strong> — a comparison you can save or share
+        when you want feedback.
       </li>
     </ul>
 
@@ -181,8 +186,8 @@ const page = {
     <div class="seo-cta-inner">
       <h2>Ready to See How You Look?</h2>
       <p>
-        Upload your selfie, pick a style, and see the result in under 30
-        seconds.
+        Upload your selfie, pick a style, and compare a makeup direction before
+        you spend time or money on it.
       </p>
       <a href="/tryon-free" class="cta-btn">Try AI Makeup Try-On — Free</a>
     </div>

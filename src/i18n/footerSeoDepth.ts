@@ -728,8 +728,8 @@ const detailsByLanguage: Record<SeoLanguageSlug, Record<string, Detail>> = {
 
 const copyByLanguage: Record<SeoLanguageSlug, DepthCopy> = {
   "zh-cn": {
-    visualHeading: "用三种画面检查真实效果",
-    visualRoles: ["方向参考", "妆效细节", "真实场景复核"],
+    visualHeading: "用三种画面检查预览参考",
+    visualRoles: ["方向参考", "妆效细节", "日常场景复核"],
     overviewTitle: (s) => `${s.keyword}的直接答案`,
     overview: (s, d) => [
       `${s.keyword}真正要解决的是：${d[0]}。这决定了页面不能只展示一张完成图，还需要说明颜色、位置、质地和使用场景之间的取舍。`,
@@ -737,7 +737,7 @@ const copyByLanguage: Record<SeoLanguageSlug, DepthCopy> = {
       `需要主动避开的信号是${d[2]}。如果出现这一情况，先降低浓度、缩小范围或更换质地，而不是继续增加产品。`,
     ],
     stepsTitle: (s) => `${s.keyword}的实操顺序`,
-    stepTitles: ["先定义目标", "执行关键技巧", "排查失败信号", "完成真实验收"],
+    stepTitles: ["先定义目标", "执行关键技巧", "排查失败信号", "完成日常复核"],
     stepBodies: (_s, d) => [
       `把目标写清楚：${d[0]}。先确定使用场景、准备时间和希望保留的个人特征。`,
       `围绕“${d[1]}”完成第一版，只改变必要的颜色、位置和强度。`,
@@ -1109,6 +1109,206 @@ const eastAsianLanguages = new Set<SeoLanguageSlug>([
   "ko",
 ]);
 
+function buildDepthDecisionSection(
+  spec: DepthSpec,
+  detail: Detail,
+): LocalizedSeoSection {
+  switch (spec.languageSlug) {
+    case "zh-cn":
+      return {
+        kind: "table",
+        title: `${spec.keyword}上线前决策清单`,
+        rows: [
+          {
+            label: "时间有限",
+            good: `优先完成“${detail[1]}”，只调整最影响脸部状态的一项。`,
+            avoid: "同时更换底妆、眼妆和唇色，导致无法判断哪一步有效。",
+          },
+          {
+            label: "需要拍照",
+            good: `用“${detail[3]}”验收，再决定是否增加颜色或光泽。`,
+            avoid: "只看近距离镜子效果，忽略镜头、距离和室内光。",
+          },
+          {
+            label: "出现问题",
+            good: `发现“${detail[2]}”时，先回退浓度、面积或质地。`,
+            avoid: "继续叠加产品，让原本的问题更明显。",
+          },
+        ],
+      };
+    case "zh-tw":
+      return {
+        kind: "table",
+        title: `${spec.keyword}上妝前決策清單`,
+        rows: [
+          {
+            label: "時間有限",
+            good: `優先完成「${detail[1]}」，只調整最影響臉部狀態的一項。`,
+            avoid: "同時更換底妝、眼妝和唇色，最後分不清哪一步有效。",
+          },
+          {
+            label: "需要拍照",
+            good: `用「${detail[3]}」驗收，再決定是否增加顏色或光澤。`,
+            avoid: "只看近距離鏡子效果，忽略鏡頭、距離和室內光。",
+          },
+          {
+            label: "出現問題",
+            good: `看到「${detail[2]}」時，先回退濃度、面積或質地。`,
+            avoid: "繼續疊加產品，讓原本的問題更明顯。",
+          },
+        ],
+      };
+    case "de":
+      return {
+        kind: "table",
+        title: `Praxis-Check vor ${spec.keyword}`,
+        rows: [
+          {
+            label: "Wenig Zeit",
+            good: `Zuerst „${detail[1]}“ umsetzen und nur den sichtbarsten Bereich verändern.`,
+            avoid:
+              "Teint, Augen und Lippen gleichzeitig ändern und den wirksamen Schritt verlieren.",
+          },
+          {
+            label: "Fotos wichtig",
+            good: `Mit „${detail[3]}“ prüfen und erst dann Farbe oder Glanz erhöhen.`,
+            avoid:
+              "Nur den Spiegel aus nächster Nähe nutzen, obwohl Kamera und Abstand anders wirken.",
+          },
+          {
+            label: "Problem sichtbar",
+            good: `Bei „${detail[2]}“ Intensität, Fläche oder Textur zurücknehmen.`,
+            avoid:
+              "Mehr Produkt auftragen und das eigentliche Problem dadurch verstärken.",
+          },
+        ],
+      };
+    case "fr":
+      return {
+        kind: "table",
+        title: `Checklist de décision pour ${spec.keyword}`,
+        rows: [
+          {
+            label: "Peu de temps",
+            good: `Appliquer d'abord « ${detail[1]} » et ne modifier que la zone la plus visible, sans changer l'intention du look.`,
+            avoid:
+              "Changer teint, yeux et lèvres en même temps, puis perdre le geste vraiment utile.",
+          },
+          {
+            label: "Photos prévues",
+            good: `Valider avec « ${detail[3]} » avant d'ajouter couleur ou brillance.`,
+            avoid:
+              "Se fier uniquement au miroir de près alors que l'appareil et la distance changent le rendu.",
+          },
+          {
+            label: "Problème visible",
+            good: `Si « ${detail[2]} » apparaît, réduire intensité, zone ou texture.`,
+            avoid:
+              "Ajouter du produit et rendre le signal d'échec encore plus évident dans la journée.",
+          },
+        ],
+      };
+    case "ja":
+      return {
+        kind: "table",
+        title: `${spec.keyword}の仕上げ前チェック`,
+        rows: [
+          {
+            label: "時間がない時",
+            good: `まず「${detail[1]}」を整え、印象が変わる部分だけ調整します。`,
+            avoid:
+              "ベース、目元、唇を同時に変えて、何が効いたのか分からなくなること。",
+          },
+          {
+            label: "写真に残る時",
+            good: `「${detail[3]}」で確認してから、色やツヤを足すか決めます。`,
+            avoid:
+              "近くの鏡だけで判断し、カメラや距離で濃く見える可能性を見落とすこと。",
+          },
+          {
+            label: "違和感がある時",
+            good: `「${detail[2]}」が見えたら、濃さ・範囲・質感を一段下げます。`,
+            avoid: "さらに重ねて、気になる部分をかえって強調すること。",
+          },
+        ],
+      };
+    case "ko":
+      return {
+        kind: "table",
+        title: `${spec.keyword} 적용 전 체크`,
+        rows: [
+          {
+            label: "시간이 적을 때",
+            good: `먼저 “${detail[1]}”를 맞추고 인상을 가장 바꾸는 부분만 조정하세요.`,
+            avoid:
+              "베이스, 눈, 입술을 동시에 바꿔 어떤 단계가 효과였는지 놓치는 것.",
+          },
+          {
+            label: "사진이 중요할 때",
+            good: `“${detail[3]}”로 확인한 뒤 색이나 광을 더할지 결정하세요.`,
+            avoid:
+              "가까운 거울만 보고 카메라와 거리에서 진해 보이는 점을 놓치는 것.",
+          },
+          {
+            label: "어색함이 보일 때",
+            good: `“${detail[2]}”가 보이면 강도, 면적, 질감을 한 단계 낮추세요.`,
+            avoid: "제품을 더 얹어 문제를 더 뚜렷하게 만드는 것.",
+          },
+        ],
+      };
+    case "es":
+      return {
+        kind: "table",
+        title: `Checklist antes de aplicar ${spec.keyword}`,
+        rows: [
+          {
+            label: "Poco tiempo",
+            good: `Resuelve primero “${detail[1]}” y ajusta solo la zona que más cambia el rostro.`,
+            avoid:
+              "Cambiar base, ojos y labios a la vez hasta no saber qué mejoró el resultado.",
+          },
+          {
+            label: "Habrá fotos",
+            good: `Valida con “${detail[3]}” antes de subir color o brillo.`,
+            avoid:
+              "Decidir solo por el espejo de cerca, aunque la cámara y la distancia cambien el efecto.",
+          },
+          {
+            label: "Algo se ve mal",
+            good: `Si aparece “${detail[2]}”, reduce intensidad, área o textura.`,
+            avoid:
+              "Añadir más producto y hacer que la señal de fallo se note todavía más.",
+          },
+        ],
+      };
+    case "pt-br":
+      return {
+        kind: "table",
+        title: `Checklist antes de aplicar ${spec.keyword}`,
+        rows: [
+          {
+            label: "Pouco tempo",
+            good: `Resolva primeiro “${detail[1]}” e ajuste só a área que mais muda o rosto.`,
+            avoid:
+              "Mudar pele, olhos e boca ao mesmo tempo até não saber o que melhorou o resultado.",
+          },
+          {
+            label: "Vai ter foto",
+            good: `Valide com “${detail[3]}” antes de aumentar cor ou brilho.`,
+            avoid:
+              "Decidir apenas pelo espelho de perto, mesmo com câmera e distância mudando o efeito.",
+          },
+          {
+            label: "Algo ficou estranho",
+            good: `Se aparecer “${detail[2]}”, reduza intensidade, área ou textura.`,
+            avoid:
+              "Acrescentar mais produto e deixar o sinal de falha ainda mais evidente.",
+          },
+        ],
+      };
+  }
+}
+
 const globalAssets: Record<string, readonly string[]> = {
   "/ai-makeup-try-on": [
     "/images/article-ai-tryon-comparison.webp",
@@ -1374,6 +1574,7 @@ export function buildFooterSeoDepth(spec: DepthSpec): {
         title: copy.matrixTitle(spec),
         rows,
       },
+      buildDepthDecisionSection(spec, detail),
       {
         kind: "highlight",
         text: copy.highlight(spec, detail),

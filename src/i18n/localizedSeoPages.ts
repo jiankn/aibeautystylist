@@ -100,6 +100,10 @@ interface LanguageCopy {
   rows(
     seed: PageSeed,
   ): readonly { label: string; good: string; avoid: string }[];
+  decisionTitle(seed: PageSeed): string;
+  decisionRows(
+    seed: PageSeed,
+  ): readonly { label: string; good: string; avoid: string }[];
   highlight(seed: PageSeed): string;
   ctaTitle(seed: PageSeed): string;
   ctaText(seed: PageSeed): string;
@@ -181,6 +185,26 @@ const deCopy: LanguageCopy = {
       label: "Lippen/Wangen",
       good: `${s.finish} in einer zusammenhängenden Farbfamilie`,
       avoid: "Mehrere starke Farbakzente ohne klare Priorität",
+    },
+  ],
+  decisionTitle: () => "Entscheidung vor dem Auftragen",
+  decisionRows: (s) => [
+    {
+      label: "Wenn du wenig Zeit hast",
+      good: `Bleibe bei ${s.finish} und prüfe nur die Stellen, die im Gesicht sofort auffallen.`,
+      avoid:
+        "Mehrere neue Farben gleichzeitig testen und danach nicht mehr erkennen, was wirklich geholfen hat.",
+    },
+    {
+      label: "Wenn Fotos wichtig sind",
+      good: `${s.proof} separat prüfen und danach Intensität oder Glanz nur punktuell anpassen.`,
+      avoid:
+        "Den Spiegel als einzigen Maßstab nutzen, obwohl Kamera, Blitz und Abstand die Wirkung verändern.",
+    },
+    {
+      label: "Wenn der Look kippt",
+      good: `${s.technique} vereinfachen und zuerst die Übergänge weicher machen.`,
+      avoid: `${s.caution} ignorieren und mit mehr Produkt ausgleichen wollen.`,
     },
   ],
   highlight: (s) =>
@@ -271,6 +295,26 @@ const frCopy: LanguageCopy = {
       avoid: "Deux accents forts qui se concurrencent",
     },
   ],
+  decisionTitle: () => "Comment trancher avant d'appliquer",
+  decisionRows: (s) => [
+    {
+      label: "Temps limité",
+      good: `Garder ${s.finish} comme priorité et ne corriger que les zones qui changent vraiment l'équilibre du visage.`,
+      avoid:
+        "Ajouter plusieurs nouveautés en même temps, puis ne plus savoir ce qui a rendu le résultat plus lourd.",
+    },
+    {
+      label: "Photo ou événement",
+      good: `Vérifier ${s.proof}, puis ajuster seulement l'intensité, la brillance ou la zone principale.`,
+      avoid:
+        "Se fier uniquement au miroir alors que la distance, le flash ou la lumière intérieure modifient le rendu.",
+    },
+    {
+      label: "Résultat trop visible",
+      good: `Simplifier ${s.technique} et adoucir les transitions avant de changer toute la routine.`,
+      avoid: `Compenser ${s.caution} avec plus de produit ou une couleur encore plus forte.`,
+    },
+  ],
   highlight: (s) =>
     `Repère utile : ${s.keyword} fonctionne quand on remarque d'abord l'équilibre du visage. Si ${s.caution} domine, le look doit être simplifié.`,
   ctaTitle: (s) => `Tester ${s.keyword} sur votre visage`,
@@ -359,6 +403,26 @@ const jaCopy: LanguageCopy = {
       avoid: "頬と唇をどちらも主役にしすぎること",
     },
   ],
+  decisionTitle: () => "塗る前に決める判断表",
+  decisionRows: (s) => [
+    {
+      label: "時間がない日",
+      good: `${s.finish}を優先し、顔全体ではなく印象が変わる部分だけ確認します。`,
+      avoid:
+        "新しい色や質感を一度に増やして、どこが似合ったのか分からなくなること。",
+    },
+    {
+      label: "写真に残る日",
+      good: `${s.proof}を先に見て、強さ・ツヤ・範囲のどれか一つだけ調整します。`,
+      avoid:
+        "鏡で近くから見た印象だけで決め、距離や照明で濃く見える可能性を見落とすこと。",
+    },
+    {
+      label: "違和感がある時",
+      good: `${s.technique}を簡単にして、境目や色の強さを一段下げます。`,
+      avoid: `${s.caution}のまま、さらに重ねて解決しようとすること。`,
+    },
+  ],
   highlight: (s) =>
     `${s.keyword}は、メイクの存在より先に顔全体の調和が見えると成功です。${s.caution}が気になる場合は、色・範囲・質感のどれかを一段引きます。`,
   ctaTitle: (s) => `${s.keyword}を自分の顔で試す`,
@@ -426,6 +490,11 @@ function makePage(seed: PageSeed): LocalizedSeoPage {
         kind: "table",
         title: copy.tableTitle(seed),
         rows: copy.rows(seed),
+      },
+      {
+        kind: "table",
+        title: copy.decisionTitle(seed),
+        rows: copy.decisionRows(seed),
       },
       {
         kind: "highlight",
@@ -658,6 +727,30 @@ const seeds: readonly PageSeed[] = [
     technique: "Wangen, Augen und Lippen in einer Farbfamilie halten",
     caution: "Blitzlicht Glanz oder Textur betont",
     proof: "Zeremonie, Essen und Tanz überstehen",
+    related: ["/scenarios/braut", "/looks/elegant", "/for/hauttyp-bestimmen"],
+  },
+  {
+    languageSlug: "de",
+    groupKey: "scenario-bridal",
+    path: "/scenarios/braut",
+    englishPath: "/scenarios/bridal-makeup",
+    category: "scenario",
+    keyword: "Braut Make-up",
+    topic:
+      "einen haltbaren Hochzeitslook für Standesamt, Fotos und Feier planen",
+    angle:
+      "vor dem Termin prüfen, welche Intensität auf dem eigenen Gesicht elegant wirkt",
+    finish:
+      "strahlender Teint, weiche Augen und Lippen, die Kuss und Fotos überstehen",
+    technique: "Tageslicht, Blitz und Innenlicht getrennt vergleichen",
+    caution: "ein Trendlook auf Fotos schwerer wirkt als im Spiegel",
+    proof: "Nahaufnahme, Gruppenfoto und Abendlicht zusammenpassen",
+    related: [
+      "/scenarios/hochzeit",
+      "/looks/elegant",
+      "/for/hauttyp-bestimmen",
+      "/try-on",
+    ],
   },
   {
     languageSlug: "de",
@@ -735,9 +828,10 @@ const seeds: readonly PageSeed[] = [
     path: "/for/hauttyp-bestimmen",
     englishPath: "/blog/how-to-determine-skin-undertone",
     category: "feature",
-    keyword: "Hauttyp und Unterton bestimmen",
-    topic: "Basis, Rouge und Lippenfarbe sicherer wählen",
-    angle: "kühl, warm oder neutral praktisch einordnen",
+    keyword: "welche Farbe steht mir",
+    topic:
+      "Hauttyp und Unterton bestimmen, um Basis, Rouge und Lippenfarbe sicherer zu wählen",
+    angle: "Farben nach kühl, warm oder neutral praktisch einordnen",
     finish: "Farben, die nicht grau oder orange kippen",
     technique: "mehrere Farbfamilien im gleichen Licht vergleichen",
     caution: "ein einzelner Venentest zu falschen Schlüssen führt",
@@ -989,10 +1083,10 @@ const seeds: readonly PageSeed[] = [
   {
     languageSlug: "fr",
     groupKey: "scenario-wedding-guest",
-    path: "/scenarios/mariage-invite",
+    path: "/scenarios/mariage",
     englishPath: "/scenarios/wedding-guest",
     category: "scenario",
-    keyword: "Maquillage Invité Mariage",
+    keyword: "maquillage invité mariage",
     topic: "un look habillé mais respectueux du contexte",
     angle: "être photogénique sans voler la scène",
     finish: "éclat doux et tenue longue durée",
@@ -1055,6 +1149,34 @@ const seeds: readonly PageSeed[] = [
     technique: "appliquer puis estomper au-delà des bords visibles",
     caution: "une nuance foncée prend toute la place",
     proof: "la peau reste lumineuse et non rougie",
+  },
+  {
+    languageSlug: "fr",
+    groupKey: "feature-hooded-eyes",
+    path: "/for/paupieres-tombantes",
+    englishPath: "/for/hooded-eyes",
+    category: "feature",
+    keyword: "maquillage pour paupières tombantes",
+    topic: "placer fard, liner et lumière là où le regard reste visible",
+    angle: "dessiner une zone ouverte au-dessus du pli naturel",
+    finish: "regard lifté sans trait épais ni matière qui transfère",
+    technique: "travailler les yeux ouverts pour poser l'ombre au bon endroit",
+    caution: "le maquillage disparaît dès que les yeux sont ouverts",
+    proof: "face au miroir et en selfie, la couleur reste visible",
+  },
+  {
+    languageSlug: "fr",
+    groupKey: "feature-mature-skin",
+    path: "/for/peau-mature",
+    englishPath: "/for/mature-skin",
+    category: "feature",
+    keyword: "maquillage peau mature",
+    topic: "garder fraîcheur et définition sans marquer les ridules",
+    angle: "privilégier l'hydratation, la lumière douce et les couches fines",
+    finish: "teint souple, blush crème et poudre uniquement ciblée",
+    technique: "presser les textures au lieu de les tirer sur la peau",
+    caution: "les fonds de teint mats et épais accentuent la texture",
+    proof: "sourire, lumière du jour et photo restent flatteurs",
   },
   {
     languageSlug: "fr",
@@ -1162,7 +1284,7 @@ const seeds: readonly PageSeed[] = [
     path: "/pricing",
     englishPath: "/pricing",
     category: "product",
-    keyword: "パーソナルカラー診断",
+    keyword: "AIメイク診断 プラン",
     topic: "診断、保存、比較に使うプラン選び",
     angle: "必要な回数に合わせて選ぶ",
     finish: "無駄な購入を減らす色選び",
@@ -1200,6 +1322,41 @@ const seeds: readonly PageSeed[] = [
     caution: "流行色だけで選ぶこと",
     proof: "リップ、チーク、アイカラーがつながること",
     related: ["/ai-beauty-advisor", "/pricing"],
+  },
+  {
+    languageSlug: "ja",
+    groupKey: "feature-personal-color-diagnosis",
+    path: "/for/パーソナルカラー",
+    englishPath: "/personalized-makeup-recommendation",
+    category: "feature",
+    keyword: "パーソナルカラー診断",
+    topic: "自分に似合う色を顔映りで確かめること",
+    angle: "タイプ名だけで決めず、肌が明るく見える方向を比べる",
+    finish: "リップ、チーク、アイカラーが自然につながる色合わせ",
+    technique: "同じ写真で黄み、青み、明度、彩度を分けて比較する",
+    caution: "無料診断のタイプ名だけでコスメを買うこと",
+    proof: "顔色が沈まず、首や髪色とも浮かないこと",
+    related: [
+      "/guides/パーソナルカラー診断",
+      "/membership",
+      "/try-on",
+      "/diagnosis",
+    ],
+  },
+  {
+    languageSlug: "ja",
+    groupKey: "feature-face-type-diagnosis",
+    path: "/for/顔タイプ",
+    englishPath: "/personalized-makeup-recommendation",
+    category: "feature",
+    keyword: "顔タイプ診断",
+    topic: "顔立ちに合うメイクの重心を決めること",
+    angle: "顔タイプ名をそのまま信じず、眉、目元、唇の位置で調整する",
+    finish: "輪郭とパーツの強さがそろった自然な印象",
+    technique: "正面写真で余白、目幅、頬の高さ、唇の存在感を比較する",
+    caution: "似合うと言われた系統を全部濃く入れること",
+    proof: "近距離でも写真でも顔の印象がちぐはぐに見えないこと",
+    related: ["/membership", "/try-on", "/looks/垢抜け", "/guides/やり方"],
   },
   {
     languageSlug: "ja",
@@ -1501,7 +1658,7 @@ const seeds: readonly PageSeed[] = [
     path: "/for/一重",
     englishPath: "/for/single-eyelids",
     category: "feature",
-    keyword: "一重メイク",
+    keyword: "一重 メイク",
     topic: "目元の存在感を自然に出すこと",
     angle: "線よりまつ毛と影で見せる",
     finish: "目を開けた状態で見えるグラデーション",
@@ -1599,7 +1756,7 @@ const seeds: readonly PageSeed[] = [
     path: "/guides/順番",
     englishPath: "/guides/beginner-routine",
     category: "guide",
-    keyword: "メイク順番",
+    keyword: "メイク 順番",
     topic: "崩れにくいメイクの流れ",
     angle: "先に整える場所を決める",
     finish: "ベースからポイントまで自然につながる",
@@ -1678,7 +1835,7 @@ const zhCnSeoPages: readonly LocalizedSeoPage[] = [
       },
       {
         q: "为什么要用自己的自拍预览？",
-        a: "同一个妆容会被肤色、五官比例、眼型和光线影响。用自拍预览比只看模特图或热门色号更接近真实效果。",
+        a: "同一个妆容会被肤色、五官比例、眼型和光线影响。用自拍预览比只看模特图或热门色号更接近自己的使用场景。",
       },
     ],
     relatedLinks: [
@@ -1698,7 +1855,7 @@ const zhCnSeoPages: readonly LocalizedSeoPage[] = [
     category: "guide",
     keyword: "化妆顺序",
     topic: "底妆、眼妆和唇颊之间更稳定的上妆流程",
-    title: "化妆顺序：先保养还是先底妆？| AI Beauty Stylist",
+    title: "化妆顺序：先护肤还是先底妆？| AI Beauty Stylist",
     description:
       "了解适合新手和日常妆的化妆顺序：从护肤、底妆、眼妆到唇颊，用自己的自拍预览妆感，减少卡粉、斑驳和颜色过重。",
     heroTitle: "化妆顺序：让妆容更服帖的基础流程",

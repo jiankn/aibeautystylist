@@ -59,13 +59,13 @@ describe("localized footer SEO pages", () => {
 
   it("ships topic-specific depth and at least three content assets", () => {
     for (const page of localizedFooterSeoPages) {
-      expect(page.sections).toHaveLength(5);
+      expect(page.sections).toHaveLength(6);
       expect(page.sections.some((section) => section.kind === "grid")).toBe(
         true,
       );
-      expect(page.sections.some((section) => section.kind === "table")).toBe(
-        true,
-      );
+      expect(
+        page.sections.filter((section) => section.kind === "table"),
+      ).toHaveLength(2);
       expect(page.faq.length).toBeGreaterThanOrEqual(4);
       expect(page.contentAssetsHeading).toBeTruthy();
       expect(page.contentAssets).toHaveLength(3);

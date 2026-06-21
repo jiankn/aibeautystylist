@@ -38,6 +38,10 @@ interface LanguageCopy {
   rows(
     seed: PageSeed,
   ): readonly { label: string; good: string; avoid: string }[];
+  decisionTitle(seed: PageSeed): string;
+  decisionRows(
+    seed: PageSeed,
+  ): readonly { label: string; good: string; avoid: string }[];
   highlight(seed: PageSeed): string;
   ctaTitle(seed: PageSeed): string;
   ctaText(seed: PageSeed): string;
@@ -119,6 +123,26 @@ const esCopy: LanguageCopy = {
       label: "Labios y mejillas",
       good: `${s.finish} dentro de una misma temperatura de color`,
       avoid: "Dos puntos fuertes compitiendo al mismo tiempo",
+    },
+  ],
+  decisionTitle: () => "Cómo decidir antes de aplicarlo",
+  decisionRows: (s) => [
+    {
+      label: "Si tienes poco tiempo",
+      good: `Mantén ${s.finish} como criterio y ajusta solo la zona que cambia más el rostro.`,
+      avoid:
+        "Probar varios colores y texturas a la vez hasta perder de vista qué mejora el resultado.",
+    },
+    {
+      label: "Si habrá fotos",
+      good: `Comprueba ${s.proof} y después cambia solo intensidad, brillo o área principal.`,
+      avoid:
+        "Decidir solo por el espejo de cerca, porque la cámara y la luz interior pueden endurecer el look.",
+    },
+    {
+      label: "Si se ve forzado",
+      good: `Simplifica ${s.technique} y baja bordes, saturación o cobertura antes de cambiar todo.`,
+      avoid: `Compensar ${s.caution} con más producto o con un color todavía más fuerte.`,
     },
   ],
   highlight: (s) =>
@@ -207,6 +231,26 @@ const ptBrCopy: LanguageCopy = {
       label: "Boca e blush",
       good: `${s.finish} dentro da mesma temperatura de cor`,
       avoid: "Dois focos fortes brigando entre si",
+    },
+  ],
+  decisionTitle: () => "Como decidir antes de aplicar",
+  decisionRows: (s) => [
+    {
+      label: "Quando há pouco tempo",
+      good: `Mantenha ${s.finish} como critério e ajuste só a área que muda mais a expressão.`,
+      avoid:
+        "Testar várias cores e texturas ao mesmo tempo até não saber o que melhorou o resultado.",
+    },
+    {
+      label: "Quando vai ter foto",
+      good: `Confira ${s.proof} e depois mexa só em intensidade, brilho ou área principal.`,
+      avoid:
+        "Decidir apenas pelo espelho de perto, porque câmera e luz interna podem pesar o visual.",
+    },
+    {
+      label: "Quando parece forçado",
+      good: `Simplifique ${s.technique} e reduza bordas, saturação ou cobertura antes de trocar tudo.`,
+      avoid: `Compensar ${s.caution} com mais produto ou uma cor ainda mais forte.`,
     },
   ],
   highlight: (s) =>
@@ -316,6 +360,11 @@ function makePage(seed: PageSeed): LocalizedSeoPage {
         rows: copy.rows(seed),
       },
       {
+        kind: "table",
+        title: copy.decisionTitle(seed),
+        rows: copy.decisionRows(seed),
+      },
+      {
         kind: "highlight",
         text: copy.highlight(seed),
       },
@@ -364,7 +413,7 @@ const seeds: readonly PageSeed[] = [
     path: "/precios",
     englishPath: "/pricing",
     category: "product",
-    keyword: "precios de prueba de maquillaje IA",
+    keyword: "precios del probador de maquillaje con IA",
     topic: "elegir un plan para probar, guardar y comparar looks",
     angle: "pagar solo por el uso que necesitas",
     finish: "recomendaciones claras sin compra impulsiva",
@@ -416,6 +465,7 @@ const seeds: readonly PageSeed[] = [
     technique: "corregir por zonas y difuminar bordes",
     caution: "que el corrector se note más que la piel",
     proof: "que funcione de cerca y con luz natural",
+    related: ["/scenarios/dia", "/looks/piel-luminosa", "/guides/paso-a-paso"],
   },
   {
     languageSlug: "es",
@@ -423,13 +473,14 @@ const seeds: readonly PageSeed[] = [
     path: "/looks/piel-luminosa",
     englishPath: "/looks/dewy-skin",
     category: "style",
-    keyword: "maquillaje de piel luminosa",
-    topic: "crear luz sin que parezca grasa",
+    keyword: "maquillaje glow",
+    topic: "crear una piel luminosa sin que parezca grasa",
     angle: "elegir dónde poner brillo",
     finish: "luminosidad fina en pómulos y centro del rostro",
     technique: "hidratar y sellar solo donde hace falta",
     caution: "mezclar brillo bonito con exceso de grasa",
     proof: "que la zona T no se vea quemada en foto",
+    related: ["/scenarios/dia", "/for/piel-grasa", "/looks/maquillaje-mate"],
   },
   {
     languageSlug: "es",
@@ -458,6 +509,7 @@ const seeds: readonly PageSeed[] = [
     technique: "profundizar la esquina externa y suavizar mejillas",
     caution: "que el contorno se vea como una línea",
     proof: "que el look funcione en foto y en persona",
+    related: ["/scenarios/noche", "/scenarios/graduacion", "/scenarios/fotos"],
   },
   {
     languageSlug: "es",
@@ -472,6 +524,7 @@ const seeds: readonly PageSeed[] = [
     technique: "usar polvo solo en el centro y difuminar",
     caution: "que la piel se vea plana o reseca",
     proof: "que las expresiones no se vean acartonadas",
+    related: ["/for/piel-grasa", "/looks/piel-luminosa", "/guides/paso-a-paso"],
   },
   {
     languageSlug: "es",
@@ -486,6 +539,44 @@ const seeds: readonly PageSeed[] = [
     technique: "usar crema en mejillas y labios para unir tonos",
     caution: "que lo simple parezca incompleto",
     proof: "que combine con peinado y ropa del día",
+  },
+  {
+    languageSlug: "es",
+    groupKey: "scenario-day",
+    path: "/scenarios/dia",
+    englishPath: "/scenarios/day-makeup",
+    category: "scenario",
+    keyword: "maquillaje de día",
+    topic: "verse arreglada con luz natural sin recargar el rostro",
+    angle: "priorizar piel fresca, cejas ordenadas y color suave",
+    finish: "base ligera, rubor transparente y labios fáciles de retocar",
+    technique: "bajar la cobertura y subir solo los puntos que dan vida",
+    caution: "que el maquillaje se vea más fuerte al salir a la calle",
+    proof: "que funcione en transporte, oficina, universidad y selfie",
+    related: [
+      "/looks/maquillaje-natural",
+      "/looks/piel-luminosa",
+      "/guides/paso-a-paso",
+    ],
+  },
+  {
+    languageSlug: "es",
+    groupKey: "scenario-night",
+    path: "/scenarios/noche",
+    englishPath: "/scenarios/nighttime",
+    category: "scenario",
+    keyword: "maquillaje de noche",
+    topic: "mantener presencia en luz baja, restaurante o fiesta",
+    angle: "subir contraste sin perder equilibrio",
+    finish: "ojos más definidos, piel pulida y labios con intención",
+    technique: "reforzar la esquina externa, pestañas y rubor para cámara",
+    caution: "que el look se vuelva pesado antes de llegar al evento",
+    proof: "que luz cálida, flash y movimiento sigan favoreciendo",
+    related: [
+      "/looks/glam-suave",
+      "/scenarios/graduacion",
+      "/scenarios/primera-cita",
+    ],
   },
   {
     languageSlug: "es",
@@ -545,6 +636,23 @@ const seeds: readonly PageSeed[] = [
   },
   {
     languageSlug: "es",
+    groupKey: "scenario-graduation",
+    path: "/scenarios/graduacion",
+    englishPath: "/scenarios/graduation",
+    category: "scenario",
+    keyword: "maquillaje para graduación",
+    topic: "verse bien en ceremonia, fiesta y fotos con flash",
+    angle: "equilibrar duración, cámara y comodidad durante muchas horas",
+    finish:
+      "piel resistente, ojos definidos y labios que combinen con el vestido",
+    technique:
+      "probar intensidad en selfie, luz natural y flash antes del evento",
+    caution: "copiar un maquillaje de fiesta que pese demasiado en tu rostro",
+    proof: "que el look siga elegante en foto cercana, escenario y baile",
+    related: ["/scenarios/noche", "/looks/glam-suave", "/scenarios/fotos"],
+  },
+  {
+    languageSlug: "es",
     groupKey: "feature-hooded",
     path: "/for/ojos-encapotados",
     englishPath: "/for/hooded-eyes",
@@ -570,6 +678,27 @@ const seeds: readonly PageSeed[] = [
     technique: "usar capas finas y cremosas",
     caution: "que el polvo se acumule en líneas",
     proof: "que el rostro se vea descansado al sonreír",
+    related: ["/for/piel-grasa", "/looks/piel-luminosa", "/guides/paso-a-paso"],
+  },
+  {
+    languageSlug: "es",
+    groupKey: "feature-oily-skin",
+    path: "/for/piel-grasa",
+    englishPath: "/looks/matte-makeup",
+    category: "feature",
+    keyword: "maquillaje para piel grasa",
+    topic: "controlar brillo sin que la base se vea pesada",
+    angle: "separar preparación, textura y sellado por zonas",
+    finish: "mate suave en zona T y piel flexible en mejillas",
+    technique:
+      "usar capas finas, primer puntual y polvo solo donde aparece grasa",
+    caution: "cubrir todo el rostro con polvo hasta marcar textura",
+    proof: "que la base no se abra en nariz, frente y barbilla",
+    related: [
+      "/looks/maquillaje-mate",
+      "/looks/piel-luminosa",
+      "/guides/paso-a-paso",
+    ],
   },
   {
     languageSlug: "es",
@@ -649,7 +778,7 @@ const seeds: readonly PageSeed[] = [
     path: "/precos",
     englishPath: "/pricing",
     category: "product",
-    keyword: "preços de teste de maquiagem IA",
+    keyword: "preços do teste de maquiagem com IA",
     topic: "escolher um plano para testar, salvar e comparar looks",
     angle: "pagar pelo uso real",
     finish: "recomendação clara sem compra por impulso",
@@ -687,6 +816,26 @@ const seeds: readonly PageSeed[] = [
     caution: "comprar só porque uma cor viralizou",
     proof: "boca, blush e olhos ficarem conectados",
     related: ["/ai-beauty-advisor", "/pricing"],
+  },
+  {
+    languageSlug: "pt-br",
+    groupKey: "feature-colorimetria",
+    path: "/for/colorimetria",
+    englishPath: "/personalized-makeup-recommendation",
+    category: "feature",
+    keyword: "colorimetria pessoal",
+    topic: "descobrir quais cores favorecem seu rosto",
+    angle: "usar a cartela como ponto de partida, não como regra rígida",
+    finish: "batom, blush e sombra conectados ao seu tom de pele",
+    technique:
+      "comparar famílias quentes, frias, claras e profundas na mesma selfie",
+    caution: "comprar produto só porque combina com uma estação de cor",
+    proof: "o rosto parecer mais descansado sem mudar sua pele real",
+    related: [
+      "/recomendacao-maquiagem-personalizada",
+      "/teste-maquiagem",
+      "/consultor-beleza-ia",
+    ],
   },
   {
     languageSlug: "pt-br",
@@ -872,6 +1021,27 @@ const seeds: readonly PageSeed[] = [
   },
   {
     languageSlug: "pt-br",
+    groupKey: "scenario-formatura",
+    path: "/scenarios/formatura",
+    englishPath: "/scenarios/graduation",
+    category: "scenario",
+    keyword: "maquiagem para formatura",
+    topic: "ficar bem na cerimônia, na festa e nas fotos",
+    angle: "equilibrar duração, flash e conforto para muitas horas",
+    finish:
+      "pele resistente, olhos definidos e boca que não briga com o vestido",
+    technique:
+      "testar a intensidade em selfie, luz natural e flash antes do evento",
+    caution: "copiar uma maquiagem de festa que pesa demais no seu rosto",
+    proof: "o look continuar elegante em foto de perto, palco e pista",
+    related: [
+      "/scenarios/casamento-convidada",
+      "/looks/glam-suave",
+      "/teste-maquiagem",
+    ],
+  },
+  {
+    languageSlug: "pt-br",
     groupKey: "scenario-quick",
     path: "/scenarios/rapida-5min",
     englishPath: "/scenarios/quick-5min",
@@ -911,6 +1081,21 @@ const seeds: readonly PageSeed[] = [
     technique: "usar camadas finas e produtos cremosos",
     caution: "pó acumular em linhas",
     proof: "o rosto parecer descansado ao sorrir",
+  },
+  {
+    languageSlug: "pt-br",
+    groupKey: "feature-pele-morena",
+    path: "/for/pele-morena",
+    englishPath: "/for/dark-skin",
+    category: "feature",
+    keyword: "maquiagem para pele morena",
+    topic: "escolher cores que valorizam pele morena sem apagar o rosto",
+    angle: "comparar subtom, contraste e intensidade antes de comprar produto",
+    finish: "pele viçosa, blush presente e batom em harmonia com o tom natural",
+    technique:
+      "testar batom, blush e sombra na mesma luz para evitar tons acinzentados",
+    caution: "usar base clara demais ou nude que deixa a boca sem definição",
+    proof: "a cor continuar bonita em selfie, luz natural e foto com flash",
   },
   {
     languageSlug: "pt-br",

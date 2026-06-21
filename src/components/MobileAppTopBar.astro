@@ -321,7 +321,7 @@ const getActionLabel = (item: ActionItem) => {
 
     {
       title ? (
-        <h1>{title}</h1>
+        <div class="mobile-app-page-title">{title}</div>
       ) : (
         <span class="mobile-app-title-spacer" aria-hidden="true" />
       )
@@ -628,7 +628,7 @@ const getActionLabel = (item: ActionItem) => {
       gap: 8px;
       padding: 8px 12px;
     }
-    .mobile-app-topbar h1 {
+    .mobile-app-page-title {
       display: -webkit-box;
       width: 100%;
       min-width: 0;

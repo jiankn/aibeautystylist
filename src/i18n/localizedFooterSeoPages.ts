@@ -108,7 +108,7 @@ const rawKeywordsByLanguage: Record<
     ["/scenarios/buero", "Make-up fürs Büro", "Make-up für den Alltag"],
     ["/scenarios/erstes-date", "Date Make-up", "Make-up für ein erstes Date"],
     ["/scenarios/reisepass-foto", "Reisepass-Foto Make-up", "Foto-Make-up"],
-    ["/scenarios/hochzeitsgast", "Hochzeit Make-up Gast", "festliches Make-up"],
+    ["/scenarios/hochzeit", "Hochzeit Make-up Gast", "festliches Make-up"],
     ["/scenarios/abschlussball", "Abschlussball Make-up", "festliches Make-up"],
   ],
   fr: [
@@ -140,11 +140,7 @@ const rawKeywordsByLanguage: Record<
       "maquillage photo d'identité",
       "maquillage pour photo",
     ],
-    [
-      "/scenarios/invitee-mariage",
-      "maquillage invité mariage",
-      "maquillage de soirée",
-    ],
+    ["/scenarios/mariage", "maquillage invité mariage", "maquillage de soirée"],
     ["/scenarios/bal", "maquillage bal", "maquillage de soirée"],
   ],
   ja: [
@@ -209,7 +205,7 @@ const rawKeywordsByLanguage: Record<
     ["/looks/soft-glam", "maquillaje soft glam", "maquillaje elegante"],
     ["/looks/maquillaje-natural", "maquillaje natural", "maquillaje de día"],
     ["/looks/sin-maquillaje", "maquillaje sin maquillaje", "maquillaje nude"],
-    ["/looks/piel-luminosa", "piel luminosa", "maquillaje glow"],
+    ["/looks/piel-luminosa", "maquillaje glow", "piel luminosa"],
     ["/looks/glass-skin", "maquillaje glass skin", "maquillaje glow"],
     ["/looks/clean-girl", "maquillaje clean girl", "maquillaje minimalista"],
     [
@@ -420,7 +416,7 @@ const copyByLanguage: Record<SeoLanguageSlug, LanguageCopy> = {
         a: "常见问题是只看模特图、忽略真实光线，或一次加入太多颜色和质感。",
       },
       {
-        q: `如何让${s.keyword}更接近真实效果？`,
+        q: `如何让${s.keyword}更接近可执行参考？`,
         a: "使用无滤镜、正面、光线均匀的自拍，并在近距离和日常环境中复核。",
       },
     ],
@@ -903,6 +899,23 @@ const copyByLanguage: Record<SeoLanguageSlug, LanguageCopy> = {
 };
 
 function relatedLinks(spec: KeywordSpec) {
+  const supplementalLinks: Record<
+    string,
+    readonly { label: string; url: string }[]
+  > = {
+    "de:/scenarios/wedding-guest": [
+      { label: "Braut Make-up", url: "/scenarios/braut" },
+    ],
+    "es:/looks/natural-makeup": [
+      { label: "maquillaje de día", url: "/scenarios/dia" },
+    ],
+    "es:/looks/dewy-skin": [
+      { label: "maquillaje para piel grasa", url: "/for/piel-grasa" },
+    ],
+    "es:/looks/soft-glam": [
+      { label: "maquillaje de noche", url: "/scenarios/noche" },
+    ],
+  };
   const siblingPaths = footerSeoTargets
     .filter(
       (target) =>
@@ -924,6 +937,7 @@ function relatedLinks(spec: KeywordSpec) {
 
   return [
     { label: spec.secondaryKeyword, url: "/tryon-free" },
+    ...(supplementalLinks[`${spec.languageSlug}:${spec.englishPath}`] ?? []),
     ...siblingPaths,
     { label: "AI Beauty Stylist", url: "/discover" },
   ];

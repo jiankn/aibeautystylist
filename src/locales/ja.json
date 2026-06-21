@@ -120,211 +120,215 @@
     "copyright": "無断転載を禁じます。"
   },
   "homepage": {
-    "jsonLdDescription": "セルフィーをアップロードし、AIでメイクをプレビューして、シーン・肌色・質感に合わせて選ぶオンラインツール。",
+    "jsonLdDescription": "セルフィーでメイクの方向を比較し、肌色・顔立ち・予定に合わせて試せるAIメイクプレビュー。",
     "heroKicker": "AI バーチャルメイク",
-    "heroKickerSub": "プレビュー準備完了",
-    "heroTitle": "写真をアップロードして、",
+    "heroKickerSub": "AIメイク診断",
+    "heroTitle": "AIメイク診断で、",
     "heroTitleSpan": "似合うメイクの方向を確認",
-    "heroSubtitle": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
+    "heroSubtitle": "セルフィーで色味、質感、目元の強さを比べて、今日の予定に合うメイクの方向を確認できます。",
     "startTryOn": "試してみる",
     "howItWorks": "使い方",
     "pricingRule": "無料で開始 · 必要になったら追加クレジットを選択",
-    "trustNaturalTitle": "結果",
-    "trustNaturalDesc": "結果を比較",
-    "trustRecommendTitle": "シーン",
-    "trustRecommendDesc": "カタログ",
+    "trustNaturalTitle": "仕上がり比較",
+    "trustNaturalDesc": "前後の印象を見る",
+    "trustRecommendTitle": "予定別に選ぶ",
+    "trustRecommendDesc": "通勤・写真・イベント対応",
     "trustPrivacyTitle": "写真は自分で管理",
-    "trustPrivacyDesc": "削除",
-    "before": "前",
-    "after": "後",
-    "heroImageAltAfter": "結果",
-    "heroImageAltBefore": "元画像",
-    "dragSlider": "結果を比較",
-    "statsTryons": "3",
-    "statsTryonsLabel": "メイクを選ぶ · セルフィーをアップロード · 結果を比較",
-    "statsRealism": "1",
+    "trustPrivacyDesc": "アップロード後も削除可能",
+    "before": "アップロード前",
+    "after": "プレビュー後",
+    "heroImageAltAfter": "メイクプレビュー後の自然な仕上がり",
+    "heroImageAltBefore": "アップロード前のセルフィー",
+    "dragSlider": "前後の仕上がりを比較",
+    "statsTryons": "3ステップ",
+    "statsTryonsLabel": "選ぶ、アップロード、比較",
+    "statsRealism": "1回",
     "statsRealismLabel": "診断または試着1回につき1クレジット",
-    "statsPrivacy": "削除",
-    "statsPrivacyLabel": "写真は自分で管理",
-    "howKicker": "3",
-    "howTitle": "メイクを選ぶ, セルフィーをアップロード, 結果を比較",
-    "howSubtitle": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
+    "statsPrivacy": "管理可能",
+    "statsPrivacyLabel": "写真と結果を自分で管理",
+    "howKicker": "3ステップ",
+    "howTitle": "似合う方向を短時間で確認",
+    "howSubtitle": "まずメイクの候補を選び、セルフィーをアップロードして、顔色・目元・質感の変化を比較します。",
     "howSteps": [
       {
         "icon": "1",
         "title": "メイクを選ぶ",
-        "copy": "シーン"
+        "copy": "通勤、写真、デート、イベントなど、使う場面に近い候補から選びます。"
       },
       {
         "icon": "2",
         "title": "セルフィーをアップロード",
-        "copy": "写真は自分で管理"
+        "copy": "正面が見える写真を使い、処理内容を確認してからアップロードします。"
       },
       {
         "icon": "3",
-        "title": "結果を比較",
-        "copy": "結果"
+        "title": "仕上がりを比較",
+        "copy": "顔色、目元の強さ、肌の質感を見て、保存するか別の方向を試します。"
       }
     ],
     "workflowWorkspace": "試着ワークスペース",
     "workflowStatus": "プレビュー準備完了",
-    "workflowPreview": "AI 結果",
+    "workflowPreview": "AIプレビュー",
     "workflowUploaded": "セルフィーをアップロード",
     "workflowReady": "プレビュー準備完了",
     "workflowScanning": "AIが光と顔の位置を分析しています...",
     "workflowSelected": "メイクを選ぶ",
-    "workflowPreviewAlt": "結果",
-    "featuredTitle": "カタログ",
-    "featuredSubtitle": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-    "featuredLink": "カタログ",
+    "workflowPreviewAlt": "選んだメイクのAIプレビュー",
+    "featuredTitle": "メイク候補",
+    "featuredSubtitle": "まずは使う場面がはっきりしたメイクから選ぶと、比較しやすくなります。",
+    "featuredLink": "候補を見る",
     "aiKicker": "AI バーチャルメイク",
     "aiTitle": "似合うメイクの方向を確認",
-    "aiSubtitle": "セルフィーをアップロードし、AIでメイクをプレビューして、シーン・肌色・質感に合わせて選ぶオンラインツール。",
+    "aiSubtitle": "流行の名前だけで決めず、肌色、顔立ち、予定に合うかを自分の写真で比べます。",
     "aiFeatures": [
       {
         "icon": "1",
-        "title": "結果",
-        "copy": "結果を比較"
+        "title": "顔色を見る",
+        "copy": "リップやチークで肌が沈まないかを確認します。"
       },
       {
         "icon": "2",
-        "title": "シーン",
-        "copy": "カタログ"
+        "title": "予定に合わせる",
+        "copy": "通勤、写真、イベントで必要な強さを分けて選びます。"
       },
       {
         "icon": "3",
         "title": "写真は自分で管理",
-        "copy": "削除"
+        "copy": "アップロード後も写真と結果を管理できます。"
       },
       {
         "icon": "4",
-        "title": "プラン",
-        "copy": "診断または試着1回につき1クレジット"
+        "title": "使う分だけ比較",
+        "copy": "診断または試着1回につき1クレジットを使います。"
       }
     ],
-    "aiVisualAlt": "結果",
-    "aiVisualCaption": "セルフィーをアップロードし、AIでメイクをプレビューして、シーン・肌色・質感に合わせて選ぶオンラインツール。",
-    "scenarioKicker": "シーン",
-    "scenarioTitle": "似合うメイクの方向を確認",
-    "scenarioSubtitle": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-    "scenarioLink": "カタログ",
+    "aiVisualAlt": "セルフィー上で比較するメイクプレビュー",
+    "aiVisualCaption": "プレビューはメイク方向を比べるための参考です。実際の質感や持ちは、使う製品と塗り方でも変わります。",
+    "scenarioKicker": "予定別メイク",
+    "scenarioTitle": "今日の予定から選ぶ",
+    "scenarioSubtitle": "写真、通勤、面接、イベントでは必要な濃さが違います。場面に合わせて先に方向を絞ります。",
+    "scenarioLink": "候補を見る",
     "scenarioTryPrefix": "試してみる",
     "scenarioCardCta": "試してみる",
     "scenarioAriaPrefix": "試してみる",
     "scenarioHighlights": [
       {
         "slug": "commute",
-        "label": "シーン",
-        "moment": "シーン",
-        "reason": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-        "scenario": "シーン"
+        "label": "通勤の血色感",
+        "moment": "朝の支度 · ビデオ会議",
+        "reason": "薄いベースと控えめな血色で、疲れて見えやすい朝の顔を整えます。",
+        "scenario": "通勤"
       },
       {
         "slug": "interview-ready",
-        "label": "バーチャルメイク",
-        "moment": "バーチャルメイク",
-        "reason": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-        "scenario": "バーチャルメイク"
+        "label": "面接のきちんと感",
+        "moment": "面接 · 顧客打ち合わせ",
+        "reason": "眉と目元を整え、色やラメが話す内容を邪魔しない強さにします。",
+        "scenario": "面接"
       },
       {
         "slug": "rose-milk-date",
-        "label": "結果",
-        "moment": "結果",
-        "reason": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-        "scenario": "結果"
+        "label": "デートのやわらかさ",
+        "moment": "夕方の食事 · 近距離",
+        "reason": "ローズ系の唇と頬で、近くで見ても重くならない印象に寄せます。",
+        "scenario": "デート"
       },
       {
         "slug": "flash-proof-satin",
-        "label": "結果を比較",
-        "moment": "結果を比較",
-        "reason": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-        "scenario": "結果を比較"
+        "label": "写真で飛ばない質感",
+        "moment": "集合写真 · 夜のイベント",
+        "reason": "フラッシュで白浮きしやすい部分を抑え、目元と唇の存在感を残します。",
+        "scenario": "写真"
       },
       {
         "slug": "mature-skin-radiance",
-        "label": "写真は自分で管理",
-        "moment": "写真は自分で管理",
-        "reason": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-        "scenario": "写真は自分で管理"
+        "label": "大人肌の明るさ",
+        "moment": "日常 · きちんと見せたい日",
+        "reason": "厚塗りよりも薄いツヤと血色で、表情が暗く見えない方向を探します。",
+        "scenario": "日常"
       },
       {
         "slug": "wedding-guest",
-        "label": "カタログ",
-        "moment": "カタログ",
-        "reason": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-        "scenario": "カタログ"
+        "label": "結婚式ゲスト",
+        "moment": "披露宴 · 長時間の写真",
+        "reason": "華やかさは足しつつ、主役より強く見えないバランスを確認します。",
+        "scenario": "イベント"
       }
     ],
-    "proofKicker": "結果を比較",
-    "proofTitle": "似合うメイクの方向を確認",
-    "proofSubtitle": "セルフィーをアップロードし、AIでメイクをプレビューして、シーン・肌色・質感に合わせて選ぶオンラインツール。",
+    "proofKicker": "判断の例",
+    "proofTitle": "どこを見て選ぶかを決める",
+    "proofSubtitle": "ただ「かわいい」かどうかではなく、顔色、質感、写真写りのどこが変わるかを確認します。",
     "proofCases": [
       {
         "slug": "olive-undertone-rose",
-        "eyebrow": "結果を比較",
-        "need": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-        "title": "結果",
-        "copy": "セルフィーをアップロードし、AIでメイクをプレビューして、シーン・肌色・質感に合わせて選ぶオンラインツール。",
-        "outcome": "結果を比較"
+        "eyebrow": "判断例 · 肌色",
+        "need": "血色はほしいが、ピンクが浮きやすい",
+        "title": "オリーブ寄りの肌にローズ系が合うか確認",
+        "copy": "唇と頬の色が肌から浮かないか、彩度を控えめにして見比べます。",
+        "outcome": "見るポイント：肌が沈まないか、唇と頬がつながるか"
       },
       {
         "slug": "flash-proof-satin",
-        "eyebrow": "結果を比較",
-        "need": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-        "title": "シーン",
-        "copy": "セルフィーをアップロードし、AIでメイクをプレビューして、シーン・肌色・質感に合わせて選ぶオンラインツール。",
-        "outcome": "結果を比較"
+        "eyebrow": "判断例 · 写真",
+        "need": "フラッシュで顔色が飛びやすい",
+        "title": "夜の写真では反射と輪郭を先に確認",
+        "copy": "ツヤを残しながら、白く飛びやすいTゾーンと唇の存在感を見ます。",
+        "outcome": "見るポイント：反射、輪郭、唇の濃さ"
       },
       {
         "slug": "mature-skin-radiance",
-        "eyebrow": "結果を比較",
-        "need": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
-        "title": "写真は自分で管理",
-        "copy": "セルフィーをアップロードし、AIでメイクをプレビューして、シーン・肌色・質感に合わせて選ぶオンラインツール。",
-        "outcome": "結果を比較"
+        "eyebrow": "判断例 · 大人肌",
+        "need": "明るく見せたいが、厚塗り感は避けたい",
+        "title": "質感を残して明るさを足す",
+        "copy": "粉っぽさより、頬の高い位置と唇の血色が自然に見えるかを確認します。",
+        "outcome": "見るポイント：肌の質感、目元の重さ、顔全体の明るさ"
       }
     ],
     "proofPrinciples": [
       {
-        "title": "シーン",
-        "copy": "カタログ"
+        "title": "予定から考える",
+        "copy": "通勤、写真、イベントでは必要な強さが違います。"
       },
       {
-        "title": "結果",
-        "copy": "結果を比較"
+        "title": "顔色を優先する",
+        "copy": "流行色よりも、肌が明るく見えるかを先に見ます。"
       },
       {
-        "title": "写真は自分で管理",
-        "copy": "削除"
+        "title": "参考として使う",
+        "copy": "AIプレビューは方向確認用。実際の質感は製品と塗り方で変わります。"
       }
     ],
     "assuranceKicker": "写真は自分で管理",
-    "assuranceTitle": "写真は自分で管理",
-    "assuranceSubtitle": "セルフィーをアップロードし、AIでメイクをプレビューして、シーン・肌色・質感に合わせて選ぶオンラインツール。",
-    "decisionFlow": ["メイクを選ぶ", "セルフィーをアップロード", "結果を比較"],
+    "assuranceTitle": "アップロード前に確認、あとから管理",
+    "assuranceSubtitle": "メイク候補を見るだけならアップロードは不要です。生成を始める前に写真の扱いを確認でき、結果はワークスペースで管理できます。",
+    "decisionFlow": [
+      "メイクを選ぶ",
+      "確認してアップロード",
+      "プレビューを見る"
+    ],
     "assuranceCta": "試してみる",
     "uploadConcerns": [
       {
         "index": "01",
-        "title": "セルフィーをアップロード",
-        "copy": "写真は自分で管理"
+        "title": "アップロード前に確認",
+        "copy": "写真の処理内容を確認してから、今回のプレビューに使います。"
       },
       {
         "index": "02",
-        "title": "結果",
-        "copy": "削除"
+        "title": "写真と結果を管理",
+        "copy": "元写真、プレビュー、診断記録をワークスペースで確認できます。"
       },
       {
         "index": "03",
-        "title": "プラン",
-        "copy": "診断または試着1回につき1クレジット"
+        "title": "生成時だけ消費",
+        "copy": "アップロード確認後に生成を始めた場合のみクレジットを使います。"
       }
     ],
     "upgradeTitle": "アップグレードしてさらに比較",
     "upgradeCopy": "プラン · クレジット · HD",
     "upgradeLink": "プラン",
     "finalCtaTitle": "自分の顔で一度試す",
-    "finalCtaSubtitle": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
+    "finalCtaSubtitle": "メイク候補を選び、セルフィーで仕上がりの方向を確認します。",
     "finalCtaCta": "試してみる"
   },
   "workspace": {
@@ -339,7 +343,7 @@
     "quickActions": "ワークスペース操作",
     "viewPlans": "プランを見る",
     "loginCta": "始める",
-    "loginDesc": "通勤、デート、写真、イベント別に選び、自分の顔でAIプレビューを確認できます。",
+    "loginDesc": "ログインすると無料クレジットを受け取り、セルフィーでメイクの方向をプレビューできます。",
     "freeBenefits": "月間無料クレジット · 履歴保存 · AI診断",
     "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} クレジット",

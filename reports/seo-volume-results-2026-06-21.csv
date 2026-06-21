@@ -1,0 +1,614 @@
+lang,category,keyword,searchVolume,kd,cpc,competition,competitionIndex,demandStatus
+de,style,Braut Make-up,4400,,1.23,LOW,18,confirmed-demand
+de,demographic,Make-up für reife Haut,1600,0,1.06,HIGH,100,confirmed-demand
+de,style,natürliches Make-up,1300,,1.83,HIGH,99,confirmed-demand
+de,style,Glow Make-up,1000,,0.96,HIGH,100,confirmed-demand
+de,style,Abend-Make-up,880,,1.03,LOW,9,confirmed-demand
+de,style,Nude Make-up,720,,1.23,HIGH,88,confirmed-demand
+de,demographic,welche Farbe steht mir,590,0,0.73,MEDIUM,35,confirmed-demand
+de,tutorial,Make-up für Anfänger,480,0,0.8,HIGH,97,confirmed-demand
+de,ai_tech,welches Make-up passt zu mir,480,13,1.62,HIGH,80,confirmed-demand
+de,product,Make-up für empfindliche Haut,320,0,1.26,HIGH,100,confirmed-demand
+de,tutorial,Grundausstattung Make-up,170,0,0.63,MEDIUM,40,confirmed-demand
+de,ai_tech,Unterton Haut bestimmen,170,0,1.23,MEDIUM,53,confirmed-demand
+de,style,dezent schminken,140,0,0.52,MEDIUM,64,confirmed-demand
+de,style,Alltags-Make-up,110,,0.98,HIGH,83,confirmed-demand
+de,ai_tech,Hautanalyse KI,110,2,2.24,HIGH,79,confirmed-demand
+de,style,elegantes Make-up,70,,0.62,LOW,10,confirmed-demand
+de,scenario,Bewerbungsfoto Make-up,70,,,LOW,4,confirmed-demand
+de,scenario,festliches Make-up,70,,,MEDIUM,62,confirmed-demand
+de,demographic,Make-up für runde Gesichter,70,,1.1,MEDIUM,36,confirmed-demand
+de,demographic,Make-up für helle Haut,70,,0.82,HIGH,100,confirmed-demand
+de,scenario,Foto-Make-up,50,,,LOW,8,confirmed-demand
+de,product,günstige Make-up Pinsel,50,,0.39,HIGH,100,confirmed-demand
+de,product,Kajal vs. Eyeliner,50,,0.5,LOW,4,confirmed-demand
+de,style,frischer Teint,40,,0.51,HIGH,91,confirmed-demand
+de,tutorial,günstige Make-up Produkte,40,,0.89,HIGH,100,confirmed-demand
+de,demographic,Make-up für schlupflider,30,,0.57,MEDIUM,55,confirmed-demand
+de,ai_tech,Make-up Simulator,30,,1.65,MEDIUM,50,confirmed-demand
+de,scenario,Date Make-up,20,,,LOW,0,confirmed-demand
+de,demographic,passende Lippenstiftfarbe finden,20,,0.96,MEDIUM,66,confirmed-demand
+de,tutorial,5 Minuten Make-up,20,,1.63,MEDIUM,50,confirmed-demand
+de,product,Make-up Grundausstattung Liste,20,,0.55,LOW,16,confirmed-demand
+de,product,Augen Make-up Tipps,20,,0.77,MEDIUM,54,confirmed-demand
+de,style,Clean Beauty Look,10,,,,,confirmed-demand
+de,scenario,Make-up fürs Büro,10,,0.94,HIGH,100,confirmed-demand
+de,scenario,Vorstellungsgespräch Make-up,10,,,LOW,0,confirmed-demand
+de,scenario,Hochzeit Make-up Gast,10,,3.09,LOW,21,confirmed-demand
+de,scenario,Make-up für den Alltag,10,,0.49,HIGH,100,confirmed-demand
+de,tutorial,schminken lernen Schritt für Schritt,10,,1.38,HIGH,100,confirmed-demand
+de,tutorial,einfaches Make-up Tutorial,10,,0.73,MEDIUM,38,confirmed-demand
+de,ai_tech,KI Make-up Beratung,10,,1.54,MEDIUM,50,confirmed-demand
+de,ai_tech,Typberatung Make-up,10,,1.6,MEDIUM,66,confirmed-demand
+de,product,vegane Make-up Produkte,10,,1.31,HIGH,100,confirmed-demand
+de,trust,DSGVO konforme App,10,,,HIGH,67,confirmed-demand
+de,style,dezenter Augenschmink,0,,,,,no-demand
+de,style,sanfter Glam Look,0,,,,,no-demand
+de,style,Matte Haut Make-up,0,,,,,no-demand
+de,scenario,Reisepass-Foto Make-up,0,,,,,no-demand
+de,scenario,schnelles Make-up morgens,0,,,,,no-demand
+de,demographic,Make-up für ovale Gesichter,0,,,,,no-demand
+de,demographic,Make-up für warme Hauttöne,0,,,,,no-demand
+de,demographic,Make-up für kühle Hauttöne,0,,,,,no-demand
+de,demographic,Make-up für olivenfarbene Haut,0,,,,,no-demand
+de,demographic,Gesichtsform erkennen Make-up,0,,,,,no-demand
+de,tutorial,schnell schminken für Anfänger,0,,,,,no-demand
+de,tutorial,Make-up Reihenfolge richtig,0,,,,,no-demand
+de,tutorial,Schminktipps für Einsteiger,0,,,,,no-demand
+de,tutorial,häufige Schminkfehler,0,,,,,no-demand
+de,ai_tech,KI Make-up Test,0,,,,,no-demand
+de,ai_tech,virtuelles Make-up Testen,0,,,,,no-demand
+de,ai_tech,passende Lippenstiftfarben KI,0,,,,,no-demand
+de,ai_tech,persönliche Farbberatung online,0,,,,,no-demand
+de,ai_tech,Farbsaison bestimmen,0,,,,,no-demand
+de,product,beste Lippenstift 2026,0,,,,,no-demand
+de,product,Drogerie Make-up Empfehlungen,0,,,,,no-demand
+de,product,langlebiger Lippenstift,0,,,,,no-demand
+de,product,beste Foundation für meinen Hautton,0,,,,,no-demand
+de,trust,Make-up App Datenschutz,0,,,,,no-demand
+de,trust,sichere Beauty App,0,,,,,no-demand
+de,trust,Foto nur lokal verarbeiten,0,,,,,no-demand
+de,trust,keine Daten speichern Beauty,0,,,,,no-demand
+en,product,clean beauty products,27100,8,2.79,MEDIUM,60,confirmed-demand
+en,style,natural makeup look,22200,4,1.77,LOW,33,confirmed-demand
+en,style,minimalist makeup,14800,0,4.63,LOW,13,confirmed-demand
+en,demographic,makeup for hooded eyes,14800,0,1.02,MEDIUM,63,confirmed-demand
+en,style,soft glam makeup,9900,0,0.48,LOW,14,confirmed-demand
+en,style,bridal makeup,9900,16,2.59,LOW,19,confirmed-demand
+en,demographic,makeup for mature skin,5400,0,4.71,HIGH,100,confirmed-demand
+en,demographic,makeup for olive skin tone,5400,0,2.58,LOW,33,confirmed-demand
+en,product,best concealer for dark circles,5400,0,1.4,HIGH,100,confirmed-demand
+en,scenario,prom makeup,4400,0,1.83,LOW,8,confirmed-demand
+en,style,no-makeup makeup look,3600,5,5.59,HIGH,75,confirmed-demand
+en,tutorial,makeup tutorial for beginners,3600,1,1.24,LOW,30,confirmed-demand
+en,tutorial,makeup order of application,2400,1,1.06,LOW,12,confirmed-demand
+en,product,long-wearing lipstick,2400,,0.96,HIGH,100,confirmed-demand
+en,demographic,makeup for fair skin,1900,0,3.54,HIGH,93,confirmed-demand
+en,ai_tech,before and after makeup,1900,0,,LOW,0,confirmed-demand
+en,style,dewy skin makeup,1600,4,1.55,MEDIUM,35,confirmed-demand
+en,style,glowy makeup,1600,0,2.12,HIGH,87,confirmed-demand
+en,scenario,wedding guest makeup,1600,0,1.86,LOW,31,confirmed-demand
+en,demographic,makeup for round face,1600,0,0.91,LOW,9,confirmed-demand
+en,tutorial,how to apply makeup step by step,1600,0,0.96,MEDIUM,46,confirmed-demand
+en,scenario,passport photo makeup,1300,6,,LOW,1,confirmed-demand
+en,scenario,graduation makeup,1300,0,1.56,LOW,6,confirmed-demand
+en,style,editorial makeup,1000,0,,LOW,1,confirmed-demand
+en,product,makeup dupes,1000,0,0.55,HIGH,76,confirmed-demand
+en,demographic,makeup for heart shaped face,880,0,7.75,LOW,4,confirmed-demand
+en,style,glass skin makeup,720,0,1.67,HIGH,88,confirmed-demand
+en,demographic,makeup for dark skin,720,0,1.96,HIGH,95,confirmed-demand
+en,style,cloud skin makeup,590,0,0.59,LOW,20,confirmed-demand
+en,demographic,makeup for oval face,590,0,0.16,LOW,9,confirmed-demand
+en,product,makeup brushes for beginners,590,0,0.74,HIGH,94,confirmed-demand
+en,scenario,interview makeup,480,0,,LOW,1,confirmed-demand
+en,demographic,makeup for square face,480,0,,LOW,5,confirmed-demand
+en,ai_tech,AI makeup app,480,23,3.3,MEDIUM,40,confirmed-demand
+en,style,matte makeup look,390,0,0.99,MEDIUM,40,confirmed-demand
+en,demographic,contouring for face shape,390,0,0.36,LOW,25,confirmed-demand
+en,tutorial,beginner makeup routine,390,1,2.1,HIGH,68,confirmed-demand
+en,tutorial,how to do natural makeup,390,9,1.12,MEDIUM,35,confirmed-demand
+en,style,everyday makeup routine,320,14,4.3,HIGH,70,confirmed-demand
+en,ai_tech,what makeup looks good on me,260,0,4.77,LOW,32,confirmed-demand
+en,ai_tech,virtual makeover,260,6,3.58,MEDIUM,41,confirmed-demand
+en,product,best mascara for hooded eyes,260,0,2.5,HIGH,100,confirmed-demand
+en,style,date night makeup,210,0,0.66,MEDIUM,42,confirmed-demand
+en,tutorial,basic makeup essentials,210,2,1.4,HIGH,92,confirmed-demand
+en,scenario,nighttime makeup look,140,1,0.02,LOW,8,confirmed-demand
+en,scenario,first date makeup,110,0,,LOW,8,confirmed-demand
+en,scenario,vacation makeup,110,8,2.07,HIGH,100,confirmed-demand
+en,ai_tech,what makeup suits me,110,0,4.7,MEDIUM,38,confirmed-demand
+en,demographic,best lipstick for cool undertone,90,,1.26,HIGH,100,confirmed-demand
+en,tutorial,easy everyday makeup,90,2,2.68,HIGH,100,confirmed-demand
+en,product,drugstore vs high-end makeup,90,0,1.12,MEDIUM,40,confirmed-demand
+en,scenario,office makeup look,70,0,,LOW,21,confirmed-demand
+en,product,best lipstick 2026,70,0,1.23,HIGH,100,confirmed-demand
+en,tutorial,drugstore makeup for beginners,50,2,0.01,MEDIUM,36,confirmed-demand
+en,ai_tech,AI makeup try-on,50,15,4.38,MEDIUM,35,confirmed-demand
+en,demographic,best lipstick for warm undertone,40,,1.06,HIGH,100,confirmed-demand
+en,demographic,makeup for single eyelids,30,,0.58,LOW,25,confirmed-demand
+en,style,daytime glam,10,,,LOW,4,confirmed-demand
+en,scenario,work makeup tutorial,10,10,,LOW,2,confirmed-demand
+en,scenario,quick 5-minute makeup,10,,2.13,HIGH,100,confirmed-demand
+en,tutorial,10 minute makeup tutorial,10,,1.07,LOW,3,confirmed-demand
+en,tutorial,makeup mistakes to avoid,10,36,,LOW,7,confirmed-demand
+en,ai_tech,virtual makeup tester,10,,,,,confirmed-demand
+en,ai_tech,AI beauty advisor,10,,,MEDIUM,33,confirmed-demand
+en,ai_tech,shade match AI,10,,1.15,MEDIUM,55,confirmed-demand
+en,ai_tech,personal color analysis AI,10,,1.93,LOW,24,confirmed-demand
+en,product,best foundation for my skin tone,10,,5.11,HIGH,90,confirmed-demand
+en,product,affordable makeup essentials,10,,0.45,LOW,26,confirmed-demand
+en,style,clean girl makeup,0,,,,,no-demand
+en,scenario,photo makeup / photoshoot makeup,0,,,,,no-demand
+en,demographic,makeup for big eyes / small eyes,0,,,,,no-demand
+en,ai_tech,makeup filter AI,0,,,,,no-demand
+en,ai_tech,AI face analysis makeup,0,,,,,no-demand
+en,ai_tech,personalized makeup recommendation,0,,,,,no-demand
+en,ai_tech,find my perfect makeup,0,,,,,no-demand
+es,style,maquillaje natural,5400,2,0.86,HIGH,98,confirmed-demand
+es,style,maquillaje de día,880,0,0.3,MEDIUM,49,confirmed-demand
+es,regional,maquillaje de carnaval,880,0,,LOW,19,confirmed-demand
+es,style,maquillaje de noche,590,0,0.43,LOW,16,confirmed-demand
+es,tutorial,maquillaje paso a paso,480,5,0.53,MEDIUM,53,confirmed-demand
+es,style,maquillaje glow,390,0,0.19,HIGH,100,confirmed-demand
+es,style,maquillaje nude,320,,0.1,HIGH,70,confirmed-demand
+es,style,maquillaje elegante,260,0,0.77,LOW,19,confirmed-demand
+es,demographic,maquillaje para piel grasa,260,0,0.4,HIGH,100,confirmed-demand
+es,demographic,maquillaje para piel madura,210,0,0.48,HIGH,100,confirmed-demand
+es,tutorial,orden de maquillaje,210,0,0.45,LOW,18,confirmed-demand
+es,product,rubor en crema,210,0,0.13,HIGH,100,confirmed-demand
+es,style,piel luminosa,170,0,0.41,HIGH,74,confirmed-demand
+es,scenario,maquillaje para graduación,170,0,0.91,LOW,11,confirmed-demand
+es,tutorial,maquillaje fácil y rápido,170,7,0.8,MEDIUM,60,confirmed-demand
+es,tutorial,maquillaje para principiantes,140,0,0.57,HIGH,92,confirmed-demand
+es,tutorial,maquillaje de ojos fácil,140,3,0.46,MEDIUM,43,confirmed-demand
+es,style,maquillaje editorial,110,0,,LOW,0,confirmed-demand
+es,scenario,maquillaje para fiesta,110,0,0.63,MEDIUM,44,confirmed-demand
+es,demographic,maquillaje para piel seca,110,0,0.38,HIGH,89,confirmed-demand
+es,ai_tech,antes y después maquillaje,90,0,,LOW,7,confirmed-demand
+es,style,maquillaje soft glam,70,,0.05,LOW,13,confirmed-demand
+es,scenario,maquillaje para fotos,70,0,0.02,LOW,6,confirmed-demand
+es,demographic,maquillaje para piel morena,70,0,0.11,HIGH,96,confirmed-demand
+es,demographic,maquillaje para ojos pequeños,70,0,1.13,MEDIUM,55,confirmed-demand
+es,style,labios jugosos,50,0,0.35,HIGH,84,confirmed-demand
+es,demographic,maquillaje para cara redonda,50,0,,LOW,20,confirmed-demand
+es,product,labial de larga duración,50,,0.55,HIGH,100,confirmed-demand
+es,style,maquillaje minimalista,40,46,,MEDIUM,51,confirmed-demand
+es,demographic,maquillaje para cara ovalada,40,14,,LOW,12,confirmed-demand
+es,tutorial,maquillaje natural para principiantes,40,0,0.63,HIGH,84,confirmed-demand
+es,ai_tech,análisis de color personal,40,,0.61,MEDIUM,39,confirmed-demand
+es,demographic,maquillaje para piel clara,30,49,0.21,HIGH,100,confirmed-demand
+es,demographic,maquillaje para párpados caídos,30,0,0.34,HIGH,72,confirmed-demand
+es,style,maquillaje monocromático,20,13,,LOW,31,confirmed-demand
+es,scenario,maquillaje para el trabajo,20,13,,LOW,10,confirmed-demand
+es,scenario,maquillaje para entrevista de trabajo,20,14,,LOW,6,confirmed-demand
+es,demographic,maquillaje para cara cuadrada,20,49,,LOW,30,confirmed-demand
+es,demographic,maquillaje para cara alargada,20,24,0.31,LOW,30,confirmed-demand
+es,ai_tech,simulador de maquillaje,20,,0.97,LOW,19,confirmed-demand
+es,scenario,maquillaje para una cita,10,,,LOW,14,confirmed-demand
+es,regional,maquillaje para quinceañera,10,51,,LOW,2,confirmed-demand
+es,scenario,maquillaje para la oficina,10,49,,MEDIUM,66,confirmed-demand
+es,tutorial,maquillaje con 5 productos,10,,,,,confirmed-demand
+es,tutorial,rutina de maquillaje diaria,10,,0.86,HIGH,67,confirmed-demand
+es,tutorial,errores de maquillaje,10,50,,LOW,0,confirmed-demand
+es,tutorial,maquillaje básico diario,10,,0.36,HIGH,100,confirmed-demand
+es,tutorial,técnicas de contorno,10,,,,,confirmed-demand
+es,ai_tech,prueba de maquillaje virtual,10,,1.2,HIGH,86,confirmed-demand
+es,ai_tech,encontrar mi tono de base,10,,1.25,MEDIUM,50,confirmed-demand
+es,product,brochas de maquillaje para principiantes,10,,0.43,HIGH,100,confirmed-demand
+es,product,labial nude caramelo,10,,,HIGH,71,confirmed-demand
+es,product,paleta de sombras multifuncional,10,,,,,confirmed-demand
+es,product,delineador para principiantes,10,,,HIGH,100,confirmed-demand
+es,regional,maquillaje para piel trigueña,10,,,MEDIUM,62,confirmed-demand
+es,regional,maquillaje para mestizas,10,,,,,confirmed-demand
+es,style,maquillaje bridal / maquillaje de novia,0,,,,,no-demand
+es,style,maquillaje bronceado / bronzed glow,0,,,,,no-demand
+es,scenario,maquillaje para primer encuentro,0,,,,,no-demand
+es,scenario,maquillaje para boda de invitada,0,,,,,no-demand
+es,scenario,maquillaje rápido para todos los días,0,,,,,no-demand
+es,demographic,labial para tono cálido,0,,,,,no-demand
+es,demographic,labial para tono frío,0,,,,,no-demand
+es,demographic,qué labial me queda,0,,,,,no-demand
+es,demographic,maquillaje según forma de tu rostro,0,,,,,no-demand
+es,tutorial,cómo maquillarse para el trabajo,0,,,,,no-demand
+es,ai_tech,probador de maquillaje con IA,0,,,,,no-demand
+es,ai_tech,qué maquillaje me queda,0,,,,,no-demand
+es,ai_tech,diagnóstico de piel IA,0,,,,,no-demand
+es,ai_tech,IA maquillage / IA maquillaje,0,,,,,no-demand
+es,ai_tech,asesor de belleza IA,0,,,,,no-demand
+es,ai_tech,colorimetría personal online,0,,,,,no-demand
+es,ai_tech,test de maquillaje en línea,0,,,,,no-demand
+es,product,mejor labial 2026,0,,,,,no-demand
+es,product,mejor base para mi tono de piel,0,,,,,no-demand
+es,product,maquillaje económico recomendado,0,,,,,no-demand
+es,product,rosa empolvado labial,0,,,,,no-demand
+es,product,maquillaje farmacia recomendación,0,,,,,no-demand
+es,product,dupas de maquillaje,0,,,,,no-demand
+es,regional,maquillaje Sephora vs farmacia,0,,,,,no-demand
+es,regional,maquillaje Mercadona / Druni,0,,,,,no-demand
+fr,style,maquillage mariée,3600,0,0.49,LOW,18,confirmed-demand
+fr,style,maquillage naturel,2400,0,2.09,HIGH,100,confirmed-demand
+fr,scenario,maquillage invité mariage,1600,0,0.41,LOW,20,confirmed-demand
+fr,style,maquillage nude,1300,0,0.64,HIGH,71,confirmed-demand
+fr,demographic,maquillage pour paupières tombantes,1000,0,0.26,MEDIUM,45,confirmed-demand
+fr,scenario,maquillage soirée,720,0,0.35,LOW,29,confirmed-demand
+fr,product,rouge à lèvres longue tenue,480,0,0.49,HIGH,100,confirmed-demand
+fr,scenario,maquillage pour photo,390,0,0.8,LOW,6,confirmed-demand
+fr,demographic,maquillage peau mature,320,0,1.23,HIGH,100,confirmed-demand
+fr,product,maquillage bio / naturel,320,8,1.63,HIGH,100,confirmed-demand
+fr,style,maquillage de soirée,260,0,0.38,LOW,26,confirmed-demand
+fr,scenario,maquillage de jour,170,0,0.3,HIGH,71,confirmed-demand
+fr,demographic,maquillage pour peau mate,170,0,0.76,HIGH,88,confirmed-demand
+fr,tutorial,apprendre à se maquiller,170,0,0.74,HIGH,70,confirmed-demand
+fr,style,teint lumineux,140,0,1.55,HIGH,98,confirmed-demand
+fr,demographic,maquillage peau sensible,140,0,0.96,HIGH,100,confirmed-demand
+fr,style,maquillage élégant,110,0,,MEDIUM,38,confirmed-demand
+fr,demographic,maquillage pour visage rond,110,0,,LOW,11,confirmed-demand
+fr,demographic,choisir son fond de teint,110,0,0.48,HIGH,99,confirmed-demand
+fr,tutorial,tuto maquillage facile,90,2,0.31,LOW,10,confirmed-demand
+fr,style,teint frais,70,0,,MEDIUM,65,confirmed-demand
+fr,product,dupes maquillage,70,0,0.36,HIGH,100,confirmed-demand
+fr,style,maquillage minimaliste,50,0,0.79,HIGH,93,confirmed-demand
+fr,demographic,maquillage pour peau claire,50,0,0.47,HIGH,100,confirmed-demand
+fr,demographic,quelle couleur me va,50,0,0.53,LOW,23,confirmed-demand
+fr,ai_tech,IA maquillage,40,,0.64,LOW,19,confirmed-demand
+fr,scenario,maquillage entretien d'embauche,30,0,,LOW,0,confirmed-demand
+fr,style,teint parfait naturel,20,52,1.13,HIGH,100,confirmed-demand
+fr,style,look glowy,10,,,LOW,12,confirmed-demand
+fr,style,maquillage doux,10,,3.9,HIGH,76,confirmed-demand
+fr,scenario,maquillage pour le bureau,10,,,MEDIUM,50,confirmed-demand
+fr,scenario,maquillage premier rendez-vous,10,48,,,,confirmed-demand
+fr,scenario,maquillage rapide matin,10,,,,,confirmed-demand
+fr,scenario,maquillage vacances,10,,,HIGH,89,confirmed-demand
+fr,tutorial,maquillage pour débutantes,10,,,,,confirmed-demand
+fr,tutorial,maquillage en 5 minutes,10,,,LOW,1,confirmed-demand
+fr,tutorial,produits maquillage essentiels,10,,,,,confirmed-demand
+fr,ai_tech,test maquillage virtuel,10,,0.13,MEDIUM,43,confirmed-demand
+fr,ai_tech,quel maquillage pour moi,10,49,0.63,MEDIUM,54,confirmed-demand
+fr,ai_tech,simulation maquillage en ligne,10,,,LOW,0,confirmed-demand
+fr,ai_tech,conseil maquillage personnalisé,10,,2.43,HIGH,67,confirmed-demand
+fr,style,maquillage éditorial,0,,,,,no-demand
+fr,style,maquillage clean girl,0,,,,,no-demand
+fr,scenario,maquillage bal,0,,,,,no-demand
+fr,demographic,rouge à lèvres pour teint chaud,0,,,,,no-demand
+fr,demographic,rouge à lèvres pour teint froid,0,,,,,no-demand
+fr,tutorial,ordre maquillage étapes,0,,,,,no-demand
+fr,tutorial,routine maquillage quotidienne,0,,,,,no-demand
+fr,tutorial,erreurs maquillage à éviter,0,,,,,no-demand
+fr,tutorial,maquillage naturel pas à pas,0,,,,,no-demand
+fr,tutorial,maquillage pas cher débutant,0,,,,,no-demand
+fr,ai_tech,essayage virtuel rouge à lèvres,0,,,,,no-demand
+fr,ai_tech,diagnostic teint IA,0,,,,,no-demand
+fr,ai_tech,analyse visage maquillage,0,,,,,no-demand
+fr,ai_tech,quelle teinte me convient,0,,,,,no-demand
+fr,ai_tech,essai maquillage avant achat,0,,,,,no-demand
+fr,product,meilleur rouge à lèvres 2026,0,,,,,no-demand
+fr,product,meilleur fond de teint pour ma peau,0,,,,,no-demand
+fr,product,pinceaux maquillage débutant,0,,,,,no-demand
+fr,product,maquillage pharmacy recommandation,0,,,,,no-demand
+fr,product,palette ombres à paupières polyvalente,0,,,,,no-demand
+ja,ai_tech,パーソナルカラー診断,301000,2,0.34,LOW,9,confirmed-demand
+ja,demographic,顔タイプ診断,135000,3,0.74,LOW,1,confirmed-demand
+ja,demographic,パーソナルカラー,49500,1,0.94,LOW,3,confirmed-demand
+ja,tutorial,メイク 順番,22200,0,0.43,LOW,0,confirmed-demand
+ja,style,ナチュラルメイク,18100,0,0.67,LOW,3,confirmed-demand
+ja,demographic,涙袋メイク,18100,0,0.15,MEDIUM,36,confirmed-demand
+ja,demographic,一重 メイク,12100,0,0.21,LOW,2,confirmed-demand
+ja,product,@cosme ランキング,8360,59,0.96,LOW,5,confirmed-demand
+ja,tutorial,メイク 初心者,8100,0,0.34,LOW,6,confirmed-demand
+ja,ai_tech,パーソナルカラー 診断 無料,8100,32,0.29,LOW,6,confirmed-demand
+ja,variant,アットコスメ ランキング,8100,42,0.96,LOW,5,confirmed-demand
+ja,ai_tech,似合うメイク 診断,6600,8,0.48,LOW,16,confirmed-demand
+ja,demographic,40代 メイク,5400,0,0.4,LOW,14,confirmed-demand
+ja,scenario,証明写真メイク,4400,0,0.4,LOW,3,confirmed-demand
+ja,demographic,奥二重 メイク,4400,0,0.16,LOW,5,confirmed-demand
+ja,style,韓国風メイク,3600,0,0.17,LOW,5,confirmed-demand
+ja,style,垢抜けメイク,2900,0,0.42,LOW,9,confirmed-demand
+ja,tutorial,メイクのやり方,2900,0,0.51,LOW,2,confirmed-demand
+ja,tutorial,アイメイク やり方,2400,0,0.36,LOW,6,confirmed-demand
+ja,style,透明感メイク,1900,0,0.36,LOW,20,confirmed-demand
+ja,scenario,面接メイク,1900,0,0.13,LOW,1,confirmed-demand
+ja,ai_tech,顔タイプ 診断 AI,1900,0,0.52,LOW,4,confirmed-demand
+ja,ai_tech,似合う色 診断,1900,9,0.16,LOW,15,confirmed-demand
+ja,style,ツヤ肌メイク,1600,0,0.51,HIGH,98,confirmed-demand
+ja,demographic,面長 メイク,1600,0,,LOW,1,confirmed-demand
+ja,product,デパコス おすすめ,1600,0,0.71,HIGH,94,confirmed-demand
+ja,scenario,オフィスメイク,1300,0,2.12,LOW,4,confirmed-demand
+ja,demographic,ブルベ メイク,1300,0,0.33,LOW,13,confirmed-demand
+ja,tutorial,メイクの基本,1300,0,0.04,LOW,5,confirmed-demand
+ja,product,乾燥しないファンデーション,1300,0,0.44,HIGH,100,confirmed-demand
+ja,style,清楚メイク,1000,0,,LOW,0,confirmed-demand
+ja,scenario,時短メイク,1000,0,0.25,LOW,30,confirmed-demand
+ja,demographic,イエベ メイク,1000,0,0.31,LOW,8,confirmed-demand
+ja,ai_tech,バーチャルメイク,1000,11,0.38,LOW,12,confirmed-demand
+ja,product,プチプラコスメ おすすめ,1000,0,0.24,LOW,33,confirmed-demand
+ja,style,プチプラメイク,880,0,0.96,LOW,12,confirmed-demand
+ja,scenario,卒業式メイク,880,0,0.67,LOW,2,confirmed-demand
+ja,demographic,似合うメイク,880,3,0.5,LOW,13,confirmed-demand
+ja,product,アイシャドウ パレット おすすめ,880,0,0.16,HIGH,96,confirmed-demand
+ja,style,マットメイク,720,0,0.22,LOW,4,confirmed-demand
+ja,demographic,丸顔 メイク,720,0,0.44,LOW,3,confirmed-demand
+ja,ai_tech,AIメイク診断,720,5,0.47,LOW,12,confirmed-demand
+ja,ai_tech,メイクシミュレーション,590,12,0.41,LOW,14,confirmed-demand
+ja,scenario,デートメイク,480,0,0.45,LOW,0,confirmed-demand
+ja,scenario,パーティーメイク,480,0,0.2,LOW,8,confirmed-demand
+ja,tutorial,メイクのコツ,390,0,0.06,LOW,1,confirmed-demand
+ja,scenario,写真映えメイク,320,0,,LOW,0,confirmed-demand
+ja,style,ケミメイク,210,,,LOW,0,confirmed-demand
+ja,scenario,旅行メイク,210,0,0.21,MEDIUM,34,confirmed-demand
+ja,style,血色感メイク,170,21,0.32,LOW,26,confirmed-demand
+ja,ai_tech,肌診断 AI,170,0,2.05,LOW,11,confirmed-demand
+ja,scenario,結婚式ゲストメイク,140,21,0.01,LOW,0,confirmed-demand
+ja,scenario,5分メイク,140,,,LOW,0,confirmed-demand
+ja,style,デパコスメイク,110,,,MEDIUM,63,confirmed-demand
+ja,style,大人ナチュラルメイク,110,,,LOW,21,confirmed-demand
+ja,style,フェアリーメイク,90,52,,LOW,0,confirmed-demand
+ja,product,40代 おすすめコスメ,90,49,0.86,HIGH,98,confirmed-demand
+ja,product,コスパ良いコスメ,70,,0.29,MEDIUM,59,confirmed-demand
+ja,style,ノーメイク風メイク,50,,,LOW,13,confirmed-demand
+ja,demographic,似合うチーク,30,,,LOW,5,confirmed-demand
+ja,scenario,通勤メイク,20,,,LOW,11,confirmed-demand
+ja,demographic,似合うリップカラー,20,,,LOW,7,confirmed-demand
+ja,product,使いやすいメイクブラシ,20,,0.24,HIGH,100,confirmed-demand
+ja,style,オーロラ肌メイク,10,,0.25,MEDIUM,44,confirmed-demand
+ja,tutorial,時短メイク 手順,10,,,LOW,0,confirmed-demand
+ja,product,崩れないリップ,10,,,HIGH,78,confirmed-demand
+ja,demographic,大人世代メイク,0,,,,,no-demand
+ja,demographic,肌悩み別メイク,0,,,,,no-demand
+ja,tutorial,簡単なメイク 初心者,0,,,,,no-demand
+ja,tutorial,自然なメイク やり方,0,,,,,no-demand
+ja,tutorial,デイリーメイク 手順,0,,,,,no-demand
+ja,tutorial,メイク 失敗しない,0,,,,,no-demand
+ja,tutorial,プチプラコスメ 初心者,0,,,,,no-demand
+ja,ai_tech,ビフォアアフターメイク,0,,,,,no-demand
+ja,ai_tech,AIビューティーアドバイザー,0,,,,,no-demand
+ja,ai_tech,自分に似合うコスメ 探す,0,,,,,no-demand
+ja,product,おすすめリップ 2026,0,,,,,no-demand
+ko,ai_tech,퍼스널컬러 자가진단,6600,0,1.07,LOW,6,confirmed-demand
+ko,ai_tech,퍼스널컬러 테스트,1600,0,0.67,LOW,3,confirmed-demand
+ko,style,청순 메이크업,480,0,0.24,LOW,5,confirmed-demand
+ko,ai_tech,얼굴형 분석,390,0,3.04,LOW,16,confirmed-demand
+ko,style,데일리 메이크업,260,0,,LOW,1,confirmed-demand
+ko,demographic,봄웜 메이크업,260,0,0.06,LOW,5,confirmed-demand
+ko,tutorial,메이크업 순서,210,0,,LOW,1,confirmed-demand
+ko,product,올리브영 추천,210,0,0.3,MEDIUM,38,confirmed-demand
+ko,style,내추럴 메이크업,170,0,,LOW,7,confirmed-demand
+ko,scenario,면접 메이크업,170,0,,LOW,1,confirmed-demand
+ko,demographic,쿨톤 메이크업,170,0,0.68,LOW,10,confirmed-demand
+ko,ai_tech,AI 피부 분석,140,0,8.64,LOW,10,confirmed-demand
+ko,demographic,웜톤 메이크업,110,0,0.52,LOW,13,confirmed-demand
+ko,product,립글로스 추천,110,0,1.04,HIGH,96,confirmed-demand
+ko,style,글로우 메이크업,90,0,0.95,MEDIUM,34,confirmed-demand
+ko,demographic,가을웜 메이크업,90,24,,LOW,21,confirmed-demand
+ko,demographic,쿨톤 립,90,0,,LOW,31,confirmed-demand
+ko,demographic,웜톤 립,90,0,0.43,MEDIUM,37,confirmed-demand
+ko,demographic,퍼스널컬러 메이크업,50,0,0.74,LOW,4,confirmed-demand
+ko,ai_tech,퍼스널컬러 진단 AI,50,,2.89,LOW,10,confirmed-demand
+ko,product,아이섀도우 팔레트 추천,50,0,0.2,HIGH,95,confirmed-demand
+ko,style,러블리 메이크업,40,,,LOW,7,confirmed-demand
+ko,scenario,소개팅 메이크업,40,,,LOW,0,confirmed-demand
+ko,product,쿠션 파데 추천,40,0,0.29,HIGH,85,confirmed-demand
+ko,style,속광 메이크업,30,0,0.27,LOW,30,confirmed-demand
+ko,style,미니멀 메이크업,30,,,LOW,0,confirmed-demand
+ko,scenario,출근 메이크업,30,60,,LOW,1,confirmed-demand
+ko,scenario,프로필 사진 메이크업,30,0,3.02,LOW,7,confirmed-demand
+ko,scenario,졸업식 메이크업,30,0,,LOW,2,confirmed-demand
+ko,scenario,등교 메이크업,30,50,,LOW,0,confirmed-demand
+ko,demographic,여름쿨 메이크업,30,,,LOW,3,confirmed-demand
+ko,tutorial,메이크업 꿀팁,30,49,0.66,LOW,10,confirmed-demand
+ko,ai_tech,가상 메이크업 체험,30,,0.6,LOW,2,confirmed-demand
+ko,style,시크 메이크업,20,,,LOW,24,confirmed-demand
+ko,scenario,데이트 메이크업,20,,,LOW,0,confirmed-demand
+ko,scenario,파티 메이크업,20,0,,LOW,0,confirmed-demand
+ko,demographic,겨울쿨 메이크업,20,,0.32,LOW,24,confirmed-demand
+ko,tutorial,메이크업 초보,20,53,,LOW,12,confirmed-demand
+ko,product,지속력 좋은 립스틱,20,49,1.44,HIGH,95,confirmed-demand
+ko,style,결광 메이크업,10,,,LOW,0,confirmed-demand
+ko,style,블러 메이크업,10,,,MEDIUM,38,confirmed-demand
+ko,style,클라우드 댄서 메이크업,10,,,LOW,0,confirmed-demand
+ko,style,K-뷰티 메이크업,10,,,LOW,0,confirmed-demand
+ko,scenario,여행 메이크업,10,,,LOW,0,confirmed-demand
+ko,scenario,빠른 메이크업,10,,,,,confirmed-demand
+ko,demographic,얼굴형 메이크업,10,,,LOW,0,confirmed-demand
+ko,demographic,둥근 얼굴 메이크업,10,,,LOW,0,confirmed-demand
+ko,demographic,긴 얼굴 메이크업,10,57,,LOW,0,confirmed-demand
+ko,demographic,홑꺼풀 메이크업,10,,,LOW,0,confirmed-demand
+ko,tutorial,간단한 메이크업,10,53,3.58,MEDIUM,40,confirmed-demand
+ko,tutorial,5분 메이크업,10,,,LOW,0,confirmed-demand
+ko,tutorial,메이크업 실수,10,,,,,confirmed-demand
+ko,tutorial,아이메이크업 방법,10,,,LOW,0,confirmed-demand
+ko,tutorial,립 메이크업 팁,10,,,,,confirmed-demand
+ko,ai_tech,나에게 어울리는 메이크업,10,54,,LOW,0,confirmed-demand
+ko,product,인생 립스틱,10,,,,,confirmed-demand
+ko,product,저가 화장품 추천,10,,,HIGH,100,confirmed-demand
+ko,style,렌더링 미감 메이크업,0,,,,,no-demand
+ko,scenario,웨딩 게스트 메이크업,0,,,,,no-demand
+ko,demographic,눈 작은 얼굴 메이크업,0,,,,,no-demand
+ko,demographic,피부톤 메이크업,0,,,,,no-demand
+ko,tutorial,기초 메이크업 방법,0,,,,,no-demand
+ko,tutorial,매일 메이크업 루틴,0,,,,,no-demand
+ko,tutorial,자기관리 메이크업,0,,,,,no-demand
+ko,ai_tech,AI 메이크업 진단,0,,,,,no-demand
+ko,ai_tech,내 얼굴에 맞는 메이크업,0,,,,,no-demand
+ko,ai_tech,AI 메이크업 앱,0,,,,,no-demand
+ko,ai_tech,비포 애프터 메이크업,0,,,,,no-demand
+ko,ai_tech,AI 뷰티 상담,0,,,,,no-demand
+ko,product,추천 립스틱 2026,0,,,,,no-demand
+ko,product,글로우픽 추천,0,,,,,no-demand
+ko,product,크리미 블러셔,0,,,,,no-demand
+pt-BR,variant,maquiagem para casamento,22200,0,0.36,LOW,11,confirmed-demand
+pt-BR,scenario,maquiagem para formatura,14800,0,0.14,LOW,7,confirmed-demand
+pt-BR,style,maquiagem artística,12100,0,0.09,LOW,32,confirmed-demand
+pt-BR,product,gloss labial,9900,0,0.14,HIGH,100,confirmed-demand
+pt-BR,product,lip combo,9900,0,0.21,HIGH,100,confirmed-demand
+pt-BR,style,maquiagem básica,8100,6,0.21,LOW,31,confirmed-demand
+pt-BR,style,maquiagem para festa,8100,0,0.12,LOW,15,confirmed-demand
+pt-BR,style,maquiagem de noiva,6600,0,0.2,LOW,7,confirmed-demand
+pt-BR,regional,maquiagem para carnaval,5400,0,0.04,MEDIUM,45,confirmed-demand
+pt-BR,demographic,maquiagem para pele morena,5400,0,0.21,MEDIUM,47,confirmed-demand
+pt-BR,demographic,colorimetria pessoal,5400,0,0.29,LOW,24,confirmed-demand
+pt-BR,tutorial,maquiagem passo a passo,5400,0,0.26,LOW,32,confirmed-demand
+pt-BR,product,batom marrom,5400,0,0.15,HIGH,100,confirmed-demand
+pt-BR,scenario,maquiagem para casamento (convidada),4400,0,0.32,LOW,13,confirmed-demand
+pt-BR,regional,maquiagem para pele negra,4400,0,0.2,HIGH,78,confirmed-demand
+pt-BR,style,maquiagem leve,3600,0,0.2,LOW,16,confirmed-demand
+pt-BR,scenario,maquiagem para Réveillon / Ano Novo,3400,,0.1,LOW,14,confirmed-demand
+pt-BR,style,maquiagem natural,2900,0,0.54,HIGH,100,confirmed-demand
+pt-BR,demographic,maquiagem para pele madura,2900,0,0.59,HIGH,100,confirmed-demand
+pt-BR,tutorial,ordem da maquiagem,2900,0,0.24,LOW,22,confirmed-demand
+pt-BR,tutorial,como se maquiar,2400,1,0.27,MEDIUM,37,confirmed-demand
+pt-BR,product,batom vinho,2400,0,0.16,HIGH,100,confirmed-demand
+pt-BR,variant,maquiagem para Ano Novo,2400,0,0.1,LOW,14,confirmed-demand
+pt-BR,product,melhor base para pele oleosa,1900,0,0.22,HIGH,100,confirmed-demand
+pt-BR,style,maquiagem glow / pele glow,1890,0,0.15,MEDIUM,56,confirmed-demand
+pt-BR,style,maquiagem para o dia a dia,1300,0,0.29,HIGH,91,confirmed-demand
+pt-BR,demographic,contorno facial,1300,0,0.18,HIGH,100,confirmed-demand
+pt-BR,demographic,cartela de cores pessoal,1300,0,0.17,HIGH,94,confirmed-demand
+pt-BR,tutorial,maquiagem para iniciantes,1300,0,0.22,HIGH,94,confirmed-demand
+pt-BR,variant,maquiagem glow,1300,0,0.15,MEDIUM,56,confirmed-demand
+pt-BR,tutorial,dicas de maquiagem,1000,0,0.34,LOW,27,confirmed-demand
+pt-BR,regional,maquiagem para Réveillon,1000,,,MEDIUM,49,confirmed-demand
+pt-BR,style,make glow,880,0,0.17,MEDIUM,42,confirmed-demand
+pt-BR,demographic,batom para pele morena,880,0,0.11,HIGH,100,confirmed-demand
+pt-BR,product,maquiagem barata boa,880,0,0.23,HIGH,100,confirmed-demand
+pt-BR,regional,batom para pele negra,880,0,0.12,HIGH,100,confirmed-demand
+pt-BR,style,maquiagem elegante,720,0,0.17,LOW,21,confirmed-demand
+pt-BR,scenario,maquiagem para fotos,720,0,0.12,LOW,8,confirmed-demand
+pt-BR,tutorial,maquiagem básica para o dia,720,3,0.23,MEDIUM,61,confirmed-demand
+pt-BR,demographic,maquiagem para rosto redondo,590,0,0.31,LOW,27,confirmed-demand
+pt-BR,ai_tech,espelho virtual,590,0,0.17,LOW,7,confirmed-demand
+pt-BR,product,iluminador cremoso,590,0,0.17,HIGH,100,confirmed-demand
+pt-BR,variant,pele glow,590,0,0.26,HIGH,70,confirmed-demand
+pt-BR,demographic,maquiagem para rosto oval,480,0,0.25,LOW,15,confirmed-demand
+pt-BR,tutorial,maquiagem simples e fácil,480,0,0.26,LOW,14,confirmed-demand
+pt-BR,scenario,maquiagem para o trabalho,390,0,0.39,MEDIUM,53,confirmed-demand
+pt-BR,demographic,maquiagem para pele oleosa,390,0,0.31,HIGH,100,confirmed-demand
+pt-BR,demographic,maquiagem para pele clara,390,0,0.12,HIGH,67,confirmed-demand
+pt-BR,tutorial,como fazer contorno,390,0,0.24,LOW,15,confirmed-demand
+pt-BR,scenario,maquiagem para balada,320,0,0.2,LOW,25,confirmed-demand
+pt-BR,scenario,make para o dia,320,0,0.01,LOW,12,confirmed-demand
+pt-BR,ai_tech,antes e depois maquiagem,320,0,,LOW,0,confirmed-demand
+pt-BR,product,sombra em creme,320,0,0.19,HIGH,100,confirmed-demand
+pt-BR,style,maquiagem minimalista,210,0,0.23,MEDIUM,46,confirmed-demand
+pt-BR,product,base que não craquela,210,0,0.3,HIGH,100,confirmed-demand
+pt-BR,scenario,maquiagem para entrevista de emprego,170,0,,LOW,5,confirmed-demand
+pt-BR,scenario,maquiagem rápida,140,0,0.69,MEDIUM,64,confirmed-demand
+pt-BR,demographic,batom para pele clara,140,0,0.16,HIGH,100,confirmed-demand
+pt-BR,demographic,maquiagem para pálpebras caídas,110,0,0.33,LOW,33,confirmed-demand
+pt-BR,ai_tech,simulador de maquiagem,70,53,0.25,LOW,11,confirmed-demand
+pt-BR,ai_tech,teste de coloração pessoal online,70,0,0.26,LOW,23,confirmed-demand
+pt-BR,product,batom nude para pele morena,70,,0.15,HIGH,100,confirmed-demand
+pt-BR,regional,make para faculdade,70,0,,LOW,0,confirmed-demand
+pt-BR,regional,espelho virtual O Boticário,70,,0.31,LOW,15,confirmed-demand
+pt-BR,style,pele molhada / wet skin,60,,,LOW,0,confirmed-demand
+pt-BR,tutorial,como fazer esfumado,50,60,0.31,LOW,5,confirmed-demand
+pt-BR,variant,pele molhada,50,,,LOW,0,confirmed-demand
+pt-BR,tutorial,rotina de maquiagem,40,,0.31,LOW,9,confirmed-demand
+pt-BR,scenario,maquiagem para encontro / primeiro encontro,30,,,MEDIUM,44,confirmed-demand
+pt-BR,demographic,maquiagem para pele seca,30,48,0.58,HIGH,97,confirmed-demand
+pt-BR,ai_tech,teste de maquiagem virtual,30,,0.46,MEDIUM,48,confirmed-demand
+pt-BR,style,blush blocking,20,,,LOW,2,confirmed-demand
+pt-BR,tutorial,erros de maquiagem,20,11,0.4,LOW,2,confirmed-demand
+pt-BR,tutorial,maquiagem com poucos produtos,20,,,LOW,18,confirmed-demand
+pt-BR,ai_tech,encontrar meu tom de base,20,,0.81,MEDIUM,49,confirmed-demand
+pt-BR,product,pincéis de maquiagem para iniciantes,20,23,0.17,HIGH,100,confirmed-demand
+pt-BR,variant,maquiagem para encontro,20,,,MEDIUM,44,confirmed-demand
+pt-BR,demographic,qual batom combina comigo,10,,0.15,MEDIUM,52,confirmed-demand
+pt-BR,ai_tech,provador virtual de maquiagem,10,,0.45,MEDIUM,44,confirmed-demand
+pt-BR,ai_tech,maquiagem virtual com IA,10,,,,,confirmed-demand
+pt-BR,ai_tech,qual maquiagem combina comigo,10,,,MEDIUM,57,confirmed-demand
+pt-BR,variant,wet skin makeup,10,,,HIGH,100,confirmed-demand
+pt-BR,variant,maquiagem para primeiro encontro,10,,,MEDIUM,33,confirmed-demand
+pt-BR,style,maquiagem caramel skin,0,,,,,no-demand
+pt-BR,style,maquiagem satin skin,0,,,,,no-demand
+pt-BR,regional,maquiagem para videochamada,0,,,,,no-demand
+pt-BR,tutorial,maquiagem em 15 minutos,0,,,,,no-demand
+pt-BR,ai_tech,análise de pele IA,0,,,,,no-demand
+pt-BR,ai_tech,colorimetria pessoal com IA,0,,,,,no-demand
+pt-BR,ai_tech,consultor de beleza IA,0,,,,,no-demand
+pt-BR,product,melhor batom 2026,0,,,,,no-demand
+pt-BR,product,maquiagem da Natura / O Boticário,0,,,,,no-demand
+pt-BR,product,maquiagem da Sephora Brasil,0,,,,,no-demand
+pt-BR,product,rímel para cílios curtos,0,,,,,no-demand
+pt-BR,regional,colorimetria pessoal PandaMi,0,,,,,no-demand
+zh-TW,tutorial,化妝步驟,5400,0,0.48,MEDIUM,36,confirmed-demand
+zh-TW,tutorial,化妝順序,1600,0,1.1,LOW,27,confirmed-demand
+zh-TW,tutorial,眉毛怎麼畫,880,0,0.14,MEDIUM,39,confirmed-demand
+zh-TW,style,裸妝,590,,0.87,MEDIUM,40,confirmed-demand
+zh-TW,tutorial,眼線怎麼畫,590,0,0.35,LOW,19,confirmed-demand
+zh-TW,demographic,個人色彩,390,0,0.31,LOW,5,confirmed-demand
+zh-TW,product,寶雅口紅,390,0,0.07,HIGH,81,confirmed-demand
+zh-TW,product,不沾杯口紅,320,0,0.33,HIGH,98,confirmed-demand
+zh-TW,product,開架口紅推薦,210,0,0.28,MEDIUM,51,confirmed-demand
+zh-TW,tutorial,化妝技巧,170,0,0.27,MEDIUM,37,confirmed-demand
+zh-TW,tutorial,眼影教學,140,0,0.01,LOW,12,confirmed-demand
+zh-TW,tutorial,新手化妝教學,110,0,0.27,MEDIUM,41,confirmed-demand
+zh-TW,ai_tech,個人色彩診斷,70,0,0.2,LOW,13,confirmed-demand
+zh-TW,product,COSME 排行榜,70,,,LOW,1,confirmed-demand
+zh-TW,product,化妝刷推薦,70,24,0.49,HIGH,96,confirmed-demand
+zh-TW,product,2026口紅推薦,50,,0.49,HIGH,100,confirmed-demand
+zh-TW,product,霧面唇膏推薦,50,54,0.21,HIGH,100,confirmed-demand
+zh-TW,style,自然妝,40,15,0.21,LOW,25,confirmed-demand
+zh-TW,scenario,證件照妝,40,15,0.36,LOW,12,confirmed-demand
+zh-TW,product,持久口紅推薦,40,,0.47,HIGH,100,confirmed-demand
+zh-TW,ai_tech,虛擬試妝,30,,1.26,LOW,3,confirmed-demand
+zh-TW,ai_tech,線上試妝,30,,0.12,LOW,22,confirmed-demand
+zh-TW,scenario,上班妝,20,55,,LOW,2,confirmed-demand
+zh-TW,scenario,面試妝,20,,,LOW,2,confirmed-demand
+zh-TW,scenario,約會妝,20,52,,LOW,7,confirmed-demand
+zh-TW,demographic,黃皮膚適合的口紅,20,51,,LOW,30,confirmed-demand
+zh-TW,ai_tech,AI 膚質檢測,20,,,LOW,22,confirmed-demand
+zh-TW,style,清透妝,10,,,LOW,18,confirmed-demand
+zh-TW,style,霧面唇妝,10,,,LOW,22,confirmed-demand
+zh-TW,scenario,快速出門妝,10,,,MEDIUM,57,confirmed-demand
+zh-TW,demographic,顯白口紅,10,,,LOW,30,confirmed-demand
+zh-TW,tutorial,簡單化妝教學,10,,0.72,LOW,29,confirmed-demand
+zh-TW,product,唇膏推薦 2026,10,,,HIGH,90,confirmed-demand
+zh-TW,product,顯白唇膏,10,52,0.99,MEDIUM,37,confirmed-demand
+zh-TW,product,屈臣氏彩妝,10,12,,,,confirmed-demand
+zh-TW,product,氣墊粉餅推薦,10,54,,,,confirmed-demand
+zh-TW,product,平價彩妝推薦,10,51,,,,confirmed-demand
+zh-TW,style,偽素顏妝,0,,,,,no-demand
+zh-TW,style,柔光裸妝,0,,,,,no-demand
+zh-TW,style,低飽和妝容,0,,,,,no-demand
+zh-TW,style,水光唇妝,0,,,,,no-demand
+zh-TW,style,韓系妝容,0,51,,,,no-demand
+zh-TW,style,日系妝容,0,0,,,,no-demand
+zh-TW,style,輕熟女妝容,0,,,,,no-demand
+zh-TW,style,氛圍感妝容,0,,,,,no-demand
+zh-TW,style,櫻桃妝,0,,,,,no-demand
+zh-TW,style,摩卡慕斯妝,0,,,,,no-demand
+zh-TW,style,玻璃肌妝容,0,,,,,no-demand
+zh-TW,style,霧光妝,0,,,,,no-demand
+zh-TW,scenario,通勤妝,0,,,,,no-demand
+zh-TW,scenario,畢業照妝容,0,,,,,no-demand
+zh-TW,scenario,婚禮賓客妝,0,,,,,no-demand
+zh-TW,scenario,出遊妝容,0,,,,,no-demand
+zh-TW,scenario,相親妝容,0,,,,,no-demand
+zh-TW,scenario,年夜飯妝容,0,,,,,no-demand
+zh-TW,scenario,情人節妝容,0,,,,,no-demand
+zh-TW,scenario,面試化妝技巧,0,,,,,no-demand
+zh-TW,demographic,適合我的口紅,0,,,,,no-demand
+zh-TW,demographic,冷調膚色彩妝,0,,,,,no-demand
+zh-TW,demographic,暖調膚色彩妝,0,,,,,no-demand
+zh-TW,demographic,圓臉彩妝,0,,,,,no-demand
+zh-TW,demographic,長臉彩妝,0,,,,,no-demand
+zh-TW,demographic,單眼皮彩妝,0,,,,,no-demand
+zh-TW,demographic,內雙彩妝,0,,,,,no-demand
+zh-TW,demographic,腫眼泡彩妝,0,,,,,no-demand
+zh-TW,demographic,熟齡肌彩妝,0,,,,,no-demand
+zh-TW,demographic,黃皮显白,0,,,,,no-demand
+zh-TW,demographic,敏弱肌彩妝,0,,,,,no-demand
+zh-TW,tutorial,5分鐘快速出門妝,0,,,,,no-demand
+zh-TW,tutorial,日常妝容教學,0,,,,,no-demand
+zh-TW,tutorial,化妝新手必备,0,,,,,no-demand
+zh-TW,tutorial,不卡粉技巧,0,,,,,no-demand
+zh-TW,tutorial,開架彩妝推薦 新手,0,,,,,no-demand
+zh-TW,ai_tech,AI 妝容診斷,0,,,,,no-demand
+zh-TW,ai_tech,AI 彩妝推薦,0,,,,,no-demand
+zh-TW,ai_tech,什麼妝適合我,0,,,,,no-demand
+zh-TW,ai_tech,色號配對,0,,,,,no-demand
+zh-TW,ai_tech,妝前妝後對比,0,,,,,no-demand
+zh-TW,ai_tech,AI 美妝顧問,0,,,,,no-demand
+zh-TW,ai_tech,臉部分析 彩妝,0,,,,,no-demand
+zh-TW,ai_tech,適合我的彩妝顏色,0,,,,,no-demand
+zh-TW,product,專櫃唇膏熱賣色,0,,,,,no-demand

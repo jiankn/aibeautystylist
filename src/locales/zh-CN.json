@@ -165,7 +165,7 @@
     "statsPrivacy": "可删除",
     "statsPrivacyLabel": "自拍和生成结果由你管理",
     "howKicker": "3 步完成",
-    "howTitle": "从选妆到上脸，流程很短",
+    "howTitle": "选妆、上传、看试妆，三步完成",
     "howSubtitle": "先看妆容特点，再上传自拍，生成后对比是否适合你的五官、肤色和使用场景。",
     "howSteps": [
       {
@@ -180,8 +180,8 @@
       },
       {
         "icon": "3",
-        "title": "查看效果",
-        "copy": "看气色、轮廓和妆面质感，再决定是否保存或继续尝试。"
+        "title": "查看试妆参考",
+        "copy": "看气色、轮廓和妆面质感是否协调，再决定是否保存或继续尝试。"
       }
     ],
     "workflowWorkspace": "试妆工作台",
@@ -341,7 +341,7 @@
     "upgradeTitle": "想多试几个妆面再决定？",
     "upgradeCopy": "Pro 适合每周多次试妆、保存高清结果和先做 AI 妆容诊断；Premium 适合拍摄、婚礼、面试前集中比较，含优先生成和完整妆容库。",
     "upgradeLink": "比较 Pro / Premium",
-    "finalCtaTitle": "先试一次自己的上脸效果",
+    "finalCtaTitle": "先看一次自己的试妆参考",
     "finalCtaSubtitle": "选择一个妆容，上传自拍后查看 AI 生成的试妆参考。",
     "finalCtaCta": "免费试一次"
   },
@@ -357,7 +357,7 @@
     "quickActions": "工作台快捷操作",
     "viewPlans": "查看方案",
     "loginCta": "开始使用并领取额度",
-    "loginDesc": "登录后领取免费生成额度，上传自拍即可查看真实上脸效果。",
+    "loginDesc": "登录后领取免费生成额度，上传自拍即可查看 AI 试妆参考。",
     "freeBenefits": "每月免费生成额度 · 可保存历史记录 · 支持 AI 妆容诊断入口",
     "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "本月还剩 {remaining} 次生成机会",
