@@ -344,7 +344,7 @@
     "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} 額度",
     "lowQuotaHint": "升級以比較更多妝容",
-    "refreshDate": "{date}",
+    "refreshDate": "下次額度刷新：{date}",
     "startTryon": "開始試妝",
     "startHdTrypton": "HD 開始試妝",
     "openFullCatalog": "查看妝容庫",

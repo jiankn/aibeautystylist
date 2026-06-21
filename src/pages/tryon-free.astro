@@ -447,17 +447,6 @@ const workspaceStatusHrefs = {
       }
     }
 
-    function ensurePerksNode(status) {
-      let perks = status.querySelector(".workspace-status-perks");
-      if (perks) return perks;
-      const subtitle = status.querySelector("[data-workspace-subtitle]");
-      if (!subtitle) return null;
-      perks = document.createElement("p");
-      perks.className = "workspace-status-perks";
-      subtitle.insertAdjacentElement("afterend", perks);
-      return perks;
-    }
-
     function updateWorkspaceLinks(status, plan) {
       const actions = status.querySelector(".workspace-status-actions");
       if (!actions) return;
@@ -548,7 +537,6 @@ const workspaceStatusHrefs = {
       const planNode = status.querySelector(".workspace-status-plan");
       const title = status.querySelector(".workspace-status-main h1");
       const subtitle = status.querySelector("[data-workspace-subtitle]");
-      const perks = ensurePerksNode(status);
       const refresh = status.querySelector("[data-quota-refresh]");
 
       status.dataset.plan = planLabel;
@@ -562,10 +550,13 @@ const workspaceStatusHrefs = {
         );
       }
       if (title) title.textContent = workspaceStatusCopy.titles[plan];
-      if (subtitle) subtitle.textContent = workspaceStatusCopy.subtitles[plan];
-      if (perks) {
-        perks.textContent = workspaceStatusCopy.perks[plan] || "";
-        perks.hidden = plan === "free";
+      if (subtitle) {
+        const paidStatusText =
+          plan === "free"
+            ? workspaceStatusCopy.subtitles[plan]
+            : workspaceStatusCopy.perks[plan];
+        subtitle.textContent = paidStatusText || "";
+        subtitle.classList.toggle("workspace-status-perks", plan !== "free");
       }
       status.querySelector(".workspace-status-low")?.remove();
       if (refresh) refresh.textContent = workspaceStatusCopy.notes[plan];
@@ -593,7 +584,9 @@ const workspaceStatusHrefs = {
       const isSaved = savedJobIds.has(lastSucceededJobId);
       saveBtn.textContent =
         (isSaved ? "★ " : "☆ ") +
-        (isSaved ? freeClientMessages.savedResult : freeClientMessages.saveResult);
+        (isSaved
+          ? freeClientMessages.savedResult
+          : freeClientMessages.saveResult);
       saveBtn.disabled = false;
       saveBtn.setAttribute("aria-pressed", String(isSaved));
     }
@@ -668,16 +661,20 @@ const workspaceStatusHrefs = {
     function activateShareActions(jobId, lookSlug) {
       if (!jobId) return;
       lastSucceededJobId = jobId;
-      lastSucceededLookSlug = lookSlug || lastSucceededLookSlug || selectedLookSlug;
+      lastSucceededLookSlug =
+        lookSlug || lastSucceededLookSlug || selectedLookSlug;
       refreshUpgradeBanner();
       const shareActions = document.getElementById("free-share-actions");
       if (shareActions) shareActions.hidden = false;
-      ["free-share-card", "free-save-result", "free-copy-link", "free-share-reward"].forEach(
-        (id) => {
-          const btn = document.getElementById(id);
-          if (btn) btn.disabled = false;
-        },
-      );
+      [
+        "free-share-card",
+        "free-save-result",
+        "free-copy-link",
+        "free-share-reward",
+      ].forEach((id) => {
+        const btn = document.getElementById(id);
+        if (btn) btn.disabled = false;
+      });
       loadSavedLooks().then(renderSaveButton);
     }
     document.addEventListener("abs:tryon-succeeded", function (event) {
@@ -763,7 +760,8 @@ const workspaceStatusHrefs = {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 jobId: lastSucceededJobId,
-                lookSlug: lastSucceededLookSlug || selectedLookSlug || "commute",
+                lookSlug:
+                  lastSucceededLookSlug || selectedLookSlug || "commute",
               }),
             });
             const data = await res.json().catch(() => null);

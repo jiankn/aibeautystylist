@@ -348,7 +348,7 @@
     "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} Credits",
     "lowQuotaHint": "Upgrade für mehr Optionen",
-    "refreshDate": "{date}",
+    "refreshDate": "Nächste Aktualisierung: {date}",
     "startTryon": "Try-on starten",
     "startHdTrypton": "In HD testen",
     "openFullCatalog": "Katalog ansehen",

@@ -1243,8 +1243,10 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 }
 .workspace-status-quota-head {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 7px;
+  flex-wrap: wrap;
   color: var(--text);
   font-size: 12px;
 }
@@ -1265,6 +1267,7 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   color: var(--muted);
   font-size: 10px;
   line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 .workspace-status-actions {
   display: flex;

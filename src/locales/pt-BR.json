@@ -348,7 +348,7 @@
     "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} créditos",
     "lowQuotaHint": "Atualize para mais opções",
-    "refreshDate": "{date}",
+    "refreshDate": "Próxima renovação: {date}",
     "startTryon": "Começar teste",
     "startHdTrypton": "Testar em HD",
     "openFullCatalog": "Ver catálogo",

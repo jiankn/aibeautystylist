@@ -348,7 +348,7 @@
     "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} crédits",
     "lowQuotaHint": "Passez à une offre supérieure",
-    "refreshDate": "{date}",
+    "refreshDate": "Prochain renouvellement : {date}",
     "startTryon": "Commencer l’essai",
     "startHdTrypton": "Essayer en HD",
     "openFullCatalog": "Voir le catalogue",

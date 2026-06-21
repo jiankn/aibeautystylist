@@ -344,7 +344,7 @@
     "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} クレジット",
     "lowQuotaHint": "アップグレードしてさらに比較",
-    "refreshDate": "{date}",
+    "refreshDate": "次回更新：{date}",
     "startTryon": "試してみる",
     "startHdTrypton": "HD 試してみる",
     "openFullCatalog": "カタログを見る",

@@ -100,6 +100,7 @@ const perksText =
     : plan === "Premium"
       ? t("workspace", "premiumPerks")
       : undefined;
+const statusSubtitle = perksText ?? subtitle;
 ---
 
 <section
@@ -113,8 +114,12 @@ const perksText =
     <span class:list={["workspace-status-plan", planClass]}>{plan}</span>
     <div>
       <h1>{title}</h1>
-      <p data-workspace-subtitle>{subtitle}</p>
-      {perksText && <p class="workspace-status-perks">{perksText}</p>}
+      <p
+        class:list={[perksText && "workspace-status-perks"]}
+        data-workspace-subtitle
+      >
+        {statusSubtitle}
+      </p>
       <!-- Low quota warning for Free logged-in -->
       {
         lowQuota && plan === "Free" && (
@@ -130,11 +135,11 @@ const perksText =
       <div class="workspace-status-quota">
         <div class="workspace-status-quota-head">
           <b data-quota-label>{quotaValue}</b>
+          <small data-quota-refresh>{note}</small>
         </div>
         <div class="meter">
           <i data-quota-meter style={`width:${percentage}%`} />
         </div>
-        <small data-quota-refresh>{note}</small>
       </div>
     )
   }

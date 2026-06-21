@@ -344,7 +344,7 @@
     "quotaRemaining": "{remaining}/{total}",
     "quotaRemainingLow": "{remaining} 크레딧",
     "lowQuotaHint": "업그레이드하고 더 비교",
-    "refreshDate": "{date}",
+    "refreshDate": "다음 새로고침: {date}",
     "startTryon": "체험 시작",
     "startHdTrypton": "HD 체험 시작",
     "openFullCatalog": "카탈로그 보기",
