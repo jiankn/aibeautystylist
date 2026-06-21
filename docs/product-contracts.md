@@ -135,7 +135,8 @@
 | `POST /api/favorite-looks` | 收藏妆容模板 | 登录用户，按 `lookSlug` 去重 |
 | `DELETE /api/favorite-looks/:slug` | 取消收藏妆容模板 | 登录用户，仅资源所有者 |
 | `POST /api/share-cards` | 创建分享卡 | 必须拥有成功结果 |
-| `POST /api/share-rewards` | 发放分享奖励 | Free 用户、每日幂等 |
+| `POST /api/shares/intent` | 创建分享领奖凭证 | Free 用户、本人成功任务、分享动作确认后调用 |
+| `POST /api/shares/reward` | 发放分享奖励 | Free 用户、每日幂等、必须携带未过期分享凭证 |
 | `POST /api/billing/checkout` | 创建 Checkout | 登录用户，成功 URL 带 `session_id={CHECKOUT_SESSION_ID}` |
 | `POST /api/billing/sync-checkout` | 回跳后主动同步 Checkout Session | 登录用户，校验 session 属于当前账户 |
 | `POST /api/billing/portal` | 创建客户 Portal | 有 Stripe customer |
@@ -191,7 +192,7 @@
 - `usage_records.idempotencyKey` 唯一。
 - `tryon_jobs.idempotencyKey` 唯一。
 - `subscriptions.stripeSubscriptionId` 唯一。
-- 分享奖励对 `userId + rewardDate + type` 唯一。
+- 分享奖励对 `userId + rewardDate + type` 唯一；奖励接口必须校验 `share_intents.claimToken`。
 - 妆容模板收藏对 `userId + lookSlug` 唯一；`saved_looks` 仍表示成功试妆结果收藏，二者不是同一对象。
 - 所有用户资源表按 `userId` 建索引。
 

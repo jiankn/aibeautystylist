@@ -142,7 +142,23 @@ export async function grantShareReward(
     };
   }
 
-  await appendUsageRecord(userId, jobId, "share_reward", 1, usageKey, DB, now);
+  const inserted = await appendUsageRecord(
+    userId,
+    jobId,
+    "share_reward",
+    1,
+    usageKey,
+    DB,
+    now,
+    true,
+  );
+  if (!inserted) {
+    return {
+      rewarded: false,
+      duplicate: true,
+      snapshot: await getQuotaSnapshot(userId, DB, now, monthlyQuota),
+    };
+  }
   return {
     rewarded: true,
     duplicate: false,
@@ -248,7 +264,8 @@ async function appendUsageRecord(
   idempotencyKey: string,
   DB?: D1DatabaseLike,
   now = new Date(),
-): Promise<void> {
+  ignoreDuplicate = false,
+): Promise<boolean> {
   const occurredAt = now.toISOString();
 
   if (DB) {
@@ -257,8 +274,8 @@ async function appendUsageRecord(
     )
       .bind(userId, occurredAt)
       .run();
-    await DB.prepare(
-      "INSERT INTO usage_records (id, user_id, job_id, type, amount, idempotency_key, occurred_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    const result = (await DB.prepare(
+      `${ignoreDuplicate ? "INSERT OR IGNORE" : "INSERT"} INTO usage_records (id, user_id, job_id, type, amount, idempotency_key, occurred_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
     )
       .bind(
         crypto.randomUUID(),
@@ -269,11 +286,18 @@ async function appendUsageRecord(
         idempotencyKey,
         occurredAt,
       )
-      .run();
-    return;
+      .run()) as { meta?: { changes?: number } } | undefined;
+    return result?.meta?.changes === 0 ? false : true;
   }
 
   const records = mockUsage.get(userId) ?? [];
+  if (
+    ignoreDuplicate &&
+    records.some((record) => record.idempotencyKey === idempotencyKey)
+  ) {
+    return false;
+  }
   records.push({ amount, idempotencyKey, occurredAt });
   mockUsage.set(userId, records);
+  return true;
 }

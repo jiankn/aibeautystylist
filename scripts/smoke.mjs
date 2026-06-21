@@ -647,16 +647,34 @@ try {
       const replay = await replayResponse.json();
       const queryResponse = await fetch(`/api/tryon-jobs/${job.data?.id}`);
       const query = await queryResponse.json();
+      const shareIntentResponse = await fetch("/api/shares/intent", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jobId: job.data?.id, method: "copy_link" }),
+      });
+      const shareIntent = await shareIntentResponse.json();
       const rewardResponse = await fetch("/api/shares/reward", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ jobId: job.data?.id }),
+        body: JSON.stringify({
+          jobId: job.data?.id,
+          shareClaimToken: shareIntent.data?.claimToken,
+        }),
       });
       const reward = await rewardResponse.json();
+      const shareIntentReplayResponse = await fetch("/api/shares/intent", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jobId: job.data?.id, method: "copy_link" }),
+      });
+      const shareIntentReplay = await shareIntentReplayResponse.json();
       const rewardReplayResponse = await fetch("/api/shares/reward", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ jobId: job.data?.id }),
+        body: JSON.stringify({
+          jobId: job.data?.id,
+          shareClaimToken: shareIntentReplay.data?.claimToken,
+        }),
       });
       const rewardReplay = await rewardReplayResponse.json();
       const cancelResponse = await fetch(
@@ -728,9 +746,11 @@ try {
         queryOk: query.ok,
         querySameJob: query.data?.id === job.data?.id,
         queryHidesOwner: !("userId" in (query.data ?? {})),
+        shareIntentOk: shareIntent.ok,
         rewardOk: reward.ok,
         rewardGranted: reward.data?.rewarded,
         rewardQuotaRemaining: reward.data?.quota?.remaining,
+        shareIntentReplayOk: shareIntentReplay.ok,
         rewardReplayOk: rewardReplay.ok,
         rewardReplayGranted: rewardReplay.data?.rewarded,
         cancelStatus: cancelResponse.status,
@@ -767,9 +787,11 @@ try {
     !uploadApiResult.queryOk ||
     !uploadApiResult.querySameJob ||
     !uploadApiResult.queryHidesOwner ||
+    !uploadApiResult.shareIntentOk ||
     !uploadApiResult.rewardOk ||
     !uploadApiResult.rewardGranted ||
     uploadApiResult.rewardQuotaRemaining !== 2 ||
+    !uploadApiResult.shareIntentReplayOk ||
     !uploadApiResult.rewardReplayOk ||
     uploadApiResult.rewardReplayGranted !== false ||
     uploadApiResult.cancelStatus !== 409 ||

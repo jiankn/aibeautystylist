@@ -655,6 +655,7 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
     const emptyEl = document.getElementById("share-empty");
     const actionsEl = document.getElementById("share-actions");
     const cardEl = document.getElementById("share-card");
+    const rewardBtn = document.getElementById("share-reward-btn");
 
     if (!jobId) {
       cardEl.hidden = true;
@@ -662,6 +663,59 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
       emptyEl.hidden = false;
       return;
     }
+
+    function shareClaimStorageKey(value) {
+      return "abs:share-claim:" + value;
+    }
+
+    function getStoredShareClaim() {
+      try {
+        const raw = sessionStorage.getItem(shareClaimStorageKey(jobId));
+        if (!raw) return null;
+        const claim = JSON.parse(raw);
+        if (!claim?.claimToken || !claim?.expiresAt) return null;
+        if (claim.expiresAt <= new Date().toISOString()) {
+          sessionStorage.removeItem(shareClaimStorageKey(jobId));
+          return null;
+        }
+        return claim;
+      } catch {
+        return null;
+      }
+    }
+
+    function storeShareClaim(claim) {
+      try {
+        sessionStorage.setItem(
+          shareClaimStorageKey(jobId),
+          JSON.stringify(claim),
+        );
+      } catch {
+        /* ignore private storage failures */
+      }
+    }
+
+    async function createShareClaim(method) {
+      const res = await fetch("/api/shares/intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId, method }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok || !data.data?.claimToken) {
+        throw new Error(data?.error?.message || "SHARE_INTENT_FAILED");
+      }
+      storeShareClaim(data.data);
+      refreshRewardButtonState();
+      return data.data;
+    }
+
+    function refreshRewardButtonState() {
+      if (!rewardBtn) return;
+      rewardBtn.disabled = !getStoredShareClaim();
+    }
+
+    refreshRewardButtonState();
 
     fetch("/api/tryon-jobs/" + jobId)
       .then((r) => r.json())
@@ -747,11 +801,17 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
               text: copy.shareText,
               url: shareUrl,
             });
+            await createShareClaim("web_share");
           } catch {
             /* user cancelled */
           }
-        } else {
-          navigator.clipboard?.writeText(shareUrl);
+        } else if (navigator.clipboard?.writeText) {
+          try {
+            await navigator.clipboard.writeText(shareUrl);
+            await createShareClaim("copy_link");
+          } catch {
+            /* keep share fallback best-effort */
+          }
           webShareBtn.textContent = copy.shareCopied;
           setTimeout(() => {
             webShareBtn.textContent = "↗  " + copy.share;
@@ -762,10 +822,20 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
 
     const copyBtn = document.getElementById("share-copy-btn");
     if (copyBtn) {
-      copyBtn.addEventListener("click", () => {
+      copyBtn.addEventListener("click", async () => {
         const shareUrl =
           location.origin + shareCardHref + "?jobId=" + jobId + "&ref=share";
-        navigator.clipboard?.writeText(shareUrl);
+        if (!navigator.clipboard?.writeText) return;
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+        } catch {
+          return;
+        }
+        try {
+          await createShareClaim("copy_link");
+        } catch {
+          /* keep copy action best-effort */
+        }
         copyBtn.textContent = copy.copied;
         setTimeout(() => {
           copyBtn.textContent = "⌘  " + copy.copyLink;
@@ -773,15 +843,22 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
       });
     }
 
-    const rewardBtn = document.getElementById("share-reward-btn");
     if (rewardBtn) {
       rewardBtn.addEventListener("click", async () => {
         try {
+          const claim = getStoredShareClaim();
+          if (!claim) {
+            refreshRewardButtonState();
+            return;
+          }
           rewardBtn.disabled = true;
           const res = await fetch("/api/shares/reward", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ jobId }),
+            body: JSON.stringify({
+              jobId,
+              shareClaimToken: claim.claimToken,
+            }),
           });
           const data = await res.json();
           if (data.ok && data.data.rewarded) {
