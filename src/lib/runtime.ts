@@ -59,7 +59,7 @@ export interface RuntimeBindings {
   STRIPE_PRICE_PREMIUM_MONTHLY?: string;
   STRIPE_PRICE_PREMIUM_YEARLY?: string;
   APP_PUBLIC_URL?: string;
-  // 邮件（Postal）与第三方登录（Google OAuth）
+  // 邮件（Postal）与第三方登录（OAuth）
   POSTAL_API_URL?: string;
   POSTAL_API_KEY?: string;
   POSTAL_API_FROM_NAME?: string;
@@ -67,6 +67,8 @@ export interface RuntimeBindings {
   SUPPORT_EMAIL?: string;
   GOOGLE_OAUTH_CLIENT_ID?: string;
   GOOGLE_OAUTH_CLIENT_SECRET?: string;
+  MICROSOFT_OAUTH_CLIENT_ID?: string;
+  MICROSOFT_OAUTH_CLIENT_SECRET?: string;
 }
 
 export function getRuntimeBindings(): RuntimeBindings {

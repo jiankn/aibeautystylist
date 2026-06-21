@@ -14,6 +14,7 @@ import { getRuntimeBindings } from "../../../lib/runtime";
 
 interface ForgotBody {
   email?: string;
+  locale?: string;
 }
 
 // 始终返回成功，避免泄露邮箱是否存在（账户枚举防护）。
@@ -25,7 +26,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const genericOk = () =>
     apiSuccess({
-      message: "如果该邮箱已注册，我们已发送密码重置邮件",
+      messageCode: "PASSWORD_RESET_EMAIL_SENT",
     });
 
   if (!DB || !email) return genericOk();
@@ -56,6 +57,7 @@ export const POST: APIRoute = async ({ request }) => {
         token,
         bindings,
         new URL(request.url).origin,
+        body?.locale,
       );
     } catch {
       // 邮件失败也返回统一响应，不暴露内部状态。

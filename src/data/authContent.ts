@@ -63,6 +63,22 @@ export interface ResetPasswordContent {
   readonly failed: string;
 }
 
+export interface AuthResponseMessages {
+  readonly networkError: string;
+  readonly invalidCredentials: string;
+  readonly emailNotVerified: string;
+  readonly oauthRequired: string;
+  readonly authUnavailable: string;
+  readonly rateLimited: string;
+  readonly invalidEmail: string;
+  readonly weakPassword: string;
+  readonly emailInUse: string;
+  readonly invalidToken: string;
+  readonly registerSuccess: string;
+  readonly registerSuccessEmailPending: string;
+  readonly resetFallback: string;
+}
+
 interface AuthLocaleContent {
   readonly login: LoginContent;
   readonly reset: ResetPasswordContent;
@@ -582,6 +598,183 @@ const localized: Partial<Record<SupportedLocale, AuthLocaleContent>> = {
 
 localized["es-419"] = localized["es-ES"];
 
+const defaultAuthResponseMessages: AuthResponseMessages = {
+  networkError:
+    "Network connection failed. Check your connection and try again.",
+  invalidCredentials: "Email or password is incorrect.",
+  emailNotVerified: "Please verify your email before signing in.",
+  oauthRequired: "This account can only sign in with Google.",
+  authUnavailable:
+    "Account service is temporarily unavailable. Try again later.",
+  rateLimited: "Too many attempts. Please try again later.",
+  invalidEmail: "Enter a valid email address.",
+  weakPassword: "Use at least 8 characters with letters and numbers.",
+  emailInUse:
+    "This email is already registered. Sign in or reset your password.",
+  invalidToken: "This reset link is invalid or expired.",
+  registerSuccess: "Account created. Check your email to verify it.",
+  registerSuccessEmailPending:
+    "Account created, but the verification email could not be sent right now. Try again later.",
+  resetFallback:
+    "If this email is registered, we have sent a password reset link.",
+};
+
+const localizedAuthResponseMessages: Partial<
+  Record<SupportedLocale, AuthResponseMessages>
+> = {
+  en: defaultAuthResponseMessages,
+  "zh-CN": {
+    networkError: "网络连接失败，请检查网络后重试。",
+    invalidCredentials: "邮箱或密码不正确。",
+    emailNotVerified: "请先完成邮箱验证后再登录。",
+    oauthRequired: "该账号仅支持 Google 登录。",
+    authUnavailable: "账户服务暂时不可用，请稍后再试。",
+    rateLimited: "尝试次数过多，请稍后再试。",
+    invalidEmail: "请输入有效的邮箱地址。",
+    weakPassword: "密码至少 8 位，且包含字母和数字。",
+    emailInUse: "该邮箱已注册，请直接登录或找回密码。",
+    invalidToken: "重置链接无效或已过期。",
+    registerSuccess: "注册成功，请查收验证邮件。",
+    registerSuccessEmailPending:
+      "注册成功，但验证邮件暂未发送，请稍后重试发送。",
+    resetFallback: "如果该邮箱已注册，我们已发送密码重置邮件。",
+  },
+  "de-DE": {
+    networkError:
+      "Netzwerkfehler. Bitte Verbindung prüfen und erneut versuchen.",
+    invalidCredentials: "E-Mail oder Passwort ist falsch.",
+    emailNotVerified: "Bitte bestätige deine E-Mail vor der Anmeldung.",
+    oauthRequired: "Dieses Konto kann nur mit Google angemeldet werden.",
+    authUnavailable:
+      "Der Kontodienst ist vorübergehend nicht verfügbar. Bitte später erneut versuchen.",
+    rateLimited: "Zu viele Versuche. Bitte später erneut versuchen.",
+    invalidEmail: "Gib eine gültige E-Mail-Adresse ein.",
+    weakPassword: "Nutze mindestens 8 Zeichen mit Buchstaben und Zahlen.",
+    emailInUse:
+      "Diese E-Mail ist bereits registriert. Melde dich an oder setze das Passwort zurück.",
+    invalidToken: "Dieser Link ist ungültig oder abgelaufen.",
+    registerSuccess: "Konto erstellt. Bitte bestätige deine E-Mail.",
+    registerSuccessEmailPending:
+      "Konto erstellt, aber die Bestätigungs-E-Mail konnte gerade nicht gesendet werden. Bitte später erneut versuchen.",
+    resetFallback:
+      "Falls die E-Mail registriert ist, wurde ein Link zum Zurücksetzen gesendet.",
+  },
+  "fr-FR": {
+    networkError: "Erreur réseau. Vérifiez votre connexion et réessayez.",
+    invalidCredentials: "L'e-mail ou le mot de passe est incorrect.",
+    emailNotVerified: "Veuillez vérifier votre e-mail avant de vous connecter.",
+    oauthRequired: "Ce compte ne peut se connecter qu'avec Google.",
+    authUnavailable:
+      "Le service de compte est temporairement indisponible. Réessayez plus tard.",
+    rateLimited: "Trop de tentatives. Réessayez plus tard.",
+    invalidEmail: "Saisissez une adresse e-mail valide.",
+    weakPassword:
+      "Utilisez au moins 8 caractères avec des lettres et des chiffres.",
+    emailInUse:
+      "Cet e-mail est déjà inscrit. Connectez-vous ou réinitialisez le mot de passe.",
+    invalidToken: "Ce lien de réinitialisation est invalide ou expiré.",
+    registerSuccess: "Compte créé. Vérifiez votre e-mail.",
+    registerSuccessEmailPending:
+      "Compte créé, mais l'e-mail de vérification n'a pas pu être envoyé pour le moment. Réessayez plus tard.",
+    resetFallback:
+      "Si cet e-mail est enregistré, un lien de réinitialisation a été envoyé.",
+  },
+  "ja-JP": {
+    networkError:
+      "ネットワークエラーです。接続を確認してもう一度お試しください。",
+    invalidCredentials: "メールアドレスまたはパスワードが正しくありません。",
+    emailNotVerified: "ログインする前にメールアドレスを確認してください。",
+    oauthRequired: "このアカウントは Google ログインのみ利用できます。",
+    authUnavailable:
+      "アカウントサービスは一時的に利用できません。時間をおいて再度お試しください。",
+    rateLimited: "試行回数が多すぎます。時間をおいて再度お試しください。",
+    invalidEmail: "有効なメールアドレスを入力してください。",
+    weakPassword: "英字と数字を含む8文字以上のパスワードにしてください。",
+    emailInUse:
+      "このメールアドレスは登録済みです。ログインするか、パスワードを再設定してください。",
+    invalidToken: "再設定リンクが無効または期限切れです。",
+    registerSuccess: "アカウントを作成しました。メールをご確認ください。",
+    registerSuccessEmailPending:
+      "アカウントを作成しましたが、確認メールを現在送信できません。時間をおいて再度お試しください。",
+    resetFallback:
+      "登録済みのメールアドレスの場合、再設定リンクを送信しました。",
+  },
+  "ko-KR": {
+    networkError: "네트워크 오류입니다. 연결을 확인한 뒤 다시 시도하세요.",
+    invalidCredentials: "이메일 또는 비밀번호가 올바르지 않습니다.",
+    emailNotVerified: "로그인하기 전에 이메일 인증을 완료하세요.",
+    oauthRequired: "이 계정은 Google 로그인만 사용할 수 있습니다.",
+    authUnavailable:
+      "계정 서비스를 일시적으로 사용할 수 없습니다. 잠시 후 다시 시도하세요.",
+    rateLimited: "시도 횟수가 너무 많습니다. 잠시 후 다시 시도하세요.",
+    invalidEmail: "유효한 이메일 주소를 입력하세요.",
+    weakPassword: "영문과 숫자를 포함해 8자 이상으로 설정하세요.",
+    emailInUse:
+      "이미 등록된 이메일입니다. 로그인하거나 비밀번호를 재설정하세요.",
+    invalidToken: "재설정 링크가 유효하지 않거나 만료되었습니다.",
+    registerSuccess: "계정이 생성되었습니다. 이메일을 확인하세요.",
+    registerSuccessEmailPending:
+      "계정은 생성되었지만 지금은 인증 이메일을 보낼 수 없습니다. 잠시 후 다시 시도하세요.",
+    resetFallback: "등록된 이메일인 경우 재설정 링크를 보냈습니다.",
+  },
+  "zh-TW": {
+    networkError: "網路連線失敗，請檢查網路後重試。",
+    invalidCredentials: "電子郵件或密碼不正確。",
+    emailNotVerified: "請先完成電子郵件驗證後再登入。",
+    oauthRequired: "此帳戶僅支援 Google 登入。",
+    authUnavailable: "帳戶服務暫時無法使用，請稍後再試。",
+    rateLimited: "嘗試次數過多，請稍後再試。",
+    invalidEmail: "請輸入有效的電子郵件地址。",
+    weakPassword: "密碼至少 8 個字元，且包含英文字母與數字。",
+    emailInUse: "此電子郵件已註冊，請直接登入或重設密碼。",
+    invalidToken: "重設連結無效或已過期。",
+    registerSuccess: "帳戶已建立，請查收驗證郵件。",
+    registerSuccessEmailPending:
+      "帳戶已建立，但驗證郵件暫時無法寄送，請稍後再試。",
+    resetFallback: "若此電子郵件已註冊，我們已寄送密碼重設連結。",
+  },
+  "es-ES": {
+    networkError: "Error de red. Revisa tu conexión e inténtalo de nuevo.",
+    invalidCredentials: "El correo o la contraseña no son correctos.",
+    emailNotVerified: "Verifica tu correo electrónico antes de iniciar sesión.",
+    oauthRequired: "Esta cuenta solo puede iniciar sesión con Google.",
+    authUnavailable:
+      "El servicio de cuenta no está disponible temporalmente. Inténtalo más tarde.",
+    rateLimited: "Demasiados intentos. Inténtalo más tarde.",
+    invalidEmail: "Introduce una dirección de correo válida.",
+    weakPassword: "Usa al menos 8 caracteres con letras y números.",
+    emailInUse:
+      "Este correo ya está registrado. Inicia sesión o restablece la contraseña.",
+    invalidToken: "Este enlace de restablecimiento no es válido o ha caducado.",
+    registerSuccess: "Cuenta creada. Revisa tu correo.",
+    registerSuccessEmailPending:
+      "Cuenta creada, pero no se pudo enviar el correo de verificación ahora. Inténtalo más tarde.",
+    resetFallback:
+      "Si el correo está registrado, hemos enviado un enlace de restablecimiento.",
+  },
+  "pt-BR": {
+    networkError: "Erro de rede. Verifique sua conexão e tente novamente.",
+    invalidCredentials: "E-mail ou senha incorretos.",
+    emailNotVerified: "Verifique seu e-mail antes de entrar.",
+    oauthRequired: "Esta conta só pode entrar com Google.",
+    authUnavailable:
+      "O serviço de conta está temporariamente indisponível. Tente novamente mais tarde.",
+    rateLimited: "Muitas tentativas. Tente novamente mais tarde.",
+    invalidEmail: "Informe um endereço de e-mail válido.",
+    weakPassword: "Use pelo menos 8 caracteres com letras e números.",
+    emailInUse: "Este e-mail já está registrado. Entre ou redefina sua senha.",
+    invalidToken: "Este link de redefinição é inválido ou expirou.",
+    registerSuccess: "Conta criada. Confira seu e-mail.",
+    registerSuccessEmailPending:
+      "Conta criada, mas o e-mail de verificação não pôde ser enviado agora. Tente novamente mais tarde.",
+    resetFallback:
+      "Se o e-mail estiver cadastrado, enviamos um link de redefinição.",
+  },
+};
+
+localizedAuthResponseMessages["es-419"] =
+  localizedAuthResponseMessages["es-ES"];
+
 export function getLocalizedLoginContent(
   locale: SupportedLocale,
 ): LoginContent | undefined {
@@ -592,4 +785,10 @@ export function getLocalizedResetPasswordContent(
   locale: SupportedLocale,
 ): ResetPasswordContent | undefined {
   return localized[locale]?.reset;
+}
+
+export function getLocalizedAuthResponseMessages(
+  locale: SupportedLocale,
+): AuthResponseMessages {
+  return localizedAuthResponseMessages[locale] ?? defaultAuthResponseMessages;
 }

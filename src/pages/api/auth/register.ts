@@ -20,6 +20,7 @@ import { getRuntimeBindings } from "../../../lib/runtime";
 interface RegisterBody {
   email?: string;
   password?: string;
+  locale?: string;
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -111,6 +112,7 @@ export const POST: APIRoute = async ({ request }) => {
       token,
       bindings,
       new URL(request.url).origin,
+      body?.locale,
     );
     emailSent = result.sent;
   } catch {
@@ -122,9 +124,9 @@ export const POST: APIRoute = async ({ request }) => {
     {
       registered: true,
       emailSent,
-      message: emailSent
-        ? "注册成功，请查收验证邮件"
-        : "注册成功，但验证邮件暂未发送，请稍后重试发送",
+      messageCode: emailSent
+        ? "REGISTER_SUCCESS"
+        : "REGISTER_SUCCESS_EMAIL_PENDING",
     },
     { status: 201 },
   );
