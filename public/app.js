@@ -380,9 +380,11 @@ function syncUploadAuthGate(session) {
   });
 }
 
-getCurrentSession()
-  .then((session) => syncUploadAuthGate(session))
-  .catch(() => {});
+if (document.querySelector("[data-upload]")) {
+  getCurrentSession()
+    .then((session) => syncUploadAuthGate(session))
+    .catch(() => {});
+}
 
 async function readApiPayload(response, fallbackMessage) {
   const payload = await response.json().catch(() => ({}));
@@ -501,16 +503,21 @@ async function refreshQuotaDisplay() {
 refreshQuotaDisplay().catch(() => {});
 
 
+const heroSyncMedia = window.matchMedia("(min-width: 901px)");
+
 function syncHeroVisualHeight() {
+  const shouldSync = heroSyncMedia.matches;
   document.querySelectorAll("[data-hero-copy-sync]").forEach((hero) => {
     const copy = hero.querySelector(".home-copy");
     const compare = hero.querySelector("[data-hero-visual] .home-compare");
     if (!copy || !compare) return;
 
-    if (window.matchMedia("(max-width: 900px)").matches) {
-      compare.style.height = "";
-      compare.style.minHeight = "";
-      delete compare.dataset.syncedHeight;
+    if (!shouldSync) {
+      if (compare.dataset.syncedHeight) {
+        compare.style.height = "";
+        compare.style.minHeight = "";
+        delete compare.dataset.syncedHeight;
+      }
       return;
     }
 
@@ -534,12 +541,15 @@ if (heroSyncSections.length) {
   });
   window.addEventListener("resize", scheduleHeroSync);
   window.addEventListener("load", scheduleHeroSync);
+  heroSyncMedia.addEventListener("change", scheduleHeroSync);
   scheduleHeroSync();
 }
 
 document.querySelectorAll("[data-compare-slider]").forEach((slider) => {
+  if (slider.dataset.compareReady === "true") return;
   const knob = slider.querySelector("[data-compare-knob]");
   if (!knob) return;
+  slider.dataset.compareReady = "true";
 
   const setPosition = (value) => {
     const pct = Math.max(5, Math.min(95, value));

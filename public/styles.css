@@ -620,6 +620,7 @@ img { display: block; width: 100%; }
   z-index: 2;
   clip-path: inset(0 calc(100% - var(--compare-position)) 0 0);
 }
+.compare-half picture { display: block; width: 100%; height: 100%; }
 .compare-half img { width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none; }
 .compare-half.left img,
 .compare-half.right img { filter: none; }

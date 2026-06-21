@@ -41,43 +41,91 @@ const getLookPreviewImage = (image: string, width = 640) => {
 
 const heroImageAttributes: Record<
   string,
-  { srcset: string; sizes: string; width: number; height: number }
+  {
+    srcset: string;
+    sizes: string;
+    width: number;
+    height: number;
+    mobileSrcset?: string;
+    mobileSizes?: string;
+    mobileHref?: string;
+  }
 > = {
   "/images/home-hero-global-commute-after.webp": {
     srcset:
       "/images/home-hero-global-commute-after-640.webp 640w, /images/home-hero-global-commute-after-960.webp 960w, /images/home-hero-global-commute-after.webp 1086w",
-    sizes:
-      "(max-width: 700px) calc(100vw - 28px), (max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
+    sizes: "(max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
     width: 1086,
     height: 1448,
+    mobileSrcset:
+      "/images/home-hero-global-commute-after-mobile-480.webp 480w, /images/home-hero-global-commute-after-mobile-640.webp 640w",
+    mobileSizes: "calc(100vw - 28px)",
+    mobileHref: "/images/home-hero-global-commute-after-mobile-640.webp",
   },
   "/images/home-hero-global-commute-before.webp": {
     srcset:
       "/images/home-hero-global-commute-before-640.webp 640w, /images/home-hero-global-commute-before-960.webp 960w, /images/home-hero-global-commute-before.webp 1086w",
-    sizes:
-      "(max-width: 700px) calc(100vw - 28px), (max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
+    sizes: "(max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
     width: 1086,
     height: 1448,
+    mobileSrcset:
+      "/images/home-hero-global-commute-before-mobile-480.webp 480w, /images/home-hero-global-commute-before-mobile-640.webp 640w",
+    mobileSizes: "calc(100vw - 28px)",
+    mobileHref: "/images/home-hero-global-commute-before-mobile-640.webp",
   },
   "/images/look-korean-dewy-makeup.webp": {
     srcset:
       "/images/look-korean-dewy-makeup-640.webp 640w, /images/look-korean-dewy-makeup.webp 1024w",
-    sizes:
-      "(max-width: 700px) calc(100vw - 28px), (max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
+    sizes: "(max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
     width: 1024,
     height: 1024,
+    mobileSrcset:
+      "/images/look-korean-dewy-makeup-mobile-480.webp 480w, /images/look-korean-dewy-makeup-mobile-640.webp 640w",
+    mobileSizes: "calc(100vw - 28px)",
+    mobileHref: "/images/look-korean-dewy-makeup-mobile-640.webp",
   },
   "/images/look-korean-dewy-makeup-before.webp": {
     srcset:
       "/images/look-korean-dewy-makeup-before-640.webp 640w, /images/look-korean-dewy-makeup-before.webp 1024w",
-    sizes:
-      "(max-width: 700px) calc(100vw - 28px), (max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
+    sizes: "(max-width: 900px) calc(100vw - 72px), min(46vw, 612px)",
     width: 1024,
     height: 1024,
+    mobileSrcset:
+      "/images/look-korean-dewy-makeup-before-mobile-480.webp 480w, /images/look-korean-dewy-makeup-before-mobile-640.webp 640w",
+    mobileSizes: "calc(100vw - 28px)",
+    mobileHref: "/images/look-korean-dewy-makeup-before-mobile-640.webp",
   },
 };
 const heroImageAfterAttrs = heroImageAttributes[heroImageAfter];
 const heroImageBeforeAttrs = heroImageAttributes[heroImageBefore];
+const heroPreloadImages = heroImageAfterAttrs?.mobileSrcset
+  ? [
+      {
+        href: heroImageAfterAttrs.mobileHref ?? heroImageAfter,
+        srcset: heroImageAfterAttrs.mobileSrcset,
+        sizes: heroImageAfterAttrs.mobileSizes,
+        media: "(max-width: 700px)",
+        type: "image/webp",
+        fetchpriority: "high" as const,
+      },
+      {
+        href: heroImageAfter,
+        srcset: heroImageAfterAttrs.srcset,
+        sizes: heroImageAfterAttrs.sizes,
+        media: "(min-width: 701px)",
+        type: "image/webp",
+        fetchpriority: "high" as const,
+      },
+    ]
+  : [
+      {
+        href: heroImageAfter,
+        srcset: heroImageAfterAttrs?.srcset,
+        sizes: heroImageAfterAttrs?.sizes,
+        type: "image/webp",
+        fetchpriority: "high" as const,
+      },
+    ];
 
 const featuredSlugs = [
   "commute",
@@ -178,15 +226,9 @@ const homepageJsonLd = JSON.stringify({
   description={t("footer", "brandDesc")}
   bodyClass="home-main"
   jsonLd={homepageJsonLd}
-  preloadImages={[
-    {
-      href: heroImageAfter,
-      srcset: heroImageAfterAttrs?.srcset,
-      sizes: heroImageAfterAttrs?.sizes,
-      type: "image/webp",
-      fetchpriority: "high",
-    },
-  ]}
+  preloadImages={heroPreloadImages}
+  appScriptStrategy="idle"
+  analyticsScriptStrategy="idle"
 >
   <SiteHeader active="tryOn" mobileHidden />
   <MobileAppTopBar brand />
@@ -250,25 +292,52 @@ const homepageJsonLd = JSON.stringify({
           aria-label={t("homepage", "dragSlider")}
         >
           <div class="compare-half right">
-            <img
-              src={heroImageAfter}
-              srcset={heroImageAfterAttrs?.srcset}
-              sizes={heroImageAfterAttrs?.sizes}
-              width={heroImageAfterAttrs?.width}
-              height={heroImageAfterAttrs?.height}
-              alt={t("homepage", "heroImageAltAfter")}
-              fetchpriority="high"
-            />
+            <picture>
+              {
+                heroImageAfterAttrs?.mobileSrcset && (
+                  <source
+                    media="(max-width: 700px)"
+                    srcset={heroImageAfterAttrs.mobileSrcset}
+                    sizes={heroImageAfterAttrs.mobileSizes}
+                    type="image/webp"
+                  />
+                )
+              }
+              <img
+                src={heroImageAfter}
+                srcset={heroImageAfterAttrs?.srcset}
+                sizes={heroImageAfterAttrs?.sizes}
+                width={heroImageAfterAttrs?.width}
+                height={heroImageAfterAttrs?.height}
+                alt={t("homepage", "heroImageAltAfter")}
+                fetchpriority="high"
+                decoding="async"
+              />
+            </picture>
           </div>
           <div class="compare-half left">
-            <img
-              src={heroImageBefore}
-              srcset={heroImageBeforeAttrs?.srcset}
-              sizes={heroImageBeforeAttrs?.sizes}
-              width={heroImageBeforeAttrs?.width}
-              height={heroImageBeforeAttrs?.height}
-              alt={t("homepage", "heroImageAltBefore")}
-            />
+            <picture>
+              {
+                heroImageBeforeAttrs?.mobileSrcset && (
+                  <source
+                    media="(max-width: 700px)"
+                    srcset={heroImageBeforeAttrs.mobileSrcset}
+                    sizes={heroImageBeforeAttrs.mobileSizes}
+                    type="image/webp"
+                  />
+                )
+              }
+              <img
+                src={heroImageBefore}
+                srcset={heroImageBeforeAttrs?.srcset}
+                sizes={heroImageBeforeAttrs?.sizes}
+                width={heroImageBeforeAttrs?.width}
+                height={heroImageBeforeAttrs?.height}
+                alt={t("homepage", "heroImageAltBefore")}
+                fetchpriority="low"
+                decoding="async"
+              />
+            </picture>
           </div>
           <span class="compare-label before">{t("homepage", "before")}</span>
           <span class="compare-label after">{t("homepage", "after")}</span>
@@ -1908,6 +1977,98 @@ const homepageJsonLd = JSON.stringify({
 </style>
 
 <script is:inline>
+  (() => {
+    document.querySelectorAll("[data-compare-slider]").forEach((slider) => {
+      if (slider.dataset.compareReady === "true") return;
+      const knob = slider.querySelector("[data-compare-knob]");
+      if (!knob) return;
+      slider.dataset.compareReady = "true";
+
+      const setPosition = (value) => {
+        const pct = Math.max(5, Math.min(95, value));
+        slider.style.setProperty("--compare-position", `${pct}%`);
+        knob.setAttribute("aria-valuenow", String(Math.round(pct)));
+      };
+
+      let sliderRect = null;
+      let pendingPosition = null;
+      let positionFrame = 0;
+
+      const flushPosition = () => {
+        positionFrame = 0;
+        if (pendingPosition === null) return;
+        setPosition(pendingPosition);
+        pendingPosition = null;
+      };
+
+      const queuePosition = (value) => {
+        pendingPosition = Math.max(5, Math.min(95, value));
+        if (!positionFrame) {
+          positionFrame = window.requestAnimationFrame(flushPosition);
+        }
+      };
+
+      const setFromClientX = (clientX, immediate = false) => {
+        const rect = sliderRect || slider.getBoundingClientRect();
+        if (!rect.width) return;
+        const next = ((clientX - rect.left) / rect.width) * 100;
+        immediate ? setPosition(next) : queuePosition(next);
+      };
+
+      let isDragging = false;
+      const endDrag = (event) => {
+        if (!isDragging) return;
+        isDragging = false;
+        sliderRect = null;
+        slider.classList.remove("is-dragging");
+        if (event?.pointerId !== undefined) {
+          slider.releasePointerCapture?.(event.pointerId);
+        }
+        if (positionFrame) {
+          window.cancelAnimationFrame(positionFrame);
+          flushPosition();
+        }
+      };
+
+      slider.addEventListener("pointerdown", (event) => {
+        if (event.button !== undefined && event.button !== 0) return;
+        isDragging = true;
+        sliderRect = slider.getBoundingClientRect();
+        slider.classList.add("is-dragging");
+        slider.setPointerCapture?.(event.pointerId);
+        knob.focus({ preventScroll: true });
+        setFromClientX(event.clientX, true);
+        event.preventDefault();
+      });
+      slider.addEventListener("pointermove", (event) => {
+        if (!isDragging) return;
+        setFromClientX(event.clientX);
+        event.preventDefault();
+      });
+      slider.addEventListener("pointerup", endDrag);
+      slider.addEventListener("pointercancel", endDrag);
+      slider.addEventListener("lostpointercapture", endDrag);
+
+      knob.addEventListener("keydown", (event) => {
+        const current = Number(knob.getAttribute("aria-valuenow") || 50);
+        const step = event.shiftKey ? 10 : 5;
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          setPosition(current - step);
+        } else if (event.key === "ArrowRight") {
+          event.preventDefault();
+          setPosition(current + step);
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          setPosition(5);
+        } else if (event.key === "End") {
+          event.preventDefault();
+          setPosition(95);
+        }
+      });
+    });
+  })();
+
   (() => {
     const items = document.querySelectorAll(".fade-in-on-scroll");
     if (!items.length) return;
