@@ -5,89 +5,522 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCurrentLocale } from "../lib/i18n";
 
 const currentLocale = getCurrentLocale();
-const isZh = currentLocale.startsWith("zh");
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 const homeHref = localizeAppHref("/");
+const discoverHref = localizeAppHref("/discover");
 const tryOnHref = localizeAppHref("/tryon-free");
 const shareCardHref = localizeAppHref("/share-card");
-const copy = isZh
-  ? {
-      title: "我的试妆效果 | AI Beauty Stylist",
-      description: "查看并分享 AI Beauty Stylist 生成的试妆参考效果。",
-      cardAria: "试妆分享卡",
-      heading: "我的试妆效果",
-      loading: "加载中…",
-      cardLoading: "加载分享卡中…",
-      benefitTryon: "AI 在线试妆",
-      benefitTryonDesc: "先看自己的上脸参考",
-      benefitScenario: "按场景选妆",
-      benefitScenarioDesc: "通勤、约会、拍照都能试",
-      benefitFree: "免费体验",
-      benefitFreeDesc: "每月 3 次免费机会",
-      ctaTitle: "上传自拍",
-      ctaHighlight: "每月免费试 3 次",
-      ctaBody: "生成真实前后对比图，适合保存和分享。",
-      download: "保存为图片",
-      share: "分享",
-      copyLink: "复制链接",
-      reward: "获取分享奖励 (+1 额度)",
-      emptyTitle: "暂无试妆结果",
-      emptyBody: "先完成一次试妆，再生成可分享的结果。",
-      emptyCta: "去试妆",
-      defaultLook: "妆容效果",
-      resultAltSuffix: "试妆效果",
-      originalAltSuffix: "原始自拍",
-      before: "原图",
-      after: "试妆后",
-      shareTitle: "我的 AI 试妆效果",
-      shareText: "来看看我的 AI 试妆参考效果。",
-      shareCopied: "✓ 链接已复制",
-      copied: "✓ 已复制",
-      rewardSuccess: "✓ 额度 +1，奖励已领取！",
-      rewardAlready: "今日已领取",
-      rewardFailed: "× 领取失败，请重试",
-    }
-  : {
-      title: "My try-on result | AI Beauty Stylist",
-      description:
-        "View and share an AI Beauty Stylist makeup try-on reference result.",
-      cardAria: "Makeup try-on share card",
-      heading: "My try-on result",
-      loading: "Loading...",
-      cardLoading: "Loading share card...",
-      benefitTryon: "AI makeup try-on",
-      benefitTryonDesc: "Preview the look on your own face",
-      benefitScenario: "Looks by scenario",
-      benefitScenarioDesc: "Try work, date, and photo-ready looks",
-      benefitFree: "Free trial",
-      benefitFreeDesc: "3 free generations each month",
-      ctaTitle: "Upload a selfie",
-      ctaHighlight: "Try 3 free generations every month",
-      ctaBody: "Create a real before-and-after card to save or share.",
-      download: "Save image",
-      share: "Share",
-      copyLink: "Copy link",
-      reward: "Get share reward (+1 credit)",
-      emptyTitle: "No try-on result yet",
-      emptyBody: "Finish a try-on first, then generate a shareable result.",
-      emptyCta: "Try makeup",
-      defaultLook: "Makeup result",
-      resultAltSuffix: " try-on result",
-      originalAltSuffix: " original selfie",
-      before: "Before",
-      after: "After",
-      shareTitle: "My AI makeup try-on result",
-      shareText: "See my AI makeup try-on reference result.",
-      shareCopied: "✓ Link copied",
-      copied: "✓ Copied",
-      rewardSuccess: "✓ Credit +1 reward claimed",
-      rewardAlready: "Already claimed today",
-      rewardFailed: "× Reward failed. Try again",
-    };
+
+type ShareCardCopy = {
+  title: string;
+  description: string;
+  navLabel: string;
+  navTitle: string;
+  navHome: string;
+  navDiscover: string;
+  navTryOn: string;
+  navTryCta: string;
+  navTryShort: string;
+  cardAria: string;
+  heading: string;
+  loading: string;
+  cardLoading: string;
+  benefitTryon: string;
+  benefitTryonDesc: string;
+  benefitScenario: string;
+  benefitScenarioDesc: string;
+  benefitFree: string;
+  benefitFreeDesc: string;
+  ctaTitle: string;
+  ctaHighlight: string;
+  ctaBody: string;
+  download: string;
+  share: string;
+  copyLink: string;
+  reward: string;
+  emptyTitle: string;
+  emptyBody: string;
+  emptyCta: string;
+  emptyHome: string;
+  defaultLook: string;
+  resultAltSuffix: string;
+  originalAltSuffix: string;
+  before: string;
+  after: string;
+  shareTitle: string;
+  shareText: string;
+  shareCopied: string;
+  copied: string;
+  rewardSuccess: string;
+  rewardAlready: string;
+  rewardFailed: string;
+};
+
+const shareCopyByLocale = {
+  en: {
+    title: "My try-on result | AI Beauty Stylist",
+    description:
+      "View and share an AI Beauty Stylist makeup try-on reference result.",
+    navLabel: "Share page navigation",
+    navTitle: "Share result",
+    navHome: "Home",
+    navDiscover: "Discover looks",
+    navTryOn: "Free try-on",
+    navTryCta: "Try it too",
+    navTryShort: "Try on",
+    cardAria: "Makeup try-on share card",
+    heading: "My try-on result",
+    loading: "Loading...",
+    cardLoading: "Loading share card...",
+    benefitTryon: "AI makeup try-on",
+    benefitTryonDesc: "Preview the look on your own face",
+    benefitScenario: "Looks by scenario",
+    benefitScenarioDesc: "Try work, date, and photo-ready looks",
+    benefitFree: "Free trial",
+    benefitFreeDesc: "3 free generations each month",
+    ctaTitle: "Upload a selfie",
+    ctaHighlight: "Try 3 free generations every month",
+    ctaBody: "Create a real before-and-after card to save or share.",
+    download: "Save image",
+    share: "Share",
+    copyLink: "Copy link",
+    reward: "Get share reward (+1 credit)",
+    emptyTitle: "No try-on result yet",
+    emptyBody: "Finish a try-on first, then generate a shareable result.",
+    emptyCta: "Try makeup",
+    emptyHome: "Back home",
+    defaultLook: "Makeup result",
+    resultAltSuffix: " try-on result",
+    originalAltSuffix: " original selfie",
+    before: "Before",
+    after: "After",
+    shareTitle: "My AI makeup try-on result",
+    shareText: "See my AI makeup try-on reference result.",
+    shareCopied: "✓ Link copied",
+    copied: "✓ Copied",
+    rewardSuccess: "✓ Credit +1 reward claimed",
+    rewardAlready: "Already claimed today",
+    rewardFailed: "× Reward failed. Try again",
+  },
+  "zh-CN": {
+    title: "我的试妆效果 | AI Beauty Stylist",
+    description: "查看并分享 AI Beauty Stylist 生成的试妆参考效果。",
+    navLabel: "分享页导航",
+    navTitle: "分享结果",
+    navHome: "首页",
+    navDiscover: "发现妆容",
+    navTryOn: "免费试妆",
+    navTryCta: "我也试试",
+    navTryShort: "试妆",
+    cardAria: "试妆分享卡",
+    heading: "我的试妆效果",
+    loading: "加载中…",
+    cardLoading: "加载分享卡中…",
+    benefitTryon: "AI 在线试妆",
+    benefitTryonDesc: "先看自己的上脸参考",
+    benefitScenario: "按场景选妆",
+    benefitScenarioDesc: "通勤、约会、拍照都能试",
+    benefitFree: "免费体验",
+    benefitFreeDesc: "每月 3 次免费机会",
+    ctaTitle: "上传自拍",
+    ctaHighlight: "每月免费试 3 次",
+    ctaBody: "生成真实前后对比图，适合保存和分享。",
+    download: "保存为图片",
+    share: "分享",
+    copyLink: "复制链接",
+    reward: "获取分享奖励 (+1 额度)",
+    emptyTitle: "暂无试妆结果",
+    emptyBody: "先完成一次试妆，再生成可分享的结果。",
+    emptyCta: "去试妆",
+    emptyHome: "返回首页",
+    defaultLook: "妆容效果",
+    resultAltSuffix: "试妆效果",
+    originalAltSuffix: "原始自拍",
+    before: "原图",
+    after: "试妆后",
+    shareTitle: "我的 AI 试妆效果",
+    shareText: "来看看我的 AI 试妆参考效果。",
+    shareCopied: "✓ 链接已复制",
+    copied: "✓ 已复制",
+    rewardSuccess: "✓ 额度 +1，奖励已领取！",
+    rewardAlready: "今日已领取",
+    rewardFailed: "× 领取失败，请重试",
+  },
+  "zh-TW": {
+    title: "我的試妝效果 | AI Beauty Stylist",
+    description: "查看並分享 AI Beauty Stylist 生成的試妝參考效果。",
+    navLabel: "分享頁導覽",
+    navTitle: "分享結果",
+    navHome: "首頁",
+    navDiscover: "發現妝容",
+    navTryOn: "免費試妝",
+    navTryCta: "我也試試",
+    navTryShort: "試妝",
+    cardAria: "試妝分享卡",
+    heading: "我的試妝效果",
+    loading: "載入中…",
+    cardLoading: "正在載入分享卡…",
+    benefitTryon: "AI 線上試妝",
+    benefitTryonDesc: "先看自己的上臉參考",
+    benefitScenario: "按場景選妝",
+    benefitScenarioDesc: "通勤、約會、拍照都能試",
+    benefitFree: "免費體驗",
+    benefitFreeDesc: "每月 3 次免費機會",
+    ctaTitle: "上傳自拍",
+    ctaHighlight: "每月免費試 3 次",
+    ctaBody: "生成真實前後對比圖，適合保存和分享。",
+    download: "保存為圖片",
+    share: "分享",
+    copyLink: "複製連結",
+    reward: "領取分享獎勵 (+1 額度)",
+    emptyTitle: "暫無試妝結果",
+    emptyBody: "先完成一次試妝，再生成可分享的結果。",
+    emptyCta: "去試妝",
+    emptyHome: "返回首頁",
+    defaultLook: "妝容效果",
+    resultAltSuffix: "試妝效果",
+    originalAltSuffix: "原始自拍",
+    before: "原圖",
+    after: "試妝後",
+    shareTitle: "我的 AI 試妝效果",
+    shareText: "來看看我的 AI 試妝參考效果。",
+    shareCopied: "✓ 連結已複製",
+    copied: "✓ 已複製",
+    rewardSuccess: "✓ 額度 +1，獎勵已領取！",
+    rewardAlready: "今日已領取",
+    rewardFailed: "× 領取失敗，請重試",
+  },
+  "de-DE": {
+    title: "Mein Try-on-Ergebnis | AI Beauty Stylist",
+    description:
+      "Sieh dir ein von AI Beauty Stylist erzeugtes Make-up-Try-on-Ergebnis an und teile es.",
+    navLabel: "Navigation der Teilen-Seite",
+    navTitle: "Ergebnis teilen",
+    navHome: "Startseite",
+    navDiscover: "Looks entdecken",
+    navTryOn: "Kostenlos testen",
+    navTryCta: "Auch ausprobieren",
+    navTryShort: "Testen",
+    cardAria: "Make-up-Try-on-Teilen-Karte",
+    heading: "Mein Try-on-Ergebnis",
+    loading: "Lädt...",
+    cardLoading: "Teilen-Karte wird geladen...",
+    benefitTryon: "AI Make-up-Try-on",
+    benefitTryonDesc: "Den Look zuerst am eigenen Gesicht ansehen",
+    benefitScenario: "Looks nach Anlass",
+    benefitScenarioDesc: "Für Arbeit, Date und Fotos testen",
+    benefitFree: "Kostenlos testen",
+    benefitFreeDesc: "3 kostenlose Generierungen pro Monat",
+    ctaTitle: "Selfie hochladen",
+    ctaHighlight: "Jeden Monat 3-mal kostenlos testen",
+    ctaBody:
+      "Erstelle eine echte Vorher-nachher-Karte zum Speichern oder Teilen.",
+    download: "Bild speichern",
+    share: "Teilen",
+    copyLink: "Link kopieren",
+    reward: "Teilen-Bonus erhalten (+1 Credit)",
+    emptyTitle: "Noch kein Try-on-Ergebnis",
+    emptyBody:
+      "Schließe zuerst ein Try-on ab, dann kannst du ein teilbares Ergebnis erstellen.",
+    emptyCta: "Make-up testen",
+    emptyHome: "Zur Startseite",
+    defaultLook: "Make-up-Ergebnis",
+    resultAltSuffix: " Try-on-Ergebnis",
+    originalAltSuffix: " Original-Selfie",
+    before: "Vorher",
+    after: "Nachher",
+    shareTitle: "Mein AI Make-up-Try-on-Ergebnis",
+    shareText: "Sieh dir mein AI Make-up-Try-on-Ergebnis an.",
+    shareCopied: "✓ Link kopiert",
+    copied: "✓ Kopiert",
+    rewardSuccess: "✓ Credit +1, Bonus erhalten",
+    rewardAlready: "Heute bereits erhalten",
+    rewardFailed: "× Bonus fehlgeschlagen. Erneut versuchen",
+  },
+  "fr-FR": {
+    title: "Mon résultat d'essai | AI Beauty Stylist",
+    description:
+      "Consultez et partagez un résultat d'essai maquillage généré par AI Beauty Stylist.",
+    navLabel: "Navigation de la page de partage",
+    navTitle: "Résultat partagé",
+    navHome: "Accueil",
+    navDiscover: "Découvrir les looks",
+    navTryOn: "Essai gratuit",
+    navTryCta: "Essayer aussi",
+    navTryShort: "Essayer",
+    cardAria: "Carte de partage d'essai maquillage",
+    heading: "Mon résultat d'essai",
+    loading: "Chargement…",
+    cardLoading: "Chargement de la carte…",
+    benefitTryon: "Essai maquillage IA",
+    benefitTryonDesc: "Prévisualisez le look sur votre visage",
+    benefitScenario: "Looks par occasion",
+    benefitScenarioDesc: "Travail, rendez-vous et photos",
+    benefitFree: "Essai gratuit",
+    benefitFreeDesc: "3 générations gratuites par mois",
+    ctaTitle: "Importer un selfie",
+    ctaHighlight: "3 essais gratuits chaque mois",
+    ctaBody: "Créez une vraie carte avant/après à enregistrer ou partager.",
+    download: "Enregistrer l'image",
+    share: "Partager",
+    copyLink: "Copier le lien",
+    reward: "Obtenir la récompense (+1 crédit)",
+    emptyTitle: "Aucun résultat d'essai",
+    emptyBody:
+      "Terminez d'abord un essai, puis générez un résultat partageable.",
+    emptyCta: "Essayer le maquillage",
+    emptyHome: "Retour à l'accueil",
+    defaultLook: "Résultat maquillage",
+    resultAltSuffix: " résultat d'essai",
+    originalAltSuffix: " selfie original",
+    before: "Avant",
+    after: "Après",
+    shareTitle: "Mon résultat d'essai maquillage IA",
+    shareText: "Découvrez mon résultat d'essai maquillage IA.",
+    shareCopied: "✓ Lien copié",
+    copied: "✓ Copié",
+    rewardSuccess: "✓ Crédit +1, récompense obtenue",
+    rewardAlready: "Déjà obtenue aujourd'hui",
+    rewardFailed: "× Échec. Réessayez",
+  },
+  "ja-JP": {
+    title: "私のメイク試着結果 | AI Beauty Stylist",
+    description:
+      "AI Beauty Stylist が生成したメイク試着の参考結果を表示・共有できます。",
+    navLabel: "共有ページのナビゲーション",
+    navTitle: "共有結果",
+    navHome: "ホーム",
+    navDiscover: "メイクを探す",
+    navTryOn: "無料試着",
+    navTryCta: "自分も試す",
+    navTryShort: "試す",
+    cardAria: "メイク試着共有カード",
+    heading: "私のメイク試着結果",
+    loading: "読み込み中…",
+    cardLoading: "共有カードを読み込み中…",
+    benefitTryon: "AIメイク試着",
+    benefitTryonDesc: "自分の顔で仕上がりを確認",
+    benefitScenario: "シーン別メイク",
+    benefitScenarioDesc: "通勤・デート・写真用も試せます",
+    benefitFree: "無料体験",
+    benefitFreeDesc: "毎月3回無料",
+    ctaTitle: "セルフィーをアップロード",
+    ctaHighlight: "毎月3回無料で試せます",
+    ctaBody: "保存や共有に使えるリアルなビフォーアフターを作成します。",
+    download: "画像を保存",
+    share: "共有",
+    copyLink: "リンクをコピー",
+    reward: "共有特典を受け取る（+1クレジット）",
+    emptyTitle: "試着結果がありません",
+    emptyBody: "先に試着を完了すると、共有できる結果を生成できます。",
+    emptyCta: "メイクを試す",
+    emptyHome: "ホームへ戻る",
+    defaultLook: "メイク結果",
+    resultAltSuffix: "の試着結果",
+    originalAltSuffix: "の元のセルフィー",
+    before: "元画像",
+    after: "試着後",
+    shareTitle: "私のAIメイク試着結果",
+    shareText: "私のAIメイク試着の参考結果を見てください。",
+    shareCopied: "✓ リンクをコピーしました",
+    copied: "✓ コピーしました",
+    rewardSuccess: "✓ クレジット +1、特典を受け取りました",
+    rewardAlready: "本日は受け取り済み",
+    rewardFailed: "× 受け取りに失敗しました。再試行してください",
+  },
+  "ko-KR": {
+    title: "내 메이크업 체험 결과 | AI Beauty Stylist",
+    description:
+      "AI Beauty Stylist가 생성한 메이크업 체험 참고 결과를 보고 공유하세요.",
+    navLabel: "공유 페이지 내비게이션",
+    navTitle: "공유 결과",
+    navHome: "홈",
+    navDiscover: "룩 둘러보기",
+    navTryOn: "무료 체험",
+    navTryCta: "나도 해보기",
+    navTryShort: "체험",
+    cardAria: "메이크업 체험 공유 카드",
+    heading: "내 메이크업 체험 결과",
+    loading: "불러오는 중…",
+    cardLoading: "공유 카드 불러오는 중…",
+    benefitTryon: "AI 메이크업 체험",
+    benefitTryonDesc: "내 얼굴에 적용된 모습을 미리 확인",
+    benefitScenario: "상황별 룩",
+    benefitScenarioDesc: "출근, 데이트, 촬영 룩을 체험",
+    benefitFree: "무료 체험",
+    benefitFreeDesc: "매월 3회 무료 생성",
+    ctaTitle: "셀피 업로드",
+    ctaHighlight: "매월 3회 무료 체험",
+    ctaBody: "저장하고 공유하기 좋은 실제 전후 비교 카드를 만듭니다.",
+    download: "이미지 저장",
+    share: "공유",
+    copyLink: "링크 복사",
+    reward: "공유 보상 받기 (+1 크레딧)",
+    emptyTitle: "체험 결과 없음",
+    emptyBody: "먼저 체험을 완료하면 공유 가능한 결과를 만들 수 있습니다.",
+    emptyCta: "메이크업 체험",
+    emptyHome: "홈으로",
+    defaultLook: "메이크업 결과",
+    resultAltSuffix: " 체험 결과",
+    originalAltSuffix: " 원본 셀피",
+    before: "원본",
+    after: "체험 후",
+    shareTitle: "내 AI 메이크업 체험 결과",
+    shareText: "내 AI 메이크업 체험 참고 결과를 확인해 보세요.",
+    shareCopied: "✓ 링크가 복사되었습니다",
+    copied: "✓ 복사됨",
+    rewardSuccess: "✓ 크레딧 +1, 보상을 받았습니다",
+    rewardAlready: "오늘 이미 받았습니다",
+    rewardFailed: "× 보상 받기 실패. 다시 시도하세요",
+  },
+  "es-ES": {
+    title: "Mi resultado de prueba | AI Beauty Stylist",
+    description:
+      "Mira y comparte un resultado de referencia de prueba de maquillaje generado por AI Beauty Stylist.",
+    navLabel: "Navegación de la página compartida",
+    navTitle: "Resultado compartido",
+    navHome: "Inicio",
+    navDiscover: "Descubrir looks",
+    navTryOn: "Prueba gratis",
+    navTryCta: "Probar también",
+    navTryShort: "Probar",
+    cardAria: "Tarjeta compartida de prueba de maquillaje",
+    heading: "Mi resultado de prueba",
+    loading: "Cargando...",
+    cardLoading: "Cargando tarjeta...",
+    benefitTryon: "Prueba de maquillaje IA",
+    benefitTryonDesc: "Previsualiza el look en tu rostro",
+    benefitScenario: "Looks por ocasión",
+    benefitScenarioDesc: "Trabajo, cita y fotos",
+    benefitFree: "Prueba gratis",
+    benefitFreeDesc: "3 generaciones gratis al mes",
+    ctaTitle: "Sube un selfie",
+    ctaHighlight: "Prueba 3 veces gratis cada mes",
+    ctaBody:
+      "Crea una tarjeta real de antes y después para guardar o compartir.",
+    download: "Guardar imagen",
+    share: "Compartir",
+    copyLink: "Copiar enlace",
+    reward: "Obtener recompensa (+1 crédito)",
+    emptyTitle: "Aún no hay resultado de prueba",
+    emptyBody:
+      "Completa primero una prueba y luego genera un resultado compartible.",
+    emptyCta: "Probar maquillaje",
+    emptyHome: "Volver al inicio",
+    defaultLook: "Resultado de maquillaje",
+    resultAltSuffix: " resultado de prueba",
+    originalAltSuffix: " selfie original",
+    before: "Antes",
+    after: "Después",
+    shareTitle: "Mi resultado de maquillaje IA",
+    shareText: "Mira mi resultado de referencia de maquillaje IA.",
+    shareCopied: "✓ Enlace copiado",
+    copied: "✓ Copiado",
+    rewardSuccess: "✓ Crédito +1, recompensa recibida",
+    rewardAlready: "Ya recibida hoy",
+    rewardFailed: "× No se pudo recibir. Inténtalo de nuevo",
+  },
+  "es-419": {
+    title: "Mi resultado de prueba | AI Beauty Stylist",
+    description:
+      "Mira y comparte un resultado de referencia de prueba de maquillaje generado por AI Beauty Stylist.",
+    navLabel: "Navegación de la página compartida",
+    navTitle: "Resultado compartido",
+    navHome: "Inicio",
+    navDiscover: "Descubrir looks",
+    navTryOn: "Prueba gratis",
+    navTryCta: "Probar también",
+    navTryShort: "Probar",
+    cardAria: "Tarjeta compartida de prueba de maquillaje",
+    heading: "Mi resultado de prueba",
+    loading: "Cargando...",
+    cardLoading: "Cargando tarjeta...",
+    benefitTryon: "Prueba de maquillaje IA",
+    benefitTryonDesc: "Previsualiza el look en tu rostro",
+    benefitScenario: "Looks por ocasión",
+    benefitScenarioDesc: "Trabajo, cita y fotos",
+    benefitFree: "Prueba gratis",
+    benefitFreeDesc: "3 generaciones gratis al mes",
+    ctaTitle: "Sube un selfie",
+    ctaHighlight: "Prueba 3 veces gratis cada mes",
+    ctaBody:
+      "Crea una tarjeta real de antes y después para guardar o compartir.",
+    download: "Guardar imagen",
+    share: "Compartir",
+    copyLink: "Copiar enlace",
+    reward: "Obtener recompensa (+1 crédito)",
+    emptyTitle: "Aún no hay resultado de prueba",
+    emptyBody:
+      "Completa primero una prueba y luego genera un resultado compartible.",
+    emptyCta: "Probar maquillaje",
+    emptyHome: "Volver al inicio",
+    defaultLook: "Resultado de maquillaje",
+    resultAltSuffix: " resultado de prueba",
+    originalAltSuffix: " selfie original",
+    before: "Antes",
+    after: "Después",
+    shareTitle: "Mi resultado de maquillaje IA",
+    shareText: "Mira mi resultado de referencia de maquillaje IA.",
+    shareCopied: "✓ Enlace copiado",
+    copied: "✓ Copiado",
+    rewardSuccess: "✓ Crédito +1, recompensa recibida",
+    rewardAlready: "Ya recibida hoy",
+    rewardFailed: "× No se pudo recibir. Inténtalo de nuevo",
+  },
+  "pt-BR": {
+    title: "Meu resultado de teste | AI Beauty Stylist",
+    description:
+      "Veja e compartilhe um resultado de referência de teste de maquiagem gerado pelo AI Beauty Stylist.",
+    navLabel: "Navegação da página de compartilhamento",
+    navTitle: "Resultado compartilhado",
+    navHome: "Início",
+    navDiscover: "Descobrir looks",
+    navTryOn: "Teste grátis",
+    navTryCta: "Testar também",
+    navTryShort: "Testar",
+    cardAria: "Cartão de compartilhamento do teste de maquiagem",
+    heading: "Meu resultado de teste",
+    loading: "Carregando...",
+    cardLoading: "Carregando cartão...",
+    benefitTryon: "Teste de maquiagem IA",
+    benefitTryonDesc: "Pré-visualize o look no seu rosto",
+    benefitScenario: "Looks por ocasião",
+    benefitScenarioDesc: "Teste trabalho, encontro e fotos",
+    benefitFree: "Teste grátis",
+    benefitFreeDesc: "3 gerações grátis por mês",
+    ctaTitle: "Enviar selfie",
+    ctaHighlight: "Teste 3 vezes grátis por mês",
+    ctaBody:
+      "Crie um cartão real de antes e depois para salvar ou compartilhar.",
+    download: "Salvar imagem",
+    share: "Compartilhar",
+    copyLink: "Copiar link",
+    reward: "Receber recompensa (+1 crédito)",
+    emptyTitle: "Ainda não há resultado de teste",
+    emptyBody:
+      "Conclua um teste primeiro para gerar um resultado compartilhável.",
+    emptyCta: "Testar maquiagem",
+    emptyHome: "Voltar ao início",
+    defaultLook: "Resultado de maquiagem",
+    resultAltSuffix: " resultado do teste",
+    originalAltSuffix: " selfie original",
+    before: "Antes",
+    after: "Depois",
+    shareTitle: "Meu resultado de maquiagem IA",
+    shareText: "Veja meu resultado de referência de maquiagem IA.",
+    shareCopied: "✓ Link copiado",
+    copied: "✓ Copiado",
+    rewardSuccess: "✓ Crédito +1, recompensa recebida",
+    rewardAlready: "Já recebida hoje",
+    rewardFailed: "× Falha ao receber. Tente novamente",
+  },
+} satisfies Record<string, ShareCardCopy>;
+
+const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
 ---
 
 <BaseLayout
@@ -95,81 +528,122 @@ const copy = isZh
   description={copy.description}
   robots="noindex,follow"
 >
-  <main class="share-page">
-    <article class="share-card" aria-label={copy.cardAria} id="share-card">
-      <header class="share-top">
-        <h1>{copy.heading}&nbsp; ✦</h1>
-        <div class="share-look" id="share-look-name">{copy.loading}</div>
-        <div class="share-brand">AI Beauty Stylist</div>
-      </header>
-      <div class="share-image" id="share-image-area">
-        <div class="share-loading">{copy.cardLoading}</div>
+  <div class="share-route">
+    <nav class="share-nav" aria-label={copy.navLabel}>
+      <a class="share-nav-brand" href={homeHref}>
+        <img
+          class="brand-logo-img"
+          src="/images/logo-ui.webp"
+          alt=""
+          aria-hidden="true"
+          width="34"
+          height="34"
+        />
+        <span>AI Beauty Stylist</span>
+      </a>
+      <div class="share-nav-links">
+        <a href={homeHref}>{copy.navHome}</a>
+        <a href={discoverHref}>{copy.navDiscover}</a>
+        <a href={tryOnHref}>{copy.navTryOn}</a>
       </div>
-      <section class="benefit-row" id="share-benefits">
-        <div class="benefit">
-          <AppIconBadge icon="tryon" tone="rose" /><div>
-            <b>{copy.benefitTryon}</b><span>{copy.benefitTryonDesc}</span>
-          </div>
-        </div>
-        <div class="benefit">
-          <AppIconBadge icon="guides" tone="teal" /><div>
-            <b>{copy.benefitScenario}</b><span>{copy.benefitScenarioDesc}</span>
-          </div>
-        </div>
-        <div class="benefit">
-          <AppIconBadge icon="credits" tone="gold" /><div>
-            <b>{copy.benefitFree}</b><span>{copy.benefitFreeDesc}</span>
-          </div>
-        </div>
-      </section>
-      <footer class="share-cta">
-        <div>
-          <h2>
-            <span>{copy.ctaTitle}</span>
-            <strong>{copy.ctaHighlight}</strong>
-          </h2>
-          <p>{copy.ctaBody}</p>
-          <a class="brand" href={homeHref}>
-            <img
-              class="brand-logo-img share-brand-logo"
-              src="/images/logo-ui.webp"
-              alt=""
-              aria-hidden="true"
-            />
-            <span
-              >AI Beauty Stylist<br /><small style="font-weight:400"
-                >aibeautystylist.com</small
-              ></span
-            >
-          </a>
-        </div>
-      </footer>
-    </article>
+      <a class="btn btn-primary share-nav-cta" href={tryOnHref}>
+        {copy.navTryCta}
+      </a>
+    </nav>
 
-    <!-- 操作按钮 -->
-    <div class="share-actions" id="share-actions">
-      <button class="btn btn-primary" id="share-download-btn">
-        ↓&nbsp; {copy.download}</button
-      >
-      <button class="btn" id="share-web-btn">↗&nbsp; {copy.share}</button>
-      <button class="btn" id="share-copy-btn">⌘&nbsp; {copy.copyLink}</button>
-      <button class="btn btn-outline-rose" id="share-reward-btn">
-        +&nbsp; {copy.reward}</button
-      >
-    </div>
+    <header class="share-mobile-nav" aria-label={copy.navLabel}>
+      <a class="share-mobile-home" href={homeHref} aria-label={copy.navHome}>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 10.8 12 3l9 7.8"></path>
+          <path d="M5.5 10.2V21h13V10.2"></path>
+          <path d="M9.5 21v-6h5v6"></path>
+        </svg>
+      </a>
+      <strong>{copy.navTitle}</strong>
+      <a class="share-mobile-tryon" href={tryOnHref}>{copy.navTryShort}</a>
+    </header>
 
-    <!-- 无结果时展示 -->
-    <div
-      class="panel"
-      id="share-empty"
-      style="text-align:center;padding:40px"
-      hidden
-    >
-      <h2>{copy.emptyTitle}</h2>
-      <p>{copy.emptyBody}</p>
-      <a class="btn btn-primary" href={tryOnHref}>{copy.emptyCta}</a>
-    </div>
-  </main>
+    <main class="share-page">
+      <article class="share-card" aria-label={copy.cardAria} id="share-card">
+        <header class="share-top">
+          <h1>{copy.heading}&nbsp; ✦</h1>
+          <div class="share-look" id="share-look-name">{copy.loading}</div>
+          <div class="share-brand">AI Beauty Stylist</div>
+        </header>
+        <div class="share-image" id="share-image-area">
+          <div class="share-loading">{copy.cardLoading}</div>
+        </div>
+        <section class="benefit-row" id="share-benefits">
+          <div class="benefit">
+            <AppIconBadge icon="tryon" tone="rose" /><div>
+              <b>{copy.benefitTryon}</b><span>{copy.benefitTryonDesc}</span>
+            </div>
+          </div>
+          <div class="benefit">
+            <AppIconBadge icon="guides" tone="teal" /><div>
+              <b>{copy.benefitScenario}</b><span
+                >{copy.benefitScenarioDesc}</span
+              >
+            </div>
+          </div>
+          <div class="benefit">
+            <AppIconBadge icon="credits" tone="gold" /><div>
+              <b>{copy.benefitFree}</b><span>{copy.benefitFreeDesc}</span>
+            </div>
+          </div>
+        </section>
+        <footer class="share-cta">
+          <div>
+            <h2>
+              <span>{copy.ctaTitle}</span>
+              <strong>{copy.ctaHighlight}</strong>
+            </h2>
+            <p>{copy.ctaBody}</p>
+            <div class="share-cta-actions">
+              <a class="btn btn-primary share-cta-button" href={tryOnHref}>
+                {copy.navTryCta}
+              </a>
+              <a class="brand" href={homeHref}>
+                <img
+                  class="brand-logo-img share-brand-logo"
+                  src="/images/logo-ui.webp"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <span
+                  >AI Beauty Stylist<br /><small style="font-weight:400"
+                    >aibeautystylist.com</small
+                  ></span
+                >
+              </a>
+            </div>
+          </div>
+        </footer>
+      </article>
+
+      <!-- 操作按钮 -->
+      <div class="share-actions" id="share-actions">
+        <button class="btn btn-primary" id="share-download-btn">
+          ↓&nbsp; {copy.download}</button
+        >
+        <button class="btn" id="share-web-btn">↗&nbsp; {copy.share}</button>
+        <button class="btn" id="share-copy-btn">⌘&nbsp; {copy.copyLink}</button>
+        <button class="btn btn-outline-rose" id="share-reward-btn">
+          +&nbsp; {copy.reward}</button
+        >
+      </div>
+
+      <!-- 无结果时展示 -->
+      <div class="panel share-empty" id="share-empty" hidden>
+        <h2>{copy.emptyTitle}</h2>
+        <p>{copy.emptyBody}</p>
+        <div class="share-empty-actions">
+          <a class="btn btn-primary" href={tryOnHref}>{copy.emptyCta}</a>
+          <a class="btn" href={homeHref}>{copy.emptyHome}</a>
+        </div>
+      </div>
+    </main>
+  </div>
 </BaseLayout>
 
 <script is:inline define:vars={{ copy, shareCardHref }}>
@@ -327,6 +801,88 @@ const copy = isZh
 </script>
 
 <style>
+  .share-route {
+    min-height: 100dvh;
+    background: var(--page-surface-alt);
+  }
+  .share-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: grid;
+    min-height: 64px;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 20px;
+    padding: 10px clamp(24px, 5vw, 64px);
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+    background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+    backdrop-filter: blur(16px);
+  }
+  .share-nav-brand,
+  .share-nav-links {
+    display: inline-flex;
+    align-items: center;
+  }
+  .share-nav-brand {
+    min-width: 0;
+    gap: 8px;
+    color: var(--heading);
+    font-size: 15px;
+    font-weight: 900;
+    text-decoration: none;
+  }
+  .share-nav-brand img {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+  }
+  .share-nav-links {
+    justify-content: center;
+    gap: 6px;
+  }
+  .share-nav-links a {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    padding: 0 12px;
+    border-radius: 999px;
+    color: var(--nav-link);
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .share-nav-links a:hover,
+  .share-nav-links a:focus-visible {
+    background: var(--rose-soft);
+    color: var(--rose);
+    outline: 0;
+  }
+  .share-nav-cta {
+    min-height: 38px;
+    justify-self: end;
+    padding-inline: 15px;
+  }
+  .share-mobile-nav {
+    display: none;
+  }
+  :global(.share-page) {
+    min-height: calc(100dvh - 64px);
+  }
+  .share-cta-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .share-cta-button {
+    border-color: rgba(255, 255, 255, 0.72);
+    background: #fff;
+    color: var(--rose-dark);
+    box-shadow:
+      0 12px 26px rgba(56, 10, 28, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
   .share-actions {
     display: flex;
     gap: 10px;
@@ -341,5 +897,97 @@ const copy = isZh
     justify-content: center;
     min-height: 200px;
     color: var(--muted);
+  }
+  .share-empty {
+    max-width: min(100%, 560px);
+    margin: 0 auto;
+    padding: 40px;
+    text-align: center;
+  }
+  .share-empty-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  @media (max-width: 700px) {
+    .share-nav {
+      display: none;
+    }
+    .share-mobile-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      min-height: 56px;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 6px max(12px, env(safe-area-inset-left)) 6px
+        max(12px, env(safe-area-inset-right));
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
+      backdrop-filter: blur(16px);
+    }
+    .share-mobile-nav strong {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--heading);
+      font-size: 16px;
+      font-weight: 900;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .share-mobile-home,
+    .share-mobile-tryon {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      text-decoration: none;
+    }
+    .share-mobile-home {
+      width: 44px;
+      color: var(--heading);
+    }
+    .share-mobile-home svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2;
+    }
+    .share-mobile-tryon {
+      padding: 0 12px;
+      background: var(--rose);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    :global(.share-page) {
+      min-height: calc(100dvh - 56px);
+      padding-top: 0;
+    }
+    .share-cta-actions {
+      display: grid;
+      gap: 12px;
+    }
+    .share-cta-button {
+      min-height: 44px;
+      justify-content: center;
+    }
+    .share-empty {
+      margin: 16px;
+      padding: 28px 18px;
+    }
+    .share-empty-actions {
+      display: grid;
+    }
   }
 </style>
