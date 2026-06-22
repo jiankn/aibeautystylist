@@ -138,14 +138,14 @@
     "copyright": "All rights reserved."
   },
   "homepage": {
-    "jsonLdDescription": "An online AI makeup try-on tool for uploading a selfie, previewing makeup looks, and using scene, skin tone, and finish guidance as beauty reference.",
-    "metaTitle": "AI Makeup App: Try Looks on Your Face | AI Beauty Stylist",
-    "metaDescription": "Use this AI makeup app to upload a selfie, preview makeup looks, and compare colors, finishes, and occasions before choosing.",
+    "jsonLdDescription": "An AI makeup app for running a makeup test, previewing makeup try on results, and using scene, skin tone, and finish guidance as beauty reference.",
+    "metaTitle": "AI Makeup App: Makeup Test & Makeup Try On",
+    "metaDescription": "Run a makeup test in this AI makeup app, use makeup try on previews, and compare colors, skin tone fit, and virtual makeover results before choosing.",
     "heroKicker": "AI Virtual Try-On",
-    "heroKickerSub": "AI makeup app",
-    "heroTitle": "AI makeup app: ",
-    "heroTitleSpan": "try looks on your own face",
-    "heroSubtitle": "Upload a selfie, compare AI makeup try-on previews, and decide which colors, finishes, and scenarios fit before buying or applying.",
+    "heroKickerSub": "Makeup test + makeup try on",
+    "heroTitle": "AI makeup app for ",
+    "heroTitleSpan": "makeup test and makeup try on",
+    "heroSubtitle": "Upload a selfie, run a practical makeup test, and compare AI makeup try on previews before buying products, following a tutorial, or choosing a virtual makeover direction.",
     "startTryOn": "Start Try-On",
     "howItWorks": "How It Works",
     "pricingRule": "Start free · Choose a plan only when you need more",
@@ -166,24 +166,24 @@
     "statsRealismLabel": "One diagnosis or try-on uses one credit",
     "statsPrivacy": "Deletable",
     "statsPrivacyLabel": "Manage selfies and generated results",
-    "howKicker": "3 Steps",
-    "howTitle": "From look selection to face preview in a short flow",
-    "howSubtitle": "Browse the look first, upload a selfie only when ready, then judge whether the result fits your features, skin tone, and scenario.",
+    "howKicker": "3-Step Makeup Test",
+    "howTitle": "Turn a makeup test into a real face preview",
+    "howSubtitle": "Browse the look first, upload a selfie only when ready, then judge whether the makeup try on result fits your features, skin tone, and scenario.",
     "howSteps": [
       {
         "icon": "1",
-        "title": "Choose a Look",
-        "copy": "Pick by daily wear, dating, photos, events, or evening occasions."
+        "title": "Choose a makeup test goal",
+        "copy": "Pick by daily wear, dating, photos, events, or evening occasions so the test starts with a real use case."
       },
       {
         "icon": "2",
-        "title": "Upload a Selfie",
-        "copy": "Use a clear front-facing photo and confirm consent before generation starts."
+        "title": "Upload for makeup try on",
+        "copy": "Use a clear front-facing photo and confirm consent before the AI makeup app starts generation."
       },
       {
         "icon": "3",
-        "title": "Review the Result",
-        "copy": "Check complexion, structure, and finish before saving or trying another look."
+        "title": "Review the fit",
+        "copy": "Check complexion, structure, color balance, and finish before saving or trying another look."
       }
     ],
     "workflowWorkspace": "Try-On Workspace",
@@ -197,9 +197,9 @@
     "featuredTitle": "Featured Looks",
     "featuredSubtitle": "Start with high-frequency scenarios and quickly find looks ready to try.",
     "featuredLink": "View All",
-    "aiKicker": "AI Try-On Advantages",
-    "aiTitle": "Not a simple filter, but a result that looks like real makeup",
-    "aiSubtitle": "The system focuses on facial lighting, skin tone, makeup edges, and scenario needs to help you rule out poor-fit looks faster.",
+    "aiKicker": "Skin Tone Makeup Guidance",
+    "aiTitle": "Skin tone makeup guidance, not just a beauty filter",
+    "aiSubtitle": "The system focuses on facial lighting, skin tone makeup harmony, makeup edges, and scenario needs to help you rule out poor-fit looks faster.",
     "aiFeatures": [
       {
         "icon": "Light",
@@ -208,8 +208,8 @@
       },
       {
         "icon": "Skin",
-        "title": "Skin-Respecting",
-        "copy": "Avoids over-smoothing and focuses on whether the look fits your real face."
+        "title": "Skin Tone Makeup",
+        "copy": "Compares whether lip, cheek, eye, and base colors work with your visible skin tone instead of copying a model photo."
       },
       {
         "icon": "Look",
@@ -223,7 +223,7 @@
       }
     ],
     "aiVisualAlt": "Refined rose makeup with natural skin texture and lighting",
-    "aiVisualCaption": "This visual explains the dimensions used to judge a look. Your result will adapt to the lighting, skin tone, and features in your selfie.",
+    "aiVisualCaption": "This visual explains the dimensions used to judge a look. Your result will adapt to the lighting, skin tone, and features in your selfie, so the virtual makeover stays grounded in your face.",
     "scenarioKicker": "Scenario Inspiration",
     "scenarioTitle": "Choose by where you need to show up today",
     "scenarioSubtitle": "The best look is not always the strongest one. It is the one that helps you look stable in photos, interviews, dates, or social settings.",
@@ -275,9 +275,9 @@
         "scenario": "活动"
       }
     ],
-    "proofKicker": "Try-On Decision Examples",
-    "proofTitle": "See how they style it",
-    "proofSubtitle": "Instead of abstract star ratings, we connect the scenario, visible change, and judgment criteria so you can choose faster.",
+    "proofKicker": "Makeup Test Examples",
+    "proofTitle": "Use the makeup test to judge fit, not just style",
+    "proofSubtitle": "Instead of abstract star ratings, we connect the scenario, visible change, and judgment criteria so each makeup try on result leads to a clearer decision.",
     "proofCases": [
       {
         "slug": "olive-undertone-rose",
@@ -343,9 +343,9 @@
     "upgradeTitle": "Want to compare a few more looks first?",
     "upgradeCopy": "Pro fits weekly try-ons, HD saves, and AI facial diagnosis. Premium fits shoots, weddings, or interviews with priority generation and the full look catalog.",
     "upgradeLink": "Compare Pro / Premium",
-    "finalCtaTitle": "Ready to try?",
-    "finalCtaSubtitle": "Upload your first selfie and see your AI try-on result in 30 seconds.",
-    "finalCtaCta": "Try It Free"
+    "finalCtaTitle": "Start your makeup test",
+    "finalCtaSubtitle": "Use the AI makeup app to preview a makeup try on result on your own face before you commit to a look.",
+    "finalCtaCta": "Start Makeup Try On"
   },
   "workspace": {
     "defaultNote": "Each generation uses 1 credit",

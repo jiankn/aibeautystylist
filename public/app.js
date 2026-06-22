@@ -168,6 +168,31 @@ function showToast(message) {
 
 window.showToast = showToast;
 
+function upsertBackgroundTask(task) {
+  if (window.__absBackgroundTasks?.upsert) {
+    window.__absBackgroundTasks.upsert(task);
+    return;
+  }
+  document.dispatchEvent(
+    new CustomEvent("abs:background-task", {
+      detail: { action: "upsert", task },
+    }),
+  );
+}
+
+function removeBackgroundTask(id) {
+  if (!id) return;
+  if (window.__absBackgroundTasks?.remove) {
+    window.__absBackgroundTasks.remove(id);
+    return;
+  }
+  document.dispatchEvent(
+    new CustomEvent("abs:background-task", {
+      detail: { action: "remove", id },
+    }),
+  );
+}
+
 function ensureAppDialog() {
   let root = document.querySelector("[data-app-dialog]");
   if (!root) {
@@ -1259,6 +1284,10 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   const retryButton = task?.querySelector("[data-upload-retry]");
   const deleteButton = task?.querySelector("[data-upload-delete]");
   const deleteResultButton = task?.querySelector("[data-result-delete]");
+  const stageItems = Array.from(
+    task?.querySelectorAll("[data-upload-stage]") || [],
+  );
+  const waitingPanel = document.querySelector("[data-tryon-waiting]");
   const runningJobStates = new Set([
     "created",
     "upload_validating",
@@ -1267,10 +1296,10 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   ]);
   const retryableJobStates = new Set(["failed", "cancelled", "timed_out"]);
   const jobProgress = {
-    created: [msg("jobCreated"), 72],
-    upload_validating: [msg("uploadValidating"), 76],
-    diagnosis_running: [msg("diagnosisRunning"), 84],
-    image_running: [msg("imageRunning"), 92],
+    created: [msg("jobCreated"), 46, "queue", "2/4"],
+    upload_validating: [msg("uploadValidating"), 52, "queue", "2/4"],
+    diagnosis_running: [msg("diagnosisRunning"), 72, "analyze", "3/4"],
+    image_running: [msg("imageRunning"), 90, "render", "4/4"],
   };
   const terminalJobMessages = {
     failed: msg("generationFailedRefunded"),
@@ -1282,6 +1311,57 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   let idempotencyKey;
   let activeJob;
   let previewUrl;
+
+  const taskRoutes = () => window.__absBackgroundTasks?.routes || {};
+  const currentTaskHref = () =>
+    window.location.pathname + window.location.search + window.location.hash;
+  const getActiveLook = () => document.querySelector("[data-look-slug].active");
+  const setTaskNavSuppressed = (suppressed) => {
+    window.absSetMobileBottomNavSuppressed?.("tryon-task", suppressed);
+  };
+  const syncTaskNavSuppression = () => {
+    const taskRunning = task && !task.hidden && task.dataset.state === "running";
+    const waitingVisible = waitingPanel && !waitingPanel.hidden;
+    setTaskNavSuppressed(Boolean(taskRunning || waitingVisible));
+  };
+  const setWaitingPanelVisible = (visible) => {
+    if (waitingPanel) waitingPanel.hidden = !visible;
+    syncTaskNavSuppression();
+  };
+  const setUploadStage = (stageKey) => {
+    if (!stageItems.length) return;
+    const stageOrder = ["upload", "queue", "analyze", "render"];
+    const currentIndex = Math.max(0, stageOrder.indexOf(stageKey));
+    stageItems.forEach((item) => {
+      const itemIndex = stageOrder.indexOf(item.dataset.uploadStage || "");
+      const state =
+        itemIndex < currentIndex
+          ? "complete"
+          : itemIndex === currentIndex
+            ? "current"
+            : "upcoming";
+      item.dataset.state = state;
+    });
+  };
+  const syncTryonBackgroundTask = (job, overrides = {}) => {
+    if (!job?.id) return;
+    const routes = taskRoutes();
+    const lookTitle =
+      job.lookTitle || getActiveLook()?.dataset.look || msg("fallbackLook");
+    upsertBackgroundTask({
+      id: job.id,
+      type: "tryon",
+      title: lookTitle
+        ? `${msg("imageRunning")} · ${lookTitle}`
+        : msg("imageRunning"),
+      status: job.status || "running",
+      progress: overrides.progress,
+      stage: overrides.stage,
+      href: currentTaskHref(),
+      resultHref: routes.history || "/history",
+      ...overrides,
+    });
+  };
 
   const clearUploadPreview = () => {
     uploadBox?.classList.remove("has-photo");
@@ -1319,16 +1399,24 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   const setUploadState = (
     message,
     progressValue,
-    { state = "running", cancellable = false, retryable = false } = {},
+    {
+      state = "running",
+      cancellable = false,
+      retryable = false,
+      stageKey,
+      stepLabel,
+    } = {},
   ) => {
     if (!task) return;
     task.hidden = false;
     task.dataset.state = state;
     status.textContent = message;
-    percent.textContent = `${progressValue}%`;
+    percent.textContent = stepLabel || `${progressValue}%`;
     progress.style.width = `${progressValue}%`;
     cancelButton.hidden = !cancellable;
     retryButton.hidden = !retryable;
+    if (stageKey) setUploadStage(stageKey);
+    syncTaskNavSuppression();
   };
 
   const readApiData = async (response, fallbackMessage) => {
@@ -1364,9 +1452,21 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         detail: { job },
       }),
     );
+    syncTryonBackgroundTask(job, {
+      status: "succeeded",
+      progress: 100,
+      stage:
+        job.resultKind === "reference-fallback"
+          ? msg("referenceGenerated")
+          : msg("tryonGenerated"),
+      resultHref: taskRoutes().history || "/history",
+    });
     setUploadState(job.resultKind === "reference-fallback" ? msg("referenceGenerated") : msg("tryonGenerated"), 100, {
       state: "success",
+      stageKey: "render",
+      stepLabel: "4/4",
     });
+    setWaitingPanelVisible(false);
     showToast(
       job.resultKind === "reference-fallback"
         ? msg("referenceGeneratedNote")
@@ -1383,10 +1483,17 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     }
 
     const message = terminalJobMessages[job.status] || msg("taskIncomplete");
+    syncTryonBackgroundTask(job, {
+      status: job.status,
+      progress: 0,
+      stage: message,
+    });
     setUploadState(message, 0, {
       state: "error",
       retryable: retryableJobStates.has(job.status),
+      stageKey: "render",
     });
+    setWaitingPanelVisible(false);
     showToast(message);
   };
 
@@ -1397,9 +1504,18 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
 
     while (runningJobStates.has(job.status)) {
       activeJob = job;
-      const [message, progressValue] = jobProgress[job.status];
+      const [message, progressValue, stageKey, stepLabel] =
+        jobProgress[job.status];
       cancelButton.textContent = msg("cancelGeneration");
-      setUploadState(message, progressValue, { cancellable: true });
+      setUploadState(message, progressValue, {
+        cancellable: true,
+        stageKey,
+        stepLabel,
+      });
+      syncTryonBackgroundTask(job, {
+        progress: progressValue,
+        stage: message,
+      });
       await new Promise((resolve) => window.setTimeout(resolve, 1200));
       job = await readApiData(await fetch(`/api/tryon-jobs/${job.id}`), msg("statusQueryFailed"));
       updateQuotaDisplay(job.quota);
@@ -1410,6 +1526,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
 
   const runUpload = async (file) => {
     if (!file) return;
+    setTaskNavSuppressed(true);
     lastFile = file;
     renderUploadPreview(file);
     idempotencyKey ||= crypto.randomUUID();
@@ -1420,7 +1537,12 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     button.disabled = true;
     button.textContent = msg("uploadingSafely");
     cancelButton.textContent = msg("cancelUpload");
-    setUploadState(msg("confirmingConsent"), 12, { cancellable: true });
+    setWaitingPanelVisible(true);
+    setUploadState(msg("confirmingConsent"), 12, {
+      cancellable: true,
+      stageKey: "upload",
+      stepLabel: "1/4",
+    });
 
     try {
       const consentResponse = await fetch("/api/consents/photo", {
@@ -1430,7 +1552,11 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         signal: controller.signal,
       });
       if (!consentResponse.ok) throw new Error("CONSENT_FAILED");
-      setUploadState(msg("validatingUpload"), 38, { cancellable: true });
+      setUploadState(msg("validatingUpload"), 38, {
+        cancellable: true,
+        stageKey: "upload",
+        stepLabel: "1/4",
+      });
 
       const formData = new FormData();
       formData.append("photo", file);
@@ -1447,8 +1573,11 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       deleteButton.hidden = false;
       button.textContent = msg("generatingReference");
       controller = undefined;
-      setUploadState(msg("uploadValidated"), 76);
-      const activeLook = document.querySelector("[data-look-slug].active");
+      setUploadState(msg("uploadValidated"), 46, {
+        stageKey: "queue",
+        stepLabel: "2/4",
+      });
+      const activeLook = getActiveLook();
       const job = await readApiData(
         await fetch("/api/tryon-jobs", {
           method: "POST",
@@ -1461,6 +1590,10 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         }),
         msg("jobCreateFailed"),
       );
+      syncTryonBackgroundTask(job, {
+        progress: 46,
+        stage: msg("jobCreated"),
+      });
       await waitForJob(job);
     } catch (error) {
       const aborted = error.name === "AbortError";
@@ -1472,12 +1605,15 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       setUploadState(errorMessage, 0, {
         state: "error",
         retryable: true,
+        stageKey: "upload",
       });
+      setWaitingPanelVisible(false);
       showToast(errorMessage);
     } finally {
       controller = undefined;
       button.textContent = originalLabel;
       button.disabled = !uploadBox?.querySelector("[data-photo-consent]")?.checked;
+      syncTaskNavSuppression();
     }
   };
 
@@ -1532,7 +1668,10 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     }
 
     retryButton.disabled = true;
-    setUploadState(msg("retryCreating"), 68);
+    setUploadState(msg("retryCreating"), 46, {
+      stageKey: "queue",
+      stepLabel: "2/4",
+    });
     try {
       const job = await readApiData(
         await fetch(`/api/tryon-jobs/${activeJob.id}/retry`, {
@@ -1542,9 +1681,19 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         }),
         msg("retryCreateFailed"),
       );
+      setWaitingPanelVisible(true);
+      syncTryonBackgroundTask(job, {
+        progress: 46,
+        stage: msg("retryCreating"),
+      });
       await waitForJob(job);
     } catch (error) {
-      setUploadState(error.message, 0, { state: "error", retryable: true });
+      setUploadState(error.message, 0, {
+        state: "error",
+        retryable: true,
+        stageKey: "queue",
+      });
+      setWaitingPanelVisible(false);
       showToast(error.message);
     } finally {
       retryButton.disabled = false;
@@ -1577,8 +1726,9 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
 
     deleteResultButton.disabled = true;
     try {
+      const deletedJobId = activeJob.id;
       await readApiData(
-        await fetch(`/api/tryon-jobs/${activeJob.id}`, { method: "DELETE" }),
+        await fetch(`/api/tryon-jobs/${deletedJobId}`, { method: "DELETE" }),
         msg("deleteResultFailed"),
       );
       const resultTarget = document.querySelector("[data-result-target]");
@@ -1594,6 +1744,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       window.__absLastSucceededJobId = undefined;
       deleteResultButton.hidden = true;
       setUploadState(msg("resultDeletedTitle"), 0, { state: "success" });
+      removeBackgroundTask(deletedJobId);
       showToast(msg("resultDeletedTitle"));
     } catch (error) {
       showToast(error.message);

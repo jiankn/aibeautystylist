@@ -1,6 +1,7 @@
 import type {
   LocalizedSeoCategory,
   LocalizedSeoPage,
+  LocalizedSeoSection,
 } from "./localizedSeoPages";
 
 type Phase4LanguageSlug = "es" | "pt-br";
@@ -20,6 +21,7 @@ interface PageSeed {
   readonly proof: string;
   readonly related?: readonly string[];
   readonly priority?: string;
+  readonly intentSections?: readonly LocalizedSeoSection[];
 }
 
 interface LanguageCopy {
@@ -344,6 +346,7 @@ function makePage(seed: PageSeed): LocalizedSeoPage {
         title: copy.overviewTitle(seed),
         paragraphs: copy.overview(seed),
       },
+      ...(seed.intentSections ?? []),
       {
         kind: "steps",
         title: copy.stepsTitle(seed),
@@ -383,9 +386,9 @@ const seeds: readonly PageSeed[] = [
     path: "/",
     englishPath: "/",
     category: "home",
-    keyword: "simulador de maquillaje",
-    topic: "prueba de maquillaje con IA para tu rostro",
-    angle: "decidir la dirección antes de comprar",
+    keyword: "colorimetría test",
+    topic: "test de colorimetría y colores que favorecen",
+    angle: "ver qué colores funcionan antes de elegir maquillaje",
     finish: "acabado natural, limpio y favorecedor",
     technique: "comparar tono de piel, forma del rostro y ocasión",
     caution: "un resultado que parezca filtro",
@@ -466,6 +469,37 @@ const seeds: readonly PageSeed[] = [
     caution: "que el corrector se note más que la piel",
     proof: "que funcione de cerca y con luz natural",
     related: ["/scenarios/dia", "/looks/piel-luminosa", "/guides/paso-a-paso"],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Maquillaje natural sin convertirlo en una capa pesada",
+        paragraphs: [
+          "La búsqueda maquillaje natural suele mezclar tres necesidades: una piel más pareja, color saludable y un acabado que no se note como máscara. Por eso esta página prioriza corrección por zonas, rubor suave y labios fáciles de retocar.",
+          "Para que no sea una página fina, el enfoque no es solo mostrar una idea bonita. También se revisa cuándo conviene usar base ligera, cuándo basta con corrector y cómo conectar mejillas, labios y cejas para que el resultado siga siendo natural en luz diaria.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Cómo adaptar el maquillaje natural",
+        rows: [
+          {
+            label: "Piel apagada",
+            good: "Base fina, rubor crema y labios suaves",
+            avoid: "Tapar todo con alta cobertura",
+          },
+          {
+            label: "Piel con brillo",
+            good: "Sellar solo zona T y mantener mejillas flexibles",
+            avoid: "Matificar toda la cara hasta perder textura",
+          },
+          {
+            label: "Poco tiempo",
+            good: "Cejas, corrector puntual y color en labios/mejillas",
+            avoid: "Intentar un tutorial completo antes de salir",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "es",
@@ -741,6 +775,87 @@ const seeds: readonly PageSeed[] = [
     technique: "definir qué parte del rostro quieres mejorar",
     caution: "mezclar texturas en un orden difícil de corregir",
     proof: "que el método sea estable y repetible",
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Maquillaje paso a paso con intención clara",
+        paragraphs: [
+          "Quien busca maquillaje paso a paso no necesita otra lista genérica de productos. Necesita saber qué va primero, por qué ese paso existe y qué puede omitirse cuando el objetivo es una rutina rápida.",
+          "La secuencia recomendada separa preparación, corrección, color y sellado. Así se evita mezclar crema, líquido y polvo en un orden que luego deja parches o hace que el maquillaje se vea pesado.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Orden práctico por objetivo",
+        rows: [
+          {
+            label: "Rutina diaria",
+            good: "Preparar, corregir, cejas, pestañas y labios",
+            avoid: "Contorno, baking y sombras fuertes sin necesidad",
+          },
+          {
+            label: "Piel con textura",
+            good: "Capas finas antes de sellar",
+            avoid: "Polvo temprano sobre zonas todavía húmedas",
+          },
+          {
+            label: "Foto o evento",
+            good: "Probar intensidad en selfie antes de salir",
+            avoid: "Subir todo el color en el último minuto",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    languageSlug: "es",
+    groupKey: "feature-colorimetry-analysis",
+    path: "/for/analisis-colorimetria",
+    englishPath: "/blog/how-to-determine-skin-undertone",
+    category: "feature",
+    keyword: "análisis de colorimetría",
+    topic: "test de colorimetría, subtono y colores de maquillaje",
+    angle: "traducir el resultado en tonos que sí usarías",
+    finish: "paleta coherente para base, rubor, ojos y labios",
+    technique: "comparar frío, cálido y neutro en la misma selfie",
+    caution: "usar una estación de color como respuesta única",
+    proof: "que los tonos favorezcan rostro, cuello y luz diaria",
+    related: [
+      "/personalized-makeup-recommendation",
+      "/tryon-free",
+      "/looks/natural-makeup",
+    ],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Dónde encaja el análisis de colorimetría",
+        paragraphs: [
+          "El análisis de colorimetría funciona mejor como página de apoyo al test de colorimetría de la home. Aquí la intención no es repetir el test, sino explicar cómo llevar el resultado a maquillaje real.",
+          "La página cubre colorimetría en base, rubor, sombras y labios para evitar una respuesta superficial. El usuario debe salir con criterios para elegir tonos y con una acción clara: probarlos sobre su propio rostro.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "De colorimetría a maquillaje",
+        rows: [
+          {
+            label: "Subtono frío",
+            good: "Rosas, malvas y marrones suaves",
+            avoid: "Naranjas intensos que apagan la piel",
+          },
+          {
+            label: "Subtono cálido",
+            good: "Durazno, coral y tierra equilibrada",
+            avoid: "Rosas azulados demasiado fríos",
+          },
+          {
+            label: "Subtono neutro",
+            good: "Probar intensidad y contraste antes de comprar",
+            avoid: "Elegir solo por el nombre de la estación",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "pt-br",
@@ -748,9 +863,9 @@ const seeds: readonly PageSeed[] = [
     path: "/",
     englishPath: "/",
     category: "home",
-    keyword: "maquiagem virtual com IA",
-    topic: "teste de maquiagem IA no seu rosto",
-    angle: "definir a direção antes de comprar",
+    keyword: "coloração pessoal",
+    topic: "colorimetria pessoal, cartela de cores e maquiagem",
+    angle: "descobrir a paleta antes de escolher o look",
     finish: "acabamento natural, limpo e valorizado",
     technique: "comparar tom de pele, formato do rosto e ocasião",
     caution: "resultado com cara de filtro",
@@ -836,6 +951,37 @@ const seeds: readonly PageSeed[] = [
       "/teste-maquiagem",
       "/consultor-beleza-ia",
     ],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Colorimetria pessoal sem parar na cartela",
+        paragraphs: [
+          "Colorimetria pessoal tem volume alto, mas a intenção real não termina em saber uma estação. A usuária quer entender quais cores deixam o rosto mais descansado e quais tons de maquiagem valem testar.",
+          "Esta página também cobre análise de coloração pessoal e teste de colorimetria como buscas de apoio. O foco é transformar a cartela em decisão prática para batom, blush, sombra e base, sempre validando na selfie.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Como usar o teste de colorimetria",
+        rows: [
+          {
+            label: "Batom",
+            good: "Comparar nude, rosa, coral e vinho na mesma luz",
+            avoid: "Comprar só porque a cor viralizou",
+          },
+          {
+            label: "Blush",
+            good: "Conectar temperatura com batom e tom de pele",
+            avoid: "Usar uma cor isolada que aparece antes do rosto",
+          },
+          {
+            label: "Base",
+            good: "Checar profundidade, subtom e oxidação",
+            avoid: "Escolher apenas pela foto da embalagem",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "pt-br",
@@ -850,6 +996,42 @@ const seeds: readonly PageSeed[] = [
     technique: "corrigir por áreas e esfumar bordas",
     caution: "o corretivo aparecer mais que a pele",
     proof: "funcionar de perto e na luz natural",
+    related: [
+      "/scenarios/trabalho",
+      "/looks/pele-glow",
+      "/guides/passo-a-passo",
+    ],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Maquiagem natural para rotina real",
+        paragraphs: [
+          "Maquiagem natural não é ausência de maquiagem. A busca normalmente pede uma pele mais uniforme, aparência descansada e cor suficiente para parecer arrumada sem pesar.",
+          "Por isso a página separa correção localizada, blush, sobrancelha e boca em decisões simples. O objetivo é que a usuária consiga adaptar o look para trabalho, luz do dia e selfie sem criar uma rotina longa demais.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Ajustes por situação",
+        rows: [
+          {
+            label: "Trabalho",
+            good: "Pele leve, sobrancelha penteada e boca confortável",
+            avoid: "Contorno marcado ou brilho fora de controle",
+          },
+          {
+            label: "Foto rápida",
+            good: "Subir um pouco blush e cílios",
+            avoid: "Usar base grossa para compensar câmera",
+          },
+          {
+            label: "Calor",
+            good: "Selar centro do rosto e manter creme nas laterais",
+            avoid: "Pó em excesso que marca textura",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "pt-br",
@@ -1138,6 +1320,37 @@ const seeds: readonly PageSeed[] = [
     technique: "definir que área do rosto você quer melhorar",
     caution: "misturar texturas em uma ordem difícil de corrigir",
     proof: "o método ser estável e repetível",
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Maquiagem passo a passo sem roteiro inflado",
+        paragraphs: [
+          "Maquiagem passo a passo precisa explicar ordem e objetivo, não apenas listar produto. O caminho mais útil é preparar, corrigir, colorir, definir e só então selar onde precisa.",
+          "A página organiza a rotina para iniciante, dia a dia e foto. Assim o conteúdo responde à busca principal e ainda evita competir com a página de maquiagem básica, que fica focada na rotina curta.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Sequência recomendada por uso",
+        rows: [
+          {
+            label: "Dia a dia",
+            good: "Preparação, corretivo pontual, sobrancelha, cílios e boca",
+            avoid: "Tentar todos os passos de festa",
+          },
+          {
+            label: "Evento",
+            good: "Testar intensidade antes e reforçar pontos de foto",
+            avoid: "Aumentar cobertura sem ver o conjunto",
+          },
+          {
+            label: "Pele oleosa",
+            good: "Texturas finas e pó só no centro",
+            avoid: "Selar cedo demais e criar manchas",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "pt-br",
@@ -1145,13 +1358,49 @@ const seeds: readonly PageSeed[] = [
     path: "/guides/rotina-basica",
     englishPath: "/guides/beginner-routine",
     category: "guide",
-    keyword: "rotina básica de maquiagem",
-    topic: "montar uma sequência curta para o dia a dia",
-    angle: "saber o que vem primeiro",
-    finish: "pele, sobrancelha, olhos e boca conectados",
-    technique: "começar pela preparação e criar camadas finas",
-    caution: "creme e pó se misturarem fora de ordem",
-    proof: "a maquiagem durar sem manchar rápido",
+    keyword: "maquiagem básica",
+    topic: "montar uma rotina básica de maquiagem para o dia a dia",
+    angle: "começar pelo que muda mais o rosto",
+    finish: "pele leve, sobrancelha organizada, cílios e boca conectados",
+    technique: "preparar a pele e criar camadas finas em poucos passos",
+    caution: "uma rotina simples virar uma lista longa de produtos",
+    proof: "a maquiagem ficar pronta rápido e durar sem manchar",
+    related: [
+      "/guides/passo-a-passo",
+      "/looks/maquiagem-natural",
+      "/teste-maquiagem",
+    ],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Maquiagem básica com volume alto e intenção clara",
+        paragraphs: [
+          "Maquiagem básica tem busca maior que rotina básica de maquiagem porque a usuária quer uma resposta direta: o que comprar, o que aplicar primeiro e o que pode ficar de fora.",
+          "Esta página deve funcionar como entrada para iniciantes. Ela cobre uma versão de cinco minutos, uma versão de dez minutos e o ponto em que vale ir para maquiagem passo a passo quando a pessoa quer aprender a ordem completa.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "O que entra na maquiagem básica",
+        rows: [
+          {
+            label: "5 minutos",
+            good: "Corretivo pontual, sobrancelha, cílios e boca/blush",
+            avoid: "Base completa, contorno e sombra elaborada",
+          },
+          {
+            label: "10 minutos",
+            good: "Base fina, blush, máscara, sobrancelha e batom",
+            avoid: "Adicionar produto sem saber o efeito",
+          },
+          {
+            label: "Aprendizado",
+            good: "Testar uma etapa por vez na selfie",
+            avoid: "Comprar kit grande antes de entender a rotina",
+          },
+        ],
+      },
+    ],
   },
 ];
 

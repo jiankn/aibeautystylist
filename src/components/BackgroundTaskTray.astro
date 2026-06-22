@@ -1,0 +1,572 @@
+---
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const locale = currentRoute.language.locale;
+const taskRoutes = {
+  discover: localizeAppHref("/discover"),
+  diagnosis: localizeAppHref("/diagnosis"),
+  history: localizeAppHref("/history"),
+  tryonFree: localizeAppHref("/tryon-free"),
+};
+---
+
+<aside
+  class="background-task-tray"
+  data-background-task-tray
+  aria-live="polite"
+  aria-atomic="true"
+  hidden
+>
+  <button
+    class="background-task-bubble"
+    type="button"
+    data-background-task-bubble
+    hidden
+  >
+    <span class="background-task-bubble-mark" aria-hidden="true">AI</span>
+    <span data-background-task-bubble-text>1</span>
+  </button>
+  <section class="background-task-card" data-background-task-card>
+    <div class="background-task-mark" aria-hidden="true">AI</div>
+    <div class="background-task-content">
+      <div class="background-task-head">
+        <strong data-background-task-title></strong>
+        <span data-background-task-state></span>
+      </div>
+      <p data-background-task-stage></p>
+      <div class="background-task-meter" aria-hidden="true">
+        <i data-background-task-progress></i>
+      </div>
+      <div class="background-task-actions">
+        <button type="button" data-background-task-collapse></button>
+        <a href={taskRoutes.history} data-background-task-primary></a>
+      </div>
+    </div>
+  </section>
+</aside>
+
+<script is:inline define:vars={{ locale, taskRoutes }}>
+  (() => {
+    const tray = document.querySelector("[data-background-task-tray]");
+    if (!tray) return;
+
+    const card = tray.querySelector("[data-background-task-card]");
+    const bubble = tray.querySelector("[data-background-task-bubble]");
+    const bubbleText = tray.querySelector("[data-background-task-bubble-text]");
+    const title = tray.querySelector("[data-background-task-title]");
+    const state = tray.querySelector("[data-background-task-state]");
+    const stage = tray.querySelector("[data-background-task-stage]");
+    const progress = tray.querySelector("[data-background-task-progress]");
+    const collapse = tray.querySelector("[data-background-task-collapse]");
+    const primary = tray.querySelector("[data-background-task-primary]");
+
+    const isZh = String(locale || "").startsWith("zh");
+    const copy = isZh
+      ? {
+          collapse: "继续浏览",
+          dismiss: "知道了",
+          open: "查看任务",
+          runningState: "后台处理中",
+          doneState: "已完成",
+          failedState: "需要重试",
+          tryonTitle: "试妆图正在后台生成",
+          diagnosisTitle: "AI 诊断正在后台分析",
+          tryonDone: "试妆结果已生成",
+          diagnosisDone: "诊断报告已生成",
+          tryonFailed: "试妆任务未完成",
+          diagnosisFailed: "诊断任务未完成",
+          viewProgress: "查看进度",
+          viewResult: "查看结果",
+          viewReport: "查看报告",
+          queued: "任务已排队，你可以继续浏览其他内容。",
+          validating: "正在校验照片质量和上传状态。",
+          tryonDiagnosis: "正在分析面部与色彩方向。",
+          tryonImage: "正在生成试妆效果。",
+          diagnosisDiagnosis: "正在分析肤色、脸型与五官位置。",
+          diagnosisImage: "正在整理诊断报告和妆容建议。",
+          failed: "处理没有完成，回到任务页可以重试。",
+        }
+      : {
+          collapse: "Keep browsing",
+          dismiss: "Dismiss",
+          open: "View task",
+          runningState: "Running in background",
+          doneState: "Done",
+          failedState: "Needs retry",
+          tryonTitle: "Try-on image is generating",
+          diagnosisTitle: "AI diagnosis is running",
+          tryonDone: "Try-on result is ready",
+          diagnosisDone: "Diagnosis report is ready",
+          tryonFailed: "Try-on task was not completed",
+          diagnosisFailed: "Diagnosis task was not completed",
+          viewProgress: "View progress",
+          viewResult: "View result",
+          viewReport: "View report",
+          queued: "Task is queued. You can keep browsing.",
+          validating: "Checking photo quality and upload status.",
+          tryonDiagnosis: "Analyzing face and color direction.",
+          tryonImage: "Generating the try-on result.",
+          diagnosisDiagnosis: "Analyzing skin tone, face shape, and placement.",
+          diagnosisImage: "Preparing the diagnosis report and makeup advice.",
+          failed: "Processing did not finish. Return to retry.",
+        };
+
+    const storageKey = "abs:background-tasks:v1";
+    const collapsedKey = "abs:background-tasks:collapsed";
+    const runningStatuses = new Set([
+      "created",
+      "upload_validating",
+      "diagnosis_running",
+      "image_running",
+      "running",
+    ]);
+    const failedStatuses = new Set(["failed", "cancelled", "timed_out"]);
+    let tasks = loadTasks();
+    let collapsed = localStorage.getItem(collapsedKey) === "true";
+    let pollTimer;
+
+    function loadTasks() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+        return Array.isArray(parsed)
+          ? parsed.filter((task) => Number(task.updatedAt || 0) > cutoff)
+          : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveTasks() {
+      const persisted = tasks
+        .filter((task) => task.persist !== false)
+        .slice(0, 4);
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(persisted));
+      } catch {
+        /* ignore private storage failures */
+      }
+    }
+
+    function normalizeTask(task) {
+      const now = Date.now();
+      const type = task.type === "diagnosis" ? "diagnosis" : "tryon";
+      const href =
+        task.href ||
+        (type === "diagnosis" ? taskRoutes.diagnosis : taskRoutes.tryonFree);
+      const resultHref =
+        task.resultHref ||
+        (type === "diagnosis" ? taskRoutes.diagnosis : taskRoutes.history);
+      return {
+        id: String(task.id || task.jobId || crypto.randomUUID()),
+        type,
+        status: task.status || "running",
+        title:
+          task.title ||
+          (type === "diagnosis" ? copy.diagnosisTitle : copy.tryonTitle),
+        stage: task.stage || "",
+        progress: Number.isFinite(Number(task.progress))
+          ? Math.max(0, Math.min(100, Number(task.progress)))
+          : 8,
+        href,
+        resultHref,
+        persist: task.persist !== false,
+        notified: Boolean(task.notified),
+        createdAt: task.createdAt || now,
+        updatedAt: now,
+      };
+    }
+
+    function statusToProgress(status) {
+      if (status === "created") return 34;
+      if (status === "upload_validating") return 46;
+      if (status === "diagnosis_running") return 68;
+      if (status === "image_running") return 88;
+      if (status === "succeeded") return 100;
+      if (failedStatuses.has(status)) return 0;
+      return 24;
+    }
+
+    function statusToStage(task, status) {
+      if (status === "created") return copy.queued;
+      if (status === "upload_validating") return copy.validating;
+      if (status === "diagnosis_running") {
+        return task.type === "diagnosis"
+          ? copy.diagnosisDiagnosis
+          : copy.tryonDiagnosis;
+      }
+      if (status === "image_running") {
+        return task.type === "diagnosis" ? copy.diagnosisImage : copy.tryonImage;
+      }
+      if (status === "succeeded") {
+        return task.type === "diagnosis" ? copy.diagnosisDone : copy.tryonDone;
+      }
+      if (failedStatuses.has(status)) return copy.failed;
+      return task.stage || copy.queued;
+    }
+
+    function mergeTask(nextTask) {
+      const normalized = normalizeTask(nextTask);
+      const index = tasks.findIndex((task) => task.id === normalized.id);
+      if (index >= 0) {
+        tasks[index] = {
+          ...tasks[index],
+          ...normalized,
+          notified: normalized.notified || tasks[index].notified,
+          createdAt: tasks[index].createdAt || normalized.createdAt,
+        };
+      } else {
+        tasks.unshift(normalized);
+      }
+      tasks.sort((a, b) => Number(b.updatedAt) - Number(a.updatedAt));
+      saveTasks();
+      render();
+      ensurePolling();
+      return normalized;
+    }
+
+    function removeTask(id) {
+      tasks = tasks.filter((task) => task.id !== id);
+      saveTasks();
+      render();
+      ensurePolling();
+    }
+
+    function getActiveTask() {
+      return (
+        tasks.find((task) => runningStatuses.has(task.status)) || tasks[0] || null
+      );
+    }
+
+    function render() {
+      const active = getActiveTask();
+      if (!active) {
+        tray.hidden = true;
+        return;
+      }
+
+      const runningCount = tasks.filter((task) =>
+        runningStatuses.has(task.status),
+      ).length;
+      const isDone = active.status === "succeeded";
+      const isFailed = failedStatuses.has(active.status);
+      const actionHref = isDone ? active.resultHref : active.href;
+
+      tray.hidden = false;
+      tray.dataset.state = isDone ? "success" : isFailed ? "error" : "running";
+      if (title) {
+        title.textContent = isDone
+          ? active.type === "diagnosis"
+            ? copy.diagnosisDone
+            : copy.tryonDone
+          : isFailed
+            ? active.type === "diagnosis"
+              ? copy.diagnosisFailed
+              : copy.tryonFailed
+            : active.title;
+      }
+      if (state) {
+        state.textContent = isDone
+          ? copy.doneState
+          : isFailed
+            ? copy.failedState
+            : copy.runningState;
+      }
+      if (stage) stage.textContent = active.stage || statusToStage(active, active.status);
+      if (progress) progress.style.width = `${active.progress || 0}%`;
+      if (collapse) {
+        collapse.textContent =
+          isDone || isFailed ? copy.dismiss : copy.collapse;
+      }
+      if (primary) {
+        primary.href = actionHref;
+        primary.textContent = isDone
+          ? active.type === "diagnosis"
+            ? copy.viewReport
+            : copy.viewResult
+          : copy.viewProgress;
+      }
+      if (bubbleText) {
+        bubbleText.textContent =
+          runningCount > 1 ? `${runningCount}` : isDone ? copy.doneState : copy.open;
+      }
+      if (card) card.hidden = collapsed;
+      if (bubble) bubble.hidden = !collapsed;
+    }
+
+    async function pollTask(task) {
+      try {
+        const response = await fetch(`/api/tryon-jobs/${encodeURIComponent(task.id)}`);
+        const payload = await response.json().catch(() => null);
+        if (!response.ok || !payload?.ok || !payload.data) return;
+        const job = payload.data;
+        const next = {
+          ...task,
+          status: job.status,
+          progress: statusToProgress(job.status),
+          stage: statusToStage(task, job.status),
+          resultHref:
+            task.type === "diagnosis" ? taskRoutes.diagnosis : taskRoutes.history,
+        };
+        const wasRunning = runningStatuses.has(task.status);
+        mergeTask(next);
+        if (wasRunning && job.status === "succeeded" && !task.notified) {
+          const message =
+            task.type === "diagnosis" ? copy.diagnosisDone : copy.tryonDone;
+          window.showToast?.(message);
+          mergeTask({ ...next, notified: true });
+        }
+      } catch {
+        /* network hiccups should not remove the task */
+      }
+    }
+
+    function ensurePolling() {
+      window.clearInterval(pollTimer);
+      const pollable = tasks.filter((task) => runningStatuses.has(task.status));
+      if (!pollable.length) return;
+      pollTimer = window.setInterval(() => {
+        tasks
+          .filter((task) => runningStatuses.has(task.status))
+          .forEach((task) => pollTask(task));
+      }, 2500);
+    }
+
+    collapse?.addEventListener("click", () => {
+      const active = getActiveTask();
+      if (active && !runningStatuses.has(active.status)) {
+        removeTask(active.id);
+        return;
+      }
+      collapsed = true;
+      localStorage.setItem(collapsedKey, "true");
+      render();
+    });
+
+    bubble?.addEventListener("click", () => {
+      collapsed = false;
+      localStorage.setItem(collapsedKey, "false");
+      render();
+    });
+
+    document.addEventListener("abs:background-task", (event) => {
+      const detail = event.detail || {};
+      if (detail.action === "remove" && detail.id) {
+        removeTask(String(detail.id));
+        return;
+      }
+      if (detail.task) mergeTask(detail.task);
+    });
+
+    window.__absBackgroundTasks = {
+      upsert: mergeTask,
+      remove: removeTask,
+      getAll: () => tasks.slice(),
+      routes: taskRoutes,
+    };
+
+    render();
+    ensurePolling();
+    tasks
+      .filter((task) => runningStatuses.has(task.status))
+      .forEach((task) => pollTask(task));
+  })();
+</script>
+
+<style>
+  .background-task-tray {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 190;
+    width: min(390px, calc(100vw - 28px));
+    color: var(--text);
+  }
+  .background-task-card {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+    padding: 14px;
+    border: 1px solid color-mix(in srgb, var(--rose-border) 80%, var(--line));
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--bg-elevated) 96%, transparent);
+    box-shadow: 0 18px 46px rgba(18, 39, 66, 0.16);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+  }
+  .background-task-tray[data-state="success"] .background-task-card {
+    border-color: var(--success-border);
+    background: color-mix(in srgb, var(--surface-success) 88%, var(--bg-elevated));
+  }
+  .background-task-tray[data-state="error"] .background-task-card {
+    border-color: var(--danger-border);
+    background: color-mix(in srgb, var(--surface-danger) 88%, var(--bg-elevated));
+  }
+  .background-task-mark,
+  .background-task-bubble-mark {
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--rose), #8b5cf6);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+  }
+  .background-task-mark {
+    width: 44px;
+    height: 44px;
+  }
+  .background-task-content {
+    display: grid;
+    min-width: 0;
+    gap: 8px;
+  }
+  .background-task-head {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+    justify-content: space-between;
+  }
+  .background-task-head strong {
+    min-width: 0;
+    color: var(--heading);
+    font-size: 14px;
+    line-height: 1.35;
+  }
+  .background-task-head span {
+    flex: 0 0 auto;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--surface-rose);
+    color: var(--rose);
+    font-size: 11px;
+    font-weight: 850;
+  }
+  .background-task-tray[data-state="success"] .background-task-head span {
+    background: var(--surface-success);
+    color: var(--success-text);
+  }
+  .background-task-tray[data-state="error"] .background-task-head span {
+    background: var(--surface-danger);
+    color: var(--danger-text);
+  }
+  .background-task-content p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .background-task-meter {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--meter-track);
+  }
+  .background-task-meter i {
+    display: block;
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--rose), var(--teal));
+    transition: width 0.28s ease;
+  }
+  .background-task-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .background-task-actions button,
+  .background-task-actions a,
+  .background-task-bubble {
+    min-height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg-elevated);
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+    touch-action: manipulation;
+    transition:
+      transform 0.18s ease,
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+  .background-task-actions button,
+  .background-task-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+  }
+  .background-task-actions a {
+    border-color: var(--rose-border);
+    background: var(--rose);
+    color: #fff;
+  }
+  .background-task-actions button:active,
+  .background-task-actions a:active,
+  .background-task-bubble:active {
+    transform: scale(0.97);
+  }
+  .background-task-bubble {
+    display: inline-flex;
+    width: auto;
+    min-width: 96px;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    padding: 8px 12px 8px 8px;
+    box-shadow: 0 14px 36px rgba(18, 39, 66, 0.16);
+  }
+  .background-task-bubble-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .background-task-actions button:hover,
+    .background-task-actions a:hover,
+    .background-task-bubble:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(18, 39, 66, 0.12);
+    }
+  }
+  @media (max-width: 767px) {
+    .background-task-tray {
+      right: 12px;
+      bottom: calc(88px + env(safe-area-inset-bottom));
+      left: 12px;
+      width: auto;
+    }
+    .background-task-card {
+      grid-template-columns: 38px minmax(0, 1fr);
+      border-radius: 14px;
+    }
+    .background-task-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+    }
+    .background-task-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .background-task-meter i,
+    .background-task-actions button,
+    .background-task-actions a,
+    .background-task-bubble {
+      transition: none;
+    }
+  }
+</style>

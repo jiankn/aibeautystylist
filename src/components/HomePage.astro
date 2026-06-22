@@ -193,6 +193,51 @@ const uploadConcerns = t("homepage", "uploadConcerns") as Array<{
 }>;
 const homepageMetaTitle = t("homepage", "metaTitle") as string;
 const homepageMetaDescription = t("homepage", "metaDescription") as string;
+const mobileExploreSearchCopy = {
+  en: {
+    label: "Explore looks, scenes, styles",
+    ariaLabel: "Explore makeup looks, scenes, and styles",
+  },
+  "zh-CN": {
+    label: "探索妆容、场景、风格",
+    ariaLabel: "探索妆容、场景、风格",
+  },
+  "zh-TW": {
+    label: "探索妝容、場景、風格",
+    ariaLabel: "探索妝容、場景、風格",
+  },
+  "de-DE": {
+    label: "Looks, Anlässe, Stile",
+    ariaLabel: "Looks, Anlässe und Stile entdecken",
+  },
+  "fr-FR": {
+    label: "Looks, occasions, styles",
+    ariaLabel: "Explorer les looks, occasions et styles",
+  },
+  "ja-JP": {
+    label: "メイク・シーン・スタイル",
+    ariaLabel: "メイク、シーン、スタイルを探す",
+  },
+  "ko-KR": {
+    label: "룩, 상황, 스타일 탐색",
+    ariaLabel: "메이크업 룩, 상황, 스타일 탐색",
+  },
+  "es-ES": {
+    label: "Looks, ocasiones, estilos",
+    ariaLabel: "Explorar looks, ocasiones y estilos",
+  },
+  "es-419": {
+    label: "Looks, ocasiones, estilos",
+    ariaLabel: "Explorar looks, ocasiones y estilos",
+  },
+  "pt-BR": {
+    label: "Looks, ocasiões, estilos",
+    ariaLabel: "Explorar looks, ocasiões e estilos",
+  },
+}[currentRoute.language.locale] ?? {
+  label: "Explore looks, scenes, styles",
+  ariaLabel: "Explore makeup looks, scenes, and styles",
+};
 
 const origin = Astro.site ?? Astro.url.origin;
 const homepageJsonLd = JSON.stringify({
@@ -233,7 +278,15 @@ const homepageJsonLd = JSON.stringify({
   analyticsScriptStrategy="idle"
 >
   <SiteHeader active="tryOn" mobileHidden />
-  <MobileAppTopBar brand />
+  <MobileAppTopBar
+    brand
+    showTheme={false}
+    searchPill={{
+      href: localizeAppHref("/discover"),
+      label: mobileExploreSearchCopy.label,
+      ariaLabel: mobileExploreSearchCopy.ariaLabel,
+    }}
+  />
   <main>
     <section class="home-hero shell" data-hero-copy-sync>
       <div class="home-copy">

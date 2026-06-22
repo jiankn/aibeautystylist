@@ -82,6 +82,7 @@ interface PageSeed {
   readonly proof: string;
   readonly related?: readonly string[];
   readonly priority?: string;
+  readonly intentSections?: readonly LocalizedSeoSection[];
 }
 
 interface LanguageCopy {
@@ -476,6 +477,7 @@ function makePage(seed: PageSeed): LocalizedSeoPage {
         title: copy.overviewTitle(seed),
         paragraphs: copy.overview(seed),
       },
+      ...(seed.intentSections ?? []),
       {
         kind: "steps",
         title: copy.stepsTitle(seed),
@@ -561,9 +563,9 @@ const seeds: readonly PageSeed[] = [
     path: "/",
     englishPath: "/",
     category: "home",
-    keyword: "welches Make-up passt zu mir",
-    topic: "KI-Vorschau, Unterton und Alltagssituationen",
-    angle: "online sehen, welche Richtung zu dir passt",
+    keyword: "Farbtyp bestimmen",
+    topic: "Farbberatung, Unterton und welcher Farbtyp bin ich",
+    angle: "Make-up Farben direkt auf deinem Selfie prüfen",
     finish: "ein natürlicher, gepflegter Eindruck",
     technique: "sanfte Platzierung von Teint, Augen und Lippen",
     caution: "ein Filtereffekt oder zu harte Kontraste",
@@ -821,6 +823,42 @@ const seeds: readonly PageSeed[] = [
     technique: "Rosenholz, Beere, Koralle oder Nude gezielt vergleichen",
     caution: "der Lippenstift vor dem Gesicht wahrgenommen wird",
     proof: "dünn und deckend aufgetragen stimmig bleibt",
+    related: [
+      "/for/hauttyp-bestimmen",
+      "/tryon-free",
+      "/personalized-makeup-recommendation",
+    ],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Welcher Lippenstift passt zu mir?",
+        paragraphs: [
+          "Die Suche welcher Lippenstift passt zu mir ist keine reine Produktfrage. Entscheidend sind Unterton, natürliche Lippenfarbe, Zahnwirkung und wie viel Kontrast dein Gesicht verträgt.",
+          "Diese Seite trennt deshalb Alltagsfarbe, Statement-Farbe und Foto-Lippenstift. So entsteht mehr Nutzwert als bei einer Liste beliebter Nuancen, weil jede Farbe gegen dein eigenes Gesicht geprüft wird.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Lippenfarbe nach Wirkung auswählen",
+        rows: [
+          {
+            label: "Alltag",
+            good: "Rosenholz, Soft Nude oder gedämpftes Korall",
+            avoid: "Zu helle Nudes, die die Lippen verschwinden lassen",
+          },
+          {
+            label: "Frischer wirken",
+            good: "Blush und Lippen in derselben Farbfamilie testen",
+            avoid: "Kühlen Lippenstift mit sehr warmem Rouge mischen",
+          },
+          {
+            label: "Fotos",
+            good: "Deckkraft und Rand in Selfie-Licht prüfen",
+            avoid: "Nur Handrücken-Swatch als Entscheidung nutzen",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "de",
@@ -836,6 +874,38 @@ const seeds: readonly PageSeed[] = [
     technique: "mehrere Farbfamilien im gleichen Licht vergleichen",
     caution: "ein einzelner Venentest zu falschen Schlüssen führt",
     proof: "Foundation und Lippenfarbe nebeneinander harmonieren",
+    related: ["/for/lippenstift-farbe", "/membership", "/try-on"],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Unterton Haut bestimmen und Foundation Farbe finden",
+        paragraphs: [
+          "Welche Farbe steht mir ist die breite Frage. Dahinter stehen oft drei konkrete Suchintentionen: Unterton Haut bestimmen, Foundation Farbe finden und herausfinden, welches Make-up passt zu mir.",
+          "Diese Seite beantwortet die Frage deshalb nicht mit einer starren Typisierung. Sie zeigt, wie du warme, kühle und neutrale Farbfamilien unter gleichem Licht vergleichst und danach Lippen, Rouge und Foundation zusammen prüfst.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Farben nach Unterton prüfen",
+        rows: [
+          {
+            label: "Kühler Unterton",
+            good: "Rosenholz, Mauve, weiche Beeren und neutrale Base",
+            avoid: "Sehr gelbe Foundation oder orange Lippenfarbe",
+          },
+          {
+            label: "Warmer Unterton",
+            good: "Pfirsich, Koralle, warmer Beige-Ton",
+            avoid: "Bläuliche Rosatöne, die den Teint grau machen",
+          },
+          {
+            label: "Neutral/Olive",
+            good: "Sättigung und Tiefe getrennt testen",
+            avoid: "Nur nach hell/dunkel wählen",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "fr",
@@ -843,9 +913,9 @@ const seeds: readonly PageSeed[] = [
     path: "/",
     englishPath: "/",
     category: "home",
-    keyword: "IA maquillage",
-    topic: "test maquillage virtuel et choix de looks personnalisés",
-    angle: "voir ce qui flatte votre visage avant de vous maquiller",
+    keyword: "test colorimétrie",
+    topic: "colorimétrie test, palette et couleurs de maquillage",
+    angle: "vérifier les couleurs sur votre visage",
     finish: "rendu naturel, lumineux et crédible",
     technique: "comparaison avant-après avec sous-ton et contexte",
     caution: "un filtre embellit sans aider à choisir",
@@ -918,13 +988,49 @@ const seeds: readonly PageSeed[] = [
     path: "/looks/naturel",
     englishPath: "/looks/natural-makeup",
     category: "style",
-    keyword: "Maquillage Naturel",
-    topic: "un visage frais qui reste proche de vous",
-    angle: "laisser la peau respirer",
-    finish: "teint transparent et couleurs fondues",
-    technique: "produits crème appliqués en fines couches",
-    caution: "la couvrance efface la texture naturelle",
+    keyword: "maquillage naturel",
+    topic: "un visage frais, lumineux et proche de vous",
+    angle: "corriger sans couvrir tout le visage",
+    finish: "teint transparent, blush fondu et lèvres faciles",
+    technique: "corriger par zones avec des couches fines",
+    caution: "la couvrance ou le correcteur se voient avant la peau",
     proof: "le résultat reste discret en pleine lumière",
+    related: [
+      "/scenarios/jour",
+      "/looks/teint-lumineux",
+      "/guides/tuto-facile",
+    ],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Maquillage naturel sans effet masque",
+        paragraphs: [
+          "Maquillage naturel est une requête large, mais l'intention est précise : paraître plus fraîche sans que le fond de teint, l'anti-cernes ou la poudre prennent toute la place.",
+          "La page traite donc le teint, les sourcils, le blush et les lèvres comme une routine adaptable. Elle évite le contenu mince en montrant quoi faire selon la texture de peau, la lumière du jour et le temps disponible.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Adapter le maquillage naturel",
+        rows: [
+          {
+            label: "Peu de temps",
+            good: "Anti-cernes ciblé, sourcils, cils et lèvres",
+            avoid: "Routine complète qui devient irréaliste",
+          },
+          {
+            label: "Peau texturée",
+            good: "Couches fines et poudre seulement au centre",
+            avoid: "Couvrance uniforme sur tout le visage",
+          },
+          {
+            label: "Photo ou visio",
+            good: "Renforcer légèrement blush et cils",
+            avoid: "Rendre le teint plus épais pour compenser la caméra",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "fr",
@@ -1184,13 +1290,95 @@ const seeds: readonly PageSeed[] = [
     path: "/for/choisir-fond-de-teint",
     englishPath: "/blog/foundation-caking-troubleshooting",
     category: "feature",
-    keyword: "Choisir son Fond de Teint",
-    topic: "trouver une base qui respecte la peau",
-    angle: "éviter démarcation et effet matière",
-    finish: "couvrance adaptée à la texture réelle",
-    technique: "tester sous-ton, profondeur et oxydation",
-    caution: "la teinte change après quelques minutes",
+    keyword: "choisir son fond de teint",
+    topic: "trouver une teinte, une couvrance et un sous-ton cohérents",
+    angle: "éviter démarcation, oxydation et effet matière",
+    finish: "fond de teint qui reste relié au cou et à la texture réelle",
+    technique: "tester sous-ton, profondeur, couvrance et oxydation",
+    caution: "la teinte s'oxyde ou crée une démarcation au cou",
     proof: "cou, visage et lumière du jour correspondent",
+    related: ["/for/analyse-colorimetrie", "/tryon-free", "/looks/naturel"],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Choisir son fond de teint avec des critères visibles",
+        paragraphs: [
+          "Choisir son fond de teint a une intention plus commerciale que les pages de look. La page doit donc aider à réduire les erreurs avant achat : mauvais sous-ton, mauvaise profondeur, couvrance trop lourde ou oxydation.",
+          "Le contenu reste honnête : l'outil aide à visualiser une direction de teint et de maquillage, mais ne promet pas de trouver automatiquement une référence exacte de marque.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Checklist avant d'acheter",
+        rows: [
+          {
+            label: "Sous-ton",
+            good: "Comparer froid, chaud et neutre sur le visage",
+            avoid: "Choisir uniquement sur le poignet",
+          },
+          {
+            label: "Profondeur",
+            good: "Vérifier visage, cou et lumière du jour",
+            avoid: "Prendre une teinte plus claire par habitude",
+          },
+          {
+            label: "Texture",
+            good: "Adapter couvrance à la peau réelle",
+            avoid: "Ajouter de la couvrance pour masquer chaque détail",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    languageSlug: "fr",
+    groupKey: "feature-colorimetry-analysis",
+    path: "/for/analyse-colorimetrie",
+    englishPath: "/blog/how-to-determine-skin-undertone",
+    category: "feature",
+    keyword: "analyse colorimétrie",
+    topic: "colorimétrie en ligne, sous-ton et couleurs de maquillage",
+    angle: "passer du diagnostic couleur aux choix de maquillage",
+    finish: "palette cohérente pour teint, blush, yeux et lèvres",
+    technique: "comparer froid, chaud, neutre et intensité sur la même photo",
+    caution: "une saison de couleur remplace l'observation du visage",
+    proof: "les couleurs restent flatteuses en selfie et en lumière du jour",
+    related: [
+      "/personalized-makeup-recommendation",
+      "/for/choisir-fond-de-teint",
+      "/tryon-free",
+    ],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Analyse colorimétrie et colorimétrie en ligne",
+        paragraphs: [
+          "Cette page soutient le test colorimétrie de la page d'accueil sans le dupliquer. L'objectif est d'expliquer comment une analyse colorimétrie devient utile pour choisir rouge à lèvres, blush, fard et fond de teint.",
+          "Colorimétrie en ligne ne doit pas rester une étiquette abstraite. Le contenu relie sous-ton, contraste, saturation et contexte réel afin que l'utilisateur puisse tester les couleurs sur son propre visage.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Transformer l'analyse en choix maquillage",
+        rows: [
+          {
+            label: "Lèvres",
+            good: "Tester rose, bois de rose, corail ou baie selon sous-ton",
+            avoid: "Suivre une couleur tendance sans comparer au visage",
+          },
+          {
+            label: "Blush",
+            good: "Relier température du blush et couleur des lèvres",
+            avoid: "Choisir une teinte isolée sur la main",
+          },
+          {
+            label: "Teint",
+            good: "Vérifier fond de teint avec cou et lumière naturelle",
+            avoid: "Utiliser la saison colorimétrique comme seule réponse",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "fr",

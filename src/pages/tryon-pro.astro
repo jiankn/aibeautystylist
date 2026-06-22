@@ -17,6 +17,7 @@ import { t } from "../lib/i18n";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const audienceContext = Astro.locals.audienceContext;
+const isLoggedIn = Boolean(Astro.locals.isLoggedIn);
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
@@ -255,7 +256,7 @@ const proClientMessages = {
       </div>
     </div>
   </main>
-  <MobileBottomNav active="tryon" />
+  {isLoggedIn && <MobileBottomNav active="tryon" />}
 </BaseLayout>
 
 <script is:inline define:vars={{ proClientMessages, loginHref, shareCardHref }}>
@@ -277,6 +278,9 @@ const proClientMessages = {
     const downloadBtn = document.getElementById("pro-download-btn");
     const historyList = document.getElementById("pro-history");
     const shareCardLink = document.querySelector("[data-share-card-link]");
+    const setTaskNavSuppressed = (suppressed) => {
+      window.absSetMobileBottomNavSuppressed?.("tryon-task", suppressed);
+    };
 
     function loginUrl() {
       return (
@@ -294,6 +298,7 @@ const proClientMessages = {
         if (data.data.user?.kind !== "account") {
           gate.hidden = false;
           content.hidden = true;
+          setTaskNavSuppressed(true);
           gate.querySelector("h2").textContent = proClientMessages.loginTitle;
           gate.querySelector("p").textContent = proClientMessages.loginDesc;
           const link = gate.querySelector("a");
@@ -305,8 +310,10 @@ const proClientMessages = {
         if (plan !== "pro" && plan !== "premium") {
           gate.hidden = false;
           content.hidden = true;
+          setTaskNavSuppressed(true);
           return;
         }
+        setTaskNavSuppressed(false);
         // 更新额度条
         const q = data.data.quota;
         const total = Number(q.total) || 0;
@@ -340,6 +347,7 @@ const proClientMessages = {
         input.onchange = async () => {
           const file = input.files?.[0];
           if (!file) return;
+          setTaskNavSuppressed(true);
           try {
             const createTryOnJob = window.__absCreateTryOnJob;
             if (typeof createTryOnJob !== "function") {
@@ -368,6 +376,7 @@ const proClientMessages = {
           } catch (err) {
             updateProgress("❌ " + err.message, 0);
             uploadBtn.disabled = false;
+            setTaskNavSuppressed(false);
           }
         };
         input.click();
@@ -387,6 +396,7 @@ const proClientMessages = {
         if (attempt > 60) {
           clearInterval(interval);
           updateProgress(proClientMessages.timeout, 0);
+          setTaskNavSuppressed(false);
           return;
         }
         try {
@@ -404,6 +414,7 @@ const proClientMessages = {
             resultStatus.textContent = proClientMessages.generated;
             if (job.resultImage) showResult(job.resultImage, jobId);
             loadHistory();
+            setTaskNavSuppressed(false);
           } else if (job.status === "failed" || job.status === "timed_out") {
             clearInterval(interval);
             updateProgress(
@@ -412,6 +423,7 @@ const proClientMessages = {
             );
             resultStatus.textContent = proClientMessages.failed;
             uploadBtn.disabled = false;
+            setTaskNavSuppressed(false);
           }
         } catch {
           /* ignore */

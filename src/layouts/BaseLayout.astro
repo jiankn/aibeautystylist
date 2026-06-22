@@ -3,6 +3,7 @@ import ToastRegion from "../components/ToastRegion.astro";
 import CookieConsent from "../components/CookieConsent.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import AuthNav from "../components/AuthNav.astro";
+import BackgroundTaskTray from "../components/BackgroundTaskTray.astro";
 import {
   buildHreflangLinks,
   getCanonicalPathname,
@@ -209,6 +210,17 @@ const clientMessages = {
     <title>{title}</title>
     <link rel="stylesheet" href="/styles.css" />
     <script is:inline>
+      (function () {
+        try {
+          if (!localStorage.getItem("abs_cookie_consent_v1")) {
+            document.documentElement.classList.add("cookie-consent-open");
+          }
+        } catch {
+          document.documentElement.classList.add("cookie-consent-open");
+        }
+      })();
+    </script>
+    <script is:inline>
       // 暗黑模式初始化（在 CSS 加载后、页面渲染前执行，避免闪烁）。
       (function () {
         var saved = localStorage.getItem("theme");
@@ -231,6 +243,12 @@ const clientMessages = {
     </script>
   </head>
   <body class={bodyClass}>
+    <script is:inline>
+      if (document.documentElement.classList.contains("cookie-consent-open")) {
+        document.body.classList.add("cookie-consent-open");
+      }
+    </script>
+    <BackgroundTaskTray />
     <slot />
     <SiteFooter />
     <CookieConsent />

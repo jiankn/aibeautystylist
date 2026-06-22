@@ -19,6 +19,47 @@ export class StripeError extends Error {
 
 const STRIPE_API_BASE = "https://api.stripe.com";
 
+export type StripeCheckoutLocale =
+  | "en"
+  | "zh"
+  | "zh-TW"
+  | "de"
+  | "fr"
+  | "ja"
+  | "ko"
+  | "es"
+  | "es-419"
+  | "pt-BR";
+
+export function toStripeCheckoutLocale(
+  locale: string | null | undefined,
+): StripeCheckoutLocale | undefined {
+  switch (locale) {
+    case "en":
+      return "en";
+    case "zh-CN":
+      return "zh";
+    case "zh-TW":
+      return "zh-TW";
+    case "de-DE":
+      return "de";
+    case "fr-FR":
+      return "fr";
+    case "ja-JP":
+      return "ja";
+    case "ko-KR":
+      return "ko";
+    case "es-ES":
+      return "es";
+    case "es-419":
+      return "es-419";
+    case "pt-BR":
+      return "pt-BR";
+    default:
+      return undefined;
+  }
+}
+
 export interface StripeClientOptions {
   apiKey: string;
   timeoutMs?: number;
@@ -82,6 +123,7 @@ export function createStripeClient(options: StripeClientOptions) {
       clientReferenceId: string;
       customerId?: string;
       customerEmail?: string;
+      locale?: StripeCheckoutLocale;
       metadata?: Record<string, string>;
     }): Promise<{ id: string; url: string | null }> {
       const params: Record<string, string | number | boolean | undefined> = {
@@ -94,6 +136,7 @@ export function createStripeClient(options: StripeClientOptions) {
         customer: input.customerId,
         customer_email: input.customerId ? undefined : input.customerEmail,
         allow_promotion_codes: true,
+        locale: input.locale,
       };
       for (const [key, value] of Object.entries(input.metadata ?? {})) {
         params[`metadata[${key}]`] = value;

@@ -61,6 +61,67 @@ const featuredLooks = requestedLook
 const selected = requestedLook ?? featuredLooks[0];
 const hasExternalSelection =
   requestedLook && !featuredSlugs.includes(requestedLook.slug);
+const isChineseLocale = currentRoute.language.locale.startsWith("zh");
+const tryonWaitingCopy = isChineseLocale
+  ? {
+      backgroundTitle: "试妆已转入后台生成",
+      backgroundDesc:
+        "你可以继续浏览妆容库、查看诊断页，完成后右下角会提醒你回来查看结果。",
+      stages: [
+        ["upload", "上传自拍"],
+        ["queue", "创建任务"],
+        ["analyze", "分析面部"],
+        ["render", "生成妆效"],
+      ],
+      preferenceTitle: "等待时先微调你的偏好",
+      preferenceDesc: "这些选择会保存在本机，用于下次默认推荐，不会打断当前生成。",
+      groups: [
+        {
+          label: "妆感",
+          key: "finish",
+          options: ["通勤自然", "约会甜美", "上镜清透"],
+        },
+        {
+          label: "重点",
+          key: "focus",
+          options: ["提气色", "显脸小", "放大眼神"],
+        },
+      ],
+      intensity: "妆感强度",
+      intensityMin: "自然",
+      intensityMax: "明艳",
+      browse: "继续浏览妆容库",
+    }
+  : {
+      backgroundTitle: "Your try-on is running in the background",
+      backgroundDesc:
+        "Keep browsing looks or open diagnosis. A task card will remind you when the result is ready.",
+      stages: [
+        ["upload", "Upload selfie"],
+        ["queue", "Create task"],
+        ["analyze", "Analyze face"],
+        ["render", "Generate look"],
+      ],
+      preferenceTitle: "Tune your preference while you wait",
+      preferenceDesc:
+        "Saved locally for your next recommendation. It will not interrupt this generation.",
+      groups: [
+        {
+          label: "Finish",
+          key: "finish",
+          options: ["Work natural", "Soft date", "Camera glow"],
+        },
+        {
+          label: "Focus",
+          key: "focus",
+          options: ["Fresh tone", "Slimmer face", "Brighter eyes"],
+        },
+      ],
+      intensity: "Makeup intensity",
+      intensityMin: "Natural",
+      intensityMax: "Bold",
+      browse: "Browse more looks",
+    };
 const freeClientMessages = {
   copied: t("tryon", "copied"),
   copyShareLink: t("tryon", "copyShareLink"),
@@ -265,6 +326,20 @@ const workspaceStatusHrefs = {
                 <div class="meter">
                   <i data-upload-progress style="width:0%"></i>
                 </div>
+                <ol
+                  class="task-stage-list"
+                  data-upload-stages
+                  aria-label={tryonWaitingCopy.backgroundTitle}
+                >
+                  {
+                    tryonWaitingCopy.stages.map(([key, label]) => (
+                      <li data-upload-stage={key}>
+                        <span aria-hidden="true"></span>
+                        <b>{label}</b>
+                      </li>
+                    ))
+                  }
+                </ol>
                 <div class="upload-task-actions">
                   <button class="btn" type="button" data-upload-cancel hidden
                     >{t("tryon", "cancelUpload")}</button
@@ -289,6 +364,52 @@ const workspaceStatusHrefs = {
               />
             </div>
           </div>
+          <section class="tryon-waiting-panel" data-tryon-waiting hidden>
+            <div class="tryon-waiting-copy">
+              <span class="section-eyebrow">{tryonWaitingCopy.backgroundTitle}</span>
+              <h3>{tryonWaitingCopy.preferenceTitle}</h3>
+              <p>{tryonWaitingCopy.backgroundDesc}</p>
+            </div>
+            <div class="tryon-waiting-controls">
+              {
+                tryonWaitingCopy.groups.map((group) => (
+                  <fieldset class="tryon-preference-group">
+                    <legend>{group.label}</legend>
+                    <div>
+                      {group.options.map((option, index) => (
+                        <button
+                          class:list={["btn", index === 0 && "active"]}
+                          type="button"
+                          data-tryon-preference={group.key}
+                          data-tryon-preference-value={option}
+                          aria-pressed={index === 0 ? "true" : "false"}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
+                ))
+              }
+              <label class="tryon-intensity-control">
+                <span>{tryonWaitingCopy.intensity}</span>
+                <input
+                  type="range"
+                  min="1"
+                  max="5"
+                  value="3"
+                  data-tryon-intensity
+                />
+                <small>
+                  <span>{tryonWaitingCopy.intensityMin}</span>
+                  <span>{tryonWaitingCopy.intensityMax}</span>
+                </small>
+              </label>
+            </div>
+            <a class="btn btn-primary" href={discoverHref}>
+              {tryonWaitingCopy.browse}
+            </a>
+          </section>
           <div class="rule-strip">
             ▣&nbsp; {t("tryon", "ruleStrip")}
             <a href={pricingHref}>{t("tryon", "learnRules")} ›</a>
@@ -391,6 +512,10 @@ const workspaceStatusHrefs = {
   }}
 >
   (function () {
+    const preferenceButtons = document.querySelectorAll(
+      "[data-tryon-preference]",
+    );
+    const intensityInput = document.querySelector("[data-tryon-intensity]");
     let lastSucceededJobId = window.__absLastSucceededJobId || null;
     let lastSucceededLookSlug = selectedLookSlug || null;
     let savedJobIds = new Set();
@@ -398,6 +523,57 @@ const workspaceStatusHrefs = {
       new URLSearchParams(window.location.search).get("checkout") === "success";
     const delay = (ms) =>
       new Promise((resolve) => window.setTimeout(resolve, ms));
+    const preferenceStorageKey = "abs:tryon-waiting-preferences";
+
+    function readWaitingPreferences() {
+      try {
+        return JSON.parse(localStorage.getItem(preferenceStorageKey) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function writeWaitingPreferences(next) {
+      try {
+        localStorage.setItem(preferenceStorageKey, JSON.stringify(next));
+      } catch {
+        /* ignore private storage failures */
+      }
+    }
+
+    function syncWaitingPreferences() {
+      const stored = readWaitingPreferences();
+      preferenceButtons.forEach((button) => {
+        const key = button.dataset.tryonPreference;
+        const selectedValue = stored[key];
+        const active = selectedValue
+          ? button.dataset.tryonPreferenceValue === selectedValue
+          : button.classList.contains("active");
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      if (intensityInput && stored.intensity) {
+        intensityInput.value = stored.intensity;
+      }
+    }
+
+    preferenceButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const key = button.dataset.tryonPreference;
+        if (!key) return;
+        const stored = readWaitingPreferences();
+        stored[key] = button.dataset.tryonPreferenceValue || "";
+        writeWaitingPreferences(stored);
+        syncWaitingPreferences();
+      });
+    });
+
+    intensityInput?.addEventListener("input", () => {
+      const stored = readWaitingPreferences();
+      stored.intensity = intensityInput.value;
+      writeWaitingPreferences(stored);
+    });
+    syncWaitingPreferences();
 
     async function loadSession() {
       try {

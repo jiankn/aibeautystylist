@@ -120,68 +120,68 @@
     "copyright": "Todos los derechos reservados."
   },
   "homepage": {
-    "jsonLdDescription": "Herramienta online de prueba de maquillaje IA para subir una selfie, previsualizar looks y decidir por ocasión, tono de piel y acabado.",
-    "metaTitle": "Simulador de maquillaje con IA | AI Beauty Stylist",
-    "metaDescription": "Usa este simulador de maquillaje con IA para subir una selfie, probar looks virtuales y comparar colores, acabados y ocasiones antes de elegir.",
-    "heroKicker": "Prueba virtual con IA",
-    "heroKickerSub": "Simulador de maquillaje",
-    "heroTitle": "Simulador de maquillaje ",
-    "heroTitleSpan": "con IA para tu rostro",
-    "heroSubtitle": "Sube una selfie, prueba maquillaje virtual con IA y compara colores, acabados y ocasiones antes de elegir.",
+    "jsonLdDescription": "Colorimetría test online para subir una selfie, hacer un test de colorimetría, ver qué colores me favorecen y previsualizar maquillaje según tono de piel, ocasión y acabado.",
+    "metaTitle": "Colorimetría test online",
+    "metaDescription": "Haz un colorimetría test online: test de colorimetría, qué colores me favorecen, tonos de maquillaje y vista previa IA sobre tu rostro.",
+    "heroKicker": "Colorimetría con IA",
+    "heroKickerSub": "colorimetría test",
+    "heroTitle": "Colorimetría test: ",
+    "heroTitleSpan": "qué colores me favorecen",
+    "heroSubtitle": "Sube una selfie, haz un test de colorimetría práctico y compara qué tonos de labios, mejillas y ojos favorecen realmente tu rostro.",
     "startTryOn": "Empezar prueba",
     "howItWorks": "Cómo funciona",
     "pricingRule": "Empieza gratis · Elige más créditos solo si los necesitas",
-    "trustNaturalTitle": "Vista previa realista",
-    "trustNaturalDesc": "Compara acabado y tono de piel",
-    "trustRecommendTitle": "Looks por ocasión",
-    "trustRecommendDesc": "Trabajo, citas, fotos y eventos",
+    "trustNaturalTitle": "Test de colorimetría",
+    "trustNaturalDesc": "Compara subtono, contraste y gama de color",
+    "trustRecommendTitle": "Colores de maquillaje",
+    "trustRecommendDesc": "Labios, mejillas y ojos según ocasión",
     "trustPrivacyTitle": "Foto bajo control",
     "trustPrivacyDesc": "Confirma antes de subir y elimina registros",
     "before": "Antes",
     "after": "Después",
-    "heroImageAltAfter": "Resultado de maquillaje natural refinado con IA",
-    "heroImageAltBefore": "Selfie original antes de la prueba virtual",
+    "heroImageAltAfter": "Resultado de colorimetría test con maquillaje natural",
+    "heroImageAltBefore": "Selfie original antes del test de colorimetría",
     "dragSlider": "Arrastra para comparar antes y después",
     "statsTryons": "3 pasos",
-    "statsTryonsLabel": "Elige un look · Sube una selfie · Compara el resultado",
+    "statsTryonsLabel": "Haz el test de colorimetría · Sube una selfie · Compara colores",
     "statsRealism": "1 crédito",
     "statsRealismLabel": "Un diagnóstico o una prueba usa 1 crédito",
     "statsPrivacy": "Borrable",
     "statsPrivacyLabel": "Gestiona selfies y resultados generados",
-    "howKicker": "3 pasos",
-    "howTitle": "Del look elegido a la vista previa en un flujo breve",
-    "howSubtitle": "Primero revisa el estilo, sube una selfie solo cuando estés lista y decide si el resultado encaja con tus rasgos, tono de piel y ocasión.",
+    "howKicker": "Colorimetría en 3 pasos",
+    "howTitle": "Del test de colorimetría a la vista previa de maquillaje",
+    "howSubtitle": "Empieza con la pregunta qué colores me favorecen, sube una selfie solo cuando estés lista y comprueba si la paleta funciona en tu propio rostro.",
     "howSteps": [
       {
         "icon": "1",
-        "title": "Elige un look",
-        "copy": "Elige por uso diario, citas, fotos, eventos o noche."
+        "title": "Define el objetivo del test",
+        "copy": "Revisa si buscas tonos cálidos, fríos, suaves o más contrastados para tu piel."
       },
       {
         "icon": "2",
-        "title": "Sube una selfie",
-        "copy": "Usa una foto frontal clara y confirma el consentimiento antes de generar."
+        "title": "Sube una selfie clara",
+        "copy": "Usa una foto frontal con luz estable y confirma el consentimiento antes de generar."
       },
       {
         "icon": "3",
-        "title": "Compara el resultado",
-        "copy": "Revisa piel, estructura y acabado antes de guardar o probar otro look."
+        "title": "Compara los colores",
+        "copy": "Revisa labios, mejillas, ojos y acabado antes de guardar o probar otra paleta."
       }
     ],
-    "workflowWorkspace": "Espacio de prueba",
+    "workflowWorkspace": "Espacio de colorimetría",
     "workflowStatus": "Vista previa lista",
-    "workflowPreview": "Vista previa generada por IA",
+    "workflowPreview": "Vista previa de colorimetría",
     "workflowUploaded": "Selfie subida",
     "workflowReady": "Generación lista",
     "workflowScanning": "La IA analiza luz y posición del rostro...",
     "workflowSelected": "Look seleccionado",
-    "workflowPreviewAlt": "Look melocotón mostrado en el espacio de prueba",
-    "featuredTitle": "Looks destacados",
-    "featuredSubtitle": "Empieza con escenarios frecuentes y encuentra rápido looks listos para probar.",
+    "workflowPreviewAlt": "Vista previa de maquillaje según colorimetría y tono de piel",
+    "featuredTitle": "Looks por paleta",
+    "featuredSubtitle": "Empieza con escenarios frecuentes y revisa si color, intensidad y acabado encajan con tu colorimetría.",
     "featuredLink": "Ver catálogo",
-    "aiKicker": "Ventajas de la prueba IA",
-    "aiTitle": "No es solo un filtro: ayuda a decidir si el look encaja",
-    "aiSubtitle": "La vista previa considera iluminación, tono de piel, bordes del maquillaje y ocasión para descartar antes los looks que no funcionan.",
+    "aiKicker": "Colorimetría + prueba IA",
+    "aiTitle": "Un test de colorimetría que termina en una decisión de maquillaje",
+    "aiSubtitle": "La vista previa considera iluminación, tono de piel, bordes del maquillaje y ocasión para evitar colores que se ven bien en teoría pero no en tu rostro.",
     "aiFeatures": [
       {
         "icon": "1",
@@ -190,8 +190,8 @@
       },
       {
         "icon": "2",
-        "title": "Respeta la piel",
-        "copy": "Evita alisar de más y prioriza si el look armoniza con tu rostro real."
+        "title": "Colorimetría visible",
+        "copy": "Compara si labios, mejillas y ojos armonizan con tu subtono, contraste y color de piel."
       },
       {
         "icon": "3",
@@ -204,11 +204,11 @@
         "copy": "Confirmas el uso de la foto antes de subirla y puedes borrar resultados."
       }
     ],
-    "aiVisualAlt": "Maquillaje rosa refinado con textura de piel natural",
-    "aiVisualCaption": "La imagen explica los criterios usados para evaluar un look. Tu resultado se adapta a la luz, tono de piel y rasgos de tu selfie.",
-    "scenarioKicker": "Inspiración por ocasión",
-    "scenarioTitle": "Elige según dónde tienes que presentarte hoy",
-    "scenarioSubtitle": "El mejor look no siempre es el más intenso, sino el que se ve estable en fotos, entrevistas, citas o eventos.",
+    "aiVisualAlt": "Colorimetría test con textura de piel natural y colores de maquillaje adaptados",
+    "aiVisualCaption": "La imagen explica los criterios usados para evaluar un look. Tu resultado se adapta a la luz, tono de piel y rasgos de tu selfie para responder qué colores te favorecen.",
+    "scenarioKicker": "Paleta por ocasión",
+    "scenarioTitle": "Elige el look según tu colorimetría y el contexto",
+    "scenarioSubtitle": "Un colorimetría test útil no termina en una etiqueta: debe verse estable en fotos, entrevistas, citas o eventos.",
     "scenarioLink": "Abrir catálogo de looks",
     "scenarioTryPrefix": "Empezar prueba",
     "scenarioCardCta": "Empezar prueba",
@@ -257,9 +257,9 @@
         "scenario": "Evento"
       }
     ],
-    "proofKicker": "Ejemplos de decisión",
-    "proofTitle": "Mira qué problema resuelve cada look",
-    "proofSubtitle": "Conectamos ocasión, cambio visible y criterio de evaluación para que elijas más rápido que con una simple calificación.",
+    "proofKicker": "Ejemplos de colorimetría",
+    "proofTitle": "Usa el test de colorimetría para decidir, no solo para clasificar",
+    "proofSubtitle": "Conectamos paleta, cambio visible y criterio de evaluación para que el resultado se traduzca en maquillaje real.",
     "proofCases": [
       {
         "slug": "olive-undertone-rose",
@@ -329,9 +329,9 @@
     "upgradeTitle": "Actualiza para más opciones",
     "upgradeCopy": "Pro sirve para pruebas semanales, descargas HD y diagnóstico facial IA. Premium encaja mejor para sesiones, bodas o entrevistas con prioridad y catálogo completo.",
     "upgradeLink": "Planes",
-    "finalCtaTitle": "Prueba una vez en tu propio rostro",
-    "finalCtaSubtitle": "Elige looks por trabajo, cita, foto o evento y revisa una vista previa IA en tu propio rostro.",
-    "finalCtaCta": "Empezar prueba"
+    "finalCtaTitle": "Empieza tu colorimetría test",
+    "finalCtaSubtitle": "Haz el test de colorimetría y mira directamente qué colores de maquillaje favorecen tu rostro.",
+    "finalCtaCta": "Empezar test"
   },
   "workspace": {
     "defaultNote": "Cada generación usa 1 crédito",

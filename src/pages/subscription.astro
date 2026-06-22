@@ -1,5 +1,8 @@
 ---
-import { buildAccountMobileMenu, getAccountCenterCopy } from "../data/accountCenterContent";
+import {
+  buildAccountMobileMenu,
+  getAccountCenterCopy,
+} from "../data/accountCenterContent";
 import AppIconBadge from "../components/AppIconBadge.astro";
 import MobileAppTopBar from "../components/MobileAppTopBar.astro";
 import MobileBottomNav from "../components/MobileBottomNav.astro";
@@ -10,6 +13,7 @@ import { getCurrentLocale } from "../lib/i18n";
 import { PLAN_DEFINITIONS } from "../lib/plans";
 
 const locale = getCurrentLocale();
+const isLoggedIn = Boolean(Astro.locals.isLoggedIn);
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
@@ -105,7 +109,8 @@ const enCopy: SubscriptionCopy = {
     "See the plan that is active on this account, how much monthly quota remains, and where to manage billing.",
   loading: "Loading subscription details...",
   signInTitle: "Sign in to view your subscription",
-  signInBody: "Your plan, quota, renewal status, and billing actions are tied to your account.",
+  signInBody:
+    "Your plan, quota, renewal status, and billing actions are tied to your account.",
   signIn: "Sign in",
   currentPlan: "Current plan",
   quotaTitle: "Monthly quota",
@@ -144,7 +149,8 @@ const enCopy: SubscriptionCopy = {
   planNotes: {
     free: "Free is best for checking the workflow before committing to a paid plan.",
     pro: "Pro is designed for regular weekly try-ons and diagnosis-backed choices.",
-    premium: "Premium is for frequent creation, deeper history, and complete look-library access.",
+    premium:
+      "Premium is for frequent creation, deeper history, and complete look-library access.",
   },
   loadFailed: "Unable to load subscription details. Refresh and try again.",
   portalFailed: "Unable to open subscription management.",
@@ -258,7 +264,8 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     mobileTitle: "契約管理",
     eyebrow: "サブスクリプション",
     heading: "プランと利用枠を管理",
-    subtitle: "現在のプラン、月間残数、保存上限、請求管理の入口を確認できます。",
+    subtitle:
+      "現在のプラン、月間残数、保存上限、請求管理の入口を確認できます。",
     loading: "契約情報を読み込んでいます...",
     signInTitle: "ログインして契約を確認",
     signInBody: "プラン、利用枠、更新状況、請求操作はアカウントに紐づきます。",
@@ -292,7 +299,8 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     mobileTitle: "구독",
     eyebrow: "구독",
     heading: "멤버십과 사용량 관리",
-    subtitle: "현재 플랜, 월간 잔여 한도, 저장 한도, 결제 관리入口를 확인하세요.",
+    subtitle:
+      "현재 플랜, 월간 잔여 한도, 저장 한도, 결제 관리入口를 확인하세요.",
     loading: "구독 정보를 불러오는 중...",
     signInTitle: "로그인 후 구독 확인",
     signInBody: "플랜, 한도, 갱신 상태와 결제 작업은 계정에 연결됩니다.",
@@ -326,14 +334,17 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     mobileTitle: "Abonnement",
     eyebrow: "Abonnement",
     heading: "Gérer votre offre et vos quotas",
-    subtitle: "Consultez l'offre active, le quota mensuel restant, la limite de sauvegarde et la gestion de facturation.",
+    subtitle:
+      "Consultez l'offre active, le quota mensuel restant, la limite de sauvegarde et la gestion de facturation.",
     loading: "Chargement de l'abonnement...",
     signInTitle: "Connectez-vous pour voir votre abonnement",
-    signInBody: "L'offre, le quota, le renouvellement et la facturation sont liés à votre compte.",
+    signInBody:
+      "L'offre, le quota, le renouvellement et la facturation sont liés à votre compte.",
     signIn: "Se connecter",
     currentPlan: "Offre actuelle",
     quotaTitle: "Quota mensuel",
-    quotaDesc: "L'essai maquillage et le diagnostic IA partagent le même quota.",
+    quotaDesc:
+      "L'essai maquillage et le diagnostic IA partagent le même quota.",
     remaining: "{remaining}/{total} restants",
     nextRefresh: "Prochain renouvellement du quota : {date}",
     renewsOn: "Renouvelle le {date}",
@@ -360,10 +371,12 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     mobileTitle: "Abo",
     eyebrow: "Abonnement",
     heading: "Mitgliedschaft und Nutzung verwalten",
-    subtitle: "Prüfen Sie aktiven Tarif, Monatskontingent, Speicherlimit und Rechnungsverwaltung.",
+    subtitle:
+      "Prüfen Sie aktiven Tarif, Monatskontingent, Speicherlimit und Rechnungsverwaltung.",
     loading: "Abo-Daten werden geladen...",
     signInTitle: "Einloggen, um das Abo zu sehen",
-    signInBody: "Tarif, Kontingent, Verlängerung und Abrechnung sind mit Ihrem Konto verknüpft.",
+    signInBody:
+      "Tarif, Kontingent, Verlängerung und Abrechnung sind mit Ihrem Konto verknüpft.",
     signIn: "Einloggen",
     currentPlan: "Aktueller Tarif",
     quotaTitle: "Monatskontingent",
@@ -394,14 +407,17 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     mobileTitle: "Suscripción",
     eyebrow: "Suscripción",
     heading: "Gestiona tu plan y uso",
-    subtitle: "Consulta el plan activo, el cupo mensual, el límite de guardados y la gestión de facturación.",
+    subtitle:
+      "Consulta el plan activo, el cupo mensual, el límite de guardados y la gestión de facturación.",
     loading: "Cargando suscripción...",
     signInTitle: "Inicia sesión para ver tu suscripción",
-    signInBody: "El plan, el cupo, la renovación y la facturación están vinculados a tu cuenta.",
+    signInBody:
+      "El plan, el cupo, la renovación y la facturación están vinculados a tu cuenta.",
     signIn: "Iniciar sesión",
     currentPlan: "Plan actual",
     quotaTitle: "Cupo mensual",
-    quotaDesc: "La prueba de maquillaje y el diagnóstico IA comparten el mismo cupo.",
+    quotaDesc:
+      "La prueba de maquillaje y el diagnóstico IA comparten el mismo cupo.",
     remaining: "{remaining}/{total} restantes",
     nextRefresh: "Próxima recarga: {date}",
     renewsOn: "Se renueva el {date}",
@@ -428,10 +444,12 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     mobileTitle: "Assinatura",
     eyebrow: "Assinatura",
     heading: "Gerencie seu plano e uso",
-    subtitle: "Veja o plano ativo, cota mensal, limite de salvos e gestão de cobrança.",
+    subtitle:
+      "Veja o plano ativo, cota mensal, limite de salvos e gestão de cobrança.",
     loading: "Carregando assinatura...",
     signInTitle: "Entre para ver sua assinatura",
-    signInBody: "Plano, cota, renovação e cobrança ficam vinculados à sua conta.",
+    signInBody:
+      "Plano, cota, renovação e cobrança ficam vinculados à sua conta.",
     signIn: "Entrar",
     currentPlan: "Plano atual",
     quotaTitle: "Cota mensal",
@@ -495,7 +513,9 @@ const planMeta = Object.fromEntries(
           <h1>{copy.heading}</h1>
           <p>{copy.subtitle}</p>
         </div>
-        <a class="btn btn-outline" href={hrefs.dashboard}>{accountCopy.workspace}</a>
+        <a class="btn btn-outline" href={hrefs.dashboard}
+          >{accountCopy.workspace}</a
+        >
       </section>
 
       <section class="subscription-loading panel" data-subscription-loading>
@@ -513,7 +533,11 @@ const planMeta = Object.fromEntries(
 
       <div class="subscription-content" data-subscription-content hidden>
         <section class="subscription-grid">
-          <article class="subscription-plan panel" data-plan-card data-plan="free">
+          <article
+            class="subscription-plan panel"
+            data-plan-card
+            data-plan="free"
+          >
             <div class="subscription-plan-head">
               <div>
                 <p class="section-kicker">{copy.currentPlan}</p>
@@ -523,7 +547,9 @@ const planMeta = Object.fromEntries(
             </div>
             <p class="subscription-plan-note" data-plan-note></p>
             <div class="subscription-price">
-              <span>$</span><b data-plan-price>--</b><small>{copy.priceUnit}</small>
+              <span>$</span><b data-plan-price>--</b><small
+                >{copy.priceUnit}</small
+              >
             </div>
             <div class="subscription-meter-block">
               <div>
@@ -538,14 +564,23 @@ const planMeta = Object.fromEntries(
           <article class="subscription-actions panel">
             <p class="section-kicker">{copy.actionsTitle}</p>
             <div class="subscription-action-list">
-              <button class="btn btn-primary" type="button" data-manage-billing hidden>
+              <button
+                class="btn btn-primary"
+                type="button"
+                data-manage-billing
+                hidden
+              >
                 {copy.manage}
               </button>
               <a class="btn btn-primary" href={hrefs.pricing} data-upgrade-plan>
                 {copy.upgrade}
               </a>
-              <a class="btn btn-outline" href={hrefs.pricing}>{copy.comparePlans}</a>
-              <a class="btn btn-outline-rose" href={hrefs.support}>{copy.support}</a>
+              <a class="btn btn-outline" href={hrefs.pricing}
+                >{copy.comparePlans}</a
+              >
+              <a class="btn btn-outline-rose" href={hrefs.support}
+                >{copy.support}</a
+              >
             </div>
             <dl class="subscription-status">
               <div>
@@ -557,7 +592,12 @@ const planMeta = Object.fromEntries(
                 <dd data-saved-limit>--</dd>
               </div>
             </dl>
-            <p class="subscription-message" data-subscription-message role="status"></p>
+            <p
+              class="subscription-message"
+              data-subscription-message
+              role="status"
+            >
+            </p>
           </article>
         </section>
 
@@ -602,7 +642,7 @@ const planMeta = Object.fromEntries(
       </div>
     </div>
   </main>
-  <MobileBottomNav active="account" />
+  {isLoggedIn && <MobileBottomNav active="account" />}
 
   <script is:inline define:vars={{ copy, planMeta, hrefs }}>
     (() => {
@@ -684,8 +724,14 @@ const planMeta = Object.fromEntries(
         setText("[data-feature-saved]", String(meta.savedLookLimit));
         setText("[data-feature-hd]", yesNo(meta.features?.hdDownload));
         setText("[data-feature-priority]", yesNo(meta.features?.priorityQueue));
-        setText("[data-feature-history]", yesNo(meta.features?.longTermHistory));
-        setText("[data-feature-library]", yesNo(meta.features?.fullLookLibrary));
+        setText(
+          "[data-feature-history]",
+          yesNo(meta.features?.longTermHistory),
+        );
+        setText(
+          "[data-feature-library]",
+          yesNo(meta.features?.fullLookLibrary),
+        );
 
         const manage = query("[data-manage-billing]");
         const upgrade = query("[data-upgrade-plan]");
@@ -734,7 +780,8 @@ const planMeta = Object.fromEntries(
           }
           throw new Error(body?.error?.message || copy.portalFailed);
         } catch (error) {
-          if (message) message.textContent = error?.message || copy.portalFailed;
+          if (message)
+            message.textContent = error?.message || copy.portalFailed;
         } finally {
           if (button) button.disabled = false;
         }

@@ -120,95 +120,95 @@
     "copyright": "保留所有權利。"
   },
   "homepage": {
-    "jsonLdDescription": "線上 AI 試妝工具，可上傳自拍預覽妝容效果，並依場合、膚色與妝感取得美妝參考。",
-    "metaTitle": "個人色彩診斷與 AI 妝容診斷 | AI Beauty Stylist",
-    "metaDescription": "用個人色彩診斷和 AI 妝容診斷先看適合自己的妝容方向，上傳自拍比較顏色、質感和不同場合的試妝參考。",
-    "heroKicker": "AI 線上試妝",
-    "heroKickerSub": "個人色彩診斷",
-    "heroTitle": "個人色彩診斷與 ",
-    "heroTitleSpan": "AI 妝容診斷一起看",
-    "heroSubtitle": "上傳自拍，先比較膚色、唇頰顏色、質感和不同場合，找出更適合自己的妝容方向。",
+    "jsonLdDescription": "AI 個人色彩鑑定與線上色彩分析工具，可上傳自拍比較膚色、唇頰顏色、妝感和不同場合的試妝效果。",
+    "metaTitle": "個人色彩鑑定：AI 色彩分析",
+    "metaDescription": "做個人色彩鑑定與 AI 色彩分析，上傳自拍查看個人色彩、唇頰顏色、妝感和線上試妝效果。",
+    "heroKicker": "AI 色彩分析",
+    "heroKickerSub": "個人色彩鑑定",
+    "heroTitle": "個人色彩鑑定：",
+    "heroTitleSpan": "先看你的色彩分析結果",
+    "heroSubtitle": "上傳自拍，先看個人色彩和膚色冷暖，再比較唇色、腮紅、眼妝和不同場合的上臉效果。",
     "startTryOn": "開始試妝",
     "howItWorks": "了解怎麼用",
     "pricingRule": "免費開始 · 需要更多額度時再選方案",
-    "trustNaturalTitle": "試妝效果",
-    "trustNaturalDesc": "查看效果",
-    "trustRecommendTitle": "場景",
-    "trustRecommendDesc": "妝容庫",
+    "trustNaturalTitle": "個人色彩",
+    "trustNaturalDesc": "比較膚色冷暖、明度與適合色系",
+    "trustRecommendTitle": "彩妝色彩",
+    "trustRecommendDesc": "唇頰、眼妝和場合一起看",
     "trustPrivacyTitle": "照片由你掌控",
-    "trustPrivacyDesc": "刪除",
+    "trustPrivacyDesc": "上傳前確認，也能刪除紀錄",
     "before": "原圖",
     "after": "試妝後",
-    "heroImageAltAfter": "試妝效果",
-    "heroImageAltBefore": "原圖",
-    "dragSlider": "查看效果",
-    "statsTryons": "3",
-    "statsTryonsLabel": "選擇妝容 · 上傳自拍 · 查看效果",
+    "heroImageAltAfter": "個人色彩鑑定後的自然妝容試妝效果",
+    "heroImageAltBefore": "個人色彩分析前的自拍原圖",
+    "dragSlider": "拖曳比較前後效果",
+    "statsTryons": "3 步驟",
+    "statsTryonsLabel": "看個人色彩 · 上傳自拍 · 比較彩妝色彩",
     "statsRealism": "1",
     "statsRealismLabel": "一次診斷或試妝使用 1 次額度",
-    "statsPrivacy": "刪除",
-    "statsPrivacyLabel": "照片由你掌控",
-    "howKicker": "3",
-    "howTitle": "選擇妝容, 上傳自拍, 查看效果",
-    "howSubtitle": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
+    "statsPrivacy": "可刪除",
+    "statsPrivacyLabel": "自拍和生成結果可分開管理",
+    "howKicker": "個人色彩鑑定 3 步驟",
+    "howTitle": "從色彩分析到上臉試妝",
+    "howSubtitle": "先判斷個人色彩方向，再上傳自拍確認妝容顏色是否真的適合你的膚色、五官和使用場合。",
     "howSteps": [
       {
         "icon": "1",
-        "title": "選擇妝容",
-        "copy": "場景"
+        "title": "選擇色彩分析目標",
+        "copy": "先確認想看膚色冷暖、春夏秋冬色彩，或某個唇頰色系是否適合。"
       },
       {
         "icon": "2",
-        "title": "上傳自拍",
-        "copy": "照片由你掌控"
+        "title": "上傳自拍做判斷",
+        "copy": "使用光線穩定的正面照，確認同意後才開始生成個人色彩參考。"
       },
       {
         "icon": "3",
-        "title": "查看效果",
-        "copy": "試妝效果"
+        "title": "比較彩妝色彩",
+        "copy": "看唇色、腮紅、眼妝和妝感是否讓膚色更乾淨、有精神。"
       }
     ],
-    "workflowWorkspace": "試妝工作台",
+    "workflowWorkspace": "色彩分析工作台",
     "workflowStatus": "生成預覽已就緒",
-    "workflowPreview": "AI 試妝效果",
+    "workflowPreview": "個人色彩預覽",
     "workflowUploaded": "上傳自拍",
     "workflowReady": "生成預覽已就緒",
     "workflowScanning": "AI 正在分析照片光線與面部位置...",
     "workflowSelected": "選擇妝容",
-    "workflowPreviewAlt": "試妝效果",
-    "featuredTitle": "妝容庫",
-    "featuredSubtitle": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
+    "workflowPreviewAlt": "依個人色彩與膚色產生的妝容預覽",
+    "featuredTitle": "依色彩挑妝容",
+    "featuredSubtitle": "從常見場合開始，比較色系、妝感和強度是否符合你的個人色彩。",
     "featuredLink": "妝容庫",
-    "aiKicker": "AI 線上試妝",
-    "aiTitle": "先看哪種妝容更適合你",
-    "aiSubtitle": "線上 AI 試妝工具，可上傳自拍預覽妝容效果，並依場合、膚色與妝感取得美妝參考。",
+    "aiKicker": "個人色彩 + 線上試妝",
+    "aiTitle": "不是只給色票，而是看彩妝上臉是否合拍",
+    "aiSubtitle": "AI 會參考照片光線、膚色冷暖、彩妝邊界和使用場合，幫你把色彩分析變成可以比較的妝容結果。",
     "aiFeatures": [
       {
         "icon": "1",
-        "title": "試妝效果",
-        "copy": "查看效果"
+        "title": "保留原本光線",
+        "copy": "盡量延續自拍中的光影，避免顏色像濾鏡一樣浮在臉上。"
       },
       {
         "icon": "2",
-        "title": "場景",
-        "copy": "妝容庫"
+        "title": "看個人色彩",
+        "copy": "比較唇色、腮紅和眼妝是否和你的膚色冷暖、明度、彩度協調。"
       },
       {
         "icon": "3",
-        "title": "照片由你掌控",
-        "copy": "刪除"
+        "title": "依場合調整",
+        "copy": "通勤、約會、拍照和活動需要的彩妝強度不同，不能只看單一色票。"
       },
       {
         "icon": "4",
-        "title": "方案",
-        "copy": "一次診斷或試妝使用 1 次額度"
+        "title": "界線清楚",
+        "copy": "上傳前需要確認，之後也可以刪除自拍、試妝結果和診斷紀錄。"
       }
     ],
-    "aiVisualAlt": "試妝效果",
-    "aiVisualCaption": "線上 AI 試妝工具，可上傳自拍預覽妝容效果，並依場合、膚色與妝感取得美妝參考。",
-    "scenarioKicker": "場景",
-    "scenarioTitle": "先看哪種妝容更適合你",
-    "scenarioSubtitle": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
+    "aiVisualAlt": "依個人色彩分析產生的自然妝容試妝圖",
+    "aiVisualCaption": "預覽重點不是把臉修到完美，而是看個人色彩、膚色和妝容強度是否協調。",
+    "scenarioKicker": "依個人色彩選場合",
+    "scenarioTitle": "同一個色系，也要看用在哪個場合",
+    "scenarioSubtitle": "個人色彩鑑定只是起點，真正要判斷的是通勤、拍照、約會或活動時，這個色系會不會自然。",
     "scenarioLink": "妝容庫",
     "scenarioTryPrefix": "開始試妝",
     "scenarioCardCta": "開始試妝",
@@ -216,118 +216,118 @@
     "scenarioHighlights": [
       {
         "slug": "commute",
-        "label": "場景",
-        "moment": "場景",
-        "reason": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-        "scenario": "場景"
+        "label": "通勤氣色",
+        "moment": "早會 · 視訊會議",
+        "reason": "柔和蜜桃色可以快速看出暖色系是否讓膚色更明亮。",
+        "scenario": "通勤"
       },
       {
         "slug": "interview-ready",
-        "label": "線上試妝",
-        "moment": "線上試妝",
-        "reason": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-        "scenario": "線上試妝"
+        "label": "面試俐落感",
+        "moment": "面試 · 客戶會議",
+        "reason": "乾淨眉眼和自然唇色能看出你的個人色彩是否適合清楚對比。",
+        "scenario": "面試"
       },
       {
         "slug": "rose-milk-date",
-        "label": "試妝效果",
-        "moment": "試妝效果",
-        "reason": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-        "scenario": "試妝效果"
+        "label": "約會柔和感",
+        "moment": "晚餐 · 傍晚光線",
+        "reason": "低飽和玫瑰色可以看出冷色或柔和色系是否更貼近你的膚色。",
+        "scenario": "約會"
       },
       {
         "slug": "flash-proof-satin",
-        "label": "查看效果",
-        "moment": "查看效果",
-        "reason": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-        "scenario": "查看效果"
+        "label": "拍照穩定感",
+        "moment": "合照 · 夜間活動",
+        "reason": "緞光妝感能檢查彩妝顏色和光澤在閃光燈下會不會太重。",
+        "scenario": "拍照"
       },
       {
         "slug": "mature-skin-radiance",
-        "label": "照片由你掌控",
-        "moment": "照片由你掌控",
-        "reason": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-        "scenario": "照片由你掌控"
+        "label": "成熟肌光澤",
+        "moment": "日常 · 重要場合",
+        "reason": "柔和亮度能看出色彩分析是否讓氣色變好，又不遮掉皮膚質感。",
+        "scenario": "日常"
       },
       {
         "slug": "wedding-guest",
-        "label": "妝容庫",
-        "moment": "妝容庫",
-        "reason": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-        "scenario": "妝容庫"
+        "label": "活動精緻感",
+        "moment": "婚宴 · 聚會 · 晚宴",
+        "reason": "完整妝容可以測試你的個人色彩在較高彩妝強度下是否仍然自然。",
+        "scenario": "活動"
       }
     ],
-    "proofKicker": "查看效果",
-    "proofTitle": "先看哪種妝容更適合你",
-    "proofSubtitle": "線上 AI 試妝工具，可上傳自拍預覽妝容效果，並依場合、膚色與妝感取得美妝參考。",
+    "proofKicker": "色彩分析範例",
+    "proofTitle": "用試妝結果判斷個人色彩，不只看色票",
+    "proofSubtitle": "每個範例都連結膚色、彩妝變化和判斷標準，讓個人色彩鑑定可以真正落到日常妝容。",
     "proofCases": [
       {
         "slug": "olive-undertone-rose",
-        "eyebrow": "查看效果",
-        "need": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-        "title": "試妝效果",
-        "copy": "線上 AI 試妝工具，可上傳自拍預覽妝容效果，並依場合、膚色與妝感取得美妝參考。",
-        "outcome": "查看效果"
+        "eyebrow": "色彩分析 · 橄欖膚色",
+        "need": "需求：想有氣色，但不想讓玫瑰色變灰",
+        "title": "先看唇頰是否在同一個色彩方向",
+        "copy": "低彩度玫瑰色能幫你判斷冷色系是否讓膚色更乾淨，或反而顯得暗沉。",
+        "outcome": "檢查：膚色是否明亮、唇頰是否自然、臉頰有沒有變灰"
       },
       {
         "slug": "flash-proof-satin",
-        "eyebrow": "查看效果",
-        "need": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-        "title": "場景",
-        "copy": "線上 AI 試妝工具，可上傳自拍預覽妝容效果，並依場合、膚色與妝感取得美妝參考。",
-        "outcome": "查看效果"
+        "eyebrow": "色彩分析 · 拍照",
+        "need": "需求：閃光燈下要有顏色，但不要油亮",
+        "title": "用緞光妝感測試照片穩定度",
+        "copy": "如果色彩太重或光澤太強，拍照時會比鏡子裡更明顯。",
+        "outcome": "檢查：T 字反光、唇色存在感、五官輪廓是否穩定"
       },
       {
         "slug": "mature-skin-radiance",
-        "eyebrow": "查看效果",
-        "need": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-        "title": "照片由你掌控",
-        "copy": "線上 AI 試妝工具，可上傳自拍預覽妝容效果，並依場合、膚色與妝感取得美妝參考。",
-        "outcome": "查看效果"
+        "eyebrow": "色彩分析 · 成熟肌",
+        "need": "需求：增加氣色，但保留真實皮膚質感",
+        "title": "少一點厚粉感，多一點柔和亮度",
+        "copy": "適合的個人色彩會讓臉中央更有精神，而不是把皮膚磨成不自然。",
+        "outcome": "檢查：皮膚紋理是否自然、臉色是否更乾淨"
       }
     ],
     "proofPrinciples": [
       {
-        "title": "場景",
-        "copy": "妝容庫"
+        "title": "先看個人色彩",
+        "copy": "色彩分析決定方向，場合決定彩妝強度。"
       },
       {
-        "title": "試妝效果",
-        "copy": "查看效果"
+        "title": "一定要上臉比較",
+        "copy": "適合色不是只看色票，而是要看它在你的自拍上是否協調。"
       },
       {
-        "title": "照片由你掌控",
-        "copy": "刪除"
+        "title": "用結果做選擇",
+        "copy": "比較膚色、唇頰、眼妝和妝感，再決定要不要保存。"
       }
     ],
     "assuranceKicker": "照片由你掌控",
-    "assuranceTitle": "照片由你掌控",
-    "assuranceSubtitle": "線上 AI 試妝工具，可上傳自拍預覽妝容效果，並依場合、膚色與妝感取得美妝參考。",
+    "assuranceTitle": "上傳自拍前，你先確認",
+    "assuranceSubtitle": "瀏覽妝容不會消耗額度。只有在你確認上傳並開始生成後，才會使用額度，之後也能管理原圖和結果。",
     "decisionFlow": ["選擇妝容", "上傳自拍", "查看效果"],
     "assuranceCta": "開始試妝",
     "uploadConcerns": [
       {
         "index": "01",
-        "title": "上傳自拍",
-        "copy": "照片由你掌控"
+        "title": "上傳前需要確認",
+        "copy": "自拍只有在你同意後，才會進入個人色彩鑑定流程。"
       },
       {
         "index": "02",
-        "title": "試妝效果",
-        "copy": "刪除"
+        "title": "可以刪除照片和結果",
+        "copy": "原始自拍、試妝結果和診斷紀錄可以分開管理。"
       },
       {
         "index": "03",
-        "title": "方案",
-        "copy": "一次診斷或試妝使用 1 次額度"
+        "title": "沒生成就不扣額度",
+        "copy": "額度只在診斷或試妝開始生成時使用，失敗任務會退回。"
       }
     ],
-    "upgradeTitle": "升級以比較更多妝容",
-    "upgradeCopy": "方案 · 額度 · HD",
+    "upgradeTitle": "想多比較幾組色彩？",
+    "upgradeCopy": "Pro 適合固定試妝、HD 下載和 AI 臉部診斷；Premium 適合拍攝、婚宴或重要場合，提供優先生成和完整妝容庫。",
     "upgradeLink": "方案",
-    "finalCtaTitle": "先試一次自己的上臉效果",
-    "finalCtaSubtitle": "從通勤、約會、拍照等場景選妝容，並在自拍上查看 AI 生成參考。",
-    "finalCtaCta": "開始試妝"
+    "finalCtaTitle": "開始個人色彩鑑定",
+    "finalCtaSubtitle": "先做色彩分析，再直接看適合你的彩妝顏色在臉上是否自然。",
+    "finalCtaCta": "開始色彩分析"
   },
   "workspace": {
     "defaultNote": "每次生成使用 1 次額度",

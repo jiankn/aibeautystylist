@@ -1,0 +1,975 @@
+{
+  "cost": 0.012,
+  "out": [
+    {
+      "locale": "en",
+      "keyword": "AI makeup app",
+      "response": {
+        "version": "0.1.20260610",
+        "status_code": 20000,
+        "status_message": "Ok.",
+        "time": "3.5082 sec.",
+        "cost": 0.002,
+        "tasks_count": 1,
+        "tasks_error": 0,
+        "tasks": [
+          {
+            "id": "06221749-1614-0121-0000-596a9f816903",
+            "status_code": 20000,
+            "status_message": "Ok.",
+            "time": "3.3973 sec.",
+            "cost": 0.002,
+            "result_count": 1,
+            "path": [
+              "v3",
+              "serp",
+              "google",
+              "organic",
+              "live",
+              "regular"
+            ],
+            "data": {
+              "api": "serp",
+              "function": "live",
+              "se": "google",
+              "se_type": "organic",
+              "keyword": "AI makeup app",
+              "location_name": "United States",
+              "language_name": "English",
+              "device": "desktop",
+              "os": "windows",
+              "depth": 10,
+              "tag": "homepage-serp-en-2026-06-22"
+            },
+            "result": [
+              {
+                "keyword": "AI makeup app",
+                "type": "organic",
+                "se_domain": "google.com",
+                "location_code": 2840,
+                "language_code": "en",
+                "check_url": "https://www.google.com/search?q=AI%20makeup%20app&hl=en&gl=US&ie=UTF-8&uule=w+CAIQIFISCQs2MuSEtepUEUK33kOSuTsc",
+                "datetime": "2026-06-22 14:49:22 +00:00",
+                "spell": null,
+                "refinement_chips": null,
+                "item_types": [
+                  "ai_overview",
+                  "organic",
+                  "people_also_ask",
+                  "video",
+                  "related_searches"
+                ],
+                "se_results_count": 162,
+                "pages_count": 1,
+                "items_count": 9,
+                "items": [
+                  {
+                    "type": "organic",
+                    "rank_group": 1,
+                    "rank_absolute": 2,
+                    "page": 1,
+                    "domain": "apps.apple.com",
+                    "title": "YouCam Makeup: Face Editor - App Store - Apple",
+                    "description": "We've got the tools for your photo and video glow-up! Join 300M+ users and try on hairstyles, makeup, and level up your selfies with YouCam Makeup. Read more",
+                    "url": "https://apps.apple.com/us/app/youcam-makeup-face-editor/id863844475",
+                    "breadcrumb": "https://apps.apple.com › app › youcam-makeup-face-ed..."
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 2,
+                    "rank_absolute": 3,
+                    "page": 1,
+                    "domain": "www.reddit.com",
+                    "title": "App that tells you what makeup would flatter you",
+                    "description": "Okay I would love to find makeup that matches my skin tone but is chat gpt an app? Read more",
+                    "url": "https://www.reddit.com/r/Makeup/comments/1dcrexk/app_that_tells_you_what_makeup_would_flatter_you/",
+                    "breadcrumb": "10+ comments  ·  2 years ago"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 3,
+                    "rank_absolute": 5,
+                    "page": 1,
+                    "domain": "yce.perfectcorp.com",
+                    "title": "AI Makeup Online: Virtual Try-On & Makeover Editor | YouCam",
+                    "description": "Add makeup to your face pictures online with just a few clicks. Experience hyper-realistic lipstick, eyeshadow, and foundation try-ons using patented 3D AR ...",
+                    "url": "https://yce.perfectcorp.com/ai-makeup",
+                    "breadcrumb": "https://yce.perfectcorp.com › ai-makeup"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 4,
+                    "rank_absolute": 7,
+                    "page": 1,
+                    "domain": "www.perfect365.com",
+                    "title": "Perfect365: AI Makeup App | Virtual Hair Changer Apps",
+                    "description": "Our free virtual makeover app uses Augmented Reality (AR) to let you try on makeup and hairstyles in real-time. Read more",
+                    "url": "https://www.perfect365.com/",
+                    "breadcrumb": "https://www.perfect365.com"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 5,
+                    "rank_absolute": 8,
+                    "page": 1,
+                    "domain": "apps.apple.com",
+                    "title": "Perfect365: Face Makeup Editor - App Store - Apple",
+                    "description": "Transform selfies instantly with AI makeup tools, virtual beauty filters, and one-tap photo editor looks. Perfect365 is your ultimate FREE virtual makeup ... Read more",
+                    "url": "https://apps.apple.com/us/app/perfect365-face-makeup-editor/id475976577",
+                    "breadcrumb": "https://apps.apple.com › app › perfect365-face-makeup..."
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 6,
+                    "rank_absolute": 9,
+                    "page": 1,
+                    "domain": "blavity.com",
+                    "title": "I Tested Out an AI Beauty App, Here's How It Went",
+                    "description": "Jul 15, 2024 — It scanned my face and provided details like hair color, skin tone, eye color, eye shape, face shape, and undertone. The app then recommended ... Read more",
+                    "url": "https://blavity.com/women/ai-makeup-app",
+                    "breadcrumb": "https://blavity.com › women › ai-makeup-app"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 7,
+                    "rank_absolute": 10,
+                    "page": 1,
+                    "domain": "play.google.com",
+                    "title": "YouCam Makeup: Face Editor - Apps on Google Play",
+                    "description": "YouCam Makeup is the ultimate face and body editor for flawless selfies. Trusted by 300 million users worldwide, edit with makeup editor, body editor, ... Read more",
+                    "url": "https://play.google.com/store/apps/details?id=com.cyberlink.youcammakeup&hl=en_US",
+                    "breadcrumb": "https://play.google.com › store › apps › details › id=com..."
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 8,
+                    "rank_absolute": 11,
+                    "page": 1,
+                    "domain": "www.fotor.com",
+                    "title": "Free AI Makeup Generator- Online Virtual Makeup Try-on",
+                    "description": "Fotor's online AI makeup generator lets you experience various makeup styles for free. Try virtual makeup try-on to find what makeup suits your face best.",
+                    "url": "https://www.fotor.com/features/ai-makeup-generator/",
+                    "breadcrumb": "https://www.fotor.com › features › ai-makeup-generator"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 9,
+                    "rank_absolute": 12,
+                    "page": 1,
+                    "domain": "beautyspark.me",
+                    "title": "Best AI Makeup Apps 2026: 6 Apps Compared Feature by ...",
+                    "description": "Jan 31, 2026 — BeautySpark, YouCam, GlowUp, Dressika, Fotor, and Colorwise compared on color analysis, eye shape detection, palette scanning, and AI looks.",
+                    "url": "https://beautyspark.me/blog/best-ai-makeup-apps-compared",
+                    "breadcrumb": "https://beautyspark.me › Blog › Comparisons"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "locale": "de",
+      "keyword": "Schminktest",
+      "response": {
+        "version": "0.1.20260610",
+        "status_code": 20000,
+        "status_message": "Ok.",
+        "time": "1.6883 sec.",
+        "cost": 0.002,
+        "tasks_count": 1,
+        "tasks_error": 0,
+        "tasks": [
+          {
+            "id": "06221749-1614-0121-0000-f981c3af4277",
+            "status_code": 20000,
+            "status_message": "Ok.",
+            "time": "1.6094 sec.",
+            "cost": 0.002,
+            "result_count": 1,
+            "path": [
+              "v3",
+              "serp",
+              "google",
+              "organic",
+              "live",
+              "regular"
+            ],
+            "data": {
+              "api": "serp",
+              "function": "live",
+              "se": "google",
+              "se_type": "organic",
+              "keyword": "Schminktest",
+              "location_name": "Germany",
+              "language_name": "German",
+              "device": "desktop",
+              "os": "windows",
+              "depth": 10,
+              "tag": "homepage-serp-de-2026-06-22"
+            },
+            "result": [
+              {
+                "keyword": "Schminktest",
+                "type": "organic",
+                "se_domain": "google.com",
+                "location_code": 2276,
+                "language_code": "de",
+                "check_url": "https://www.google.com/search?q=Schminktest&hl=de&gl=DE&ie=UTF-8&uule=w+CAIQIFISCWu-scIecppHEVvlkY5rXeh1",
+                "datetime": "2026-06-22 14:49:25 +00:00",
+                "spell": {
+                  "keyword": "Schminkset",
+                  "type": "showing_results_for"
+                },
+                "refinement_chips": {
+                  "type": "refinement_chips",
+                  "xpath": "/html[1]/body[1]/div[3]/div[1]/div[5]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]",
+                  "items": [
+                    {
+                      "type": "refinement_chips_element",
+                      "title": "CATRICE",
+                      "url": "https://www.google.com/search?sca_esv=7c3c44d1206346ec&hl=de&gl=DE&q=catrice+schminkset&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rt9bo9hbAEIGGIEWIj_tTPx3l52c1m3dMnZb7SETjdHq6EhAhKjW_fppqGXyUOo4S78iAXIXLNtgD-WXaeCbqDoLsgaTumU7d7lIy6nMPmh505PPRI1CVVtDQ5T3zv5iusmH_5Ep3EMMQPByHjhD4xHQoBq96TkgL2hJDISDSEKyxk7gtCNpgW6YHOxs2HRsi_i1YsQ&sa=X&ved=2ahUKEwjjp-D8i5uVAxV_TTABHQv9MRUQxKsJKAB6BAgZEAE&ictx=0",
+                      "domain": "www.google.com",
+                      "options": null
+                    },
+                    {
+                      "type": "refinement_chips_element",
+                      "title": "Saint Laurent",
+                      "url": "https://www.google.com/search?sca_esv=7c3c44d1206346ec&hl=de&gl=DE&q=saint+laurent+schminkset&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4ruFzr2GyvokrzGvSypEOOUdzJ0_0U9eaSv1wWTyLMSw2CioWS3d-33SM7koSAkpT1r276Lt9lclUSvKylNswTW5_DJYqYWhtkKDdln-rfQldXbveQyGh0TpZIBfll4P2rE7j_a0jIitFqPjSEHRTe7kQPx416P7Qs2-JOCQS2KJRfZy0zp79gPIoZWV7msDR7SB4JrA&sa=X&ved=2ahUKEwjjp-D8i5uVAxV_TTABHQv9MRUQxKsJKAF6BAgbEAE&ictx=0",
+                      "domain": "www.google.com",
+                      "options": null
+                    },
+                    {
+                      "type": "refinement_chips_element",
+                      "title": "Grimas",
+                      "url": "https://www.google.com/search?sca_esv=7c3c44d1206346ec&hl=de&gl=DE&q=grimas+schminkset&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rM1wj1K6BVf8RPIJRF_FbniJrSdKTvw0EvZZLRXQw2exr9uBl8rnBs5a3TS_rdt0YGz8mLvdL60ayG9wVEr8COfLzf-e4xScXcIszwsW9Zd9w0TZlIDDWAYtsnyjAeKwL4cwJPuoA5BBwbL7unM3j_zBIi5hrqBrQGCa82hDJ1HExJf9GGZK8FqkoTE1PUSNVcnk6YA&sa=X&ved=2ahUKEwjjp-D8i5uVAxV_TTABHQv9MRUQxKsJKAJ6BAgaEAE&ictx=0",
+                      "domain": "www.google.com",
+                      "options": null
+                    },
+                    {
+                      "type": "refinement_chips_element",
+                      "title": "Kosmetikgeschenksets",
+                      "url": "https://www.google.com/search?sca_esv=7c3c44d1206346ec&hl=de&gl=DE&q=kosmetikgeschenksets+schminkset&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rRhuHoGe-Zc8eqXu8JOh34aP5Lw-ZSjigJVqaNVuwM_jC9sSt0zyrqykilI-ZF1DddYHqeoGcyiAjIbz1vUlqhmaJxcRYNK0gatV8tZHrv7XP1e-YsNsvoOHximaIvvu3OgsiJkmErzFRSjDMkoAtS-cAfYzg2YPB5WszZhohwXmhKjhz&sa=X&ved=2ahUKEwjjp-D8i5uVAxV_TTABHQv9MRUQxKsJKAN6BAgcEAE&ictx=0",
+                      "domain": "www.google.com",
+                      "options": null
+                    },
+                    {
+                      "type": "refinement_chips_element",
+                      "title": "Palette",
+                      "url": "https://www.google.com/search?sca_esv=7c3c44d1206346ec&hl=de&gl=DE&q=palette+schminkset&uds=AJ5uw1_a2D0D09lxm8gpKKOTUn4rt9bo9hbAEIGGIEWIj_tTPx3l52c1m3dMnZb7SETjdHpq4gAchr4L6kO1VxlBsynvJcE352Cn5xNMLUPPC1jEkQF5dGJv5VveSDWe8cRjRbcN-VtwGqq1JZV-mKE-CURwkpFWJX1ariNQ1a60zpVxnw5WYLzclYI9Xe2DO6R59ibVW_ZQlsP8fmgMSS23csi2YDnmCw&sa=X&ved=2ahUKEwjjp-D8i5uVAxV_TTABHQv9MRUQxKsJKAR6BAgdEAE&ictx=0",
+                      "domain": "www.google.com",
+                      "options": null
+                    }
+                  ]
+                },
+                "item_types": [
+                  "organic",
+                  "images",
+                  "related_searches"
+                ],
+                "se_results_count": 201,
+                "pages_count": 1,
+                "items_count": 4,
+                "items": [
+                  {
+                    "type": "organic",
+                    "rank_group": 1,
+                    "rank_absolute": 1,
+                    "page": 1,
+                    "domain": "www.amazon.de",
+                    "title": "Suchergebnis Auf Amazon.de Für: Schminkset",
+                    "description": "Ruicen Make Up Set für den perfekten Full Face Look, 43-teiliges Make Up Set für Frauen mit 60 Color Lidschatten, Mascara, Eyeliner, Lipgloss, MakeUp Set für ...",
+                    "url": "https://www.amazon.de/schminkset/s?k=schminkset",
+                    "breadcrumb": "https://www.amazon.de › schminkset"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 2,
+                    "rank_absolute": 2,
+                    "page": 1,
+                    "domain": "missnella.de",
+                    "title": "Kaufen Premium Kinder-Schminkset",
+                    "description": "Schauen Sie sich unser premium-sortiment an ungiftigen kinder-schminkset, sanften lipgloss-sets, leuchtenden farben und mehr an, perfekt für kinderpartys.",
+                    "url": "https://missnella.de/collections/kinder-schminkset?srsltid=AfmBOooXPUB2iCK45hZtBQ7xDTci0Cc0siHuMRKVKuQp1fkwqJp3Rk2N",
+                    "breadcrumb": "https://missnella.de › collections › kinder-schminkset"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 3,
+                    "rank_absolute": 3,
+                    "page": 1,
+                    "domain": "www.notino.de",
+                    "title": "Make-up Sets und Schminksets",
+                    "description": "Machen Sie sich oder Ihren Liebsten Freude mit einem Schminken-Set! Komplettes Schminkset für Frauen oder Make-up Starter-Set für Anfänger ❤️ NOTINO.",
+                    "url": "https://www.notino.de/sets-mit-dekorativer-kosmetik/",
+                    "breadcrumb": "https://www.notino.de › Make-up"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 4,
+                    "rank_absolute": 5,
+                    "page": 1,
+                    "domain": "cosline.de",
+                    "title": "Schminkset – Make-up Sets für dein perfektes Styling",
+                    "description": "Ein gutes Schminkset ist die perfekte Grundlage, um dein Make-up einfach, schnell und professionell aufzutragen. Ob für den Alltag, für besondere Anlässe ...",
+                    "url": "https://cosline.de/collections/schmink-set",
+                    "breadcrumb": "https://cosline.de › collections › schmink-set"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "locale": "fr",
+      "keyword": "test colorimétrie",
+      "response": {
+        "version": "0.1.20260610",
+        "status_code": 20000,
+        "status_message": "Ok.",
+        "time": "0.8429 sec.",
+        "cost": 0.002,
+        "tasks_count": 1,
+        "tasks_error": 0,
+        "tasks": [
+          {
+            "id": "06221749-1614-0121-0000-2f88918e4858",
+            "status_code": 20000,
+            "status_message": "Ok.",
+            "time": "0.7509 sec.",
+            "cost": 0.002,
+            "result_count": 1,
+            "path": [
+              "v3",
+              "serp",
+              "google",
+              "organic",
+              "live",
+              "regular"
+            ],
+            "data": {
+              "api": "serp",
+              "function": "live",
+              "se": "google",
+              "se_type": "organic",
+              "keyword": "test colorimétrie",
+              "location_name": "France",
+              "language_name": "French",
+              "device": "desktop",
+              "os": "windows",
+              "depth": 10,
+              "tag": "homepage-serp-fr-2026-06-22"
+            },
+            "result": [
+              {
+                "keyword": "test colorimétrie",
+                "type": "organic",
+                "se_domain": "google.com",
+                "location_code": 2250,
+                "language_code": "fr",
+                "check_url": "https://www.google.com/search?q=test%20colorim%C3%A9trie&hl=fr&gl=FR&ie=UTF-8&uule=w+CAIQIFISCTFXeDMpoFQNEffZR8eWP_1r",
+                "datetime": "2026-06-22 14:49:26 +00:00",
+                "spell": null,
+                "refinement_chips": null,
+                "item_types": [
+                  "organic",
+                  "video",
+                  "images",
+                  "related_searches"
+                ],
+                "se_results_count": 60,
+                "pages_count": 1,
+                "items_count": 8,
+                "items": [
+                  {
+                    "type": "organic",
+                    "rank_group": 1,
+                    "rank_absolute": 1,
+                    "page": 1,
+                    "domain": "17h10.com",
+                    "title": "Test colorimétrie & morphologie gratuit",
+                    "description": "Faites notre test personnalisé pour découvrir les couleurs et coupes faites pour vous. Recevez une sélection de tailleurs adaptés à votre silhouette et ...",
+                    "url": "https://17h10.com/pages/test-colorimetrie-morphologie?srsltid=AfmBOop64ki9iMf81tNZXzFayCjXhTAdzpv-gwfP8qT5XKzRmE6JhCjM",
+                    "breadcrumb": "https://17h10.com › test-colorimetrie-morphologie"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 2,
+                    "rank_absolute": 2,
+                    "page": 1,
+                    "domain": "mycolormatch.fr",
+                    "title": "Test de colorimétrie gratuit en ligne sur la base de ta photo",
+                    "description": "Test de colorimétrie gratuit en ligne avec photo · 1. Choisis ta photo · 2. Quelle est la couleur de tes cheveux ? · 3. Quelle est la couleur de tes yeux ? · 4.",
+                    "url": "https://mycolormatch.fr/colorimetrie-test-gratuit",
+                    "breadcrumb": "https://mycolormatch.fr › colorimetrie-test-gratuit"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 3,
+                    "rank_absolute": 3,
+                    "page": 1,
+                    "domain": "www.palettehunt.com",
+                    "title": "Test colorimétrie en ligne gratuit",
+                    "description": "Ce test de colorimétrie détermine si tu es Printemps (chaud et brillant), Été (froid et doux), Automne (chaud et profond) ou Hiver (froid et spectaculaire).",
+                    "url": "https://www.palettehunt.com/test-colorimetrie",
+                    "breadcrumb": "https://www.palettehunt.com › test-colorimetrie"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 4,
+                    "rank_absolute": 4,
+                    "page": 1,
+                    "domain": "www.c-and-a.com",
+                    "title": "Trouver sa colorimétrie : tests, profils et conseils",
+                    "description": "Définir son profil colorimétrique : faites le test. Selon la théorie classique des types de couleurs, il existe quatre principaux types basés sur les saisons ...",
+                    "url": "https://www.c-and-a.com/fr/fr/shop/etablir-profil-colorimetrique",
+                    "breadcrumb": "https://www.c-and-a.com › etablir-profil-colorimetrique"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 5,
+                    "rank_absolute": 5,
+                    "page": 1,
+                    "domain": "www.elle.fr",
+                    "title": "Quelles couleurs vous vont ? - Test & Quiz Beauté",
+                    "description": "Encore faut-il savoir choisir celles qui vont à votre teint, et à votre personnalité ! ? Je fais le test.",
+                    "url": "https://www.elle.fr/Beaute/Tests-et-quiz/Quelles-couleurs-vous-vont",
+                    "breadcrumb": "https://www.elle.fr › Beauté › Tests & Quiz Beauté"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 6,
+                    "rank_absolute": 7,
+                    "page": 1,
+                    "domain": "www.atode.fr",
+                    "title": "Fais ton test de colorimétrie dès maintenant !",
+                    "description": "21 juil. 2025 — Parce qu'entre nous, porter les bonnes couleurs, ça change tout ! Tu gagnes instantanément en lumière, en confiance, en cohérence.",
+                    "url": "https://www.atode.fr/test-colorimetrie/",
+                    "breadcrumb": "https://www.atode.fr › ... › COLORIMETRIE"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 7,
+                    "rank_absolute": 8,
+                    "page": 1,
+                    "domain": "www.claireott-enparticulier.com",
+                    "title": "Test de colorimétrie : révélez les couleurs qui vous illuminent",
+                    "description": "10 juil. 2025 — Le test de colorimétrie consiste à déterminer les couleurs qui vous illuminent le plus naturellement. Grâce à un jeu de tissus placés près ...",
+                    "url": "https://www.claireott-enparticulier.com/post/test-de-colorimetrie",
+                    "breadcrumb": "https://www.claireott-enparticulier.com › post › test-de-..."
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 8,
+                    "rank_absolute": 10,
+                    "page": 1,
+                    "domain": "www.facebook.com",
+                    "title": "✨ Test de colorimétrie avec Mélanie ✨ Découvrir les couleurs ...",
+                    "description": "Avec Mélanie, on identifie les teintes qui illuminent le teint, subliment le regard et apportent plus d'harmonie à votre style. Un moment ...",
+                    "url": "https://www.facebook.com/christelle.authentic/videos/-test-de-colorim%C3%A9trie-avec-m%C3%A9lanie-d%C3%A9couvrir-les-couleurs-qui-vous-mettent-r%C3%A9ell/1593996829393279/",
+                    "breadcrumb": "Plus de 10 réactions  ·  il y a 2 mois"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "locale": "zh-TW",
+      "keyword": "個人色彩診斷",
+      "response": {
+        "version": "0.1.20260610",
+        "status_code": 20000,
+        "status_message": "Ok.",
+        "time": "2.9688 sec.",
+        "cost": 0.002,
+        "tasks_count": 1,
+        "tasks_error": 0,
+        "tasks": [
+          {
+            "id": "06221749-1614-0121-0000-41141ad54b2b",
+            "status_code": 20000,
+            "status_message": "Ok.",
+            "time": "2.8349 sec.",
+            "cost": 0.002,
+            "result_count": 1,
+            "path": [
+              "v3",
+              "serp",
+              "google",
+              "organic",
+              "live",
+              "regular"
+            ],
+            "data": {
+              "api": "serp",
+              "function": "live",
+              "se": "google",
+              "se_type": "organic",
+              "keyword": "個人色彩診斷",
+              "location_name": "Taiwan",
+              "language_name": "Chinese (Traditional)",
+              "device": "desktop",
+              "os": "windows",
+              "depth": 10,
+              "tag": "homepage-serp-zh-TW-2026-06-22"
+            },
+            "result": [
+              {
+                "keyword": "個人色彩診斷",
+                "type": "organic",
+                "se_domain": "google.com",
+                "location_code": 2158,
+                "language_code": "zh-TW",
+                "check_url": "https://www.google.com/search?q=%E5%80%8B%E4%BA%BA%E8%89%B2%E5%BD%A9%E8%A8%BA%E6%96%B7&hl=zh-TW&gl=TW&ie=UTF-8&uule=w+CAIQIFISCS9XB1wG8240EWlUnL8E8BHn",
+                "datetime": "2026-06-22 14:49:29 +00:00",
+                "spell": null,
+                "refinement_chips": null,
+                "item_types": [
+                  "ai_overview",
+                  "organic",
+                  "short_videos",
+                  "related_searches"
+                ],
+                "se_results_count": 125,
+                "pages_count": 1,
+                "items_count": 9,
+                "items": [
+                  {
+                    "type": "organic",
+                    "rank_group": 1,
+                    "rank_absolute": 2,
+                    "page": 1,
+                    "domain": "personalcolor.kose.com.tw",
+                    "title": "個人色彩 - KOSE",
+                    "description": "Ai人工智能會對您的皮膚，瞳孔色及面部其他的構成顏色進行分析。數秒後就會顯示出您的個人色彩類型。 拍照時注意點. 請在自然光或 ...",
+                    "url": "https://personalcolor.kose.com.tw/",
+                    "breadcrumb": "https://personalcolor.kose.com.tw"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 2,
+                    "rank_absolute": 3,
+                    "page": 1,
+                    "domain": "www.poyabuy.com.tw",
+                    "title": "自己也能做個人色彩分析鑑定！帶你找出四季型人命定色",
+                    "description": "什麼是個人色彩分析鑑定？ ... 個人色彩鑑定（Personal Color Analysis），是一種透過色彩分析你與生俱來的基因色彩，包含：膚色、瞳孔顏色、原生髮色、唇色等特徵，來判斷最適合你 ...",
+                    "url": "https://www.poyabuy.com.tw/Article/Detail/103348?lang=zh-TW",
+                    "breadcrumb": "https://www.poyabuy.com.tw › Article › Detail"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 3,
+                    "rank_absolute": 4,
+                    "page": 1,
+                    "domain": "ooopenlab.cc",
+                    "title": "個人色彩自我檢測",
+                    "description": "我們是不是常常遇到. 適合的顏色不喜歡，喜歡的顏色不適合的窘境呢? 在找專業的色彩顧問幫你做色彩鑑定前. 先來做一下自我的診斷後再去與顧問們測色對個答案吧~!.",
+                    "url": "https://ooopenlab.cc/quiz/KKlIDz5YdwEGXyq6icep",
+                    "breadcrumb": "https://ooopenlab.cc › quiz"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 4,
+                    "rank_absolute": 5,
+                    "page": 1,
+                    "domain": "www.instagram.com",
+                    "title": "台灣也能做個人色彩鑑定？ 🇰🇷韓國色彩分析師 ...",
+                    "description": "台灣也能做個人色彩鑑定？ 韓國色彩分析師姐姐直接把整套專業技術搬來台灣 幫我們找命定色啦   之前我自己做線上測驗總是無法明確知道自己是哪個 ...",
+                    "url": "https://www.instagram.com/p/DEsImKYy9Pb/",
+                    "breadcrumb": "超過 2180 人按讚  ·  1 年前"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 5,
+                    "rank_absolute": 6,
+                    "page": 1,
+                    "domain": "www.urban-research.tw",
+                    "title": "個人色彩診斷！找出最適合自己的色彩",
+                    "description": "穿對顏色能讓五官線條更立體，膚色更明亮有氣色，近年日韓流行的「個人色彩診斷」分析法，依據天生的眼珠、頭髮、膚質、嘴唇等顏色判斷，將人分為「春、夏、秋、冬」4種類 ...",
+                    "url": "https://www.urban-research.tw/special/230214-personal-color/",
+                    "breadcrumb": "https://www.urban-research.tw › 230214-personal-color"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 6,
+                    "rank_absolute": 7,
+                    "page": 1,
+                    "domain": "www.dcard.tw",
+                    "title": "為什麼台灣的個人色彩鑑定都這麼貴啊？ - 美妝板",
+                    "description": "2023年2月26日 — 台灣也有很便宜兩三千塊的，不同的色彩顧問用的系統不一樣，再加上服務的細節內容不同，價格高低不是唯一的判斷標準。 如果只在乎價格且只想知道結果，那選 ...",
+                    "url": "https://www.dcard.tw/f/makeup/p/241341523",
+                    "breadcrumb": "https://www.dcard.tw › Dcard › 美妝"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 7,
+                    "rank_absolute": 9,
+                    "page": 1,
+                    "domain": "www.vanessastyleadvisor.com",
+                    "title": "一對一個人色彩診斷，找到妳的命定色彩",
+                    "description": "根據個人色彩報告書，包含季節色彩適合的顏色、穿搭配色、飾品色、彩妝色、髮色、美甲色。 以及市價950元的個人色彩紙本色票，用於實體購物的選色、對色，讓適合妳的命定色彩， ...",
+                    "url": "https://www.vanessastyleadvisor.com/personalcolortraining",
+                    "breadcrumb": "https://www.vanessastyleadvisor.com › personalcolortrai..."
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 8,
+                    "rank_absolute": 10,
+                    "page": 1,
+                    "domain": "www.elle.com",
+                    "title": "「春夏秋冬」你屬於哪個色系？韓國超火個人色彩鑑定介紹",
+                    "description": "2025年2月10日 — 「個人色彩分析」（personal colour）是近年韓國最流行的「風格診斷法」，據說只要找到專屬「命定色」，你就能改善膚色、造型甚至是氣質！",
+                    "url": "https://www.elle.com/tw/fashion/flash/g63731109/personal-color/",
+                    "breadcrumb": "https://www.elle.com › 時尚 › 時尚速報"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 9,
+                    "rank_absolute": 11,
+                    "page": 1,
+                    "domain": "www.youtube.com",
+                    "title": "超熱門的「個人色彩檢測」有意義嗎？做了兩次檢測的真實感想..",
+                    "description": null,
+                    "url": "https://www.youtube.com/watch?v=mFVBywRPmac",
+                    "breadcrumb": "觀看次數超過 5.3萬 次  ·  1 年前"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "locale": "es",
+      "keyword": "test de colorimetría",
+      "response": {
+        "version": "0.1.20260610",
+        "status_code": 20000,
+        "status_message": "Ok.",
+        "time": "3.1314 sec.",
+        "cost": 0.002,
+        "tasks_count": 1,
+        "tasks_error": 0,
+        "tasks": [
+          {
+            "id": "06221749-1614-0121-0000-6ffe90f9fa78",
+            "status_code": 20000,
+            "status_message": "Ok.",
+            "time": "3.0257 sec.",
+            "cost": 0.002,
+            "result_count": 1,
+            "path": [
+              "v3",
+              "serp",
+              "google",
+              "organic",
+              "live",
+              "regular"
+            ],
+            "data": {
+              "api": "serp",
+              "function": "live",
+              "se": "google",
+              "se_type": "organic",
+              "keyword": "test de colorimetría",
+              "location_name": "Spain",
+              "language_name": "Spanish",
+              "device": "desktop",
+              "os": "windows",
+              "depth": 10,
+              "tag": "homepage-serp-es-2026-06-22"
+            },
+            "result": [
+              {
+                "keyword": "test de colorimetría",
+                "type": "organic",
+                "se_domain": "google.com",
+                "location_code": 2724,
+                "language_code": "es",
+                "check_url": "https://www.google.com/search?q=test%20de%20colorimetr%C3%ADa&hl=es&gl=ES&ie=UTF-8&uule=w+CAIQIFISCYu8YTJ440IMEeyjaAeULOym",
+                "datetime": "2026-06-22 14:49:33 +00:00",
+                "spell": null,
+                "refinement_chips": null,
+                "item_types": [
+                  "organic",
+                  "images",
+                  "people_also_ask",
+                  "related_searches"
+                ],
+                "se_results_count": 127,
+                "pages_count": 1,
+                "items_count": 9,
+                "items": [
+                  {
+                    "type": "organic",
+                    "rank_group": 1,
+                    "rank_absolute": 1,
+                    "page": 1,
+                    "domain": "personalitia.com",
+                    "title": "Test de Colorimetría Gratis | Encuentra Tu Paleta Perfecta",
+                    "description": "Descubre qué colores realzan tu imagen con nuestro test gratuito. Identifica tu paleta ideal y potencia tu estilo con Personalitia. ¡Hazlo ahora!",
+                    "url": "https://personalitia.com/test-de-colorimetria/",
+                    "breadcrumb": "https://personalitia.com › test-de-colorimetria"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 2,
+                    "rank_absolute": 2,
+                    "page": 1,
+                    "domain": "colorai.es",
+                    "title": "ColorAI: Test de Colorimetría Online Gratis | Descubre Qué ...",
+                    "description": "Test de colorimetría online gratis. Descubre tu estación (primavera, verano, otoño, invierno) y recibe recomendaciones de prendas personalizadas según tu ...",
+                    "url": "https://colorai.es/",
+                    "breadcrumb": "https://colorai.es"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 3,
+                    "rank_absolute": 3,
+                    "page": 1,
+                    "domain": "www.palettehunt.com",
+                    "title": "Test de Colorimetría Online Gratis",
+                    "description": "Este test de colorimetría determinará si eres una Primavera (cálida y brillante), Verano (fría y suave), Otoño (cálida y profunda), o Invierno (fría y dramática) ...",
+                    "url": "https://www.palettehunt.com/test-analisis-colorimetria",
+                    "breadcrumb": "https://www.palettehunt.com › test-analisis-colorimetria"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 4,
+                    "rank_absolute": 4,
+                    "page": 1,
+                    "domain": "www.c-and-a.com",
+                    "title": "Colorimetría: test para saber la tuya y consejos",
+                    "description": "→ Paso 1: Identifica tu rasgo distintivo. Ponte delante de un espejo y observa tu color de ojos, de pelo y de tez. ¿Cuál es tu rasgo más llamativo? Decide cuál ...",
+                    "url": "https://www.c-and-a.com/es/es/shop/como-saber-mi-colorimetria",
+                    "breadcrumb": "https://www.c-and-a.com › como-saber-mi-colorimetria"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 5,
+                    "rank_absolute": 5,
+                    "page": 1,
+                    "domain": "www.beautyplus.com",
+                    "title": "Test de colorimetría personal online gratis con GPT Image ...",
+                    "description": "Usa nuestra herramienta de colorimetría test para descubrir los labiales, rubores, sombras y bases que combinan perfectamente con tu piel. Evita lucir opaca o ...",
+                    "url": "https://www.beautyplus.com/es/personal-color-analysis",
+                    "breadcrumb": "https://www.beautyplus.com › personal-color-analysis"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 6,
+                    "rank_absolute": 7,
+                    "page": 1,
+                    "domain": "www.youtube.com",
+                    "title": "Test de colorimetría QUÉ COLORES ME FAVORECEN",
+                    "description": null,
+                    "url": "https://www.youtube.com/watch?v=2GJg3WpBoDU",
+                    "breadcrumb": "Más de 269 mil vistas  ·  hace 6 años"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 7,
+                    "rank_absolute": 8,
+                    "page": 1,
+                    "domain": "saigucosmetics.com",
+                    "title": "Cómo saber mi Colorimetría | Test",
+                    "description": "No sabes qué colores de maquillaje te favorecen más? Descubre tu estación y subestación con el test de colorimetría y encuentra la paleta que mejor resalta ...",
+                    "url": "https://saigucosmetics.com/pages/test-de-colorimetria",
+                    "breadcrumb": "https://saigucosmetics.com › pages › test-de-colorimetria"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 8,
+                    "rank_absolute": 9,
+                    "page": 1,
+                    "domain": "goloka.es",
+                    "title": "Test de Colorimetría",
+                    "description": "8 ago 2024 — El test de colorimetría es una herramienta fundamental para descubrir los colores que mejor nos favorecen y realzan nuestra belleza natural. A ...",
+                    "url": "https://goloka.es/analisis-de-color/",
+                    "breadcrumb": "https://goloka.es › analisis-de-color"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 9,
+                    "rank_absolute": 11,
+                    "page": 1,
+                    "domain": "www.tiktok.com",
+                    "title": "Como saber tu colorimetria completamente gratis??? Falso o ...",
+                    "description": "test de colorimetría online gratis,como saber mi colorimetría,prueba colorimetría con foto,colorimetría piel cálida o fría,identificar ...",
+                    "url": "https://www.tiktok.com/@hanniamarquezr/video/7437735050579430711",
+                    "breadcrumb": "Más de 27,8 mil vistas  ·  hace 1 año"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "locale": "pt-BR",
+      "keyword": "colorimetria pessoal",
+      "response": {
+        "version": "0.1.20260610",
+        "status_code": 20000,
+        "status_message": "Ok.",
+        "time": "3.8244 sec.",
+        "cost": 0.002,
+        "tasks_count": 1,
+        "tasks_error": 0,
+        "tasks": [
+          {
+            "id": "06221749-1614-0121-0000-77bb2da768c7",
+            "status_code": 20000,
+            "status_message": "Ok.",
+            "time": "3.7114 sec.",
+            "cost": 0.002,
+            "result_count": 1,
+            "path": [
+              "v3",
+              "serp",
+              "google",
+              "organic",
+              "live",
+              "regular"
+            ],
+            "data": {
+              "api": "serp",
+              "function": "live",
+              "se": "google",
+              "se_type": "organic",
+              "keyword": "colorimetria pessoal",
+              "location_name": "Brazil",
+              "language_name": "Portuguese",
+              "device": "desktop",
+              "os": "windows",
+              "depth": 10,
+              "tag": "homepage-serp-pt-BR-2026-06-22"
+            },
+            "result": [
+              {
+                "keyword": "colorimetria pessoal",
+                "type": "organic",
+                "se_domain": "google.com",
+                "location_code": 2076,
+                "language_code": "pt",
+                "check_url": "https://www.google.com/search?q=colorimetria%20pessoal&hl=pt&gl=BR&ie=UTF-8&uule=w+CAIQIFISCc8ozOvHWZwAEWM-KfIGFVop",
+                "datetime": "2026-06-22 14:49:37 +00:00",
+                "spell": null,
+                "refinement_chips": null,
+                "item_types": [
+                  "ai_overview",
+                  "organic",
+                  "people_also_ask",
+                  "video",
+                  "images",
+                  "related_searches"
+                ],
+                "se_results_count": 121,
+                "pages_count": 1,
+                "items_count": 8,
+                "items": [
+                  {
+                    "type": "organic",
+                    "rank_group": 1,
+                    "rank_absolute": 2,
+                    "page": 1,
+                    "domain": "www.dafiti.com.br",
+                    "title": "Colorimetria: Descubra sua Paleta com o ... - Dafiti",
+                    "description": "A análise de coloração pessoal é um estudo aprofundado das características naturais de uma pessoa – tom de pele, cor dos olhos e cor do cabelo – para determinar ...",
+                    "url": "https://www.dafiti.com.br/moda/colorimetria",
+                    "breadcrumb": "https://www.dafiti.com.br › moda › colorimetria"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 2,
+                    "rank_absolute": 3,
+                    "page": 1,
+                    "domain": "apps.apple.com",
+                    "title": "Colorimetria Coloração Pessoal - App Store - Apple",
+                    "description": "Descubra as cores que mais combinam com você em roupas, maquiagem e cabelo — Colorimetria Pessoal e provador virtual. Mostre o seu melhor e sinta-se ...",
+                    "url": "https://apps.apple.com/br/app/colorimetria-colora%C3%A7%C3%A3o-pessoal/id1536745174",
+                    "breadcrumb": "https://apps.apple.com › app › colorimetria-coloração-p..."
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 3,
+                    "rank_absolute": 4,
+                    "page": 1,
+                    "domain": "www.mariamargarida.com.br",
+                    "title": "teste de coloração",
+                    "description": "Descubra Sua Cartela de Cores Pessoais. Na Maria Margarida, acreditamos que cada mulher tem uma beleza única, que merece ser valorizada com autenticidade e ...",
+                    "url": "https://www.mariamargarida.com.br/testecoloracao?srsltid=AfmBOoq2XzA2c3GHyrDiJq_jA-YgH-aQHrzW6gHCwzm0QWDg2o7JSqvS",
+                    "breadcrumb": "https://www.mariamargarida.com.br › testecoloracao"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 4,
+                    "rank_absolute": 5,
+                    "page": 1,
+                    "domain": "play.google.com",
+                    "title": "Colorimetria Coloração Pessoal – Apps no ...",
+                    "description": "Esta aplicação tem um recurso exclusivo: a análise de cores pessoal automática. Basta tirar uma selfie para descobrir a cor da estação, paleta de cores da ...",
+                    "url": "https://play.google.com/store/apps/details?id=com.standysoftware.colorstyle&hl=pt_BR",
+                    "breadcrumb": "https://play.google.com › store › apps › details"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 5,
+                    "rank_absolute": 6,
+                    "page": 1,
+                    "domain": "www.instagram.com",
+                    "title": "Crislaine Pereira| Coloração Pessoal (@crislainemendess)",
+                    "description": "Consultora de Imagem & Coloração Pessoal Beleza, identidade & presença. Maternidade & recomeços. Ilha da Madeira • Portugal ⬇️ Agende já sua análise.",
+                    "url": "https://www.instagram.com/crislainemendess/",
+                    "breadcrumb": "Mais de 65,9 mil seguidores"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 6,
+                    "rank_absolute": 9,
+                    "page": 1,
+                    "domain": "www.westwing.com.br",
+                    "title": "Coloração Pessoal: Guia Completo e Cartelas - Cores",
+                    "description": "A colorimetria pessoal se baseia na combinação das cores da pele, veias, cabelos, pelos e olhos, com as de possíveis roupas e acessórios. Para isso, são ...",
+                    "url": "https://www.westwing.com.br/guiar/coloracao-pessoal/",
+                    "breadcrumb": "https://www.westwing.com.br › guiar › coloracao-pessoal"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 7,
+                    "rank_absolute": 11,
+                    "page": 1,
+                    "domain": "pandami.com.br",
+                    "title": "Teste de Colorimetria Online Grátis — Descubra Sua ...",
+                    "description": "O Que É Colorimetria Pessoal? Colorimetria pessoal é a técnica que identifica quais cores harmonizam naturalmente com seu tom de pele, cor dos olhos e cabelo.",
+                    "url": "https://pandami.com.br/ferramentas/quiz-colorimetria",
+                    "breadcrumb": "https://pandami.com.br › ferramentas › quiz-colorimetria"
+                  },
+                  {
+                    "type": "organic",
+                    "rank_group": 8,
+                    "rank_absolute": 12,
+                    "page": 1,
+                    "domain": "www.palettehunt.com",
+                    "title": "Teste de Coloração Pessoal Online Grátis",
+                    "description": "Faça o teste de coloração pessoal e colorimetria online grátis com IA. Descubra sua estação cromática e as cores que mais valorizam você em minutos.",
+                    "url": "https://www.palettehunt.com/teste-colorimetria-pessoal",
+                    "breadcrumb": "https://www.palettehunt.com › teste-colorimetria-pessoal"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

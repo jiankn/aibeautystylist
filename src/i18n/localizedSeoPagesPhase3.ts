@@ -21,6 +21,7 @@ interface PageSeed {
   readonly proof: string;
   readonly related?: readonly string[];
   readonly priority?: string;
+  readonly intentSections?: readonly LocalizedSeoSection[];
 }
 
 interface LanguageCopy {
@@ -367,6 +368,7 @@ function makePage(seed: PageSeed): LocalizedSeoPage {
         title: copy.overviewTitle(seed),
         paragraphs: copy.overview(seed),
       },
+      ...(seed.intentSections ?? []),
       {
         kind: "steps",
         title: copy.stepsTitle(seed),
@@ -818,9 +820,9 @@ const seeds: readonly PageSeed[] = [
     path: "/",
     englishPath: "/",
     category: "home",
-    keyword: "個人色彩診斷",
-    topic: "AI 妝容診斷與適合我的妝容判斷",
-    angle: "先看自己臉上的效果",
+    keyword: "個人色彩鑑定",
+    topic: "AI 色彩分析與個人色彩判斷",
+    angle: "先看適合自己的色系與上臉效果",
     finish: "自然、乾淨、有精神的妝感",
     technique: "把膚色、臉型和場合一起比較",
     caution: "像濾鏡一樣不真實",
@@ -1012,6 +1014,42 @@ const seeds: readonly PageSeed[] = [
     technique: "同亮度下比較冷暖和飽和度",
     caution: "只用季節名稱決定產品",
     proof: "口紅和腮紅一起看仍協調",
+    related: [
+      "/personalized-makeup-recommendation",
+      "/tryon-free",
+      "/guides/步驟",
+    ],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "個人色彩、色彩分析和妝容選色要分開看",
+        paragraphs: [
+          "個人色彩這個詞本身偏向認識色彩方向，首頁則承接個人色彩鑑定的工具意圖。這一頁的任務是把色彩分析結果轉成彩妝選色，而不是重複首頁。",
+          "實際挑妝時，個人色彩分析不能只停在春夏秋冬。還要看原生唇色、臉部對比、髮色和日常光線，才能決定口紅、腮紅、眼影和底妝要往哪個方向試。",
+        ],
+      },
+      {
+        kind: "table",
+        title: "個人色彩落到彩妝時怎麼判斷",
+        rows: [
+          {
+            label: "口紅",
+            good: "同時看牙齒、膚色和原生唇色",
+            avoid: "只照熱門色號或季節分類買",
+          },
+          {
+            label: "腮紅",
+            good: "和唇色保持同一個冷暖方向",
+            avoid: "單看手臂試色就決定",
+          },
+          {
+            label: "眼影",
+            good: "先看明度和飽和度是否壓眼神",
+            avoid: "只因為色盤好看就整盤上眼",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "zh-tw",
@@ -1082,6 +1120,38 @@ const seeds: readonly PageSeed[] = [
     technique: "先決定要改善哪個區域",
     caution: "順序錯了導致不好修正",
     proof: "同一流程能穩定重現",
+    related: ["/guides/順序", "/guides/新手教學", "/tryon-free"],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "化妝步驟要回答順序，也要回答為什麼",
+        paragraphs: [
+          "搜尋化妝步驟的人多半不是想看完整妝容展示，而是想知道保養、底妝、遮瑕、眉眼、唇頰和定妝的先後順序。這一頁會把每一步的目的講清楚，避免只是一張產品清單。",
+          "對新手來說，最容易出錯的是一次模仿太完整的教學。更好的做法是先固定基礎流程，再依照上班、拍照或約會調整強度。",
+        ],
+      },
+      {
+        kind: "table",
+        title: "不同情境的化妝步驟",
+        rows: [
+          {
+            label: "日常出門",
+            good: "保濕、局部遮瑕、眉毛、睫毛、唇頰",
+            avoid: "一開始就加修容、亮片和複雜眼影",
+          },
+          {
+            label: "拍照",
+            good: "底妝薄、眉眼清楚、腮紅比日常多一點",
+            avoid: "只靠厚粉底讓膚色看起來平均",
+          },
+          {
+            label: "新手練習",
+            good: "一次只新增一個步驟並用自拍比較",
+            avoid: "照影片從頭到尾買齊再開始",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "zh-tw",

@@ -11,6 +11,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 // Premium 展示完整妆容库。
 const audienceContext = Astro.locals.audienceContext;
+const isLoggedIn = Boolean(Astro.locals.isLoggedIn);
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
@@ -311,7 +312,7 @@ const premiumClientMessages = {
       </div>
     </div>
   </main>
-  <MobileBottomNav active="tryon" />
+  {isLoggedIn && <MobileBottomNav active="tryon" />}
 </BaseLayout>
 
 <script
@@ -336,6 +337,9 @@ const premiumClientMessages = {
     const badge = document.getElementById("prem-result-badge");
     const shareCardLink = document.querySelector("[data-share-card-link]");
     const historyList = document.getElementById("prem-history");
+    const setTaskNavSuppressed = (suppressed) => {
+      window.absSetMobileBottomNavSuppressed?.("tryon-task", suppressed);
+    };
     let currentJobId = null;
 
     function loginUrl() {
@@ -354,6 +358,7 @@ const premiumClientMessages = {
         if (data.data.user?.kind !== "account") {
           gate.hidden = false;
           content.hidden = true;
+          setTaskNavSuppressed(true);
           gate.querySelector("h2").textContent =
             premiumClientMessages.loginTitle;
           gate.querySelector("p").textContent = premiumClientMessages.loginDesc;
@@ -366,8 +371,10 @@ const premiumClientMessages = {
         if (plan !== "premium") {
           gate.hidden = false;
           content.hidden = true;
+          setTaskNavSuppressed(true);
           return;
         }
+        setTaskNavSuppressed(false);
         const q = data.data.quota;
         const total = Number(q.total) || 0;
         const remaining = Number(q.remaining) || 0;
@@ -399,6 +406,7 @@ const premiumClientMessages = {
         input.onchange = async () => {
           const file = input.files?.[0];
           if (!file) return;
+          setTaskNavSuppressed(true);
           try {
             const createTryOnJob = window.__absCreateTryOnJob;
             if (typeof createTryOnJob !== "function") {
@@ -430,6 +438,7 @@ const premiumClientMessages = {
           } catch (err) {
             updateProgress("❌ " + err.message, 0);
             uploadBtn.disabled = false;
+            setTaskNavSuppressed(false);
           }
         };
         input.click();
@@ -449,6 +458,7 @@ const premiumClientMessages = {
         if (attempt > 60) {
           clearInterval(interval);
           updateProgress(premiumClientMessages.timeout, 0);
+          setTaskNavSuppressed(false);
           return;
         }
         try {
@@ -466,6 +476,7 @@ const premiumClientMessages = {
             badge.textContent = "✓ " + premiumClientMessages.highQualityOutput;
             if (job.resultImage) showResult(job.resultImage, jobId);
             loadHistory();
+            setTaskNavSuppressed(false);
           } else if (job.status === "failed" || job.status === "timed_out") {
             clearInterval(interval);
             updateProgress(
@@ -474,6 +485,7 @@ const premiumClientMessages = {
             );
             badge.textContent = "× " + premiumClientMessages.failed;
             uploadBtn.disabled = false;
+            setTaskNavSuppressed(false);
           }
         } catch {
           /* ignore */

@@ -614,6 +614,14 @@ const resolvedMobileMenuSection = {
                     </a>
                   ),
                 )}
+                <button
+                  class="mobile-app-link mobile-theme-link"
+                  type="button"
+                  data-mobile-theme-toggle
+                >
+                  <AppIconBadge icon="theme" size="menu" />
+                  <b>{t("navigation", "toggleTheme")}</b>
+                </button>
               </div>
               <span class="mobile-app-status" data-mobile-logout-status />
             </section>
@@ -987,7 +995,20 @@ const resolvedMobileMenuSection = {
   }
   @media (max-width: 767px) {
     .site-header-mobile-hidden {
+      height: 0;
+      min-height: 0;
+      border-bottom: 0;
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      pointer-events: none;
+    }
+    .site-header-mobile-hidden .site-nav {
       display: none;
+    }
+    .site-header-mobile-hidden .mobile-nav-backdrop,
+    .site-header-mobile-hidden .mobile-nav-panel {
+      pointer-events: auto;
     }
   }
   .site-header .brand {
@@ -1378,6 +1399,7 @@ const resolvedMobileMenuSection = {
   :global(.account-plan-quota) {
     color: var(--muted);
     font-size: 12px;
+    white-space: nowrap;
   }
   :global(.account-plan-quota)::before {
     content: "·";
@@ -1857,9 +1879,13 @@ const resolvedMobileMenuSection = {
     .mobile-account-summary {
       display: grid;
       grid-template-columns: 38px minmax(0, 1fr) auto;
+      grid-template-areas:
+        "avatar title action"
+        "avatar meta meta";
       min-height: 58px;
       align-items: center;
-      gap: 10px;
+      column-gap: 10px;
+      row-gap: 2px;
       padding: 10px 0 12px;
       border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
       color: var(--text);
@@ -1872,8 +1898,10 @@ const resolvedMobileMenuSection = {
     }
     .mobile-account-summary-avatar {
       display: grid;
+      grid-area: avatar;
       width: 36px;
       height: 36px;
+      align-self: center;
       place-items: center;
       border: 1px solid color-mix(in srgb, var(--rose) 24%, var(--line));
       border-radius: 999px;
@@ -1883,11 +1911,11 @@ const resolvedMobileMenuSection = {
       font-weight: 900;
     }
     .mobile-account-summary-copy {
-      display: grid;
+      display: contents;
       min-width: 0;
-      gap: 3px;
     }
     .mobile-account-summary-copy b {
+      grid-area: title;
       min-width: 0;
       overflow: hidden;
       color: var(--heading);
@@ -1898,6 +1926,7 @@ const resolvedMobileMenuSection = {
       white-space: nowrap;
     }
     .mobile-account-summary-copy small {
+      grid-area: meta;
       min-width: 0;
       overflow: hidden;
       color: var(--body-secondary);
@@ -1924,11 +1953,14 @@ const resolvedMobileMenuSection = {
     .mobile-account-summary-copy .account-plan-label,
     .mobile-account-summary-copy .account-plan-quota {
       font-size: 11px;
+      white-space: nowrap;
     }
     .mobile-account-summary-action {
       display: inline-flex;
+      grid-area: action;
       min-height: 30px;
       align-items: center;
+      justify-self: end;
       padding: 0 10px;
       border: 1px solid color-mix(in srgb, var(--rose) 28%, transparent);
       border-radius: 999px;
@@ -1937,7 +1969,7 @@ const resolvedMobileMenuSection = {
       font-weight: 850;
       white-space: nowrap;
     }
-    .mobile-nav-panel .mobile-nav-root > a,
+    .mobile-nav-panel .mobile-nav-root > a:not(.mobile-account-summary),
     .mobile-nav-row {
       display: flex;
       width: 100%;
@@ -1956,7 +1988,7 @@ const resolvedMobileMenuSection = {
       text-align: left;
       cursor: pointer;
     }
-    .mobile-nav-panel .mobile-nav-root > a:hover,
+    .mobile-nav-panel .mobile-nav-root > a:not(.mobile-account-summary):hover,
     .mobile-nav-row:hover {
       background: transparent;
       color: var(--rose);
@@ -2298,6 +2330,19 @@ const resolvedMobileMenuSection = {
       .mobile-menu-auth-cta {
         min-height: 32px;
         padding-inline: 10px;
+        font-size: 11.5px;
+      }
+      .mobile-account-summary {
+        grid-template-columns: 36px minmax(0, 1fr) auto;
+        column-gap: 8px;
+      }
+      .mobile-account-summary-avatar {
+        width: 34px;
+        height: 34px;
+      }
+      .mobile-account-summary-action {
+        min-height: 28px;
+        padding-inline: 8px;
         font-size: 11.5px;
       }
       .mobile-subnav-close {

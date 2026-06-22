@@ -10,6 +10,11 @@ import { getCurrentLocale } from "../lib/i18n";
 
 type RightAction = "account" | "search" | "help" | "settings" | "bell" | "none";
 type ActionItem = Exclude<RightAction, "none"> | "language" | "theme" | "menu";
+type SearchPill = {
+  label: string;
+  href?: string;
+  ariaLabel?: string;
+};
 type TabItem = {
   label: string;
   href?: string;
@@ -33,6 +38,7 @@ interface Props {
   showLanguage?: boolean;
   showTheme?: boolean;
   searchControls?: string;
+  searchPill?: SearchPill;
 }
 
 const {
@@ -48,6 +54,7 @@ const {
   showLanguage = true,
   showTheme = true,
   searchControls,
+  searchPill,
 } = Astro.props as Props;
 
 const locale = getCurrentLocale();
@@ -246,6 +253,9 @@ const copy = {
   theme: "Change display mode",
   pro: "Pro",
 };
+const searchPillHref = searchPill?.href ?? localizeAppHref("/discover");
+const searchPillLabel = searchPill?.label ?? copy.search;
+const searchPillAriaLabel = searchPill?.ariaLabel ?? searchPillLabel;
 
 const actionItems: ActionItem[] = [];
 if (rightAction !== "none") {
@@ -320,7 +330,19 @@ const getActionLabel = (item: ActionItem) => {
     </div>
 
     {
-      title ? (
+      searchPill ? (
+        <a
+          class="mobile-app-search-pill"
+          href={searchPillHref}
+          aria-label={searchPillAriaLabel}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.2" />
+            <path d="m16 16 4.2 4.2" />
+          </svg>
+          <span>{searchPillLabel}</span>
+        </a>
+      ) : title ? (
         <div class="mobile-app-page-title">{title}</div>
       ) : (
         <span class="mobile-app-title-spacer" aria-hidden="true" />
@@ -709,6 +731,57 @@ const getActionLabel = (item: ActionItem) => {
       stroke-linejoin: round;
       stroke-width: 2.1;
     }
+    .mobile-app-search-pill {
+      display: inline-flex;
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      align-items: center;
+      gap: 8px;
+      justify-self: stretch;
+      padding: 0 13px;
+      border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg-elevated) 92%, var(--surface-rose));
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 760;
+      line-height: 1;
+      text-decoration: none;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      touch-action: manipulation;
+      transition:
+        border-color 0.18s ease,
+        color 0.18s ease,
+        background-color 0.18s ease,
+        transform 0.18s ease;
+    }
+    .mobile-app-search-pill:active {
+      transform: scale(0.98);
+    }
+    .mobile-app-search-pill:hover,
+    .mobile-app-search-pill:focus-visible {
+      border-color: color-mix(in srgb, var(--rose) 38%, var(--line));
+      background: color-mix(in srgb, var(--surface-rose) 76%, var(--bg-elevated));
+      color: var(--rose);
+      outline: 0;
+    }
+    .mobile-app-search-pill svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.15;
+    }
+    .mobile-app-search-pill span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .mobile-app-lang-dropdown {
       position: relative;
       display: grid;
@@ -877,6 +950,19 @@ const getActionLabel = (item: ActionItem) => {
     :global([data-theme="dark"]) .mobile-app-topbar {
       border-bottom-color: rgba(255, 255, 255, 0.08);
       background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
+    }
+    :global([data-theme="dark"]) .mobile-app-search-pill {
+      border-color: rgba(255, 255, 255, 0.1);
+      background: color-mix(in srgb, var(--bg-elevated) 88%, transparent);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mobile-app-search-pill {
+        transition: none;
+      }
+      .mobile-app-search-pill:active {
+        transform: none;
+      }
     }
   }
 </style>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createStripeClient } from "./stripe";
+import { createStripeClient, toStripeCheckoutLocale } from "./stripe";
 
 function createRecordingFetcher() {
   const requests: Array<{ url: string; init?: RequestInit }> = [];
@@ -27,6 +27,33 @@ function checkoutInput() {
 }
 
 describe("Stripe client", () => {
+  it("maps app locales to Stripe Checkout locales", () => {
+    expect(toStripeCheckoutLocale("en")).toBe("en");
+    expect(toStripeCheckoutLocale("zh-CN")).toBe("zh");
+    expect(toStripeCheckoutLocale("zh-TW")).toBe("zh-TW");
+    expect(toStripeCheckoutLocale("ja-JP")).toBe("ja");
+    expect(toStripeCheckoutLocale("ko-KR")).toBe("ko");
+    expect(toStripeCheckoutLocale("de-DE")).toBe("de");
+    expect(toStripeCheckoutLocale("fr-FR")).toBe("fr");
+    expect(toStripeCheckoutLocale("es-ES")).toBe("es");
+    expect(toStripeCheckoutLocale("es-419")).toBe("es-419");
+    expect(toStripeCheckoutLocale("pt-BR")).toBe("pt-BR");
+    expect(toStripeCheckoutLocale("unknown")).toBeUndefined();
+  });
+
+  it("passes the Checkout locale when provided", async () => {
+    const { fetcher, requests } = createRecordingFetcher();
+    const stripe = createStripeClient({ apiKey: "sk_test", fetcher });
+
+    await stripe.createCheckoutSession({
+      ...checkoutInput(),
+      locale: "en",
+    });
+
+    const body = new URLSearchParams(String(requests[0]?.init?.body));
+    expect(body.get("locale")).toBe("en");
+  });
+
   it("passes the account email to Checkout when creating a new customer", async () => {
     const { fetcher, requests } = createRecordingFetcher();
     const stripe = createStripeClient({ apiKey: "sk_test", fetcher });

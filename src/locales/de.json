@@ -120,95 +120,95 @@
     "copyright": "Alle Rechte vorbehalten."
   },
   "homepage": {
-    "jsonLdDescription": "Online-KI-Make-up-Try-on zum Hochladen eines Selfies, Vorschauen von Looks und Entscheiden nach Anlass, Hautton und Finish.",
-    "metaTitle": "Welches Make-up passt zu mir? KI-Vorschau | AI Beauty Stylist",
-    "metaDescription": "Finde heraus, welches Make-up zu dir passt: Lade ein Selfie hoch, teste KI-Make-up-Vorschauen und vergleiche Farben, Finish und Anlass.",
-    "heroKicker": "KI Virtual Try-on",
-    "heroKickerSub": "Welches Make-up passt zu mir",
-    "heroTitle": "Welches Make-up passt zu mir? ",
-    "heroTitleSpan": "Teste es auf deinem Gesicht",
-    "heroSubtitle": "Lade ein Selfie hoch, vergleiche KI-Make-up-Vorschauen und entscheide, welche Farben, Finishes und Anlässe wirklich zu dir passen.",
+    "jsonLdDescription": "KI-gestützte Farbberatung zum Farbtyp bestimmen, Selfie hochladen, Make-up Farben prüfen und Looks nach Hautton, Anlass und Finish vergleichen.",
+    "metaTitle": "Farbtyp bestimmen: Farbberatung online",
+    "metaDescription": "Bestimme deinen Farbtyp online: KI-Farbberatung mit Selfie, welcher Farbtyp bin ich, passende Make-up Farben und realistische Try-on-Vorschau.",
+    "heroKicker": "KI-Farbberatung",
+    "heroKickerSub": "Farbtyp bestimmen",
+    "heroTitle": "Farbtyp bestimmen: ",
+    "heroTitleSpan": "welcher Farbtyp bin ich?",
+    "heroSubtitle": "Lade ein Selfie hoch, nutze die Farbberatung als ersten Check und sieh danach, welche Make-up Farben, Lippen und Wangen auf deinem Gesicht ruhig wirken.",
     "startTryOn": "Try-on starten",
     "howItWorks": "So funktioniert es",
     "pricingRule": "Kostenlos starten · Mehr Credits nur bei Bedarf",
-    "trustNaturalTitle": "Ergebnis",
-    "trustNaturalDesc": "Ergebnis vergleichen",
-    "trustRecommendTitle": "Anlässe",
-    "trustRecommendDesc": "Katalog",
+    "trustNaturalTitle": "Farbtyp-Check",
+    "trustNaturalDesc": "Unterton, Kontrast und Farbfamilie vergleichen",
+    "trustRecommendTitle": "Make-up Farben",
+    "trustRecommendDesc": "Lippen, Wangen und Augen passend zum Anlass prüfen",
     "trustPrivacyTitle": "Foto unter Kontrolle",
-    "trustPrivacyDesc": "Löschen",
+    "trustPrivacyDesc": "Vor Upload bestätigen und Ergebnisse löschen",
     "before": "Vorher",
     "after": "Nachher",
-    "heroImageAltAfter": "Ergebnis",
-    "heroImageAltBefore": "Original",
-    "dragSlider": "Ergebnis vergleichen",
-    "statsTryons": "3",
-    "statsTryonsLabel": "Look auswählen · Selfie hochladen · Ergebnis vergleichen",
+    "heroImageAltAfter": "Farbtyp- und Make-up-Vorschau mit natürlichem Finish",
+    "heroImageAltBefore": "Original-Selfie vor der Farbberatung",
+    "dragSlider": "Vorher und Nachher vergleichen",
+    "statsTryons": "3 Schritte",
+    "statsTryonsLabel": "Farbtyp prüfen · Selfie hochladen · Make-up Farben vergleichen",
     "statsRealism": "1",
     "statsRealismLabel": "Eine Diagnose oder ein Try-on nutzt 1 Credit",
-    "statsPrivacy": "Löschen",
-    "statsPrivacyLabel": "Foto unter Kontrolle",
-    "howKicker": "3",
-    "howTitle": "Look auswählen, Selfie hochladen, Ergebnis vergleichen",
-    "howSubtitle": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
+    "statsPrivacy": "Löschbar",
+    "statsPrivacyLabel": "Selfies und Ergebnisse getrennt verwalten",
+    "howKicker": "Farbberatung in 3 Schritten",
+    "howTitle": "Vom Farbtyp-Test zur Make-up-Vorschau",
+    "howSubtitle": "Starte mit der Frage, welcher Farbtyp bin ich, lade erst dann ein Selfie hoch und prüfe, welche Farbberatung auf deinem Gesicht wirklich funktioniert.",
     "howSteps": [
       {
         "icon": "1",
-        "title": "Look auswählen",
-        "copy": "Anlässe"
+        "title": "Farbtyp-Ziel wählen",
+        "copy": "Prüfe zuerst, ob du Richtung warm, kühl, klar oder gedämpft besser wirkst."
       },
       {
         "icon": "2",
-        "title": "Selfie hochladen",
-        "copy": "Foto unter Kontrolle"
+        "title": "Selfie für die Farbberatung hochladen",
+        "copy": "Nutze ein frontales Foto bei ruhigem Licht und bestätige die Verarbeitung vor dem Start."
       },
       {
         "icon": "3",
-        "title": "Ergebnis vergleichen",
-        "copy": "Ergebnis"
+        "title": "Make-up Farben vergleichen",
+        "copy": "Vergleiche Lippen, Wangen, Augen und Finish, bevor du einen Look speicherst oder anpasst."
       }
     ],
-    "workflowWorkspace": "Try-on Bereich",
+    "workflowWorkspace": "Farbberatung Workspace",
     "workflowStatus": "Vorschau bereit",
-    "workflowPreview": "KI Ergebnis",
+    "workflowPreview": "Farbtyp-Vorschau",
     "workflowUploaded": "Selfie hochladen",
     "workflowReady": "Vorschau bereit",
     "workflowScanning": "Die KI analysiert Licht und Gesichtsposition...",
     "workflowSelected": "Look auswählen",
-    "workflowPreviewAlt": "Ergebnis",
-    "featuredTitle": "Katalog",
-    "featuredSubtitle": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
+    "workflowPreviewAlt": "Make-up Vorschau nach Farbtyp und Hautton",
+    "featuredTitle": "Looks nach Farbtyp",
+    "featuredSubtitle": "Beginne mit häufigen Anlässen und prüfe, ob Farbe, Intensität und Finish zu deinem Farbtyp passen.",
     "featuredLink": "Katalog",
-    "aiKicker": "KI Virtual Try-on",
-    "aiTitle": "sieh, welche Make-up Richtung passt",
-    "aiSubtitle": "Online-KI-Make-up-Try-on zum Hochladen eines Selfies, Vorschauen von Looks und Entscheiden nach Anlass, Hautton und Finish.",
+    "aiKicker": "Farbberatung + Try-on",
+    "aiTitle": "Farbberatung, die Make-up Farben am eigenen Gesicht prüft",
+    "aiSubtitle": "Die KI achtet auf Licht, Hautton, Kontrast und Anlass, damit der Farbtyp-Test nicht abstrakt bleibt, sondern als sichtbare Make-up-Vorschau endet.",
     "aiFeatures": [
       {
         "icon": "1",
-        "title": "Ergebnis",
-        "copy": "Ergebnis vergleichen"
+        "title": "Licht bleibt sichtbar",
+        "copy": "Die Vorschau erhält die ursprüngliche Lichtstimmung, damit Farben nicht wie ein aufgesetzter Filter wirken."
       },
       {
         "icon": "2",
-        "title": "Anlässe",
-        "copy": "Katalog"
+        "title": "Farbtyp und Unterton",
+        "copy": "Die Farbberatung vergleicht, ob Lippen, Wangen und Augen mit deinem sichtbaren Hautton harmonieren."
       },
       {
         "icon": "3",
-        "title": "Foto unter Kontrolle",
-        "copy": "Löschen"
+        "title": "Anlass statt Trend",
+        "copy": "Büro, Date, Foto und Event brauchen unterschiedliche Intensität, auch wenn die Farbfamilie gleich bleibt."
       },
       {
         "icon": "4",
-        "title": "Pläne",
-        "copy": "Eine Diagnose oder ein Try-on nutzt 1 Credit"
+        "title": "Klare Grenzen",
+        "copy": "Du bestätigst den Upload vorher und kannst Selfies, Ergebnisse und Diagnoseverlauf löschen."
       }
     ],
-    "aiVisualAlt": "Ergebnis",
-    "aiVisualCaption": "Online-KI-Make-up-Try-on zum Hochladen eines Selfies, Vorschauen von Looks und Entscheiden nach Anlass, Hautton und Finish.",
-    "scenarioKicker": "Anlässe",
-    "scenarioTitle": "sieh, welche Make-up Richtung passt",
-    "scenarioSubtitle": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
+    "aiVisualAlt": "Farbberatung mit natürlicher Hautstruktur und passender Make-up Farbe",
+    "aiVisualCaption": "Die Vorschau zeigt, ob Farbtyp, Hautton und Make-up Intensität zusammenpassen. So wird aus Farbberatung eine konkrete Entscheidung.",
+    "scenarioKicker": "Farbtyp nach Anlass",
+    "scenarioTitle": "Wähle den Look nach Farbtyp und Anlass",
+    "scenarioSubtitle": "Farbberatung endet nicht bei einer Palette. Entscheidend ist, ob die Farben im Büro, auf Fotos, beim Date oder beim Event stabil wirken.",
     "scenarioLink": "Katalog",
     "scenarioTryPrefix": "Try-on starten",
     "scenarioCardCta": "Try-on starten",
@@ -216,93 +216,93 @@
     "scenarioHighlights": [
       {
         "slug": "commute",
-        "label": "Anlässe",
-        "moment": "Anlässe",
-        "reason": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-        "scenario": "Anlässe"
+        "label": "Frische für den Alltag",
+        "moment": "Büro · Video-Calls",
+        "reason": "Ein weicher Pfirsichton zeigt schnell, ob warme Farben deinen Teint wacher machen.",
+        "scenario": "Alltag"
       },
       {
         "slug": "interview-ready",
-        "label": "Virtual Try-on",
-        "moment": "Virtual Try-on",
-        "reason": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-        "scenario": "Virtual Try-on"
+        "label": "Ruhig für Termine",
+        "moment": "Vorstellungsgespräch · Kundentermin",
+        "reason": "Definierte Augen und neutrale Lippen helfen zu prüfen, ob dein Farbtyp klare Kontraste verträgt.",
+        "scenario": "Termin"
       },
       {
         "slug": "rose-milk-date",
-        "label": "Ergebnis",
-        "moment": "Ergebnis",
-        "reason": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-        "scenario": "Ergebnis"
+        "label": "Weich für Date",
+        "moment": "Dinner · Abendlicht",
+        "reason": "Rosige Töne zeigen, ob kühle oder gedämpfte Farben natürlicher neben deinem Hautton wirken.",
+        "scenario": "Date"
       },
       {
         "slug": "flash-proof-satin",
-        "label": "Ergebnis vergleichen",
-        "moment": "Ergebnis vergleichen",
-        "reason": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-        "scenario": "Ergebnis vergleichen"
+        "label": "Stabil für Fotos",
+        "moment": "Gruppenfoto · Nachtlicht",
+        "reason": "Ein Satin-Finish macht sichtbar, ob Farbe und Glanz unter Blitz zu stark werden.",
+        "scenario": "Foto"
       },
       {
         "slug": "mature-skin-radiance",
-        "label": "Foto unter Kontrolle",
-        "moment": "Foto unter Kontrolle",
-        "reason": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-        "scenario": "Foto unter Kontrolle"
+        "label": "Leuchtend für reife Haut",
+        "moment": "Alltag · wichtige Termine",
+        "reason": "Sanfte Helligkeit hilft zu sehen, ob die Farbberatung Frische bringt, ohne Textur zu verstecken.",
+        "scenario": "Reife Haut"
       },
       {
         "slug": "wedding-guest",
-        "label": "Katalog",
-        "moment": "Katalog",
-        "reason": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-        "scenario": "Katalog"
+        "label": "Festlich für Events",
+        "moment": "Hochzeit · Dinner · Feier",
+        "reason": "Ein kompletter Look zeigt, ob deine Farbfamilie auch mit mehr Intensität elegant bleibt.",
+        "scenario": "Event"
       }
     ],
-    "proofKicker": "Ergebnis vergleichen",
-    "proofTitle": "sieh, welche Make-up Richtung passt",
-    "proofSubtitle": "Online-KI-Make-up-Try-on zum Hochladen eines Selfies, Vorschauen von Looks und Entscheiden nach Anlass, Hautton und Finish.",
+    "proofKicker": "Farbberatung Beispiele",
+    "proofTitle": "Nutze die Vorschau, um deinen Farbtyp praktisch zu prüfen",
+    "proofSubtitle": "Jedes Beispiel verbindet Farbtyp, sichtbare Veränderung und Entscheidungskriterium, damit die Frage welcher Farbtyp bin ich nicht theoretisch bleibt.",
     "proofCases": [
       {
         "slug": "olive-undertone-rose",
-        "eyebrow": "Ergebnis vergleichen",
-        "need": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-        "title": "Ergebnis",
-        "copy": "Online-KI-Make-up-Try-on zum Hochladen eines Selfies, Vorschauen von Looks und Entscheiden nach Anlass, Hautton und Finish.",
-        "outcome": "Ergebnis vergleichen"
+        "eyebrow": "Farbtyp-Beispiel · Oliviger Unterton",
+        "need": "Ziel: rosige Farbe nutzen, ohne dass der Teint grau wirkt",
+        "title": "Prüfe zuerst Lippen und Wangen im gleichen Farbraum",
+        "copy": "Ein zurückhaltendes Rosa zeigt, ob kühle Töne deinem Hautton Ruhe geben oder ihn flacher machen.",
+        "outcome": "Achte auf: klareren Teint, ruhige Lippenfarbe und keine grauen Wangen"
       },
       {
         "slug": "flash-proof-satin",
-        "eyebrow": "Ergebnis vergleichen",
-        "need": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-        "title": "Anlässe",
-        "copy": "Online-KI-Make-up-Try-on zum Hochladen eines Selfies, Vorschauen von Looks und Entscheiden nach Anlass, Hautton und Finish.",
-        "outcome": "Ergebnis vergleichen"
+        "eyebrow": "Farbberatung · Fotos",
+        "need": "Ziel: Farbe sichtbar halten, ohne Glanz zu übertreiben",
+        "title": "Teste Satin-Finish bei Blitz und Nachtlicht",
+        "copy": "So siehst du, ob dein Farbtyp mehr Kontrast verträgt oder ob die Farbe zu schwer wirkt.",
+        "outcome": "Achte auf: T-Zone, Lippenpräsenz und Kontur im Gesicht"
       },
       {
         "slug": "mature-skin-radiance",
-        "eyebrow": "Ergebnis vergleichen",
-        "need": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-        "title": "Foto unter Kontrolle",
-        "copy": "Online-KI-Make-up-Try-on zum Hochladen eines Selfies, Vorschauen von Looks und Entscheiden nach Anlass, Hautton und Finish.",
-        "outcome": "Ergebnis vergleichen"
+        "eyebrow": "Farbtyp-Beispiel · Reife Haut",
+        "need": "Ziel: Frische erzeugen, ohne Textur zu verdecken",
+        "title": "Weniger Puder, mehr weiche Helligkeit",
+        "copy": "Eine passende Farbfamilie lässt die Mitte des Gesichts wacher wirken, ohne Maskeneffekt.",
+        "outcome": "Achte auf: natürliche Hautstruktur und einen ruhigeren Gesamteindruck"
       }
     ],
     "proofPrinciples": [
       {
-        "title": "Anlässe",
-        "copy": "Katalog"
+        "title": "Mit dem Farbtyp starten",
+        "copy": "Farbberatung gibt die Richtung, der Anlass bestimmt die Intensität."
       },
       {
-        "title": "Ergebnis",
-        "copy": "Ergebnis vergleichen"
+        "title": "Am eigenen Gesicht prüfen",
+        "copy": "Entscheidend ist nicht die Palette allein, sondern ob die Farbe auf deinem Selfie funktioniert."
       },
       {
-        "title": "Foto unter Kontrolle",
-        "copy": "Löschen"
+        "title": "Ergebnis als Entscheidung nutzen",
+        "copy": "Vergleiche Teint, Lippen, Wangen und Finish, bevor du einen Look übernimmst."
       }
     ],
     "assuranceKicker": "Foto unter Kontrolle",
-    "assuranceTitle": "Foto unter Kontrolle",
-    "assuranceSubtitle": "Online-KI-Make-up-Try-on zum Hochladen eines Selfies, Vorschauen von Looks und Entscheiden nach Anlass, Hautton und Finish.",
+    "assuranceTitle": "Selfie hochladen, aber die Kontrolle behalten",
+    "assuranceSubtitle": "Du kannst Looks durchsuchen, ohne Credits zu nutzen. Die Generierung startet erst nach deiner Bestätigung, und Ergebnisse bleiben löschbar.",
     "decisionFlow": [
       "Look auswählen",
       "Selfie hochladen",
@@ -312,26 +312,26 @@
     "uploadConcerns": [
       {
         "index": "01",
-        "title": "Selfie hochladen",
-        "copy": "Foto unter Kontrolle"
+        "title": "Du bestätigst vor dem Upload",
+        "copy": "Dein Selfie geht erst in die Farbberatung, wenn du die Verarbeitung aktiv bestätigst."
       },
       {
         "index": "02",
-        "title": "Ergebnis",
-        "copy": "Löschen"
+        "title": "Fotos und Ergebnisse löschen",
+        "copy": "Originale, Try-on Ergebnisse und Diagnoseverlauf lassen sich getrennt verwalten."
       },
       {
         "index": "03",
-        "title": "Pläne",
-        "copy": "Eine Diagnose oder ein Try-on nutzt 1 Credit"
+        "title": "Kein Start, kein Credit-Verbrauch",
+        "copy": "Credits werden erst genutzt, wenn eine Diagnose oder Try-on Generierung beginnt."
       }
     ],
-    "upgradeTitle": "Upgrade für mehr Optionen",
-    "upgradeCopy": "Pläne · Credits · HD",
+    "upgradeTitle": "Mehr Farbvarianten vergleichen?",
+    "upgradeCopy": "Pro passt für regelmäßige Farbberatung, HD-Downloads und AI-Gesichtsdiagnose. Premium passt für Shootings, Hochzeit oder wichtige Termine mit Priorität und vollem Katalog.",
     "upgradeLink": "Pläne",
-    "finalCtaTitle": "Teste einen Look auf deinem Gesicht",
-    "finalCtaSubtitle": "Wähle Looks nach Arbeit, Date, Foto oder Event und prüfe die KI-Vorschau auf deinem Gesicht.",
-    "finalCtaCta": "Try-on starten"
+    "finalCtaTitle": "Farbtyp bestimmen und Look testen",
+    "finalCtaSubtitle": "Starte mit einer KI-Farbberatung und sieh direkt, welche Make-up Farben auf deinem Gesicht funktionieren.",
+    "finalCtaCta": "Farbtyp testen"
   },
   "workspace": {
     "defaultNote": "Jede Generierung nutzt 1 Credit",

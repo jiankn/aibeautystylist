@@ -8,6 +8,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCurrentLocale } from "../lib/i18n";
 
 const locale = getCurrentLocale();
+const isLoggedIn = Boolean(Astro.locals.isLoggedIn);
 const audienceContext = Astro.locals.audienceContext;
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
@@ -202,7 +203,8 @@ const copyByLocale = {
     favorite: "收藏",
     unfavorite: "已收藏",
     saveFailed: "操作收藏失敗。",
-    savedLimitReached: "目前方案的收藏數量已滿，請取消一個收藏或升級後繼續保存。",
+    savedLimitReached:
+      "目前方案的收藏數量已滿，請取消一個收藏或升級後繼續保存。",
     more: "查看結果",
     delete: "刪除",
     compare: "對比",
@@ -838,7 +840,7 @@ const copy =
     >
     </div>
   </main>
-  <MobileBottomNav active="history" />
+  {isLoggedIn && <MobileBottomNav active="history" />}
 
   <style is:global>
     .history-body .history-main {
@@ -1857,6 +1859,12 @@ const copy =
         cancel: root.querySelector("[data-history-cancel]"),
         feedback: root.querySelector("[data-history-feedback]"),
       };
+      const setSelectionNavSuppressed = (suppressed) => {
+        window.absSetMobileBottomNavSuppressed?.(
+          "history-selection",
+          suppressed,
+        );
+      };
 
       const icons = {
         heart:
@@ -2334,6 +2342,7 @@ const copy =
         if (controls.selectionBar) {
           controls.selectionBar.hidden = !state.selectMode;
         }
+        setSelectionNavSuppressed(state.selectMode);
         if (controls.delete) controls.delete.disabled = count === 0;
         if (controls.compare) controls.compare.disabled = count < 2;
         if (controls.share) controls.share.disabled = count !== 1;

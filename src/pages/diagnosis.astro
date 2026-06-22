@@ -277,6 +277,68 @@ const diagnosisClientCopy = {
   historyEmptySecondary: diagnosisCopy.historyEmptySecondary,
   historyEmptyMeta: diagnosisCopy.historyEmptyMeta,
 };
+const diagnosisProgressCopy = isEnglish
+  ? {
+      progressTitle: "Your report is building in the background",
+      progressDesc:
+        "You can keep browsing. The task card will bring you back when the report is ready.",
+      stages: [
+        ["quality", "Photo quality"],
+        ["intake", "Task created"],
+        ["features", "Face analysis"],
+        ["report", "Report advice"],
+      ],
+      questionTitle: "Make the report more useful while you wait",
+      questionDesc:
+        "These answers are saved locally for your next diagnosis preference.",
+      groups: [
+        {
+          key: "goal",
+          label: "Main goal",
+          options: ["Fresh tone", "Smaller face", "Style direction"],
+        },
+        {
+          key: "context",
+          label: "Daily scene",
+          options: ["Work", "Date", "Camera"],
+        },
+        {
+          key: "sensitivity",
+          label: "Skin sensitivity",
+          options: ["Sensitive", "Not sensitive", "Not sure"],
+        },
+      ],
+    }
+  : {
+      progressTitle: "诊断报告正在后台生成",
+      progressDesc:
+        "你可以继续浏览妆容库。报告完成后，右下角任务卡会提醒你回来查看。",
+      stages: [
+        ["quality", "自拍质量"],
+        ["intake", "创建任务"],
+        ["features", "面部分析"],
+        ["report", "生成建议"],
+      ],
+      questionTitle: "等待时补充一点偏好",
+      questionDesc: "这些回答只保存在本机，用于下次默认诊断偏好。",
+      groups: [
+        {
+          key: "goal",
+          label: "最想改善",
+          options: ["提气色", "显脸小", "妆容风格"],
+        },
+        {
+          key: "context",
+          label: "日常场景",
+          options: ["通勤", "约会", "拍照"],
+        },
+        {
+          key: "sensitivity",
+          label: "皮肤状态",
+          options: ["敏感肌", "不敏感", "不确定"],
+        },
+      ],
+    };
 ---
 
 <BaseLayout
@@ -326,7 +388,9 @@ const diagnosisClientCopy = {
         </div>
         <div class="report-preview-summary">
           <div class="report-preview-copy">
-            <span class="report-preview-label">{diagnosisCopy.previewLabel}</span>
+            <span class="report-preview-label"
+              >{diagnosisCopy.previewLabel}</span
+            >
             <h2>{diagnosisCopy.previewTitle}</h2>
           </div>
           <div class="report-preview-stats">
@@ -419,6 +483,59 @@ const diagnosisClientCopy = {
             </div>
             <div class="meter"><i id="diag-progress" style="width:0%"></i></div>
           </div>
+          <section
+            class="diagnosis-progress-plan"
+            data-diagnosis-progress-plan
+            hidden
+          >
+            <div>
+              <strong>{diagnosisProgressCopy.progressTitle}</strong>
+              <p>{diagnosisProgressCopy.progressDesc}</p>
+            </div>
+            <ol
+              class="diagnosis-stage-list"
+              aria-label={diagnosisProgressCopy.progressTitle}
+            >
+              {
+                diagnosisProgressCopy.stages.map(([key, label]) => (
+                  <li data-diagnosis-stage={key}>
+                    <span aria-hidden="true" />
+                    <b>{label}</b>
+                  </li>
+                ))
+              }
+            </ol>
+          </section>
+          <section
+            class="diagnosis-waiting-questions"
+            data-diagnosis-waiting
+            hidden
+          >
+            <div class="diagnosis-waiting-copy">
+              <strong>{diagnosisProgressCopy.questionTitle}</strong>
+              <p>{diagnosisProgressCopy.questionDesc}</p>
+            </div>
+            {
+              diagnosisProgressCopy.groups.map((group) => (
+                <fieldset class="diagnosis-waiting-group">
+                  <legend>{group.label}</legend>
+                  <div>
+                    {group.options.map((option, index) => (
+                      <button
+                        class:list={["btn", index === 0 && "active"]}
+                        type="button"
+                        data-diagnosis-preference={group.key}
+                        data-diagnosis-preference-value={option}
+                        aria-pressed={index === 0 ? "true" : "false"}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+              ))
+            }
+          </section>
         </div>
       </section>
 
@@ -538,6 +655,7 @@ const diagnosisClientCopy = {
     is:inline
     define:vars={{
       diagnosisClientCopy,
+      diagnosisProgressCopy,
       discoverHref,
       loginHref,
       tryOnFreeHref,
@@ -576,10 +694,119 @@ const diagnosisClientCopy = {
       const quotaText = document.querySelector("[data-diagnosis-quota-text]");
       const quotaNote = document.querySelector("[data-diagnosis-quota-note]");
       const recommendsContainer = document.getElementById("diag-recommends");
+      const progressPlan = document.querySelector(
+        "[data-diagnosis-progress-plan]",
+      );
+      const waitingQuestions = document.querySelector(
+        "[data-diagnosis-waiting]",
+      );
+      const stageItems = Array.from(
+        document.querySelectorAll("[data-diagnosis-stage]"),
+      );
+      const preferenceButtons = document.querySelectorAll(
+        "[data-diagnosis-preference]",
+      );
+      const setTaskNavSuppressed = (suppressed) => {
+        window.absSetMobileBottomNavSuppressed?.("diagnosis-task", suppressed);
+      };
       const START_HASH = "#diagnosis-new";
       let isAccountUser = false;
       let wantsNewDiagnosis = location.hash === START_HASH;
       let quotaSnapshot = null;
+      const preferenceStorageKey = "abs:diagnosis-waiting-preferences";
+
+      function readWaitingPreferences() {
+        try {
+          return JSON.parse(localStorage.getItem(preferenceStorageKey) || "{}");
+        } catch {
+          return {};
+        }
+      }
+
+      function writeWaitingPreferences(next) {
+        try {
+          localStorage.setItem(preferenceStorageKey, JSON.stringify(next));
+        } catch {
+          /* ignore private storage failures */
+        }
+      }
+
+      function syncWaitingPreferences() {
+        const stored = readWaitingPreferences();
+        preferenceButtons.forEach((button) => {
+          const key = button.dataset.diagnosisPreference;
+          const selectedValue = stored[key];
+          const active = selectedValue
+            ? button.dataset.diagnosisPreferenceValue === selectedValue
+            : button.classList.contains("active");
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+      }
+
+      preferenceButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.diagnosisPreference;
+          if (!key) return;
+          const stored = readWaitingPreferences();
+          stored[key] = button.dataset.diagnosisPreferenceValue || "";
+          writeWaitingPreferences(stored);
+          syncWaitingPreferences();
+        });
+      });
+      syncWaitingPreferences();
+
+      function getTaskRoutes() {
+        return window.__absBackgroundTasks?.routes || {};
+      }
+
+      function currentTaskHref() {
+        return location.pathname + location.search + location.hash;
+      }
+
+      function syncDiagnosisBackgroundTask(job, overrides = {}) {
+        if (!job?.id) return;
+        const routes = getTaskRoutes();
+        const stage =
+          overrides.stage ||
+          (job.status === "succeeded"
+            ? copy.complete
+            : diagnosisProgressCopy.progressTitle);
+        window.__absBackgroundTasks?.upsert?.({
+          id: job.id,
+          type: "diagnosis",
+          title: diagnosisProgressCopy.progressTitle,
+          status: job.status || "running",
+          progress: overrides.progress,
+          stage,
+          href: currentTaskHref(),
+          resultHref: routes.diagnosis || location.pathname,
+          ...overrides,
+        });
+      }
+
+      function setDiagnosisExperienceVisible(visible) {
+        if (progressPlan) progressPlan.hidden = !visible;
+        if (waitingQuestions) waitingQuestions.hidden = !visible;
+        setTaskNavSuppressed(visible);
+      }
+
+      function setDiagnosisStage(stageKey) {
+        if (!stageItems.length) return;
+        const stageOrder = ["quality", "intake", "features", "report"];
+        const currentIndex = Math.max(0, stageOrder.indexOf(stageKey));
+        stageItems.forEach((item) => {
+          const itemIndex = stageOrder.indexOf(
+            item.dataset.diagnosisStage || "",
+          );
+          item.dataset.state =
+            itemIndex < currentIndex
+              ? "complete"
+              : itemIndex === currentIndex
+                ? "current"
+                : "upcoming";
+        });
+      }
 
       function scrollToDiagnosisStart() {
         if (!newSection) return;
@@ -587,6 +814,7 @@ const diagnosisClientCopy = {
         newSection.hidden = false;
         if (resultSection) resultSection.hidden = true;
         if (taskStatus) taskStatus.hidden = true;
+        setDiagnosisExperienceVisible(false);
         newSection.scrollIntoView({ behavior: "smooth", block: "start" });
         window.history.replaceState(null, "", START_HASH);
 
@@ -733,8 +961,9 @@ const diagnosisClientCopy = {
               }
               uploadBtn.disabled = true;
               taskStatus.hidden = false;
-              updateProgress(copy.uploading, 10);
-              updateProgress(copy.confirming, 18);
+              setDiagnosisExperienceVisible(true);
+              updateProgress(copy.uploading, 12, "quality", "1/4");
+              updateProgress(copy.confirming, 22, "quality", "1/4");
               const result = await createTryOnJob({
                 file,
                 lookSlug: "commute",
@@ -745,9 +974,13 @@ const diagnosisClientCopy = {
                   "-" +
                   Math.random().toString(36).slice(2),
               });
-              updateProgress(copy.creating, 25);
+              updateProgress(copy.creating, 38, "intake", "2/4");
               currentJobId = result.job.id;
-              updateProgress(copy.analyzing, 40);
+              syncDiagnosisBackgroundTask(result.job, {
+                progress: 38,
+                stage: copy.creating,
+              });
+              updateProgress(copy.analyzing, 52, "features", "3/4");
 
               // 3. 轮询
               pollJob(currentJobId);
@@ -758,7 +991,8 @@ const diagnosisClientCopy = {
               }
               const message =
                 err instanceof Error ? err.message : String(err || "");
-              updateProgress(message || copy.failed, 0);
+              updateProgress(message || copy.failed, 0, "quality");
+              setDiagnosisExperienceVisible(false);
               syncUploadAvailability();
             }
           };
@@ -766,10 +1000,11 @@ const diagnosisClientCopy = {
         });
       }
 
-      function updateProgress(text, pct) {
+      function updateProgress(text, pct, stageKey, stepLabel) {
         if (statusText) statusText.textContent = text;
-        if (percentText) percentText.textContent = pct + "%";
+        if (percentText) percentText.textContent = stepLabel || pct + "%";
         if (progressBar) progressBar.style.width = pct + "%";
+        if (stageKey) setDiagnosisStage(stageKey);
       }
 
       async function pollJob(jobId) {
@@ -778,7 +1013,17 @@ const diagnosisClientCopy = {
           attempt++;
           if (attempt > POLL_MAX) {
             clearInterval(interval);
-            updateProgress(copy.timeout, 0);
+            updateProgress(copy.timeout, 0, "report");
+            if (currentJobId) {
+              syncDiagnosisBackgroundTask(
+                { id: currentJobId, status: "timed_out" },
+                {
+                  progress: 0,
+                  stage: copy.timeout,
+                },
+              );
+            }
+            setDiagnosisExperienceVisible(false);
             syncUploadAvailability();
             return;
           }
@@ -788,22 +1033,43 @@ const diagnosisClientCopy = {
             if (!data.ok) return;
             const job = data.data;
             if (job.status === "diagnosis_running") {
-              updateProgress(copy.running, 50 + attempt);
+              const progress = Math.min(76, 52 + attempt);
+              updateProgress(copy.running, progress, "features", "3/4");
+              syncDiagnosisBackgroundTask(job, {
+                progress,
+                stage: copy.running,
+              });
             } else if (job.status === "image_running") {
-              updateProgress(copy.generating, 70 + attempt);
+              const progress = Math.min(94, 78 + attempt);
+              updateProgress(copy.generating, progress, "report", "4/4");
+              syncDiagnosisBackgroundTask(job, {
+                progress,
+                stage: copy.generating,
+              });
             } else if (job.status === "succeeded") {
               clearInterval(interval);
-              updateProgress(copy.complete, 100);
+              updateProgress(copy.complete, 100, "report", "4/4");
+              syncDiagnosisBackgroundTask(job, {
+                status: "succeeded",
+                progress: 100,
+                stage: copy.complete,
+              });
+              setDiagnosisExperienceVisible(false);
+              window.showToast?.(copy.complete);
               // 加载诊断结果
               loadDiagnosisResult(jobId);
             } else if (job.status === "failed" || job.status === "timed_out") {
               clearInterval(interval);
-              updateProgress(
-                job.errorCode
-                  ? copy.failed + "：" + job.errorCode
-                  : copy.failed,
-                0,
-              );
+              const message = job.errorCode
+                ? copy.failed + "：" + job.errorCode
+                : copy.failed;
+              updateProgress(message, 0, "report");
+              syncDiagnosisBackgroundTask(job, {
+                status: job.status,
+                progress: 0,
+                stage: message,
+              });
+              setDiagnosisExperienceVisible(false);
               syncUploadAvailability();
             }
           } catch {
@@ -1886,6 +2152,107 @@ const diagnosisClientCopy = {
       color: var(--text);
       font-size: 13px;
     }
+    .diagnosis-progress-plan {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background:
+        linear-gradient(135deg, var(--surface-rose), transparent 48%),
+        var(--bg-elevated);
+    }
+    .diagnosis-progress-plan strong,
+    .diagnosis-waiting-copy strong {
+      display: block;
+      color: var(--heading);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .diagnosis-progress-plan p,
+    .diagnosis-waiting-copy p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.58;
+    }
+    .diagnosis-stage-list {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .diagnosis-stage-list li {
+      display: grid;
+      min-width: 0;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .diagnosis-stage-list li span {
+      display: block;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--meter-track);
+    }
+    .diagnosis-stage-list li b {
+      overflow-wrap: anywhere;
+      font-size: inherit;
+      font-weight: inherit;
+    }
+    .diagnosis-stage-list li[data-state="complete"] {
+      color: var(--success-text);
+    }
+    .diagnosis-stage-list li[data-state="complete"] span {
+      background: var(--success-solid);
+    }
+    .diagnosis-stage-list li[data-state="current"] {
+      color: var(--rose);
+    }
+    .diagnosis-stage-list li[data-state="current"] span {
+      background: linear-gradient(90deg, var(--rose), var(--teal));
+    }
+    .diagnosis-waiting-questions {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--bg-elevated);
+    }
+    .diagnosis-waiting-group {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    .diagnosis-waiting-group legend {
+      color: var(--heading);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .diagnosis-waiting-group div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .diagnosis-waiting-group .btn {
+      min-height: 36px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+    .diagnosis-waiting-group .btn.active {
+      border-color: var(--rose-border);
+      background: var(--rose);
+      color: #fff;
+    }
     .diagnosis-main.has-account-result .diagnosis-hero,
     .diagnosis-main.has-account-result .diagnosis-outcomes,
     .diagnosis-main.has-account-result .diagnosis-banner {
@@ -2415,6 +2782,12 @@ const diagnosisClientCopy = {
       .diagnosis-banner,
       .diagnosis-history {
         padding: 18px;
+      }
+      .diagnosis-stage-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .diagnosis-waiting-group .btn {
+        flex: 1 1 calc(50% - 8px);
       }
       .diagnosis-credit {
         min-width: 0;

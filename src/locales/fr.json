@@ -120,95 +120,95 @@
     "copyright": "Tous droits réservés."
   },
   "homepage": {
-    "jsonLdDescription": "Outil en ligne d’essai maquillage IA pour importer un selfie, prévisualiser des looks et choisir selon l’occasion, le teint et le fini.",
-    "metaTitle": "IA maquillage : test maquillage virtuel | AI Beauty Stylist",
-    "metaDescription": "Utilisez l'IA maquillage pour importer un selfie, tester des looks virtuels et comparer couleurs, finis et occasions avant de choisir.",
-    "heroKicker": "IA Essai virtuel",
-    "heroKickerSub": "IA maquillage",
-    "heroTitle": "IA maquillage : ",
-    "heroTitleSpan": "testez les looks sur votre visage",
-    "heroSubtitle": "Importez un selfie, lancez un test maquillage virtuel et comparez couleurs, finis et occasions avant de choisir.",
+    "jsonLdDescription": "Test colorimétrie en ligne pour importer un selfie, comparer une palette, vérifier les couleurs de maquillage et prévisualiser des looks selon le teint, l’occasion et le fini.",
+    "metaTitle": "Test colorimétrie en ligne",
+    "metaDescription": "Faites un test colorimétrie en ligne : colorimétrie test, test de colorimétrie, couleurs de maquillage et prévisualisation IA sur votre visage.",
+    "heroKicker": "Test colorimétrie IA",
+    "heroKickerSub": "test colorimétrie",
+    "heroTitle": "Test colorimétrie : ",
+    "heroTitleSpan": "vérifiez les couleurs sur votre visage",
+    "heroSubtitle": "Importez un selfie, lancez un colorimétrie test pratique et voyez quelles couleurs de maquillage, lèvres et joues illuminent vraiment votre visage.",
     "startTryOn": "Commencer l’essai",
     "howItWorks": "Comment ça marche",
     "pricingRule": "Commencer gratuitement · Plus de crédits seulement si nécessaire",
-    "trustNaturalTitle": "Résultat",
-    "trustNaturalDesc": "Comparer le rendu",
-    "trustRecommendTitle": "Occasions",
-    "trustRecommendDesc": "Catalogue",
+    "trustNaturalTitle": "Palette personnelle",
+    "trustNaturalDesc": "Comparer sous-ton, contraste et couleurs",
+    "trustRecommendTitle": "Maquillage adapté",
+    "trustRecommendDesc": "Lèvres, joues et regard selon l’occasion",
     "trustPrivacyTitle": "Photo sous contrôle",
-    "trustPrivacyDesc": "Supprimer",
+    "trustPrivacyDesc": "Confirmer avant l’envoi et supprimer les résultats",
     "before": "Avant",
     "after": "Après",
-    "heroImageAltAfter": "Résultat",
-    "heroImageAltBefore": "Original",
-    "dragSlider": "Comparer le rendu",
-    "statsTryons": "3",
-    "statsTryonsLabel": "Choisir un look · Importer un selfie · Comparer le rendu",
+    "heroImageAltAfter": "Résultat de test colorimétrie avec maquillage naturel",
+    "heroImageAltBefore": "Selfie original avant le test de colorimétrie",
+    "dragSlider": "Comparer avant et après",
+    "statsTryons": "3 étapes",
+    "statsTryonsLabel": "Tester la colorimétrie · Importer un selfie · Comparer les couleurs",
     "statsRealism": "1",
     "statsRealismLabel": "Un diagnostic ou un essai utilise 1 crédit",
-    "statsPrivacy": "Supprimer",
-    "statsPrivacyLabel": "Photo sous contrôle",
-    "howKicker": "3",
-    "howTitle": "Choisir un look, Importer un selfie, Comparer le rendu",
-    "howSubtitle": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
+    "statsPrivacy": "Supprimable",
+    "statsPrivacyLabel": "Gérer les selfies et les résultats générés",
+    "howKicker": "Test de colorimétrie en 3 étapes",
+    "howTitle": "Du test colorimétrie à la prévisualisation maquillage",
+    "howSubtitle": "Commencez par la couleur, importez une photo seulement quand vous êtes prête, puis vérifiez le rendu des tons sur votre propre visage.",
     "howSteps": [
       {
         "icon": "1",
-        "title": "Choisir un look",
-        "copy": "Occasions"
+        "title": "Définir l’objectif du test",
+        "copy": "Cherchez une palette plus chaude, plus froide, plus douce ou plus contrastée selon votre besoin."
       },
       {
         "icon": "2",
-        "title": "Importer un selfie",
-        "copy": "Photo sous contrôle"
+        "title": "Importer un selfie clair",
+        "copy": "Utilisez une photo de face avec une lumière régulière et confirmez le traitement avant la génération."
       },
       {
         "icon": "3",
-        "title": "Comparer le rendu",
-        "copy": "Résultat"
+        "title": "Comparer les couleurs",
+        "copy": "Vérifiez lèvres, joues, regard et fini avant de garder le look ou d’en tester un autre."
       }
     ],
-    "workflowWorkspace": "Espace d’essai",
+    "workflowWorkspace": "Espace colorimétrie",
     "workflowStatus": "Aperçu prêt",
-    "workflowPreview": "IA Résultat",
+    "workflowPreview": "Aperçu colorimétrie",
     "workflowUploaded": "Importer un selfie",
     "workflowReady": "Aperçu prêt",
     "workflowScanning": "L’IA analyse la lumière et la position du visage...",
     "workflowSelected": "Choisir un look",
-    "workflowPreviewAlt": "Résultat",
-    "featuredTitle": "Catalogue",
-    "featuredSubtitle": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
+    "workflowPreviewAlt": "Aperçu maquillage selon la colorimétrie et le teint",
+    "featuredTitle": "Looks par palette",
+    "featuredSubtitle": "Commencez par des situations fréquentes et voyez si couleur, intensité et fini restent cohérents avec votre colorimétrie.",
     "featuredLink": "Catalogue",
-    "aiKicker": "IA Essai virtuel",
-    "aiTitle": "voyez quel maquillage vous va",
-    "aiSubtitle": "Outil en ligne d’essai maquillage IA pour importer un selfie, prévisualiser des looks et choisir selon l’occasion, le teint et le fini.",
+    "aiKicker": "Colorimétrie + essai IA",
+    "aiTitle": "Un test de colorimétrie qui finit sur un vrai choix maquillage",
+    "aiSubtitle": "La prévisualisation tient compte de la lumière, du teint, des bords du maquillage et de l’occasion pour éviter une couleur flatteuse en théorie mais faible sur votre visage.",
     "aiFeatures": [
       {
         "icon": "1",
-        "title": "Résultat",
-        "copy": "Comparer le rendu"
+        "title": "Lumière respectée",
+        "copy": "La prévisualisation garde autant que possible l’éclairage de votre photo pour éviter l’effet masque."
       },
       {
         "icon": "2",
-        "title": "Occasions",
-        "copy": "Catalogue"
+        "title": "Colorimétrie visible",
+        "copy": "Le test compare si lèvres, joues et regard s’accordent avec le sous-ton et le contraste de votre peau."
       },
       {
         "icon": "3",
-        "title": "Photo sous contrôle",
-        "copy": "Supprimer"
+        "title": "Choix par occasion",
+        "copy": "Bureau, entretien, rendez-vous et photos demandent des intensités différentes même avec la même palette."
       },
       {
         "icon": "4",
-        "title": "Offres",
-        "copy": "Un diagnostic ou un essai utilise 1 crédit"
+        "title": "Limites claires",
+        "copy": "Vous confirmez l’envoi avant le traitement et pouvez supprimer les selfies et les résultats."
       }
     ],
-    "aiVisualAlt": "Résultat",
-    "aiVisualCaption": "Outil en ligne d’essai maquillage IA pour importer un selfie, prévisualiser des looks et choisir selon l’occasion, le teint et le fini.",
-    "scenarioKicker": "Occasions",
-    "scenarioTitle": "voyez quel maquillage vous va",
-    "scenarioSubtitle": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
+    "aiVisualAlt": "Test colorimétrie avec peau naturelle et couleurs de maquillage adaptées",
+    "aiVisualCaption": "L’aperçu montre si la colorimétrie, le teint et l’intensité du maquillage restent cohérents sur votre visage.",
+    "scenarioKicker": "Palette par occasion",
+    "scenarioTitle": "Choisissez un look selon votre colorimétrie et le contexte",
+    "scenarioSubtitle": "Un test de colorimétrie utile doit aussi fonctionner en photo, au bureau, en rendez-vous ou lors d’un événement.",
     "scenarioLink": "Catalogue",
     "scenarioTryPrefix": "Commencer l’essai",
     "scenarioCardCta": "Commencer l’essai",
@@ -216,93 +216,93 @@
     "scenarioHighlights": [
       {
         "slug": "commute",
-        "label": "Occasions",
-        "moment": "Occasions",
-        "reason": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-        "scenario": "Occasions"
+        "label": "Fraîcheur du quotidien",
+        "moment": "Réunions du matin · Visioconférences",
+        "reason": "Un pêche léger montre vite si les tons chauds réveillent le teint sans l’alourdir.",
+        "scenario": "Bureau"
       },
       {
         "slug": "interview-ready",
-        "label": "Essai virtuel",
-        "moment": "Essai virtuel",
-        "reason": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-        "scenario": "Essai virtuel"
+        "label": "Net pour entretien",
+        "moment": "Entretien · Rendez-vous client",
+        "reason": "Des sourcils propres et des lèvres sobres aident à vérifier si le contraste reste professionnel.",
+        "scenario": "Entretien"
       },
       {
         "slug": "rose-milk-date",
-        "label": "Résultat",
-        "moment": "Résultat",
-        "reason": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-        "scenario": "Résultat"
+        "label": "Rose doux pour rendez-vous",
+        "moment": "Dîner · Lumière du soir",
+        "reason": "Les tons rose lait montrent si une palette froide ou adoucie flatte mieux les lèvres et les joues.",
+        "scenario": "Rendez-vous"
       },
       {
         "slug": "flash-proof-satin",
-        "label": "Comparer le rendu",
-        "moment": "Comparer le rendu",
-        "reason": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-        "scenario": "Comparer le rendu"
+        "label": "Satin pour photos",
+        "moment": "Photos de groupe · Soirée",
+        "reason": "Un fini satiné révèle si couleur et brillance restent lisibles sous flash.",
+        "scenario": "Photo"
       },
       {
         "slug": "mature-skin-radiance",
-        "label": "Photo sous contrôle",
-        "moment": "Photo sous contrôle",
-        "reason": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-        "scenario": "Photo sous contrôle"
+        "label": "Éclat peau mature",
+        "moment": "Quotidien · Moments importants",
+        "reason": "Une lumière douce montre si la palette apporte de la fraîcheur sans masquer la texture.",
+        "scenario": "Peau mature"
       },
       {
         "slug": "wedding-guest",
-        "label": "Catalogue",
-        "moment": "Catalogue",
-        "reason": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-        "scenario": "Catalogue"
+        "label": "Élégance événement",
+        "moment": "Mariage · Dîner · Cérémonie",
+        "reason": "Un look plus complet teste si votre palette reste chic avec plus d’intensité.",
+        "scenario": "Événement"
       }
     ],
-    "proofKicker": "Comparer le rendu",
-    "proofTitle": "voyez quel maquillage vous va",
-    "proofSubtitle": "Outil en ligne d’essai maquillage IA pour importer un selfie, prévisualiser des looks et choisir selon l’occasion, le teint et le fini.",
+    "proofKicker": "Exemples de colorimétrie",
+    "proofTitle": "Utilisez le test de colorimétrie pour décider, pas seulement classer",
+    "proofSubtitle": "Chaque exemple relie palette, changement visible et critère de choix pour rendre le test de colorimétrie utile au maquillage réel.",
     "proofCases": [
       {
         "slug": "olive-undertone-rose",
-        "eyebrow": "Comparer le rendu",
-        "need": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-        "title": "Résultat",
-        "copy": "Outil en ligne d’essai maquillage IA pour importer un selfie, prévisualiser des looks et choisir selon l’occasion, le teint et le fini.",
-        "outcome": "Comparer le rendu"
+        "eyebrow": "Exemple · Sous-ton olive",
+        "need": "Besoin : apporter de la couleur sans que le rose grise le teint",
+        "title": "Commencez par comparer lèvres et joues dans la même famille",
+        "copy": "Un rose mesuré montre si une couleur froide équilibre le visage ou l’éteint.",
+        "outcome": "À vérifier : teint plus clair, lèvres naturelles et joues non grisées"
       },
       {
         "slug": "flash-proof-satin",
-        "eyebrow": "Comparer le rendu",
-        "need": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-        "title": "Occasions",
-        "copy": "Outil en ligne d’essai maquillage IA pour importer un selfie, prévisualiser des looks et choisir selon l’occasion, le teint et le fini.",
-        "outcome": "Comparer le rendu"
+        "eyebrow": "Exemple · Photos",
+        "need": "Besoin : garder la couleur visible sous flash",
+        "title": "Testez le fini satiné avant une soirée",
+        "copy": "Le rendu aide à voir si votre colorimétrie supporte plus de contraste sans durcir le visage.",
+        "outcome": "À vérifier : zone T, présence des lèvres et structure du regard"
       },
       {
         "slug": "mature-skin-radiance",
-        "eyebrow": "Comparer le rendu",
-        "need": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-        "title": "Photo sous contrôle",
-        "copy": "Outil en ligne d’essai maquillage IA pour importer un selfie, prévisualiser des looks et choisir selon l’occasion, le teint et le fini.",
-        "outcome": "Comparer le rendu"
+        "eyebrow": "Exemple · Peau mature",
+        "need": "Besoin : illuminer sans masquer la texture",
+        "title": "Réduisez la poudre et observez la lumière douce",
+        "copy": "Une palette bien choisie rend le centre du visage plus frais sans effet trop lissé.",
+        "outcome": "À vérifier : texture naturelle et visage plus reposé"
       }
     ],
     "proofPrinciples": [
       {
-        "title": "Occasions",
-        "copy": "Catalogue"
+        "title": "Partir de la colorimétrie",
+        "copy": "La palette donne la direction, l’occasion règle l’intensité."
       },
       {
-        "title": "Résultat",
-        "copy": "Comparer le rendu"
+        "title": "Vérifier sur votre visage",
+        "copy": "Le bon résultat est celui qui fonctionne avec votre teint, pas seulement sur un nuancier."
       },
       {
-        "title": "Photo sous contrôle",
-        "copy": "Supprimer"
+        "title": "Décider avec l’aperçu",
+        "copy": "Comparez teint, lèvres, joues et fini avant de garder le look."
       }
     ],
     "assuranceKicker": "Photo sous contrôle",
-    "assuranceTitle": "Photo sous contrôle",
-    "assuranceSubtitle": "Outil en ligne d’essai maquillage IA pour importer un selfie, prévisualiser des looks et choisir selon l’occasion, le teint et le fini.",
+    "assuranceTitle": "Importer une photo sans perdre le contrôle",
+    "assuranceSubtitle": "Vous pouvez explorer les looks sans utiliser de crédit. La génération commence seulement après confirmation, et les résultats restent supprimables.",
     "decisionFlow": [
       "Choisir un look",
       "Importer un selfie",
@@ -312,26 +312,26 @@
     "uploadConcerns": [
       {
         "index": "01",
-        "title": "Importer un selfie",
-        "copy": "Photo sous contrôle"
+        "title": "Vous confirmez avant l’envoi",
+        "copy": "Votre selfie entre dans le test colorimétrie seulement après votre accord explicite."
       },
       {
         "index": "02",
-        "title": "Résultat",
-        "copy": "Supprimer"
+        "title": "Supprimer photos et résultats",
+        "copy": "Gérez séparément les selfies originaux, les rendus d’essai et les diagnostics."
       },
       {
         "index": "03",
-        "title": "Offres",
-        "copy": "Un diagnostic ou un essai utilise 1 crédit"
+        "title": "Pas de génération, pas de crédit",
+        "copy": "Le crédit est utilisé uniquement quand le diagnostic ou l’essai démarre."
       }
     ],
-    "upgradeTitle": "Passez à une offre supérieure",
-    "upgradeCopy": "Offres · crédits · HD",
+    "upgradeTitle": "Comparer plus de palettes ?",
+    "upgradeCopy": "Pro convient aux essais réguliers, aux téléchargements HD et au diagnostic IA. Premium convient mieux aux séances photo, mariages ou entretiens avec priorité et catalogue complet.",
     "upgradeLink": "Offres",
-    "finalCtaTitle": "Essayez une fois sur votre visage",
-    "finalCtaSubtitle": "Choisissez un look par contexte puis vérifiez une prévisualisation IA sur votre visage.",
-    "finalCtaCta": "Commencer l’essai"
+    "finalCtaTitle": "Lancer votre test colorimétrie",
+    "finalCtaSubtitle": "Commencez par la colorimétrie, puis voyez directement quelles couleurs de maquillage fonctionnent sur votre visage.",
+    "finalCtaCta": "Commencer le test"
   },
   "workspace": {
     "defaultNote": "Chaque génération utilise 1 crédit",

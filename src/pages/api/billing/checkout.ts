@@ -1,5 +1,7 @@
 import type { APIRoute } from "astro";
 
+import { isAppLocale } from "../../../i18n/config";
+import { resolveLocaleRoute } from "../../../i18n/routing";
 import { getAccountByUserId } from "../../../lib/accounts";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import { buildCheckoutStatusUrl } from "../../../lib/checkoutRedirect";
@@ -11,7 +13,11 @@ import {
 } from "../../../lib/plans";
 import { createProxyFetcher } from "../../../lib/proxyFetch";
 import { getRuntimeBindings, type RuntimeBindings } from "../../../lib/runtime";
-import { createStripeClient, StripeError } from "../../../lib/stripe";
+import {
+  createStripeClient,
+  StripeError,
+  toStripeCheckoutLocale,
+} from "../../../lib/stripe";
 import { getStripeCustomerId } from "../../../lib/subscriptions";
 
 interface CheckoutBody {
@@ -19,6 +25,7 @@ interface CheckoutBody {
   interval?: string;
   pricingPath?: string;
   returnTo?: string;
+  locale?: string;
 }
 
 function withCheckoutSessionId(url: string): string {
@@ -26,7 +33,43 @@ function withCheckoutSessionId(url: string): string {
   return `${url}${separator}session_id={CHECKOUT_SESSION_ID}`;
 }
 
-export const POST: APIRoute = async ({ cookies, request }) => {
+function appLocaleFromString(value: string | null | undefined) {
+  return value && isAppLocale(value) ? value : undefined;
+}
+
+function localeFromInternalPath(value: string | null | undefined) {
+  if (
+    !value ||
+    !value.startsWith("/") ||
+    value.startsWith("//") ||
+    value.includes("\\") ||
+    /[\u0000-\u001f\u007f]/.test(value)
+  ) {
+    return undefined;
+  }
+
+  try {
+    const url = new URL(value, "https://aibeautystylist.local");
+    return resolveLocaleRoute(url.pathname).language.locale;
+  } catch {
+    return undefined;
+  }
+}
+
+function resolveCheckoutAppLocale(input: {
+  body: CheckoutBody | null;
+  cookieLocale?: string;
+  localsLocale?: string;
+}) {
+  return (
+    appLocaleFromString(input.body?.locale) ??
+    localeFromInternalPath(input.body?.pricingPath) ??
+    appLocaleFromString(input.cookieLocale) ??
+    appLocaleFromString(input.localsLocale)
+  );
+}
+
+export const POST: APIRoute = async ({ cookies, locals, request }) => {
   const body = (await request.json().catch(() => null)) as CheckoutBody | null;
   const interval: BillingInterval =
     body?.interval === "yearly" ? "yearly" : "monthly";
@@ -73,6 +116,12 @@ export const POST: APIRoute = async ({ cookies, request }) => {
   if (!auth.ok) return auth.response;
   const userId = auth.user.id;
   const baseUrl = bindings.APP_PUBLIC_URL ?? new URL(request.url).origin;
+  const appLocale = resolveCheckoutAppLocale({
+    body,
+    cookieLocale: cookies.get("abs_locale")?.value,
+    localsLocale: locals.audienceContext?.locale,
+  });
+  const stripeLocale = toStripeCheckoutLocale(appLocale);
   const stripe = createStripeClient({
     apiKey: bindings.STRIPE_SECRET_KEY,
     fetcher: bindings.OUTBOUND_PROXY_URL
@@ -108,7 +157,13 @@ export const POST: APIRoute = async ({ cookies, request }) => {
       clientReferenceId: userId,
       customerId,
       customerEmail: account?.email,
-      metadata: { userId, planCode: body.planCode, priceId },
+      locale: stripeLocale,
+      metadata: {
+        userId,
+        planCode: body.planCode,
+        priceId,
+        ...(appLocale ? { locale: appLocale } : {}),
+      },
     });
     return apiSuccess({ id: session.id, url: session.url });
   } catch (error) {

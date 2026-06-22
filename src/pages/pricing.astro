@@ -1036,6 +1036,7 @@ const checkoutCopy = {
             planCode: pendingPlan,
             interval,
             pricingPath: window.location.pathname,
+            locale: document.documentElement.lang || undefined,
           };
           const returnTo = getCheckoutReturnTo();
           if (returnTo) payload.returnTo = returnTo;
@@ -2169,18 +2170,14 @@ const checkoutCopy = {
       color: var(--premium-ribbon-text);
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.34);
     }
-    :global([data-theme="dark"])
-      .compare-row.heading
-      > .compare-plan-free {
+    :global([data-theme="dark"]) .compare-row.heading > .compare-plan-free {
       background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
       color: #d7fffb;
     }
     :global([data-theme="dark"]) .compare-row.heading > .compare-plan-pro {
       text-shadow: none;
     }
-    :global([data-theme="dark"])
-      .compare-row.heading
-      > .compare-plan-premium {
+    :global([data-theme="dark"]) .compare-row.heading > .compare-plan-premium {
       color: #1d1304;
       text-shadow: none;
     }
@@ -2547,11 +2544,7 @@ const checkoutCopy = {
             rgba(35, 183, 169, 0.14),
             transparent 34%
           ),
-          linear-gradient(
-            135deg,
-            rgba(246, 255, 253, 0.98),
-            var(--bg-elevated)
-          );
+          linear-gradient(135deg, rgba(246, 255, 253, 0.98), var(--bg-elevated));
         box-shadow: 0 12px 30px rgba(10, 81, 83, 0.08);
       }
       .mobile-plan-compare-card.recommended {
@@ -2607,8 +2600,7 @@ const checkoutCopy = {
         background: var(--premium-pill-bg);
         color: var(--premium-pill-color);
       }
-      :global([data-theme="dark"])
-        .mobile-plan-compare-card.free-plan {
+      :global([data-theme="dark"]) .mobile-plan-compare-card.free-plan {
         border-color: rgba(45, 212, 191, 0.32);
         background:
           radial-gradient(
@@ -2637,11 +2629,7 @@ const checkoutCopy = {
               rgba(45, 212, 191, 0.14),
               transparent 34%
             ),
-            linear-gradient(
-              135deg,
-              rgba(10, 33, 35, 0.98),
-              var(--bg-elevated)
-            );
+            linear-gradient(135deg, rgba(10, 33, 35, 0.98), var(--bg-elevated));
           box-shadow: 0 12px 30px rgba(0, 0, 0, 0.26);
         }
         :global(:root:not([data-theme="light"]))

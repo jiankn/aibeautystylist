@@ -40,8 +40,16 @@ const privacyHref = getLocalizedAppHref(
   );
   const cookiePreferenceKey = "abs_cookie_consent_v1";
 
+  function setCookieConsentOpen(isOpen: boolean) {
+    document.body.classList.toggle("cookie-consent-open", isOpen);
+    document.documentElement.classList.toggle("cookie-consent-open", isOpen);
+  }
+
   function showCookieSettings() {
-    if (cookieConsent) cookieConsent.hidden = false;
+    if (cookieConsent) {
+      cookieConsent.hidden = false;
+      setCookieConsentOpen(true);
+    }
   }
 
   function saveCookiePreference(choice: string) {
@@ -51,14 +59,20 @@ const privacyHref = getLocalizedAppHref(
         JSON.stringify({ choice, updatedAt: new Date().toISOString() }),
       );
     } catch {}
-    if (cookieConsent) cookieConsent.hidden = true;
+    if (cookieConsent) {
+      cookieConsent.hidden = true;
+      setCookieConsentOpen(false);
+    }
   }
 
   if (cookieConsent) {
     try {
-      cookieConsent.hidden = Boolean(localStorage.getItem(cookiePreferenceKey));
+      const hasPreference = Boolean(localStorage.getItem(cookiePreferenceKey));
+      cookieConsent.hidden = hasPreference;
+      setCookieConsentOpen(!hasPreference);
     } catch {
       cookieConsent.hidden = false;
+      setCookieConsentOpen(true);
     }
   }
 

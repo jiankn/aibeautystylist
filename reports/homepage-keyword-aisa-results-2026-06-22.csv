@@ -1,0 +1,211 @@
+locale,keyword,search_volume,keyword_difficulty,cpc,competition,competition_index,intent,homepage_score
+de,Schminktest,135000,16,0.62,HIGH,100,tool-home,160.6
+de,Farbtyp bestimmen,2900,0,0.83,LOW,31,diagnosis-fit,137.3
+de,welche Farbe steht mir,590,0,0.73,MEDIUM,35,diagnosis-fit,111.4
+de,welches Make-up passt zu mir,480,13,1.62,HIGH,80,fit-home,102.6
+de,Beauty App,140,0,1.56,MEDIUM,35,tool-home,97
+de,Make-up App,210,4,1.7,MEDIUM,35,tool-home,96.5
+de,Hautanalyse KI,110,2,2.24,HIGH,79,tool-home,92.9
+de,Make-up Filter,320,0,1.43,MEDIUM,39,broad,88.1
+de,Schmink App,70,4,2.28,MEDIUM,50,tool-home,87
+de,welcher Lippenstift passt zu mir,590,0,1.45,HIGH,76,product-adjacent,83.4
+de,Make-up KI,260,,0.58,HIGH,88,tool-home,80.3
+de,Unterton Haut bestimmen,170,0,1.23,MEDIUM,53,broad,74.7
+de,Foundation Farbe finden,210,0,1.59,HIGH,70,product-adjacent,66.5
+de,Gesichtsform Analyse,70,2,0.53,LOW,21,broad,65
+de,Make-up online testen,30,10,1.72,MEDIUM,61,tool-home,59.8
+de,Make-up Empfehlung,90,,0.9,HIGH,98,broad,47.2
+de,Make-up Simulator,30,64,1.65,MEDIUM,50,tool-home,39.8
+de,virtueller Make-up Tester,10,,1.65,MEDIUM,51,tool-home,38.8
+de,KI Make-up Beratung,10,,1.54,MEDIUM,50,tool-home,38.8
+de,virtuelles Umstyling,10,,,,,tool-home,38.8
+de,Make-up Typ Test,10,,1.05,HIGH,77,tool-home,38.8
+de,virtuelle Typberatung,10,,,LOW,14,tool-home,38.8
+de,Make-up Test online,20,31,1.65,MEDIUM,51,tool-home,36.4
+de,Makeover App,10,51,2.61,LOW,19,tool-home,30.8
+de,Make-up ausprobieren,30,,2.35,LOW,21,broad,23.8
+de,virtuelles Make-up testen,0,,,,,tool-home,18
+de,KI Make-up Test,0,,,,,tool-home,18
+de,Make-up virtuell,0,,,,,tool-home,18
+de,Farbsaison bestimmen,0,,,,,tool-home,18
+de,KI Beauty App,0,,,,,tool-home,18
+de,Online Schminken,20,45,2.16,MEDIUM,63,broad,12.4
+de,Make-up Farben testen,0,,,,,diagnosis-fit,12
+de,Make-up Beratung online,10,50,1.55,HIGH,83,broad,6.8
+de,Make-up für mein Gesicht,0,,,,,broad,-6
+de,Lippenstift Farbe testen,0,,,,,product-adjacent,-16
+en,makeup test,1000,0,5.57,LOW,23,tool-home,134
+en,skin tone makeup,720,0,1.46,HIGH,77,tool-home,119.2
+en,before and after makeup,1900,0,,LOW,0,broad,115.6
+en,makeup app,2400,57,2.57,MEDIUM,39,tool-home,111.6
+en,what makeup looks good on me,260,0,4.77,LOW,32,fit-home,102.3
+en,foundation shade finder,5400,14,1.77,MEDIUM,54,product-adjacent,100.6
+en,virtual makeover,260,6,3.58,MEDIUM,41,tool-home,96.3
+en,what makeup suits me,110,0,4.7,MEDIUM,38,fit-home,94.9
+en,AI makeup app,480,23,3.3,MEDIUM,40,tool-home,92.6
+en,virtual makeup app,720,41,0.62,LOW,1,tool-home,89.2
+en,virtual makeup,260,20,4.81,MEDIUM,40,tool-home,82.3
+en,makeup try on,480,11,4.85,MEDIUM,51,broad,80.6
+en,best makeup app,260,23,3.19,MEDIUM,53,tool-home,79.3
+en,makeup simulator,170,24,4.47,LOW,24,tool-home,74.7
+en,AI makeup try-on,50,15,4.38,MEDIUM,35,tool-home,73.2
+en,beauty filter app,170,74,4.09,MEDIUM,55,tool-home,68.7
+en,face makeup app,50,21,3.81,MEDIUM,48,tool-home,67.2
+en,makeup filter app,140,69,4.14,MEDIUM,49,tool-home,67
+en,AI beauty app,140,30,4.68,MEDIUM,34,tool-home,67
+en,online makeover,90,29,2.42,LOW,28,tool-home,64.2
+en,makeup for my face,50,0,3.35,MEDIUM,53,broad,64.2
+en,makeup look generator,50,0,4.14,MEDIUM,42,broad,64.2
+en,lipstick try on,110,7,6.53,HIGH,68,product-adjacent,53.9
+en,online makeup try on,110,18,5.28,MEDIUM,64,broad,52.9
+en,try on makeup online,110,18,5.28,MEDIUM,64,broad,52.9
+en,makeup finder,90,19,4.09,MEDIUM,54,broad,50.2
+en,makeup editor,170,27,5.9,MEDIUM,48,broad,47.7
+en,makeup camera app,40,66,3.49,MEDIUM,53,tool-home,42.3
+en,virtual makeup tester,10,,,,,tool-home,38.8
+en,shade match AI,10,,1.15,MEDIUM,55,tool-home,38.8
+en,AI beauty advisor,10,,,MEDIUM,33,tool-home,38.8
+en,makeup recommendation app,10,,1.71,MEDIUM,50,tool-home,38.8
+en,personal color analysis AI,10,,1.93,LOW,24,diagnosis-fit,32.8
+en,AI face analysis makeup,0,,,,,tool-home,18
+en,makeup analysis app,0,,,,,tool-home,18
+es,test de colorimetría,880,0,0.4,LOW,23,diagnosis-fit,114.9
+es,maquillaje natural,5400,0,0.86,HIGH,98,adjacent-content,106.6
+es,análisis de colorimetría,210,0,0.73,LOW,29,diagnosis-fit,94.5
+es,maquillaje paso a paso,480,5,0.53,MEDIUM,53,adjacent-content,68.6
+es,maquillaje online,140,11,0.54,HIGH,85,broad,62
+es,colorimetría personal,50,,0.56,MEDIUM,34,diagnosis-fit,60.2
+es,probador de maquillaje virtual,40,,1.42,MEDIUM,36,tool-home,50.3
+es,filtro de maquillaje,70,,0.81,LOW,14,broad,45
+es,simulador de maquillaje,20,,0.97,LOW,19,tool-home,44.4
+es,IA maquillaje,20,,0.87,HIGH,68,tool-home,44.4
+es,app maquillaje,30,49,0.89,MEDIUM,38,tool-home,39.8
+es,belleza IA,30,60,0.88,LOW,4,tool-home,39.8
+es,prueba de maquillaje virtual,10,,1.2,HIGH,86,tool-home,38.8
+es,maquillaje con IA,10,,,LOW,24,tool-home,38.8
+es,simulador de maquillaje online,10,,1.52,HIGH,79,tool-home,38.8
+es,maquillaje virtual gratis,10,,,,,tool-home,38.8
+es,app de maquillaje virtual,10,,,,,tool-home,38.8
+es,maquillaje virtual,20,46,2.28,MEDIUM,57,tool-home,36.4
+es,app para maquillar fotos,10,49,0.5,MEDIUM,50,tool-home,30.8
+es,aplicación de maquillaje,10,13,0.57,MEDIUM,34,broad,23.8
+es,probador de maquillaje con IA,0,,,,,tool-home,18
+es,qué maquillaje me queda,0,,,,,fit-home,18
+es,qué maquillaje me favorece,0,,,,,fit-home,18
+es,asesor de belleza IA,0,,,,,tool-home,18
+es,diagnóstico de piel IA,0,,,,,tool-home,18
+es,test de maquillaje en línea,0,,,,,tool-home,18
+es,maquillaje con inteligencia artificial,0,,,,,tool-home,18
+es,probar maquillaje online,10,,2.2,MEDIUM,49,broad,14.8
+es,maquillaje para mi rostro,10,,,,,broad,14.8
+es,maquillaje según tono de piel,10,,1.72,MEDIUM,55,broad,14.8
+es,asesor de maquillaje online,0,,,,,broad,-6
+es,look de maquillaje online,0,,,,,broad,-6
+es,simulador de labial,0,,,,,product-adjacent,-16
+es,probador de labiales virtual,0,,,,,product-adjacent,-16
+es,prueba de labial virtual,0,,,,,product-adjacent,-16
+fr,test colorimétrie,2400,0,0.79,LOW,27,diagnosis-fit,135.6
+fr,analyse colorimétrie,320,0,1.13,LOW,25,diagnosis-fit,106.1
+fr,maquillage naturel,2400,0,2.09,HIGH,100,adjacent-content,99.6
+fr,colorimétrie en ligne,260,0,1.04,LOW,27,diagnosis-fit,96.3
+fr,application maquillage,110,0,1.06,LOW,24,tool-home,94.9
+fr,simulateur maquillage,50,0,0.11,LOW,21,tool-home,88.2
+fr,maquillage virtuel,70,12,0.63,LOW,21,tool-home,79
+fr,filtre maquillage,110,0,0.48,LOW,17,broad,70.9
+fr,maquillage en ligne,170,74,1.61,HIGH,100,tool-home,68.7
+fr,IA beauté,50,,0.57,LOW,2,tool-home,66.2
+fr,choisir son fond de teint,110,0,0.48,HIGH,99,product-adjacent,60.9
+fr,IA maquillage,40,,0.64,LOW,19,tool-home,50.3
+fr,beauté IA,40,,,LOW,3,tool-home,50.3
+fr,relooking virtuel,10,17,0.67,LOW,17,tool-home,43.8
+fr,application relooking,30,51,5.53,LOW,29,tool-home,39.8
+fr,test maquillage virtuel,10,,0.13,MEDIUM,43,tool-home,38.8
+fr,essai maquillage virtuel,10,,0.71,MEDIUM,44,tool-home,38.8
+fr,essayer maquillage en ligne,10,,0.63,MEDIUM,59,tool-home,38.8
+fr,quel maquillage me va,10,,,,,fit-home,38.8
+fr,application filtre maquillage,10,,,LOW,15,tool-home,38.8
+fr,simulation maquillage en ligne,10,,,LOW,0,tool-home,38.8
+fr,quel maquillage pour moi,10,49,0.63,MEDIUM,54,fit-home,30.8
+fr,diagnostic teint IA,0,,,,,tool-home,18
+fr,diagnostic beauté IA,0,,,,,tool-home,18
+fr,conseiller beauté IA,0,,,,,tool-home,18
+fr,application beauté IA,0,,,,,tool-home,18
+fr,essai maquillage avant achat,0,,,,,tool-home,18
+fr,test couleur maquillage,0,,,,,tool-home,18
+fr,conseil maquillage en ligne,0,,,,,tool-home,18
+fr,trouver son maquillage,10,,1.43,MEDIUM,46,broad,14.8
+fr,maquillage pour mon visage,0,,,,,broad,-6
+fr,test rouge à lèvres virtuel,0,,,,,product-adjacent,-16
+fr,essayage virtuel rouge à lèvres,0,,,,,product-adjacent,-16
+fr,fond de teint teinte test,0,,,,,product-adjacent,-16
+fr,simulateur rouge à lèvres,0,,,,,product-adjacent,-16
+pt-BR,maquiagem básica,8100,6,0.21,LOW,31,tool-home,146.2
+pt-BR,colorimetria pessoal,5400,0,0.29,LOW,24,diagnosis-fit,142.6
+pt-BR,análise de coloração pessoal,720,0,0.4,MEDIUM,34,diagnosis-fit,113.2
+pt-BR,maquiagem passo a passo,5400,0,0.26,LOW,32,adjacent-content,106.6
+pt-BR,maquiagem natural,2900,0,0.54,HIGH,100,adjacent-content,101.3
+pt-BR,filtro de maquiagem,170,3,0.2,LOW,7,tool-home,95.7
+pt-BR,teste de colorimetria,590,16,0.14,LOW,29,diagnosis-fit,95.4
+pt-BR,maquiagem online,320,18,0.53,HIGH,98,tool-home,94.1
+pt-BR,aplicativo de maquiagem,880,39,0.24,LOW,26,tool-home,90.9
+pt-BR,maquiagem virtual,50,17,0.44,LOW,10,tool-home,71.2
+pt-BR,app de maquiagem,210,57,0.83,LOW,32,tool-home,70.5
+pt-BR,aplicativo para maquiagem,210,50,0.34,LOW,22,tool-home,70.5
+pt-BR,simulador de maquiagem,70,53,0.25,LOW,11,tool-home,61
+pt-BR,beleza IA,40,,,LOW,1,tool-home,50.3
+pt-BR,teste de maquiagem virtual,30,,0.46,MEDIUM,48,tool-home,47.8
+pt-BR,testar maquiagem online,20,,0.27,MEDIUM,44,tool-home,44.4
+pt-BR,maquiagem virtual com IA,10,,,,,tool-home,38.8
+pt-BR,qual maquiagem combina comigo,10,,,MEDIUM,57,tool-home,38.8
+pt-BR,app de filtro de maquiagem,10,,0.06,HIGH,71,tool-home,38.8
+pt-BR,simulador de maquiagem online,10,53,,LOW,29,tool-home,30.8
+pt-BR,teste de maquiagem IA,0,,,,,tool-home,18
+pt-BR,app para testar maquiagem,0,,,,,tool-home,18
+pt-BR,maquiagem para meu rosto,0,,,,,tool-home,18
+pt-BR,consultoria de maquiagem IA,0,,,,,tool-home,18
+pt-BR,consultor de beleza IA,0,,,,,tool-home,18
+pt-BR,análise de pele IA,0,,,,,tool-home,18
+pt-BR,experimentar maquiagem online,0,,,,,tool-home,18
+pt-BR,maquiagem virtual grátis,0,,,,,tool-home,18
+pt-BR,maquiagem com inteligência artificial,0,,,,,tool-home,18
+pt-BR,diagnóstico de maquiagem,0,,,,,tool-home,18
+pt-BR,simulador de maquiagem grátis,0,,,,,tool-home,18
+pt-BR,look de maquiagem online,0,,,,,tool-home,18
+pt-BR,simulador de batom,10,,0.31,MEDIUM,35,product-adjacent,4.8
+pt-BR,teste virtual de batom,0,,,,,product-adjacent,-16
+pt-BR,teste de batom virtual,0,,,,,product-adjacent,-16
+zh-TW,個人色彩,390,0,0.31,LOW,5,diagnosis-fit,107.8
+zh-TW,化妝步驟,5400,0,0.48,MEDIUM,36,adjacent-content,106.6
+zh-TW,個人色彩診斷,70,0,0.2,LOW,13,diagnosis-fit,85
+zh-TW,寶雅口紅,390,0,0.07,HIGH,81,product-adjacent,79.8
+zh-TW,不沾杯口紅,320,0,0.33,HIGH,98,product-adjacent,78.1
+zh-TW,開架口紅推薦,210,0,0.28,MEDIUM,51,product-adjacent,66.5
+zh-TW,個人色彩測驗,30,1,0.02,LOW,4,diagnosis-fit,62.8
+zh-TW,口紅試色,50,0,0.25,LOW,23,product-adjacent,54.2
+zh-TW,裸妝,590,,0.87,MEDIUM,40,adjacent-content,53.4
+zh-TW,新手化妝教學,110,0,0.27,MEDIUM,41,adjacent-content,52.9
+zh-TW,虛擬試妝,30,,1.26,LOW,3,tool-home,47.8
+zh-TW,線上試妝,30,,0.12,LOW,22,tool-home,47.8
+zh-TW,化妝 App,30,,2.51,LOW,21,tool-home,47.8
+zh-TW,AI 膚質檢測,20,,,LOW,22,tool-home,44.4
+zh-TW,AI 試妝,10,,,LOW,3,tool-home,38.8
+zh-TW,AI 美妝,10,,,LOW,7,tool-home,38.8
+zh-TW,彩妝推薦,10,0,,,,broad,36.8
+zh-TW,COSME 排行榜,70,,,LOW,1,product-adjacent,35
+zh-TW,化妝濾鏡,20,,0.78,LOW,7,broad,20.4
+zh-TW,AI 妝容診斷,0,,,,,tool-home,18
+zh-TW,AI 彩妝推薦,0,,,,,tool-home,18
+zh-TW,什麼妝適合我,0,,,,,fit-home,18
+zh-TW,適合我的妝容,0,,,,,fit-home,18
+zh-TW,適合我的彩妝顏色,0,,,,,fit-home,18
+zh-TW,AI 美妝顧問,0,,,,,tool-home,18
+zh-TW,自然妝,40,15,0.21,LOW,25,adjacent-content,15.3
+zh-TW,眼影試色,10,,,LOW,0,broad,14.8
+zh-TW,妝容濾鏡,0,,,,,broad,-6
+zh-TW,美妝顧問,0,,,,,broad,-6
+zh-TW,膚色診斷,0,,,,,broad,-6
+zh-TW,彩妝試色,0,,,,,broad,-6
+zh-TW,線上彩妝推薦,0,,,,,broad,-6
+zh-TW,適合我的口紅,0,,,,,product-adjacent,-16
+zh-TW,唇色推薦,0,,,,,product-adjacent,-16
+zh-TW,線上口紅試色,0,,,,,product-adjacent,-16
