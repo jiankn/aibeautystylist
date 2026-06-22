@@ -229,7 +229,7 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
   }
   @media (max-width: 767px) {
     :global(body.mobile-bottom-nav-ready) {
-      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+      padding-bottom: calc(60px + env(safe-area-inset-bottom));
     }
     .mobile-bottom-nav {
       position: fixed;
@@ -238,7 +238,7 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
       left: 0;
       z-index: 130;
       display: block;
-      padding: 7px 12px calc(7px + env(safe-area-inset-bottom));
+      padding: 5px 12px calc(5px + env(safe-area-inset-bottom));
       border-top: 1px solid color-mix(in srgb, var(--line) 86%, transparent);
       background: color-mix(in srgb, var(--bg-elevated) 96%, transparent);
       box-shadow: 0 -12px 34px rgba(18, 39, 66, 0.11);
@@ -248,7 +248,7 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
     .mobile-bottom-nav-inner {
       display: grid;
       max-width: 460px;
-      min-height: 58px;
+      min-height: 46px;
       grid-template-columns: repeat(
         var(--mobile-bottom-nav-items, 3),
         minmax(0, 1fr)
@@ -260,12 +260,12 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
     .mobile-bottom-item {
       display: inline-flex;
       min-width: 0;
-      min-height: 50px;
+      min-height: 42px;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 2px;
       flex-direction: column;
-      border-radius: 14px;
+      border-radius: 12px;
       color: var(--muted);
       font-size: 11px;
       font-weight: 720;
@@ -288,14 +288,14 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
     }
     .mobile-bottom-icon {
       display: grid;
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       place-items: center;
     }
     .mobile-bottom-icon svg {
       display: block;
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       fill: none;
       stroke: currentColor;
       stroke-linecap: round;
@@ -308,8 +308,8 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
     }
     .mobile-bottom-item-primary {
       position: relative;
-      width: min(112px, 100%);
-      min-height: 48px;
+      width: min(104px, 100%);
+      min-height: 40px;
       color: #fff8fb;
       flex-direction: row;
       gap: 5px;
@@ -323,12 +323,12 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
         inset 0 1px 0 rgba(255, 255, 255, 0.24);
     }
     .mobile-bottom-item-primary .mobile-bottom-icon {
-      width: 27px;
-      height: 27px;
+      width: 24px;
+      height: 24px;
     }
     .mobile-bottom-item-primary .mobile-bottom-icon svg {
-      width: 25px;
-      height: 25px;
+      width: 22px;
+      height: 22px;
       stroke-width: 2.25;
     }
     .mobile-bottom-item-primary span:last-child {

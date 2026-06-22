@@ -1878,15 +1878,15 @@ const resolvedMobileMenuSection = {
     }
     .mobile-account-summary {
       display: grid;
-      grid-template-columns: 38px minmax(0, 1fr) auto;
+      grid-template-columns: 36px minmax(0, 1fr) auto;
       grid-template-areas:
         "avatar title action"
-        "avatar meta meta";
-      min-height: 58px;
+        "avatar meta  action";
+      min-height: 52px;
       align-items: center;
       column-gap: 10px;
-      row-gap: 2px;
-      padding: 10px 0 12px;
+      row-gap: 3px;
+      padding: 10px 0;
       border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
       color: var(--text);
       text-decoration: none;
@@ -1921,7 +1921,7 @@ const resolvedMobileMenuSection = {
       color: var(--heading);
       font-size: 14px;
       font-weight: 850;
-      line-height: 1.25;
+      line-height: 1.2;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -1931,41 +1931,48 @@ const resolvedMobileMenuSection = {
       overflow: hidden;
       color: var(--body-secondary);
       font-size: 12px;
-      line-height: 1.25;
+      line-height: 1.2;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
     .mobile-account-summary-copy .mobile-account-plan-line {
       display: flex;
       align-items: center;
-      gap: 5px;
-      flex-wrap: wrap;
+      gap: 6px;
       overflow: visible;
-      line-height: 1.45;
-      text-overflow: clip;
       white-space: normal;
+      text-overflow: clip;
     }
-    .mobile-account-summary-copy .account-plan-badge {
-      min-height: 20px;
-      padding-inline: 7px;
-      font-size: 10.5px;
+    .mobile-account-summary-copy .mobile-account-plan-line :global(.account-plan-label) {
+      display: none;
     }
-    .mobile-account-summary-copy .account-plan-label,
-    .mobile-account-summary-copy .account-plan-quota {
+    .mobile-account-summary-copy :global(.account-plan-badge) {
+      min-height: 18px;
+      padding-inline: 6px;
+      font-size: 10px;
+    }
+    .mobile-account-summary-copy :global(.account-plan-quota) {
       font-size: 11px;
+      color: var(--muted);
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mobile-account-summary-copy :global(.account-plan-quota)::before {
+      content: none;
     }
     .mobile-account-summary-action {
       display: inline-flex;
       grid-area: action;
-      min-height: 30px;
+      min-height: 28px;
       align-items: center;
+      align-self: center;
       justify-self: end;
       padding: 0 10px;
       border: 1px solid color-mix(in srgb, var(--rose) 28%, transparent);
       border-radius: 999px;
       color: var(--rose);
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 850;
       white-space: nowrap;
     }
@@ -2333,17 +2340,18 @@ const resolvedMobileMenuSection = {
         font-size: 11.5px;
       }
       .mobile-account-summary {
-        grid-template-columns: 36px minmax(0, 1fr) auto;
+        grid-template-columns: 32px minmax(0, 1fr) auto;
         column-gap: 8px;
       }
       .mobile-account-summary-avatar {
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
+        font-size: 11px;
       }
       .mobile-account-summary-action {
-        min-height: 28px;
+        min-height: 26px;
         padding-inline: 8px;
-        font-size: 11.5px;
+        font-size: 11px;
       }
       .mobile-subnav-close {
         width: 36px;
