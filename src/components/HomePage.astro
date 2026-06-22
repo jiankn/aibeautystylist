@@ -191,6 +191,8 @@ const uploadConcerns = t("homepage", "uploadConcerns") as Array<{
   title: string;
   copy: string;
 }>;
+const homepageMetaTitle = t("homepage", "metaTitle") as string;
+const homepageMetaDescription = t("homepage", "metaDescription") as string;
 
 const origin = Astro.site ?? Astro.url.origin;
 const homepageJsonLd = JSON.stringify({
@@ -222,8 +224,8 @@ const homepageJsonLd = JSON.stringify({
 ---
 
 <BaseLayout
-  title={`${t("brand", "name")} | ${t("homepage", "heroKickerSub")}`}
-  description={t("footer", "brandDesc")}
+  title={homepageMetaTitle}
+  description={homepageMetaDescription}
   bodyClass="home-main"
   jsonLd={homepageJsonLd}
   preloadImages={heroPreloadImages}
