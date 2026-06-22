@@ -456,21 +456,32 @@ const planCards = planOrder.map((code) => ({
   content: copy.planContent[code],
 }));
 
-const productJsonLd = JSON.stringify({
+const structuredDataUrl = new URL(
+  currentPathname,
+  Astro.site ?? Astro.url.origin,
+).href;
+
+const pricingJsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Product",
+      "@type": "WebApplication",
+      "@id": `${structuredDataUrl}#webapp`,
+      url: structuredDataUrl,
       name: "AI Beauty Stylist",
       description: pageMetaDescription,
-      brand: { "@type": "Brand", name: "AI Beauty Stylist" },
+      applicationCategory: "LifestyleApplication",
+      operatingSystem: "Web",
+      publisher: { "@type": "Organization", name: "AI Beauty Stylist" },
       offers: planCards
         .filter((plan) => plan.code !== "free")
         .map((plan) => ({
           "@type": "Offer",
           name: plan.title,
+          url: structuredDataUrl,
           price: plan.monthlyPrice,
           priceCurrency: "USD",
+          availability: "https://schema.org/OnlineOnly",
           category: "subscription",
         })),
     },
@@ -507,7 +518,7 @@ const checkoutCopy = {
   title={pageMetaTitle}
   description={pageMetaDescription}
   bodyClass="pricing-body"
-  jsonLd={productJsonLd}
+  jsonLd={pricingJsonLd}
 >
   <SiteHeader active="pricing" />
   <main class="pricing-main">
