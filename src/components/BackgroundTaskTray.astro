@@ -1,5 +1,6 @@
 ---
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import type { SupportedLocale } from "../lib/i18n";
 
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
@@ -13,6 +14,288 @@ const taskRoutes = {
   history: localizeAppHref("/history"),
   tryonFree: localizeAppHref("/tryon-free"),
 };
+
+type BackgroundTaskCopy = {
+  collapse: string;
+  dismiss: string;
+  open: string;
+  runningState: string;
+  doneState: string;
+  failedState: string;
+  tryonTitle: string;
+  diagnosisTitle: string;
+  tryonDone: string;
+  diagnosisDone: string;
+  tryonFailed: string;
+  diagnosisFailed: string;
+  viewProgress: string;
+  viewResult: string;
+  viewReport: string;
+  queued: string;
+  validating: string;
+  tryonDiagnosis: string;
+  tryonImage: string;
+  diagnosisDiagnosis: string;
+  diagnosisImage: string;
+  failed: string;
+};
+
+const taskCopyByLocale: Record<SupportedLocale, BackgroundTaskCopy> = {
+  en: {
+    collapse: "Keep browsing",
+    dismiss: "Dismiss",
+    open: "View task",
+    runningState: "Running in background",
+    doneState: "Done",
+    failedState: "Needs retry",
+    tryonTitle: "Try-on image is generating",
+    diagnosisTitle: "AI diagnosis is running",
+    tryonDone: "Try-on result is ready",
+    diagnosisDone: "Diagnosis report is ready",
+    tryonFailed: "Try-on task was not completed",
+    diagnosisFailed: "Diagnosis task was not completed",
+    viewProgress: "View progress",
+    viewResult: "View result",
+    viewReport: "View report",
+    queued: "Task is queued. You can keep browsing.",
+    validating: "Checking photo quality and upload status.",
+    tryonDiagnosis: "Analyzing face and color direction.",
+    tryonImage: "Generating the try-on result.",
+    diagnosisDiagnosis: "Analyzing skin tone, face shape, and placement.",
+    diagnosisImage: "Preparing the diagnosis report and makeup advice.",
+    failed: "Processing did not finish. Return to retry.",
+  },
+  "zh-CN": {
+    collapse: "继续浏览",
+    dismiss: "知道了",
+    open: "查看任务",
+    runningState: "后台处理中",
+    doneState: "已完成",
+    failedState: "需要重试",
+    tryonTitle: "试妆图正在后台生成",
+    diagnosisTitle: "AI 诊断正在后台分析",
+    tryonDone: "试妆结果已生成",
+    diagnosisDone: "诊断报告已生成",
+    tryonFailed: "试妆任务未完成",
+    diagnosisFailed: "诊断任务未完成",
+    viewProgress: "查看进度",
+    viewResult: "查看结果",
+    viewReport: "查看报告",
+    queued: "任务已排队，你可以继续浏览其他内容。",
+    validating: "正在校验照片质量和上传状态。",
+    tryonDiagnosis: "正在分析面部与色彩方向。",
+    tryonImage: "正在生成试妆效果。",
+    diagnosisDiagnosis: "正在分析肤色、脸型与五官位置。",
+    diagnosisImage: "正在整理诊断报告和妆容建议。",
+    failed: "处理没有完成，回到任务页可以重试。",
+  },
+  "zh-TW": {
+    collapse: "繼續瀏覽",
+    dismiss: "知道了",
+    open: "查看任務",
+    runningState: "背景處理中",
+    doneState: "已完成",
+    failedState: "需要重試",
+    tryonTitle: "試妝圖正在背景生成",
+    diagnosisTitle: "AI 診斷正在背景分析",
+    tryonDone: "試妝結果已生成",
+    diagnosisDone: "診斷報告已生成",
+    tryonFailed: "試妝任務未完成",
+    diagnosisFailed: "診斷任務未完成",
+    viewProgress: "查看進度",
+    viewResult: "查看結果",
+    viewReport: "查看報告",
+    queued: "任務已排隊，你可以繼續瀏覽其他內容。",
+    validating: "正在檢查照片品質和上傳狀態。",
+    tryonDiagnosis: "正在分析臉部與色彩方向。",
+    tryonImage: "正在生成試妝效果。",
+    diagnosisDiagnosis: "正在分析膚色、臉型與五官位置。",
+    diagnosisImage: "正在整理診斷報告和妝容建議。",
+    failed: "處理沒有完成，回到任務頁可以重試。",
+  },
+  "de-DE": {
+    collapse: "Weiter stöbern",
+    dismiss: "Schließen",
+    open: "Aufgabe ansehen",
+    runningState: "Läuft im Hintergrund",
+    doneState: "Fertig",
+    failedState: "Erneut versuchen",
+    tryonTitle: "Make-up-Testbild wird erstellt",
+    diagnosisTitle: "KI-Diagnose läuft",
+    tryonDone: "Testergebnis ist bereit",
+    diagnosisDone: "Diagnosebericht ist bereit",
+    tryonFailed: "Make-up-Test wurde nicht abgeschlossen",
+    diagnosisFailed: "Diagnose wurde nicht abgeschlossen",
+    viewProgress: "Fortschritt ansehen",
+    viewResult: "Ergebnis ansehen",
+    viewReport: "Bericht ansehen",
+    queued: "Aufgabe ist in der Warteschlange. Du kannst weiter stöbern.",
+    validating: "Fotoqualität und Uploadstatus werden geprüft.",
+    tryonDiagnosis: "Gesicht und Farbrichtung werden analysiert.",
+    tryonImage: "Testergebnis wird erstellt.",
+    diagnosisDiagnosis:
+      "Hautton, Gesichtsform und Platzierung werden analysiert.",
+    diagnosisImage:
+      "Diagnosebericht und Make-up-Empfehlung werden vorbereitet.",
+    failed:
+      "Die Verarbeitung wurde nicht abgeschlossen. Kehre zum Wiederholen zurück.",
+  },
+  "fr-FR": {
+    collapse: "Continuer à parcourir",
+    dismiss: "Fermer",
+    open: "Voir la tâche",
+    runningState: "Traitement en arrière-plan",
+    doneState: "Terminé",
+    failedState: "À réessayer",
+    tryonTitle: "L'image d'essai maquillage est en génération",
+    diagnosisTitle: "Le diagnostic IA est en cours",
+    tryonDone: "Le résultat d'essai est prêt",
+    diagnosisDone: "Le rapport de diagnostic est prêt",
+    tryonFailed: "La tâche d'essai n'a pas été terminée",
+    diagnosisFailed: "La tâche de diagnostic n'a pas été terminée",
+    viewProgress: "Voir la progression",
+    viewResult: "Voir le résultat",
+    viewReport: "Voir le rapport",
+    queued:
+      "La tâche est en file d'attente. Vous pouvez continuer à parcourir.",
+    validating: "Vérification de la qualité photo et de l'envoi.",
+    tryonDiagnosis: "Analyse du visage et de la direction couleur.",
+    tryonImage: "Génération du résultat d'essai.",
+    diagnosisDiagnosis:
+      "Analyse du teint, de la forme du visage et du placement.",
+    diagnosisImage:
+      "Préparation du rapport de diagnostic et des conseils maquillage.",
+    failed: "Le traitement n'a pas abouti. Revenez pour réessayer.",
+  },
+  "ja-JP": {
+    collapse: "閲覧を続ける",
+    dismiss: "閉じる",
+    open: "タスクを見る",
+    runningState: "バックグラウンド処理中",
+    doneState: "完了",
+    failedState: "再試行が必要",
+    tryonTitle: "メイク試着画像を生成中",
+    diagnosisTitle: "AI診断を実行中",
+    tryonDone: "試着結果の準備ができました",
+    diagnosisDone: "診断レポートの準備ができました",
+    tryonFailed: "試着タスクが完了しませんでした",
+    diagnosisFailed: "診断タスクが完了しませんでした",
+    viewProgress: "進行状況を見る",
+    viewResult: "結果を見る",
+    viewReport: "レポートを見る",
+    queued: "タスクはキューに入りました。閲覧を続けられます。",
+    validating: "写真品質とアップロード状況を確認しています。",
+    tryonDiagnosis: "顔とカラー傾向を分析しています。",
+    tryonImage: "試着結果を生成しています。",
+    diagnosisDiagnosis: "肌トーン、顔型、配置を分析しています。",
+    diagnosisImage: "診断レポートとメイク提案を準備しています。",
+    failed: "処理が完了しませんでした。戻って再試行できます。",
+  },
+  "ko-KR": {
+    collapse: "계속 둘러보기",
+    dismiss: "닫기",
+    open: "작업 보기",
+    runningState: "백그라운드 처리 중",
+    doneState: "완료",
+    failedState: "재시도 필요",
+    tryonTitle: "메이크업 체험 이미지 생성 중",
+    diagnosisTitle: "AI 진단 진행 중",
+    tryonDone: "체험 결과가 준비되었습니다",
+    diagnosisDone: "진단 보고서가 준비되었습니다",
+    tryonFailed: "메이크업 체험 작업이 완료되지 않았습니다",
+    diagnosisFailed: "진단 작업이 완료되지 않았습니다",
+    viewProgress: "진행 상황 보기",
+    viewResult: "결과 보기",
+    viewReport: "보고서 보기",
+    queued: "작업이 대기열에 추가되었습니다. 계속 둘러볼 수 있습니다.",
+    validating: "사진 품질과 업로드 상태를 확인하고 있습니다.",
+    tryonDiagnosis: "얼굴과 컬러 방향을 분석하고 있습니다.",
+    tryonImage: "메이크업 체험 결과를 생성하고 있습니다.",
+    diagnosisDiagnosis: "피부 톤, 얼굴형, 위치를 분석하고 있습니다.",
+    diagnosisImage: "진단 보고서와 메이크업 조언을 준비하고 있습니다.",
+    failed:
+      "처리가 완료되지 않았습니다. 작업 페이지로 돌아가 재시도할 수 있습니다.",
+  },
+  "es-ES": {
+    collapse: "Seguir explorando",
+    dismiss: "Cerrar",
+    open: "Ver tarea",
+    runningState: "Procesando en segundo plano",
+    doneState: "Listo",
+    failedState: "Reintento necesario",
+    tryonTitle: "La imagen de prueba se está generando",
+    diagnosisTitle: "El diagnóstico IA está en curso",
+    tryonDone: "El resultado de prueba está listo",
+    diagnosisDone: "El informe de diagnóstico está listo",
+    tryonFailed: "La tarea de prueba no se completó",
+    diagnosisFailed: "La tarea de diagnóstico no se completó",
+    viewProgress: "Ver progreso",
+    viewResult: "Ver resultado",
+    viewReport: "Ver informe",
+    queued: "La tarea está en cola. Puedes seguir explorando.",
+    validating: "Comprobando calidad de la foto y estado de carga.",
+    tryonDiagnosis: "Analizando rostro y dirección de color.",
+    tryonImage: "Generando el resultado de prueba.",
+    diagnosisDiagnosis:
+      "Analizando tono de piel, forma del rostro y ubicación.",
+    diagnosisImage:
+      "Preparando el informe de diagnóstico y consejos de maquillaje.",
+    failed: "El procesamiento no terminó. Vuelve para reintentar.",
+  },
+  "es-419": {
+    collapse: "Seguir explorando",
+    dismiss: "Cerrar",
+    open: "Ver tarea",
+    runningState: "Procesando en segundo plano",
+    doneState: "Listo",
+    failedState: "Reintento necesario",
+    tryonTitle: "La imagen de prueba se está generando",
+    diagnosisTitle: "El diagnóstico IA está en curso",
+    tryonDone: "El resultado de prueba está listo",
+    diagnosisDone: "El informe de diagnóstico está listo",
+    tryonFailed: "La tarea de prueba no se completó",
+    diagnosisFailed: "La tarea de diagnóstico no se completó",
+    viewProgress: "Ver progreso",
+    viewResult: "Ver resultado",
+    viewReport: "Ver informe",
+    queued: "La tarea está en cola. Puedes seguir explorando.",
+    validating: "Comprobando calidad de la foto y estado de carga.",
+    tryonDiagnosis: "Analizando rostro y dirección de color.",
+    tryonImage: "Generando el resultado de prueba.",
+    diagnosisDiagnosis:
+      "Analizando tono de piel, forma del rostro y ubicación.",
+    diagnosisImage:
+      "Preparando el informe de diagnóstico y consejos de maquillaje.",
+    failed: "El procesamiento no terminó. Vuelve para reintentar.",
+  },
+  "pt-BR": {
+    collapse: "Continuar navegando",
+    dismiss: "Fechar",
+    open: "Ver tarefa",
+    runningState: "Processando em segundo plano",
+    doneState: "Concluído",
+    failedState: "Precisa tentar novamente",
+    tryonTitle: "A imagem de teste está sendo gerada",
+    diagnosisTitle: "O diagnóstico IA está em andamento",
+    tryonDone: "O resultado do teste está pronto",
+    diagnosisDone: "O relatório de diagnóstico está pronto",
+    tryonFailed: "A tarefa de teste não foi concluída",
+    diagnosisFailed: "A tarefa de diagnóstico não foi concluída",
+    viewProgress: "Ver progresso",
+    viewResult: "Ver resultado",
+    viewReport: "Ver relatório",
+    queued: "A tarefa entrou na fila. Você pode continuar navegando.",
+    validating: "Verificando qualidade da foto e status do envio.",
+    tryonDiagnosis: "Analisando rosto e direção de cor.",
+    tryonImage: "Gerando o resultado do teste.",
+    diagnosisDiagnosis:
+      "Analisando tom de pele, formato do rosto e posicionamento.",
+    diagnosisImage:
+      "Preparando o relatório de diagnóstico e os conselhos de maquiagem.",
+    failed: "O processamento não terminou. Volte para tentar novamente.",
+  },
+};
+const copy = taskCopyByLocale[locale];
 ---
 
 <aside
@@ -50,7 +333,7 @@ const taskRoutes = {
   </section>
 </aside>
 
-<script is:inline define:vars={{ locale, taskRoutes }}>
+<script is:inline define:vars={{ copy, taskRoutes }}>
   (() => {
     const tray = document.querySelector("[data-background-task-tray]");
     if (!tray) return;
@@ -64,57 +347,6 @@ const taskRoutes = {
     const progress = tray.querySelector("[data-background-task-progress]");
     const collapse = tray.querySelector("[data-background-task-collapse]");
     const primary = tray.querySelector("[data-background-task-primary]");
-
-    const isZh = String(locale || "").startsWith("zh");
-    const copy = isZh
-      ? {
-          collapse: "继续浏览",
-          dismiss: "知道了",
-          open: "查看任务",
-          runningState: "后台处理中",
-          doneState: "已完成",
-          failedState: "需要重试",
-          tryonTitle: "试妆图正在后台生成",
-          diagnosisTitle: "AI 诊断正在后台分析",
-          tryonDone: "试妆结果已生成",
-          diagnosisDone: "诊断报告已生成",
-          tryonFailed: "试妆任务未完成",
-          diagnosisFailed: "诊断任务未完成",
-          viewProgress: "查看进度",
-          viewResult: "查看结果",
-          viewReport: "查看报告",
-          queued: "任务已排队，你可以继续浏览其他内容。",
-          validating: "正在校验照片质量和上传状态。",
-          tryonDiagnosis: "正在分析面部与色彩方向。",
-          tryonImage: "正在生成试妆效果。",
-          diagnosisDiagnosis: "正在分析肤色、脸型与五官位置。",
-          diagnosisImage: "正在整理诊断报告和妆容建议。",
-          failed: "处理没有完成，回到任务页可以重试。",
-        }
-      : {
-          collapse: "Keep browsing",
-          dismiss: "Dismiss",
-          open: "View task",
-          runningState: "Running in background",
-          doneState: "Done",
-          failedState: "Needs retry",
-          tryonTitle: "Try-on image is generating",
-          diagnosisTitle: "AI diagnosis is running",
-          tryonDone: "Try-on result is ready",
-          diagnosisDone: "Diagnosis report is ready",
-          tryonFailed: "Try-on task was not completed",
-          diagnosisFailed: "Diagnosis task was not completed",
-          viewProgress: "View progress",
-          viewResult: "View result",
-          viewReport: "View report",
-          queued: "Task is queued. You can keep browsing.",
-          validating: "Checking photo quality and upload status.",
-          tryonDiagnosis: "Analyzing face and color direction.",
-          tryonImage: "Generating the try-on result.",
-          diagnosisDiagnosis: "Analyzing skin tone, face shape, and placement.",
-          diagnosisImage: "Preparing the diagnosis report and makeup advice.",
-          failed: "Processing did not finish. Return to retry.",
-        };
 
     const storageKey = "abs:background-tasks:v1";
     const collapsedKey = "abs:background-tasks:collapsed";
@@ -201,7 +433,9 @@ const taskRoutes = {
           : copy.tryonDiagnosis;
       }
       if (status === "image_running") {
-        return task.type === "diagnosis" ? copy.diagnosisImage : copy.tryonImage;
+        return task.type === "diagnosis"
+          ? copy.diagnosisImage
+          : copy.tryonImage;
       }
       if (status === "succeeded") {
         return task.type === "diagnosis" ? copy.diagnosisDone : copy.tryonDone;
@@ -239,7 +473,9 @@ const taskRoutes = {
 
     function getActiveTask() {
       return (
-        tasks.find((task) => runningStatuses.has(task.status)) || tasks[0] || null
+        tasks.find((task) => runningStatuses.has(task.status)) ||
+        tasks[0] ||
+        null
       );
     }
 
@@ -277,7 +513,9 @@ const taskRoutes = {
             ? copy.failedState
             : copy.runningState;
       }
-      if (stage) stage.textContent = active.stage || statusToStage(active, active.status);
+      if (stage)
+        stage.textContent =
+          active.stage || statusToStage(active, active.status);
       if (progress) progress.style.width = `${active.progress || 0}%`;
       if (collapse) {
         collapse.textContent =
@@ -293,7 +531,11 @@ const taskRoutes = {
       }
       if (bubbleText) {
         bubbleText.textContent =
-          runningCount > 1 ? `${runningCount}` : isDone ? copy.doneState : copy.open;
+          runningCount > 1
+            ? `${runningCount}`
+            : isDone
+              ? copy.doneState
+              : copy.open;
       }
       if (card) card.hidden = collapsed;
       if (bubble) bubble.hidden = !collapsed;
@@ -301,7 +543,9 @@ const taskRoutes = {
 
     async function pollTask(task) {
       try {
-        const response = await fetch(`/api/tryon-jobs/${encodeURIComponent(task.id)}`);
+        const response = await fetch(
+          `/api/tryon-jobs/${encodeURIComponent(task.id)}`,
+        );
         const payload = await response.json().catch(() => null);
         if (!response.ok || !payload?.ok || !payload.data) return;
         const job = payload.data;
@@ -311,7 +555,9 @@ const taskRoutes = {
           progress: statusToProgress(job.status),
           stage: statusToStage(task, job.status),
           resultHref:
-            task.type === "diagnosis" ? taskRoutes.diagnosis : taskRoutes.history,
+            task.type === "diagnosis"
+              ? taskRoutes.diagnosis
+              : taskRoutes.history,
         };
         const wasRunning = runningStatuses.has(task.status);
         mergeTask(next);
@@ -402,11 +648,19 @@ const taskRoutes = {
   }
   .background-task-tray[data-state="success"] .background-task-card {
     border-color: var(--success-border);
-    background: color-mix(in srgb, var(--surface-success) 88%, var(--bg-elevated));
+    background: color-mix(
+      in srgb,
+      var(--surface-success) 88%,
+      var(--bg-elevated)
+    );
   }
   .background-task-tray[data-state="error"] .background-task-card {
     border-color: var(--danger-border);
-    background: color-mix(in srgb, var(--surface-danger) 88%, var(--bg-elevated));
+    background: color-mix(
+      in srgb,
+      var(--surface-danger) 88%,
+      var(--bg-elevated)
+    );
   }
   .background-task-mark,
   .background-task-bubble-mark {

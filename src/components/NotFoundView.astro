@@ -2,10 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "./SiteHeader.astro";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
-import { getCurrentLocale } from "../lib/i18n";
+import { getCurrentLocale, type SupportedLocale } from "../lib/i18n";
 
 const currentLocale = getCurrentLocale();
-const isZh = currentLocale.startsWith("zh");
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(Astro.url.pathname);
 const homeHref = getLocalizedAppHref("/", currentRoute.language.slug);
@@ -13,23 +12,99 @@ const discoverHref = getLocalizedAppHref(
   "/discover",
   currentRoute.language.slug,
 );
-const copy = isZh
-  ? {
-      title: "页面未找到 | AI Beauty Stylist",
-      description: "你访问的页面不存在或已被移除。",
-      heading: "页面未找到",
-      body: "这个链接可能已失效，也可能是地址输入有误。",
-      home: "返回首页",
-      discover: "浏览妆容",
-    }
-  : {
-      title: "Page not found | AI Beauty Stylist",
-      description: "The page you requested does not exist or was removed.",
-      heading: "Page not found",
-      body: "This link may have expired, or the address may be incorrect.",
-      home: "Back to home",
-      discover: "Browse looks",
-    };
+
+type NotFoundCopy = {
+  title: string;
+  description: string;
+  heading: string;
+  body: string;
+  home: string;
+  discover: string;
+};
+
+const copyByLocale: Record<SupportedLocale, NotFoundCopy> = {
+  en: {
+    title: "Page not found | AI Beauty Stylist",
+    description: "The page you requested does not exist or was removed.",
+    heading: "Page not found",
+    body: "This link may have expired, or the address may be incorrect.",
+    home: "Back to home",
+    discover: "Browse looks",
+  },
+  "zh-CN": {
+    title: "页面未找到 | AI Beauty Stylist",
+    description: "你访问的页面不存在或已被移除。",
+    heading: "页面未找到",
+    body: "这个链接可能已失效，也可能是地址输入有误。",
+    home: "返回首页",
+    discover: "浏览妆容",
+  },
+  "zh-TW": {
+    title: "頁面未找到 | AI Beauty Stylist",
+    description: "你造訪的頁面不存在或已被移除。",
+    heading: "頁面未找到",
+    body: "這個連結可能已失效，也可能是網址輸入有誤。",
+    home: "返回首頁",
+    discover: "瀏覽妝容",
+  },
+  "de-DE": {
+    title: "Seite nicht gefunden | AI Beauty Stylist",
+    description: "Die angeforderte Seite existiert nicht oder wurde entfernt.",
+    heading: "Seite nicht gefunden",
+    body: "Dieser Link ist möglicherweise abgelaufen oder die Adresse ist falsch.",
+    home: "Zur Startseite",
+    discover: "Looks durchsuchen",
+  },
+  "fr-FR": {
+    title: "Page introuvable | AI Beauty Stylist",
+    description: "La page demandée n'existe pas ou a été supprimée.",
+    heading: "Page introuvable",
+    body: "Ce lien a peut-être expiré, ou l'adresse est incorrecte.",
+    home: "Retour à l'accueil",
+    discover: "Parcourir les looks",
+  },
+  "ja-JP": {
+    title: "ページが見つかりません | AI Beauty Stylist",
+    description: "リクエストされたページは存在しないか、削除されました。",
+    heading: "ページが見つかりません",
+    body: "リンクの有効期限が切れているか、アドレスが間違っている可能性があります。",
+    home: "ホームへ戻る",
+    discover: "ルックを見る",
+  },
+  "ko-KR": {
+    title: "페이지를 찾을 수 없음 | AI Beauty Stylist",
+    description: "요청한 페이지가 없거나 삭제되었습니다.",
+    heading: "페이지를 찾을 수 없음",
+    body: "링크가 만료되었거나 주소가 잘못 입력되었을 수 있습니다.",
+    home: "홈으로 돌아가기",
+    discover: "룩 둘러보기",
+  },
+  "es-ES": {
+    title: "Página no encontrada | AI Beauty Stylist",
+    description: "La página solicitada no existe o fue eliminada.",
+    heading: "Página no encontrada",
+    body: "Este enlace puede haber caducado o la dirección puede ser incorrecta.",
+    home: "Volver al inicio",
+    discover: "Explorar looks",
+  },
+  "es-419": {
+    title: "Página no encontrada | AI Beauty Stylist",
+    description: "La página solicitada no existe o fue eliminada.",
+    heading: "Página no encontrada",
+    body: "Este enlace puede haber caducado o la dirección puede ser incorrecta.",
+    home: "Volver al inicio",
+    discover: "Explorar looks",
+  },
+  "pt-BR": {
+    title: "Página não encontrada | AI Beauty Stylist",
+    description: "A página solicitada não existe ou foi removida.",
+    heading: "Página não encontrada",
+    body: "Este link pode ter expirado ou o endereço pode estar incorreto.",
+    home: "Voltar ao início",
+    discover: "Explorar looks",
+  },
+};
+const copy = copyByLocale[currentLocale];
 ---
 
 <BaseLayout

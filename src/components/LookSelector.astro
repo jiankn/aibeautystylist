@@ -1,7 +1,7 @@
 ---
 import type { LookCatalogItem } from "../data/lookCatalog";
 import type { ResolvedLook } from "../data/makeup/audienceTypes";
-import { getCurrentLocale } from "../lib/i18n";
+import { getCurrentLocale, type SupportedLocale } from "../lib/i18n";
 
 type LookInput = LookCatalogItem | ResolvedLook;
 
@@ -13,8 +13,22 @@ interface Props {
 
 const { looks, selectedSlug, variant = "list" } = Astro.props;
 const locale = getCurrentLocale();
-const isZh = locale.startsWith("zh");
-const selectedLabel = isZh ? "已选择" : "Selected";
+const selectorCopyByLocale: Record<
+  SupportedLocale,
+  { selectedLabel: string; listSeparator: string }
+> = {
+  en: { selectedLabel: "Selected: ", listSeparator: ", " },
+  "zh-CN": { selectedLabel: "已选择：", listSeparator: "，" },
+  "zh-TW": { selectedLabel: "已選擇：", listSeparator: "，" },
+  "de-DE": { selectedLabel: "Ausgewählt: ", listSeparator: ", " },
+  "fr-FR": { selectedLabel: "Sélectionné : ", listSeparator: ", " },
+  "ja-JP": { selectedLabel: "選択済み：", listSeparator: "、" },
+  "ko-KR": { selectedLabel: "선택됨: ", listSeparator: ", " },
+  "es-ES": { selectedLabel: "Seleccionado: ", listSeparator: ", " },
+  "es-419": { selectedLabel: "Seleccionado: ", listSeparator: ", " },
+  "pt-BR": { selectedLabel: "Selecionado: ", listSeparator: ", " },
+};
+const selectorCopy = selectorCopyByLocale[locale];
 ---
 
 {
@@ -35,7 +49,7 @@ const selectedLabel = isZh ? "已选择" : "Selected";
           data-advisor-anchors={JSON.stringify(look.advisor.anchors)}
           data-advisor-caution={look.advisor.caution}
           data-advisor-judge={JSON.stringify(look.advisor.judge)}
-          data-toast={`${selectedLabel}${look.title}`}
+          data-toast={`${selectorCopy.selectedLabel}${look.title}`}
         >
           <img src={look.image} alt={look.imageAlt} loading="lazy" />
           <strong>{look.title}</strong>
@@ -65,7 +79,7 @@ const selectedLabel = isZh ? "已选择" : "Selected";
             <p>
               {look.scenarios.join(" / ")}
               <br />
-              {look.finish.join(isZh ? "，" : ", ")}
+              {look.finish.join(selectorCopy.listSeparator)}
             </p>
           </div>
           <span class="check-dot">✓</span>

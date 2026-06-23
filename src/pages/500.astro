@@ -2,42 +2,160 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
-import { getCurrentLocale } from "../lib/i18n";
+import { getCurrentLocale, type SupportedLocale } from "../lib/i18n";
 
 const currentLocale = getCurrentLocale();
-const isZh = currentLocale.startsWith("zh");
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const homeHref = getLocalizedAppHref("/", currentRoute.language.slug);
 const faqHref = getLocalizedAppHref("/faq", currentRoute.language.slug);
 const supportHref = getLocalizedAppHref("/support", currentRoute.language.slug);
-const copy = isZh
-  ? {
-      title: "500 服务器错误",
-      description: "服务器暂时无法完成请求，请稍后重试或联系支持。",
-      label: "500 SERVER ERROR",
-      heading: "服务器暂时不可用",
-      message: "很抱歉，刚才的请求没有成功完成。",
-      details:
-        "我们已记录该异常。你可以稍后刷新重试，或先返回首页、查看帮助中心、提交支持工单。",
-      home: "返回首页",
-      faq: "查看帮助中心",
-      support: "联系客户支持",
-    }
-  : {
-      title: "500 server error",
-      description:
-        "The server could not complete the request. Try again later or contact support.",
-      label: "500 SERVER ERROR",
-      heading: "The server is temporarily unavailable",
-      message: "Sorry, the last request did not complete successfully.",
-      details:
-        "The exception has been recorded. You can retry later, return home, check the help center, or contact support.",
-      home: "Back to home",
-      faq: "Help center",
-      support: "Contact support",
-    };
+
+type ServerErrorCopy = {
+  title: string;
+  description: string;
+  label: string;
+  heading: string;
+  message: string;
+  details: string;
+  home: string;
+  faq: string;
+  support: string;
+};
+
+const copyByLocale: Record<SupportedLocale, ServerErrorCopy> = {
+  en: {
+    title: "500 server error",
+    description:
+      "The server could not complete the request. Try again later or contact support.",
+    label: "500 server error",
+    heading: "The server is temporarily unavailable",
+    message: "Sorry, the last request did not complete successfully.",
+    details:
+      "The exception has been recorded. You can retry later, return home, check the help center, or contact support.",
+    home: "Back to home",
+    faq: "Help center",
+    support: "Contact support",
+  },
+  "zh-CN": {
+    title: "500 服务器错误",
+    description: "服务器暂时无法完成请求，请稍后重试或联系支持。",
+    label: "500 服务器错误",
+    heading: "服务器暂时不可用",
+    message: "很抱歉，刚才的请求没有成功完成。",
+    details:
+      "我们已记录该异常。你可以稍后刷新重试，或先返回首页、查看帮助中心、提交支持工单。",
+    home: "返回首页",
+    faq: "查看帮助中心",
+    support: "联系客户支持",
+  },
+  "zh-TW": {
+    title: "500 伺服器錯誤",
+    description: "伺服器暫時無法完成請求，請稍後重試或聯絡支援。",
+    label: "500 伺服器錯誤",
+    heading: "伺服器暫時無法使用",
+    message: "很抱歉，剛才的請求沒有成功完成。",
+    details:
+      "我們已記錄該異常。你可以稍後重新整理重試，或先返回首頁、查看說明中心、提交支援工單。",
+    home: "返回首頁",
+    faq: "查看說明中心",
+    support: "聯絡客戶支援",
+  },
+  "de-DE": {
+    title: "500 Serverfehler",
+    description:
+      "Der Server konnte die Anfrage nicht abschließen. Versuche es später erneut oder kontaktiere den Support.",
+    label: "500 Serverfehler",
+    heading: "Der Server ist vorübergehend nicht verfügbar",
+    message:
+      "Entschuldigung, die letzte Anfrage wurde nicht erfolgreich abgeschlossen.",
+    details:
+      "Der Fehler wurde aufgezeichnet. Du kannst es später erneut versuchen, zur Startseite zurückkehren, die Hilfe öffnen oder den Support kontaktieren.",
+    home: "Zur Startseite",
+    faq: "Hilfe",
+    support: "Support kontaktieren",
+  },
+  "fr-FR": {
+    title: "Erreur serveur 500",
+    description:
+      "Le serveur n'a pas pu terminer la demande. Réessayez plus tard ou contactez le support.",
+    label: "Erreur serveur 500",
+    heading: "Le serveur est temporairement indisponible",
+    message: "Désolé, la dernière demande n'a pas abouti.",
+    details:
+      "L'exception a été enregistrée. Vous pouvez réessayer plus tard, revenir à l'accueil, consulter l'aide ou contacter le support.",
+    home: "Retour à l'accueil",
+    faq: "Centre d'aide",
+    support: "Contacter le support",
+  },
+  "ja-JP": {
+    title: "500 サーバーエラー",
+    description:
+      "サーバーがリクエストを完了できませんでした。時間をおいて再試行するか、サポートへお問い合わせください。",
+    label: "500 サーバーエラー",
+    heading: "サーバーを一時的に利用できません",
+    message: "申し訳ありません。直前のリクエストは正常に完了しませんでした。",
+    details:
+      "この例外は記録されました。後でもう一度試すか、ホームへ戻る、ヘルプを見る、サポートへ問い合わせることができます。",
+    home: "ホームへ戻る",
+    faq: "ヘルプセンター",
+    support: "サポートに連絡",
+  },
+  "ko-KR": {
+    title: "500 서버 오류",
+    description:
+      "서버가 요청을 완료하지 못했습니다. 잠시 후 다시 시도하거나 지원팀에 문의하세요.",
+    label: "500 서버 오류",
+    heading: "서버를 일시적으로 사용할 수 없습니다",
+    message: "죄송합니다. 방금 요청이 정상적으로 완료되지 않았습니다.",
+    details:
+      "해당 오류를 기록했습니다. 잠시 후 다시 시도하거나 홈으로 돌아가고, 도움말을 확인하거나 지원팀에 문의할 수 있습니다.",
+    home: "홈으로 돌아가기",
+    faq: "도움말 센터",
+    support: "고객 지원 문의",
+  },
+  "es-ES": {
+    title: "Error del servidor 500",
+    description:
+      "El servidor no pudo completar la solicitud. Inténtalo más tarde o contacta con soporte.",
+    label: "Error del servidor 500",
+    heading: "El servidor no está disponible temporalmente",
+    message: "Lo sentimos, la última solicitud no se completó correctamente.",
+    details:
+      "La excepción quedó registrada. Puedes intentarlo más tarde, volver al inicio, consultar ayuda o contactar con soporte.",
+    home: "Volver al inicio",
+    faq: "Centro de ayuda",
+    support: "Contactar con soporte",
+  },
+  "es-419": {
+    title: "Error del servidor 500",
+    description:
+      "El servidor no pudo completar la solicitud. Inténtalo más tarde o contacta a soporte.",
+    label: "Error del servidor 500",
+    heading: "El servidor no está disponible temporalmente",
+    message: "Lo sentimos, la última solicitud no se completó correctamente.",
+    details:
+      "La excepción quedó registrada. Puedes intentarlo más tarde, volver al inicio, consultar ayuda o contactar a soporte.",
+    home: "Volver al inicio",
+    faq: "Centro de ayuda",
+    support: "Contactar a soporte",
+  },
+  "pt-BR": {
+    title: "Erro de servidor 500",
+    description:
+      "O servidor não conseguiu concluir a solicitação. Tente mais tarde ou fale com o suporte.",
+    label: "Erro de servidor 500",
+    heading: "O servidor está temporariamente indisponível",
+    message: "Desculpe, a última solicitação não foi concluída com sucesso.",
+    details:
+      "A exceção foi registrada. Você pode tentar mais tarde, voltar ao início, consultar a central de ajuda ou falar com o suporte.",
+    home: "Voltar ao início",
+    faq: "Central de ajuda",
+    support: "Falar com suporte",
+  },
+};
+const copy = copyByLocale[currentLocale];
 ---
 
 <BaseLayout

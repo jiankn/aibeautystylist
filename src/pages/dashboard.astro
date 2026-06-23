@@ -15,7 +15,6 @@ import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import { getCurrentLocale, type SupportedLocale } from "../lib/i18n";
 
 const locale = getCurrentLocale();
-const isZh = locale.startsWith("zh");
 const isLoggedIn = Boolean(Astro.locals.isLoggedIn);
 const audienceContext = Astro.locals.audienceContext;
 const currentPathname = Astro.originPathname || Astro.url.pathname;
@@ -75,228 +74,1207 @@ const recommendations = resolveLookCatalog(audienceContext)
     finish: look.finish.slice(0, 2),
   }));
 const primaryRecommendation = recommendations[0];
+
+type RepresentationKey = (typeof representationKeys)[number];
+type DashboardCopyBase = {
+  title: string;
+  description: string;
+  railLabel: string;
+  menuLabel: string;
+  currentSection: string;
+  openMenu: string;
+  closeMenu: string;
+  overview: string;
+  workspace: string;
+  diagnosis: string;
+  history: string;
+  saved: string;
+  preferences: string;
+  billing: string;
+  settings: string;
+  eyebrow: string;
+  heading: string;
+  subtitle: string;
+  quickActions: string;
+  startTryon: string;
+  openDiagnosis: string;
+  signedInAs: string;
+  loadingAccount: string;
+  plan: string;
+  planNote: string;
+  quota: string;
+  quotaNote: string;
+  looks: string;
+  looksNote: string;
+  savedLooks: string;
+  savedNote: string;
+  nextAction: string;
+  nextActionTitle: string;
+  nextActionBody: string;
+  recommended: string;
+  allLooks: string;
+  recentHistory: string;
+  viewWorkspace: string;
+  viewAllHistory: string;
+  savedPanelTitle: string;
+  removeSaved: string;
+  viewShareCard: string;
+  diagnosisPanelTitle: string;
+  runDiagnosis: string;
+  preferencesTitle: string;
+  editPreferences: string;
+  billingTitle: string;
+  manageBilling: string;
+  upgrade: string;
+  statusSucceeded: string;
+  statusRunning: string;
+  statusFailed: string;
+  emptyHistory: string;
+  emptySaved: string;
+  emptyDiagnosis: string;
+  openLook: string;
+  unknownLook: string;
+  confidence: string;
+  noPreference: string;
+  marketProfile: string;
+  representation: string;
+  representationLabels: Record<RepresentationKey, string>;
+  portalFailed: string;
+  loadFailed: string;
+  freePlanNote: string;
+  paidPlanNote: string;
+  signInRequired: string;
+  signIn: string;
+};
+
+type DashboardCopy = DashboardCopyBase & {
+  checkoutSuccess: string;
+};
+
+type DashboardModuleCopy = {
+  accountActions: string;
+  currentPreference: string;
+  preferenceHint: string;
+  diagnosisCapabilities: string;
+  diagnosisCapabilityTone: string;
+  diagnosisCapabilityFace: string;
+  diagnosisCapabilityLook: string;
+  diagnosisEmptyTitle: string;
+  billingCurrentPlan: string;
+  billingUsage: string;
+  billingSavedLimit: string;
+  billingSavedUnit: string;
+  billingRefresh: string;
+  billingRefreshFallback: string;
+  billingIncluded: string;
+  billingFreeBenefit: string;
+  billingPaidBenefit: string;
+  billingSharedBenefit: string;
+};
+
+type PlanNameCopy = Record<"free" | "pro" | "premium", string>;
+
+const dashboardCheckoutSuccessFallbackByLocale: Record<
+  SupportedLocale,
+  string
+> = {
+  en: "Checkout completed. Your plan may take a moment to update.",
+  "zh-CN": "支付已完成，计划状态可能需要片刻同步。",
+  "zh-TW": "付款已完成，方案狀態可能需要片刻同步。",
+  "de-DE":
+    "Der Checkout ist abgeschlossen. Dein Tarif braucht eventuell einen Moment zum Aktualisieren.",
+  "fr-FR":
+    "Le paiement est terminé. Votre formule peut prendre un instant à se mettre à jour.",
+  "ja-JP":
+    "決済が完了しました。プランの反映には少し時間がかかる場合があります。",
+  "ko-KR":
+    "결제가 완료되었습니다. 요금제 상태가 반영되기까지 잠시 걸릴 수 있습니다.",
+  "es-ES":
+    "El pago se completó. Tu plan puede tardar un momento en actualizarse.",
+  "es-419":
+    "El pago se completó. Tu plan puede tardar un momento en actualizarse.",
+  "pt-BR":
+    "O pagamento foi concluído. Seu plano pode levar alguns instantes para atualizar.",
+};
+
 const checkoutSuccessMessage =
   getLocalizedPricingContent(locale)?.copy.checkoutSuccess ??
-  (isZh
-    ? "支付已完成，计划状态可能需要片刻同步。"
-    : "Checkout completed. Your plan may take a moment to update.");
+  dashboardCheckoutSuccessFallbackByLocale[locale];
 
-const copy = isZh
-  ? {
-      title: "工作台 | AI Beauty Stylist",
-      description:
-        "查看你的 AI 试妆额度、最近结果、收藏妆容、AI 诊断和内容偏好。",
-      railLabel: "工作台导航",
-      menuLabel: "菜单",
-      currentSection: "当前模块",
-      openMenu: "打开工作台菜单",
-      closeMenu: "关闭工作台菜单",
-      overview: "总览",
-      workspace: "开始试妆",
-      diagnosis: "AI 诊断",
-      history: "历史",
-      saved: "收藏",
-      preferences: "偏好",
-      billing: "订阅",
-      settings: "账户",
-      eyebrow: "个人工作台",
-      heading: "我的美妆工作台",
-      subtitle:
-        "从这里继续试妆、查看最近结果、保存灵感，并把诊断建议转成下一次可执行的妆容选择。",
-      quickActions: "快捷操作",
-      startTryon: "开始试妆",
-      openDiagnosis: "查看 AI 诊断",
-      signedInAs: "已登录",
-      loadingAccount: "正在读取账户",
-      plan: "会员计划",
-      planNote: "根据当前权益推荐入口",
-      quota: "本月额度",
-      quotaNote: "试妆和诊断共用权益",
-      looks: "试妆结果",
-      looksNote: "最近 100 条以内",
-      savedLooks: "收藏妆容",
-      savedNote: "可用于复盘和分享",
-      nextAction: "下一步",
-      nextActionTitle: "继续生成一张可落地的妆容结果",
-      nextActionBody:
-        "系统会按你的内容偏好优先推荐妆容资产。你仍然可以访问全球资产包和全部参考图。",
-      recommended: "当前推荐",
-      allLooks: "浏览妆容库",
-      recentHistory: "最近试妆",
-      viewWorkspace: "打开工作台",
-      viewAllHistory: "查看全部历史",
-      savedPanelTitle: "收藏板",
-      removeSaved: "取消收藏",
-      viewShareCard: "分享卡片",
-      diagnosisPanelTitle: "AI 诊断摘要",
-      runDiagnosis: "开始诊断",
-      preferencesTitle: "内容偏好",
-      editPreferences: "编辑偏好",
-      billingTitle: "订阅与额度",
-      manageBilling: "管理订阅",
-      upgrade: "升级会员",
-      statusSucceeded: "已完成",
-      statusRunning: "处理中",
-      statusFailed: "未完成",
-      emptyHistory: "还没有试妆结果。",
-      emptySaved: "还没有收藏妆容。",
-      emptyDiagnosis: "还没有 AI 诊断记录。",
-      openLook: "打开结果",
-      unknownLook: "妆容结果",
-      confidence: "置信度",
-      noPreference: "暂未设置",
-      marketProfile: "灵感来源",
-      representation: "参考图偏好",
-      representationLabels: {
-        diverse: "多元模特混合展示",
-        "east-asian": "东亚参考",
-        black: "深肤色参考",
-        "south-asian": "南亚参考",
-        latina: "拉美参考",
-        "middle-eastern": "中东参考",
-        white: "浅肤色参考",
-        mixed: "混合背景参考",
-      },
-      portalFailed: "无法打开订阅管理页面",
-      loadFailed: "部分数据暂时无法读取，请稍后刷新。",
-      freePlanNote: "Free 计划可继续试用，也可以升级解锁更多生成额度。",
-      paidPlanNote: "订阅计划已启用，可直接进入对应工作台。",
-      signInRequired: "需要登录后查看工作台。",
-      signIn: "登录账户",
-      checkoutSuccess: checkoutSuccessMessage,
-    }
-  : {
-      title: "Dashboard | AI Beauty Stylist",
-      description:
-        "Review your AI try-on quota, recent results, saved looks, diagnosis, and content preferences.",
-      railLabel: "Dashboard navigation",
-      menuLabel: "Menu",
-      currentSection: "Current section",
-      openMenu: "Open dashboard menu",
-      closeMenu: "Close dashboard menu",
-      overview: "Overview",
-      workspace: "Start try-on",
-      diagnosis: "AI diagnosis",
-      history: "History",
-      saved: "Saved",
-      preferences: "Preferences",
-      billing: "Billing",
-      settings: "Account",
-      eyebrow: "Personal workspace",
-      heading: "My beauty dashboard",
-      subtitle:
-        "Continue try-ons, review recent results, save ideas, and turn diagnosis guidance into the next look choice.",
-      quickActions: "Quick actions",
-      startTryon: "Start try-on",
-      openDiagnosis: "Open AI diagnosis",
-      signedInAs: "Signed in",
-      loadingAccount: "Loading account",
-      plan: "Plan",
-      planNote: "Entry point follows your entitlement",
-      quota: "Monthly quota",
-      quotaNote: "Try-ons and diagnosis share the same quota",
-      looks: "Try-on results",
-      looksNote: "Latest 100 items",
-      savedLooks: "Saved looks",
-      savedNote: "Ready for review and sharing",
-      nextAction: "Next action",
-      nextActionTitle: "Generate a practical makeup result",
-      nextActionBody:
-        "Recommendations follow your content preferences first. You can still access global assets and every reference set.",
-      recommended: "Recommended now",
-      allLooks: "Browse looks",
-      recentHistory: "Recent try-ons",
-      viewWorkspace: "Open workspace",
-      viewAllHistory: "View all history",
-      savedPanelTitle: "Saved board",
-      removeSaved: "Remove",
-      viewShareCard: "Share card",
-      diagnosisPanelTitle: "AI diagnosis summary",
-      runDiagnosis: "Run diagnosis",
-      preferencesTitle: "Content preferences",
-      editPreferences: "Edit preferences",
-      billingTitle: "Subscription and quota",
-      manageBilling: "Manage billing",
-      upgrade: "Upgrade",
-      statusSucceeded: "Done",
-      statusRunning: "Processing",
-      statusFailed: "Incomplete",
-      emptyHistory: "No try-on results yet.",
-      emptySaved: "No saved looks yet.",
-      emptyDiagnosis: "No AI diagnosis records yet.",
-      openLook: "Open result",
-      unknownLook: "Makeup result",
-      confidence: "Confidence",
-      noPreference: "Not set",
-      marketProfile: "Inspiration source",
-      representation: "Reference preference",
-      representationLabels: {
-        diverse: "Diverse model rotation",
-        "east-asian": "East Asian references",
-        black: "Deep skin tone references",
-        "south-asian": "South Asian references",
-        latina: "Latina references",
-        "middle-eastern": "Middle Eastern references",
-        white: "Fair skin tone references",
-        mixed: "Mixed-background references",
-      },
-      portalFailed: "Unable to open billing management",
-      loadFailed: "Some data could not be loaded. Refresh later.",
-      freePlanNote:
-        "Free plan is ready. Upgrade when you need more generation quota.",
-      paidPlanNote: "Your subscription is active. Continue in your workspace.",
-      signInRequired: "Sign in to view your dashboard.",
-      signIn: "Sign in",
-      checkoutSuccess: checkoutSuccessMessage,
-    };
+const dashboardCopyByLocale: Record<SupportedLocale, DashboardCopyBase> = {
+  en: {
+    title: "Dashboard | AI Beauty Stylist",
+    description:
+      "Review your AI try-on quota, recent results, saved looks, diagnosis, and content preferences.",
+    railLabel: "Dashboard navigation",
+    menuLabel: "Menu",
+    currentSection: "Current section",
+    openMenu: "Open dashboard menu",
+    closeMenu: "Close dashboard menu",
+    overview: "Overview",
+    workspace: "Start try-on",
+    diagnosis: "AI diagnosis",
+    history: "History",
+    saved: "Saved",
+    preferences: "Preferences",
+    billing: "Billing",
+    settings: "Account",
+    eyebrow: "Personal workspace",
+    heading: "My beauty dashboard",
+    subtitle:
+      "Continue try-ons, review recent results, save ideas, and turn diagnosis guidance into the next look choice.",
+    quickActions: "Quick actions",
+    startTryon: "Start try-on",
+    openDiagnosis: "Open AI diagnosis",
+    signedInAs: "Signed in",
+    loadingAccount: "Loading account",
+    plan: "Plan",
+    planNote: "Entry point follows your entitlement",
+    quota: "Monthly quota",
+    quotaNote: "Try-ons and diagnosis share the same quota",
+    looks: "Try-on results",
+    looksNote: "Latest 100 items",
+    savedLooks: "Saved looks",
+    savedNote: "Ready for review and sharing",
+    nextAction: "Next action",
+    nextActionTitle: "Generate a practical makeup result",
+    nextActionBody:
+      "Recommendations follow your content preferences first. You can still access global assets and every reference set.",
+    recommended: "Recommended now",
+    allLooks: "Browse looks",
+    recentHistory: "Recent try-ons",
+    viewWorkspace: "Open workspace",
+    viewAllHistory: "View all history",
+    savedPanelTitle: "Saved board",
+    removeSaved: "Remove",
+    viewShareCard: "Share card",
+    diagnosisPanelTitle: "AI diagnosis summary",
+    runDiagnosis: "Run diagnosis",
+    preferencesTitle: "Content preferences",
+    editPreferences: "Edit preferences",
+    billingTitle: "Subscription and quota",
+    manageBilling: "Manage billing",
+    upgrade: "Upgrade",
+    statusSucceeded: "Done",
+    statusRunning: "Processing",
+    statusFailed: "Incomplete",
+    emptyHistory: "No try-on results yet.",
+    emptySaved: "No saved looks yet.",
+    emptyDiagnosis: "No AI diagnosis records yet.",
+    openLook: "Open result",
+    unknownLook: "Makeup result",
+    confidence: "Confidence",
+    noPreference: "Not set",
+    marketProfile: "Inspiration source",
+    representation: "Reference preference",
+    representationLabels: {
+      diverse: "Diverse model rotation",
+      "east-asian": "East Asian references",
+      black: "Deep skin tone references",
+      "south-asian": "South Asian references",
+      latina: "Latina references",
+      "middle-eastern": "Middle Eastern references",
+      white: "Fair skin tone references",
+      mixed: "Mixed-background references",
+    },
+    portalFailed: "Unable to open billing management",
+    loadFailed: "Some data could not be loaded. Refresh later.",
+    freePlanNote:
+      "Free plan is ready. Upgrade when you need more generation quota.",
+    paidPlanNote: "Your subscription is active. Continue in your workspace.",
+    signInRequired: "Sign in to view your dashboard.",
+    signIn: "Sign in",
+  },
+  "zh-CN": {
+    title: "工作台 | AI Beauty Stylist",
+    description:
+      "查看你的 AI 试妆额度、最近结果、收藏妆容、AI 诊断和内容偏好。",
+    railLabel: "工作台导航",
+    menuLabel: "菜单",
+    currentSection: "当前模块",
+    openMenu: "打开工作台菜单",
+    closeMenu: "关闭工作台菜单",
+    overview: "总览",
+    workspace: "开始试妆",
+    diagnosis: "AI 诊断",
+    history: "历史",
+    saved: "收藏",
+    preferences: "偏好",
+    billing: "订阅",
+    settings: "账户",
+    eyebrow: "个人工作台",
+    heading: "我的美妆工作台",
+    subtitle:
+      "从这里继续试妆、查看最近结果、保存灵感，并把诊断建议转成下一次可执行的妆容选择。",
+    quickActions: "快捷操作",
+    startTryon: "开始试妆",
+    openDiagnosis: "查看 AI 诊断",
+    signedInAs: "已登录",
+    loadingAccount: "正在读取账户",
+    plan: "会员计划",
+    planNote: "根据当前权益推荐入口",
+    quota: "本月额度",
+    quotaNote: "试妆和诊断共用权益",
+    looks: "试妆结果",
+    looksNote: "最近 100 条以内",
+    savedLooks: "收藏妆容",
+    savedNote: "可用于复盘和分享",
+    nextAction: "下一步",
+    nextActionTitle: "继续生成一张可落地的妆容结果",
+    nextActionBody:
+      "系统会按你的内容偏好优先推荐妆容资产。你仍然可以访问全球资产包和全部参考图。",
+    recommended: "当前推荐",
+    allLooks: "浏览妆容库",
+    recentHistory: "最近试妆",
+    viewWorkspace: "打开工作台",
+    viewAllHistory: "查看全部历史",
+    savedPanelTitle: "收藏板",
+    removeSaved: "取消收藏",
+    viewShareCard: "分享卡片",
+    diagnosisPanelTitle: "AI 诊断摘要",
+    runDiagnosis: "开始诊断",
+    preferencesTitle: "内容偏好",
+    editPreferences: "编辑偏好",
+    billingTitle: "订阅与额度",
+    manageBilling: "管理订阅",
+    upgrade: "升级会员",
+    statusSucceeded: "已完成",
+    statusRunning: "处理中",
+    statusFailed: "未完成",
+    emptyHistory: "还没有试妆结果。",
+    emptySaved: "还没有收藏妆容。",
+    emptyDiagnosis: "还没有 AI 诊断记录。",
+    openLook: "打开结果",
+    unknownLook: "妆容结果",
+    confidence: "置信度",
+    noPreference: "暂未设置",
+    marketProfile: "灵感来源",
+    representation: "参考图偏好",
+    representationLabels: {
+      diverse: "多元模特混合展示",
+      "east-asian": "东亚参考",
+      black: "深肤色参考",
+      "south-asian": "南亚参考",
+      latina: "拉美参考",
+      "middle-eastern": "中东参考",
+      white: "浅肤色参考",
+      mixed: "混合背景参考",
+    },
+    portalFailed: "无法打开订阅管理页面",
+    loadFailed: "部分数据暂时无法读取，请稍后刷新。",
+    freePlanNote: "免费计划可继续试用，也可以升级解锁更多生成额度。",
+    paidPlanNote: "订阅计划已启用，可直接进入对应工作台。",
+    signInRequired: "需要登录后查看工作台。",
+    signIn: "登录账户",
+  },
+  "zh-TW": {
+    title: "工作台 | AI Beauty Stylist",
+    description:
+      "查看你的 AI 試妝額度、最近結果、收藏妝容、AI 診斷和內容偏好。",
+    railLabel: "工作台導覽",
+    menuLabel: "選單",
+    currentSection: "目前模組",
+    openMenu: "開啟工作台選單",
+    closeMenu: "關閉工作台選單",
+    overview: "總覽",
+    workspace: "開始試妝",
+    diagnosis: "AI 診斷",
+    history: "歷史",
+    saved: "收藏",
+    preferences: "偏好",
+    billing: "訂閱",
+    settings: "帳戶",
+    eyebrow: "個人工作台",
+    heading: "我的美妝工作台",
+    subtitle:
+      "從這裡繼續試妝、查看最近結果、保存靈感，並把診斷建議轉成下一次可執行的妝容選擇。",
+    quickActions: "快速操作",
+    startTryon: "開始試妝",
+    openDiagnosis: "查看 AI 診斷",
+    signedInAs: "已登入",
+    loadingAccount: "正在讀取帳戶",
+    plan: "會員方案",
+    planNote: "依照目前權益推薦入口",
+    quota: "本月額度",
+    quotaNote: "試妝和診斷共用權益",
+    looks: "試妝結果",
+    looksNote: "最近 100 筆以內",
+    savedLooks: "收藏妝容",
+    savedNote: "可用於複盤和分享",
+    nextAction: "下一步",
+    nextActionTitle: "繼續生成一張可落地的妝容結果",
+    nextActionBody:
+      "系統會依照你的內容偏好優先推薦妝容資產。你仍然可以瀏覽全球資產包和全部參考圖。",
+    recommended: "目前推薦",
+    allLooks: "瀏覽妝容庫",
+    recentHistory: "最近試妝",
+    viewWorkspace: "開啟工作台",
+    viewAllHistory: "查看全部歷史",
+    savedPanelTitle: "收藏板",
+    removeSaved: "取消收藏",
+    viewShareCard: "分享卡片",
+    diagnosisPanelTitle: "AI 診斷摘要",
+    runDiagnosis: "開始診斷",
+    preferencesTitle: "內容偏好",
+    editPreferences: "編輯偏好",
+    billingTitle: "訂閱與額度",
+    manageBilling: "管理訂閱",
+    upgrade: "升級會員",
+    statusSucceeded: "已完成",
+    statusRunning: "處理中",
+    statusFailed: "未完成",
+    emptyHistory: "還沒有試妝結果。",
+    emptySaved: "還沒有收藏妝容。",
+    emptyDiagnosis: "還沒有 AI 診斷記錄。",
+    openLook: "開啟結果",
+    unknownLook: "妝容結果",
+    confidence: "可信度",
+    noPreference: "尚未設定",
+    marketProfile: "靈感來源",
+    representation: "參考圖偏好",
+    representationLabels: {
+      diverse: "多元模特混合展示",
+      "east-asian": "東亞參考",
+      black: "深膚色參考",
+      "south-asian": "南亞參考",
+      latina: "拉美參考",
+      "middle-eastern": "中東參考",
+      white: "淺膚色參考",
+      mixed: "混合背景參考",
+    },
+    portalFailed: "無法開啟訂閱管理頁面",
+    loadFailed: "部分資料暫時無法讀取，請稍後重新整理。",
+    freePlanNote: "免費方案可繼續試用，也可以升級解鎖更多生成額度。",
+    paidPlanNote: "訂閱方案已啟用，可直接進入對應工作台。",
+    signInRequired: "需要登入後查看工作台。",
+    signIn: "登入帳戶",
+  },
+  "de-DE": {
+    title: "Dashboard | AI Beauty Stylist",
+    description:
+      "Überblick über dein KI-Make-up-Testkontingent, letzte Ergebnisse, gespeicherte Looks, Diagnose und Inhaltspräferenzen.",
+    railLabel: "Dashboard-Navigation",
+    menuLabel: "Menü",
+    currentSection: "Aktueller Bereich",
+    openMenu: "Dashboard-Menü öffnen",
+    closeMenu: "Dashboard-Menü schließen",
+    overview: "Übersicht",
+    workspace: "Make-up-Test starten",
+    diagnosis: "KI-Diagnose",
+    history: "Verlauf",
+    saved: "Gespeichert",
+    preferences: "Präferenzen",
+    billing: "Abo",
+    settings: "Konto",
+    eyebrow: "Persönlicher Arbeitsbereich",
+    heading: "Mein Beauty-Dashboard",
+    subtitle:
+      "Setze Tests fort, prüfe letzte Ergebnisse, speichere Ideen und mache aus Diagnosehinweisen den nächsten Look.",
+    quickActions: "Schnellaktionen",
+    startTryon: "Make-up-Test starten",
+    openDiagnosis: "KI-Diagnose öffnen",
+    signedInAs: "Angemeldet",
+    loadingAccount: "Konto wird geladen",
+    plan: "Tarif",
+    planNote: "Der Einstieg folgt deinen aktuellen Berechtigungen",
+    quota: "Monatskontingent",
+    quotaNote: "Make-up-Tests und Diagnose teilen sich dasselbe Kontingent",
+    looks: "Testergebnisse",
+    looksNote: "Letzte 100 Einträge",
+    savedLooks: "Gespeicherte Looks",
+    savedNote: "Bereit zum Prüfen und Teilen",
+    nextAction: "Nächster Schritt",
+    nextActionTitle: "Ein praxistaugliches Make-up-Ergebnis erstellen",
+    nextActionBody:
+      "Empfehlungen folgen zuerst deinen Inhaltspräferenzen. Globale Ressourcen und alle Referenzsets bleiben verfügbar.",
+    recommended: "Aktuelle Empfehlung",
+    allLooks: "Looks durchsuchen",
+    recentHistory: "Letzte Tests",
+    viewWorkspace: "Arbeitsbereich öffnen",
+    viewAllHistory: "Gesamten Verlauf ansehen",
+    savedPanelTitle: "Gespeicherte Looks",
+    removeSaved: "Entfernen",
+    viewShareCard: "Teilen-Karte",
+    diagnosisPanelTitle: "Zusammenfassung der KI-Diagnose",
+    runDiagnosis: "Diagnose starten",
+    preferencesTitle: "Inhaltspräferenzen",
+    editPreferences: "Präferenzen bearbeiten",
+    billingTitle: "Abo und Kontingent",
+    manageBilling: "Abo verwalten",
+    upgrade: "Upgrade",
+    statusSucceeded: "Fertig",
+    statusRunning: "In Bearbeitung",
+    statusFailed: "Unvollständig",
+    emptyHistory: "Noch keine Testergebnisse.",
+    emptySaved: "Noch keine gespeicherten Looks.",
+    emptyDiagnosis: "Noch keine KI-Diagnosen.",
+    openLook: "Ergebnis öffnen",
+    unknownLook: "Make-up-Ergebnis",
+    confidence: "Konfidenz",
+    noPreference: "Nicht festgelegt",
+    marketProfile: "Inspirationsquelle",
+    representation: "Referenzpräferenz",
+    representationLabels: {
+      diverse: "Diverse Modelauswahl",
+      "east-asian": "Ostasiatische Referenzen",
+      black: "Referenzen für dunklere Hauttöne",
+      "south-asian": "Südasiatische Referenzen",
+      latina: "Latina-Referenzen",
+      "middle-eastern": "Nahöstliche Referenzen",
+      white: "Referenzen für helle Hauttöne",
+      mixed: "Referenzen mit gemischten Hintergründen",
+    },
+    portalFailed: "Aboverwaltung konnte nicht geöffnet werden",
+    loadFailed:
+      "Einige Daten konnten nicht geladen werden. Bitte später aktualisieren.",
+    freePlanNote:
+      "Der kostenlose Tarif ist bereit. Führe ein Upgrade durch, wenn du mehr Generierungskontingent brauchst.",
+    paidPlanNote: "Dein Abo ist aktiv. Fahre im Arbeitsbereich fort.",
+    signInRequired: "Melde dich an, um dein Dashboard zu sehen.",
+    signIn: "Anmelden",
+  },
+  "fr-FR": {
+    title: "Tableau de bord | AI Beauty Stylist",
+    description:
+      "Consultez votre quota d'essais IA, vos résultats récents, looks favoris, diagnostic et préférences de contenu.",
+    railLabel: "Navigation du tableau de bord",
+    menuLabel: "Menu",
+    currentSection: "Section actuelle",
+    openMenu: "Ouvrir le menu du tableau de bord",
+    closeMenu: "Fermer le menu du tableau de bord",
+    overview: "Vue d'ensemble",
+    workspace: "Lancer l'essai",
+    diagnosis: "Diagnostic IA",
+    history: "Historique",
+    saved: "Favoris",
+    preferences: "Préférences",
+    billing: "Abonnement",
+    settings: "Compte",
+    eyebrow: "Espace personnel",
+    heading: "Mon tableau de bord beauté",
+    subtitle:
+      "Reprenez vos essais, consultez les résultats récents, enregistrez des idées et transformez les conseils du diagnostic en prochain look.",
+    quickActions: "Actions rapides",
+    startTryon: "Lancer l'essai",
+    openDiagnosis: "Ouvrir le diagnostic IA",
+    signedInAs: "Connecté",
+    loadingAccount: "Chargement du compte",
+    plan: "Formule",
+    planNote: "L'entrée suit vos droits actuels",
+    quota: "Quota mensuel",
+    quotaNote: "Les essais et le diagnostic partagent le même quota",
+    looks: "Résultats d'essai",
+    looksNote: "100 derniers éléments",
+    savedLooks: "Looks favoris",
+    savedNote: "Prêts à consulter et partager",
+    nextAction: "Prochaine action",
+    nextActionTitle: "Générer un résultat maquillage pratique",
+    nextActionBody:
+      "Les recommandations suivent d'abord vos préférences de contenu. Les ressources globales et tous les jeux de références restent accessibles.",
+    recommended: "Recommandation actuelle",
+    allLooks: "Parcourir les looks",
+    recentHistory: "Essais récents",
+    viewWorkspace: "Ouvrir l'espace",
+    viewAllHistory: "Voir tout l'historique",
+    savedPanelTitle: "Tableau des favoris",
+    removeSaved: "Retirer",
+    viewShareCard: "Carte de partage",
+    diagnosisPanelTitle: "Résumé du diagnostic IA",
+    runDiagnosis: "Lancer le diagnostic",
+    preferencesTitle: "Préférences de contenu",
+    editPreferences: "Modifier les préférences",
+    billingTitle: "Abonnement et quota",
+    manageBilling: "Gérer l'abonnement",
+    upgrade: "Mettre à niveau",
+    statusSucceeded: "Terminé",
+    statusRunning: "En cours",
+    statusFailed: "Incomplet",
+    emptyHistory: "Aucun résultat d'essai pour le moment.",
+    emptySaved: "Aucun look favori pour le moment.",
+    emptyDiagnosis: "Aucun diagnostic IA pour le moment.",
+    openLook: "Ouvrir le résultat",
+    unknownLook: "Résultat maquillage",
+    confidence: "Confiance",
+    noPreference: "Non défini",
+    marketProfile: "Source d'inspiration",
+    representation: "Préférence de référence",
+    representationLabels: {
+      diverse: "Rotation de modèles variés",
+      "east-asian": "Références est-asiatiques",
+      black: "Références de carnations foncées",
+      "south-asian": "Références sud-asiatiques",
+      latina: "Références latines",
+      "middle-eastern": "Références moyen-orientales",
+      white: "Références de carnations claires",
+      mixed: "Références de profils mixtes",
+    },
+    portalFailed: "Impossible d'ouvrir la gestion de l'abonnement",
+    loadFailed:
+      "Certaines données n'ont pas pu être chargées. Réessayez plus tard.",
+    freePlanNote:
+      "La formule gratuite est prête. Passez à une formule supérieure si vous avez besoin de plus de crédits de génération.",
+    paidPlanNote: "Votre abonnement est actif. Continuez dans votre espace.",
+    signInRequired: "Connectez-vous pour voir votre tableau de bord.",
+    signIn: "Se connecter",
+  },
+  "ja-JP": {
+    title: "ダッシュボード | AI Beauty Stylist",
+    description:
+      "AIメイク試着の利用枠、最近の結果、保存したルック、診断、コンテンツの好みを確認できます。",
+    railLabel: "ダッシュボードナビゲーション",
+    menuLabel: "メニュー",
+    currentSection: "現在のセクション",
+    openMenu: "ダッシュボードメニューを開く",
+    closeMenu: "ダッシュボードメニューを閉じる",
+    overview: "概要",
+    workspace: "試着開始",
+    diagnosis: "AI診断",
+    history: "履歴",
+    saved: "保存",
+    preferences: "好み",
+    billing: "サブスク",
+    settings: "アカウント",
+    eyebrow: "個人ワークスペース",
+    heading: "マイビューティーダッシュボード",
+    subtitle:
+      "試着の続き、最近の結果確認、アイデア保存、診断アドバイスから次のルック選びまで進められます。",
+    quickActions: "クイック操作",
+    startTryon: "試着開始",
+    openDiagnosis: "AI診断を開く",
+    signedInAs: "ログイン中",
+    loadingAccount: "アカウントを読み込み中",
+    plan: "プラン",
+    planNote: "現在の権限に合わせて入口を表示",
+    quota: "今月の利用枠",
+    quotaNote: "試着と診断は同じ利用枠を共有します",
+    looks: "試着結果",
+    looksNote: "最新100件",
+    savedLooks: "保存したルック",
+    savedNote: "見直しや共有に利用できます",
+    nextAction: "次のアクション",
+    nextActionTitle: "実用的なメイク結果を生成",
+    nextActionBody:
+      "おすすめはまずコンテンツの好みに沿って表示されます。グローバル素材とすべてのリファレンスセットも利用できます。",
+    recommended: "現在のおすすめ",
+    allLooks: "ルックを見る",
+    recentHistory: "最近の試着",
+    viewWorkspace: "ワークスペースを開く",
+    viewAllHistory: "すべての履歴を見る",
+    savedPanelTitle: "保存ボード",
+    removeSaved: "保存解除",
+    viewShareCard: "共有カード",
+    diagnosisPanelTitle: "AI診断サマリー",
+    runDiagnosis: "診断を開始",
+    preferencesTitle: "コンテンツの好み",
+    editPreferences: "好みを編集",
+    billingTitle: "サブスクと利用枠",
+    manageBilling: "サブスクを管理",
+    upgrade: "アップグレード",
+    statusSucceeded: "完了",
+    statusRunning: "処理中",
+    statusFailed: "未完了",
+    emptyHistory: "試着結果はまだありません。",
+    emptySaved: "保存したルックはまだありません。",
+    emptyDiagnosis: "AI診断の記録はまだありません。",
+    openLook: "結果を開く",
+    unknownLook: "メイク結果",
+    confidence: "信頼度",
+    noPreference: "未設定",
+    marketProfile: "インスピレーション元",
+    representation: "リファレンスの好み",
+    representationLabels: {
+      diverse: "多様なモデルを表示",
+      "east-asian": "東アジア系リファレンス",
+      black: "深い肌色のリファレンス",
+      "south-asian": "南アジア系リファレンス",
+      latina: "ラテン系リファレンス",
+      "middle-eastern": "中東系リファレンス",
+      white: "明るい肌色のリファレンス",
+      mixed: "複合背景のリファレンス",
+    },
+    portalFailed: "サブスク管理ページを開けません",
+    loadFailed:
+      "一部のデータを読み込めませんでした。後でもう一度お試しください。",
+    freePlanNote:
+      "無料プランを利用できます。生成枠を増やしたい場合はアップグレードしてください。",
+    paidPlanNote: "サブスクが有効です。ワークスペースでそのまま続けられます。",
+    signInRequired: "ダッシュボードを見るにはログインが必要です。",
+    signIn: "ログイン",
+  },
+  "ko-KR": {
+    title: "대시보드 | AI Beauty Stylist",
+    description:
+      "AI 메이크업 체험 한도, 최근 결과, 저장한 룩, 진단, 콘텐츠 취향을 확인하세요.",
+    railLabel: "대시보드 내비게이션",
+    menuLabel: "메뉴",
+    currentSection: "현재 섹션",
+    openMenu: "대시보드 메뉴 열기",
+    closeMenu: "대시보드 메뉴 닫기",
+    overview: "개요",
+    workspace: "메이크업 체험",
+    diagnosis: "AI 진단",
+    history: "기록",
+    saved: "저장",
+    preferences: "취향",
+    billing: "구독",
+    settings: "계정",
+    eyebrow: "개인 작업 공간",
+    heading: "나의 뷰티 대시보드",
+    subtitle:
+      "메이크업 체험을 이어가고, 최근 결과를 확인하고, 영감을 저장하고, 진단 조언을 다음 룩 선택으로 연결하세요.",
+    quickActions: "빠른 작업",
+    startTryon: "메이크업 체험",
+    openDiagnosis: "AI 진단 열기",
+    signedInAs: "로그인됨",
+    loadingAccount: "계정을 불러오는 중",
+    plan: "요금제",
+    planNote: "현재 권한에 맞는 작업 공간으로 안내합니다",
+    quota: "이번 달 한도",
+    quotaNote: "메이크업 체험과 진단은 같은 한도를 사용합니다",
+    looks: "체험 결과",
+    looksNote: "최근 100개 항목",
+    savedLooks: "저장한 룩",
+    savedNote: "복습과 공유에 사용할 수 있습니다",
+    nextAction: "다음 작업",
+    nextActionTitle: "실제로 활용할 수 있는 메이크업 결과 생성",
+    nextActionBody:
+      "추천은 먼저 콘텐츠 취향을 따릅니다. 글로벌 에셋과 모든 참고 세트도 계속 이용할 수 있습니다.",
+    recommended: "현재 추천",
+    allLooks: "룩 둘러보기",
+    recentHistory: "최근 체험",
+    viewWorkspace: "작업 공간 열기",
+    viewAllHistory: "전체 기록 보기",
+    savedPanelTitle: "저장 보드",
+    removeSaved: "저장 해제",
+    viewShareCard: "공유 카드",
+    diagnosisPanelTitle: "AI 진단 요약",
+    runDiagnosis: "진단 시작",
+    preferencesTitle: "콘텐츠 취향",
+    editPreferences: "취향 편집",
+    billingTitle: "구독 및 한도",
+    manageBilling: "구독 관리",
+    upgrade: "업그레이드",
+    statusSucceeded: "완료",
+    statusRunning: "처리 중",
+    statusFailed: "미완료",
+    emptyHistory: "아직 메이크업 체험 결과가 없습니다.",
+    emptySaved: "아직 저장한 룩이 없습니다.",
+    emptyDiagnosis: "아직 AI 진단 기록이 없습니다.",
+    openLook: "결과 열기",
+    unknownLook: "메이크업 결과",
+    confidence: "신뢰도",
+    noPreference: "설정 안 됨",
+    marketProfile: "영감 출처",
+    representation: "참고 이미지 취향",
+    representationLabels: {
+      diverse: "다양한 모델 표시",
+      "east-asian": "동아시아 참고",
+      black: "짙은 피부 톤 참고",
+      "south-asian": "남아시아 참고",
+      latina: "라틴계 참고",
+      "middle-eastern": "중동 참고",
+      white: "밝은 피부 톤 참고",
+      mixed: "혼합 배경 참고",
+    },
+    portalFailed: "구독 관리 페이지를 열 수 없습니다",
+    loadFailed: "일부 데이터를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.",
+    freePlanNote:
+      "무료 요금제를 계속 사용할 수 있습니다. 더 많은 생성 한도가 필요하면 업그레이드하세요.",
+    paidPlanNote: "구독이 활성화되었습니다. 작업 공간에서 계속 진행하세요.",
+    signInRequired: "대시보드를 보려면 로그인해야 합니다.",
+    signIn: "로그인",
+  },
+  "es-ES": {
+    title: "Panel | AI Beauty Stylist",
+    description:
+      "Revisa tu cuota de pruebas IA, resultados recientes, looks guardados, diagnóstico y preferencias de contenido.",
+    railLabel: "Navegación del panel",
+    menuLabel: "Menú",
+    currentSection: "Sección actual",
+    openMenu: "Abrir menú del panel",
+    closeMenu: "Cerrar menú del panel",
+    overview: "Resumen",
+    workspace: "Probar look",
+    diagnosis: "Diagnóstico IA",
+    history: "Historial",
+    saved: "Guardados",
+    preferences: "Preferencias",
+    billing: "Suscripción",
+    settings: "Cuenta",
+    eyebrow: "Espacio personal",
+    heading: "Mi panel de belleza",
+    subtitle:
+      "Continúa tus pruebas, revisa resultados recientes, guarda ideas y convierte las recomendaciones del diagnóstico en el próximo look.",
+    quickActions: "Acciones rápidas",
+    startTryon: "Probar look",
+    openDiagnosis: "Abrir diagnóstico IA",
+    signedInAs: "Sesión iniciada",
+    loadingAccount: "Cargando cuenta",
+    plan: "Plan",
+    planNote: "La entrada sigue tus derechos actuales",
+    quota: "Cuota mensual",
+    quotaNote: "Las pruebas y el diagnóstico comparten la misma cuota",
+    looks: "Resultados de prueba",
+    looksNote: "Últimos 100 elementos",
+    savedLooks: "Looks guardados",
+    savedNote: "Listos para revisar y compartir",
+    nextAction: "Siguiente acción",
+    nextActionTitle: "Generar un resultado de maquillaje práctico",
+    nextActionBody:
+      "Las recomendaciones siguen primero tus preferencias de contenido. Los recursos globales y todos los conjuntos de referencia siguen disponibles.",
+    recommended: "Recomendación actual",
+    allLooks: "Explorar looks",
+    recentHistory: "Pruebas recientes",
+    viewWorkspace: "Abrir espacio",
+    viewAllHistory: "Ver todo el historial",
+    savedPanelTitle: "Tablero de guardados",
+    removeSaved: "Quitar",
+    viewShareCard: "Tarjeta para compartir",
+    diagnosisPanelTitle: "Resumen del diagnóstico IA",
+    runDiagnosis: "Iniciar diagnóstico",
+    preferencesTitle: "Preferencias de contenido",
+    editPreferences: "Editar preferencias",
+    billingTitle: "Suscripción y cuota",
+    manageBilling: "Gestionar suscripción",
+    upgrade: "Mejorar plan",
+    statusSucceeded: "Listo",
+    statusRunning: "Procesando",
+    statusFailed: "Incompleto",
+    emptyHistory: "Aún no hay resultados de prueba.",
+    emptySaved: "Aún no hay looks guardados.",
+    emptyDiagnosis: "Aún no hay diagnósticos IA.",
+    openLook: "Abrir resultado",
+    unknownLook: "Resultado de maquillaje",
+    confidence: "Confianza",
+    noPreference: "Sin definir",
+    marketProfile: "Fuente de inspiración",
+    representation: "Preferencia de referencia",
+    representationLabels: {
+      diverse: "Rotación de modelos diversos",
+      "east-asian": "Referencias de Asia oriental",
+      black: "Referencias de tonos de piel profundos",
+      "south-asian": "Referencias de Asia del Sur",
+      latina: "Referencias latinas",
+      "middle-eastern": "Referencias de Oriente Medio",
+      white: "Referencias de tonos de piel claros",
+      mixed: "Referencias de orígenes mixtos",
+    },
+    portalFailed: "No se pudo abrir la gestión de suscripción",
+    loadFailed: "No se pudieron cargar algunos datos. Actualiza más tarde.",
+    freePlanNote:
+      "El plan gratis está listo. Mejora el plan cuando necesites más cuota de generación.",
+    paidPlanNote: "Tu suscripción está activa. Continúa en tu espacio.",
+    signInRequired: "Inicia sesión para ver tu panel.",
+    signIn: "Iniciar sesión",
+  },
+  "es-419": {
+    title: "Panel | AI Beauty Stylist",
+    description:
+      "Revisa tu cuota de pruebas IA, resultados recientes, looks guardados, diagnóstico y preferencias de contenido.",
+    railLabel: "Navegación del panel",
+    menuLabel: "Menú",
+    currentSection: "Sección actual",
+    openMenu: "Abrir menú del panel",
+    closeMenu: "Cerrar menú del panel",
+    overview: "Resumen",
+    workspace: "Probar look",
+    diagnosis: "Diagnóstico IA",
+    history: "Historial",
+    saved: "Guardados",
+    preferences: "Preferencias",
+    billing: "Suscripción",
+    settings: "Cuenta",
+    eyebrow: "Espacio personal",
+    heading: "Mi panel de belleza",
+    subtitle:
+      "Continúa tus pruebas, revisa resultados recientes, guarda ideas y convierte las recomendaciones del diagnóstico en el próximo look.",
+    quickActions: "Acciones rápidas",
+    startTryon: "Probar look",
+    openDiagnosis: "Abrir diagnóstico IA",
+    signedInAs: "Sesión iniciada",
+    loadingAccount: "Cargando cuenta",
+    plan: "Plan",
+    planNote: "La entrada sigue tus beneficios actuales",
+    quota: "Cuota mensual",
+    quotaNote: "Las pruebas y el diagnóstico comparten la misma cuota",
+    looks: "Resultados de prueba",
+    looksNote: "Últimos 100 elementos",
+    savedLooks: "Looks guardados",
+    savedNote: "Listos para revisar y compartir",
+    nextAction: "Siguiente acción",
+    nextActionTitle: "Generar un resultado de maquillaje práctico",
+    nextActionBody:
+      "Las recomendaciones siguen primero tus preferencias de contenido. Los recursos globales y todos los conjuntos de referencia siguen disponibles.",
+    recommended: "Recomendación actual",
+    allLooks: "Explorar looks",
+    recentHistory: "Pruebas recientes",
+    viewWorkspace: "Abrir espacio",
+    viewAllHistory: "Ver todo el historial",
+    savedPanelTitle: "Tablero de guardados",
+    removeSaved: "Quitar",
+    viewShareCard: "Tarjeta para compartir",
+    diagnosisPanelTitle: "Resumen del diagnóstico IA",
+    runDiagnosis: "Iniciar diagnóstico",
+    preferencesTitle: "Preferencias de contenido",
+    editPreferences: "Editar preferencias",
+    billingTitle: "Suscripción y cuota",
+    manageBilling: "Gestionar suscripción",
+    upgrade: "Mejorar plan",
+    statusSucceeded: "Listo",
+    statusRunning: "Procesando",
+    statusFailed: "Incompleto",
+    emptyHistory: "Aún no hay resultados de prueba.",
+    emptySaved: "Aún no hay looks guardados.",
+    emptyDiagnosis: "Aún no hay diagnósticos IA.",
+    openLook: "Abrir resultado",
+    unknownLook: "Resultado de maquillaje",
+    confidence: "Confianza",
+    noPreference: "Sin definir",
+    marketProfile: "Fuente de inspiración",
+    representation: "Preferencia de referencia",
+    representationLabels: {
+      diverse: "Rotación de modelos diversos",
+      "east-asian": "Referencias de Asia oriental",
+      black: "Referencias de tonos de piel profundos",
+      "south-asian": "Referencias de Asia del Sur",
+      latina: "Referencias latinas",
+      "middle-eastern": "Referencias de Medio Oriente",
+      white: "Referencias de tonos de piel claros",
+      mixed: "Referencias de orígenes mixtos",
+    },
+    portalFailed: "No se pudo abrir la gestión de suscripción",
+    loadFailed: "No se pudieron cargar algunos datos. Actualiza más tarde.",
+    freePlanNote:
+      "El plan gratis está listo. Mejora el plan cuando necesites más cuota de generación.",
+    paidPlanNote: "Tu suscripción está activa. Continúa en tu espacio.",
+    signInRequired: "Inicia sesión para ver tu panel.",
+    signIn: "Iniciar sesión",
+  },
+  "pt-BR": {
+    title: "Painel | AI Beauty Stylist",
+    description:
+      "Revise sua cota de testes com IA, resultados recentes, looks salvos, diagnóstico e preferências de conteúdo.",
+    railLabel: "Navegação do painel",
+    menuLabel: "Menu",
+    currentSection: "Seção atual",
+    openMenu: "Abrir menu do painel",
+    closeMenu: "Fechar menu do painel",
+    overview: "Visão geral",
+    workspace: "Testar look",
+    diagnosis: "Diagnóstico IA",
+    history: "Histórico",
+    saved: "Salvos",
+    preferences: "Preferências",
+    billing: "Assinatura",
+    settings: "Conta",
+    eyebrow: "Área pessoal",
+    heading: "Meu painel de beleza",
+    subtitle:
+      "Continue seus testes, revise resultados recentes, salve ideias e transforme orientações do diagnóstico no próximo look.",
+    quickActions: "Ações rápidas",
+    startTryon: "Testar look",
+    openDiagnosis: "Abrir diagnóstico IA",
+    signedInAs: "Conectado",
+    loadingAccount: "Carregando conta",
+    plan: "Plano",
+    planNote: "A entrada segue seus direitos atuais",
+    quota: "Cota mensal",
+    quotaNote: "Testes e diagnóstico compartilham a mesma cota",
+    looks: "Resultados de teste",
+    looksNote: "Últimos 100 itens",
+    savedLooks: "Looks salvos",
+    savedNote: "Prontos para revisar e compartilhar",
+    nextAction: "Próxima ação",
+    nextActionTitle: "Gerar um resultado de maquiagem prático",
+    nextActionBody:
+      "As recomendações seguem primeiro suas preferências de conteúdo. Os recursos globais e todos os conjuntos de referência continuam disponíveis.",
+    recommended: "Recomendação atual",
+    allLooks: "Explorar looks",
+    recentHistory: "Testes recentes",
+    viewWorkspace: "Abrir área",
+    viewAllHistory: "Ver todo o histórico",
+    savedPanelTitle: "Quadro de salvos",
+    removeSaved: "Remover",
+    viewShareCard: "Cartão de compartilhamento",
+    diagnosisPanelTitle: "Resumo do diagnóstico IA",
+    runDiagnosis: "Iniciar diagnóstico",
+    preferencesTitle: "Preferências de conteúdo",
+    editPreferences: "Editar preferências",
+    billingTitle: "Assinatura e cota",
+    manageBilling: "Gerenciar assinatura",
+    upgrade: "Fazer upgrade",
+    statusSucceeded: "Concluído",
+    statusRunning: "Processando",
+    statusFailed: "Incompleto",
+    emptyHistory: "Ainda não há resultados de teste.",
+    emptySaved: "Ainda não há looks salvos.",
+    emptyDiagnosis: "Ainda não há diagnósticos IA.",
+    openLook: "Abrir resultado",
+    unknownLook: "Resultado de maquiagem",
+    confidence: "Confiança",
+    noPreference: "Não definido",
+    marketProfile: "Fonte de inspiração",
+    representation: "Preferência de referência",
+    representationLabels: {
+      diverse: "Rotação de modelos diversos",
+      "east-asian": "Referências do Leste Asiático",
+      black: "Referências de tons de pele profundos",
+      "south-asian": "Referências do Sul Asiático",
+      latina: "Referências latinas",
+      "middle-eastern": "Referências do Oriente Médio",
+      white: "Referências de tons de pele claros",
+      mixed: "Referências de origens mistas",
+    },
+    portalFailed: "Não foi possível abrir o gerenciamento da assinatura",
+    loadFailed: "Não foi possível carregar alguns dados. Atualize mais tarde.",
+    freePlanNote:
+      "O plano grátis está pronto. Faça upgrade quando precisar de mais cota de geração.",
+    paidPlanNote: "Sua assinatura está ativa. Continue na sua área.",
+    signInRequired: "Entre para ver seu painel.",
+    signIn: "Entrar",
+  },
+};
+
+const copy: DashboardCopy = {
+  ...dashboardCopyByLocale[locale],
+  checkoutSuccess: checkoutSuccessMessage,
+};
 
 const currentMarketProfileLabel =
   marketOptions.find((option) => option.value === audienceContext.marketProfile)
     ?.label ?? copy.noPreference;
 
-const dashboardModuleCopy = isZh
-  ? {
-      accountActions: "账户操作",
-      currentPreference: "当前偏好",
-      preferenceHint:
-        "这些偏好只影响推荐顺序和参考图展示，不限制你访问全部妆容。",
-      diagnosisCapabilities: "诊断会整理",
-      diagnosisCapabilityTone: "肤色方向",
-      diagnosisCapabilityFace: "五官重点",
-      diagnosisCapabilityLook: "推荐妆容",
-      diagnosisEmptyTitle: "先完成一次 AI 妆容诊断",
-      billingCurrentPlan: "当前套餐",
-      billingUsage: "本月额度",
-      billingSavedLimit: "收藏上限",
-      billingSavedUnit: "个妆容",
-      billingRefresh: "下次刷新",
-      billingRefreshFallback: "按月自动刷新",
-      billingIncluded: "当前权益",
-      billingFreeBenefit: "标准预览",
-      billingPaidBenefit: "高清下载",
-      billingSharedBenefit: "试妆和诊断共用额度",
-    }
-  : {
-      accountActions: "Account actions",
-      currentPreference: "Current preference",
-      preferenceHint:
-        "Preferences only adjust recommendation order and reference images. They do not limit the full look library.",
-      diagnosisCapabilities: "Diagnosis covers",
-      diagnosisCapabilityTone: "Tone direction",
-      diagnosisCapabilityFace: "Feature focus",
-      diagnosisCapabilityLook: "Recommended look",
-      diagnosisEmptyTitle: "Start with one AI makeup diagnosis",
-      billingCurrentPlan: "Current plan",
-      billingUsage: "Monthly quota",
-      billingSavedLimit: "Saved limit",
-      billingSavedUnit: "looks",
-      billingRefresh: "Next refresh",
-      billingRefreshFallback: "Refreshes monthly",
-      billingIncluded: "Included now",
-      billingFreeBenefit: "Standard preview",
-      billingPaidBenefit: "HD download",
-      billingSharedBenefit: "Try-on and diagnosis share quota",
-    };
+const dashboardModuleCopyByLocale: Record<
+  SupportedLocale,
+  DashboardModuleCopy
+> = {
+  en: {
+    accountActions: "Account actions",
+    currentPreference: "Current preference",
+    preferenceHint:
+      "Preferences only adjust recommendation order and reference images. They do not limit the full look library.",
+    diagnosisCapabilities: "Diagnosis covers",
+    diagnosisCapabilityTone: "Tone direction",
+    diagnosisCapabilityFace: "Feature focus",
+    diagnosisCapabilityLook: "Recommended look",
+    diagnosisEmptyTitle: "Start with one AI makeup diagnosis",
+    billingCurrentPlan: "Current plan",
+    billingUsage: "Monthly quota",
+    billingSavedLimit: "Saved limit",
+    billingSavedUnit: "looks",
+    billingRefresh: "Next refresh",
+    billingRefreshFallback: "Refreshes monthly",
+    billingIncluded: "Included now",
+    billingFreeBenefit: "Standard preview",
+    billingPaidBenefit: "HD download",
+    billingSharedBenefit: "Try-on and diagnosis share quota",
+  },
+  "zh-CN": {
+    accountActions: "账户操作",
+    currentPreference: "当前偏好",
+    preferenceHint:
+      "这些偏好只影响推荐顺序和参考图展示，不限制你访问全部妆容。",
+    diagnosisCapabilities: "诊断会整理",
+    diagnosisCapabilityTone: "肤色方向",
+    diagnosisCapabilityFace: "五官重点",
+    diagnosisCapabilityLook: "推荐妆容",
+    diagnosisEmptyTitle: "先完成一次 AI 妆容诊断",
+    billingCurrentPlan: "当前套餐",
+    billingUsage: "本月额度",
+    billingSavedLimit: "收藏上限",
+    billingSavedUnit: "个妆容",
+    billingRefresh: "下次刷新",
+    billingRefreshFallback: "按月自动刷新",
+    billingIncluded: "当前权益",
+    billingFreeBenefit: "标准预览",
+    billingPaidBenefit: "高清下载",
+    billingSharedBenefit: "试妆和诊断共用额度",
+  },
+  "zh-TW": {
+    accountActions: "帳戶操作",
+    currentPreference: "目前偏好",
+    preferenceHint:
+      "這些偏好只會影響推薦順序和參考圖展示，不會限制你瀏覽全部妝容。",
+    diagnosisCapabilities: "診斷會整理",
+    diagnosisCapabilityTone: "膚色方向",
+    diagnosisCapabilityFace: "五官重點",
+    diagnosisCapabilityLook: "推薦妝容",
+    diagnosisEmptyTitle: "先完成一次 AI 妝容診斷",
+    billingCurrentPlan: "目前方案",
+    billingUsage: "本月額度",
+    billingSavedLimit: "收藏上限",
+    billingSavedUnit: "個妝容",
+    billingRefresh: "下次刷新",
+    billingRefreshFallback: "按月自動刷新",
+    billingIncluded: "目前權益",
+    billingFreeBenefit: "標準預覽",
+    billingPaidBenefit: "高清下載",
+    billingSharedBenefit: "試妝和診斷共用額度",
+  },
+  "de-DE": {
+    accountActions: "Kontoaktionen",
+    currentPreference: "Aktuelle Präferenz",
+    preferenceHint:
+      "Präferenzen ändern nur die Empfehlungsreihenfolge und Referenzbilder. Sie beschränken nicht die vollständige Look-Bibliothek.",
+    diagnosisCapabilities: "Die Diagnose umfasst",
+    diagnosisCapabilityTone: "Hauttonrichtung",
+    diagnosisCapabilityFace: "Merkmalfokus",
+    diagnosisCapabilityLook: "Empfohlener Look",
+    diagnosisEmptyTitle: "Starte mit einer KI-Make-up-Diagnose",
+    billingCurrentPlan: "Aktueller Tarif",
+    billingUsage: "Monatskontingent",
+    billingSavedLimit: "Limit gespeicherter Looks",
+    billingSavedUnit: "Looks",
+    billingRefresh: "Nächste Aktualisierung",
+    billingRefreshFallback: "Aktualisiert sich monatlich",
+    billingIncluded: "Derzeit enthalten",
+    billingFreeBenefit: "Standardvorschau",
+    billingPaidBenefit: "HD-Download",
+    billingSharedBenefit: "Make-up-Test und Diagnose teilen das Kontingent",
+  },
+  "fr-FR": {
+    accountActions: "Actions du compte",
+    currentPreference: "Préférence actuelle",
+    preferenceHint:
+      "Les préférences ajustent seulement l'ordre des recommandations et les images de référence. Elles ne limitent pas toute la bibliothèque de looks.",
+    diagnosisCapabilities: "Le diagnostic couvre",
+    diagnosisCapabilityTone: "Direction du teint",
+    diagnosisCapabilityFace: "Points forts du visage",
+    diagnosisCapabilityLook: "Look recommandé",
+    diagnosisEmptyTitle: "Commencez par un diagnostic maquillage IA",
+    billingCurrentPlan: "Formule actuelle",
+    billingUsage: "Quota mensuel",
+    billingSavedLimit: "Limite de favoris",
+    billingSavedUnit: "looks",
+    billingRefresh: "Prochain renouvellement",
+    billingRefreshFallback: "Renouvellement mensuel",
+    billingIncluded: "Inclus maintenant",
+    billingFreeBenefit: "Aperçu standard",
+    billingPaidBenefit: "Téléchargement HD",
+    billingSharedBenefit: "Les essais et le diagnostic partagent le quota",
+  },
+  "ja-JP": {
+    accountActions: "アカウント操作",
+    currentPreference: "現在の好み",
+    preferenceHint:
+      "好みはおすすめ順とリファレンス画像の表示にだけ反映されます。すべてのルックライブラリは引き続き利用できます。",
+    diagnosisCapabilities: "診断で整理する内容",
+    diagnosisCapabilityTone: "肌トーンの方向",
+    diagnosisCapabilityFace: "顔立ちの重点",
+    diagnosisCapabilityLook: "おすすめルック",
+    diagnosisEmptyTitle: "まずAIメイク診断を完了",
+    billingCurrentPlan: "現在のプラン",
+    billingUsage: "今月の利用枠",
+    billingSavedLimit: "保存上限",
+    billingSavedUnit: "ルック",
+    billingRefresh: "次回更新",
+    billingRefreshFallback: "毎月自動更新",
+    billingIncluded: "現在の特典",
+    billingFreeBenefit: "標準プレビュー",
+    billingPaidBenefit: "HDダウンロード",
+    billingSharedBenefit: "試着と診断は利用枠を共有",
+  },
+  "ko-KR": {
+    accountActions: "계정 작업",
+    currentPreference: "현재 취향",
+    preferenceHint:
+      "취향 설정은 추천 순서와 참고 이미지 표시만 조정하며, 전체 룩 라이브러리 접근을 제한하지 않습니다.",
+    diagnosisCapabilities: "진단에서 정리하는 내용",
+    diagnosisCapabilityTone: "피부 톤 방향",
+    diagnosisCapabilityFace: "이목구비 포인트",
+    diagnosisCapabilityLook: "추천 메이크업",
+    diagnosisEmptyTitle: "먼저 AI 메이크업 진단을 완료하세요",
+    billingCurrentPlan: "현재 요금제",
+    billingUsage: "이번 달 한도",
+    billingSavedLimit: "저장 한도",
+    billingSavedUnit: "개 룩",
+    billingRefresh: "다음 갱신",
+    billingRefreshFallback: "매월 자동 갱신",
+    billingIncluded: "현재 포함 사항",
+    billingFreeBenefit: "표준 미리보기",
+    billingPaidBenefit: "고화질 다운로드",
+    billingSharedBenefit: "메이크업 체험과 진단은 한도를 공유합니다",
+  },
+  "es-ES": {
+    accountActions: "Acciones de cuenta",
+    currentPreference: "Preferencia actual",
+    preferenceHint:
+      "Las preferencias solo ajustan el orden de recomendaciones y las imágenes de referencia. No limitan toda la biblioteca de looks.",
+    diagnosisCapabilities: "El diagnóstico cubre",
+    diagnosisCapabilityTone: "Dirección del tono",
+    diagnosisCapabilityFace: "Enfoque de rasgos",
+    diagnosisCapabilityLook: "Look recomendado",
+    diagnosisEmptyTitle: "Empieza con un diagnóstico de maquillaje IA",
+    billingCurrentPlan: "Plan actual",
+    billingUsage: "Cuota mensual",
+    billingSavedLimit: "Límite de guardados",
+    billingSavedUnit: "looks",
+    billingRefresh: "Próxima renovación",
+    billingRefreshFallback: "Se renueva mensualmente",
+    billingIncluded: "Incluido ahora",
+    billingFreeBenefit: "Vista previa estándar",
+    billingPaidBenefit: "Descarga HD",
+    billingSharedBenefit: "Las pruebas y el diagnóstico comparten cuota",
+  },
+  "es-419": {
+    accountActions: "Acciones de cuenta",
+    currentPreference: "Preferencia actual",
+    preferenceHint:
+      "Las preferencias solo ajustan el orden de recomendaciones y las imágenes de referencia. No limitan toda la biblioteca de looks.",
+    diagnosisCapabilities: "El diagnóstico cubre",
+    diagnosisCapabilityTone: "Dirección del tono",
+    diagnosisCapabilityFace: "Enfoque de rasgos",
+    diagnosisCapabilityLook: "Look recomendado",
+    diagnosisEmptyTitle: "Empieza con un diagnóstico de maquillaje IA",
+    billingCurrentPlan: "Plan actual",
+    billingUsage: "Cuota mensual",
+    billingSavedLimit: "Límite de guardados",
+    billingSavedUnit: "looks",
+    billingRefresh: "Próxima renovación",
+    billingRefreshFallback: "Se renueva mensualmente",
+    billingIncluded: "Incluido ahora",
+    billingFreeBenefit: "Vista previa estándar",
+    billingPaidBenefit: "Descarga HD",
+    billingSharedBenefit: "Las pruebas y el diagnóstico comparten cuota",
+  },
+  "pt-BR": {
+    accountActions: "Ações da conta",
+    currentPreference: "Preferência atual",
+    preferenceHint:
+      "As preferências ajustam apenas a ordem das recomendações e as imagens de referência. Elas não limitam toda a biblioteca de looks.",
+    diagnosisCapabilities: "O diagnóstico cobre",
+    diagnosisCapabilityTone: "Direção do tom",
+    diagnosisCapabilityFace: "Foco nos traços",
+    diagnosisCapabilityLook: "Look recomendado",
+    diagnosisEmptyTitle: "Comece com um diagnóstico de maquiagem IA",
+    billingCurrentPlan: "Plano atual",
+    billingUsage: "Cota mensal",
+    billingSavedLimit: "Limite de salvos",
+    billingSavedUnit: "looks",
+    billingRefresh: "Próxima renovação",
+    billingRefreshFallback: "Renova mensalmente",
+    billingIncluded: "Incluído agora",
+    billingFreeBenefit: "Prévia padrão",
+    billingPaidBenefit: "Download HD",
+    billingSharedBenefit: "Testes e diagnóstico compartilham a cota",
+  },
+};
+
+const dashboardModuleCopy = dashboardModuleCopyByLocale[locale];
+
+const planNamesByLocale: Record<SupportedLocale, PlanNameCopy> = {
+  en: { free: "Free", pro: "Pro", premium: "Premium" },
+  "zh-CN": { free: "免费", pro: "Pro", premium: "Premium" },
+  "zh-TW": { free: "免費", pro: "Pro", premium: "Premium" },
+  "de-DE": { free: "Kostenlos", pro: "Pro", premium: "Premium" },
+  "fr-FR": { free: "Gratuit", pro: "Pro", premium: "Premium" },
+  "ja-JP": { free: "無料", pro: "Pro", premium: "Premium" },
+  "ko-KR": { free: "무료", pro: "Pro", premium: "Premium" },
+  "es-ES": { free: "Gratis", pro: "Pro", premium: "Premium" },
+  "es-419": { free: "Gratis", pro: "Pro", premium: "Premium" },
+  "pt-BR": { free: "Grátis", pro: "Pro", premium: "Premium" },
+};
+const planNames = planNamesByLocale[locale];
 
 type DashboardNavCopy = {
   overview: string;
@@ -372,7 +1350,7 @@ const dashboardNavCopyByLocale: Record<SupportedLocale, DashboardNavCopy> = {
   },
   "de-DE": {
     overview: "Übersicht",
-    workspace: "Try-on starten",
+    workspace: "Make-up-Test starten",
     diagnosis: "KI-Diagnose",
     history: "Verlauf",
     saved: "Gespeichert",
@@ -476,7 +1454,9 @@ const dashboardNavItems: DashboardNavItem[] = [
   },
 ];
 
-const dashboardMobileTabs = [
+const shouldFitDashboardMobileTabs = locale === "zh-CN" || locale === "zh-TW";
+
+const dashboardMobilePrimaryTabs = [
   {
     href: "#overview",
     label: dashboardNavCopy.overview,
@@ -490,6 +1470,9 @@ const dashboardMobileTabs = [
     href: "#saved-panel",
     label: dashboardNavCopy.saved,
   },
+];
+
+const dashboardMobileSecondaryTabs = [
   {
     href: "#preferences-panel",
     label: dashboardNavCopy.preferences,
@@ -503,6 +1486,13 @@ const dashboardMobileTabs = [
     label: dashboardNavCopy.settings,
   },
 ];
+
+const dashboardMobileTabs = shouldFitDashboardMobileTabs
+  ? [...dashboardMobilePrimaryTabs, ...dashboardMobileSecondaryTabs]
+  : dashboardMobilePrimaryTabs;
+const dashboardMobileMoreTabs = shouldFitDashboardMobileTabs
+  ? []
+  : dashboardMobileSecondaryTabs;
 
 const dashboardMobileMenu = buildAccountMobileMenu(
   accountCenterCopy,
@@ -1552,7 +2542,12 @@ const diagnosisValueAliases =
     mobileSmartHide
     mobileHidden
   />
-  <MobileAppTopBar title={copy.heading} tabs={dashboardMobileTabs} />
+  <MobileAppTopBar
+    title={copy.heading}
+    tabs={dashboardMobileTabs}
+    fitTabs={shouldFitDashboardMobileTabs}
+    tabOverflow={dashboardMobileMoreTabs}
+  />
   <main class="dashboard-main" data-dashboard>
     <div class="dashboard-shell">
       <aside class="dashboard-rail" aria-label={copy.railLabel}>
@@ -1604,7 +2599,11 @@ const diagnosisValueAliases =
         </section>
 
         <section class="dashboard-metrics" aria-label={copy.overview}>
-          <article class="metric-card metric-card-primary">
+          <article
+            class="metric-card metric-card-primary metric-card-plan"
+            data-plan-card
+            data-plan="free"
+          >
             <div class="metric-icon">
               <AppIconBadge icon="membership" size="sm" tone="gold" />
             </div>
@@ -1613,7 +2612,7 @@ const diagnosisValueAliases =
               <strong data-plan-value>--</strong>
             </div>
           </article>
-          <article class="metric-card metric-card-primary">
+          <article class="metric-card metric-card-primary metric-card-quota">
             <div class="metric-icon">
               <AppIconBadge icon="tryon" size="sm" tone="teal" />
             </div>
@@ -2314,6 +3313,21 @@ const diagnosisValueAliases =
       flex-wrap: wrap;
       gap: 10px;
     }
+    .dashboard-hero-actions {
+      flex: 0 1 440px;
+      min-width: min(100%, 320px);
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .dashboard-hero-actions .btn {
+      flex: 1 1 180px;
+      min-width: 0;
+      min-height: 44px;
+      padding-block: 8px;
+      text-align: center;
+      line-height: 1.15;
+      white-space: normal;
+    }
     .dashboard-gate {
       display: flex;
       align-items: center;
@@ -2348,6 +3362,256 @@ const diagnosisValueAliases =
         0 8px 24px rgba(18, 39, 66, 0.06),
         0 2px 8px rgba(18, 39, 66, 0.04);
       transform: translateY(-2px);
+    }
+    .metric-card-plan {
+      --dashboard-plan-card-border: color-mix(
+        in srgb,
+        var(--teal) 30%,
+        var(--line)
+      );
+      --dashboard-plan-card-bg:
+        radial-gradient(
+          circle at 88% 10%,
+          rgba(35, 183, 169, 0.16),
+          transparent 32%
+        ),
+        linear-gradient(135deg, rgba(246, 255, 253, 0.98), var(--bg-elevated));
+      --dashboard-plan-card-wash: linear-gradient(
+        180deg,
+        rgba(15, 118, 110, 0.07),
+        transparent 46%
+      );
+      --dashboard-plan-card-inset-border: rgba(15, 118, 110, 0.12);
+      --dashboard-plan-card-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        0 18px 42px rgba(10, 81, 83, 0.08);
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      border-color: var(--dashboard-plan-card-border);
+      background: var(--dashboard-plan-card-bg);
+      box-shadow: var(--dashboard-plan-card-shadow);
+    }
+    .metric-card-plan[data-plan="pro"] {
+      --dashboard-plan-card-border: rgba(200, 62, 104, 0.54);
+      --dashboard-plan-card-bg:
+        radial-gradient(
+          circle at 84% 0,
+          rgba(255, 190, 211, 0.62),
+          transparent 36%
+        ),
+        linear-gradient(
+          150deg,
+          #fffafc 0%,
+          #ffeaf1 34%,
+          #fff6f9 64%,
+          #ffffff 100%
+        );
+      --dashboard-plan-card-wash: linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0.58),
+        transparent 29%,
+        rgba(200, 62, 104, 0.14) 52%,
+        transparent 74%
+      );
+      --dashboard-plan-card-inset-border: rgba(255, 210, 224, 0.72);
+      --dashboard-plan-card-shadow:
+        0 24px 52px rgba(156, 38, 82, 0.15), 0 8px 18px rgba(156, 38, 82, 0.07),
+        var(--panel-inset);
+    }
+    .metric-card-plan[data-plan="premium"] {
+      --dashboard-plan-card-border: rgba(184, 123, 23, 0.58);
+      --dashboard-plan-card-bg:
+        radial-gradient(
+          circle at 84% 0,
+          rgba(255, 237, 178, 0.7),
+          transparent 36%
+        ),
+        linear-gradient(
+          150deg,
+          #fffdf6 0%,
+          #fff4d5 34%,
+          #fffaf1 64%,
+          #ffffff 100%
+        );
+      --dashboard-plan-card-wash: linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0.6),
+        transparent 28%,
+        rgba(221, 169, 62, 0.16) 52%,
+        transparent 74%
+      );
+      --dashboard-plan-card-inset-border: rgba(255, 235, 175, 0.74);
+      --dashboard-plan-card-shadow:
+        0 24px 52px rgba(143, 88, 12, 0.16), 0 8px 18px rgba(143, 88, 12, 0.08),
+        var(--panel-inset);
+    }
+    :global([data-theme="dark"]) .metric-card-plan {
+      --dashboard-plan-card-border: rgba(45, 212, 191, 0.32);
+      --dashboard-plan-card-bg:
+        radial-gradient(
+          circle at 88% 10%,
+          rgba(45, 212, 191, 0.14),
+          transparent 32%
+        ),
+        linear-gradient(135deg, rgba(10, 33, 35, 0.98), var(--bg-elevated));
+      --dashboard-plan-card-wash: linear-gradient(
+        180deg,
+        rgba(45, 212, 191, 0.08),
+        transparent 46%
+      );
+      --dashboard-plan-card-inset-border: rgba(45, 212, 191, 0.12);
+      --dashboard-plan-card-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 44px rgba(0, 0, 0, 0.26);
+    }
+    :global([data-theme="dark"]) .metric-card-plan[data-plan="pro"] {
+      --dashboard-plan-card-border: rgba(232, 122, 152, 0.42);
+      --dashboard-plan-card-bg:
+        radial-gradient(
+          circle at 84% 0,
+          rgba(232, 122, 152, 0.22),
+          transparent 38%
+        ),
+        linear-gradient(
+          150deg,
+          rgba(54, 22, 37, 0.94) 0%,
+          rgba(30, 35, 47, 0.96) 46%,
+          rgba(24, 32, 48, 0.98) 100%
+        );
+      --dashboard-plan-card-wash: linear-gradient(
+        115deg,
+        rgba(255, 166, 194, 0.13),
+        transparent 32%,
+        rgba(255, 255, 255, 0.04) 58%,
+        transparent 78%
+      );
+      --dashboard-plan-card-inset-border: rgba(255, 178, 202, 0.17);
+      --dashboard-plan-card-shadow:
+        0 24px 52px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(232, 122, 152, 0.07),
+        var(--panel-inset);
+    }
+    :global([data-theme="dark"]) .metric-card-plan[data-plan="premium"] {
+      --dashboard-plan-card-border: rgba(239, 182, 82, 0.42);
+      --dashboard-plan-card-bg:
+        radial-gradient(
+          circle at 84% 0,
+          rgba(240, 168, 50, 0.22),
+          transparent 38%
+        ),
+        linear-gradient(
+          150deg,
+          rgba(56, 43, 21, 0.94) 0%,
+          rgba(30, 35, 46, 0.96) 46%,
+          rgba(24, 32, 48, 0.98) 100%
+        );
+      --dashboard-plan-card-wash: linear-gradient(
+        115deg,
+        rgba(255, 226, 152, 0.12),
+        transparent 32%,
+        rgba(255, 255, 255, 0.04) 58%,
+        transparent 78%
+      );
+      --dashboard-plan-card-inset-border: rgba(255, 226, 149, 0.18);
+      --dashboard-plan-card-shadow:
+        0 24px 52px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(237, 181, 82, 0.08),
+        var(--panel-inset);
+    }
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"])) .metric-card-plan {
+        --dashboard-plan-card-border: rgba(45, 212, 191, 0.32);
+        --dashboard-plan-card-bg:
+          radial-gradient(
+            circle at 88% 10%,
+            rgba(45, 212, 191, 0.14),
+            transparent 32%
+          ),
+          linear-gradient(135deg, rgba(10, 33, 35, 0.98), var(--bg-elevated));
+        --dashboard-plan-card-wash: linear-gradient(
+          180deg,
+          rgba(45, 212, 191, 0.08),
+          transparent 46%
+        );
+        --dashboard-plan-card-inset-border: rgba(45, 212, 191, 0.12);
+        --dashboard-plan-card-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.08),
+          0 18px 44px rgba(0, 0, 0, 0.26);
+      }
+      :global(:root:not([data-theme="light"]))
+        .metric-card-plan[data-plan="pro"] {
+        --dashboard-plan-card-border: rgba(232, 122, 152, 0.42);
+        --dashboard-plan-card-bg:
+          radial-gradient(
+            circle at 84% 0,
+            rgba(232, 122, 152, 0.22),
+            transparent 38%
+          ),
+          linear-gradient(
+            150deg,
+            rgba(54, 22, 37, 0.94) 0%,
+            rgba(30, 35, 47, 0.96) 46%,
+            rgba(24, 32, 48, 0.98) 100%
+          );
+        --dashboard-plan-card-wash: linear-gradient(
+          115deg,
+          rgba(255, 166, 194, 0.13),
+          transparent 32%,
+          rgba(255, 255, 255, 0.04) 58%,
+          transparent 78%
+        );
+        --dashboard-plan-card-inset-border: rgba(255, 178, 202, 0.17);
+        --dashboard-plan-card-shadow:
+          0 24px 52px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(232, 122, 152, 0.07),
+          var(--panel-inset);
+      }
+      :global(:root:not([data-theme="light"]))
+        .metric-card-plan[data-plan="premium"] {
+        --dashboard-plan-card-border: rgba(239, 182, 82, 0.42);
+        --dashboard-plan-card-bg:
+          radial-gradient(
+            circle at 84% 0,
+            rgba(240, 168, 50, 0.22),
+            transparent 38%
+          ),
+          linear-gradient(
+            150deg,
+            rgba(56, 43, 21, 0.94) 0%,
+            rgba(30, 35, 46, 0.96) 46%,
+            rgba(24, 32, 48, 0.98) 100%
+          );
+        --dashboard-plan-card-wash: linear-gradient(
+          115deg,
+          rgba(255, 226, 152, 0.12),
+          transparent 32%,
+          rgba(255, 255, 255, 0.04) 58%,
+          transparent 78%
+        );
+        --dashboard-plan-card-inset-border: rgba(255, 226, 149, 0.18);
+        --dashboard-plan-card-shadow:
+          0 24px 52px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(237, 181, 82, 0.08),
+          var(--panel-inset);
+      }
+    }
+    .metric-card-plan::before,
+    .metric-card-plan::after {
+      position: absolute;
+      z-index: 0;
+      pointer-events: none;
+      content: "";
+    }
+    .metric-card-plan::before {
+      inset: 0;
+      background: var(--dashboard-plan-card-wash);
+    }
+    .metric-card-plan::after {
+      inset: 1px;
+      border: 1px solid var(--dashboard-plan-card-inset-border);
+      border-radius: 11px;
+      box-shadow: inset 0 0 0 1px
+        color-mix(in srgb, currentColor 4%, transparent);
+    }
+    .metric-card-plan > * {
+      position: relative;
+      z-index: 1;
     }
     .metric-icon {
       flex: 0 0 auto;
@@ -2529,6 +3793,9 @@ const diagnosisValueAliases =
     }
     .history-panel {
       grid-column: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 320px;
     }
     .panel-head {
       display: flex;
@@ -3177,10 +4444,20 @@ const diagnosisValueAliases =
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1rem;
+      flex: 1;
     }
-    .history-list > .loading-line,
-    .history-list > .empty-state {
+    .history-list :global(.loading-line),
+    .history-list :global(.empty-state) {
       grid-column: 1 / -1;
+    }
+    .history-list :global(.empty-state) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .history-list :global(.empty-state .empty-state-action) {
+      justify-self: center;
     }
     .history-item {
       display: grid;
@@ -3587,7 +4864,7 @@ const diagnosisValueAliases =
       margin: 12px 0 0;
       color: var(--danger-text);
     }
-    .empty-state {
+    :global(.empty-state) {
       display: grid;
       gap: 10px;
       padding: 16px;
@@ -3598,25 +4875,25 @@ const diagnosisValueAliases =
       font-size: 14px;
       line-height: 1.6;
     }
-    .empty-state a {
+    :global(.empty-state a) {
       color: var(--rose);
       font-weight: 800;
       text-decoration: none;
     }
-    .empty-state a.empty-state-action {
+    :global(.empty-state a.empty-state-action) {
       justify-self: start;
       min-height: 38px;
       padding-inline: 14px;
       color: #ffffff;
       line-height: 1;
     }
-    .empty-state strong {
+    :global(.empty-state strong) {
       color: var(--navy);
       font-size: 15px;
       line-height: 1.35;
     }
     .panel-head a.dashboard-diagnosis-cta,
-    .empty-state a.dashboard-diagnosis-cta {
+    :global(.empty-state a.dashboard-diagnosis-cta) {
       min-height: 38px;
       padding: 0 12px 0 10px;
       border-color: color-mix(in srgb, var(--rose-dark) 86%, #ffffff);
@@ -3635,7 +4912,7 @@ const diagnosisValueAliases =
         inset 0 1px 0 rgba(255, 255, 255, 0.32);
     }
     .panel-head a.dashboard-diagnosis-cta::before,
-    .empty-state a.dashboard-diagnosis-cta::before {
+    :global(.empty-state a.dashboard-diagnosis-cta)::before {
       display: grid;
       width: 24px;
       height: 24px;
@@ -3650,26 +4927,26 @@ const diagnosisValueAliases =
       content: "AI";
     }
     .panel-head a.dashboard-diagnosis-cta::after,
-    .empty-state a.dashboard-diagnosis-cta::after {
+    :global(.empty-state a.dashboard-diagnosis-cta)::after {
       color: rgba(255, 255, 255, 0.9);
       font-size: 14px;
       line-height: 1;
       content: "→";
     }
     .panel-head a.dashboard-diagnosis-cta:hover,
-    .empty-state a.dashboard-diagnosis-cta:hover {
+    :global(.empty-state a.dashboard-diagnosis-cta:hover) {
       border-color: color-mix(in srgb, var(--rose) 82%, #ffffff);
       color: #ffffff;
       box-shadow:
         0 14px 28px rgba(200, 62, 104, 0.32),
         inset 0 1px 0 rgba(255, 255, 255, 0.38);
     }
-    .empty-state a.dashboard-diagnosis-cta {
+    :global(.empty-state a.dashboard-diagnosis-cta) {
       justify-self: start;
       margin-top: 2px;
     }
     :global([data-theme="dark"]) .panel-head a.dashboard-diagnosis-cta,
-    :global([data-theme="dark"]) .empty-state a.dashboard-diagnosis-cta {
+    :global([data-theme="dark"] .empty-state a.dashboard-diagnosis-cta) {
       border-color: rgba(255, 151, 184, 0.45);
       background: linear-gradient(135deg, #de5b86, #9f294f);
       box-shadow:
@@ -3682,7 +4959,7 @@ const diagnosisValueAliases =
         .panel-head
         a.dashboard-diagnosis-cta,
       :global(:root:not([data-theme="light"]))
-        .empty-state
+        :global(.empty-state)
         a.dashboard-diagnosis-cta {
         border-color: rgba(255, 151, 184, 0.45);
         background: linear-gradient(135deg, #de5b86, #9f294f);
@@ -3772,34 +5049,165 @@ const diagnosisValueAliases =
         line-height: 1.15;
       }
       .dashboard-hero-actions {
+        flex: 0 1 auto;
         width: 100%;
+        min-width: 0;
+        align-items: stretch;
+        justify-content: stretch;
       }
       .dashboard-hero-actions .btn {
-        flex: 1;
+        flex: 1 1 140px;
         min-width: 0;
       }
       .dashboard-metrics {
+        position: relative;
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 0;
+        padding: 14px 16px 12px;
+        border: 1px solid color-mix(in srgb, var(--line) 64%, transparent);
+        border-radius: 14px;
+        background:
+          linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--teal-soft) 18%, transparent),
+            transparent 54%
+          ),
+          var(--bg-elevated);
+        box-shadow: 0 10px 28px rgba(18, 39, 66, 0.06);
       }
-      .metric-card {
-        min-height: 72px;
-        padding: 14px;
+      .dashboard-metrics .metric-card {
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        transition: none;
       }
-      .metric-content strong {
-        font-size: 24px;
+      .dashboard-metrics .metric-card:hover {
+        border-color: transparent;
+        box-shadow: none;
+        transform: none;
       }
-      .metric-card-dual {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto;
-        gap: 12px;
-        padding: 14px;
+      :global([data-theme="dark"]) .dashboard-metrics {
+        border-color: rgba(255, 255, 255, 0.07);
+        background:
+          linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--teal-soft) 28%, transparent),
+            transparent 54%
+          ),
+          var(--bg-elevated);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
       }
-      .metric-dual-divider {
+      @media (prefers-color-scheme: dark) {
+        :global(:root:not([data-theme="light"])) .dashboard-metrics {
+          border-color: rgba(255, 255, 255, 0.07);
+          background:
+            linear-gradient(
+              135deg,
+              color-mix(in srgb, var(--teal-soft) 28%, transparent),
+              transparent 54%
+            ),
+            var(--bg-elevated);
+          box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+        }
+      }
+      .dashboard-metrics .metric-card-plan {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 1;
+        display: inline-flex;
+        min-height: 28px;
+        max-width: 42%;
+        align-items: center;
+        justify-content: center;
+        padding: 0 10px;
+        border: 1px solid var(--dashboard-plan-card-border);
+        border-radius: 999px;
+        background: var(--dashboard-plan-card-bg);
+      }
+      .dashboard-metrics .metric-card-plan::before,
+      .dashboard-metrics .metric-card-plan::after {
         display: none;
       }
+      .metric-card-plan .metric-icon,
+      .metric-card-quota .metric-icon,
+      .metric-card-dual .metric-icon {
+        display: none;
+      }
+      .metric-card-plan .metric-content {
+        flex: 0 1 auto;
+      }
+      .metric-card-plan .metric-content span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+      .metric-card-plan .metric-content strong {
+        overflow: hidden;
+        color: var(--rose);
+        font-size: 13px;
+        font-weight: 900;
+        line-height: 1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .metric-card-quota {
+        padding: 0 92px 13px 0;
+        border-bottom: 1px solid
+          color-mix(in srgb, var(--line) 58%, transparent);
+      }
+      .metric-card-quota .metric-content span {
+        margin-bottom: 7px;
+        font-size: 12px;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+      .metric-card-quota .metric-content strong {
+        font-size: 34px;
+        line-height: 0.95;
+      }
+      .metric-card-dual {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        gap: 12px;
+        padding: 12px 0 0;
+      }
+      .metric-dual-divider {
+        display: block;
+        width: 1px;
+        min-height: 28px;
+        background: color-mix(in srgb, var(--line) 64%, transparent);
+      }
       .metric-dual-item {
-        gap: 10px;
+        min-width: 0;
+        gap: 8px;
+        align-items: baseline;
+      }
+      .metric-dual-item .metric-content {
+        display: flex;
+        min-width: 0;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .metric-dual-item .metric-content span {
+        min-width: 0;
+        margin: 0;
+        overflow: hidden;
+        font-size: 12px;
+        letter-spacing: 0;
+        text-overflow: ellipsis;
+        text-transform: none;
+        white-space: nowrap;
+      }
+      .metric-dual-item .metric-content strong {
+        flex: 0 0 auto;
+        font-size: 22px;
+        line-height: 1;
       }
       .next-action-card {
         padding: 20px;
@@ -3841,6 +5249,9 @@ const diagnosisValueAliases =
       }
       .history-list {
         gap: 12px;
+      }
+      .history-list :global(.empty-state) {
+        min-height: 124px;
       }
       .dashboard-account-layout,
       .dashboard-billing-status,
@@ -4007,6 +5418,7 @@ const diagnosisValueAliases =
       diagnosisValueAliases,
       hrefs,
       marketOptions,
+      planNames,
       recommendations,
     }}
   >
@@ -4014,7 +5426,6 @@ const diagnosisValueAliases =
       const root = document.querySelector("[data-dashboard]");
       if (!root) return;
 
-      const planNames = { free: "Free", pro: "Pro", premium: "Premium" };
       const savedLookLimitByPlan = { free: 10, pro: 30, premium: 100 };
       const defaultMarketOptions = Array.isArray(marketOptions)
         ? marketOptions
@@ -4090,6 +5501,11 @@ const diagnosisValueAliases =
       ).filter((link) =>
         dashboardViewByHash.has(link.getAttribute("href") || ""),
       );
+      const dashboardMobileTabOverflowGroups = Array.from(
+        document.querySelectorAll(
+          "[data-mobile-app-topbar] [data-mobile-tab-overflow]",
+        ),
+      );
       const formatDate = (value) => {
         if (!value) return "";
         const date = new Date(value);
@@ -4125,6 +5541,12 @@ const diagnosisValueAliases =
           } else {
             link.removeAttribute("aria-current");
           }
+        });
+        dashboardMobileTabOverflowGroups.forEach((group) => {
+          const isActive = Array.from(
+            group.querySelectorAll('a[href^="#"]'),
+          ).some((link) => link.getAttribute("href") === hash);
+          group.classList.toggle("active", isActive);
         });
       }
 
@@ -4726,6 +6148,8 @@ const diagnosisValueAliases =
         const email = data?.user?.email || "";
         const planLabel = planNames[plan] || plan;
         const isPaid = plan === "pro" || plan === "premium";
+        const planCard = query("[data-plan-card]");
+        if (planCard) planCard.dataset.plan = plan;
         setText(
           "[data-dashboard-email]",
           email ? `${copy.signedInAs} ${email}` : copy.signedInAs,
@@ -4863,9 +6287,12 @@ const diagnosisValueAliases =
           if (message) message.textContent = accountCenterCopy.signOutFailed;
         }
       });
-      query("[data-dashboard-theme-shortcut]")?.addEventListener("click", () => {
-        document.getElementById("theme-toggle")?.click();
-      });
+      query("[data-dashboard-theme-shortcut]")?.addEventListener(
+        "click",
+        () => {
+          document.getElementById("theme-toggle")?.click();
+        },
+      );
 
       const preferenceForm = query("[data-dashboard-preferences]");
       const preferenceStatus = query("[data-dashboard-preference-status]");

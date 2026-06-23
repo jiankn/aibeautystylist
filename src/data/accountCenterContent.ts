@@ -411,7 +411,7 @@ const accountCenterCopies: Record<SupportedLocale, AccountCenterCopy> = {
     settings: "Einstellungen",
     memberCenter: "Mitgliedschaft",
     helpCenter: "Hilfezentrum",
-    workspace: "Try-on starten",
+    workspace: "Make-up-Test starten",
     signOut: "Abmelden",
     signingOut: "Abmelden...",
     signOutFailed: "Abmeldung fehlgeschlagen. Erneut versuchen.",
@@ -457,7 +457,7 @@ const accountCenterCopies: Record<SupportedLocale, AccountCenterCopy> = {
     history: {
       ...en.history,
       loading: "Verlauf wird geladen...",
-      empty: "Noch keine Try-on-Ergebnisse.",
+      empty: "Noch keine Testergebnisse.",
       loadFailed: "Verlauf konnte nicht geladen werden. Später aktualisieren.",
       all: "Alle",
       completed: "Fertig",
@@ -470,7 +470,7 @@ const accountCenterCopies: Record<SupportedLocale, AccountCenterCopy> = {
     },
     data: {
       usageStats: "Nutzungsstatistik",
-      totalTryons: "Try-ons gesamt",
+      totalTryons: "Tests gesamt",
       completedTryons: "Fertig",
       remainingQuota: "Übrig",
     },
