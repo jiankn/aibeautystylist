@@ -50,8 +50,10 @@ describe("Microsoft OAuth helpers", () => {
   });
 
   it("can tag login status redirects with the provider", () => {
-    expect(getOAuthLoginStatusUrl("failed", "/account", "microsoft")).toBe(
-      "/login?oauth=failed&provider=microsoft&next=%2Faccount",
+    expect(
+      getOAuthLoginStatusUrl("failed", "/dashboard#account-panel", "microsoft"),
+    ).toBe(
+      "/login?oauth=failed&provider=microsoft&next=%2Fdashboard%23account-panel",
     );
   });
 

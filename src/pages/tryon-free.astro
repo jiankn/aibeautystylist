@@ -40,7 +40,7 @@ const loginHref = localizeAppHref(
   `/login?mode=register&next=${encodeURIComponent(localizeAppHref("/tryon-free"))}`,
 );
 const shareCardHref = localizeAppHref("/share-card");
-const accountHref = localizeAppHref("/account");
+const subscriptionHref = localizeAppHref("/subscription");
 const tryonProHref = localizeAppHref("/tryon-pro");
 const tryonPremiumHref = localizeAppHref("/tryon-premium");
 const resolvedLooks = resolveLookCatalog(audienceContext);
@@ -160,7 +160,7 @@ const upgradeBannerCopy = {
 };
 const upgradeBannerHrefs = {
   pricing: pricingHref,
-  account: accountHref,
+  account: subscriptionHref,
   pro: tryonProHref,
   premium: tryonPremiumHref,
 };

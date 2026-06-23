@@ -43,7 +43,6 @@ const appRoutePathnames = new Set([
   "/faq",
   "/history",
   "/login",
-  "/account",
   "/dashboard",
   "/support",
   "/tryon-pro",
@@ -172,7 +171,6 @@ const mobileGuidesSummary = [
 
 const authEntryHref = localizeAppHref("/login?mode=register");
 const authAccountHref = localizeAppHref("/dashboard");
-const mobileAccountHref = localizeAppHref("/account");
 const authEntryLabel = t("navigation", "login");
 const authEntryShortLabel = t("navigation", "loginShort");
 const mobileDiagnosisHref = localizeAppHref("/diagnosis");
@@ -181,6 +179,8 @@ const mobileFaqHref = localizeAppHref("/faq");
 const mobileHistoryHref = localizeAppHref("/history");
 const mobileWorkspaceHref = localizeAppHref("/tryon-free");
 const mobileDashboardHref = localizeAppHref("/dashboard");
+const mobileAccountPanelHref = `${mobileDashboardHref}#account-panel`;
+const mobilePreferencesHref = `${mobileDashboardHref}#preferences-panel`;
 const accountMenuCopy = getAccountCenterCopy(
   currentRoute.language.locale as SupportedLocale,
 );
@@ -197,13 +197,14 @@ const defaultMobileMenuSection = Astro.locals.isLoggedIn
   ? buildAccountMobileMenu(
       accountMenuCopy,
       {
-        account: mobileAccountHref,
+        accountPanel: mobileAccountPanelHref,
         dashboard: mobileDashboardHref,
         diagnosis: mobileDiagnosisHref,
         faq: mobileFaqHref,
         history: mobileHistoryHref,
         home: localizeHref("/"),
         pricing: mobilePricingHref,
+        preferences: mobilePreferencesHref,
         workspace: mobileWorkspaceHref,
       },
       "workspace",
@@ -537,7 +538,7 @@ const resolvedMobileMenuSection = {
                 href={authEntryHref}
                 data-mobile-account-summary
                 data-auth-href={authEntryHref}
-                data-account-href={mobileAccountHref}
+                data-account-href={mobileDashboardHref}
                 data-auth-title={authEntryLabel}
                 data-auth-note={t("brand", "tagline")}
                 data-auth-action={authEntryShortLabel}

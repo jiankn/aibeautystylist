@@ -74,7 +74,6 @@ const appRoutePathnames = new Set([
   "/faq",
   "/history",
   "/login",
-  "/account",
   "/dashboard",
   "/support",
   "/tryon-pro",
@@ -96,14 +95,15 @@ const languageOptions = languageConfigs
     active: language.slug === activeLanguageSlug,
     href: languageSwitchHref(language.slug),
   }));
-const accountHref = localizeAppHref("/account");
+const dashboardHref = localizeAppHref("/dashboard");
+const accountSettingsHref = `${dashboardHref}#account-panel`;
 const authTarget = localizeAppHref(
-  `/login?mode=register&next=${encodeURIComponent(accountHref)}`,
+  `/login?mode=register&next=${encodeURIComponent(dashboardHref)}`,
 );
 const accountTarget = Astro.locals.isLoggedIn
-  ? accountHref
+  ? dashboardHref
   : localizeAppHref(
-      `/login?mode=login&next=${encodeURIComponent(accountHref)}`,
+      `/login?mode=login&next=${encodeURIComponent(dashboardHref)}`,
     );
 const resolvedRightHref =
   rightHref ??
@@ -112,11 +112,11 @@ const resolvedRightHref =
     : rightAction === "help"
       ? localizeAppHref("/faq")
       : rightAction === "settings"
-        ? localizeAppHref("/account#settings")
+        ? accountSettingsHref
         : rightAction === "search"
           ? localizeAppHref("/discover")
           : rightAction === "bell"
-            ? localizeAppHref("/account")
+            ? dashboardHref
             : undefined);
 const resolvedBackHref = backHref ?? localizeHref("/");
 
@@ -278,12 +278,12 @@ const getActionHref = (item: ActionItem) => {
   if (item === "settings")
     return rightAction === "settings"
       ? resolvedRightHref
-      : localizeAppHref("/account#settings");
+      : accountSettingsHref;
   if (item === "search")
     return rightAction === "search"
       ? resolvedRightHref
       : localizeAppHref("/discover");
-  if (item === "bell") return localizeAppHref("/account");
+  if (item === "bell") return dashboardHref;
   return undefined;
 };
 
@@ -359,7 +359,7 @@ const getActionLabel = (item: ActionItem) => {
               aria-label={copy.account}
               data-mobile-top-account
               data-auth-href={authTarget}
-              data-account-href={accountHref}
+              data-account-href={dashboardHref}
             >
               <span class="mobile-app-plan" data-mobile-top-plan>
                 {Astro.locals.isLoggedIn ? "AI" : copy.account}

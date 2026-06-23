@@ -143,7 +143,6 @@ export function isInfrastructurePath(pathname: string): boolean {
 
 const localizableAppRoutes = new Set([
   "/about",
-  "/account",
   "/ai-disclaimer",
   "/blog",
   "/dashboard",

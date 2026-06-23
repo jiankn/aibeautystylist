@@ -328,7 +328,7 @@
         const noteText = quotaText
           ? `${planLabel}: ${plan} · ${quotaText}`
           : `${planLabel}: ${plan}`;
-        summary.href = summary.dataset.accountHref || localized("/account");
+        summary.href = summary.dataset.accountHref || localized("/dashboard");
         if (avatar) avatar.textContent = initial;
         if (title) title.textContent = email || authCopy.accountMenu;
         if (note) {
@@ -380,7 +380,7 @@
       mobileAuthCtas.forEach((anchor) => {
         const label = anchor.querySelector("[data-mobile-menu-auth-label]");
         const avatar = anchor.querySelector("[data-mobile-menu-auth-avatar]");
-        anchor.href = anchor.dataset.accountHref || localized("/account");
+        anchor.href = anchor.dataset.accountHref || localized("/dashboard");
         anchor.classList.add("mobile-menu-auth-cta-account");
         if (label) label.textContent = plan;
         else anchor.textContent = plan;
@@ -397,7 +397,7 @@
       mobileTopAccounts.forEach((anchor) => {
         const label = anchor.querySelector("[data-mobile-top-plan]");
         const avatar = anchor.querySelector("[data-mobile-top-avatar]");
-        anchor.href = anchor.dataset.accountHref || localized("/account");
+        anchor.href = anchor.dataset.accountHref || localized("/dashboard");
         if (label) label.textContent = plan;
         if (avatar) avatar.textContent = initial;
         anchor.setAttribute(
@@ -486,7 +486,7 @@
         label: authCopy.dashboard,
       });
       const account = createMenuItem({
-        href: localized("/account"),
+        href: localized("/dashboard#account-panel"),
         label: authCopy.account,
       });
       const billing = createMenuItem({

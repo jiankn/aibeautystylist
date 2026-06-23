@@ -22,11 +22,11 @@ const localizeAppHref = (href: string) =>
 const localizeHref = (href: string) =>
   getLocalizedPathname(href, currentRoute.language.slug);
 const isLoggedIn = Boolean(Astro.locals.isLoggedIn);
-const accountHref = localizeAppHref("/account");
+const dashboardHref = localizeAppHref("/dashboard");
 const accountTarget = isLoggedIn
-  ? accountHref
+  ? dashboardHref
   : localizeAppHref(
-      `/login?mode=login&next=${encodeURIComponent(accountHref)}`,
+      `/login?mode=login&next=${encodeURIComponent(dashboardHref)}`,
     );
 
 const copy = {

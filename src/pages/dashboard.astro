@@ -29,11 +29,13 @@ const loginHref = localizeAppHref(
   `/login?mode=register&next=${encodeURIComponent(dashboardHref)}`,
 );
 const hrefs = {
+  about: localizeAppHref("/about"),
   dashboard: dashboardHref,
   home: localizeAppHref("/"),
   login: loginHref,
-  account: localizeAppHref("/account"),
   pricing: localizeAppHref("/pricing"),
+  privacy: localizeAppHref("/privacy"),
+  resetPassword: localizeAppHref("/reset-password"),
   subscription: localizeAppHref("/subscription"),
   discover: localizeAppHref("/discover"),
   diagnosis: localizeAppHref("/diagnosis"),
@@ -505,13 +507,14 @@ const dashboardMobileTabs = [
 const dashboardMobileMenu = buildAccountMobileMenu(
   accountCenterCopy,
   {
-    account: hrefs.account,
+    accountPanel: `${hrefs.dashboard}#account-panel`,
     dashboard: hrefs.dashboard,
     diagnosis: hrefs.diagnosis,
     faq: hrefs.faq,
     history: hrefs.history,
     home: hrefs.home,
     pricing: hrefs.subscription,
+    preferences: `${hrefs.dashboard}#preferences-panel`,
     workspace: hrefs.tryonFree,
   },
   "workspace",
@@ -1956,9 +1959,20 @@ const diagnosisValueAliases =
                 </article>
                 <div class="dashboard-account-actions">
                   <span>{dashboardModuleCopy.accountActions}</span>
-                  <a href={hrefs.account}>
-                    <AppIconBadge icon="account" size="sm" />
-                    <span>{accountCenterCopy.profile}</span>
+                  <a href={hrefs.privacy}>
+                    <AppIconBadge icon="privacy" size="sm" />
+                    <span>{accountCenterCopy.actions.privacyTitle}</span>
+                  </a>
+                  <a href={hrefs.resetPassword}>
+                    <AppIconBadge icon="security" size="sm" />
+                    <span>{accountCenterCopy.actions.securityTitle}</span>
+                  </a>
+                  <a
+                    href="#preferences-panel"
+                    data-dashboard-module-link="preferences"
+                  >
+                    <AppIconBadge icon="preferences" size="sm" />
+                    <span>{accountCenterCopy.actions.preferencesTitle}</span>
                   </a>
                   <a href="#billing-panel" data-dashboard-module-link="billing">
                     <AppIconBadge icon="membership" size="sm" tone="gold" />
@@ -1967,6 +1981,22 @@ const diagnosisValueAliases =
                   <a href={hrefs.faq}>
                     <AppIconBadge icon="help" size="sm" tone="teal" />
                     <span>{accountCenterCopy.helpCenter}</span>
+                  </a>
+                  <a href={hrefs.support}>
+                    <AppIconBadge icon="support" size="sm" tone="teal" />
+                    <span>{accountCenterCopy.actions.supportTitle}</span>
+                  </a>
+                  <a href={hrefs.about}>
+                    <AppIconBadge icon="about" size="sm" />
+                    <span>{accountCenterCopy.actions.aboutTitle}</span>
+                  </a>
+                  <button type="button" data-dashboard-theme-shortcut>
+                    <AppIconBadge icon="theme" size="sm" />
+                    <span>{accountCenterCopy.actions.appearanceTitle}</span>
+                  </button>
+                  <a href={hrefs.support}>
+                    <AppIconBadge icon="export" size="sm" />
+                    <span>{accountCenterCopy.actions.exportTitle}</span>
                   </a>
                   <button type="button" data-dashboard-logout>
                     <AppIconBadge icon="logout" size="sm" tone="danger" />
@@ -3140,7 +3170,7 @@ const diagnosisValueAliases =
       background: color-mix(in srgb, var(--rose-soft) 58%, transparent);
       outline: none;
     }
-    .dashboard-account-actions button {
+    .dashboard-account-actions button[data-dashboard-logout] {
       color: var(--danger-text);
     }
     .history-list {
@@ -4832,6 +4862,9 @@ const diagnosisValueAliases =
           if (button) button.disabled = false;
           if (message) message.textContent = accountCenterCopy.signOutFailed;
         }
+      });
+      query("[data-dashboard-theme-shortcut]")?.addEventListener("click", () => {
+        document.getElementById("theme-toggle")?.click();
       });
 
       const preferenceForm = query("[data-dashboard-preferences]");

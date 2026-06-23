@@ -22,7 +22,6 @@ const localizeAppHref = (href: string) =>
 
 const subscriptionHref = localizeAppHref("/subscription");
 const hrefs = {
-  account: localizeAppHref("/account"),
   dashboard: localizeAppHref("/dashboard"),
   diagnosis: localizeAppHref("/diagnosis"),
   faq: localizeAppHref("/faq"),
@@ -43,13 +42,14 @@ const accountCopy = getAccountCenterCopy(locale);
 const accountMobileMenu = buildAccountMobileMenu(
   accountCopy,
   {
-    account: hrefs.account,
+    accountPanel: `${hrefs.dashboard}#account-panel`,
     dashboard: hrefs.dashboard,
     diagnosis: hrefs.diagnosis,
     faq: hrefs.faq,
     history: hrefs.history,
     home: hrefs.home,
     pricing: hrefs.subscription,
+    preferences: `${hrefs.dashboard}#preferences-panel`,
     workspace: hrefs.workspace,
   },
   "account",
@@ -514,7 +514,7 @@ const planMeta = Object.fromEntries(
           <p>{copy.subtitle}</p>
         </div>
         <a class="btn btn-outline" href={hrefs.dashboard}
-          >{accountCopy.workspace}</a
+          >{accountCopy.myData}</a
         >
       </section>
 
