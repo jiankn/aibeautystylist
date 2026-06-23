@@ -267,6 +267,11 @@ img { display: block; width: 100%; }
 .site-header ~ main {
   padding-top: 52px;
 }
+@media (max-width: 767px) {
+  .site-header.site-header-mobile-hidden ~ main {
+    padding-top: 0;
+  }
+}
 .site-nav {
   height: 100%;
   display: flex;

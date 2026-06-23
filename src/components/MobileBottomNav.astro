@@ -263,9 +263,10 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
       min-height: 42px;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      flex-direction: column;
-      border-radius: 12px;
+      gap: 5px;
+      flex-direction: row;
+      padding: 0 12px;
+      border-radius: 999px;
       color: var(--muted);
       font-size: 11px;
       font-weight: 720;
@@ -281,21 +282,20 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
       transform: scale(0.96);
     }
     .mobile-bottom-item span:last-child {
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      flex-shrink: 0;
       white-space: nowrap;
     }
     .mobile-bottom-icon {
       display: grid;
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
       place-items: center;
     }
     .mobile-bottom-icon svg {
       display: block;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       fill: none;
       stroke: currentColor;
       stroke-linecap: round;
@@ -305,6 +305,21 @@ const isItemActive = (id: (typeof items)[number]["id"]) =>
     .mobile-bottom-item.active {
       color: var(--rose);
       background: color-mix(in srgb, var(--rose-soft) 74%, transparent);
+      padding: 0 14px;
+    }
+    /* CJK 语言优化：汉字较宽，缩小图标+增大文字间距 */
+    :global(:lang(zh)) .mobile-bottom-item:not(.mobile-bottom-item-primary) {
+      gap: 4px;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+    :global(:lang(zh)) .mobile-bottom-item:not(.mobile-bottom-item-primary) .mobile-bottom-icon {
+      width: 18px;
+      height: 18px;
+    }
+    :global(:lang(zh)) .mobile-bottom-item:not(.mobile-bottom-item-primary) .mobile-bottom-icon svg {
+      width: 16px;
+      height: 16px;
     }
     .mobile-bottom-item-primary {
       position: relative;
