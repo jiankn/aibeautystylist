@@ -35,6 +35,8 @@ const hrefs = {
   pricing: localizeAppHref("/pricing"),
   privacy: localizeAppHref("/privacy"),
   resetPassword: localizeAppHref("/reset-password"),
+  resultBase: localizeAppHref("/result"),
+  shareBase: localizeAppHref("/share"),
   subscription: localizeAppHref("/subscription"),
   discover: localizeAppHref("/discover"),
   diagnosis: localizeAppHref("/diagnosis"),
@@ -4474,6 +4476,9 @@ const diagnosisValueAliases =
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--bg);
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
     }
     .history-item img,
     .saved-look img {
@@ -5442,6 +5447,11 @@ const diagnosisValueAliases =
         pro: hrefs.tryonPro,
         premium: hrefs.tryonPremium,
       };
+      const resultHrefForJob = (jobId) => {
+        if (!jobId) return workspaceHref;
+        const base = String(hrefs.resultBase || "/result").replace(/\/+$/, "");
+        return `${base}/${encodeURIComponent(jobId)}`;
+      };
       const runningStatuses = new Set([
         "created",
         "upload_validating",
@@ -5890,8 +5900,9 @@ const diagnosisValueAliases =
         const visibleLimit = historyDesktopQuery.matches ? 6 : 4;
         jobs.slice(0, visibleLimit).forEach((job) => {
           const fallback = fallbackLook(job?.lookSlug);
-          const item = document.createElement("article");
+          const item = document.createElement("a");
           item.className = "history-item";
+          item.href = resultHrefForJob(job?.id);
 
           const image = document.createElement("img");
           image.src = job?.resultImage || fallback.image || "";
@@ -5954,11 +5965,7 @@ const diagnosisValueAliases =
           card.className = "saved-look";
           const link = document.createElement("a");
           link.className = "saved-look-open";
-          link.href = job.resultImage || workspaceHref;
-          if (job.resultImage) {
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-          }
+          link.href = resultHrefForJob(job.id || item.jobId);
 
           const image = document.createElement("img");
           image.src = job.resultImage || fallback.image || "";

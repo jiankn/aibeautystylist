@@ -30,6 +30,7 @@ const pricingHref = localizeAppHref(
 const discoverHref = localizeAppHref("/discover");
 const loginHref = localizeAppHref("/login");
 const shareCardHref = localizeAppHref("/share-card");
+const shareBaseHref = localizeAppHref("/share");
 const resolvedLooks = resolveLookCatalog(audienceContext);
 const featuredSlugs = ["commute", "no-makeup", "rose-milk-date", "photogenic"];
 const defaultFeaturedLooks = featuredSlugs
@@ -259,7 +260,10 @@ const proClientMessages = {
   {isLoggedIn && <MobileBottomNav active="tryon" />}
 </BaseLayout>
 
-<script is:inline define:vars={{ proClientMessages, loginHref, shareCardHref }}>
+<script
+  is:inline
+  define:vars={{ proClientMessages, loginHref, shareBaseHref, shareCardHref }}
+>
   (function () {
     const POLL_INTERVAL = 2000;
     const gate = document.getElementById("pro-gate");
@@ -339,46 +343,52 @@ const proClientMessages = {
 
     // 上传 + 生成
     let currentJobId = null;
+    const publicShareUrlByJobId = new Map();
     if (uploadBtn) {
-      uploadBtn.addEventListener("click", async () => {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/jpeg,image/png,image/webp,image/heic,image/heif";
-        input.onchange = async () => {
-          const file = input.files?.[0];
-          if (!file) return;
-          setTaskNavSuppressed(true);
-          try {
-            const createTryOnJob = window.__absCreateTryOnJob;
-            if (typeof createTryOnJob !== "function") {
-              throw new Error(proClientMessages.uploadFlowNotReady);
-            }
-            uploadBtn.disabled = true;
-            taskStatus.hidden = false;
-            updateProgress(proClientMessages.uploading, 10);
-            updateProgress(proClientMessages.confirmingPhotoNotice, 18);
-            updateProgress(proClientMessages.creatingTask, 25);
-
-            const slug =
-              document.querySelector("#pro-content [data-look-slug].active")
-                ?.dataset.lookSlug || "commute";
-            const result = await createTryOnJob({
-              file,
-              lookSlug: slug,
-              requiredPlan: "pro",
-              idempotencyKey:
-                "pro-" + Date.now() + "-" + Math.random().toString(36).slice(2),
-            });
-            currentJobId = result.job.id;
-            updateProgress(proClientMessages.aiGeneratingImage, 40);
-            resultStatus.textContent = proClientMessages.generating;
-            pollJob(currentJobId);
-          } catch (err) {
-            updateProgress("❌ " + err.message, 0);
-            uploadBtn.disabled = false;
-            setTaskNavSuppressed(false);
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "image/jpeg,image/png,image/webp,image/heic,image/heif";
+      input.className = "native-file-picker";
+      input.tabIndex = -1;
+      input.setAttribute("aria-hidden", "true");
+      uploadBtn.insertAdjacentElement("afterend", input);
+      input.addEventListener("change", async () => {
+        const file = input.files?.[0];
+        if (!file) return;
+        setTaskNavSuppressed(true);
+        try {
+          const createTryOnJob = window.__absCreateTryOnJob;
+          if (typeof createTryOnJob !== "function") {
+            throw new Error(proClientMessages.uploadFlowNotReady);
           }
-        };
+          uploadBtn.disabled = true;
+          taskStatus.hidden = false;
+          updateProgress(proClientMessages.uploading, 10);
+          updateProgress(proClientMessages.confirmingPhotoNotice, 18);
+          updateProgress(proClientMessages.creatingTask, 25);
+
+          const slug =
+            document.querySelector("#pro-content [data-look-slug].active")
+              ?.dataset.lookSlug || "commute";
+          const result = await createTryOnJob({
+            file,
+            lookSlug: slug,
+            requiredPlan: "pro",
+            idempotencyKey:
+              "pro-" + Date.now() + "-" + Math.random().toString(36).slice(2),
+          });
+          currentJobId = result.job.id;
+          updateProgress(proClientMessages.aiGeneratingImage, 40);
+          resultStatus.textContent = proClientMessages.generating;
+          pollJob(currentJobId);
+        } catch (err) {
+          updateProgress("❌ " + err.message, 0);
+          uploadBtn.disabled = false;
+          setTaskNavSuppressed(false);
+        }
+      });
+      uploadBtn.addEventListener("click", () => {
+        input.value = "";
         input.click();
       });
     }
@@ -442,6 +452,28 @@ const proClientMessages = {
       } catch (e) {
         console.error(proClientMessages.loadSavedFailed, e);
       }
+    }
+
+    async function createPublicShareUrl(jobId) {
+      if (publicShareUrlByJobId.has(jobId)) {
+        return publicShareUrlByJobId.get(jobId);
+      }
+      const res = await fetch("/api/shares", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok || !data.data?.sourceCode) {
+        throw new Error(data?.error?.message || "SHARE_FAILED");
+      }
+      const base = String(shareBaseHref || "/share").replace(/\/+$/, "");
+      const shareUrl = new URL(
+        `${base}/${encodeURIComponent(data.data.sourceCode)}`,
+        location.origin,
+      ).toString();
+      publicShareUrlByJobId.set(jobId, shareUrl);
+      return shareUrl;
     }
 
     function showResult(imageUrl, jobId) {
@@ -594,15 +626,14 @@ const proClientMessages = {
     // 复制链接
     const copyBtn = document.getElementById("pro-copy-link");
     if (copyBtn) {
-      copyBtn.addEventListener("click", () => {
+      copyBtn.addEventListener("click", async () => {
         if (!currentJobId) return;
-        navigator.clipboard?.writeText(
-          location.origin +
-            shareCardHref +
-            "?jobId=" +
-            currentJobId +
-            "&ref=share",
-        );
+        try {
+          const shareUrl = await createPublicShareUrl(currentJobId);
+          await navigator.clipboard?.writeText(shareUrl);
+        } catch {
+          return;
+        }
         copyBtn.textContent = "✓ " + proClientMessages.copied;
         setTimeout(() => {
           copyBtn.textContent = "⌘  " + proClientMessages.copyShareLink;

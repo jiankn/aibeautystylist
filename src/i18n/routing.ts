@@ -154,6 +154,8 @@ const localizableAppRoutes = new Set([
   "/pricing",
   "/privacy",
   "/reset-password",
+  "/result",
+  "/share",
   "/share-card",
   "/support",
   "/subscription",
@@ -173,7 +175,11 @@ function shouldOverrideLocalizedSeoRoute(pathname: string): boolean {
 function isLocalizableAppRoute(pathname: string): boolean {
   const normalized = normalizeRoutePathname(pathname);
   if (localizableAppRoutes.has(normalized)) return true;
-  return normalized.startsWith("/blog/");
+  return (
+    normalized.startsWith("/blog/") ||
+    normalized.startsWith("/result/") ||
+    normalized.startsWith("/share/")
+  );
 }
 
 export function shouldRewriteLocaleRoute(pathname: string): boolean {

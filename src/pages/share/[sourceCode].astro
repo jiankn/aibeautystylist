@@ -1,0 +1,327 @@
+---
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCurrentLocale } from "../../lib/i18n";
+
+const locale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+
+const sourceCode = Astro.params.sourceCode || "";
+const copyByLocale = {
+  en: {
+    title: "Shared makeup result",
+    description: "View a shared AI Beauty Stylist try-on result.",
+    brand: "AI Beauty Stylist",
+    loading: "Loading shared result...",
+    missingTitle: "Share unavailable",
+    missingBody: "This shared result may have expired or been removed.",
+    tryIt: "Try this look",
+    home: "Home",
+    copy: "Copy link",
+    copied: "Link copied",
+    sharedBy: "Shared try-on result",
+    disclaimer: "AI try-on results are for beauty reference only.",
+    defaultLook: "Makeup result",
+  },
+  "zh-CN": {
+    title: "分享的试妆结果",
+    description: "查看一张 AI Beauty Stylist 试妆分享结果。",
+    brand: "AI Beauty Stylist",
+    loading: "正在读取分享结果...",
+    missingTitle: "分享暂时不可用",
+    missingBody: "这条分享可能已过期或已被删除。",
+    tryIt: "我也要试这个妆",
+    home: "返回首页",
+    copy: "复制链接",
+    copied: "链接已复制",
+    sharedBy: "分享的试妆结果",
+    disclaimer: "AI 试妆结果仅供美妆参考。",
+    defaultLook: "妆容结果",
+  },
+  "zh-TW": {
+    title: "分享的試妝結果",
+    description: "查看一張 AI Beauty Stylist 試妝分享結果。",
+    brand: "AI Beauty Stylist",
+    loading: "正在讀取分享結果...",
+    missingTitle: "分享暫時不可用",
+    missingBody: "這筆分享可能已過期或已被刪除。",
+    tryIt: "我也要試這個妝",
+    home: "返回首頁",
+    copy: "複製連結",
+    copied: "連結已複製",
+    sharedBy: "分享的試妝結果",
+    disclaimer: "AI 試妝結果僅供美妝參考。",
+    defaultLook: "妝容結果",
+  },
+};
+const copy =
+  copyByLocale[locale as keyof typeof copyByLocale] ?? copyByLocale.en;
+const hrefs = {
+  home: localizeAppHref("/"),
+  tryonFree: localizeAppHref("/tryon-free"),
+};
+---
+
+<BaseLayout
+  title={`${copy.title} | AI Beauty Stylist`}
+  description={copy.description}
+  bodyClass="public-share-body"
+  robots="noindex,follow"
+>
+  <main
+    class="public-share-main"
+    data-public-share
+    data-source-code={sourceCode}
+  >
+    <article class="public-share-card" aria-live="polite">
+      <div class="public-share-media" data-share-media>
+        <div class="public-share-loading" role="status">{copy.loading}</div>
+      </div>
+      <section class="public-share-copy">
+        <span>{copy.sharedBy}</span>
+        <h1 data-share-title>{copy.loading}</h1>
+        <p data-share-disclaimer>{copy.disclaimer}</p>
+        <div class="public-share-actions">
+          <a class="btn btn-primary" href={hrefs.tryonFree} data-share-try>
+            {copy.tryIt}
+          </a>
+          <button class="btn" type="button" data-share-copy>
+            {copy.copy}
+          </button>
+          <a class="btn btn-outline" href={hrefs.home}>{copy.home}</a>
+        </div>
+      </section>
+    </article>
+    <section class="public-share-empty panel" data-share-empty hidden>
+      <h1>{copy.missingTitle}</h1>
+      <p>{copy.missingBody}</p>
+      <a class="btn btn-primary" href={hrefs.tryonFree}>{copy.tryIt}</a>
+    </section>
+  </main>
+
+  <script is:inline define:vars={{ copy, hrefs }}>
+    (() => {
+      const root = document.querySelector("[data-public-share]");
+      if (!root) return;
+      const sourceCode = root.dataset.sourceCode;
+      const card = root.querySelector(".public-share-card");
+      const media = root.querySelector("[data-share-media]");
+      const title = root.querySelector("[data-share-title]");
+      const disclaimer = root.querySelector("[data-share-disclaimer]");
+      const tryLink = root.querySelector("[data-share-try]");
+      const copyButton = root.querySelector("[data-share-copy]");
+      const empty = root.querySelector("[data-share-empty]");
+
+      function showEmpty() {
+        if (card) card.hidden = true;
+        if (empty) empty.hidden = false;
+      }
+
+      async function loadShare() {
+        const response = await fetch(
+          `/api/shares/${encodeURIComponent(sourceCode)}`,
+        );
+        const body = await response.json().catch(() => null);
+        if (!response.ok || !body?.ok || !body.data)
+          throw new Error("NOT_FOUND");
+        return body.data;
+      }
+
+      function renderShare(job) {
+        if (title) title.textContent = job.lookTitle || copy.defaultLook;
+        if (disclaimer)
+          disclaimer.textContent = job.disclaimer || copy.disclaimer;
+        if (tryLink) {
+          const url = new URL(hrefs.tryonFree, location.origin);
+          if (job.lookSlug) url.searchParams.set("look", job.lookSlug);
+          url.searchParams.set("source", "shared_result");
+          tryLink.href = `${url.pathname}${url.search}`;
+        }
+        if (media) {
+          media.classList.add("is-loading");
+          const image = document.createElement("img");
+          image.src = job.resultImage;
+          image.alt = job.lookTitle || copy.defaultLook;
+          image.loading = "eager";
+          image.decoding = "async";
+          image.addEventListener(
+            "load",
+            () => media.classList.remove("is-loading"),
+            { once: true },
+          );
+          image.addEventListener(
+            "error",
+            () => media.classList.remove("is-loading"),
+            { once: true },
+          );
+          media.replaceChildren(image);
+          if (image.complete)
+            requestAnimationFrame(() => media.classList.remove("is-loading"));
+        }
+      }
+
+      copyButton?.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard?.writeText(location.href);
+          copyButton.textContent = copy.copied;
+          window.setTimeout(() => {
+            copyButton.textContent = copy.copy;
+          }, 2200);
+        } catch {
+          /* no clipboard support */
+        }
+      });
+
+      if (!sourceCode) {
+        showEmpty();
+        return;
+      }
+
+      loadShare().then(renderShare).catch(showEmpty);
+    })();
+  </script>
+
+  <style>
+    .public-share-main {
+      display: grid;
+      min-height: 100dvh;
+      place-items: center;
+      padding: 24px;
+      background: var(--page-surface);
+    }
+
+    .public-share-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
+      width: min(100%, 980px);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--bg-elevated);
+      box-shadow: 0 24px 70px rgba(18, 39, 66, 0.14);
+    }
+
+    .public-share-media {
+      position: relative;
+      display: grid;
+      min-height: 640px;
+      overflow: hidden;
+      place-items: center;
+      background: var(--surface-neutral);
+      contain: layout paint;
+    }
+
+    .public-share-media.is-loading::before {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border-radius: 12px;
+      background: linear-gradient(
+        110deg,
+        var(--surface-neutral) 8%,
+        var(--bg-elevated) 18%,
+        var(--surface-neutral) 33%
+      );
+      background-size: 200% 100%;
+      animation: result-image-loading 1.1s ease-in-out infinite;
+    }
+
+    .public-share-media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .public-share-loading {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .public-share-copy {
+      display: grid;
+      align-content: center;
+      gap: 16px;
+      padding: 32px;
+    }
+
+    .public-share-copy span {
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .public-share-copy h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .public-share-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .public-share-actions {
+      display: grid;
+      gap: 9px;
+      margin-top: 4px;
+    }
+
+    .public-share-actions .btn {
+      min-height: 44px;
+      justify-content: center;
+    }
+
+    .public-share-empty {
+      display: grid;
+      gap: 12px;
+      width: min(100%, 460px);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .public-share-empty h1 {
+      margin: 0;
+      color: var(--navy);
+    }
+
+    .public-share-empty p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    @media (max-width: 760px) {
+      .public-share-main {
+        align-items: start;
+        padding: 12px;
+      }
+
+      .public-share-card {
+        grid-template-columns: 1fr;
+        border-radius: 10px;
+      }
+
+      .public-share-media {
+        min-height: clamp(320px, 94vw, 520px);
+        aspect-ratio: 4 / 5;
+      }
+
+      .public-share-copy {
+        padding: 20px;
+      }
+    }
+  </style>
+</BaseLayout>

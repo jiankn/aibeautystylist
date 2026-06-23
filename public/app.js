@@ -372,6 +372,17 @@ function redirectToLogin(message = msg("loginRequired")) {
   }, 300);
 }
 
+function createNativeImagePicker(anchor) {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/jpeg,image/png,image/webp,image/heic,image/heif";
+  input.className = "native-file-picker";
+  input.tabIndex = -1;
+  input.setAttribute("aria-hidden", "true");
+  anchor?.insertAdjacentElement("afterend", input);
+  return input;
+}
+
 function syncUploadAuthGate(session) {
   const authenticated = isAccountSession(session);
   document.querySelectorAll("[data-upload]").forEach((button) => {
@@ -1311,10 +1322,35 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   let idempotencyKey;
   let activeJob;
   let previewUrl;
+  const fileInput = createNativeImagePicker(button);
+
+  const revealLoadedImage = (container, image) => {
+    if (!container || !image) return;
+    const reveal = () => container.classList.remove("is-loading");
+    image.addEventListener("load", reveal, { once: true });
+    image.addEventListener("error", reveal, { once: true });
+    if (image.complete) window.requestAnimationFrame(reveal);
+  };
 
   const taskRoutes = () => window.__absBackgroundTasks?.routes || {};
+  const resultHrefForJob = (jobId) => {
+    const base = (taskRoutes().resultBase || "/result").replace(/\/+$/, "");
+    return `${base}/${encodeURIComponent(jobId)}`;
+  };
   const currentTaskHref = () =>
     window.location.pathname + window.location.search + window.location.hash;
+  const setCurrentJobInUrl = (jobId) => {
+    if (!jobId || !window.history?.replaceState) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("jobId", jobId);
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  };
+  const clearCurrentJobInUrl = () => {
+    if (!window.history?.replaceState) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("jobId");
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  };
   const getActiveLook = () => document.querySelector("[data-look-slug].active");
   const setTaskNavSuppressed = (suppressed) => {
     window.absSetMobileBottomNavSuppressed?.("tryon-task", suppressed);
@@ -1358,7 +1394,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       progress: overrides.progress,
       stage: overrides.stage,
       href: currentTaskHref(),
-      resultHref: routes.history || "/history",
+      resultHref: job.id ? resultHrefForJob(job.id) : routes.history || "/history",
       ...overrides,
     });
   };
@@ -1379,10 +1415,12 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     previewUrl = URL.createObjectURL(file);
 
     const preview = document.createElement("div");
-    preview.className = "upload-original-preview";
+    preview.className = "upload-original-preview is-loading";
     preview.dataset.uploadPreview = "";
 
     const image = document.createElement("img");
+    image.loading = "eager";
+    image.decoding = "async";
     image.src = previewUrl;
     image.alt = msg("originalPhoto");
 
@@ -1391,6 +1429,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     badge.textContent = msg("originalPhoto");
 
     preview.append(image, badge);
+    revealLoadedImage(preview, image);
     uploadBox.prepend(preview);
     uploadBox.classList.add("has-photo");
     uploadBox.closest(".upload-preview")?.classList.add("has-photo-preview");
@@ -1428,11 +1467,15 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   };
 
   const renderSuccessfulJob = (job) => {
+    setCurrentJobInUrl(job.id);
     const resultTarget = document.querySelector("[data-result-target]");
     if (resultTarget && job.resultImage) {
       const wrapper = document.createElement("div");
-      wrapper.className = "generated-result";
+      wrapper.className = "generated-result is-loading";
       const image = document.createElement("img");
+      image.loading = "eager";
+      image.decoding = "async";
+      image.fetchPriority = "high";
       image.src = job.resultImage;
       image.alt = msg("referenceAlt", { look: job.lookTitle });
       const badge = document.createElement("span");
@@ -1442,6 +1485,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       const message = document.createElement("p");
       message.textContent = job.disclaimer || msg("resultDisclaimer");
       wrapper.append(badge, image, message);
+      revealLoadedImage(wrapper, image);
       resultTarget.replaceChildren(wrapper);
     }
     deleteResultButton.hidden = false;
@@ -1459,7 +1503,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         job.resultKind === "reference-fallback"
           ? msg("referenceGenerated")
           : msg("tryonGenerated"),
-      resultHref: taskRoutes().history || "/history",
+      resultHref: resultHrefForJob(job.id),
     });
     setUploadState(job.resultKind === "reference-fallback" ? msg("referenceGenerated") : msg("tryonGenerated"), 100, {
       state: "success",
@@ -1500,6 +1544,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   const waitForJob = async (initialJob) => {
     let job = initialJob;
     activeJob = job;
+    setCurrentJobInUrl(job.id);
     updateQuotaDisplay(job.quota);
 
     while (runningJobStates.has(job.status)) {
@@ -1531,6 +1576,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     renderUploadPreview(file);
     idempotencyKey ||= crypto.randomUUID();
     activeJob = undefined;
+    clearCurrentJobInUrl();
     deleteResultButton.hidden = true;
     const originalLabel = button.textContent;
     controller = new AbortController();
@@ -1590,6 +1636,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         }),
         msg("jobCreateFailed"),
       );
+      setCurrentJobInUrl(job.id);
       syncTryonBackgroundTask(job, {
         progress: 46,
         stage: msg("jobCreated"),
@@ -1617,7 +1664,35 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     }
   };
 
-  button.addEventListener("click", async () => {
+  const restoreJobFromUrl = async () => {
+    const jobId = new URLSearchParams(window.location.search).get("jobId");
+    if (!jobId) return;
+    try {
+      const job = await readApiData(
+        await fetch(`/api/tryon-jobs/${encodeURIComponent(jobId)}`),
+        msg("statusQueryFailed"),
+      );
+      activeJob = job;
+      syncTryonBackgroundTask(job, {
+        progress: runningJobStates.has(job.status) ? undefined : 100,
+        resultHref: resultHrefForJob(job.id),
+      });
+      if (runningJobStates.has(job.status)) {
+        setWaitingPanelVisible(true);
+        await waitForJob(job);
+      } else {
+        presentTerminalJob(job);
+      }
+    } catch {
+      clearCurrentJobInUrl();
+    }
+  };
+
+  void restoreJobFromUrl();
+
+  fileInput.addEventListener("change", async () => {
+    if (!fileInput.files?.length) return;
+    const file = fileInput.files[0];
     const session = await getCurrentSession({ refresh: true });
     if (!isAccountSession(session)) {
       syncUploadAuthGate(session);
@@ -1625,18 +1700,19 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       return;
     }
 
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/jpeg,image/png,image/webp,image/heic,image/heif";
-    input.addEventListener("change", async () => {
-      if (input.files?.length) {
-        idempotencyKey = crypto.randomUUID();
-        activeJob = undefined;
-        deleteResultButton.hidden = true;
-        await runUpload(input.files[0]);
-      }
-    });
-    input.click();
+    idempotencyKey = crypto.randomUUID();
+    activeJob = undefined;
+    deleteResultButton.hidden = true;
+    await runUpload(file);
+  });
+
+  button.addEventListener("click", () => {
+    if (button.dataset.loginRequired === "true") {
+      redirectToLogin(msg("loginQuotaRequired"));
+      return;
+    }
+    fileInput.value = "";
+    fileInput.click();
   });
 
   cancelButton?.addEventListener("click", async () => {
@@ -1742,6 +1818,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       resultTarget?.replaceChildren(emptyState);
       activeJob = undefined;
       window.__absLastSucceededJobId = undefined;
+      clearCurrentJobInUrl();
       deleteResultButton.hidden = true;
       setUploadState(msg("resultDeletedTitle"), 0, { state: "success" });
       removeBackgroundTask(deletedJobId);

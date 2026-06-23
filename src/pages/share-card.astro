@@ -14,6 +14,7 @@ const homeHref = localizeAppHref("/");
 const discoverHref = localizeAppHref("/discover");
 const tryOnHref = localizeAppHref("/tryon-free");
 const shareCardHref = localizeAppHref("/share-card");
+const shareBaseHref = localizeAppHref("/share");
 
 type ShareCardCopy = {
   title: string;
@@ -657,7 +658,7 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
   </div>
 </BaseLayout>
 
-<script is:inline define:vars={{ copy, shareCardHref }}>
+<script is:inline define:vars={{ copy, shareBaseHref, shareCardHref }}>
   (function () {
     const params = new URLSearchParams(location.search);
     const jobId = params.get("jobId");
@@ -672,6 +673,7 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
     const copyBtn = document.getElementById("share-copy-btn");
     let currentPlan = "free";
     let currentJob = null;
+    let publicShareUrl;
 
     if (!jobId) {
       cardEl.hidden = true;
@@ -724,6 +726,25 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
       storeShareClaim(data.data);
       refreshRewardButtonState();
       return data.data;
+    }
+
+    async function createPublicShareUrl() {
+      if (publicShareUrl) return publicShareUrl;
+      const res = await fetch("/api/shares", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok || !data.data?.sourceCode) {
+        throw new Error(data?.error?.message || "SHARE_FAILED");
+      }
+      const base = String(shareBaseHref || "/share").replace(/\/+$/, "");
+      publicShareUrl = new URL(
+        `${base}/${encodeURIComponent(data.data.sourceCode)}`,
+        location.origin,
+      ).toString();
+      return publicShareUrl;
     }
 
     function refreshRewardButtonState() {
@@ -969,10 +990,9 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
 
     if (webShareBtn) {
       webShareBtn.addEventListener("click", async () => {
-        const shareUrl =
-          location.origin + shareCardHref + "?jobId=" + jobId + "&ref=share";
-        if (navigator.share) {
-          try {
+        try {
+          const shareUrl = await createPublicShareUrl();
+          if (navigator.share) {
             const blob = await createShareCardBlob();
             const file =
               blob &&
@@ -993,30 +1013,25 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
               });
             }
             await createShareClaim("web_share");
-          } catch {
-            /* user cancelled */
-          }
-        } else if (navigator.clipboard?.writeText) {
-          try {
+          } else if (navigator.clipboard?.writeText) {
             await navigator.clipboard.writeText(shareUrl);
             await createShareClaim("copy_link");
-          } catch {
-            /* keep share fallback best-effort */
+            webShareBtn.textContent = copy.shareCopied;
+            setTimeout(() => {
+              webShareBtn.textContent = "↗  " + copy.share;
+            }, 2000);
           }
-          webShareBtn.textContent = copy.shareCopied;
-          setTimeout(() => {
-            webShareBtn.textContent = "↗  " + copy.share;
-          }, 2000);
+        } catch {
+          /* user cancelled or sharing unavailable */
         }
       });
     }
 
     if (copyBtn) {
       copyBtn.addEventListener("click", async () => {
-        const shareUrl =
-          location.origin + shareCardHref + "?jobId=" + jobId + "&ref=share";
         if (!navigator.clipboard?.writeText) return;
         try {
+          const shareUrl = await createPublicShareUrl();
           await navigator.clipboard.writeText(shareUrl);
         } catch {
           return;

@@ -1536,10 +1536,13 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .result-head .pill { margin-left: auto; }
 .result-compare { height: 500px; border-radius: 13px; }
 .result-caption { margin: 16px 0 0; color: var(--muted); font-size: 13px; text-align: center; }
-.upload-preview { display: grid; min-height: 420px; grid-template-columns: minmax(224px, .9fr) 22px minmax(272px, 1.1fr); align-items: stretch; gap: 8px; }
+.upload-preview { display: grid; min-width: 0; max-width: 100%; min-height: 420px; grid-template-columns: minmax(224px, .9fr) 22px minmax(272px, 1.1fr); align-items: stretch; gap: 8px; overflow: hidden; }
 .upload-preview.has-photo-preview { grid-template-columns: minmax(260px, 1fr) 22px minmax(260px, 1fr); }
+.upload-preview > * { min-width: 0; }
 .upload-box, .result-placeholder {
   display: grid;
+  width: 100%;
+  max-width: 100%;
   height: 100%;
   min-height: 392px;
   align-content: center;
@@ -1550,6 +1553,8 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   border-radius: 16px;
   background: linear-gradient(180deg, var(--bg-elevated), var(--surface-rose));
   text-align: center;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .result-placeholder {
   border-style: solid;
@@ -1563,10 +1568,12 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .result-placeholder .upload-camera { width: 72px; height: 72px; background: var(--surface-neutral) !important; color: var(--muted) !important; font-size: 30px; }
 .upload-box h3, .result-placeholder h3 { margin: 2px 0 0; color: var(--navy); font-size: 18px; line-height: 1.35; text-wrap: balance; }
 .upload-box p, .result-placeholder p { max-width: 260px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
-[data-result-target] { display: grid; min-width: 0; height: 100%; }
+[data-result-target] { display: grid; min-width: 0; width: 100%; max-width: 100%; height: 100%; overflow: hidden; }
 .generated-result {
   position: relative;
   display: grid;
+  width: 100%;
+  max-width: 100%;
   height: 100%;
   min-height: 420px;
   overflow: hidden;
@@ -1577,9 +1584,25 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   background:
     radial-gradient(circle at 50% 38%, var(--surface-neutral) 0 62px, transparent 63px),
     linear-gradient(180deg, var(--page-surface), var(--bg-elevated));
+  box-sizing: border-box;
+  contain: layout paint;
   text-align: center;
 }
+.generated-result.is-loading::before,
+.upload-original-preview.is-loading::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  z-index: 1;
+  border-radius: 12px;
+  background: linear-gradient(110deg, var(--surface-neutral) 8%, var(--bg-elevated) 18%, var(--surface-neutral) 33%);
+  background-size: 200% 100%;
+  animation: result-image-loading 1.1s ease-in-out infinite;
+}
 .generated-result img {
+  display: block;
+  align-self: stretch;
+  justify-self: stretch;
   width: 100%;
   max-width: 100%;
   height: 100%;
@@ -1588,6 +1611,11 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   border-radius: 12px;
   object-fit: contain;
   background: var(--bg-elevated);
+  transition: opacity .2s ease;
+}
+.generated-result.is-loading img,
+.upload-original-preview.is-loading img {
+  opacity: 0;
 }
 .generated-result .pill {
   position: absolute;
@@ -1669,20 +1697,31 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   position: relative;
   display: grid;
   width: 100%;
+  max-width: 100%;
+  height: 100%;
   min-height: 0;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--bg-elevated);
+  box-sizing: border-box;
+  contain: layout paint;
 }
 .upload-original-preview img {
+  display: block;
+  align-self: stretch;
+  justify-self: stretch;
   width: 100%;
+  max-width: 100%;
   height: 100%;
+  max-height: 100%;
   min-height: 0;
   object-fit: contain;
+  transition: opacity .2s ease;
 }
 .upload-original-preview .pill {
   position: absolute;
+  z-index: 2;
   top: 12px;
   left: 12px;
   box-shadow: 0 8px 20px rgba(18, 39, 66, .12);
@@ -1700,6 +1739,11 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   white-space: normal;
   text-align: center;
   text-wrap: balance;
+}
+@keyframes result-image-loading {
+  to {
+    background-position: -200% 0;
+  }
 }
 .btn:disabled { cursor: not-allowed; opacity: .48; transform: none; box-shadow: none; }
 .upload-arrow { display: grid; width: 22px; min-height: 44px; place-self: center; place-items: center; border: 1px solid var(--line); border-radius: 999px; background: var(--bg-elevated); color: var(--rose); font-size: 18px; box-shadow: 0 8px 18px rgba(18, 39, 66, .06); }
@@ -1920,6 +1964,16 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   transition: .25s ease;
 }
 .toast.show { transform: translate(-50%, 0); opacity: 1; }
+.native-file-picker {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  opacity: 0;
+  pointer-events: none;
+}
 
 .app-dialog-backdrop {
   position: fixed;
@@ -2467,7 +2521,30 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   .result-share-bar > div { display: grid; }
   .result-compare { height: 420px; }
   .upload-preview,
-  .upload-preview.has-photo-preview { grid-template-columns: 1fr; }
+  .upload-preview.has-photo-preview {
+    min-height: 0;
+    grid-template-columns: 1fr;
+    overflow: hidden;
+  }
+  .upload-box,
+  .result-placeholder,
+  .generated-result {
+    min-height: clamp(300px, 86vw, 420px);
+  }
+  .upload-box.has-photo {
+    min-height: clamp(320px, 92vw, 460px);
+  }
+  .upload-original-preview,
+  .generated-result {
+    aspect-ratio: 4 / 5;
+  }
+  .upload-original-preview img,
+  .generated-result img {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+  }
   .upload-arrow { transform: rotate(90deg); text-align: center; }
   .tryon-waiting-panel {
     grid-template-columns: 1fr;

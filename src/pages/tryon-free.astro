@@ -40,6 +40,7 @@ const loginHref = localizeAppHref(
   `/login?mode=register&next=${encodeURIComponent(localizeAppHref("/tryon-free"))}`,
 );
 const shareCardHref = localizeAppHref("/share-card");
+const shareBaseHref = localizeAppHref("/share");
 const subscriptionHref = localizeAppHref("/subscription");
 const tryonProHref = localizeAppHref("/tryon-pro");
 const tryonPremiumHref = localizeAppHref("/tryon-premium");
@@ -74,7 +75,8 @@ const tryonWaitingCopy = isChineseLocale
         ["render", "生成妆效"],
       ],
       preferenceTitle: "等待时先微调你的偏好",
-      preferenceDesc: "这些选择会保存在本机，用于下次默认推荐，不会打断当前生成。",
+      preferenceDesc:
+        "这些选择会保存在本机，用于下次默认推荐，不会打断当前生成。",
       groups: [
         {
           label: "妆感",
@@ -334,7 +336,7 @@ const workspaceStatusHrefs = {
                   {
                     tryonWaitingCopy.stages.map(([key, label]) => (
                       <li data-upload-stage={key}>
-                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true" />
                         <b>{label}</b>
                       </li>
                     ))
@@ -366,7 +368,9 @@ const workspaceStatusHrefs = {
           </div>
           <section class="tryon-waiting-panel" data-tryon-waiting hidden>
             <div class="tryon-waiting-copy">
-              <span class="section-eyebrow">{tryonWaitingCopy.backgroundTitle}</span>
+              <span class="section-eyebrow"
+                >{tryonWaitingCopy.backgroundTitle}</span
+              >
               <h3>{tryonWaitingCopy.preferenceTitle}</h3>
               <p>{tryonWaitingCopy.backgroundDesc}</p>
             </div>
@@ -503,6 +507,7 @@ const workspaceStatusHrefs = {
   is:inline
   define:vars={{
     freeClientMessages,
+    shareBaseHref,
     shareCardHref,
     selectedLookSlug: selected.slug,
     upgradeBannerCopy,
@@ -519,6 +524,7 @@ const workspaceStatusHrefs = {
     let lastSucceededJobId = window.__absLastSucceededJobId || null;
     let lastSucceededLookSlug = selectedLookSlug || null;
     let savedJobIds = new Set();
+    const publicShareUrlByJobId = new Map();
     const checkoutSucceeded =
       new URLSearchParams(window.location.search).get("checkout") === "success";
     const delay = (ms) =>
@@ -639,6 +645,28 @@ const workspaceStatusHrefs = {
       }
       storeShareClaim(jobId, data.data);
       return data.data;
+    }
+
+    async function createPublicShareUrl(jobId) {
+      if (publicShareUrlByJobId.has(jobId)) {
+        return publicShareUrlByJobId.get(jobId);
+      }
+      const res = await fetch("/api/shares", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok || !data.data?.sourceCode) {
+        throw new Error(data?.error?.message || "SHARE_FAILED");
+      }
+      const base = String(shareBaseHref || "/share").replace(/\/+$/, "");
+      const shareUrl = new URL(
+        `${base}/${encodeURIComponent(data.data.sourceCode)}`,
+        location.origin,
+      ).toString();
+      publicShareUrlByJobId.set(jobId, shareUrl);
+      return shareUrl;
     }
 
     function refreshRewardButtonState() {
@@ -914,13 +942,9 @@ const workspaceStatusHrefs = {
       copyBtn.addEventListener("click", async () => {
         if (!lastSucceededJobId) return;
         if (!navigator.clipboard?.writeText) return;
-        const shareUrl =
-          location.origin +
-          shareCardHref +
-          "?jobId=" +
-          lastSucceededJobId +
-          "&ref=share";
+        let shareUrl;
         try {
+          shareUrl = await createPublicShareUrl(lastSucceededJobId);
           await navigator.clipboard.writeText(shareUrl);
         } catch (error) {
           console.error("Copy share link failed", error);

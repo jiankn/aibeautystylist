@@ -12,6 +12,8 @@ const taskRoutes = {
   discover: localizeAppHref("/discover"),
   diagnosis: localizeAppHref("/diagnosis"),
   history: localizeAppHref("/history"),
+  resultBase: localizeAppHref("/result"),
+  shareBase: localizeAppHref("/share"),
   tryonFree: localizeAppHref("/tryon-free"),
 };
 
@@ -391,9 +393,13 @@ const copy = taskCopyByLocale[locale];
       const href =
         task.href ||
         (type === "diagnosis" ? taskRoutes.diagnosis : taskRoutes.tryonFree);
-      const resultHref =
-        task.resultHref ||
-        (type === "diagnosis" ? taskRoutes.diagnosis : taskRoutes.history);
+      const fallbackResultHref =
+        type === "diagnosis"
+          ? taskRoutes.diagnosis
+          : task.id || task.jobId
+            ? `${taskRoutes.resultBase}/${encodeURIComponent(task.id || task.jobId)}`
+            : taskRoutes.history;
+      const resultHref = task.resultHref || fallbackResultHref;
       return {
         id: String(task.id || task.jobId || crypto.randomUUID()),
         type,
@@ -557,7 +563,7 @@ const copy = taskCopyByLocale[locale];
           resultHref:
             task.type === "diagnosis"
               ? taskRoutes.diagnosis
-              : taskRoutes.history,
+              : `${taskRoutes.resultBase}/${encodeURIComponent(job.id)}`,
         };
         const wasRunning = runningStatuses.has(task.status);
         mergeTask(next);

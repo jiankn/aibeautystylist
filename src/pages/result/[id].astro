@@ -1,0 +1,673 @@
+---
+import MobileAppTopBar from "../../components/MobileAppTopBar.astro";
+import MobileBottomNav from "../../components/MobileBottomNav.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCurrentLocale } from "../../lib/i18n";
+
+const locale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+
+const jobId = Astro.params.id || "";
+const copyByLocale = {
+  en: {
+    title: "Try-on result",
+    description: "View, save, download, and share your AI try-on result.",
+    eyebrow: "Generated result",
+    heading: "Your try-on result",
+    loading: "Loading result...",
+    missingTitle: "Result unavailable",
+    missingBody:
+      "This result may have been deleted, expired, or belongs to another account.",
+    login: "Sign in",
+    backHistory: "Back to history",
+    share: "Share",
+    copyLink: "Copy share link",
+    copied: "Link copied",
+    download: "Download image",
+    shareCard: "Create share card",
+    save: "Save",
+    saved: "Saved",
+    reward: "Claim share reward",
+    rewarded: "Reward claimed",
+    retry: "Try this look again",
+    statusSucceeded: "Completed",
+    statusRunning: "Processing",
+    statusFailed: "Incomplete",
+    shareFailed: "Sharing is not available for this result.",
+    saveFailed: "Saved-look operation failed.",
+    savedLimitReached: "Your saved-look list is full. Remove one result first.",
+    defaultLook: "Makeup result",
+    disclaimer:
+      "Generated results are for reference only. Actual effects may vary.",
+  },
+  "zh-CN": {
+    title: "试妆结果",
+    description: "查看、保存、下载并分享你的 AI 试妆结果。",
+    eyebrow: "生成结果",
+    heading: "你的试妆结果",
+    loading: "正在读取结果...",
+    missingTitle: "结果暂时不可用",
+    missingBody: "这条结果可能已删除、已过期，或不属于当前账户。",
+    login: "登录账户",
+    backHistory: "返回历史记录",
+    share: "分享",
+    copyLink: "复制分享链接",
+    copied: "链接已复制",
+    download: "下载图片",
+    shareCard: "制作分享卡",
+    save: "收藏",
+    saved: "已收藏",
+    reward: "领取分享奖励",
+    rewarded: "已领取奖励",
+    retry: "再试一次这个妆容",
+    statusSucceeded: "已完成",
+    statusRunning: "处理中",
+    statusFailed: "未完成",
+    shareFailed: "当前结果暂时无法分享。",
+    saveFailed: "操作收藏失败。",
+    savedLimitReached: "收藏数量已满，请先取消一个收藏。",
+    defaultLook: "妆容结果",
+    disclaimer: "生成结果仅供参考，实际效果因个人条件而异。",
+  },
+  "zh-TW": {
+    title: "試妝結果",
+    description: "查看、保存、下載並分享你的 AI 試妝結果。",
+    eyebrow: "生成結果",
+    heading: "你的試妝結果",
+    loading: "正在讀取結果...",
+    missingTitle: "結果暫時不可用",
+    missingBody: "這筆結果可能已刪除、已過期，或不屬於目前帳戶。",
+    login: "登入帳戶",
+    backHistory: "返回歷史記錄",
+    share: "分享",
+    copyLink: "複製分享連結",
+    copied: "連結已複製",
+    download: "下載圖片",
+    shareCard: "製作分享卡",
+    save: "收藏",
+    saved: "已收藏",
+    reward: "領取分享獎勵",
+    rewarded: "已領取獎勵",
+    retry: "再試一次這個妝容",
+    statusSucceeded: "已完成",
+    statusRunning: "處理中",
+    statusFailed: "未完成",
+    shareFailed: "目前結果暫時無法分享。",
+    saveFailed: "操作收藏失敗。",
+    savedLimitReached: "收藏數量已滿，請先取消一個收藏。",
+    defaultLook: "妝容結果",
+    disclaimer: "生成結果僅供參考，實際效果因個人條件而異。",
+  },
+};
+const copy =
+  copyByLocale[locale as keyof typeof copyByLocale] ?? copyByLocale.en;
+const resultHref = localizeAppHref(`/result/${encodeURIComponent(jobId)}`);
+const hrefs = {
+  history: localizeAppHref("/history"),
+  login: localizeAppHref(
+    `/login?mode=login&next=${encodeURIComponent(resultHref)}`,
+  ),
+  shareBase: localizeAppHref("/share"),
+  shareCard: localizeAppHref("/share-card"),
+  tryonFree: localizeAppHref("/tryon-free"),
+};
+---
+
+<BaseLayout
+  title={`${copy.title} | AI Beauty Stylist`}
+  description={copy.description}
+  bodyClass="result-body"
+  robots="noindex,follow"
+>
+  <SiteHeader active="tryOn" mobileHidden />
+  <MobileAppTopBar title={copy.title} backHref={hrefs.history} />
+  <main class="result-main" data-result-page data-job-id={jobId}>
+    <section class="result-shell panel" aria-labelledby="result-title">
+      <div class="result-viewer" data-result-viewer>
+        <div class="result-loading" role="status">{copy.loading}</div>
+      </div>
+      <aside class="result-side">
+        <span class="section-kicker">{copy.eyebrow}</span>
+        <h1 id="result-title">{copy.heading}</h1>
+        <p data-result-summary>{copy.loading}</p>
+        <dl class="result-meta">
+          <div>
+            <dt>Status</dt>
+            <dd data-result-status>-</dd>
+          </div>
+          <div>
+            <dt>Look</dt>
+            <dd data-result-look>{copy.defaultLook}</dd>
+          </div>
+          <div>
+            <dt>Date</dt>
+            <dd data-result-date>-</dd>
+          </div>
+        </dl>
+        <div class="result-actions" data-result-actions hidden>
+          <button class="btn btn-primary" type="button" data-result-share>
+            {copy.share}
+          </button>
+          <button class="btn" type="button" data-result-copy>
+            {copy.copyLink}
+          </button>
+          <a class="btn" href="#" data-result-download download>
+            {copy.download}
+          </a>
+          <button class="btn" type="button" data-result-save>
+            {copy.save}
+          </button>
+          <a class="btn" href="#" data-result-share-card>
+            {copy.shareCard}
+          </a>
+          <button
+            class="btn btn-outline-rose"
+            type="button"
+            data-result-reward
+            disabled
+          >
+            {copy.reward}
+          </button>
+          <a class="btn btn-outline" href={hrefs.tryonFree} data-result-retry>
+            {copy.retry}
+          </a>
+          <a class="btn btn-outline" href={hrefs.history}>
+            {copy.backHistory}
+          </a>
+        </div>
+        <div class="result-empty" data-result-empty hidden>
+          <strong>{copy.missingTitle}</strong>
+          <span>{copy.missingBody}</span>
+          <div>
+            <a class="btn btn-primary" href={hrefs.login}>{copy.login}</a>
+            <a class="btn" href={hrefs.history}>{copy.backHistory}</a>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+  <MobileBottomNav active="history" />
+
+  <script is:inline define:vars={{ copy, hrefs }}>
+    (() => {
+      const root = document.querySelector("[data-result-page]");
+      if (!root) return;
+      const jobId = root.dataset.jobId;
+      const viewer = root.querySelector("[data-result-viewer]");
+      const actions = root.querySelector("[data-result-actions]");
+      const empty = root.querySelector("[data-result-empty]");
+      const summary = root.querySelector("[data-result-summary]");
+      const status = root.querySelector("[data-result-status]");
+      const look = root.querySelector("[data-result-look]");
+      const date = root.querySelector("[data-result-date]");
+      const shareBtn = root.querySelector("[data-result-share]");
+      const copyBtn = root.querySelector("[data-result-copy]");
+      const download = root.querySelector("[data-result-download]");
+      const saveBtn = root.querySelector("[data-result-save]");
+      const shareCard = root.querySelector("[data-result-share-card]");
+      const rewardBtn = root.querySelector("[data-result-reward]");
+      const retry = root.querySelector("[data-result-retry]");
+      let currentJob;
+      let publicShareUrl;
+
+      function showFeedback(message) {
+        window.showToast?.(message);
+      }
+
+      async function getJson(url, options) {
+        const response = await fetch(url, options);
+        const body = await response.json().catch(() => null);
+        if (!response.ok || !body?.ok) {
+          const error = new Error(body?.error?.message || "REQUEST_FAILED");
+          error.code = body?.error?.code;
+          throw error;
+        }
+        return body.data;
+      }
+
+      function shareClaimStorageKey(value) {
+        return "abs:share-claim:" + value;
+      }
+
+      function getStoredShareClaim() {
+        try {
+          const raw = sessionStorage.getItem(shareClaimStorageKey(jobId));
+          if (!raw) return null;
+          const claim = JSON.parse(raw);
+          if (!claim?.claimToken || !claim?.expiresAt) return null;
+          if (claim.expiresAt <= new Date().toISOString()) {
+            sessionStorage.removeItem(shareClaimStorageKey(jobId));
+            return null;
+          }
+          return claim;
+        } catch {
+          return null;
+        }
+      }
+
+      function storeShareClaim(claim) {
+        try {
+          sessionStorage.setItem(
+            shareClaimStorageKey(jobId),
+            JSON.stringify(claim),
+          );
+        } catch {
+          /* ignore private storage failures */
+        }
+      }
+
+      function refreshRewardState() {
+        if (!rewardBtn) return;
+        rewardBtn.disabled = !getStoredShareClaim();
+      }
+
+      async function recordShareIntent(method) {
+        try {
+          const claim = await getJson("/api/shares/intent", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jobId, method }),
+          });
+          storeShareClaim(claim);
+          refreshRewardState();
+        } catch {
+          refreshRewardState();
+        }
+      }
+
+      async function ensurePublicShareUrl() {
+        if (publicShareUrl) return publicShareUrl;
+        const share = await getJson("/api/shares", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jobId }),
+        });
+        const base = String(hrefs.shareBase || "/share").replace(/\/+$/, "");
+        publicShareUrl = new URL(
+          `${base}/${encodeURIComponent(share.sourceCode)}`,
+          location.origin,
+        ).toString();
+        return publicShareUrl;
+      }
+
+      function renderImage(job) {
+        if (!viewer) return;
+        viewer.classList.add("is-loading");
+        const image = document.createElement("img");
+        image.src = job.resultImage;
+        image.alt = job.lookTitle || copy.defaultLook;
+        image.loading = "eager";
+        image.decoding = "async";
+        image.addEventListener(
+          "load",
+          () => viewer.classList.remove("is-loading"),
+          { once: true },
+        );
+        image.addEventListener(
+          "error",
+          () => viewer.classList.remove("is-loading"),
+          { once: true },
+        );
+        viewer.replaceChildren(image);
+        if (image.complete)
+          requestAnimationFrame(() => viewer.classList.remove("is-loading"));
+      }
+
+      function renderJob(job) {
+        currentJob = job;
+        const statusText =
+          job.status === "succeeded"
+            ? copy.statusSucceeded
+            : [
+                  "created",
+                  "upload_validating",
+                  "diagnosis_running",
+                  "image_running",
+                ].includes(job.status)
+              ? copy.statusRunning
+              : copy.statusFailed;
+        if (summary) summary.textContent = job.disclaimer || copy.disclaimer;
+        if (status) status.textContent = statusText;
+        if (look) look.textContent = job.lookTitle || copy.defaultLook;
+        if (date) {
+          date.textContent = job.createdAt
+            ? new Intl.DateTimeFormat(
+                document.documentElement.lang || undefined,
+                {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                },
+              ).format(new Date(job.createdAt))
+            : "-";
+        }
+        if (job.status === "succeeded" && job.resultImage) {
+          renderImage(job);
+          if (download)
+            download.href = `/api/tryon-jobs/${encodeURIComponent(job.id)}/result`;
+          if (shareCard)
+            shareCard.href = `${hrefs.shareCard}?jobId=${encodeURIComponent(job.id)}`;
+          if (retry) {
+            const retryUrl = new URL(hrefs.tryonFree, location.origin);
+            if (job.lookSlug) retryUrl.searchParams.set("look", job.lookSlug);
+            retry.href = `${retryUrl.pathname}${retryUrl.search}`;
+          }
+          if (actions) actions.hidden = false;
+          refreshRewardState();
+          loadSavedState();
+          return;
+        }
+        showEmpty();
+      }
+
+      function showEmpty() {
+        if (viewer) {
+          const box = document.createElement("div");
+          box.className = "result-loading";
+          box.textContent = copy.missingTitle;
+          viewer.replaceChildren(box);
+        }
+        if (actions) actions.hidden = true;
+        if (empty) empty.hidden = false;
+      }
+
+      async function loadSavedState() {
+        if (!saveBtn) return;
+        try {
+          const data = await getJson("/api/saved-looks");
+          const items = Array.isArray(data?.items) ? data.items : [];
+          const saved = items.some((item) => item.jobId === jobId);
+          saveBtn.dataset.saved = saved ? "true" : "false";
+          saveBtn.textContent = saved ? copy.saved : copy.save;
+          saveBtn.setAttribute("aria-pressed", String(saved));
+        } catch {
+          /* keep default save state */
+        }
+      }
+
+      shareBtn?.addEventListener("click", async () => {
+        if (!currentJob) return;
+        try {
+          const url = await ensurePublicShareUrl();
+          if (navigator.share) {
+            await navigator.share({
+              title: currentJob.lookTitle || copy.title,
+              text: copy.description,
+              url,
+            });
+            await recordShareIntent("web_share");
+          } else if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(url);
+            await recordShareIntent("copy_link");
+            showFeedback(copy.copied);
+          }
+        } catch {
+          showFeedback(copy.shareFailed);
+        }
+      });
+
+      copyBtn?.addEventListener("click", async () => {
+        try {
+          const url = await ensurePublicShareUrl();
+          await navigator.clipboard?.writeText(url);
+          await recordShareIntent("copy_link");
+          copyBtn.textContent = copy.copied;
+          window.setTimeout(() => {
+            copyBtn.textContent = copy.copyLink;
+          }, 2200);
+        } catch {
+          showFeedback(copy.shareFailed);
+        }
+      });
+
+      saveBtn?.addEventListener("click", async () => {
+        if (!currentJob) return;
+        saveBtn.disabled = true;
+        const saved = saveBtn.dataset.saved === "true";
+        try {
+          if (saved) {
+            await getJson(`/api/saved-looks/${encodeURIComponent(jobId)}`, {
+              method: "DELETE",
+            });
+            saveBtn.dataset.saved = "false";
+            saveBtn.textContent = copy.save;
+            saveBtn.setAttribute("aria-pressed", "false");
+          } else {
+            await getJson("/api/saved-looks", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                jobId,
+                lookSlug: currentJob.lookSlug || "commute",
+              }),
+            });
+            saveBtn.dataset.saved = "true";
+            saveBtn.textContent = copy.saved;
+            saveBtn.setAttribute("aria-pressed", "true");
+          }
+        } catch (error) {
+          showFeedback(
+            error.code === "SAVED_LOOK_LIMIT_REACHED"
+              ? copy.savedLimitReached
+              : copy.saveFailed,
+          );
+        } finally {
+          saveBtn.disabled = false;
+        }
+      });
+
+      rewardBtn?.addEventListener("click", async () => {
+        const claim = getStoredShareClaim();
+        if (!claim) {
+          refreshRewardState();
+          return;
+        }
+        rewardBtn.disabled = true;
+        try {
+          await getJson("/api/shares/reward", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              jobId,
+              shareClaimToken: claim.claimToken,
+            }),
+          });
+          rewardBtn.textContent = copy.rewarded;
+        } catch {
+          refreshRewardState();
+        }
+      });
+
+      if (!jobId) {
+        showEmpty();
+        return;
+      }
+
+      getJson(`/api/tryon-jobs/${encodeURIComponent(jobId)}`)
+        .then(renderJob)
+        .catch(showEmpty);
+    })();
+  </script>
+
+  <style>
+    .result-main {
+      min-height: calc(100dvh - 64px);
+      padding: 24px;
+      background: var(--page-surface);
+    }
+
+    .result-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+      gap: 22px;
+      width: min(100%, 1120px);
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .result-viewer {
+      position: relative;
+      display: grid;
+      min-height: 620px;
+      overflow: hidden;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      contain: layout paint;
+    }
+
+    .result-viewer.is-loading::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border-radius: 10px;
+      background: linear-gradient(
+        110deg,
+        var(--surface-neutral) 8%,
+        var(--bg-elevated) 18%,
+        var(--surface-neutral) 33%
+      );
+      background-size: 200% 100%;
+      animation: result-image-loading 1.1s ease-in-out infinite;
+    }
+
+    .result-viewer img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .result-loading {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .result-side {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      min-width: 0;
+      padding: 10px 4px 10px 0;
+    }
+
+    .result-side h1 {
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .result-side p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .result-meta {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .result-meta div {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .result-meta dt {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .result-meta dd {
+      min-width: 0;
+      margin: 0;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .result-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 4px;
+    }
+
+    .result-actions .btn {
+      min-height: 42px;
+      padding-inline: 12px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .result-empty {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      background: var(--surface-neutral);
+    }
+
+    .result-empty strong {
+      color: var(--navy);
+      font-size: 16px;
+    }
+
+    .result-empty span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .result-empty div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    @media (max-width: 760px) {
+      .result-main {
+        padding: 12px 12px calc(92px + env(safe-area-inset-bottom));
+      }
+
+      .result-shell {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 12px;
+      }
+
+      .result-viewer {
+        min-height: clamp(320px, 92vw, 480px);
+        aspect-ratio: 4 / 5;
+      }
+
+      .result-side {
+        padding: 0;
+      }
+
+      .result-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>
