@@ -11,6 +11,31 @@ const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 
 const sourceCode = Astro.params.sourceCode || "";
+type PublicShareCopy = {
+  title: string;
+  description: string;
+  brand: string;
+  loading: string;
+  missingTitle: string;
+  missingBody: string;
+  tryIt: string;
+  home: string;
+  copy: string;
+  copied: string;
+  heading: string;
+  cardAria: string;
+  benefitTryon: string;
+  benefitTryonDesc: string;
+  benefitScenario: string;
+  benefitScenarioDesc: string;
+  benefitBonus: string;
+  benefitBonusDesc: string;
+  ctaTitle: string;
+  ctaBody: string;
+  after: string;
+  defaultLook: string;
+};
+
 const copyByLocale = {
   en: {
     title: "Shared makeup result",
@@ -23,8 +48,17 @@ const copyByLocale = {
     home: "Home",
     copy: "Copy link",
     copied: "Link copied",
-    sharedBy: "Shared try-on result",
-    disclaimer: "AI try-on results are for beauty reference only.",
+    heading: "My try-on result",
+    cardAria: "Shared makeup try-on result",
+    benefitTryon: "AI makeup try-on",
+    benefitTryonDesc: "Preview the look on your own face",
+    benefitScenario: "Looks by scenario",
+    benefitScenarioDesc: "Try work, date, and photo-ready looks",
+    benefitBonus: "Daily bonus",
+    benefitBonusDesc: "Share once daily for +1 generation",
+    ctaTitle: "Free try-ons every day",
+    ctaBody: "Share once daily to unlock one more AI makeup generation.",
+    after: "After",
     defaultLook: "Makeup result",
   },
   "zh-CN": {
@@ -38,8 +72,17 @@ const copyByLocale = {
     home: "返回首页",
     copy: "复制链接",
     copied: "链接已复制",
-    sharedBy: "分享的试妆结果",
-    disclaimer: "AI 试妆结果仅供美妆参考。",
+    heading: "我的试妆效果",
+    cardAria: "分享的 AI 试妆效果",
+    benefitTryon: "AI 在线试妆",
+    benefitTryonDesc: "先看自己的上脸参考",
+    benefitScenario: "按场景选妆",
+    benefitScenarioDesc: "通勤、约会、拍照都能试",
+    benefitBonus: "每日奖励",
+    benefitBonusDesc: "每天分享一次，加 1 次生成额度",
+    ctaTitle: "每天都有免费试妆",
+    ctaBody: "每天分享一次，可解锁 1 次 AI 妆容生成。",
+    after: "试妆后",
     defaultLook: "妆容结果",
   },
   "zh-TW": {
@@ -53,11 +96,198 @@ const copyByLocale = {
     home: "返回首頁",
     copy: "複製連結",
     copied: "連結已複製",
-    sharedBy: "分享的試妝結果",
-    disclaimer: "AI 試妝結果僅供美妝參考。",
+    heading: "我的試妝效果",
+    cardAria: "分享的 AI 試妝效果",
+    benefitTryon: "AI 線上試妝",
+    benefitTryonDesc: "先看自己的上臉參考",
+    benefitScenario: "按場景選妝",
+    benefitScenarioDesc: "通勤、約會、拍照都能試",
+    benefitBonus: "每日獎勵",
+    benefitBonusDesc: "每天分享一次，加 1 次生成額度",
+    ctaTitle: "每天都有免費試妝",
+    ctaBody: "每天分享一次，可解鎖 1 次 AI 妝容生成。",
+    after: "試妝後",
     defaultLook: "妝容結果",
   },
-};
+  "de-DE": {
+    title: "Geteiltes Make-up-Ergebnis",
+    description: "Sieh dir ein geteiltes AI Beauty Stylist Try-on-Ergebnis an.",
+    brand: "AI Beauty Stylist",
+    loading: "Geteiltes Ergebnis wird geladen...",
+    missingTitle: "Teilen nicht verfügbar",
+    missingBody:
+      "Dieses geteilte Ergebnis ist eventuell abgelaufen oder entfernt.",
+    tryIt: "Diesen Look testen",
+    home: "Startseite",
+    copy: "Link kopieren",
+    copied: "Link kopiert",
+    heading: "Mein Try-on-Ergebnis",
+    cardAria: "Geteiltes Make-up-Try-on-Ergebnis",
+    benefitTryon: "AI Make-up-Try-on",
+    benefitTryonDesc: "Den Look zuerst am eigenen Gesicht ansehen",
+    benefitScenario: "Looks nach Anlass",
+    benefitScenarioDesc: "Für Arbeit, Date und Fotos testen",
+    benefitBonus: "Tagesbonus",
+    benefitBonusDesc: "Einmal täglich teilen für +1 Generierung",
+    ctaTitle: "Jeden Tag kostenlose Try-ons",
+    ctaBody:
+      "Teile einmal täglich und schalte eine weitere AI Make-up-Generierung frei.",
+    after: "Nachher",
+    defaultLook: "Make-up-Ergebnis",
+  },
+  "fr-FR": {
+    title: "Résultat maquillage partagé",
+    description: "Consultez un résultat d'essai partagé par AI Beauty Stylist.",
+    brand: "AI Beauty Stylist",
+    loading: "Chargement du résultat partagé...",
+    missingTitle: "Partage indisponible",
+    missingBody: "Ce résultat partagé a peut-être expiré ou été supprimé.",
+    tryIt: "Essayer ce look",
+    home: "Accueil",
+    copy: "Copier le lien",
+    copied: "Lien copié",
+    heading: "Mon résultat d'essai",
+    cardAria: "Résultat d'essai maquillage partagé",
+    benefitTryon: "Essai maquillage IA",
+    benefitTryonDesc: "Prévisualisez le look sur votre visage",
+    benefitScenario: "Looks par occasion",
+    benefitScenarioDesc: "Travail, rendez-vous et photos",
+    benefitBonus: "Bonus quotidien",
+    benefitBonusDesc: "Partagez chaque jour pour +1 génération",
+    ctaTitle: "Des essais gratuits chaque jour",
+    ctaBody:
+      "Partagez une fois par jour pour débloquer une génération maquillage IA en plus.",
+    after: "Après",
+    defaultLook: "Résultat maquillage",
+  },
+  "ja-JP": {
+    title: "共有されたメイク試着結果",
+    description: "AI Beauty Stylist の共有メイク試着結果を表示します。",
+    brand: "AI Beauty Stylist",
+    loading: "共有結果を読み込み中...",
+    missingTitle: "共有を表示できません",
+    missingBody: "この共有結果は期限切れ、または削除された可能性があります。",
+    tryIt: "このルックを試す",
+    home: "ホーム",
+    copy: "リンクをコピー",
+    copied: "リンクをコピーしました",
+    heading: "私のメイク試着結果",
+    cardAria: "共有されたメイク試着結果",
+    benefitTryon: "AIメイク試着",
+    benefitTryonDesc: "自分の顔で仕上がりを確認",
+    benefitScenario: "シーン別メイク",
+    benefitScenarioDesc: "通勤・デート・写真用も試せます",
+    benefitBonus: "毎日ボーナス",
+    benefitBonusDesc: "1日1回のシェアで生成を1回追加",
+    ctaTitle: "毎日無料で試せる",
+    ctaBody: "1日1回シェアすると、AIメイク生成をもう1回アンロックできます。",
+    after: "試着後",
+    defaultLook: "メイク結果",
+  },
+  "ko-KR": {
+    title: "공유된 메이크업 체험 결과",
+    description: "AI Beauty Stylist의 공유 메이크업 체험 결과를 확인하세요.",
+    brand: "AI Beauty Stylist",
+    loading: "공유 결과 불러오는 중...",
+    missingTitle: "공유를 사용할 수 없음",
+    missingBody: "이 공유 결과가 만료되었거나 삭제되었을 수 있습니다.",
+    tryIt: "이 룩 체험하기",
+    home: "홈",
+    copy: "링크 복사",
+    copied: "링크가 복사되었습니다",
+    heading: "내 메이크업 체험 결과",
+    cardAria: "공유된 메이크업 체험 결과",
+    benefitTryon: "AI 메이크업 체험",
+    benefitTryonDesc: "내 얼굴에 적용된 모습을 미리 확인",
+    benefitScenario: "상황별 룩",
+    benefitScenarioDesc: "출근, 데이트, 촬영 룩을 체험",
+    benefitBonus: "매일 보너스",
+    benefitBonusDesc: "하루 한 번 공유하면 생성 1회 추가",
+    ctaTitle: "매일 무료 체험",
+    ctaBody: "하루 한 번 공유하면 AI 메이크업 생성 1회를 더 받을 수 있어요.",
+    after: "체험 후",
+    defaultLook: "메이크업 결과",
+  },
+  "es-ES": {
+    title: "Resultado de maquillaje compartido",
+    description: "Mira un resultado de prueba compartido de AI Beauty Stylist.",
+    brand: "AI Beauty Stylist",
+    loading: "Cargando resultado compartido...",
+    missingTitle: "Compartido no disponible",
+    missingBody:
+      "Este resultado compartido puede haber caducado o sido eliminado.",
+    tryIt: "Probar este look",
+    home: "Inicio",
+    copy: "Copiar enlace",
+    copied: "Enlace copiado",
+    heading: "Mi resultado de prueba",
+    cardAria: "Resultado compartido de prueba de maquillaje",
+    benefitTryon: "Prueba de maquillaje IA",
+    benefitTryonDesc: "Previsualiza el look en tu rostro",
+    benefitScenario: "Looks por ocasión",
+    benefitScenarioDesc: "Trabajo, cita y fotos",
+    benefitBonus: "Bonus diario",
+    benefitBonusDesc: "Comparte una vez al día para +1 generación",
+    ctaTitle: "Pruebas gratis todos los días",
+    ctaBody:
+      "Comparte una vez al día para desbloquear una generación de maquillaje IA más.",
+    after: "Después",
+    defaultLook: "Resultado de maquillaje",
+  },
+  "es-419": {
+    title: "Resultado de maquillaje compartido",
+    description: "Mira un resultado de prueba compartido de AI Beauty Stylist.",
+    brand: "AI Beauty Stylist",
+    loading: "Cargando resultado compartido...",
+    missingTitle: "Compartido no disponible",
+    missingBody:
+      "Este resultado compartido puede haber caducado o sido eliminado.",
+    tryIt: "Probar este look",
+    home: "Inicio",
+    copy: "Copiar enlace",
+    copied: "Enlace copiado",
+    heading: "Mi resultado de prueba",
+    cardAria: "Resultado compartido de prueba de maquillaje",
+    benefitTryon: "Prueba de maquillaje IA",
+    benefitTryonDesc: "Previsualiza el look en tu rostro",
+    benefitScenario: "Looks por ocasión",
+    benefitScenarioDesc: "Trabajo, cita y fotos",
+    benefitBonus: "Bonus diario",
+    benefitBonusDesc: "Comparte una vez al día para +1 generación",
+    ctaTitle: "Pruebas gratis todos los días",
+    ctaBody:
+      "Comparte una vez al día para desbloquear una generación de maquillaje IA más.",
+    after: "Después",
+    defaultLook: "Resultado de maquillaje",
+  },
+  "pt-BR": {
+    title: "Resultado de maquiagem compartilhado",
+    description:
+      "Veja um resultado de teste compartilhado do AI Beauty Stylist.",
+    brand: "AI Beauty Stylist",
+    loading: "Carregando resultado compartilhado...",
+    missingTitle: "Compartilhamento indisponível",
+    missingBody:
+      "Este resultado compartilhado pode ter expirado ou sido removido.",
+    tryIt: "Testar este look",
+    home: "Início",
+    copy: "Copiar link",
+    copied: "Link copiado",
+    heading: "Meu resultado de teste",
+    cardAria: "Resultado compartilhado do teste de maquiagem",
+    benefitTryon: "Teste de maquiagem IA",
+    benefitTryonDesc: "Pré-visualize o look no seu rosto",
+    benefitScenario: "Looks por ocasião",
+    benefitScenarioDesc: "Teste trabalho, encontro e fotos",
+    benefitBonus: "Bônus diário",
+    benefitBonusDesc: "Compartilhe uma vez ao dia para +1 geração",
+    ctaTitle: "Testes grátis todos os dias",
+    ctaBody:
+      "Compartilhe uma vez por dia para liberar mais uma geração de maquiagem IA.",
+    after: "Depois",
+    defaultLook: "Resultado de maquiagem",
+  },
+} satisfies Record<string, PublicShareCopy>;
 const copy =
   copyByLocale[locale as keyof typeof copyByLocale] ?? copyByLocale.en;
 const hrefs = {
@@ -77,14 +307,38 @@ const hrefs = {
     data-public-share
     data-source-code={sourceCode}
   >
-    <article class="public-share-card" aria-live="polite">
+    <article
+      class="public-share-card"
+      aria-label={copy.cardAria}
+      aria-live="polite"
+    >
+      <header class="public-share-top">
+        <h1>{copy.heading}</h1>
+        <div class="public-share-look" data-share-title>{copy.loading}</div>
+        <div class="public-share-brand">{copy.brand}</div>
+      </header>
       <div class="public-share-media" data-share-media>
         <div class="public-share-loading" role="status">{copy.loading}</div>
       </div>
-      <section class="public-share-copy">
-        <span>{copy.sharedBy}</span>
-        <h1 data-share-title>{copy.loading}</h1>
-        <p data-share-disclaimer>{copy.disclaimer}</p>
+      <section class="public-share-benefits">
+        <div>
+          <b>{copy.benefitTryon}</b>
+          <span>{copy.benefitTryonDesc}</span>
+        </div>
+        <div>
+          <b>{copy.benefitScenario}</b>
+          <span>{copy.benefitScenarioDesc}</span>
+        </div>
+        <div>
+          <b>{copy.benefitBonus}</b>
+          <span>{copy.benefitBonusDesc}</span>
+        </div>
+      </section>
+      <footer class="public-share-copy">
+        <h2>
+          <span>{copy.ctaTitle}</span>
+          <strong>{copy.ctaBody}</strong>
+        </h2>
         <div class="public-share-actions">
           <a class="btn btn-primary" href={hrefs.tryonFree} data-share-try>
             {copy.tryIt}
@@ -94,7 +348,15 @@ const hrefs = {
           </button>
           <a class="btn btn-outline" href={hrefs.home}>{copy.home}</a>
         </div>
-      </section>
+        <a
+          class="public-share-brand-link"
+          href={hrefs.home}
+          data-public-share-link
+        >
+          <span>{copy.brand}</span>
+          <small data-public-share-url>aibeautystylist.com</small>
+        </a>
+      </footer>
     </article>
     <section class="public-share-empty panel" data-share-empty hidden>
       <h1>{copy.missingTitle}</h1>
@@ -111,10 +373,24 @@ const hrefs = {
       const card = root.querySelector(".public-share-card");
       const media = root.querySelector("[data-share-media]");
       const title = root.querySelector("[data-share-title]");
-      const disclaimer = root.querySelector("[data-share-disclaimer]");
       const tryLink = root.querySelector("[data-share-try]");
       const copyButton = root.querySelector("[data-share-copy]");
       const empty = root.querySelector("[data-share-empty]");
+      const shareUrlText = root.querySelector("[data-public-share-url]");
+      const shareUrlLink = root.querySelector("[data-public-share-link]");
+
+      function formatShareDisplayUrl(value) {
+        try {
+          const url = new URL(value, location.origin);
+          return url.hostname.replace(/^www\./, "") + url.pathname;
+        } catch {
+          return "aibeautystylist.com";
+        }
+      }
+
+      if (shareUrlText)
+        shareUrlText.textContent = formatShareDisplayUrl(location.href);
+      if (shareUrlLink) shareUrlLink.href = location.href;
 
       function showEmpty() {
         if (card) card.hidden = true;
@@ -133,8 +409,6 @@ const hrefs = {
 
       function renderShare(job) {
         if (title) title.textContent = job.lookTitle || copy.defaultLook;
-        if (disclaimer)
-          disclaimer.textContent = job.disclaimer || copy.disclaimer;
         if (tryLink) {
           const url = new URL(hrefs.tryonFree, location.origin);
           if (job.lookSlug) url.searchParams.set("look", job.lookSlug);
@@ -148,6 +422,9 @@ const hrefs = {
           image.alt = job.lookTitle || copy.defaultLook;
           image.loading = "eager";
           image.decoding = "async";
+          const label = document.createElement("span");
+          label.className = "public-share-label";
+          label.textContent = copy.after;
           image.addEventListener(
             "load",
             () => media.classList.remove("is-loading"),
@@ -158,7 +435,7 @@ const hrefs = {
             () => media.classList.remove("is-loading"),
             { once: true },
           );
-          media.replaceChildren(image);
+          media.replaceChildren(image, label);
           if (image.complete)
             requestAnimationFrame(() => media.classList.remove("is-loading"));
         }
@@ -190,41 +467,72 @@ const hrefs = {
       display: grid;
       min-height: 100dvh;
       place-items: center;
-      padding: 24px;
-      background: var(--page-surface);
+      padding: 40px 24px;
+      background: linear-gradient(
+        180deg,
+        var(--page-surface-alt),
+        var(--page-surface)
+      );
     }
 
     .public-share-card {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
-      width: min(100%, 980px);
+      width: min(100%, 720px);
       overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: var(--bg-elevated);
-      box-shadow: 0 24px 70px rgba(18, 39, 66, 0.14);
+      border: 1px solid color-mix(in srgb, var(--line) 86%, transparent);
+      border-radius: 22px;
+      background: linear-gradient(160deg, #fff8fa 0%, #f8fcfb 52%, #fff 100%);
+      color: var(--text);
+      box-shadow: 0 25px 70px rgba(31, 45, 65, 0.14);
+    }
+
+    .public-share-top {
+      padding: 48px 56px 22px;
+    }
+
+    .public-share-top h1 {
+      margin: 0;
+      color: var(--heading);
+      font-size: 52px;
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .public-share-look {
+      margin: 14px 0 10px;
+      color: var(--rose);
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.18;
+    }
+
+    .public-share-brand {
+      color: #4f8f8a;
+      font-size: 20px;
+      font-weight: 800;
     }
 
     .public-share-media {
       position: relative;
       display: grid;
-      min-height: 640px;
+      aspect-ratio: 936 / 760;
+      margin: 18px 48px 0;
       overflow: hidden;
       place-items: center;
-      background: var(--surface-neutral);
+      border-radius: 22px;
+      background: #f5f2f1;
+      box-shadow: 0 18px 40px rgba(31, 45, 65, 0.1);
       contain: layout paint;
     }
 
     .public-share-media.is-loading::before {
       content: "";
       position: absolute;
-      inset: 16px;
-      border-radius: 12px;
+      inset: 0;
       background: linear-gradient(
         110deg,
-        var(--surface-neutral) 8%,
+        #f5f2f1 8%,
         var(--bg-elevated) 18%,
-        var(--surface-neutral) 33%
+        #f5f2f1 33%
       );
       background-size: 200% 100%;
       animation: result-image-loading 1.1s ease-in-out infinite;
@@ -235,6 +543,21 @@ const hrefs = {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      object-position: center center;
+      filter: saturate(1.02);
+    }
+
+    .public-share-label {
+      position: absolute;
+      right: 22px;
+      bottom: 22px;
+      z-index: 2;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--heading);
+      font-weight: 900;
+      box-shadow: 0 12px 26px rgba(31, 45, 65, 0.12);
     }
 
     .public-share-loading {
@@ -243,45 +566,89 @@ const hrefs = {
       font-weight: 800;
     }
 
+    .public-share-benefits {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 28px 48px 0;
+    }
+
+    .public-share-benefits div {
+      min-width: 0;
+      padding: 20px 22px;
+      border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: 0 14px 32px rgba(31, 45, 65, 0.06);
+    }
+
+    .public-share-benefits b {
+      display: block;
+      color: var(--heading);
+      font-size: 17px;
+      line-height: 1.3;
+    }
+
+    .public-share-benefits span {
+      display: block;
+      margin-top: 8px;
+      color: var(--body-secondary);
+      font-size: 14px;
+      line-height: 1.42;
+    }
+
     .public-share-copy {
       display: grid;
-      align-content: center;
-      gap: 16px;
-      padding: 32px;
+      gap: 18px;
+      padding: 36px 56px 46px;
     }
 
-    .public-share-copy span {
-      color: var(--rose);
-      font-size: 12px;
+    .public-share-copy h2 {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      color: var(--heading);
+      font-size: 34px;
+      line-height: 1.15;
+    }
+
+    .public-share-copy h2 span {
       font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
     }
 
-    .public-share-copy h1 {
-      margin: 0;
-      color: var(--navy);
-      font-size: clamp(30px, 5vw, 52px);
-      line-height: 1.05;
-      letter-spacing: 0;
-    }
-
-    .public-share-copy p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
+    .public-share-copy h2 strong {
+      color: var(--rose);
+      font-size: 22px;
+      line-height: 1.32;
     }
 
     .public-share-actions {
-      display: grid;
-      gap: 9px;
-      margin-top: 4px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 2px;
     }
 
     .public-share-actions .btn {
       min-height: 44px;
       justify-content: center;
+    }
+
+    .public-share-brand-link {
+      display: inline-grid;
+      width: fit-content;
+      gap: 2px;
+      color: var(--heading);
+      font-size: 18px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .public-share-brand-link small {
+      color: var(--rose);
+      font-size: 15px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
     }
 
     .public-share-empty {
@@ -310,17 +677,68 @@ const hrefs = {
       }
 
       .public-share-card {
-        grid-template-columns: 1fr;
-        border-radius: 10px;
+        border-radius: 18px;
+      }
+
+      .public-share-top {
+        padding: 28px 22px 12px;
+      }
+
+      .public-share-top h1 {
+        font-size: 32px;
+      }
+
+      .public-share-look {
+        margin-top: 10px;
+        font-size: 22px;
+      }
+
+      .public-share-brand {
+        font-size: 16px;
       }
 
       .public-share-media {
-        min-height: clamp(320px, 94vw, 520px);
-        aspect-ratio: 4 / 5;
+        margin: 12px 16px 0;
+        border-radius: 16px;
+      }
+
+      .public-share-label {
+        right: 14px;
+        bottom: 14px;
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+
+      .public-share-benefits {
+        gap: 8px;
+        margin: 18px 16px 0;
+      }
+
+      .public-share-benefits div {
+        padding: 14px 10px;
+      }
+
+      .public-share-benefits b {
+        font-size: 13px;
+      }
+
+      .public-share-benefits span {
+        margin-top: 6px;
+        font-size: 11px;
+        line-height: 1.35;
       }
 
       .public-share-copy {
-        padding: 20px;
+        gap: 14px;
+        padding: 24px 22px 28px;
+      }
+
+      .public-share-copy h2 {
+        font-size: 24px;
+      }
+
+      .public-share-copy h2 strong {
+        font-size: 16px;
       }
     }
   </style>
