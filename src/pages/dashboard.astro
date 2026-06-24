@@ -5491,6 +5491,8 @@ const diagnosisValueAliases =
       const historyDesktopQuery = window.matchMedia("(min-width: 768px)");
       let latestHistoryJobs = [];
       let hasRenderedHistory = false;
+      let savedResultCount = 0;
+      let favoriteLookCount = Number(window.__absFavoriteLookCount ?? 0) || 0;
 
       const query = (selector) => root.querySelector(selector);
       const setText = (selector, value) => {
@@ -5537,6 +5539,12 @@ const diagnosisValueAliases =
       };
       const fallbackLook = (slug) =>
         recommendationBySlug.get(slug) || recommendations[0] || {};
+      const renderSavedMetric = () => {
+        setText(
+          "[data-saved-count]",
+          String(Math.max(0, savedResultCount + favoriteLookCount)),
+        );
+      };
       const getJson = async (url) => {
         const response = await fetch(url);
         const body = await response.json().catch(() => null);
@@ -5948,10 +5956,23 @@ const diagnosisValueAliases =
         rerenderHistoryForViewport,
       );
 
+      document.addEventListener("abs:favorite-looks-changed", (event) => {
+        const count = Number(event.detail?.count);
+        if (!Number.isFinite(count)) return;
+        favoriteLookCount = Math.max(0, count);
+        renderSavedMetric();
+      });
+
+      function renderFavoriteLooks(items) {
+        favoriteLookCount = Array.isArray(items) ? items.length : 0;
+        renderSavedMetric();
+      }
+
       function renderSaved(items) {
         const target = query("[data-saved-list]");
         const saved = Array.isArray(items) ? items : [];
-        setText("[data-saved-count]", String(saved.length));
+        savedResultCount = saved.length;
+        renderSavedMetric();
         if (!target) return;
         if (!saved.length) {
           renderEmpty(target, copy.emptySaved, copy.startTryon, workspaceHref);
@@ -6229,12 +6250,14 @@ const diagnosisValueAliases =
           return;
         }
 
-        const [jobs, saved, diagnoses, preferences] = await Promise.allSettled([
-          getJson("/api/tryon-jobs?limit=20"),
-          getJson("/api/saved-looks"),
-          getJson("/api/diagnoses"),
-          getJson("/api/content-preferences"),
-        ]);
+        const [jobs, saved, favoriteLooks, diagnoses, preferences] =
+          await Promise.allSettled([
+            getJson("/api/tryon-jobs?limit=20"),
+            getJson("/api/saved-looks"),
+            getJson("/api/favorite-looks"),
+            getJson("/api/diagnoses"),
+            getJson("/api/content-preferences"),
+          ]);
 
         if (jobs.status === "fulfilled") renderHistory(jobs.value?.items);
         else {
@@ -6245,8 +6268,16 @@ const diagnosisValueAliases =
 
         if (saved.status === "fulfilled") renderSaved(saved.value?.items);
         else {
-          setText("[data-saved-count]", "0");
+          savedResultCount = 0;
+          renderSavedMetric();
           renderEmpty(query("[data-saved-list]"), copy.loadFailed);
+        }
+
+        if (favoriteLooks.status === "fulfilled") {
+          renderFavoriteLooks(favoriteLooks.value?.items);
+        } else {
+          favoriteLookCount = Number(window.__absFavoriteLookCount ?? 0) || 0;
+          renderSavedMetric();
         }
 
         if (diagnoses.status === "fulfilled")

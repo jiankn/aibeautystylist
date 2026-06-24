@@ -11,7 +11,7 @@ import {
   getTryOnJobPurpose,
   isRetryableJobStatus,
   timeoutStoredJobIfExpired,
-  toJobResponse,
+  toLocalizedJobResponse,
   type StoredTryOnJob,
 } from "../../../../lib/jobs";
 import { refundQuota } from "../../../../lib/quota";
@@ -107,7 +107,7 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
     }
     const { quota } = await getEntitlementContext(userId, bindings.DB);
     return apiSuccess({
-      ...toJobResponse(existingRetry),
+      ...toLocalizedJobResponse(existingRetry, locals.audienceContext),
       idempotentReplay: true,
       quota,
     });
@@ -145,7 +145,7 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
     });
     return apiSuccess(
       {
-        ...toJobResponse(result.job),
+        ...toLocalizedJobResponse(result.job, locals.audienceContext),
         quota: result.quota,
       },
       { status: 201 },

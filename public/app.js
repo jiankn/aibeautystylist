@@ -16,6 +16,8 @@ const APP_MESSAGES = {
     favoriteRemoved: "已取消收藏",
     favoriteSaveFailed: "收藏操作失败，请稍后重试",
     favoriteLimitReached: "收藏数量已满，请先取消一个收藏",
+    favoriteServiceUnavailable: "收藏服务暂时不可用，请稍后再试",
+    favoriteLookUnavailable: "这个妆容暂时无法收藏",
     loginToUpload: "登录后上传自拍",
     uploadButton: "上传自拍试这个妆",
     chooseFile: "请选择 JPG、PNG、WebP 或 HEIC 自拍",
@@ -84,6 +86,8 @@ const APP_MESSAGES = {
     favoriteRemoved: "Saved look removed",
     favoriteSaveFailed: "Could not update saved looks. Try again later.",
     favoriteLimitReached: "Your saved-look list is full. Remove one first.",
+    favoriteServiceUnavailable: "Saved looks are temporarily unavailable. Try again later.",
+    favoriteLookUnavailable: "This look cannot be saved right now.",
     loginToUpload: "Sign in to upload photo",
     uploadButton: "Upload & Try This Look",
     chooseFile: "Please choose a JPG, PNG, WebP, or HEIC selfie",
@@ -832,6 +836,16 @@ function openDiscoverSearch({ focus = true } = {}) {
 const favoriteLookButtons = document.querySelectorAll("[data-look-favorite]");
 let favoriteLookSlugs = new Set();
 
+function notifyFavoriteLookCountChange() {
+  const count = favoriteLookSlugs.size;
+  window.__absFavoriteLookCount = count;
+  document.dispatchEvent(
+    new CustomEvent("abs:favorite-looks-changed", {
+      detail: { count },
+    }),
+  );
+}
+
 function setFavoriteLookButtonState(button, isFavorite) {
   if (!button) return;
   const label = isFavorite
@@ -861,6 +875,8 @@ async function hydrateFavoriteLooks() {
 
   const session = await getCurrentSession().catch(() => undefined);
   if (!isAccountSession(session)) {
+    favoriteLookSlugs = new Set();
+    notifyFavoriteLookCountChange();
     applyLookFilters();
     return;
   }
@@ -875,6 +891,7 @@ async function hydrateFavoriteLooks() {
         .filter(Boolean),
     );
     syncFavoriteLookButtons();
+    notifyFavoriteLookCountChange();
     applyLookFilters();
   } catch {
     /* 收藏状态加载失败不影响浏览妆容。 */
@@ -918,6 +935,14 @@ async function toggleFavoriteLook(button) {
         showToast(msg("favoriteLimitReached"));
         return;
       }
+      if (payload.error?.code === "DB_UNAVAILABLE") {
+        showToast(msg("favoriteServiceUnavailable"));
+        return;
+      }
+      if (payload.error?.code === "LOOK_NOT_FOUND") {
+        showToast(msg("favoriteLookUnavailable"));
+        return;
+      }
       throw new Error(payload.error?.message || "FAVORITE_LOOK_FAILED");
     }
 
@@ -927,6 +952,7 @@ async function toggleFavoriteLook(button) {
       favoriteLookSlugs.add(lookSlug);
     }
     setFavoriteLookButtonState(button, !wasFavorite);
+    notifyFavoriteLookCountChange();
     applyLookFilters({ track: true });
     showToast(wasFavorite ? msg("favoriteRemoved") : msg("favoriteSaved"));
     window.__track?.("favorite_look_toggled", {

@@ -8,6 +8,7 @@ import {
   resetMockJobs,
   saveStoredJob,
   timeoutStoredJobIfExpired,
+  toLocalizedJobResponse,
   toJobResponse,
   transitionStoredJob,
   TRYON_JOB_TIMEOUT_MS,
@@ -40,6 +41,34 @@ describe("try-on job lifecycle", () => {
     expect(toJobResponse(job)).not.toHaveProperty("userId");
     expect(toJobResponse(job)).not.toHaveProperty("uploadId");
     expect(toJobResponse(job)).not.toHaveProperty("idempotencyKey");
+  });
+
+  it("localizes stored look titles for the current audience locale", () => {
+    const job = {
+      ...runningJob(),
+      status: "succeeded" as const,
+      lookSlug: "commute",
+      lookTitle: "蜜桃气色妆",
+      resultKind: "reference-fallback" as const,
+      disclaimer:
+        "当前显示现有妆容参考图，并非你的真实上脸效果。实际效果因个人条件而异。",
+      lookRecipeId: "commute",
+      marketVariantId: "commute--global-diverse",
+      locale: "zh-CN",
+    };
+
+    const response = toLocalizedJobResponse(job, {
+      locale: "en",
+      marketProfile: "global-diverse",
+      beautyPreferences: [],
+      representationPreference: ["diverse"],
+      source: "locale",
+    });
+
+    expect(response.lookTitle).toBe("Peach Glow Commute");
+    expect(response.disclaimer).toContain(
+      "showing the current makeup reference image",
+    );
   });
 
   it("cancels a running job and marks it retryable", async () => {

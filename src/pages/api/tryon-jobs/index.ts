@@ -10,7 +10,7 @@ import { apiError, apiSuccess } from "../../../lib/http";
 import {
   getStoredJobByIdempotencyKey,
   getTryOnJobPurpose,
-  toJobResponse,
+  toLocalizedJobResponse,
   type StoredTryOnJob,
   type TryOnJobPurpose,
 } from "../../../lib/jobs";
@@ -32,7 +32,7 @@ interface CreateJobBody {
   purpose?: string;
 }
 
-export const GET: APIRoute = async ({ cookies, url }) => {
+export const GET: APIRoute = async ({ cookies, locals, url }) => {
   const bindings = getRuntimeBindings();
   if (!bindings.DB) {
     return apiError(
@@ -57,7 +57,8 @@ export const GET: APIRoute = async ({ cookies, url }) => {
   const items = (rows.results ?? [])
     .map((row) => (row.result_json ? JSON.parse(row.result_json) : null))
     .filter(Boolean)
-    .filter((job) => getTryOnJobPurpose(job) === "tryon");
+    .filter((job) => getTryOnJobPurpose(job) === "tryon")
+    .map((job) => toLocalizedJobResponse(job, locals.audienceContext));
 
   return apiSuccess({ items });
 };
@@ -145,7 +146,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     });
     const { quota } = await getEntitlementContext(userId, bindings.DB);
     return apiSuccess({
-      ...toJobResponse(existingJob),
+      ...toLocalizedJobResponse(existingJob, audienceContext),
       idempotentReplay: true,
       quota,
     });
@@ -170,7 +171,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     });
     return apiSuccess(
       {
-        ...toJobResponse(result.job),
+        ...toLocalizedJobResponse(result.job, audienceContext),
         quota: result.quota,
       },
       { status: 201 },

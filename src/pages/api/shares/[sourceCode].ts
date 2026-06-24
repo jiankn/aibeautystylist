@@ -1,11 +1,11 @@
 import type { APIRoute } from "astro";
 
 import { apiError, apiSuccess } from "../../../lib/http";
-import { getStoredJobById, toJobResponse } from "../../../lib/jobs";
+import { getStoredJobById, toLocalizedJobResponse } from "../../../lib/jobs";
 import { getRuntimeBindings } from "../../../lib/runtime";
 import { getPublicShareCardByCode } from "../../../lib/shareCards";
 
-export const GET: APIRoute = async ({ params }) => {
+export const GET: APIRoute = async ({ locals, params }) => {
   const { DB } = getRuntimeBindings();
   if (!DB) return shareNotFound();
 
@@ -19,7 +19,7 @@ export const GET: APIRoute = async ({ params }) => {
   }
 
   return apiSuccess({
-    ...toJobResponse(job),
+    ...toLocalizedJobResponse(job, locals.audienceContext),
     shareCode: shareCard.sourceCode,
     resultImage: `/api/shares/${encodeURIComponent(shareCard.sourceCode)}/result`,
   });

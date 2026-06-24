@@ -7,13 +7,13 @@ import {
   getStoredJobById,
   isRunningJobStatus,
   timeoutStoredJobIfExpired,
-  toJobResponse,
+  toLocalizedJobResponse,
   transitionStoredJob,
 } from "../../../../lib/jobs";
 import { refundQuota } from "../../../../lib/quota";
 import { getRuntimeBindings } from "../../../../lib/runtime";
 
-export const POST: APIRoute = async ({ cookies, params }) => {
+export const POST: APIRoute = async ({ cookies, locals, params }) => {
   const { DB } = getRuntimeBindings();
   const auth = await requireAuthenticatedUser(cookies, DB);
   if (!auth.ok) return auth.response;
@@ -61,7 +61,7 @@ export const POST: APIRoute = async ({ cookies, params }) => {
   const { quota } = await getEntitlementContext(userId, DB);
 
   return apiSuccess({
-    ...toJobResponse(cancelled),
+    ...toLocalizedJobResponse(cancelled, locals.audienceContext),
     quota,
   });
 };

@@ -4,7 +4,11 @@ import { getEntitlementContext } from "../../../lib/entitlements";
 import { apiError, apiSuccess } from "../../../lib/http";
 import { getSavedLookLimit } from "../../../lib/plans";
 import { getRuntimeBindings } from "../../../lib/runtime";
-import { getStoredJobById } from "../../../lib/jobs";
+import {
+  getStoredJobById,
+  toLocalizedJobResponse,
+  type StoredTryOnJob,
+} from "../../../lib/jobs";
 
 interface SavedLookRow {
   id: string;
@@ -15,7 +19,7 @@ interface SavedLookRow {
 }
 
 // 获取当前用户的收藏列表
-export const GET: APIRoute = async ({ cookies }) => {
+export const GET: APIRoute = async ({ cookies, locals }) => {
   const { DB } = getRuntimeBindings();
   if (!DB) {
     return apiError(
@@ -39,13 +43,17 @@ export const GET: APIRoute = async ({ cookies }) => {
     .all<SavedLookRow>();
 
   const items = (rows.results ?? []).map((row) => {
-    const job = row.result_json ? JSON.parse(row.result_json) : null;
+    const job = row.result_json
+      ? (JSON.parse(row.result_json) as StoredTryOnJob)
+      : null;
     return {
       id: row.id,
       jobId: row.job_id,
       lookSlug: row.look_slug,
       createdAt: row.created_at,
-      jobDetails: job,
+      jobDetails: job
+        ? toLocalizedJobResponse(job, locals.audienceContext)
+        : null,
     };
   });
 

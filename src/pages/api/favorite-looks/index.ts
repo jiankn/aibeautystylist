@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 
 import { resolveLookCatalog } from "../../../data/makeup/resolveCatalog";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
+import { ensureFavoriteLooksSchema } from "../../../lib/favoriteLooksSchema";
 import { apiError, apiSuccess } from "../../../lib/http";
 import { getRuntimeBindings } from "../../../lib/runtime";
 
@@ -28,6 +29,7 @@ export const GET: APIRoute = async ({ cookies, locals }) => {
 
   const auth = await requireAuthenticatedUser(cookies, DB);
   if (!auth.ok) return auth.response;
+  await ensureFavoriteLooksSchema(DB);
 
   const rows = await DB.prepare(
     `SELECT id, look_slug, created_at
@@ -63,6 +65,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
 
   const auth = await requireAuthenticatedUser(cookies, DB);
   if (!auth.ok) return auth.response;
+  await ensureFavoriteLooksSchema(DB);
 
   const body = (await request
     .json()

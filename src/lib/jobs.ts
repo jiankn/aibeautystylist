@@ -1,6 +1,9 @@
 import type { LookCatalogItem } from "../data/lookCatalog";
 import type { ResolvedLook } from "../data/makeup/audienceTypes";
+import type { AudienceContext } from "../data/makeup/audienceTypes";
+import { resolveBySnapshot } from "../data/makeup/resolveCatalog";
 import type { D1DatabaseLike, R2BucketLike } from "./runtime";
+import { localizedTryOnDisclaimer } from "./tryonDisclaimers";
 
 export const jobStatuses = [
   "created",
@@ -143,6 +146,31 @@ export function toJobResponse(job: StoredTryOnJob): TryOnJobResult {
     ...response
   } = job;
   return response;
+}
+
+export function toLocalizedJobResponse(
+  job: StoredTryOnJob,
+  audienceContext: AudienceContext,
+): TryOnJobResult {
+  const localizedLook = resolveBySnapshot(
+    {
+      ...job,
+      locale: audienceContext.locale,
+    },
+    audienceContext,
+  );
+  return {
+    ...toJobResponse(job),
+    lookTitle: localizedLook?.title ?? job.lookTitle,
+    disclaimer: job.resultKind
+      ? localizedTryOnDisclaimer(
+          job.resultKind === "reference-fallback"
+            ? "referenceFallback"
+            : "generated",
+          audienceContext.locale,
+        )
+      : job.disclaimer,
+  };
 }
 
 export async function getStoredJobByIdempotencyKey(

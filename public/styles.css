@@ -962,24 +962,39 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .look-image-link:hover img { transform: scale(1.025); }
 .look-favorite-button {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 10px;
+  right: 10px;
   z-index: 3;
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, .76);
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: rgba(255, 255, 255, .92);
-  color: var(--rose);
-  box-shadow: 0 10px 22px rgba(8, 16, 28, .16);
-  transition: transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease;
+  background: transparent;
+  color: #fff;
+  box-shadow: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform .15s ease,
+    border-color .15s ease,
+    background .15s ease,
+    color .15s ease;
 }
 .look-favorite-button:hover {
   transform: translateY(-1px);
-  border-color: rgba(200, 62, 104, .5);
-  background: #fff;
+  border-color: rgba(255, 255, 255, .34);
+  background: rgba(16, 37, 68, .18);
+}
+.look-favorite-button:active {
+  transform: scale(.96);
+  background: rgba(16, 37, 68, .26);
+}
+.look-favorite-button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  background: rgba(16, 37, 68, .24);
 }
 .look-favorite-button:disabled {
   cursor: wait;
@@ -992,14 +1007,20 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   stroke: currentColor;
   stroke-width: 2;
   stroke-linejoin: round;
+  filter: drop-shadow(0 2px 4px rgba(8, 16, 28, .5));
+  transition:
+    fill .15s ease,
+    stroke .15s ease,
+    filter .15s ease;
 }
 .look-favorite-button[aria-pressed="true"] {
-  border-color: rgba(200, 62, 104, .32);
-  background: var(--rose);
-  color: #fff;
+  border-color: transparent;
+  background: transparent;
+  color: var(--rose);
 }
 .look-favorite-button[aria-pressed="true"] svg {
   fill: currentColor;
+  stroke: #fff;
 }
 .look-media-tags {
   position: absolute;
@@ -1950,7 +1971,7 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 
 .toast {
   position: fixed;
-  z-index: 100;
+  z-index: 155;
   left: 50%;
   bottom: 28px;
   max-width: min(90vw, 520px);
@@ -1964,6 +1985,24 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   transition: .25s ease;
 }
 .toast.show { transform: translate(-50%, 0); opacity: 1; }
+@media (max-width: 767px) {
+  .toast {
+    top: calc(68px + env(safe-area-inset-top));
+    bottom: auto;
+    width: max-content;
+    max-width: calc(100vw - 28px);
+    padding: 12px 16px;
+    transform: translate(-50%, -12px);
+    border-radius: 18px;
+    line-height: 1.35;
+    text-align: center;
+    white-space: normal;
+  }
+  .toast.show {
+    transform: translate(-50%, 0);
+  }
+}
+
 .native-file-picker {
   position: fixed;
   width: 1px;

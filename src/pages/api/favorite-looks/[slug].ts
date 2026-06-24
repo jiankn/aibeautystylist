@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
+import { ensureFavoriteLooksSchema } from "../../../lib/favoriteLooksSchema";
 import { apiError, apiSuccess } from "../../../lib/http";
 import { getRuntimeBindings } from "../../../lib/runtime";
 
@@ -15,6 +16,7 @@ export const DELETE: APIRoute = async ({ cookies, params }) => {
 
   const auth = await requireAuthenticatedUser(cookies, DB);
   if (!auth.ok) return auth.response;
+  await ensureFavoriteLooksSchema(DB);
 
   const lookSlug = params.slug;
   if (!lookSlug) {
