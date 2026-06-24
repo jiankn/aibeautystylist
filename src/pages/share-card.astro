@@ -1,5 +1,4 @@
 ---
-import AppIconBadge from "../components/AppIconBadge.astro";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCurrentLocale } from "../lib/i18n";
@@ -540,6 +539,91 @@ const shareCopyByLocale = {
 } satisfies Record<string, ShareCardCopy>;
 
 const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
+
+const posterCopyByLocale = {
+  en: {
+    eyebrow: "AI makeup try-on",
+    prefix: "I tried",
+    subtext: "A real makeup preview made for my face.",
+    rewardTop: "Share daily",
+    rewardBottom: "get +1 try-on",
+  },
+  "zh-CN": {
+    eyebrow: "AI 在线试妆",
+    prefix: "我试了",
+    subtext: "用我的脸生成真实妆容预览。",
+    rewardTop: "每日分享",
+    rewardBottom: "+1 次试妆",
+  },
+  "zh-TW": {
+    eyebrow: "AI 線上試妝",
+    prefix: "我試了",
+    subtext: "用我的臉生成真實妝容預覽。",
+    rewardTop: "每日分享",
+    rewardBottom: "+1 次試妝",
+  },
+  "de-DE": {
+    eyebrow: "AI Make-up-Try-on",
+    prefix: "Ich teste",
+    subtext: "Eine echte Make-up-Vorschau für mein Gesicht.",
+    rewardTop: "Täglich teilen",
+    rewardBottom: "+1 Try-on erhalten",
+  },
+  "fr-FR": {
+    eyebrow: "Essai maquillage IA",
+    prefix: "J'essaie",
+    subtext: "Un aperçu maquillage créé pour mon visage.",
+    rewardTop: "Partager chaque jour",
+    rewardBottom: "+1 essai offert",
+  },
+  "ja-JP": {
+    eyebrow: "AIメイク試着",
+    prefix: "試したルック",
+    subtext: "自分の顔に合わせたリアルなメイクプレビュー。",
+    rewardTop: "毎日シェア",
+    rewardBottom: "+1回試着",
+  },
+  "ko-KR": {
+    eyebrow: "AI 메이크업 체험",
+    prefix: "체험한 룩",
+    subtext: "내 얼굴에 맞춘 실제 메이크업 미리보기.",
+    rewardTop: "매일 공유",
+    rewardBottom: "+1회 체험",
+  },
+  "es-ES": {
+    eyebrow: "Prueba de maquillaje IA",
+    prefix: "Probé",
+    subtext: "Una vista previa de maquillaje hecha para mi rostro.",
+    rewardTop: "Comparte a diario",
+    rewardBottom: "+1 prueba gratis",
+  },
+  "es-419": {
+    eyebrow: "Prueba de maquillaje IA",
+    prefix: "Probé",
+    subtext: "Una vista previa de maquillaje hecha para mi rostro.",
+    rewardTop: "Comparte a diario",
+    rewardBottom: "+1 prueba gratis",
+  },
+  "pt-BR": {
+    eyebrow: "Teste de maquiagem IA",
+    prefix: "Testei",
+    subtext: "Uma prévia de maquiagem feita para o meu rosto.",
+    rewardTop: "Compartilhe todo dia",
+    rewardBottom: "+1 teste grátis",
+  },
+} satisfies Record<
+  string,
+  {
+    eyebrow: string;
+    prefix: string;
+    subtext: string;
+    rewardTop: string;
+    rewardBottom: string;
+  }
+>;
+const posterCopy =
+  posterCopyByLocale[currentLocale as keyof typeof posterCopyByLocale] ??
+  posterCopyByLocale.en;
 ---
 
 <BaseLayout
@@ -583,59 +667,49 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
     </header>
 
     <main class="share-page">
-      <article class="share-card" aria-label={copy.cardAria} id="share-card">
-        <header class="share-top">
-          <h1>{copy.heading}</h1>
-          <div class="share-look" id="share-look-name">{copy.loading}</div>
-          <div class="share-brand">AI Beauty Stylist</div>
-        </header>
-        <div class="share-image" id="share-image-area">
+      <article
+        class="share-card share-poster"
+        aria-label={copy.cardAria}
+        id="share-card"
+      >
+        <div class="share-poster-media" id="share-image-area">
           <div class="share-loading">{copy.cardLoading}</div>
         </div>
-        <section class="benefit-row" id="share-benefits">
-          <div class="benefit">
-            <AppIconBadge icon="tryon" tone="rose" /><div>
-              <b>{copy.benefitTryon}</b><span>{copy.benefitTryonDesc}</span>
-            </div>
+        <div class="share-poster-scrim" aria-hidden="true"></div>
+        <header class="share-poster-top">
+          <a class="share-poster-brand" href={homeHref}>
+            <img
+              class="brand-logo-img share-brand-logo"
+              src="/images/logo-ui.webp"
+              alt=""
+              aria-hidden="true"
+            />
+            <span>AI Beauty Stylist</span>
+          </a>
+          <span class="share-poster-badge">{copy.after}</span>
+        </header>
+        <footer class="share-poster-copy">
+          <div class="share-poster-eyebrow">
+            <span aria-hidden="true"></span>
+            {posterCopy.eyebrow}
           </div>
-          <div class="benefit">
-            <AppIconBadge icon="guides" tone="teal" /><div>
-              <b>{copy.benefitScenario}</b><span
-                >{copy.benefitScenarioDesc}</span
-              >
-            </div>
-          </div>
-          <div class="benefit">
-            <AppIconBadge icon="credits" tone="gold" /><div>
-              <b>{copy.benefitFree}</b><span>{copy.benefitFreeDesc}</span>
-            </div>
-          </div>
-        </section>
-        <footer class="share-cta">
-          <div>
-            <h2>
-              <span>{copy.ctaTitle}</span>
-              <strong>{copy.ctaHighlight}</strong>
-            </h2>
-            <p>{copy.ctaBody}</p>
-            <div class="share-cta-actions">
-              <a class="btn btn-primary share-cta-button" href={tryOnHref}>
-                {copy.navTryCta}
-              </a>
-              <a class="brand" href={homeHref}>
-                <img
-                  class="brand-logo-img share-brand-logo"
-                  src="/images/logo-ui.webp"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <span
-                  >AI Beauty Stylist<br /><small style="font-weight:400"
-                    ><span id="share-card-url">aibeautystylist.com</span></small
-                  ></span
-                >
-              </a>
-            </div>
+          <h1>
+            <span>{posterCopy.prefix}</span>
+            <strong id="share-look-name">{copy.loading}</strong>
+          </h1>
+          <p>{posterCopy.subtext}</p>
+          <div class="share-poster-action-row">
+            <a
+              class="btn btn-primary share-poster-cta"
+              href={tryOnHref}
+              id="share-try-link"
+            >
+              {copy.navTryCta}
+            </a>
+            <p class="share-poster-reward">
+              <span>{posterCopy.rewardTop}</span>
+              <strong>{posterCopy.rewardBottom}</strong>
+            </p>
           </div>
         </footer>
       </article>
@@ -665,7 +739,10 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
   </div>
 </BaseLayout>
 
-<script is:inline define:vars={{ copy, shareBaseHref, shareCardHref }}>
+<script
+  is:inline
+  define:vars={{ copy, posterCopy, shareBaseHref, shareCardHref, tryOnHref }}
+>
   (function () {
     const params = new URLSearchParams(location.search);
     const jobId = params.get("jobId");
@@ -678,7 +755,7 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
     const downloadBtn = document.getElementById("share-download-btn");
     const webShareBtn = document.getElementById("share-web-btn");
     const copyBtn = document.getElementById("share-copy-btn");
-    const shareCardUrlEl = document.getElementById("share-card-url");
+    const tryLink = document.getElementById("share-try-link");
     let currentPlan = "free";
     let currentJob = null;
     let publicShareUrl;
@@ -752,30 +829,20 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
         `${base}/${encodeURIComponent(data.data.sourceCode)}`,
         location.origin,
       ).toString();
-      updateShareCardUrl(publicShareUrl);
       return publicShareUrl;
-    }
-
-    function formatShareDisplayUrl(value) {
-      try {
-        const url = new URL(value, location.origin);
-        return url.hostname.replace(/^www\./, "") + url.pathname;
-      } catch {
-        return "aibeautystylist.com";
-      }
-    }
-
-    function updateShareCardUrl(value) {
-      if (!shareCardUrlEl) return;
-      const displayUrl = formatShareDisplayUrl(value);
-      shareCardUrlEl.textContent = displayUrl;
-      const link = shareCardUrlEl.closest("a");
-      if (link) link.href = value;
     }
 
     function refreshRewardButtonState() {
       if (!rewardBtn) return;
       rewardBtn.disabled = !getStoredShareClaim();
+    }
+
+    function updateTryLink(job) {
+      if (!tryLink) return;
+      const url = new URL(tryOnHref || "/tryon-free", location.origin);
+      if (job?.lookSlug) url.searchParams.set("look", job.lookSlug);
+      url.searchParams.set("source", "share_card");
+      tryLink.href = `${url.pathname}${url.search}`;
     }
 
     refreshRewardButtonState();
@@ -818,21 +885,17 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
         }
         const job = data.data;
         currentJob = job;
+        updateTryLink(job);
         if (lookNameEl)
           lookNameEl.textContent = job.lookTitle || copy.defaultLook;
         if (imageArea && job.resultImage) {
           const lookTitle = job.lookTitle || copy.defaultLook;
           const resultAlt = lookTitle + copy.resultAltSuffix;
-          imageArea.classList.remove("has-comparison");
-          imageArea.classList.add("is-single");
           imageArea.innerHTML = `
             <img src="${escapeHtml(job.resultImage)}" alt="${escapeHtml(resultAlt)}" loading="eager" data-share-result-img />
-            <span class="compare-label after">${escapeHtml(copy.after)}</span>
           `;
         }
-        createPublicShareUrl().catch(() => {
-          updateShareCardUrl(location.origin);
-        });
+        createPublicShareUrl().catch(() => {});
       })
       .catch(() => {
         cardEl.hidden = true;
@@ -873,18 +936,16 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
       ctx.closePath();
     }
 
-    function drawImageContain(ctx, img, x, y, width, height) {
-      ctx.fillStyle = "#f5f2f1";
-      ctx.fillRect(x, y, width, height);
-      const scale = Math.min(
+    function drawImageCover(ctx, img, x, y, width, height, focusY = 0.38) {
+      const scale = Math.max(
         width / img.naturalWidth,
         height / img.naturalHeight,
       );
-      const dw = img.naturalWidth * scale;
-      const dh = img.naturalHeight * scale;
-      const dx = x + (width - dw) / 2;
-      const dy = y + (height - dh) / 2;
-      ctx.drawImage(img, dx, dy, dw, dh);
+      const sw = width / scale;
+      const sh = height / scale;
+      const sx = Math.max(0, (img.naturalWidth - sw) / 2);
+      const sy = Math.max(0, (img.naturalHeight - sh) * focusY);
+      ctx.drawImage(img, sx, sy, sw, sh, x, y, width, height);
     }
 
     function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
@@ -916,103 +977,100 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
       const resultSrc = imgEl?.src || currentJob?.resultImage;
       if (!resultSrc) return null;
       const resultImage = await loadImage(resultSrc);
-      const shareUrl = await createPublicShareUrl().catch(
-        () => location.origin,
+      const logoImage = await loadImage("/images/logo-256.png").catch(
+        () => null,
       );
-      const displayShareUrl = formatShareDisplayUrl(shareUrl);
       const canvas = document.createElement("canvas");
       canvas.width = 1080;
       canvas.height = 1440;
       const ctx = canvas.getContext("2d");
       if (!ctx) return null;
 
-      const gradient = ctx.createLinearGradient(0, 0, 1080, 1440);
-      gradient.addColorStop(0, "#fff7f8");
-      gradient.addColorStop(0.52, "#f7fbfb");
-      gradient.addColorStop(1, "#ffffff");
-      ctx.fillStyle = gradient;
+      ctx.fillStyle = "#181114";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = "#3a2d2f";
-      ctx.font = "700 58px Inter, Arial, sans-serif";
-      ctx.fillText(copy.heading, 72, 116);
-      ctx.fillStyle = "#b85c70";
-      ctx.font = "600 38px Inter, Arial, sans-serif";
-      ctx.fillText(currentJob?.lookTitle || copy.defaultLook, 72, 174);
-      ctx.fillStyle = "#4f8f8a";
-      ctx.font = "600 28px Inter, Arial, sans-serif";
-      ctx.fillText("AI Beauty Stylist", 72, 222);
+      drawImageCover(ctx, resultImage, 0, 0, 1080, 1440, 0.34);
 
-      ctx.save();
-      roundedRect(ctx, 72, 270, 936, 760, 36);
-      ctx.clip();
-      drawImageContain(ctx, resultImage, 72, 270, 936, 760);
-      ctx.restore();
-      ctx.fillStyle = "rgba(255,255,255,0.9)";
-      roundedRect(ctx, 812, 946, 148, 52, 26);
+      const topScrim = ctx.createLinearGradient(0, 0, 0, 520);
+      topScrim.addColorStop(0, "rgba(17,10,13,0.42)");
+      topScrim.addColorStop(0.52, "rgba(17,10,13,0.02)");
+      topScrim.addColorStop(1, "rgba(17,10,13,0)");
+      ctx.fillStyle = topScrim;
+      ctx.fillRect(0, 0, 1080, 520);
+
+      const bottomScrim = ctx.createLinearGradient(0, 620, 0, 1440);
+      bottomScrim.addColorStop(0, "rgba(35,18,25,0)");
+      bottomScrim.addColorStop(0.45, "rgba(35,18,25,0.74)");
+      bottomScrim.addColorStop(1, "rgba(16,8,11,0.96)");
+      ctx.fillStyle = bottomScrim;
+      ctx.fillRect(0, 620, 1080, 820);
+
+      ctx.textBaseline = "alphabetic";
+      ctx.textAlign = "left";
+
+      const brandText = "AI Beauty Stylist";
+      ctx.font = "900 27px Inter, Arial, sans-serif";
+      const brandWidth = Math.min(410, ctx.measureText(brandText).width + 104);
+      ctx.fillStyle = "rgba(255,255,255,0.86)";
+      roundedRect(ctx, 58, 58, brandWidth, 74, 37);
       ctx.fill();
-      ctx.fillStyle = "#3a2d2f";
-      ctx.font = "700 25px Inter, Arial, sans-serif";
-      ctx.fillText(copy.after, 838, 981);
-
-      const benefits = [
-        [copy.benefitTryon, copy.benefitTryonDesc],
-        [copy.benefitScenario, copy.benefitScenarioDesc],
-        [copy.benefitFree, copy.benefitFreeDesc],
-      ];
-      let x = 72;
-      for (const [title, body] of benefits) {
-        ctx.fillStyle = "#ffffff";
-        roundedRect(ctx, x, 1074, 292, 142, 24);
-        ctx.fill();
-        ctx.fillStyle = "#3a2d2f";
-        ctx.font = "700 27px Inter, Arial, sans-serif";
-        ctx.fillText(title, x + 24, 1128);
-        ctx.fillStyle = "#6e6265";
-        ctx.font = "400 22px Inter, Arial, sans-serif";
-        drawWrappedText(ctx, body, x + 24, 1172, 236, 28, 2);
-        x += 322;
+      if (logoImage) {
+        ctx.save();
+        roundedRect(ctx, 76, 73, 44, 44, 22);
+        ctx.clip();
+        ctx.drawImage(logoImage, 76, 73, 44, 44);
+        ctx.restore();
       }
+      ctx.fillStyle = "#241920";
+      ctx.fillText(brandText, 136, 105);
 
-      ctx.fillStyle = "#3a2d2f";
-      ctx.font = "700 38px Inter, Arial, sans-serif";
-      const ctaTitleBottom = drawWrappedText(
-        ctx,
-        copy.ctaTitle,
-        72,
-        1288,
-        590,
-        44,
-        2,
-      );
-      ctx.fillStyle = "#b85c70";
-      ctx.font = "600 24px Inter, Arial, sans-serif";
-      const ctaHighlightBottom = drawWrappedText(
-        ctx,
-        copy.ctaHighlight,
-        72,
-        ctaTitleBottom + 8,
-        600,
-        31,
-        2,
-      );
-      ctx.fillStyle = "#6e6265";
-      ctx.font = "400 22px Inter, Arial, sans-serif";
-      drawWrappedText(
-        ctx,
-        copy.ctaBody,
-        72,
-        Math.min(ctaHighlightBottom + 8, 1390),
-        600,
-        28,
-        1,
-      );
-      ctx.fillStyle = "#3a2d2f";
-      ctx.font = "700 21px Inter, Arial, sans-serif";
-      ctx.fillText("Try it:", 720, 1310);
-      ctx.fillStyle = "#b85c70";
-      ctx.font = "700 21px Inter, Arial, sans-serif";
-      drawWrappedText(ctx, displayShareUrl, 720, 1344, 300, 28, 3);
+      ctx.font = "900 26px Inter, Arial, sans-serif";
+      const afterWidth = Math.max(128, ctx.measureText(copy.after).width + 58);
+      ctx.fillStyle = "rgba(191,45,98,0.94)";
+      roundedRect(ctx, 1022 - afterWidth, 58, afterWidth, 70, 35);
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.fillText(copy.after, 1022 - afterWidth / 2, 103);
+      ctx.textAlign = "left";
+
+      ctx.strokeStyle = "rgba(255,255,255,0.72)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(64, 948);
+      ctx.lineTo(122, 948);
+      ctx.stroke();
+      ctx.fillStyle = "rgba(255,255,255,0.92)";
+      ctx.font = "900 29px Inter, Arial, sans-serif";
+      ctx.fillText(posterCopy.eyebrow, 136, 958);
+
+      const lookTitle = currentJob?.lookTitle || copy.defaultLook;
+      const posterTitle = `${posterCopy.prefix} ${lookTitle}`.trim();
+      ctx.fillStyle = "#ffffff";
+      ctx.font =
+        posterTitle.length > 28
+          ? "900 84px Inter, Arial, sans-serif"
+          : "900 104px Inter, Arial, sans-serif";
+      drawWrappedText(ctx, posterTitle, 64, 1066, 850, 100, 3);
+
+      ctx.fillStyle = "rgba(255,255,255,0.9)";
+      ctx.font = "900 32px Inter, Arial, sans-serif";
+      drawWrappedText(ctx, posterCopy.subtext, 64, 1248, 760, 40, 2);
+
+      ctx.fillStyle = "#ffffff";
+      roundedRect(ctx, 64, 1290, 632, 92, 46);
+      ctx.fill();
+      ctx.fillStyle = "#b92f62";
+      ctx.font = "900 36px Inter, Arial, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(copy.navTryCta, 380, 1349);
+
+      ctx.textAlign = "right";
+      ctx.fillStyle = "rgba(255,255,255,0.88)";
+      ctx.font = "900 25px Inter, Arial, sans-serif";
+      ctx.fillText(posterCopy.rewardTop, 1016, 1330);
+      ctx.fillText(posterCopy.rewardBottom, 1016, 1364);
+      ctx.textAlign = "left";
 
       return new Promise((resolve) => {
         canvas.toBlob((blob) => resolve(blob), "image/png", 0.95);
@@ -1058,6 +1116,11 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
         try {
           const shareUrl = await createPublicShareUrl();
           if (navigator.share) {
+            const sharePayload = {
+              title: copy.shareTitle,
+              text: copy.shareText,
+              url: shareUrl,
+            };
             const blob = await createShareCardBlob();
             const file =
               blob &&
@@ -1065,17 +1128,13 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
                 type: "image/png",
               });
             if (file && navigator.canShare?.({ files: [file] })) {
-              await navigator.share({
-                title: copy.shareTitle,
-                text: copy.shareText,
-                files: [file],
-              });
+              try {
+                await navigator.share({ ...sharePayload, files: [file] });
+              } catch {
+                await navigator.share(sharePayload);
+              }
             } else {
-              await navigator.share({
-                title: copy.shareTitle,
-                text: copy.shareText,
-                url: shareUrl,
-              });
+              await navigator.share(sharePayload);
             }
             await createShareClaim("web_share");
           } else if (navigator.clipboard?.writeText) {
@@ -1216,19 +1275,189 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
   :global(.share-page) {
     min-height: calc(100dvh - 64px);
   }
-  .share-cta-actions {
+  .share-poster {
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 560px);
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border: 0;
+    border-radius: 28px;
+    background: #181114;
+    color: #fff;
+    box-shadow:
+      0 28px 90px rgba(38, 16, 24, 0.2),
+      0 2px 0 rgba(255, 255, 255, 0.65) inset;
+  }
+  .share-poster-media,
+  .share-poster-media img,
+  .share-poster-scrim {
+    position: absolute;
+    inset: 0;
+  }
+  .share-poster-media {
+    z-index: -2;
+    display: grid;
+    place-items: center;
+    background: #181114;
+  }
+  .share-poster-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 22%;
+    filter: saturate(1.04);
+  }
+  .share-poster-scrim {
+    z-index: -1;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(17, 10, 13, 0.42) 0%,
+        rgba(17, 10, 13, 0.02) 27%,
+        rgba(17, 10, 13, 0) 45%
+      ),
+      linear-gradient(
+        0deg,
+        rgba(16, 8, 11, 0.96) 0%,
+        rgba(35, 18, 25, 0.74) 25%,
+        rgba(35, 18, 25, 0.24) 48%,
+        rgba(35, 18, 25, 0) 68%
+      );
+  }
+  .share-poster-top {
+    position: absolute;
+    top: clamp(20px, 5vw, 32px);
+    right: clamp(20px, 5vw, 32px);
+    left: clamp(20px, 5vw, 32px);
     display: flex;
     align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
   }
-  .share-cta-button {
-    border-color: rgba(255, 255, 255, 0.72);
+  .share-poster-brand {
+    display: inline-flex;
+    min-width: 0;
+    max-width: calc(100% - 96px);
+    align-items: center;
+    gap: 10px;
+    padding: 8px 15px 8px 9px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.84);
+    color: #241920;
+    font-size: clamp(13px, 2.6vw, 17px);
+    font-weight: 900;
+    text-decoration: none;
+    box-shadow:
+      0 18px 42px rgba(30, 12, 18, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  }
+  .share-poster-brand img {
+    width: clamp(28px, 7vw, 38px);
+    height: clamp(28px, 7vw, 38px);
+    flex: 0 0 auto;
+    border-radius: 999px;
+  }
+  .share-poster-brand span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .share-poster-badge {
+    display: inline-flex;
+    min-height: clamp(42px, 8vw, 52px);
+    align-items: center;
+    padding: 0 clamp(18px, 5vw, 24px);
+    border-radius: 999px;
+    background: rgba(191, 45, 98, 0.94);
+    color: #fff;
+    font-size: clamp(15px, 3.5vw, 20px);
+    font-weight: 900;
+    box-shadow: 0 18px 44px rgba(73, 12, 35, 0.32);
+    white-space: nowrap;
+  }
+  .share-poster-copy {
+    position: absolute;
+    right: clamp(24px, 6vw, 40px);
+    bottom: clamp(24px, 6vw, 40px);
+    left: clamp(24px, 6vw, 40px);
+    display: grid;
+    gap: clamp(12px, 2.8vw, 18px);
+  }
+  .share-poster-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: clamp(12px, 3.3vw, 20px);
+    font-weight: 900;
+  }
+  .share-poster-eyebrow span {
+    width: clamp(30px, 9vw, 48px);
+    height: 2px;
+    background: rgba(255, 255, 255, 0.72);
+  }
+  .share-poster-copy h1 {
+    display: grid;
+    gap: 0;
+    max-width: 92%;
+    margin: 0;
+    color: #fff;
+    font-size: clamp(34px, 10.8vw, 76px);
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 0.94;
+    text-wrap: balance;
+    text-shadow: 0 18px 60px rgba(0, 0, 0, 0.38);
+  }
+  .share-poster-copy h1 span,
+  .share-poster-copy h1 strong {
+    min-width: 0;
+  }
+  .share-poster-copy h1 strong {
+    font-weight: inherit;
+  }
+  .share-poster-copy > p {
+    max-width: 86%;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(14px, 4vw, 23px);
+    font-weight: 800;
+    line-height: 1.25;
+  }
+  .share-poster-action-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+  }
+  .share-poster-cta {
+    min-height: clamp(52px, 10vw, 68px);
+    justify-content: center;
+    border: 0;
+    border-radius: 999px;
     background: #fff;
     color: var(--rose-dark);
+    font-size: clamp(17px, 4.6vw, 25px);
+    font-weight: 900;
     box-shadow:
-      0 12px 26px rgba(56, 10, 28, 0.16),
-      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      0 20px 60px rgba(0, 0, 0, 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+  }
+  .share-poster-reward {
+    display: grid;
+    min-width: clamp(110px, 28vw, 156px);
+    margin: 0;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: clamp(12px, 3.2vw, 17px);
+    font-weight: 900;
+    line-height: 1.15;
+    text-align: right;
+  }
+  .share-poster-reward strong {
+    font-weight: inherit;
   }
   .share-actions {
     display: flex;
@@ -1321,13 +1550,20 @@ const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
       min-height: calc(100dvh - 56px);
       padding-top: 0;
     }
-    .share-cta-actions {
-      display: grid;
-      gap: 12px;
+    .share-poster {
+      width: 100%;
+      border-radius: 22px;
     }
-    .share-cta-button {
-      min-height: 44px;
+    .share-poster-action-row {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .share-poster-reward {
+      display: flex;
+      min-width: 0;
       justify-content: center;
+      gap: 6px;
+      text-align: center;
     }
     .share-empty {
       margin: 16px;

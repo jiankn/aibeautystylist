@@ -290,6 +290,90 @@ const copyByLocale = {
 } satisfies Record<string, PublicShareCopy>;
 const copy =
   copyByLocale[locale as keyof typeof copyByLocale] ?? copyByLocale.en;
+const posterCopyByLocale = {
+  en: {
+    eyebrow: "AI makeup try-on",
+    prefix: "I tried",
+    subtext: "A real makeup preview made for my face.",
+    rewardTop: "Share daily",
+    rewardBottom: "get +1 try-on",
+  },
+  "zh-CN": {
+    eyebrow: "AI 在线试妆",
+    prefix: "我试了",
+    subtext: "用我的脸生成真实妆容预览。",
+    rewardTop: "每日分享",
+    rewardBottom: "+1 次试妆",
+  },
+  "zh-TW": {
+    eyebrow: "AI 線上試妝",
+    prefix: "我試了",
+    subtext: "用我的臉生成真實妝容預覽。",
+    rewardTop: "每日分享",
+    rewardBottom: "+1 次試妝",
+  },
+  "de-DE": {
+    eyebrow: "AI Make-up-Try-on",
+    prefix: "Ich teste",
+    subtext: "Eine echte Make-up-Vorschau für mein Gesicht.",
+    rewardTop: "Täglich teilen",
+    rewardBottom: "+1 Try-on erhalten",
+  },
+  "fr-FR": {
+    eyebrow: "Essai maquillage IA",
+    prefix: "J'essaie",
+    subtext: "Un aperçu maquillage créé pour mon visage.",
+    rewardTop: "Partager chaque jour",
+    rewardBottom: "+1 essai offert",
+  },
+  "ja-JP": {
+    eyebrow: "AIメイク試着",
+    prefix: "試したルック",
+    subtext: "自分の顔に合わせたリアルなメイクプレビュー。",
+    rewardTop: "毎日シェア",
+    rewardBottom: "+1回試着",
+  },
+  "ko-KR": {
+    eyebrow: "AI 메이크업 체험",
+    prefix: "체험한 룩",
+    subtext: "내 얼굴에 맞춘 실제 메이크업 미리보기.",
+    rewardTop: "매일 공유",
+    rewardBottom: "+1회 체험",
+  },
+  "es-ES": {
+    eyebrow: "Prueba de maquillaje IA",
+    prefix: "Probé",
+    subtext: "Una vista previa de maquillaje hecha para mi rostro.",
+    rewardTop: "Comparte a diario",
+    rewardBottom: "+1 prueba gratis",
+  },
+  "es-419": {
+    eyebrow: "Prueba de maquillaje IA",
+    prefix: "Probé",
+    subtext: "Una vista previa de maquillaje hecha para mi rostro.",
+    rewardTop: "Comparte a diario",
+    rewardBottom: "+1 prueba gratis",
+  },
+  "pt-BR": {
+    eyebrow: "Teste de maquiagem IA",
+    prefix: "Testei",
+    subtext: "Uma prévia de maquiagem feita para o meu rosto.",
+    rewardTop: "Compartilhe todo dia",
+    rewardBottom: "+1 teste grátis",
+  },
+} satisfies Record<
+  string,
+  {
+    eyebrow: string;
+    prefix: string;
+    subtext: string;
+    rewardTop: string;
+    rewardBottom: string;
+  }
+>;
+const posterCopy =
+  posterCopyByLocale[locale as keyof typeof posterCopyByLocale] ??
+  posterCopyByLocale.en;
 const hrefs = {
   home: localizeAppHref("/"),
   tryonFree: localizeAppHref("/tryon-free"),
@@ -308,56 +392,53 @@ const hrefs = {
     data-source-code={sourceCode}
   >
     <article
-      class="public-share-card"
+      class="public-share-card public-share-poster"
       aria-label={copy.cardAria}
       aria-live="polite"
     >
-      <header class="public-share-top">
-        <h1>{copy.heading}</h1>
-        <div class="public-share-look" data-share-title>{copy.loading}</div>
-        <div class="public-share-brand">{copy.brand}</div>
-      </header>
       <div class="public-share-media" data-share-media>
         <div class="public-share-loading" role="status">{copy.loading}</div>
       </div>
-      <section class="public-share-benefits">
-        <div>
-          <b>{copy.benefitTryon}</b>
-          <span>{copy.benefitTryonDesc}</span>
-        </div>
-        <div>
-          <b>{copy.benefitScenario}</b>
-          <span>{copy.benefitScenarioDesc}</span>
-        </div>
-        <div>
-          <b>{copy.benefitBonus}</b>
-          <span>{copy.benefitBonusDesc}</span>
-        </div>
-      </section>
+      <div class="public-share-scrim" aria-hidden="true"></div>
+      <header class="public-share-top">
+        <a class="public-share-brand" href={hrefs.home}>
+          <img
+            class="brand-logo-img"
+            src="/images/logo-ui.webp"
+            alt=""
+            aria-hidden="true"
+          />
+          <span>{copy.brand}</span>
+        </a>
+        <span class="public-share-label">{copy.after}</span>
+      </header>
       <footer class="public-share-copy">
+        <div class="public-share-eyebrow">
+          <span aria-hidden="true"></span>
+          {posterCopy.eyebrow}
+        </div>
         <h2>
-          <span>{copy.ctaTitle}</span>
-          <strong>{copy.ctaBody}</strong>
+          <span>{posterCopy.prefix}</span>
+          <strong data-share-title>{copy.loading}</strong>
         </h2>
-        <div class="public-share-actions">
+        <p>{posterCopy.subtext}</p>
+        <div class="public-share-poster-actions">
           <a class="btn btn-primary" href={hrefs.tryonFree} data-share-try>
             {copy.tryIt}
           </a>
-          <button class="btn" type="button" data-share-copy>
-            {copy.copy}
-          </button>
-          <a class="btn btn-outline" href={hrefs.home}>{copy.home}</a>
+          <p class="public-share-reward">
+            <span>{posterCopy.rewardTop}</span>
+            <strong>{posterCopy.rewardBottom}</strong>
+          </p>
         </div>
-        <a
-          class="public-share-brand-link"
-          href={hrefs.home}
-          data-public-share-link
-        >
-          <span>{copy.brand}</span>
-          <small data-public-share-url>aibeautystylist.com</small>
-        </a>
       </footer>
     </article>
+    <div class="public-share-actions" data-public-share-actions>
+      <button class="btn" type="button" data-share-copy>
+        {copy.copy}
+      </button>
+      <a class="btn btn-outline" href={hrefs.home}>{copy.home}</a>
+    </div>
     <section class="public-share-empty panel" data-share-empty hidden>
       <h1>{copy.missingTitle}</h1>
       <p>{copy.missingBody}</p>
@@ -375,25 +456,12 @@ const hrefs = {
       const title = root.querySelector("[data-share-title]");
       const tryLink = root.querySelector("[data-share-try]");
       const copyButton = root.querySelector("[data-share-copy]");
+      const actionsPanel = root.querySelector("[data-public-share-actions]");
       const empty = root.querySelector("[data-share-empty]");
-      const shareUrlText = root.querySelector("[data-public-share-url]");
-      const shareUrlLink = root.querySelector("[data-public-share-link]");
-
-      function formatShareDisplayUrl(value) {
-        try {
-          const url = new URL(value, location.origin);
-          return url.hostname.replace(/^www\./, "") + url.pathname;
-        } catch {
-          return "aibeautystylist.com";
-        }
-      }
-
-      if (shareUrlText)
-        shareUrlText.textContent = formatShareDisplayUrl(location.href);
-      if (shareUrlLink) shareUrlLink.href = location.href;
 
       function showEmpty() {
         if (card) card.hidden = true;
+        if (actionsPanel) actionsPanel.hidden = true;
         if (empty) empty.hidden = false;
       }
 
@@ -422,9 +490,6 @@ const hrefs = {
           image.alt = job.lookTitle || copy.defaultLook;
           image.loading = "eager";
           image.decoding = "async";
-          const label = document.createElement("span");
-          label.className = "public-share-label";
-          label.textContent = copy.after;
           image.addEventListener(
             "load",
             () => media.classList.remove("is-loading"),
@@ -435,7 +500,7 @@ const hrefs = {
             () => media.classList.remove("is-loading"),
             { once: true },
           );
-          media.replaceChildren(image, label);
+          media.replaceChildren(image);
           if (image.complete)
             requestAnimationFrame(() => media.classList.remove("is-loading"));
         }
@@ -739,6 +804,265 @@ const hrefs = {
 
       .public-share-copy h2 strong {
         font-size: 16px;
+      }
+    }
+
+    .public-share-main {
+      align-content: start;
+      gap: 18px;
+      background: linear-gradient(180deg, var(--page-surface-alt), #f5f7f8);
+    }
+
+    .public-share-poster {
+      position: relative;
+      isolation: isolate;
+      width: min(100%, 560px);
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      border: 0;
+      border-radius: 28px;
+      background: #181114;
+      color: #fff;
+      box-shadow:
+        0 28px 90px rgba(38, 16, 24, 0.2),
+        0 2px 0 rgba(255, 255, 255, 0.65) inset;
+    }
+
+    .public-share-poster .public-share-media,
+    .public-share-poster .public-share-media img,
+    .public-share-scrim {
+      position: absolute;
+      inset: 0;
+    }
+
+    .public-share-poster .public-share-media {
+      z-index: -2;
+      display: grid;
+      margin: 0;
+      border-radius: 0;
+      background: #181114;
+      box-shadow: none;
+      place-items: center;
+    }
+
+    .public-share-poster .public-share-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 22%;
+      filter: saturate(1.04);
+    }
+
+    .public-share-scrim {
+      z-index: -1;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(17, 10, 13, 0.42) 0%,
+          rgba(17, 10, 13, 0.02) 27%,
+          rgba(17, 10, 13, 0) 45%
+        ),
+        linear-gradient(
+          0deg,
+          rgba(16, 8, 11, 0.96) 0%,
+          rgba(35, 18, 25, 0.74) 25%,
+          rgba(35, 18, 25, 0.24) 48%,
+          rgba(35, 18, 25, 0) 68%
+        );
+    }
+
+    .public-share-poster .public-share-top {
+      position: absolute;
+      top: clamp(20px, 5vw, 32px);
+      right: clamp(20px, 5vw, 32px);
+      left: clamp(20px, 5vw, 32px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0;
+    }
+
+    .public-share-poster .public-share-brand {
+      display: inline-flex;
+      min-width: 0;
+      max-width: calc(100% - 96px);
+      align-items: center;
+      gap: 10px;
+      padding: 8px 15px 8px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.84);
+      color: #241920;
+      font-size: clamp(13px, 2.6vw, 17px);
+      font-weight: 900;
+      text-decoration: none;
+      box-shadow:
+        0 18px 42px rgba(30, 12, 18, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.86);
+    }
+
+    .public-share-poster .public-share-brand img {
+      width: clamp(28px, 7vw, 38px);
+      height: clamp(28px, 7vw, 38px);
+      flex: 0 0 auto;
+      border-radius: 999px;
+    }
+
+    .public-share-poster .public-share-brand span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .public-share-poster .public-share-label {
+      position: static;
+      display: inline-flex;
+      min-height: clamp(42px, 8vw, 52px);
+      align-items: center;
+      padding: 0 clamp(18px, 5vw, 24px);
+      border-radius: 999px;
+      background: rgba(191, 45, 98, 0.94);
+      color: #fff;
+      font-size: clamp(15px, 3.5vw, 20px);
+      font-weight: 900;
+      box-shadow: 0 18px 44px rgba(73, 12, 35, 0.32);
+      white-space: nowrap;
+    }
+
+    .public-share-poster .public-share-copy {
+      position: absolute;
+      right: clamp(24px, 6vw, 40px);
+      bottom: clamp(24px, 6vw, 40px);
+      left: clamp(24px, 6vw, 40px);
+      display: grid;
+      gap: clamp(12px, 2.8vw, 18px);
+      padding: 0;
+    }
+
+    .public-share-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: clamp(12px, 3.3vw, 20px);
+      font-weight: 900;
+    }
+
+    .public-share-eyebrow span {
+      width: clamp(30px, 9vw, 48px);
+      height: 2px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .public-share-poster .public-share-copy h2 {
+      display: grid;
+      max-width: 92%;
+      margin: 0;
+      color: #fff;
+      font-size: clamp(34px, 10.8vw, 76px);
+      font-weight: 900;
+      letter-spacing: 0;
+      line-height: 0.94;
+      text-wrap: balance;
+      text-shadow: 0 18px 60px rgba(0, 0, 0, 0.38);
+    }
+
+    .public-share-poster .public-share-copy h2 span,
+    .public-share-poster .public-share-copy h2 strong {
+      min-width: 0;
+      color: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+    }
+
+    .public-share-poster .public-share-copy > p {
+      max-width: 86%;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: clamp(14px, 4vw, 23px);
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .public-share-poster-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .public-share-poster-actions .btn {
+      min-height: clamp(52px, 10vw, 68px);
+      justify-content: center;
+      border: 0;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--rose-dark);
+      font-size: clamp(17px, 4.6vw, 25px);
+      font-weight: 900;
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      white-space: nowrap;
+    }
+
+    .public-share-reward {
+      display: grid;
+      min-width: clamp(110px, 28vw, 156px);
+      margin: 0;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: clamp(12px, 3.2vw, 17px);
+      font-weight: 900;
+      line-height: 1.15;
+      text-align: right;
+    }
+
+    .public-share-reward strong {
+      font-weight: inherit;
+    }
+
+    .public-share-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 auto;
+      width: min(100%, 560px);
+    }
+
+    .public-share-actions .btn {
+      min-height: 44px;
+      justify-content: center;
+    }
+
+    @media (max-width: 760px) {
+      .public-share-main {
+        padding: 12px;
+      }
+
+      .public-share-poster {
+        width: 100%;
+        border-radius: 22px;
+      }
+
+      .public-share-poster-actions {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .public-share-reward {
+        display: flex;
+        min-width: 0;
+        justify-content: center;
+        gap: 6px;
+        text-align: center;
+      }
+
+      .public-share-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
   </style>
