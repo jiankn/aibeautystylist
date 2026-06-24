@@ -300,10 +300,24 @@ const hrefs = {
         if (!viewer) return;
         viewer.classList.add("is-loading");
         const image = document.createElement("img");
-        image.src = job.resultDisplayImage || job.resultImage;
         image.alt = job.lookTitle || copy.defaultLook;
         image.loading = "eager";
         image.decoding = "async";
+        if (
+          job.resultDisplayImage &&
+          job.resultDisplayImage !== job.resultImage
+        ) {
+          image.addEventListener(
+            "error",
+            (event) => {
+              if (image.dataset.fallbackApplied === "true") return;
+              image.dataset.fallbackApplied = "true";
+              event.stopImmediatePropagation();
+              image.src = job.resultImage;
+            },
+            { once: true },
+          );
+        }
         image.addEventListener(
           "load",
           () => viewer.classList.remove("is-loading"),
@@ -314,6 +328,7 @@ const hrefs = {
           () => viewer.classList.remove("is-loading"),
           { once: true },
         );
+        image.src = job.resultDisplayImage || job.resultImage;
         viewer.replaceChildren(image);
         if (image.complete)
           requestAnimationFrame(() => viewer.classList.remove("is-loading"));

@@ -482,10 +482,24 @@ const hrefs = {
         if (media) {
           media.classList.add("is-loading");
           const image = document.createElement("img");
-          image.src = job.resultDisplayImage || job.resultImage;
           image.alt = job.lookTitle || copy.defaultLook;
           image.loading = "eager";
           image.decoding = "async";
+          if (
+            job.resultDisplayImage &&
+            job.resultDisplayImage !== job.resultImage
+          ) {
+            image.addEventListener(
+              "error",
+              (event) => {
+                if (image.dataset.fallbackApplied === "true") return;
+                image.dataset.fallbackApplied = "true";
+                event.stopImmediatePropagation();
+                image.src = job.resultImage;
+              },
+              { once: true },
+            );
+          }
           image.addEventListener(
             "load",
             () => media.classList.remove("is-loading"),
@@ -496,6 +510,7 @@ const hrefs = {
             () => media.classList.remove("is-loading"),
             { once: true },
           );
+          image.src = job.resultDisplayImage || job.resultImage;
           media.replaceChildren(image);
           if (image.complete)
             requestAnimationFrame(() => media.classList.remove("is-loading"));

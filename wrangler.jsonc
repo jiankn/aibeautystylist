@@ -11,6 +11,9 @@
     "binding": "ASSETS",
     "directory": "dist/client",
   },
+  "images": {
+    "binding": "IMAGES",
+  },
   "observability": {
     "enabled": true,
   },
@@ -49,6 +52,7 @@
     "UPLOAD_PROVIDER": "r2",
     "TRYON_PROVIDER": "gemini",
     "IMAGE_PROVIDER": "gemini",
+    "ENABLE_CF_IMAGE_VARIANTS": "true",
     "GEMINI_MODEL": "gemini-2.5-flash",
     "GEMINI_MODEL_FREE": "gemini-2.5-flash-lite",
     "GEMINI_IMAGE_MODEL": "gemini-2.5-flash-image",

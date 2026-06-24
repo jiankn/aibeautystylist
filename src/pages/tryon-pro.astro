@@ -423,7 +423,11 @@ const proClientMessages = {
             updateProgress(proClientMessages.complete, 100);
             resultStatus.textContent = proClientMessages.generated;
             if (job.resultImage)
-              showResult(job.resultDisplayImage || job.resultImage, jobId);
+              showResult(
+                job.resultDisplayImage || job.resultImage,
+                jobId,
+                job.resultImage,
+              );
             loadHistory();
             setTaskNavSuppressed(false);
           } else if (job.status === "failed" || job.status === "timed_out") {
@@ -477,13 +481,24 @@ const proClientMessages = {
       return shareUrl;
     }
 
-    function showResult(imageUrl, jobId) {
+    function showResult(imageUrl, jobId, fallbackUrl) {
       currentJobId = jobId;
       if (uploadArea) uploadArea.hidden = true;
       if (compareDiv) {
         compareDiv.hidden = false;
       }
-      if (resultImg) resultImg.src = imageUrl;
+      if (resultImg) {
+        resultImg.dataset.fallbackApplied = "false";
+        resultImg.onerror =
+          fallbackUrl && fallbackUrl !== imageUrl
+            ? () => {
+                if (resultImg.dataset.fallbackApplied === "true") return;
+                resultImg.dataset.fallbackApplied = "true";
+                resultImg.src = fallbackUrl;
+              }
+            : null;
+        resultImg.src = imageUrl;
+      }
       if (actionsDiv) actionsDiv.hidden = false;
       if (downloadBtn)
         downloadBtn.href = "/api/tryon-jobs/" + jobId + "/result";
@@ -612,7 +627,11 @@ const proClientMessages = {
                       btn.classList.remove("active");
                     }
                   });
-                showResult(job.resultDisplayImage || job.resultImage, job.id);
+                showResult(
+                  job.resultDisplayImage || job.resultImage,
+                  job.id,
+                  job.resultImage,
+                );
               }
             });
           });

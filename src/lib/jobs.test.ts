@@ -43,6 +43,20 @@ describe("try-on job lifecycle", () => {
     expect(toJobResponse(job)).not.toHaveProperty("idempotencyKey");
   });
 
+  it("adds one display image variant without adding thumbnail variants", () => {
+    const response = toJobResponse({
+      ...runningJob(),
+      status: "succeeded",
+      resultImage: "/api/tryon-jobs/job_1/result",
+      resultR2Key: "results/visitor_1/job_1/result.webp",
+    });
+
+    expect(response.resultDisplayImage).toBe(
+      "/api/tryon-jobs/job_1/result?variant=display",
+    );
+    expect(response).not.toHaveProperty("resultThumbImage");
+  });
+
   it("localizes stored look titles for the current audience locale", () => {
     const job = {
       ...runningJob(),

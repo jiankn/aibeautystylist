@@ -30,6 +30,7 @@ export interface R2BucketLike {
 export interface RuntimeBindings {
   DB?: D1DatabaseLike;
   USER_UPLOADS?: R2BucketLike;
+  IMAGES?: ImagesBinding;
   TRYON_JOBS_QUEUE?: Queue<TryOnJobQueueMessage>;
   AI_PROVIDER?: string;
   UPLOAD_PROVIDER?: string;
@@ -48,6 +49,7 @@ export interface RuntimeBindings {
   EVOLINK_IMAGE_TIMEOUT_MS?: string;
   // 妆效图生成 Provider：默认 gemini（gemini-2.5-flash-image），可设为 evolink 使用 Wan Image。
   IMAGE_PROVIDER?: string;
+  ENABLE_CF_IMAGE_VARIANTS?: string;
   CLEANUP_SECRET?: string;
   // 本地受控验收用：worker 出站 fetch 经此中继走系统代理。生产留空即直连。
   OUTBOUND_PROXY_URL?: string;
@@ -85,6 +87,9 @@ export function getRuntimeBindings(): RuntimeBindings {
     ...runtime,
     AI_PROVIDER: runtime.AI_PROVIDER ?? import.meta.env.AI_PROVIDER ?? "mock",
     UPLOAD_PROVIDER: uploadProvider,
+    ENABLE_CF_IMAGE_VARIANTS:
+      runtime.ENABLE_CF_IMAGE_VARIANTS ??
+      import.meta.env.ENABLE_CF_IMAGE_VARIANTS,
     // Without persisted uploads, real diagnosis cannot run safely; force mock
     // task mode to keep local/mock environments coherent and avoid paid calls.
     TRYON_PROVIDER: tryOnProvider,

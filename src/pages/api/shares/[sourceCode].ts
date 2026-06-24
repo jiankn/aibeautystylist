@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 
 import { apiError, apiSuccess } from "../../../lib/http";
+import { resultDisplayImageUrl } from "../../../lib/imageVariants";
 import { getStoredJobById, toLocalizedJobResponse } from "../../../lib/jobs";
 import { getRuntimeBindings } from "../../../lib/runtime";
 import { getPublicShareCardByCode } from "../../../lib/shareCards";
@@ -25,6 +26,7 @@ export const GET: APIRoute = async ({ locals, params }) => {
     ...toLocalizedJobResponse(job, locals.audienceContext),
     shareCode: shareCard.sourceCode,
     resultImage,
+    resultDisplayImage: resultDisplayImageUrl(resultImage),
   });
 };
 

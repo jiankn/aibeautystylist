@@ -1,6 +1,11 @@
 import type { APIRoute } from "astro";
 
 import { apiError } from "../../../../lib/http";
+import {
+  createResultImageResponse,
+  isImageVariantsEnabled,
+  normalizeResultImageVariant,
+} from "../../../../lib/imageVariants";
 import { getStoredJobById } from "../../../../lib/jobs";
 import { getRuntimeBindings } from "../../../../lib/runtime";
 import { getPublicShareCardByCode } from "../../../../lib/shareCards";
@@ -9,7 +14,8 @@ const PUBLIC_RESULT_CACHE =
   "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800";
 
 export const GET: APIRoute = async ({ params, request }) => {
-  const { DB, USER_UPLOADS } = getRuntimeBindings();
+  const bindings = getRuntimeBindings();
+  const { DB, USER_UPLOADS } = bindings;
   if (!DB) return resultNotFound();
 
   const sourceCode = params.sourceCode || "";
@@ -26,12 +32,19 @@ export const GET: APIRoute = async ({ params, request }) => {
     const object = await USER_UPLOADS.get(job.resultR2Key).catch(() => null);
     if (!object) return resultNotFound();
 
-    return new Response(object.body as BodyInit, {
-      headers: {
-        "cache-control": PUBLIC_RESULT_CACHE,
-        "content-type": object.httpMetadata?.contentType ?? "image/png",
-        "x-content-type-options": "nosniff",
-      },
+    return createResultImageResponse({
+      object,
+      images: bindings.IMAGES,
+      variant: normalizeResultImageVariant(
+        new URL(request.url).searchParams.get("variant"),
+      ),
+      variantsEnabled: isImageVariantsEnabled(
+        bindings.ENABLE_CF_IMAGE_VARIANTS,
+      ),
+      fallbackContentType: "image/png",
+      originalCacheControl: PUBLIC_RESULT_CACHE,
+      variantCacheControl: PUBLIC_RESULT_CACHE,
+      context: `share:${shareCard.sourceCode}`,
     });
   }
 

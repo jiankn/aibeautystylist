@@ -2,6 +2,7 @@ import type { LookCatalogItem } from "../data/lookCatalog";
 import type { ResolvedLook } from "../data/makeup/audienceTypes";
 import type { AudienceContext } from "../data/makeup/audienceTypes";
 import { resolveBySnapshot } from "../data/makeup/resolveCatalog";
+import { resultDisplayImageUrl } from "./imageVariants";
 import type { D1DatabaseLike, R2BucketLike } from "./runtime";
 import { localizedTryOnDisclaimer } from "./tryonDisclaimers";
 
@@ -41,6 +42,7 @@ export interface TryOnJobResult {
   lookSlug: string;
   lookTitle: string;
   resultImage?: string;
+  resultDisplayImage?: string;
   resultKind?: "reference-fallback" | "ai-generated";
   disclaimer?: string;
   errorCode?: string;
@@ -145,7 +147,12 @@ export function toJobResponse(job: StoredTryOnJob): TryOnJobResult {
     deletedAt: _deletedAt,
     ...response
   } = job;
-  return response;
+  return {
+    ...response,
+    resultDisplayImage:
+      response.resultDisplayImage ??
+      resultDisplayImageUrl(response.resultImage),
+  };
 }
 
 export function toLocalizedJobResponse(

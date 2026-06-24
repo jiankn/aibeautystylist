@@ -1482,6 +1482,23 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     if (image.complete) window.requestAnimationFrame(reveal);
   };
 
+  const installImageFallback = (image, fallbackSrc, details = {}) => {
+    if (!image || !fallbackSrc || image.src === new URL(fallbackSrc, location.origin).href) {
+      return;
+    }
+    image.addEventListener(
+      "error",
+      (event) => {
+        if (image.dataset.fallbackApplied === "true") return;
+        image.dataset.fallbackApplied = "true";
+        event.stopImmediatePropagation();
+        trackTryonPerf("tryon_result_image_fallback", details);
+        image.src = fallbackSrc;
+      },
+      { once: true },
+    );
+  };
+
   const taskRoutes = () => window.__absBackgroundTasks?.routes || {};
   const resultHrefForJob = (jobId) => {
     const base = (taskRoutes().resultBase || "/result").replace(/\/+$/, "");
@@ -1628,8 +1645,12 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       image.loading = "eager";
       image.decoding = "async";
       image.fetchPriority = "high";
-      image.src = resultSrc;
       image.alt = msg("referenceAlt", { look: job.lookTitle });
+      installImageFallback(image, job.resultImage, {
+        jobId: job.id,
+        source: "tryon-result",
+      });
+      image.src = resultSrc;
       image.addEventListener(
         "load",
         () =>
