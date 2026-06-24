@@ -1373,21 +1373,35 @@ const copy =
 
     .history-body .history-card-icon {
       display: grid;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       place-items: center;
-      border: 1px solid color-mix(in srgb, var(--bg-elevated) 72%, transparent);
-      border-radius: 50%;
-      background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
-      color: var(--navy);
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #fff;
       cursor: pointer;
-      backdrop-filter: blur(10px);
+      line-height: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      filter: drop-shadow(0 2px 6px rgba(8, 24, 47, 0.42));
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .history-body .history-card-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke-width: 2.25;
     }
 
     .history-body .history-card-icon[aria-pressed="true"] {
-      border-color: color-mix(in srgb, var(--rose) 58%, transparent);
-      background: var(--rose);
-      color: #fff;
+      color: var(--rose);
+    }
+
+    .history-body .history-card-icon[aria-pressed="true"] svg path {
+      fill: currentColor;
+      stroke: #fff;
     }
 
     .history-body .history-card-icon:disabled {
@@ -1840,15 +1854,20 @@ const copy =
       }
 
       .history-body .history-card-icon {
-        width: 32px;
-        height: 32px;
+        width: 40px;
+        height: 40px;
       }
 
-      .history-body .history-card-icon svg,
       .history-body .history-card-result svg,
       .history-body .history-card-share svg {
         width: 16px;
         height: 16px;
+      }
+
+      .history-body .history-card-icon svg {
+        width: 22px;
+        height: 22px;
+        stroke-width: 2.1;
       }
 
       .history-body .history-card-body {
