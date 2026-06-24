@@ -437,8 +437,11 @@ const workspaceStatusHrefs = {
             <button class="btn" id="free-copy-link" disabled
               >⌘&nbsp; {t("tryon", "copyLink")}</button
             >
-            <button class="btn btn-outline-rose" id="free-share-reward" disabled
-              >{t("tryon", "shareReward")}</button
+            <button
+              class="btn btn-outline-rose"
+              id="free-share-reward"
+              disabled
+              hidden>{t("tryon", "shareReward")}</button
             >
           </section>
         </section>
@@ -523,6 +526,8 @@ const workspaceStatusHrefs = {
     const intensityInput = document.querySelector("[data-tryon-intensity]");
     let lastSucceededJobId = window.__absLastSucceededJobId || null;
     let lastSucceededLookSlug = selectedLookSlug || null;
+    let currentPlan = "free";
+    let hasLoadedPlan = false;
     let savedJobIds = new Set();
     const publicShareUrlByJobId = new Map();
     const checkoutSucceeded =
@@ -585,8 +590,15 @@ const workspaceStatusHrefs = {
       try {
         const res = await fetch("/api/session");
         const data = await res.json();
-        return data.ok ? data.data : null;
+        const session = data.ok ? data.data : null;
+        currentPlan = normalizePlan(session?.plan);
+        hasLoadedPlan = true;
+        refreshRewardButtonState();
+        return session;
       } catch {
+        currentPlan = "free";
+        hasLoadedPlan = true;
+        refreshRewardButtonState();
         return null;
       }
     }
@@ -671,7 +683,22 @@ const workspaceStatusHrefs = {
 
     function refreshRewardButtonState() {
       const rewardBtn = document.getElementById("free-share-reward");
-      if (!rewardBtn || !lastSucceededJobId) return;
+      if (!rewardBtn) return;
+      if (
+        !hasLoadedPlan ||
+        currentPlan === "pro" ||
+        currentPlan === "premium"
+      ) {
+        rewardBtn.hidden = true;
+        rewardBtn.disabled = true;
+        return;
+      }
+      if (!lastSucceededJobId) {
+        rewardBtn.hidden = false;
+        rewardBtn.disabled = true;
+        return;
+      }
+      rewardBtn.hidden = false;
       rewardBtn.disabled = !getStoredShareClaim(lastSucceededJobId);
     }
 

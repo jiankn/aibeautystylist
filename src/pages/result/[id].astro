@@ -171,6 +171,7 @@ const hrefs = {
             type="button"
             data-result-reward
             disabled
+            hidden
           >
             {copy.reward}
           </button>
@@ -213,6 +214,8 @@ const hrefs = {
       const shareCard = root.querySelector("[data-result-share-card]");
       const rewardBtn = root.querySelector("[data-result-reward]");
       const retry = root.querySelector("[data-result-retry]");
+      let currentPlan = "free";
+      let hasLoadedPlan = false;
       let currentJob;
       let publicShareUrl;
 
@@ -264,8 +267,36 @@ const hrefs = {
 
       function refreshRewardState() {
         if (!rewardBtn) return;
+        if (!hasLoadedPlan || isPaidPlan()) {
+          rewardBtn.hidden = true;
+          rewardBtn.disabled = true;
+          return;
+        }
+        rewardBtn.hidden = false;
         rewardBtn.disabled = !getStoredShareClaim();
       }
+
+      function normalizePlan(plan) {
+        return plan === "premium" ? "premium" : plan === "pro" ? "pro" : "free";
+      }
+
+      function isPaidPlan() {
+        return currentPlan === "pro" || currentPlan === "premium";
+      }
+
+      async function loadSessionPlan() {
+        try {
+          const session = await getJson("/api/session");
+          currentPlan = normalizePlan(session?.plan);
+        } catch {
+          currentPlan = "free";
+        }
+        hasLoadedPlan = true;
+        refreshRewardState();
+      }
+
+      refreshRewardState();
+      loadSessionPlan();
 
       async function recordShareIntent(method) {
         try {

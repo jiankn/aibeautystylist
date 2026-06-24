@@ -706,7 +706,7 @@ const posterCopy =
         >
         <button class="btn" id="share-web-btn">↗&nbsp; {copy.share}</button>
         <button class="btn" id="share-copy-btn">⌘&nbsp; {copy.copyLink}</button>
-        <button class="btn btn-outline-rose" id="share-reward-btn">
+        <button class="btn btn-outline-rose" id="share-reward-btn" hidden>
           +&nbsp; {copy.reward}</button
         >
       </div>
@@ -741,6 +741,7 @@ const posterCopy =
     const webShareBtn = document.getElementById("share-web-btn");
     const copyBtn = document.getElementById("share-copy-btn");
     let currentPlan = "free";
+    let hasLoadedPlan = false;
     let currentJob = null;
     let publicShareUrl;
 
@@ -818,6 +819,12 @@ const posterCopy =
 
     function refreshRewardButtonState() {
       if (!rewardBtn) return;
+      if (!hasLoadedPlan || isPaidPlan()) {
+        rewardBtn.hidden = true;
+        rewardBtn.disabled = true;
+        return;
+      }
+      rewardBtn.hidden = false;
       rewardBtn.disabled = !getStoredShareClaim();
     }
 
@@ -840,7 +847,9 @@ const posterCopy =
       } catch {
         currentPlan = "free";
       }
+      hasLoadedPlan = true;
       updateDownloadButtonLabel();
+      refreshRewardButtonState();
     }
 
     function updateDownloadButtonLabel() {
