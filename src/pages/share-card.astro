@@ -675,41 +675,26 @@ const posterCopy =
         <div class="share-poster-media" id="share-image-area">
           <div class="share-loading">{copy.cardLoading}</div>
         </div>
-        <div class="share-poster-scrim" aria-hidden="true"></div>
-        <header class="share-poster-top">
-          <a class="share-poster-brand" href={homeHref}>
-            <img
-              class="brand-logo-img share-brand-logo"
-              src="/images/logo-ui.webp"
-              alt=""
-              aria-hidden="true"
-            />
-            <span>AI Beauty Stylist</span>
-          </a>
-          <span class="share-poster-badge">{copy.after}</span>
-        </header>
         <footer class="share-poster-copy">
-          <div class="share-poster-eyebrow">
-            <span aria-hidden="true"></span>
-            {posterCopy.eyebrow}
+          <div class="share-poster-meta">
+            <span class="share-poster-chip">{copy.after}</span>
+            <span>{posterCopy.eyebrow}</span>
           </div>
           <h1>
-            <span>{posterCopy.prefix}</span>
             <strong id="share-look-name">{copy.loading}</strong>
           </h1>
           <p>{posterCopy.subtext}</p>
-          <div class="share-poster-action-row">
-            <a
-              class="btn btn-primary share-poster-cta"
-              href={tryOnHref}
-              id="share-try-link"
-            >
-              {copy.navTryCta}
+          <div class="share-poster-footer">
+            <a class="share-poster-brand" href={homeHref}>
+              <img
+                class="brand-logo-img share-brand-logo"
+                src="/images/logo-ui.webp"
+                alt=""
+                aria-hidden="true"
+              />
+              <span>AI Beauty Stylist</span>
             </a>
-            <p class="share-poster-reward">
-              <span>{posterCopy.rewardTop}</span>
-              <strong>{posterCopy.rewardBottom}</strong>
-            </p>
+            <span class="share-poster-url">aibeautystylist.com</span>
           </div>
         </footer>
       </article>
@@ -755,7 +740,6 @@ const posterCopy =
     const downloadBtn = document.getElementById("share-download-btn");
     const webShareBtn = document.getElementById("share-web-btn");
     const copyBtn = document.getElementById("share-copy-btn");
-    const tryLink = document.getElementById("share-try-link");
     let currentPlan = "free";
     let currentJob = null;
     let publicShareUrl;
@@ -837,14 +821,6 @@ const posterCopy =
       rewardBtn.disabled = !getStoredShareClaim();
     }
 
-    function updateTryLink(job) {
-      if (!tryLink) return;
-      const url = new URL(tryOnHref || "/tryon-free", location.origin);
-      if (job?.lookSlug) url.searchParams.set("look", job.lookSlug);
-      url.searchParams.set("source", "share_card");
-      tryLink.href = `${url.pathname}${url.search}`;
-    }
-
     refreshRewardButtonState();
     loadSessionPlan();
 
@@ -885,7 +861,6 @@ const posterCopy =
         }
         const job = data.data;
         currentJob = job;
-        updateTryLink(job);
         if (lookNameEl)
           lookNameEl.textContent = job.lookTitle || copy.defaultLook;
         if (imageArea && job.resultImage) {
@@ -986,91 +961,92 @@ const posterCopy =
       const ctx = canvas.getContext("2d");
       if (!ctx) return null;
 
-      ctx.fillStyle = "#181114";
+      ctx.fillStyle = "#fff8fb";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      drawImageCover(ctx, resultImage, 0, 0, 1080, 1440, 0.34);
+      drawImageCover(ctx, resultImage, 0, 0, 1080, 1138, 0.34);
 
-      const topScrim = ctx.createLinearGradient(0, 0, 0, 520);
-      topScrim.addColorStop(0, "rgba(17,10,13,0.42)");
-      topScrim.addColorStop(0.52, "rgba(17,10,13,0.02)");
-      topScrim.addColorStop(1, "rgba(17,10,13,0)");
-      ctx.fillStyle = topScrim;
-      ctx.fillRect(0, 0, 1080, 520);
+      const imageFade = ctx.createLinearGradient(0, 1046, 0, 1138);
+      imageFade.addColorStop(0, "rgba(255,248,251,0)");
+      imageFade.addColorStop(1, "rgba(255,248,251,0.82)");
+      ctx.fillStyle = imageFade;
+      ctx.fillRect(0, 1046, 1080, 92);
 
-      const bottomScrim = ctx.createLinearGradient(0, 620, 0, 1440);
-      bottomScrim.addColorStop(0, "rgba(35,18,25,0)");
-      bottomScrim.addColorStop(0.45, "rgba(35,18,25,0.74)");
-      bottomScrim.addColorStop(1, "rgba(16,8,11,0.96)");
-      ctx.fillStyle = bottomScrim;
-      ctx.fillRect(0, 620, 1080, 820);
+      ctx.fillStyle = "#fff8fb";
+      ctx.fillRect(0, 1138, 1080, 302);
+      ctx.strokeStyle = "rgba(130,72,92,0.14)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(64, 1138);
+      ctx.lineTo(1016, 1138);
+      ctx.stroke();
 
       ctx.textBaseline = "alphabetic";
       ctx.textAlign = "left";
 
-      const brandText = "AI Beauty Stylist";
-      ctx.font = "900 27px Inter, Arial, sans-serif";
-      const brandWidth = Math.min(410, ctx.measureText(brandText).width + 104);
-      ctx.fillStyle = "rgba(255,255,255,0.86)";
-      roundedRect(ctx, 58, 58, brandWidth, 74, 37);
+      ctx.font = "800 23px Inter, Arial, sans-serif";
+      const afterWidth = Math.max(118, ctx.measureText(copy.after).width + 56);
+      ctx.fillStyle = "rgba(185,47,98,0.1)";
+      roundedRect(ctx, 64, 1156, afterWidth, 40, 20);
       ctx.fill();
-      if (logoImage) {
-        ctx.save();
-        roundedRect(ctx, 76, 73, 44, 44, 22);
-        ctx.clip();
-        ctx.drawImage(logoImage, 76, 73, 44, 44);
-        ctx.restore();
-      }
-      ctx.fillStyle = "#241920";
-      ctx.fillText(brandText, 136, 105);
-
-      ctx.font = "900 26px Inter, Arial, sans-serif";
-      const afterWidth = Math.max(128, ctx.measureText(copy.after).width + 58);
-      ctx.fillStyle = "rgba(191,45,98,0.94)";
-      roundedRect(ctx, 1022 - afterWidth, 58, afterWidth, 70, 35);
-      ctx.fill();
-      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "rgba(185,47,98,0.28)";
+      ctx.stroke();
+      ctx.fillStyle = "#a82e5c";
       ctx.textAlign = "center";
-      ctx.fillText(copy.after, 1022 - afterWidth / 2, 103);
+      ctx.fillText(copy.after, 64 + afterWidth / 2, 1184);
       ctx.textAlign = "left";
 
-      ctx.strokeStyle = "rgba(255,255,255,0.72)";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(64, 948);
-      ctx.lineTo(122, 948);
-      ctx.stroke();
-      ctx.fillStyle = "rgba(255,255,255,0.92)";
-      ctx.font = "900 29px Inter, Arial, sans-serif";
-      ctx.fillText(posterCopy.eyebrow, 136, 958);
+      ctx.fillStyle = "rgba(83,55,68,0.72)";
+      ctx.font = "800 23px Inter, Arial, sans-serif";
+      ctx.fillText(posterCopy.eyebrow, 64 + afterWidth + 24, 1184);
 
       const lookTitle = currentJob?.lookTitle || copy.defaultLook;
-      const posterTitle = `${posterCopy.prefix} ${lookTitle}`.trim();
-      ctx.fillStyle = "#ffffff";
-      ctx.font =
-        posterTitle.length > 28
-          ? "900 84px Inter, Arial, sans-serif"
-          : "900 104px Inter, Arial, sans-serif";
-      drawWrappedText(ctx, posterTitle, 64, 1066, 850, 100, 3);
+      const compactTitle = lookTitle.length > 24;
+      ctx.fillStyle = "#2d2028";
+      ctx.font = compactTitle
+        ? "900 50px Inter, Arial, sans-serif"
+        : "900 58px Inter, Arial, sans-serif";
+      const nextY = drawWrappedText(
+        ctx,
+        lookTitle,
+        64,
+        compactTitle ? 1236 : 1250,
+        952,
+        compactTitle ? 50 : 56,
+        2,
+      );
 
-      ctx.fillStyle = "rgba(255,255,255,0.9)";
+      ctx.fillStyle = "rgba(83,55,68,0.86)";
+      ctx.font = "700 24px Inter, Arial, sans-serif";
+      drawWrappedText(ctx, posterCopy.subtext, 64, nextY - 14, 760, 28, 2);
+
+      const brandText = "AI Beauty Stylist";
       ctx.font = "900 32px Inter, Arial, sans-serif";
-      drawWrappedText(ctx, posterCopy.subtext, 64, 1248, 760, 40, 2);
+      if (logoImage) {
+        ctx.save();
+        roundedRect(ctx, 64, 1344, 52, 52, 26);
+        ctx.clip();
+        ctx.drawImage(logoImage, 64, 1344, 52, 52);
+        ctx.restore();
+      }
+      ctx.fillStyle = "#2d2028";
+      ctx.fillText(brandText, 132, 1382);
 
-      ctx.fillStyle = "#ffffff";
-      roundedRect(ctx, 64, 1290, 632, 92, 46);
-      ctx.fill();
-      ctx.fillStyle = "#b92f62";
-      ctx.font = "900 36px Inter, Arial, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(copy.navTryCta, 380, 1349);
-
-      ctx.textAlign = "right";
-      ctx.fillStyle = "rgba(255,255,255,0.88)";
-      ctx.font = "900 25px Inter, Arial, sans-serif";
-      ctx.fillText(posterCopy.rewardTop, 1016, 1330);
-      ctx.fillText(posterCopy.rewardBottom, 1016, 1364);
+      ctx.save();
       ctx.textAlign = "left";
+      ctx.fillStyle = "rgba(168,46,92,0.82)";
+      ctx.font = "800 26px Inter, Arial, sans-serif";
+      const websiteText = "aibeautystylist.com";
+      const websiteLetterSpacing = 1.45;
+      const websiteWidth =
+        ctx.measureText(websiteText).width +
+        Math.max(0, websiteText.length - 1) * websiteLetterSpacing;
+      let websiteCursorX = 1016 - websiteWidth;
+      for (const char of websiteText) {
+        ctx.fillText(char, websiteCursorX, 1382);
+        websiteCursorX += ctx.measureText(char).width + websiteLetterSpacing;
+      }
+      ctx.restore();
 
       return new Promise((resolve) => {
         canvas.toBlob((blob) => resolve(blob), "image/png", 0.95);
@@ -1280,81 +1256,106 @@ const posterCopy =
     isolation: isolate;
     width: min(100%, 560px);
     aspect-ratio: 3 / 4;
+    display: grid;
+    grid-template-rows: minmax(0, 76%) minmax(0, 24%);
     overflow: hidden;
     border: 0;
     border-radius: 28px;
-    background: #181114;
-    color: #fff;
+    background: #fff8fb;
+    color: #2d2028;
     box-shadow:
-      0 28px 90px rgba(38, 16, 24, 0.2),
+      0 28px 90px rgba(76, 38, 54, 0.18),
       0 2px 0 rgba(255, 255, 255, 0.65) inset;
   }
-  .share-poster-media,
-  .share-poster-media img,
-  .share-poster-scrim {
+  .share-poster-media {
+    position: relative;
+    display: grid;
+    overflow: hidden;
+    place-items: center;
+    background: #efe7ea;
+  }
+  :global(.share-poster-media img) {
     position: absolute;
     inset: 0;
-  }
-  .share-poster-media {
-    z-index: -2;
-    display: grid;
-    place-items: center;
-    background: #181114;
-  }
-  .share-poster-media img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 22%;
-    filter: saturate(1.04);
+    object-position: center 42%;
+    filter: saturate(1.03) contrast(1.02);
   }
-  .share-poster-scrim {
-    z-index: -1;
-    background:
-      linear-gradient(
-        180deg,
-        rgba(17, 10, 13, 0.42) 0%,
-        rgba(17, 10, 13, 0.02) 27%,
-        rgba(17, 10, 13, 0) 45%
-      ),
-      linear-gradient(
-        0deg,
-        rgba(16, 8, 11, 0.96) 0%,
-        rgba(35, 18, 25, 0.74) 25%,
-        rgba(35, 18, 25, 0.24) 48%,
-        rgba(35, 18, 25, 0) 68%
-      );
+  .share-poster-copy {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: clamp(4px, 1.1vw, 8px);
+    padding: clamp(12px, 3vw, 21px) clamp(20px, 5.2vw, 36px)
+      clamp(12px, 3vw, 21px);
+    border-top: 1px solid rgba(130, 72, 92, 0.14);
+    background: linear-gradient(180deg, #fff8fb 0%, #fff 100%);
   }
-  .share-poster-top {
-    position: absolute;
-    top: clamp(20px, 5vw, 32px);
-    right: clamp(20px, 5vw, 32px);
-    left: clamp(20px, 5vw, 32px);
+  .share-poster-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(83, 55, 68, 0.72);
+    font-size: clamp(11px, 2.7vw, 14px);
+    font-weight: 850;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .share-poster-chip {
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    padding: 0 13px;
+    border: 1px solid rgba(185, 47, 98, 0.26);
+    border-radius: 999px;
+    background: rgba(185, 47, 98, 0.08);
+    color: #a82e5c;
+  }
+  .share-poster-copy h1 {
+    max-width: 100%;
+    margin: 0;
+    color: #2d2028;
+    font-size: clamp(27px, 7.2vw, 46px);
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+  .share-poster-copy h1 strong {
+    min-width: 0;
+    font-weight: inherit;
+  }
+  .share-poster-copy > p {
+    max-width: 48ch;
+    margin: 0;
+    color: rgba(83, 55, 68, 0.86);
+    font-size: clamp(11px, 2.7vw, 15px);
+    font-weight: 700;
+    line-height: 1.18;
+  }
+  .share-poster-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    margin-top: clamp(1px, 0.7vw, 6px);
   }
   .share-poster-brand {
     display: inline-flex;
     min-width: 0;
-    max-width: calc(100% - 96px);
     align-items: center;
     gap: 10px;
-    padding: 8px 15px 8px 9px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.84);
-    color: #241920;
-    font-size: clamp(13px, 2.6vw, 17px);
+    color: #2d2028;
+    font-size: clamp(15px, 3.7vw, 21px);
     font-weight: 900;
     text-decoration: none;
-    box-shadow:
-      0 18px 42px rgba(30, 12, 18, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.86);
   }
   .share-poster-brand img {
-    width: clamp(28px, 7vw, 38px);
-    height: clamp(28px, 7vw, 38px);
+    width: clamp(34px, 8.2vw, 46px);
+    height: clamp(34px, 8.2vw, 46px);
     flex: 0 0 auto;
     border-radius: 999px;
   }
@@ -1364,100 +1365,18 @@ const posterCopy =
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .share-poster-badge {
-    display: inline-flex;
-    min-height: clamp(42px, 8vw, 52px);
-    align-items: center;
-    padding: 0 clamp(18px, 5vw, 24px);
-    border-radius: 999px;
-    background: rgba(191, 45, 98, 0.94);
-    color: #fff;
-    font-size: clamp(15px, 3.5vw, 20px);
-    font-weight: 900;
-    box-shadow: 0 18px 44px rgba(73, 12, 35, 0.32);
-    white-space: nowrap;
-  }
-  .share-poster-copy {
-    position: absolute;
-    right: clamp(24px, 6vw, 40px);
-    bottom: clamp(24px, 6vw, 40px);
-    left: clamp(24px, 6vw, 40px);
-    display: grid;
-    gap: clamp(12px, 2.8vw, 18px);
-  }
-  .share-poster-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    color: rgba(255, 255, 255, 0.92);
-    font-size: clamp(12px, 3.3vw, 20px);
-    font-weight: 900;
-  }
-  .share-poster-eyebrow span {
-    width: clamp(30px, 9vw, 48px);
-    height: 2px;
-    background: rgba(255, 255, 255, 0.72);
-  }
-  .share-poster-copy h1 {
-    display: grid;
-    gap: 0;
-    max-width: 92%;
-    margin: 0;
-    color: #fff;
-    font-size: clamp(34px, 10.8vw, 76px);
-    font-weight: 900;
-    letter-spacing: 0;
-    line-height: 0.94;
-    text-wrap: balance;
-    text-shadow: 0 18px 60px rgba(0, 0, 0, 0.38);
-  }
-  .share-poster-copy h1 span,
-  .share-poster-copy h1 strong {
+  .share-poster-url {
+    flex: 0 1 auto;
     min-width: 0;
-  }
-  .share-poster-copy h1 strong {
-    font-weight: inherit;
-  }
-  .share-poster-copy > p {
-    max-width: 86%;
-    margin: 0;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: clamp(14px, 4vw, 23px);
+    overflow: hidden;
+    color: rgba(168, 46, 92, 0.82);
+    font-size: clamp(13px, 3.1vw, 18px);
     font-weight: 800;
-    line-height: 1.25;
-  }
-  .share-poster-action-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 16px;
-  }
-  .share-poster-cta {
-    min-height: clamp(52px, 10vw, 68px);
-    justify-content: center;
-    border: 0;
-    border-radius: 999px;
-    background: #fff;
-    color: var(--rose-dark);
-    font-size: clamp(17px, 4.6vw, 25px);
-    font-weight: 900;
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.24),
-      inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    white-space: nowrap;
-  }
-  .share-poster-reward {
-    display: grid;
-    min-width: clamp(110px, 28vw, 156px);
-    margin: 0;
-    color: rgba(255, 255, 255, 0.86);
-    font-size: clamp(12px, 3.2vw, 17px);
-    font-weight: 900;
-    line-height: 1.15;
+    letter-spacing: 0.045em;
+    line-height: 1;
     text-align: right;
-  }
-  .share-poster-reward strong {
-    font-weight: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .share-actions {
     display: flex;
@@ -1552,18 +1471,39 @@ const posterCopy =
     }
     .share-poster {
       width: 100%;
+      grid-template-rows: minmax(0, 79%) minmax(0, 21%);
       border-radius: 22px;
     }
-    .share-poster-action-row {
-      grid-template-columns: 1fr;
-      gap: 10px;
+    .share-poster-copy {
+      gap: 3px;
+      padding: 8px 18px 9px;
     }
-    .share-poster-reward {
-      display: flex;
-      min-width: 0;
-      justify-content: center;
+    .share-poster-meta {
       gap: 6px;
-      text-align: center;
+      font-size: 10px;
+    }
+    .share-poster-chip {
+      min-height: 21px;
+      padding: 0 9px;
+    }
+    .share-poster-copy h1 {
+      font-size: clamp(21px, 5.9vw, 29px);
+    }
+    .share-poster-copy > p {
+      font-size: 10.4px;
+      line-height: 1.08;
+    }
+    .share-poster-brand {
+      gap: 6px;
+      font-size: 13.8px;
+    }
+    .share-poster-brand img {
+      width: 26px;
+      height: 26px;
+    }
+    .share-poster-url {
+      font-size: 12.8px;
+      letter-spacing: 0.042em;
     }
     .share-empty {
       margin: 16px;
