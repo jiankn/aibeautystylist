@@ -25,7 +25,7 @@ export const GET: APIRoute = async ({ cookies, params }) => {
 
   return new Response(object.body as BodyInit, {
     headers: {
-      "cache-control": "private, no-store, max-age=0",
+      "cache-control": "private, max-age=3600, stale-while-revalidate=86400",
       "content-type":
         object.httpMetadata?.contentType ?? upload.contentType ?? "image/jpeg",
       "x-content-type-options": "nosniff",

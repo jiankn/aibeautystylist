@@ -8,6 +8,7 @@ const appRoot = fileURLToPath(new URL("./app/", import.meta.url));
 export default defineConfig({
   adapter: cloudflare({
     configPath: "../wrangler.app.jsonc",
+    imageService: "passthrough",
   }),
   i18n: {
     defaultLocale: "en",

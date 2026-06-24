@@ -5,6 +5,9 @@ import { getStoredJobById } from "../../../../lib/jobs";
 import { getRuntimeBindings } from "../../../../lib/runtime";
 import { getPublicShareCardByCode } from "../../../../lib/shareCards";
 
+const PUBLIC_RESULT_CACHE =
+  "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800";
+
 export const GET: APIRoute = async ({ params, request }) => {
   const { DB, USER_UPLOADS } = getRuntimeBindings();
   if (!DB) return resultNotFound();
@@ -25,7 +28,7 @@ export const GET: APIRoute = async ({ params, request }) => {
 
     return new Response(object.body as BodyInit, {
       headers: {
-        "cache-control": "public, max-age=3600",
+        "cache-control": PUBLIC_RESULT_CACHE,
         "content-type": object.httpMetadata?.contentType ?? "image/png",
         "x-content-type-options": "nosniff",
       },

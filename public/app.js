@@ -172,6 +172,107 @@ function showToast(message) {
 
 window.showToast = showToast;
 
+const CLIENT_UPLOAD_MAX_EDGE = 1280;
+const CLIENT_UPLOAD_TARGET_BYTES = 2 * 1024 * 1024;
+const CLIENT_UPLOAD_QUALITY = 0.82;
+const CLIENT_COMPRESSIBLE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+function trackTryonPerf(event, properties = {}) {
+  try {
+    window.__track?.(event, {
+      path: location.pathname,
+      effectiveType: navigator.connection?.effectiveType || "",
+      ...properties,
+    });
+  } catch {
+    /* Metrics must never block the try-on flow. */
+  }
+}
+
+async function prepareImageForUpload(file) {
+  if (!file || !CLIENT_COMPRESSIBLE_TYPES.has(file.type)) return file;
+
+  let decoded;
+  try {
+    decoded = await decodeUploadImage(file);
+    const maxSide = Math.max(decoded.width, decoded.height);
+    if (maxSide <= CLIENT_UPLOAD_MAX_EDGE && file.size <= CLIENT_UPLOAD_TARGET_BYTES) {
+      return file;
+    }
+
+    const scale = Math.min(1, CLIENT_UPLOAD_MAX_EDGE / maxSide);
+    const width = Math.max(1, Math.round(decoded.width * scale));
+    const height = Math.max(1, Math.round(decoded.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", {
+      alpha: false,
+      desynchronized: true,
+    });
+    if (!context) return file;
+    context.drawImage(decoded.source, 0, 0, width, height);
+
+    const blob = await canvasToUploadBlob(canvas);
+    if (!blob || blob.size <= 0) return file;
+    if (blob.size >= file.size && maxSide <= CLIENT_UPLOAD_MAX_EDGE) return file;
+
+    const extension = blob.type === "image/webp" ? "webp" : "jpg";
+    const name = file.name.replace(/\.[^.]+$/, "") || "selfie";
+    return new File([blob], `${name}.upload.${extension}`, {
+      type: blob.type,
+      lastModified: Date.now(),
+    });
+  } catch {
+    return file;
+  } finally {
+    decoded?.close?.();
+  }
+}
+
+async function decodeUploadImage(file) {
+  if ("createImageBitmap" in window) {
+    try {
+      const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+      return {
+        source: bitmap,
+        width: bitmap.width,
+        height: bitmap.height,
+        close: () => bitmap.close?.(),
+      };
+    } catch {
+      /* Fall back to HTMLImageElement decoding. */
+    }
+  }
+
+  const url = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = url;
+    await image.decode();
+    return {
+      source: image,
+      width: image.naturalWidth || image.width,
+      height: image.naturalHeight || image.height,
+      close: () => URL.revokeObjectURL(url),
+    };
+  } catch (error) {
+    URL.revokeObjectURL(url);
+    throw error;
+  }
+}
+
+async function canvasToUploadBlob(canvas) {
+  for (const type of ["image/webp", "image/jpeg"]) {
+    const blob = await new Promise((resolve) =>
+      canvas.toBlob(resolve, type, CLIENT_UPLOAD_QUALITY),
+    );
+    if (blob?.type === type) return blob;
+  }
+  return null;
+}
+
 function upsertBackgroundTask(task) {
   if (window.__absBackgroundTasks?.upsert) {
     window.__absBackgroundTasks.upsert(task);
@@ -458,9 +559,20 @@ window.__absCreateTryOnJob = async function createTryOnJobFlow({
     msg("consentRequired"),
   );
 
+  const preparedFile = await prepareImageForUpload(file);
+  trackTryonPerf("tryon_upload_prepared", {
+    originalBytes: file.size,
+    preparedBytes: preparedFile.size,
+    compressed: preparedFile !== file,
+  });
+
   const formData = new FormData();
-  formData.append("photo", file);
+  formData.append("photo", preparedFile);
   formData.append("consentVersion", PHOTO_CONSENT_VERSION);
+  formData.append("clientOriginalSize", String(file.size));
+  formData.append("clientPreparedSize", String(preparedFile.size));
+  formData.append("clientCompressed", String(preparedFile !== file));
+  const uploadStartedAt = performance.now();
   const upload = await readApiPayload(
     await fetch("/api/uploads", {
       method: "POST",
@@ -469,6 +581,13 @@ window.__absCreateTryOnJob = async function createTryOnJobFlow({
     }),
     msg("uploadFailed"),
   );
+  trackTryonPerf("tryon_upload_completed", {
+    durationMs: Math.round(performance.now() - uploadStartedAt),
+    originalBytes: file.size,
+    preparedBytes: preparedFile.size,
+    uploadedBytes: upload.sizeBytes || preparedFile.size,
+  });
+  const jobCreateStartedAt = performance.now();
   const job = await readApiPayload(
     await fetch("/api/tryon-jobs", {
       method: "POST",
@@ -483,6 +602,11 @@ window.__absCreateTryOnJob = async function createTryOnJobFlow({
     }),
     msg("jobCreateFailed"),
   );
+  trackTryonPerf("tryon_job_created", {
+    durationMs: Math.round(performance.now() - jobCreateStartedAt),
+    jobId: job.id,
+    status: job.status,
+  });
 
   return { upload, job };
 };
@@ -1496,14 +1620,26 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     setCurrentJobInUrl(job.id);
     const resultTarget = document.querySelector("[data-result-target]");
     if (resultTarget && job.resultImage) {
+      const resultSrc = job.resultDisplayImage || job.resultImage;
+      const imageStartedAt = performance.now();
       const wrapper = document.createElement("div");
       wrapper.className = "generated-result is-loading";
       const image = document.createElement("img");
       image.loading = "eager";
       image.decoding = "async";
       image.fetchPriority = "high";
-      image.src = job.resultImage;
+      image.src = resultSrc;
       image.alt = msg("referenceAlt", { look: job.lookTitle });
+      image.addEventListener(
+        "load",
+        () =>
+          trackTryonPerf("tryon_result_image_loaded", {
+            jobId: job.id,
+            durationMs: Math.round(performance.now() - imageStartedAt),
+            variant: resultSrc === job.resultImage ? "full" : "display",
+          }),
+        { once: true },
+      );
       const badge = document.createElement("span");
       badge.className = "pill pill-teal";
       badge.textContent =
@@ -1572,6 +1708,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     activeJob = job;
     setCurrentJobInUrl(job.id);
     updateQuotaDisplay(job.quota);
+    const waitStartedAt = performance.now();
 
     while (runningJobStates.has(job.status)) {
       activeJob = job;
@@ -1593,6 +1730,11 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     }
 
     presentTerminalJob(job);
+    trackTryonPerf("tryon_job_wait_completed", {
+      jobId: job.id,
+      status: job.status,
+      durationMs: Math.round(performance.now() - waitStartedAt),
+    });
   };
 
   const runUpload = async (file) => {
@@ -1630,9 +1772,20 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         stepLabel: "1/4",
       });
 
+      const preparedFile = await prepareImageForUpload(file);
+      trackTryonPerf("tryon_upload_prepared", {
+        originalBytes: file.size,
+        preparedBytes: preparedFile.size,
+        compressed: preparedFile !== file,
+      });
+
       const formData = new FormData();
-      formData.append("photo", file);
+      formData.append("photo", preparedFile);
       formData.append("consentVersion", PHOTO_CONSENT_VERSION);
+      formData.append("clientOriginalSize", String(file.size));
+      formData.append("clientPreparedSize", String(preparedFile.size));
+      formData.append("clientCompressed", String(preparedFile !== file));
+      const uploadStartedAt = performance.now();
       const uploadResponse = await fetch("/api/uploads", {
         method: "POST",
         body: formData,
@@ -1640,6 +1793,12 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       });
       const result = await uploadResponse.json();
       if (!uploadResponse.ok) throw new Error(result.error?.message || "UPLOAD_FAILED");
+      trackTryonPerf("tryon_upload_completed", {
+        durationMs: Math.round(performance.now() - uploadStartedAt),
+        originalBytes: file.size,
+        preparedBytes: preparedFile.size,
+        uploadedBytes: result.data?.sizeBytes || preparedFile.size,
+      });
 
       button.dataset.uploadId = result.data.id;
       deleteButton.hidden = false;
@@ -1650,6 +1809,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         stepLabel: "2/4",
       });
       const activeLook = getActiveLook();
+      const jobCreateStartedAt = performance.now();
       const job = await readApiData(
         await fetch("/api/tryon-jobs", {
           method: "POST",
@@ -1662,6 +1822,11 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         }),
         msg("jobCreateFailed"),
       );
+      trackTryonPerf("tryon_job_created", {
+        durationMs: Math.round(performance.now() - jobCreateStartedAt),
+        jobId: job.id,
+        status: job.status,
+      });
       setCurrentJobInUrl(job.id);
       syncTryonBackgroundTask(job, {
         progress: 46,

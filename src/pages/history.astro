@@ -49,6 +49,8 @@ const copyByLocale = {
     startTryon: "Start try-on",
     browseLooks: "Browse looks",
     loading: "Loading history...",
+    loadMore: "Load more",
+    loadingMore: "Loading more...",
     emptyHistoryTitle: "No try-on results yet",
     emptyHistoryHint:
       "Generated results will be saved here automatically for review, comparison, and future adjustments.",
@@ -113,6 +115,8 @@ const copyByLocale = {
     startTryon: "开始试妆",
     browseLooks: "浏览妆容库",
     loading: "正在读取历史记录...",
+    loadMore: "加载更多",
+    loadingMore: "正在加载...",
     emptyHistoryTitle: "还没有试妆结果",
     emptyHistoryHint:
       "生成后的试妆结果会自动保存在这里，方便你回看、对比和继续调整妆容方向。",
@@ -175,6 +179,8 @@ const copyByLocale = {
     startTryon: "開始試妝",
     browseLooks: "瀏覽妝容庫",
     loading: "正在讀取歷史記錄...",
+    loadMore: "載入更多",
+    loadingMore: "正在載入...",
     emptyHistoryTitle: "還沒有試妝結果",
     emptyHistoryHint:
       "生成後的試妝結果會自動保存在這裡，方便回看、對比和調整。",
@@ -239,6 +245,8 @@ const copyByLocale = {
     startTryon: "Try-on starten",
     browseLooks: "Looks ansehen",
     loading: "Verlauf wird geladen...",
+    loadMore: "Mehr laden",
+    loadingMore: "Wird geladen...",
     emptyHistoryTitle: "Noch keine Try-on-Ergebnisse",
     emptyHistoryHint:
       "Erzeugte Ergebnisse erscheinen hier automatisch zum Pruefen, Vergleichen und Anpassen.",
@@ -304,6 +312,8 @@ const copyByLocale = {
     startTryon: "Demarrer l'essai",
     browseLooks: "Explorer les looks",
     loading: "Chargement de l'historique...",
+    loadMore: "Charger plus",
+    loadingMore: "Chargement...",
     emptyHistoryTitle: "Aucun resultat d'essai",
     emptyHistoryHint:
       "Les resultats generes seront sauvegardes ici pour les revoir, les comparer et les ajuster.",
@@ -368,6 +378,8 @@ const copyByLocale = {
     startTryon: "試着を始める",
     browseLooks: "メイクを見る",
     loading: "履歴を読み込み中...",
+    loadMore: "もっと読み込む",
+    loadingMore: "読み込み中...",
     emptyHistoryTitle: "試着結果はまだありません",
     emptyHistoryHint:
       "生成された結果はここに自動保存され、見返しや比較、調整に使えます。",
@@ -432,6 +444,8 @@ const copyByLocale = {
     startTryon: "체험 시작",
     browseLooks: "룩 둘러보기",
     loading: "기록을 불러오는 중...",
+    loadMore: "더 보기",
+    loadingMore: "불러오는 중...",
     emptyHistoryTitle: "아직 체험 결과가 없습니다",
     emptyHistoryHint:
       "생성된 결과는 자동으로 이곳에 저장되어 다시 보기, 비교, 조정에 사용할 수 있습니다.",
@@ -496,6 +510,8 @@ const copyByLocale = {
     startTryon: "Iniciar prueba",
     browseLooks: "Explorar looks",
     loading: "Cargando historial...",
+    loadMore: "Cargar mas",
+    loadingMore: "Cargando...",
     emptyHistoryTitle: "Aun no hay resultados",
     emptyHistoryHint:
       "Los resultados generados se guardaran aqui para revisarlos, compararlos y seguir ajustando.",
@@ -560,6 +576,8 @@ const copyByLocale = {
     startTryon: "Iniciar prueba",
     browseLooks: "Explorar looks",
     loading: "Cargando historial...",
+    loadMore: "Cargar mas",
+    loadingMore: "Cargando...",
     emptyHistoryTitle: "Aun no hay resultados",
     emptyHistoryHint:
       "Los resultados generados se guardaran aqui para revisarlos, compararlos y seguir ajustando.",
@@ -624,6 +642,8 @@ const copyByLocale = {
     startTryon: "Iniciar prova",
     browseLooks: "Explorar looks",
     loading: "Carregando historico...",
+    loadMore: "Carregar mais",
+    loadingMore: "Carregando...",
     emptyHistoryTitle: "Ainda nao ha resultados",
     emptyHistoryHint:
       "Os resultados gerados serão salvos aqui automaticamente para revisar, comparar e ajustar.",
@@ -821,6 +841,11 @@ const copy =
               <span></span><span></span><span></span><span></span>
             </div>
           </div>
+        </div>
+        <div class="history-pagination">
+          <button type="button" data-history-load-more hidden>
+            {copy.loadMore}
+          </button>
         </div>
       </section>
     </div>
@@ -1153,6 +1178,31 @@ const copy =
 
     .history-body .history-list {
       min-height: 220px;
+    }
+
+    .history-body .history-pagination {
+      display: flex;
+      justify-content: center;
+      padding-top: 18px;
+    }
+
+    .history-body .history-pagination button {
+      min-height: 44px;
+      min-width: 152px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--navy);
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: 0 14px 30px rgba(15, 34, 68, 0.08);
+    }
+
+    .history-body .history-pagination button:disabled {
+      cursor: wait;
+      opacity: 0.65;
     }
 
     .history-body .history-loading-state {
@@ -1897,6 +1947,7 @@ const copy =
       const root = document.querySelector("[data-history-page]");
       if (!root) return;
 
+      const HISTORY_PAGE_SIZE = 24;
       const runningStatuses = new Set([
         "created",
         "upload_validating",
@@ -1915,6 +1966,8 @@ const copy =
         selectMode: false,
         selectedIds: new Set(),
         favoriteIds: new Set(),
+        nextCursor: null,
+        loadingMore: false,
       };
 
       const controls = {
@@ -1937,6 +1990,7 @@ const copy =
         share: root.querySelector("[data-history-share]"),
         cancel: root.querySelector("[data-history-cancel]"),
         feedback: root.querySelector("[data-history-feedback]"),
+        loadMore: root.querySelector("[data-history-load-more]"),
       };
       const setSelectionNavSuppressed = (suppressed) => {
         window.absSetMobileBottomNavSuppressed?.(
@@ -2039,7 +2093,12 @@ const copy =
           id,
           lookSlug: job?.lookSlug || fallback.slug || "",
           title,
-          image: job?.resultImage || fallback.image || "",
+          image:
+            job?.resultThumbImage ||
+            job?.resultDisplayImage ||
+            job?.resultImage ||
+            fallback.image ||
+            "",
           imageAlt: title,
           resultImage: job?.resultImage || "",
           status: job?.status || "failed",
@@ -2328,6 +2387,7 @@ const copy =
           image.src = job.image;
           image.alt = job.imageAlt;
           image.loading = "lazy";
+          image.decoding = "async";
           media.append(image);
         } else {
           const placeholder = document.createElement("span");
@@ -2445,6 +2505,7 @@ const copy =
           controls.clearSearch.hidden = state.query.trim().length === 0;
         }
         updateCounts(filteredJobs);
+        updateLoadMoreUi();
 
         if (!state.jobs.length) {
           renderEmpty();
@@ -2562,6 +2623,48 @@ const copy =
         }, 3600);
       }
 
+      function updateLoadMoreUi() {
+        if (!controls.loadMore) return;
+        const hasMore = Boolean(state.nextCursor);
+        controls.loadMore.hidden =
+          !hasMore || state.selectMode || state.jobs.length === 0;
+        controls.loadMore.disabled = state.loadingMore;
+        controls.loadMore.textContent = state.loadingMore
+          ? copy.loadingMore
+          : copy.loadMore;
+      }
+
+      async function loadHistoryPage({ reset = false } = {}) {
+        const params = new URLSearchParams({
+          limit: String(HISTORY_PAGE_SIZE),
+        });
+        if (!reset && state.nextCursor) params.set("before", state.nextCursor);
+
+        const data = await getJson(`/api/tryon-jobs?${params.toString()}`);
+        const jobs = Array.isArray(data?.items) ? data.items : [];
+        const offset = reset ? 0 : state.jobs.length;
+        const normalized = jobs.map((job, index) =>
+          normalizeJob(job, offset + index),
+        );
+        state.jobs = reset ? normalized : [...state.jobs, ...normalized];
+        state.nextCursor = data?.nextCursor || null;
+        render();
+      }
+
+      async function loadMoreHistory() {
+        if (!state.nextCursor || state.loadingMore) return;
+        state.loadingMore = true;
+        updateLoadMoreUi();
+        try {
+          await loadHistoryPage();
+        } catch {
+          showFeedback(copy.loadFailedHint);
+        } finally {
+          state.loadingMore = false;
+          updateLoadMoreUi();
+        }
+      }
+
       function bindControls() {
         controls.search?.addEventListener("input", (event) => {
           state.query = event.currentTarget.value;
@@ -2592,27 +2695,25 @@ const copy =
         controls.delete?.addEventListener("click", deleteSelected);
         controls.compare?.addEventListener("click", compareSelected);
         controls.share?.addEventListener("click", shareSelected);
+        controls.loadMore?.addEventListener("click", loadMoreHistory);
       }
 
       async function hydrateHistory() {
         try {
-          const [data, savedData] = await Promise.all([
-            getJson("/api/tryon-jobs?limit=100"),
-            getJson("/api/saved-looks"),
-          ]);
+          const savedData = await getJson("/api/saved-looks");
           const savedItems = Array.isArray(savedData?.items)
             ? savedData.items
             : [];
           state.favoriteIds = new Set(
             savedItems.map((item) => item.jobId).filter(Boolean),
           );
-          const jobs = Array.isArray(data?.items) ? data.items : [];
-          state.jobs = jobs.map(normalizeJob);
-          render();
+          await loadHistoryPage({ reset: true });
         } catch {
           state.jobs = [];
+          state.nextCursor = null;
           updateCounts([]);
           renderFailure();
+          updateLoadMoreUi();
         }
       }
 

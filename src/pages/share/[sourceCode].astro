@@ -482,7 +482,7 @@ const hrefs = {
         if (media) {
           media.classList.add("is-loading");
           const image = document.createElement("img");
-          image.src = job.resultImage;
+          image.src = job.resultDisplayImage || job.resultImage;
           image.alt = job.lookTitle || copy.defaultLook;
           image.loading = "eager";
           image.decoding = "async";

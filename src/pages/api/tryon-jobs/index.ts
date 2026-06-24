@@ -44,23 +44,35 @@ export const GET: APIRoute = async ({ cookies, locals, url }) => {
   if (!auth.ok) return auth.response;
   const userId = auth.user.id;
 
-  const limit = Math.min(Number(url.searchParams.get("limit") ?? "20"), 100);
-  const rows = await bindings.DB.prepare(
-    `SELECT result_json FROM tryon_jobs 
-     WHERE user_id = ? AND deleted_at IS NULL 
-     ORDER BY created_at DESC 
-     LIMIT ?`,
-  )
-    .bind(userId, limit)
+  const limit = normalizeHistoryLimit(url.searchParams.get("limit"));
+  const before = normalizeHistoryCursor(url.searchParams.get("before"));
+  const query = before
+    ? `SELECT result_json FROM tryon_jobs
+       WHERE user_id = ? AND deleted_at IS NULL AND created_at < ?
+       ORDER BY created_at DESC
+       LIMIT ?`
+    : `SELECT result_json FROM tryon_jobs
+       WHERE user_id = ? AND deleted_at IS NULL
+       ORDER BY created_at DESC
+       LIMIT ?`;
+  const rows = await bindings.DB.prepare(query)
+    .bind(...(before ? [userId, before, limit + 1] : [userId, limit + 1]))
     .all<{ result_json: string | null }>();
 
-  const items = (rows.results ?? [])
+  const rawJobs = (rows.results ?? [])
     .map((row) => (row.result_json ? JSON.parse(row.result_json) : null))
-    .filter(Boolean)
+    .filter(Boolean);
+  const pageJobs = rawJobs.slice(0, limit);
+  const items = pageJobs
     .filter((job) => getTryOnJobPurpose(job) === "tryon")
     .map((job) => toLocalizedJobResponse(job, locals.audienceContext));
+  const lastJob = pageJobs.at(-1);
+  const nextCursor =
+    rawJobs.length > limit
+      ? lastJob?.createdAt || lastJob?.updatedAt
+      : undefined;
 
-  return apiSuccess({ items });
+  return apiSuccess({ items, nextCursor });
 };
 
 export const POST: APIRoute = async ({ cookies, locals, request }) => {
@@ -201,6 +213,18 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
 function normalizeRequiredPlan(value: unknown): PlanCode | undefined {
   if (value === undefined || value === null || value === "") return "free";
   return isPlanCode(value) ? value : undefined;
+}
+
+function normalizeHistoryLimit(value: string | null): number {
+  const parsed = Number.parseInt(value ?? "20", 10);
+  if (!Number.isFinite(parsed)) return 20;
+  return Math.min(Math.max(parsed, 1), 100);
+}
+
+function normalizeHistoryCursor(value: string | null): string | undefined {
+  if (!value) return undefined;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? undefined : value;
 }
 
 function normalizeJobPurpose(value: unknown): TryOnJobPurpose | undefined {

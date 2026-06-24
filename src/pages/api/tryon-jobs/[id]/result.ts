@@ -5,6 +5,8 @@ import { apiError } from "../../../../lib/http";
 import { getStoredJobById } from "../../../../lib/jobs";
 import { getRuntimeBindings } from "../../../../lib/runtime";
 
+const RESULT_CACHE = "private, max-age=3600, stale-while-revalidate=86400";
+
 export const GET: APIRoute = async ({ cookies, params }) => {
   const { DB, USER_UPLOADS } = getRuntimeBindings();
   const auth = await requireAuthenticatedUser(cookies, DB);
@@ -21,7 +23,7 @@ export const GET: APIRoute = async ({ cookies, params }) => {
 
   return new Response(object.body as BodyInit, {
     headers: {
-      "cache-control": "private, no-store, max-age=0",
+      "cache-control": RESULT_CACHE,
       "content-type": object.httpMetadata?.contentType ?? "image/png",
       "x-content-type-options": "nosniff",
     },

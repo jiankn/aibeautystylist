@@ -5913,9 +5913,15 @@ const diagnosisValueAliases =
           item.href = resultHrefForJob(job?.id);
 
           const image = document.createElement("img");
-          image.src = job?.resultImage || fallback.image || "";
+          image.src =
+            job?.resultThumbImage ||
+            job?.resultDisplayImage ||
+            job?.resultImage ||
+            fallback.image ||
+            "";
           image.alt = job?.lookTitle || fallback.title || copy.unknownLook;
           image.loading = "lazy";
+          image.decoding = "async";
 
           const copyNode = document.createElement("div");
           copyNode.className = "history-copy";
@@ -5989,9 +5995,15 @@ const diagnosisValueAliases =
           link.href = resultHrefForJob(job.id || item.jobId);
 
           const image = document.createElement("img");
-          image.src = job.resultImage || fallback.image || "";
+          image.src =
+            job.resultThumbImage ||
+            job.resultDisplayImage ||
+            job.resultImage ||
+            fallback.image ||
+            "";
           image.alt = job.lookTitle || fallback.title || copy.unknownLook;
           image.loading = "lazy";
+          image.decoding = "async";
 
           const title = document.createElement("strong");
           title.textContent =

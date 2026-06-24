@@ -51,7 +51,7 @@ const ALLOWED_TYPES = new Map<
   ],
 ]);
 
-export const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
+export const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 export const PHOTO_RETENTION_DAYS = 30;
 export const PHOTO_CONSENT_VERSION = "2026-06-07";
 export const SUPPORTED_UPLOAD_FORMAT_LABEL = "JPG、PNG、WebP、HEIC/HEIF";

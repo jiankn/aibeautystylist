@@ -422,7 +422,8 @@ const proClientMessages = {
             clearInterval(interval);
             updateProgress(proClientMessages.complete, 100);
             resultStatus.textContent = proClientMessages.generated;
-            if (job.resultImage) showResult(job.resultImage, jobId);
+            if (job.resultImage)
+              showResult(job.resultDisplayImage || job.resultImage, jobId);
             loadHistory();
             setTaskNavSuppressed(false);
           } else if (job.status === "failed" || job.status === "timed_out") {
@@ -581,7 +582,7 @@ const proClientMessages = {
                 .map(
                   (job) => `
                 <div class="history-item-card" data-job-id="${job.id}">
-                  <img src="${job.resultImage}" alt="${job.lookTitle}" class="history-thumb" />
+                  <img src="${job.resultThumbImage || job.resultDisplayImage || job.resultImage}" alt="${job.lookTitle}" class="history-thumb" loading="lazy" decoding="async" />
                   <div class="history-info">
                     <span class="history-title">${job.lookTitle}</span>
                     <span class="history-date">${new Date(job.createdAt).toLocaleDateString(document.documentElement.lang || "zh-CN", { month: "2-digit", day: "2-digit" })}</span>
@@ -611,7 +612,7 @@ const proClientMessages = {
                       btn.classList.remove("active");
                     }
                   });
-                showResult(job.resultImage, job.id);
+                showResult(job.resultDisplayImage || job.resultImage, job.id);
               }
             });
           });

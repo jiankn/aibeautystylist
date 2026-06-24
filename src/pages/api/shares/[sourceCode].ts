@@ -18,10 +18,13 @@ export const GET: APIRoute = async ({ locals, params }) => {
     return shareNotFound();
   }
 
+  const resultImage = `/api/shares/${encodeURIComponent(
+    shareCard.sourceCode,
+  )}/result`;
   return apiSuccess({
     ...toLocalizedJobResponse(job, locals.audienceContext),
     shareCode: shareCard.sourceCode,
-    resultImage: `/api/shares/${encodeURIComponent(shareCard.sourceCode)}/result`,
+    resultImage,
   });
 };
 

@@ -11,9 +11,6 @@
     "binding": "ASSETS",
     "directory": "dist/client",
   },
-  "images": {
-    "binding": "IMAGES",
-  },
   "observability": {
     "enabled": true,
   },
