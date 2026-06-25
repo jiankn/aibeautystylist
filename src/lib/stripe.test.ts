@@ -110,4 +110,28 @@ describe("Stripe client", () => {
     );
     expect(requests[0]?.init?.method).toBe("GET");
   });
+
+  it("updates a subscription item price with immediate proration", async () => {
+    const { fetcher, requests } = createRecordingFetcher();
+    const stripe = createStripeClient({ apiKey: "sk_test", fetcher });
+
+    await stripe.updateSubscriptionPrice({
+      subscriptionId: "sub_123",
+      itemId: "si_123",
+      priceId: "price_premium_monthly",
+      metadata: { userId: "user_123", planCode: "premium" },
+    });
+
+    const body = new URLSearchParams(String(requests[0]?.init?.body));
+    expect(requests[0]?.url).toBe(
+      "https://api.stripe.com/v1/subscriptions/sub_123",
+    );
+    expect(requests[0]?.init?.method).toBe("POST");
+    expect(body.get("items[0][id]")).toBe("si_123");
+    expect(body.get("items[0][price]")).toBe("price_premium_monthly");
+    expect(body.get("proration_behavior")).toBe("always_invoice");
+    expect(body.get("payment_behavior")).toBe("error_if_incomplete");
+    expect(body.get("metadata[userId]")).toBe("user_123");
+    expect(body.get("metadata[planCode]")).toBe("premium");
+  });
 });

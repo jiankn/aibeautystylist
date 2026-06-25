@@ -4,12 +4,21 @@ import { isAppLocale } from "../../../i18n/config";
 import { resolveLocaleRoute } from "../../../i18n/routing";
 import { getAccountByUserId } from "../../../lib/accounts";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
-import { buildCheckoutStatusUrl } from "../../../lib/checkoutRedirect";
+import {
+  buildCheckoutStatusUrl,
+  safeCheckoutPricingPath,
+} from "../../../lib/checkoutRedirect";
+import {
+  SubscriptionUpgradeError,
+  upgradeActiveSubscriptionPlan,
+} from "../../../lib/billingUpgrade";
 import { apiError, apiSuccess } from "../../../lib/http";
 import {
+  getPlanRank,
   isPlanCode,
   PLAN_DEFINITIONS,
   type BillingInterval,
+  type PlanCode,
 } from "../../../lib/plans";
 import { createProxyFetcher } from "../../../lib/proxyFetch";
 import { getRuntimeBindings, type RuntimeBindings } from "../../../lib/runtime";
@@ -18,7 +27,10 @@ import {
   StripeError,
   toStripeCheckoutLocale,
 } from "../../../lib/stripe";
-import { getStripeCustomerId } from "../../../lib/subscriptions";
+import {
+  getEffectiveSubscription,
+  getStripeCustomerId,
+} from "../../../lib/subscriptions";
 
 interface CheckoutBody {
   planCode?: string;
@@ -31,6 +43,17 @@ interface CheckoutBody {
 function withCheckoutSessionId(url: string): string {
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}session_id={CHECKOUT_SESSION_ID}`;
+}
+
+function buildPortalReturnUrl(input: {
+  baseUrl: string;
+  pricingPath?: string | null;
+}): string {
+  const base = new URL(input.baseUrl);
+  return new URL(
+    safeCheckoutPricingPath(input.pricingPath),
+    base.origin,
+  ).toString();
 }
 
 function appLocaleFromString(value: string | null | undefined) {
@@ -84,6 +107,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       422,
     );
   }
+  const planCode = body.planCode as Exclude<PlanCode, "free">;
 
   const bindings = getRuntimeBindings();
   if (!bindings.STRIPE_SECRET_KEY) {
@@ -97,7 +121,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     );
   }
 
-  const priceEnvKey = PLAN_DEFINITIONS[body.planCode].priceEnvKeys[interval];
+  const priceEnvKey = PLAN_DEFINITIONS[planCode].priceEnvKeys[interval];
   const priceId = priceEnvKey
     ? bindings[priceEnvKey as keyof RuntimeBindings]
     : undefined;
@@ -137,6 +161,79 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     if (customerId && account?.email) {
       await stripe.updateCustomer({ customerId, email: account.email });
     }
+    const portalReturnUrl = buildPortalReturnUrl({
+      baseUrl,
+      pricingPath: body?.pricingPath,
+    });
+    const openPortal = async () =>
+      customerId
+        ? await stripe.createBillingPortalSession({
+            customerId,
+            returnUrl: portalReturnUrl,
+          })
+        : undefined;
+    const currentSubscription = await getEffectiveSubscription(
+      userId,
+      bindings.DB,
+    );
+
+    if (currentSubscription) {
+      if (getPlanRank(planCode) <= getPlanRank(currentSubscription.planCode)) {
+        const portal = await openPortal();
+        if (portal) {
+          return apiSuccess({ url: portal.url, mode: "portal" });
+        }
+        return apiError(
+          {
+            code: "SUBSCRIPTION_ALREADY_ACTIVE",
+            message: "当前订阅已包含该计划权益，请在订阅管理中调整。",
+            retryable: false,
+          },
+          409,
+        );
+      }
+
+      if (currentSubscription.planCode === "pro" && planCode === "premium") {
+        try {
+          const upgrade = await upgradeActiveSubscriptionPlan({
+            userId,
+            toPlanCode: planCode,
+            interval,
+            priceId,
+            stripe,
+            DB: bindings.DB,
+            metadata: {
+              ...(appLocale ? { locale: appLocale } : {}),
+            },
+          });
+          return apiSuccess({ mode: "subscription_update", ...upgrade });
+        } catch (error) {
+          if (error instanceof SubscriptionUpgradeError) {
+            if (customerId) {
+              const portal = await openPortal();
+              if (portal) {
+                return apiSuccess({ url: portal.url, mode: "portal" });
+              }
+            }
+            return apiError(
+              {
+                code: error.code,
+                message: error.message,
+                retryable: error.retryable,
+              },
+              error.status,
+            );
+          }
+          if (error instanceof StripeError && customerId) {
+            const portal = await openPortal();
+            if (portal) {
+              return apiSuccess({ url: portal.url, mode: "portal" });
+            }
+          }
+          throw error;
+        }
+      }
+    }
 
     const session = await stripe.createCheckoutSession({
       priceId,
@@ -160,7 +257,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       locale: stripeLocale,
       metadata: {
         userId,
-        planCode: body.planCode,
+        planCode,
         priceId,
         ...(appLocale ? { locale: appLocale } : {}),
       },

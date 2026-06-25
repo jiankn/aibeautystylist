@@ -1,4 +1,4 @@
-import { isPlanCode, type PlanCode } from "./plans";
+import { getPlanRank, isPlanCode, type PlanCode } from "./plans";
 import type { D1DatabaseLike } from "./runtime";
 
 // Stripe 订阅状态中视为「权益有效」的集合。
@@ -51,10 +51,7 @@ export async function getEffectivePlan(
   DB?: D1DatabaseLike,
   now = new Date(),
 ): Promise<EffectivePlan> {
-  const subscriptions = await listUserSubscriptions(userId, DB);
-  const effective = subscriptions
-    .filter((sub) => isEntitled(sub, now))
-    .sort((a, b) => planRank(b.planCode) - planRank(a.planCode))[0];
+  const effective = await getEffectiveSubscription(userId, DB, now);
 
   if (!effective) {
     return { planCode: "free", source: "default" };
@@ -65,6 +62,17 @@ export async function getEffectivePlan(
     status: effective.status,
     currentPeriodEnd: effective.currentPeriodEnd,
   };
+}
+
+export async function getEffectiveSubscription(
+  userId: string,
+  DB?: D1DatabaseLike,
+  now = new Date(),
+): Promise<StoredSubscription | undefined> {
+  const subscriptions = await listUserSubscriptions(userId, DB);
+  return subscriptions
+    .filter((sub) => isEntitled(sub, now))
+    .sort((a, b) => getPlanRank(b.planCode) - getPlanRank(a.planCode))[0];
 }
 
 export async function upsertSubscription(
@@ -220,10 +228,6 @@ function isEntitled(sub: StoredSubscription, now: Date): boolean {
     return new Date(sub.currentPeriodEnd).getTime() > now.getTime();
   }
   return false;
-}
-
-function planRank(code: PlanCode): number {
-  return code === "premium" ? 3 : code === "pro" ? 2 : 1;
 }
 
 function fromRow(row: SubscriptionRow): StoredSubscription {

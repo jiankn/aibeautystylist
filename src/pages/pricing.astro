@@ -456,6 +456,102 @@ const planCards = planOrder.map((code) => ({
   content: copy.planContent[code],
 }));
 
+const proToPremiumMonthlyDelta =
+  PLAN_DEFINITIONS.premium.monthlyPriceUsd -
+  PLAN_DEFINITIONS.pro.monthlyPriceUsd;
+const proToPremiumCopyByLocale: Record<
+  string,
+  {
+    cta: string;
+    note: string;
+    summary: string;
+    success: string;
+  }
+> = {
+  en: {
+    cta: "Upgrade to Premium",
+    note: "Already on Pro? Upgrade by paying only the prorated difference.",
+    summary:
+      "Your unused Pro time is credited automatically. Stripe charges only the prorated upgrade difference.",
+    success: "Premium upgrade completed. Your new credits are ready.",
+  },
+  "zh-CN": {
+    cta: "升级到 Premium",
+    note: "已是 Pro？升级时只需支付按比例计算的补差价。",
+    summary:
+      "当前 Pro 周期未使用部分会自动抵扣，Stripe 只收取按比例计算的升级差价。",
+    success: "Premium 升级已完成，新的额度已生效。",
+  },
+  "zh-TW": {
+    cta: "升級到 Premium",
+    note: "已是 Pro？升級時只需支付按比例計算的差價。",
+    summary:
+      "目前 Pro 週期未使用部分會自動抵扣，Stripe 只收取按比例計算的升級差價。",
+    success: "Premium 升級已完成，新的額度已生效。",
+  },
+  "de-DE": {
+    cta: "Auf Premium upgraden",
+    note: "Schon Pro? Beim Upgrade zahlst du nur die anteilige Differenz.",
+    summary:
+      "Ungenutzte Pro-Zeit wird automatisch angerechnet. Stripe berechnet nur die anteilige Upgrade-Differenz.",
+    success: "Premium-Upgrade abgeschlossen. Deine neuen Credits sind aktiv.",
+  },
+  "fr-FR": {
+    cta: "Passer à Premium",
+    note: "Déjà Pro ? Payez seulement la différence calculée au prorata.",
+    summary:
+      "Le temps Pro non utilisé est crédité automatiquement. Stripe facture seulement la différence au prorata.",
+    success: "Passage à Premium terminé. Vos nouveaux crédits sont actifs.",
+  },
+  "ja-JP": {
+    cta: "Premium にアップグレード",
+    note: "Pro 利用中なら、日割り計算の差額だけでアップグレードできます。",
+    summary:
+      "未使用の Pro 期間は自動で差し引かれ、Stripe は日割りのアップグレード差額のみを請求します。",
+    success:
+      "Premium へのアップグレードが完了しました。新しいクレジットを利用できます。",
+  },
+  "ko-KR": {
+    cta: "Premium으로 업그레이드",
+    note: "이미 Pro라면 비례 계산된 차액만 결제하고 업그레이드하세요.",
+    summary:
+      "사용하지 않은 Pro 기간은 자동으로 차감되며, Stripe는 비례 계산된 업그레이드 차액만 청구합니다.",
+    success:
+      "Premium 업그레이드가 완료되었습니다. 새 크레딧을 사용할 수 있습니다.",
+  },
+  "es-ES": {
+    cta: "Subir a Premium",
+    note: "¿Ya tienes Pro? Paga solo la diferencia prorrateada del upgrade.",
+    summary:
+      "El tiempo Pro no usado se acredita automáticamente. Stripe cobra solo la diferencia prorrateada.",
+    success:
+      "Upgrade a Premium completado. Tus nuevos créditos ya están activos.",
+  },
+  "es-419": {
+    cta: "Subir a Premium",
+    note: "¿Ya tienes Pro? Paga solo la diferencia prorrateada del upgrade.",
+    summary:
+      "El tiempo Pro no usado se acredita automáticamente. Stripe cobra solo la diferencia prorrateada.",
+    success:
+      "Upgrade a Premium completado. Tus nuevos créditos ya están activos.",
+  },
+  "pt-BR": {
+    cta: "Upgrade para Premium",
+    note: "Já é Pro? Pague apenas a diferença proporcional do upgrade.",
+    summary:
+      "O tempo Pro não usado é creditado automaticamente. A Stripe cobra apenas a diferença proporcional.",
+    success:
+      "Upgrade para Premium concluído. Seus novos créditos já estão ativos.",
+  },
+};
+const proToPremiumCopy =
+  proToPremiumCopyByLocale[currentLocale] ?? proToPremiumCopyByLocale.en;
+const proToPremiumUpgrade = {
+  monthlyPrice: proToPremiumMonthlyDelta.toFixed(2),
+  yearlyPrice: (proToPremiumMonthlyDelta * yearlyFactor).toFixed(2),
+  ...proToPremiumCopy,
+};
+
 const structuredDataUrl = new URL(
   currentPathname,
   Astro.site ?? Astro.url.origin,
@@ -510,6 +606,9 @@ const checkoutCopy = {
   toastPortalFailed: copy.toastPortalFailed,
   checkoutSuccess: copy.checkoutSuccess,
   checkoutCancelNotice: copy.checkoutCancelNotice,
+  upgradeFromProCta: proToPremiumUpgrade.cta,
+  upgradeFromProSummary: proToPremiumUpgrade.summary,
+  upgradeSuccess: proToPremiumUpgrade.success,
   dashboardHref,
 };
 ---
@@ -584,11 +683,26 @@ const checkoutCopy = {
                 class="plan-price"
                 data-monthly={plan.monthlyPrice}
                 data-yearly={plan.yearlyPrice}
+                data-upgrade-monthly={
+                  plan.code === "premium"
+                    ? proToPremiumUpgrade.monthlyPrice
+                    : undefined
+                }
+                data-upgrade-yearly={
+                  plan.code === "premium"
+                    ? proToPremiumUpgrade.yearlyPrice
+                    : undefined
+                }
               >
-                <span>$</span>
+                <span data-price-prefix>$</span>
                 <b class="price-amount">{plan.monthlyPrice}</b>
                 <small class="price-unit">{copy.monthlyUnit}</small>
               </div>
+              {plan.code === "premium" && (
+                <p class="pro-upgrade-note" data-pro-upgrade-note hidden>
+                  {proToPremiumUpgrade.note}
+                </p>
+              )}
               <p class="plan-reason">{plan.content.reason}</p>
               {plan.code === "free" ? (
                 <a
@@ -886,8 +1000,10 @@ const checkoutCopy = {
       const confirmBtn = document.querySelector("[data-checkout-confirm]");
       const cancelBtn = document.querySelector("[data-checkout-cancel]");
       const params = new URLSearchParams(window.location.search);
+      const planRanks = { free: 1, pro: 2, premium: 3 };
       let interval = "monthly";
       let pendingPlan = null;
+      let currentPlan = null;
 
       function toast(msg) {
         if (window.showToast) {
@@ -987,9 +1103,18 @@ const checkoutCopy = {
         await delay(1600);
       }
 
+      function isProToPremiumCard(card) {
+        return currentPlan === "pro" && card?.dataset.plan === "premium";
+      }
+
       function priceFor(card) {
         const price = card.querySelector(".plan-price");
-        return price?.dataset[interval] || "0";
+        const key = isProToPremiumCard(card)
+          ? interval === "yearly"
+            ? "upgradeYearly"
+            : "upgradeMonthly"
+          : interval;
+        return price?.dataset[key] || price?.dataset[interval] || "0";
       }
 
       function updatePrices() {
@@ -997,12 +1122,17 @@ const checkoutCopy = {
           const price = card.querySelector(".plan-price");
           const amount = card.querySelector(".price-amount");
           const unit = card.querySelector(".price-unit");
+          const prefix = card.querySelector("[data-price-prefix]");
+          const upgradeNote = card.querySelector("[data-pro-upgrade-note]");
+          const isUpgrade = isProToPremiumCard(card);
           if (!price || !amount || !unit) return;
-          amount.textContent = price.dataset[interval] || "0";
+          amount.textContent = priceFor(card);
+          if (prefix) prefix.textContent = isUpgrade ? "+$" : "$";
           unit.textContent =
             interval === "yearly"
               ? checkoutCopy.yearlyUnit
               : checkoutCopy.monthlyUnit;
+          if (upgradeNote) upgradeNote.hidden = !isUpgrade;
         });
       }
 
@@ -1022,14 +1152,16 @@ const checkoutCopy = {
         pendingPlan = plan;
         const title = card.querySelector("h2")?.textContent?.trim() || plan;
         const price = priceFor(card);
+        const isUpgrade = isProToPremiumCard(card);
         if (summary) {
           summary.innerHTML = `
-            <b>${title}</b>
-            <span>$${price} ${
+            <b>${isUpgrade ? checkoutCopy.upgradeFromProCta : title}</b>
+            <span>${isUpgrade ? "+$" : "$"}${price} ${
               interval === "yearly"
                 ? checkoutCopy.yearlyUnit
                 : checkoutCopy.monthlyUnit
             }</span>
+            ${isUpgrade ? `<em>${checkoutCopy.upgradeFromProSummary}</em>` : ""}
           `;
         }
         if (dialog && typeof dialog.showModal === "function") {
@@ -1060,6 +1192,13 @@ const checkoutCopy = {
           const body = await res.json().catch(() => null);
           if (body?.ok && body.data?.url) {
             window.location.href = body.data.url;
+            return;
+          }
+          if (body?.ok && body.data?.upgraded) {
+            dialog?.close();
+            toast(checkoutCopy.upgradeSuccess || checkoutCopy.checkoutSuccess);
+            await delay(1400);
+            window.location.href = getCheckoutSuccessDestination();
             return;
           }
           if (
@@ -1096,7 +1235,11 @@ const checkoutCopy = {
           event.preventDefault();
           const card = button.closest(".pricing-plan-card");
           const plan = button.dataset.plan;
-          if (card?.dataset.current === "true") openPortal();
+          if (
+            card?.dataset.current === "true" ||
+            button.dataset.manageSubscription === "true"
+          )
+            openPortal();
           else if (plan) openCheckout(plan);
         });
       });
@@ -1108,16 +1251,42 @@ const checkoutCopy = {
         .then((res) => res.json())
         .then((body) => {
           const plan = body?.data?.plan;
+          currentPlan = plan || null;
           cards.forEach((card) => {
-            if (card.dataset.plan !== plan) return;
-            card.dataset.current = "true";
-            card.insertAdjacentHTML(
-              "afterbegin",
-              `<div class="current-plan-flag">${checkoutCopy.currentPlan}</div>`,
-            );
+            const cardPlan = card.dataset.plan;
             const cta = card.querySelector("[data-plan-cta]");
-            if (cta) cta.textContent = checkoutCopy.manageCta;
+            const currentRank = planRanks[currentPlan] || 0;
+            const cardRank = planRanks[cardPlan] || 0;
+            if (cta && currentRank > 0 && cardRank <= currentRank) {
+              cta.textContent = checkoutCopy.manageCta;
+              cta.dataset.manageSubscription = "true";
+            }
+            if (cardPlan !== currentPlan) return;
+            card.dataset.current = "true";
+            if (!card.querySelector(".current-plan-flag")) {
+              card.insertAdjacentHTML(
+                "afterbegin",
+                `<div class="current-plan-flag">${checkoutCopy.currentPlan}</div>`,
+              );
+            }
           });
+          const currentRank = planRanks[currentPlan] || 0;
+          document.querySelectorAll("[data-plan-cta]").forEach((cta) => {
+            const ctaRank = planRanks[cta.dataset.plan] || 0;
+            if (currentRank > 0 && ctaRank > 0 && ctaRank <= currentRank) {
+              cta.textContent = checkoutCopy.manageCta;
+              cta.dataset.manageSubscription = "true";
+            }
+          });
+          if (currentPlan === "pro") {
+            document
+              .querySelectorAll('[data-plan-cta][data-plan="premium"]')
+              .forEach((cta) => {
+                cta.textContent = checkoutCopy.upgradeFromProCta;
+                delete cta.dataset.manageSubscription;
+              });
+          }
+          updatePrices();
         })
         .catch(() => {});
 
@@ -1904,6 +2073,34 @@ const checkoutCopy = {
     .premium .plan-price small {
       color: var(--premium-price-unit);
     }
+    .pro-upgrade-note {
+      width: fit-content;
+      max-width: 100%;
+      margin: -2px 0 14px;
+      padding: 8px 10px;
+      border: 1px solid rgba(184, 123, 23, 0.24);
+      border-radius: 12px;
+      background: rgba(255, 248, 225, 0.72);
+      color: color-mix(in srgb, var(--premium-gold-ink) 76%, var(--text));
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+    .pro-upgrade-note[hidden] {
+      display: none;
+    }
+    :global([data-theme="dark"]) .pro-upgrade-note {
+      border-color: rgba(239, 182, 82, 0.28);
+      background: rgba(246, 204, 115, 0.1);
+      color: #f5cf82;
+    }
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"]) .pro-upgrade-note) {
+        border-color: rgba(239, 182, 82, 0.28);
+        background: rgba(246, 204, 115, 0.1);
+        color: #f5cf82;
+      }
+    }
     .plan-reason {
       min-height: 58px;
       margin: 0 0 18px;
@@ -2358,8 +2555,8 @@ const checkoutCopy = {
       font-size: 18px;
     }
     .checkout-summary {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: 12px;
       margin: 18px 0;
       padding: 14px;
@@ -2367,6 +2564,18 @@ const checkoutCopy = {
       border-radius: 12px;
       background: var(--soft);
       color: var(--heading);
+    }
+    .checkout-summary span {
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .checkout-summary em {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 1.55;
     }
     .checkout-actions {
       display: grid;

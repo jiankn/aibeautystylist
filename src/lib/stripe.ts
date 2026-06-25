@@ -181,6 +181,34 @@ export function createStripeClient(options: StripeClientOptions) {
         `/v1/subscriptions/${encodeURIComponent(subscriptionId)}`,
       );
     },
+
+    updateSubscriptionPrice(input: {
+      subscriptionId: string;
+      itemId: string;
+      priceId: string;
+      prorationBehavior?: "always_invoice" | "create_prorations" | "none";
+      paymentBehavior?:
+        | "allow_incomplete"
+        | "default_incomplete"
+        | "pending_if_incomplete"
+        | "error_if_incomplete";
+      metadata?: Record<string, string>;
+    }): Promise<StripeSubscription> {
+      const params: Record<string, string | number | boolean | undefined> = {
+        "items[0][id]": input.itemId,
+        "items[0][price]": input.priceId,
+        proration_behavior: input.prorationBehavior ?? "always_invoice",
+        payment_behavior: input.paymentBehavior ?? "error_if_incomplete",
+      };
+      for (const [key, value] of Object.entries(input.metadata ?? {})) {
+        params[`metadata[${key}]`] = value;
+      }
+      return request(
+        "POST",
+        `/v1/subscriptions/${encodeURIComponent(input.subscriptionId)}`,
+        params,
+      );
+    },
   };
 }
 
@@ -192,7 +220,7 @@ export interface StripeSubscription {
   client_reference_id?: string;
   metadata?: Record<string, string>;
   items?: {
-    data?: Array<{ price?: { id?: string } }>;
+    data?: Array<{ id?: string; price?: { id?: string } }>;
   };
 }
 
