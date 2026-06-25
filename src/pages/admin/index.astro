@@ -89,11 +89,6 @@ const overviewCopy = {
       low: "低",
       process: "处理",
       view: "查看",
-      ownerOps: "张晓晓",
-      ownerGrowth: "李明",
-      ownerAi: "王伟",
-      ownerSupport: "陈晨",
-      ownerFinance: "杨洋",
       openTickets: "待处理工单积压",
       openTicketsMetric: "待处理",
       aiSuccess: "AI 生成成功率",
@@ -203,11 +198,6 @@ const overviewCopy = {
       low: "Low",
       process: "Handle",
       view: "View",
-      ownerOps: "Zhang",
-      ownerGrowth: "Li",
-      ownerAi: "Wang",
-      ownerSupport: "Chen",
-      ownerFinance: "Yang",
       openTickets: "Open ticket backlog",
       openTicketsMetric: "open",
       aiSuccess: "AI generation success",
@@ -402,13 +392,12 @@ const adminHref = (href: string) => {
                 <th>{copy.table.priority}</th>
                 <th>{copy.table.item}</th>
                 <th>{copy.table.impact}</th>
-                <th>{copy.table.owner}</th>
                 <th>{copy.table.action}</th>
               </tr>
             </thead>
             <tbody id="actionQueue">
               <tr>
-                <td colspan="5" class="admin-loading"
+                <td colspan="4" class="admin-loading"
                   ><div class="admin-spinner"></div>{copy.loading}</td
                 >
               </tr>
@@ -527,7 +516,6 @@ const adminHref = (href: string) => {
     .ops-panel-head,
     .ops-legend,
     .ops-chart-tools,
-    .ops-owner,
     .ops-table-user {
       display: flex;
       align-items: center;
@@ -787,28 +775,6 @@ const adminHref = (href: string) => {
     .ops-priority.low {
       background: #e9f8ef;
       color: #128252;
-    }
-
-    .ops-owner {
-      gap: 8px;
-      min-width: 0;
-      color: var(--admin-text);
-      font-size: 13px;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .ops-owner-avatar {
-      display: grid;
-      width: 24px;
-      height: 24px;
-      flex: 0 0 auto;
-      place-items: center;
-      border-radius: 999px;
-      background: #9b59b6;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 800;
     }
 
     .ops-table-action {
@@ -1202,7 +1168,7 @@ const adminHref = (href: string) => {
         if (!tbody) return;
         if (!data) {
           tbody.innerHTML =
-            '<tr><td colspan="5">' +
+            '<tr><td colspan="4">' +
             emptyBlock(overviewCopy.empty.queueTitle, overviewCopy.loadError) +
             "</td></tr>";
           if (badge)
@@ -1218,6 +1184,17 @@ const adminHref = (href: string) => {
           badge.textContent = pending + " " + overviewCopy.sections.queueBadge;
         }
 
+        if (!items.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="4">' +
+            emptyBlock(
+              overviewCopy.empty.queueTitle,
+              overviewCopy.empty.queueBody,
+            ) +
+            "</td></tr>";
+          return;
+        }
+
         tbody.innerHTML = items
           .map(function (item) {
             return (
@@ -1230,9 +1207,6 @@ const adminHref = (href: string) => {
               "</td>" +
               '<td style="font-variant-numeric:tabular-nums">' +
               escapeHtml(item.metric) +
-              "</td>" +
-              "<td>" +
-              ownerCell(item.owner) +
               "</td>" +
               '<td><a class="admin-btn admin-btn-sm ops-table-action" href="' +
               escapeHtml(item.href) +
@@ -1252,35 +1226,30 @@ const adminHref = (href: string) => {
         var users = Number(data.totalUsers || 0);
         var activeSubscriptions = Number(data.activeSubscriptions || 0);
         var aiCost = Number(data.monthlyAiCostUnits || 0);
-        return [
-          {
-            priority:
-              openTickets >= 10 ? "high" : openTickets > 0 ? "medium" : "low",
+        var items = [];
+        if (openTickets > 0) {
+          items.push({
+            priority: openTickets >= 10 ? "high" : "medium",
             title: overviewCopy.queue.openTickets,
             metric:
               formatNumber(openTickets) +
               " " +
               overviewCopy.queue.openTicketsMetric,
-            owner: overviewCopy.queue.ownerSupport,
             href: adminHref("/admin/support"),
-            action:
-              openTickets > 0
-                ? overviewCopy.queue.process
-                : overviewCopy.queue.view,
-          },
-          {
-            priority:
-              successRate < 95 ? "high" : successRate < 98 ? "medium" : "low",
+            action: overviewCopy.queue.process,
+          });
+        }
+        if (successRate < 98) {
+          items.push({
+            priority: successRate < 95 ? "high" : "medium",
             title: overviewCopy.queue.aiSuccess,
             metric: successRate.toFixed(2).replace(".00", "") + "%",
-            owner: overviewCopy.queue.ownerAi,
             href: adminHref("/admin/ai-costs"),
-            action:
-              successRate < 98
-                ? overviewCopy.queue.process
-                : overviewCopy.queue.view,
-          },
-          {
+            action: overviewCopy.queue.process,
+          });
+        }
+        if (latencySeconds >= 6) {
+          items.push({
             priority:
               latencySeconds >= 10
                 ? "high"
@@ -1291,38 +1260,30 @@ const adminHref = (href: string) => {
             metric:
               latencySeconds.toFixed(1).replace(".0", "") +
               overviewCopy.labels.seconds,
-            owner: overviewCopy.queue.ownerOps,
             href: adminHref("/admin/ai-costs"),
-            action:
-              latencySeconds >= 6
-                ? overviewCopy.queue.process
-                : overviewCopy.queue.view,
-          },
-          {
-            priority:
-              users >= 10 && activeSubscriptions === 0 ? "medium" : "low",
+            action: overviewCopy.queue.process,
+          });
+        }
+        if (users >= 10 && activeSubscriptions === 0) {
+          items.push({
+            priority: "medium",
             title: overviewCopy.queue.paidConversion,
             metric:
               formatNumber(activeSubscriptions) + " / " + formatNumber(users),
-            owner: overviewCopy.queue.ownerGrowth,
             href: adminHref("/admin/revenue"),
-            action:
-              users >= 10 && activeSubscriptions === 0
-                ? overviewCopy.queue.process
-                : overviewCopy.queue.view,
-          },
-          {
-            priority: aiCost >= 100 ? "medium" : "low",
+            action: overviewCopy.queue.process,
+          });
+        }
+        if (aiCost >= 100) {
+          items.push({
+            priority: "medium",
             title: overviewCopy.queue.aiBudget,
             metric: formatMoney(aiCost),
-            owner: overviewCopy.queue.ownerFinance,
             href: adminHref("/admin/ai-costs"),
-            action:
-              aiCost >= 100
-                ? overviewCopy.queue.process
-                : overviewCopy.queue.view,
-          },
-        ];
+            action: overviewCopy.queue.process,
+          });
+        }
+        return items;
       }
 
       function priorityBadge(priority) {
@@ -1339,19 +1300,6 @@ const adminHref = (href: string) => {
               ? overviewCopy.queue.medium
               : overviewCopy.queue.low;
         return '<span class="' + cls + '">' + escapeHtml(label) + "</span>";
-      }
-
-      function ownerCell(name) {
-        var initial = String(name || "A")
-          .slice(0, 1)
-          .toUpperCase();
-        return (
-          '<span class="ops-owner"><span class="ops-owner-avatar">' +
-          escapeHtml(initial) +
-          "</span>" +
-          escapeHtml(name || "-") +
-          "</span>"
-        );
       }
 
       function userIdentity(name, email) {
