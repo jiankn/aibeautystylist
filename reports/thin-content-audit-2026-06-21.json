@@ -21,7 +21,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 38,
+      "internalLinks": 37,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -48,7 +48,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 39,
+      "internalLinks": 38,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -75,7 +75,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -102,7 +102,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -129,7 +129,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -156,7 +156,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -183,7 +183,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -210,7 +210,7 @@
       "h2Count": 9,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 39,
+      "internalLinks": 38,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -237,7 +237,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -246,8 +246,8 @@
       },
       "reasons": [],
       "watchReasons": [],
-      "maxSimilarity": 0.04122674710910005,
-      "maxSimilarityUrl": "/looks/natural-makeup",
+      "maxSimilarity": 0.038955289951305885,
+      "maxSimilarityUrl": "/scenarios/passport-photo",
       "severity": "ok"
     },
     {
@@ -257,14 +257,14 @@
       "action": "optimize-existing",
       "keyword": "natural makeup look",
       "status": 200,
-      "effectiveWords": 1212,
+      "effectiveWords": 1623,
       "h1": [
-        "Natural Makeup Look: The 'No-Makeup' Guide for Real Life"
+        "Natural Makeup Look Ideas: How to Wear Makeup Naturally"
       ],
-      "h2Count": 8,
+      "h2Count": 10,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -273,7 +273,7 @@
       },
       "reasons": [],
       "watchReasons": [],
-      "maxSimilarity": 0.04122674710910005,
+      "maxSimilarity": 0.03419516263552961,
       "maxSimilarityUrl": "/ai-makeup-try-on",
       "severity": "ok"
     },
@@ -291,7 +291,7 @@
       "h2Count": 9,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -318,7 +318,7 @@
       "h2Count": 10,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 38,
+      "internalLinks": 37,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -345,7 +345,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -372,7 +372,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 39,
+      "internalLinks": 38,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -399,7 +399,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -426,7 +426,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -453,7 +453,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -480,7 +480,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -507,7 +507,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -534,7 +534,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 39,
+      "internalLinks": 38,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -543,7 +543,7 @@
       },
       "reasons": [],
       "watchReasons": [],
-      "maxSimilarity": 0.5038387715930902,
+      "maxSimilarity": 0.5043144774688398,
       "maxSimilarityUrl": "/de/for/reife-haut",
       "severity": "ok"
     },
@@ -561,7 +561,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -588,7 +588,7 @@
       "h2Count": 6,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -615,7 +615,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -642,7 +642,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -669,7 +669,7 @@
       "h2Count": 6,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 44,
+      "internalLinks": 43,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -696,7 +696,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 34,
+      "internalLinks": 33,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -723,7 +723,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -732,7 +732,7 @@
       },
       "reasons": [],
       "watchReasons": [],
-      "maxSimilarity": 0.5499505440158259,
+      "maxSimilarity": 0.5503952569169961,
       "maxSimilarityUrl": "/de/tutorial",
       "severity": "ok"
     },
@@ -750,7 +750,7 @@
       "h2Count": 9,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 39,
+      "internalLinks": 38,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -759,7 +759,7 @@
       },
       "reasons": [],
       "watchReasons": [],
-      "maxSimilarity": 0.4529109589041096,
+      "maxSimilarity": 0.4533789563729683,
       "maxSimilarityUrl": "/de/scenarios/braut",
       "severity": "ok"
     },
@@ -777,7 +777,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -804,7 +804,7 @@
       "h2Count": 9,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -831,7 +831,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 39,
+      "internalLinks": 38,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -858,7 +858,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 38,
+      "internalLinks": 37,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -867,7 +867,7 @@
       },
       "reasons": [],
       "watchReasons": [],
-      "maxSimilarity": 0.5499505440158259,
+      "maxSimilarity": 0.5503952569169961,
       "maxSimilarityUrl": "/de/for/reife-haut",
       "severity": "ok"
     },
@@ -885,7 +885,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -912,7 +912,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -939,7 +939,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 38,
+      "internalLinks": 37,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -966,7 +966,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -993,7 +993,7 @@
       "h2Count": 10,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 38,
+      "internalLinks": 37,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -1020,7 +1020,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 35,
+      "internalLinks": 34,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -1047,7 +1047,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 39,
+      "internalLinks": 38,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -1074,7 +1074,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -1101,7 +1101,7 @@
       "h2Count": 7,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 39,
+      "internalLinks": 38,
       "keywordPlacement": {
         "title": true,
         "h1": true,
@@ -1128,7 +1128,7 @@
       "h2Count": 8,
       "hasFaq": true,
       "hasCta": true,
-      "internalLinks": 36,
+      "internalLinks": 35,
       "keywordPlacement": {
         "title": false,
         "h1": false,

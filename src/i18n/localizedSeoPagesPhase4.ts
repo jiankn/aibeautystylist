@@ -409,6 +409,40 @@ const seeds: readonly PageSeed[] = [
     caution: "decidir solo por una foto de modelo",
     proof: "que el color funcione en tu tono y expresión",
     related: ["/ai-makeup-try-on", "/virtual-makeup-app"],
+    intentSections: [
+      {
+        kind: "paragraphs",
+        title: "Prueba de maquillaje online antes de comprar",
+        paragraphs: [
+          "Quien busca prueba de maquillaje suele querer reducir incertidumbre: saber si un color favorece, si una base se verá pesada o si un look funciona en su propio rostro. Esta página responde esa intención desde una prueba online, no desde una cita presencial con maquillador.",
+          "La diferencia práctica es que puedes probar direcciones antes de invertir tiempo o dinero. Sube una selfie limpia, compara intensidad, labios, ojos y acabado, y guarda una referencia visual para decidir si el maquillaje merece pasar a la compra o a una prueba física.",
+        ],
+      },
+      {
+        kind: "table",
+        title: "Prueba de maquillaje online vs prueba presencial",
+        rows: [
+          {
+            label: "Antes de comprar",
+            good: "Usa la prueba online para filtrar tonos, intensidad y estilo general.",
+            avoid:
+              "Comprar solo porque el color se ve bien en una modelo o en un tutorial.",
+          },
+          {
+            label: "Antes de un evento",
+            good: "Prueba varias direcciones en tu selfie y lleva una referencia clara al maquillador.",
+            avoid:
+              "Llegar a la prueba presencial sin saber si buscas natural, glow o más definición.",
+          },
+          {
+            label: "Cuando no tienes productos",
+            good: "Valida familias de color y acabado antes de elegir base, rubor o labial.",
+            avoid:
+              "Intentar copiar un look completo sin revisar subtono, luz y forma del rostro.",
+          },
+        ],
+      },
+    ],
   },
   {
     languageSlug: "es",
