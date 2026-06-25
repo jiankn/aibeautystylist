@@ -323,7 +323,7 @@
       {
         "index": "03",
         "title": "Sin generación no hay consumo",
-        "copy": "El crédito se usa cuando empieza la generación; las tareas fallidas se reembolsan."
+        "copy": "El crédito se usa cuando empieza la generación; las tareas fallidas devuelven créditos."
       }
     ],
     "upgradeTitle": "Actualiza para más opciones",
@@ -380,7 +380,7 @@
     "loginToUseDesc": "Tu cuenta conserva créditos, historial y resultados guardados.",
     "previewPlaceholderTitle": "Tu resultado aparecerá aquí",
     "previewPlaceholderDesc": "Elige un look y sube una selfie para generar la prueba.",
-    "ruleStrip": "No se descuenta crédito antes de subir la foto. Las tareas fallidas se reembolsan.",
+    "ruleStrip": "No se descuenta crédito antes de subir la foto. Las tareas fallidas devuelven créditos.",
     "learnRules": "Ver reglas",
     "waitingUpload": "Esperando selfie",
     "cancelUpload": "Cancelar subida",

@@ -471,32 +471,38 @@ Slogan：**Your full-year style concierge**
 
 累计购买 3 次后引导转订阅："You've already invested $XX — upgrade to Pro for unlimited access and save."
 
-### 7.6 退款政策（No Refund Policy）
+### 7.6 退款政策（Refund Policy）
 
-本产品为数字服务产品，采用行业标准的**不退款政策（No Refund Policy）**。
+本产品为 AI 生图类数字服务，核心成本来自不可回收的模型调用与算力消耗，因此退款政策需要区分**现金退款**和**生成额度返还**。
 
 #### 政策声明
 
-所有付费订阅（Pro / Premium）和单次增值包一经购买，**不予退款**。
+订阅费用在已使用 AI 生成额度或付费权益后通常不予退款，除非适用法律要求或经人工审核批准。取消订阅会停止下一次续费，当前已付周期权益继续保留。失败、超时或系统取消的生成任务会自动返还额度；已完成生成的任务即使结果不符合预期，也会消耗额度。
+
+English source copy:
+
+Subscription fees are generally non-refundable once AI generation credits or paid features have been used, except where required by law or approved after review. Canceling stops the next renewal and keeps current-period access active. Failed, timed-out, or system-canceled generations return credits automatically; completed generations consume credits even if the result is not preferred.
 
 具体条款：
-- 月付订阅：付款后立即生效，当月不退款。用户可随时取消，取消后当前计费周期内继续享有服务，下一周期不再扣费
-- 年付订阅：付款后立即生效，整个年度不退款。用户可随时取消，取消后剩余月份继续享有服务，到期不自动续费
-- 单次增值包：购买后立即交付，不退款
-- 超额额度包（$0.99/10 次）：购买后立即到账，不退款
+- 月付订阅：付款后立即生效。用户可随时取消，取消后当前计费周期内继续享有服务，下一周期不再扣费。
+- 年付订阅：付款后立即生效。用户可随时取消，取消后剩余周期继续享有服务，到期不自动续费。
+- 单次增值包 / 超额额度包：购买后立即交付；如已使用或已发放至账户，通常不退现金。
+- 系统失败、超时或系统取消：自动返还对应生成额度。
+- 已完成生成：即使用户不喜欢结果，也视为已消耗 AI 算力和生成额度。
 
 #### 法律依据
 
 - **数字内容例外**：欧盟《消费者权利指令》（2011/83/EU）第 16(m) 条允许数字内容在用户同意并确认放弃撤回权后，排除 14 天冷静期
-- **SaaS 行业惯例**：Canva、Figma、Adobe Creative Cloud、Midjourney 等主流 SaaS 产品均采用不退款政策
+- **AI 算力成本**：AI 生图任务一旦开始，第三方模型调用和算力成本通常不可撤回
+- **SaaS 行业惯例**：主流数字服务通常在用户使用付费权益后限制现金退款，并提供取消续费或服务补偿机制
 - **Apple / Google 应用内购买**：如后续上架 App Store 或 Google Play，退款由平台自行处理，不影响本产品政策
 
 #### 用户告知时机（合规硬性要求）
 
-不退款政策必须在以下 **3 个节点** 明确告知用户：
+退款政策必须在以下节点明确告知用户：
 
-1. **定价页**：在价格卡下方以小字标注 "All purchases are final. No refunds."
-2. **结账页（Stripe Checkout）**：在"确认付款"按钮上方展示 "By completing this purchase, you agree that this is a digital product and no refunds will be issued."
+1. **定价页**：展示现金退款、取消续费和额度返还规则。
+2. **结账页（Stripe Checkout）**：付款前展示计划、价格、续费周期和适用政策。
 3. **确认邮件**：付款成功邮件中包含退款政策链接
 
 #### 例外情况
@@ -505,13 +511,15 @@ Slogan：**Your full-year style concierge**
 - **重复扣款 / 技术故障**：系统错误导致的重复扣费，应全额退款
 - **服务完全不可用**：连续 72 小时以上 AI 服务不可用（非用户端问题），可按比例补偿额度
 - **法律强制要求**：特定司法管辖区法律要求必须退款的，按当地法律执行
+- **客服审核批准**：在未使用付费权益、错误购买、欺诈风险等特殊情况中，可由人工审核后处理
 
 #### 多语言适配
 
-退款政策需要翻译为所有上线语言（中文 / 英文），且：
-- 中文版使用"数字产品，一经购买不予退款"
-- 英文版使用 "All sales are final. This is a digital product and no refunds will be issued."
-- 两种语言版本需经过法律审核
+退款政策需要翻译为所有上线语言，且必须统一以下语义：
+- 现金退款：已使用 AI 额度或付费权益后通常不退现金，法律要求或人工审核批准除外。
+- 取消订阅：停止下一次续费，当前已付周期继续保留权益。
+- 额度返还：失败、超时或系统取消自动返还额度。
+- 已完成生成：结果不符合主观预期也会消耗额度。
 
 ---
 

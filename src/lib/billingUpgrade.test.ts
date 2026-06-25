@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import {
+  previewActiveSubscriptionUpgrade,
   SubscriptionUpgradeError,
   upgradeActiveSubscriptionPlan,
+  type SubscriptionUpgradePreviewStripe,
   type SubscriptionUpgradeStripe,
 } from "./billingUpgrade";
 import { getQuotaSnapshot, reserveQuota, resetMockQuota } from "./quota";
@@ -88,6 +90,7 @@ describe("subscription upgrades", () => {
       priceId: "price_premium_monthly",
       stripe,
       now,
+      prorationDate: 1781712000,
     });
 
     expect(updates[0]).toMatchObject({
@@ -95,6 +98,7 @@ describe("subscription upgrades", () => {
       itemId: "si_123",
       priceId: "price_premium_monthly",
       prorationBehavior: "always_invoice",
+      prorationDate: 1781712000,
       paymentBehavior: "error_if_incomplete",
       metadata: {
         userId: "user_123",
@@ -111,6 +115,80 @@ describe("subscription upgrades", () => {
     await expect(
       getEffectivePlan("user_123", undefined, now),
     ).resolves.toMatchObject({ planCode: "premium", status: "active" });
+  });
+
+  it("previews only the immediate prorated upgrade charge", async () => {
+    await upsertSubscription(
+      {
+        userId: "user_123",
+        stripeSubscriptionId: "sub_123",
+        planCode: "pro",
+        status: "active",
+      },
+      undefined,
+      now,
+    );
+    const previews: Parameters<
+      SubscriptionUpgradePreviewStripe["createPreviewInvoice"]
+    >[0][] = [];
+    const stripe: SubscriptionUpgradePreviewStripe = {
+      async retrieveSubscription(subscriptionId) {
+        return {
+          id: subscriptionId,
+          status: "active",
+          customer: "cus_123",
+          current_period_end: nextPeriod,
+          items: {
+            data: [{ id: "si_123", price: { id: "price_pro_monthly" } }],
+          },
+        };
+      },
+      async createPreviewInvoice(input) {
+        previews.push(input);
+        return {
+          id: "upcoming_in_123",
+          amount_due: 5627,
+          total: 5627,
+          currency: "usd",
+          subscription_details: { proration_date: input.prorationDate },
+          lines: {
+            data: [
+              { amount: -372, currency: "usd", proration: true },
+              {
+                amount: 2000,
+                currency: "usd",
+                parent: { subscription_item_details: { proration: true } },
+              },
+              { amount: 3999, currency: "usd", proration: false },
+            ],
+          },
+        };
+      },
+    };
+
+    const preview = await previewActiveSubscriptionUpgrade({
+      userId: "user_123",
+      toPlanCode: "premium",
+      interval: "monthly",
+      priceId: "price_premium_monthly",
+      stripe,
+      now,
+    });
+
+    expect(previews[0]).toMatchObject({
+      customerId: "cus_123",
+      subscriptionId: "sub_123",
+      itemId: "si_123",
+      priceId: "price_premium_monthly",
+    });
+    expect(preview).toMatchObject({
+      fromPlanCode: "pro",
+      toPlanCode: "premium",
+      interval: "monthly",
+      amountDue: 1628,
+      currency: "usd",
+      prorationDate: Math.floor(now.getTime() / 1000),
+    });
   });
 
   it("rejects non-upgrade plan changes", async () => {

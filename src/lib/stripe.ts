@@ -187,6 +187,7 @@ export function createStripeClient(options: StripeClientOptions) {
       itemId: string;
       priceId: string;
       prorationBehavior?: "always_invoice" | "create_prorations" | "none";
+      prorationDate?: number;
       paymentBehavior?:
         | "allow_incomplete"
         | "default_incomplete"
@@ -198,6 +199,7 @@ export function createStripeClient(options: StripeClientOptions) {
         "items[0][id]": input.itemId,
         "items[0][price]": input.priceId,
         proration_behavior: input.prorationBehavior ?? "always_invoice",
+        proration_date: input.prorationDate,
         payment_behavior: input.paymentBehavior ?? "error_if_incomplete",
       };
       for (const [key, value] of Object.entries(input.metadata ?? {})) {
@@ -208,6 +210,22 @@ export function createStripeClient(options: StripeClientOptions) {
         `/v1/subscriptions/${encodeURIComponent(input.subscriptionId)}`,
         params,
       );
+    },
+
+    createPreviewInvoice(input: {
+      customerId: string;
+      subscriptionId: string;
+      itemId: string;
+      priceId: string;
+      prorationDate: number;
+    }): Promise<StripePreviewInvoice> {
+      return request("POST", "/v1/invoices/create_preview", {
+        customer: input.customerId,
+        subscription: input.subscriptionId,
+        "subscription_details[items][0][id]": input.itemId,
+        "subscription_details[items][0][price]": input.priceId,
+        "subscription_details[proration_date]": input.prorationDate,
+      });
     },
   };
 }
@@ -233,6 +251,31 @@ export interface StripeCheckoutSession {
   customer?: string;
   client_reference_id?: string;
   metadata?: Record<string, string>;
+}
+
+export interface StripePreviewInvoice {
+  id: string;
+  amount_due?: number;
+  total?: number;
+  currency?: string;
+  subscription_details?: {
+    proration_date?: number;
+  };
+  lines?: {
+    data?: StripeInvoiceLine[];
+  };
+}
+
+export interface StripeInvoiceLine {
+  amount?: number;
+  currency?: string;
+  proration?: boolean;
+  tax_amounts?: Array<{ amount?: number }>;
+  parent?: {
+    subscription_item_details?: {
+      proration?: boolean;
+    };
+  };
 }
 
 function encodeForm(

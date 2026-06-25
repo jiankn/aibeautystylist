@@ -323,7 +323,7 @@
       {
         "index": "03",
         "title": "Sem geração, sem consumo",
-        "copy": "O crédito é usado quando a geração começa; tarefas com falha são reembolsadas."
+        "copy": "O crédito é usado quando a geração começa; tarefas com falha devolvem créditos."
       }
     ],
     "upgradeTitle": "Atualize para mais opções",
@@ -380,7 +380,7 @@
     "loginToUseDesc": "Sua conta mantém créditos, histórico e resultados salvos.",
     "previewPlaceholderTitle": "Seu resultado aparecerá aqui",
     "previewPlaceholderDesc": "Escolha um look e envie uma selfie para gerar o teste.",
-    "ruleStrip": "Nenhum crédito é descontado antes do envio. Tarefas com falha são reembolsadas.",
+    "ruleStrip": "Nenhum crédito é descontado antes do envio. Tarefas com falha devolvem créditos.",
     "learnRules": "Ver regras",
     "waitingUpload": "Aguardando selfie",
     "cancelUpload": "Cancelar envio",

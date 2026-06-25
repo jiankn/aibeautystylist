@@ -110,8 +110,8 @@ const de: LocalizedPricingContent = {
         "Eine Diagnose oder ein Try-on nutzt einen Credit.",
       ],
       [
-        "Erstattung bei Fehlern",
-        "Fehlgeschlagene, abgebrochene oder zeitüberschrittene Aufgaben werden automatisch erstattet.",
+        "Credit-Rückgabe bei Fehlern",
+        "Fehlgeschlagene, zeitüberschrittene oder vom System abgebrochene Aufgaben geben Credits automatisch zurück.",
       ],
       [
         "Jederzeit kündbar",
@@ -202,7 +202,7 @@ const de: LocalizedPricingContent = {
       ],
       [
         "Was passiert bei einer fehlgeschlagenen Generierung?",
-        "Fehlgeschlagene, abgebrochene oder zeitüberschrittene Aufgaben erstatten den reservierten Credit automatisch.",
+        "Fehlgeschlagene, zeitüberschrittene oder vom System abgebrochene Aufgaben geben den reservierten Credit automatisch zurück. Abgeschlossene Generierungen verbrauchen Credits, auch wenn das Ergebnis nicht gefällt.",
       ],
       [
         "Darf ich Downloads kommerziell nutzen?",
@@ -211,7 +211,7 @@ const de: LocalizedPricingContent = {
     ],
     policyTitle: "Abrechnung und Regeln",
     policyText:
-      "Abos verlängern sich automatisch. Du kannst im Kundenportal kündigen. Bezahlte Gebühren werden nicht erstattet; eine Kündigung verhindert die nächste Verlängerung.",
+      "Abogebühren sind in der Regel nicht erstattungsfähig, sobald KI-Generierungscredits oder kostenpflichtige Funktionen genutzt wurden, außer wenn geltendes Recht es verlangt oder der Support eine Erstattung nach Prüfung genehmigt. Eine Kündigung stoppt die nächste Verlängerung und lässt den Zugang im laufenden Zeitraum aktiv. Fehlgeschlagene, zeitüberschrittene oder vom System abgebrochene Generierungen geben Credits automatisch zurück; abgeschlossene Generierungen verbrauchen Credits, auch wenn das Ergebnis nicht gefällt.",
     policyKicker: "Klare Abrechnung",
     policyFacts: [
       [
@@ -222,7 +222,10 @@ const de: LocalizedPricingContent = {
         "Nach der Kündigung",
         "Vorteile bleiben bis zum Ende des bezahlten Zeitraums aktiv",
       ],
-      ["Erstattung", "Bezahlte Abogebühren werden nicht erstattet"],
+      [
+        "Erstattung",
+        "Gelderstattungen werden nur bei gesetzlicher Pflicht oder nach Supportprüfung bearbeitet; berechtigte Systemfehler geben Generierungscredits zurück",
+      ],
     ],
     policySupportLead: "Noch Fragen zu Abrechnung oder Kündigung?",
     policySupportCta: "Support kontaktieren",
@@ -290,7 +293,7 @@ const fr: LocalizedPricingContent = {
       ],
       [
         "Crédit rendu en cas d’échec",
-        "Les tâches échouées, annulées ou expirées sont remboursées automatiquement.",
+        "Les tâches échouées, expirées ou annulées par le système restituent automatiquement les crédits.",
       ],
       [
         "Résiliation à tout moment",
@@ -383,7 +386,7 @@ const fr: LocalizedPricingContent = {
       ],
       [
         "Que se passe-t-il si la génération échoue ?",
-        "Les tâches échouées, annulées ou expirées rendent automatiquement le crédit réservé.",
+        "Les tâches échouées, expirées ou annulées par le système restituent automatiquement le crédit réservé. Les générations terminées consomment des crédits, même si le résultat ne vous convient pas.",
       ],
       [
         "Puis-je utiliser les images à des fins commerciales ?",
@@ -392,7 +395,7 @@ const fr: LocalizedPricingContent = {
     ],
     policyTitle: "Facturation et conditions",
     policyText:
-      "Les abonnements se renouvellent automatiquement. Vous pouvez résilier depuis le portail client. Les montants payés ne sont pas remboursés, mais la résiliation empêche le prochain renouvellement.",
+      "Les frais d’abonnement ne sont généralement pas remboursables une fois que des crédits de génération IA ou des fonctionnalités payantes ont été utilisés, sauf obligation légale ou approbation après examen. La résiliation bloque le prochain renouvellement et conserve l’accès jusqu’à la fin de la période en cours. Les générations échouées, expirées ou annulées par le système restituent automatiquement les crédits; les générations terminées consomment des crédits même si le résultat ne vous convient pas.",
     policyKicker: "Facturation transparente",
     policyFacts: [
       ["Renouvellement", "Renouvellement automatique selon le cycle choisi"],
@@ -402,7 +405,7 @@ const fr: LocalizedPricingContent = {
       ],
       [
         "Remboursements",
-        "Les frais d’abonnement déjà payés ne sont pas remboursés",
+        "Les remboursements en espèces sont étudiés uniquement si la loi l’exige ou si l’assistance les approuve; les erreurs système éligibles restituent des crédits",
       ],
     ],
     policySupportLead: "Une question sur la facturation ou la résiliation ?",
@@ -462,7 +465,7 @@ const ja: LocalizedPricingContent = {
       ["共通クレジット", "診断または試着1回につき1クレジットを使用します。"],
       [
         "失敗時は返却",
-        "失敗、タイムアウト、キャンセル時は自動で返却されます。",
+        "失敗、タイムアウト、システムによるキャンセル時は自動で返却されます。",
       ],
       [
         "いつでも解約可能",
@@ -551,7 +554,7 @@ const ja: LocalizedPricingContent = {
       ],
       [
         "生成に失敗した場合は？",
-        "失敗、タイムアウト、キャンセルされたタスクは予約クレジットを自動返却します。",
+        "失敗、タイムアウト、システムによるキャンセル時は予約クレジットを自動返却します。完了した生成は、結果が希望と異なる場合でもクレジットを消費します。",
       ],
       [
         "画像を商用利用できますか？",
@@ -560,12 +563,15 @@ const ja: LocalizedPricingContent = {
     ],
     policyTitle: "請求と利用条件",
     policyText:
-      "サブスクリプションは自動更新されます。カスタマーポータルからいつでも解約できます。支払済み料金は返金されませんが、解約すると次回更新は行われません。",
+      "AI生成クレジットまたは有料機能の利用後、サブスクリプション料金は原則返金されません。ただし、適用法で求められる場合、または審査後に承認された場合を除きます。解約すると次回更新は停止し、現在の支払済み期間のアクセスは維持されます。失敗、タイムアウト、システムによるキャンセルの生成は自動でクレジットを返却します。完了した生成は、結果が希望と異なる場合でもクレジットを消費します。",
     policyKicker: "明確な請求ルール",
     policyFacts: [
       ["更新", "選択した請求周期で自動更新"],
       ["解約後", "支払済み期間の終了まで特典を利用可能"],
-      ["返金", "支払済みサブスクリプション料金は返金対象外"],
+      [
+        "返金",
+        "現金返金は法的に必要な場合、またはサポート審査で承認された場合のみ処理されます。対象となるシステム障害では生成クレジットを返却します",
+      ],
     ],
     policySupportLead: "請求や解約について質問がありますか？",
     policySupportCta: "サポートに連絡",
@@ -624,7 +630,10 @@ const ko: LocalizedPricingContent = {
         "하나의 크레딧 체계",
         "진단 또는 가상 메이크업 1회에 크레딧 1개를 사용합니다.",
       ],
-      ["실패 시 반환", "실패, 시간 초과, 취소된 작업은 자동으로 반환됩니다."],
+      [
+        "실패 시 반환",
+        "실패, 시간 초과, 시스템에서 취소된 작업은 크레딧이 자동으로 반환됩니다.",
+      ],
       ["언제든 해지", "해지 후에도 결제 기간 종료까지 혜택이 유지됩니다."],
     ],
     planContent: {
@@ -709,7 +718,7 @@ const ko: LocalizedPricingContent = {
       ],
       [
         "생성에 실패하면 어떻게 되나요?",
-        "실패, 시간 초과, 취소된 작업은 예약 크레딧을 자동으로 반환합니다.",
+        "실패, 시간 초과, 시스템에서 취소된 작업은 예약 크레딧을 자동으로 반환합니다. 완료된 생성은 결과가 마음에 들지 않아도 크레딧을 사용합니다.",
       ],
       [
         "다운로드 이미지를 상업적으로 사용할 수 있나요?",
@@ -718,12 +727,15 @@ const ko: LocalizedPricingContent = {
     ],
     policyTitle: "결제 및 정책",
     policyText:
-      "구독은 자동 갱신됩니다. 고객 포털에서 언제든 해지할 수 있습니다. 이미 결제된 금액은 환불되지 않지만 해지하면 다음 갱신이 중단됩니다.",
+      "AI 생성 크레딧 또는 유료 기능을 사용한 뒤에는 구독 요금이 일반적으로 환불되지 않습니다. 단, 관련 법률상 필요하거나 검토 후 승인된 경우는 예외입니다. 해지하면 다음 갱신이 중단되고 현재 결제 기간의 접근 권한은 유지됩니다. 실패, 시간 초과, 시스템에서 취소된 생성은 크레딧이 자동으로 반환됩니다. 완료된 생성은 결과가 기대와 달라도 크레딧을 사용합니다.",
     policyKicker: "명확한 결제 규칙",
     policyFacts: [
       ["갱신", "선택한 결제 주기에 따라 자동 갱신"],
       ["해지 후", "결제 기간 종료까지 혜택 유지"],
-      ["환불", "이미 결제된 구독 요금은 환불되지 않음"],
+      [
+        "환불",
+        "현금 환불은 법률상 필요하거나 지원팀 검토 후 승인된 경우에만 처리됩니다. 해당 시스템 오류는 생성 크레딧으로 반환됩니다",
+      ],
     ],
     policySupportLead: "결제나 해지에 대해 궁금한 점이 있나요?",
     policySupportCta: "지원팀 문의",
@@ -779,7 +791,7 @@ const zhTW: LocalizedPricingContent = {
     ],
     heroPoints: [
       ["統一點數", "一次診斷或一次試妝使用 1 點。"],
-      ["失敗返還", "失敗、逾時或取消的任務會自動返還點數。"],
+      ["失敗返還", "失敗、逾時或系統取消的任務會自動返還點數。"],
       ["隨時取消", "取消後權益保留至已付費週期結束。"],
     ],
     planContent: {
@@ -849,17 +861,23 @@ const zhTW: LocalizedPricingContent = {
     faq: [
       ["訂閱後可以取消嗎？", "可以。權益會保留至目前計費週期結束。"],
       ["診斷點數是分開計算嗎？", "不是。診斷與試妝使用相同的每月點數。"],
-      ["生成失敗會怎樣？", "失敗、逾時或取消的任務會自動返還預留點數。"],
+      [
+        "生成失敗會怎樣？",
+        "失敗、逾時或系統取消的任務會自動返還預留點數；已完成生成的任務即使結果不符合預期，也會消耗點數。",
+      ],
       ["下載圖片可以商用嗎？", "預設支援個人使用；商業使用需要另外授權。"],
     ],
     policyTitle: "扣款與政策",
     policyText:
-      "訂閱會自動續費，可在客戶入口隨時取消。已支付費用不退款，但取消後不會產生下一期扣款。",
+      "訂閱費用在已使用 AI 生成點數或付費權益後通常不予退款，除非適用法律要求或經人工審核批准。取消訂閱會停止下一次續費，目前已付週期權益繼續保留。失敗、逾時或系統取消的生成任務會自動返還點數；已完成生成的任務即使結果不符合預期，也會消耗點數。",
     policyKicker: "清楚的訂閱規則",
     policyFacts: [
       ["續費", "依選擇的月繳或年繳週期自動續費"],
       ["取消後", "權益保留至已付費週期結束"],
-      ["退款", "已支付的訂閱費用不予退款"],
+      [
+        "退款",
+        "現金退款僅在適用法律要求或客服審核批准時處理；符合條件的系統失敗會返還生成點數",
+      ],
     ],
     policySupportLead: "對扣款或取消仍有疑問？",
     policySupportCta: "聯絡支援",
@@ -918,7 +936,7 @@ const es: LocalizedPricingContent = {
       ],
       [
         "Devolución si falla",
-        "Las tareas fallidas, canceladas o agotadas se reembolsan automáticamente.",
+        "Las tareas fallidas, agotadas o canceladas por el sistema devuelven créditos automáticamente.",
       ],
       [
         "Cancela cuando quieras",
@@ -1011,7 +1029,7 @@ const es: LocalizedPricingContent = {
       ],
       [
         "¿Qué pasa si falla la generación?",
-        "Las tareas fallidas, canceladas o agotadas devuelven automáticamente el crédito reservado.",
+        "Las tareas fallidas, agotadas o canceladas por el sistema devuelven automáticamente el crédito reservado. Las generaciones completadas consumen créditos aunque el resultado no sea el preferido.",
       ],
       [
         "¿Puedo usar las imágenes comercialmente?",
@@ -1020,7 +1038,7 @@ const es: LocalizedPricingContent = {
     ],
     policyTitle: "Facturación y condiciones",
     policyText:
-      "Las suscripciones se renuevan automáticamente. Puedes cancelar desde el portal del cliente. Los pagos realizados no se reembolsan, pero cancelar evita la siguiente renovación.",
+      "Las cuotas de suscripción generalmente no se reembolsan una vez usados créditos de generación con IA o funciones pagas, salvo que lo exija la ley aplicable o se apruebe tras revisión. Cancelar detiene la próxima renovación y mantiene el acceso del periodo actual. Las generaciones fallidas, agotadas o canceladas por el sistema devuelven créditos automáticamente; las generaciones completadas consumen créditos aunque el resultado no sea el preferido.",
     policyKicker: "Facturación clara",
     policyFacts: [
       ["Renovación", "Renovación automática según el ciclo elegido"],
@@ -1028,7 +1046,10 @@ const es: LocalizedPricingContent = {
         "Después de cancelar",
         "Los beneficios siguen activos hasta terminar el periodo pagado",
       ],
-      ["Reembolsos", "Las cuotas ya pagadas no se reembolsan"],
+      [
+        "Reembolsos",
+        "Los reembolsos en efectivo solo se revisan si la ley lo exige o soporte los aprueba; los fallos elegibles del sistema devuelven créditos de generación",
+      ],
     ],
     policySupportLead: "¿Tienes dudas sobre pagos o cancelación?",
     policySupportCta: "Contactar soporte",
@@ -1086,7 +1107,7 @@ const ptBR: LocalizedPricingContent = {
       ["Um sistema de créditos", "Um diagnóstico ou teste usa um crédito."],
       [
         "Crédito devolvido em falhas",
-        "Tarefas com falha, canceladas ou expiradas são reembolsadas automaticamente.",
+        "Tarefas com falha, expiradas ou canceladas pelo sistema devolvem créditos automaticamente.",
       ],
       [
         "Cancele quando quiser",
@@ -1178,7 +1199,7 @@ const ptBR: LocalizedPricingContent = {
       ],
       [
         "O que acontece se a geração falhar?",
-        "Tarefas com falha, canceladas ou expiradas devolvem automaticamente o crédito reservado.",
+        "Tarefas com falha, expiradas ou canceladas pelo sistema devolvem automaticamente o crédito reservado. Gerações concluídas consomem créditos mesmo que o resultado não seja o preferido.",
       ],
       [
         "Posso usar as imagens comercialmente?",
@@ -1187,12 +1208,15 @@ const ptBR: LocalizedPricingContent = {
     ],
     policyTitle: "Cobrança e condições",
     policyText:
-      "As assinaturas são renovadas automaticamente. Você pode cancelar no portal do cliente. Valores pagos não são reembolsados, mas o cancelamento impede a próxima renovação.",
+      "As taxas de assinatura geralmente não são reembolsáveis após o uso de créditos de geração por IA ou recursos pagos, exceto quando exigido por lei aplicável ou aprovado após análise. Cancelar impede a próxima renovação e mantém o acesso do período atual. Gerações com falha, expiradas ou canceladas pelo sistema devolvem créditos automaticamente; gerações concluídas consomem créditos mesmo que o resultado não seja o preferido.",
     policyKicker: "Cobrança transparente",
     policyFacts: [
       ["Renovação", "Renovação automática no ciclo escolhido"],
       ["Após cancelar", "Os benefícios ficam ativos até o fim do período pago"],
-      ["Reembolsos", "As taxas de assinatura já pagas não são reembolsadas"],
+      [
+        "Reembolsos",
+        "Reembolsos em dinheiro só são analisados quando exigidos por lei ou aprovados pelo suporte; falhas elegíveis do sistema devolvem créditos de geração",
+      ],
     ],
     policySupportLead: "Ainda tem dúvidas sobre cobrança ou cancelamento?",
     policySupportCta: "Falar com o suporte",

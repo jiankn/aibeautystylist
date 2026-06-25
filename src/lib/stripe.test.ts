@@ -119,6 +119,7 @@ describe("Stripe client", () => {
       subscriptionId: "sub_123",
       itemId: "si_123",
       priceId: "price_premium_monthly",
+      prorationDate: 1781712000,
       metadata: { userId: "user_123", planCode: "premium" },
     });
 
@@ -130,8 +131,35 @@ describe("Stripe client", () => {
     expect(body.get("items[0][id]")).toBe("si_123");
     expect(body.get("items[0][price]")).toBe("price_premium_monthly");
     expect(body.get("proration_behavior")).toBe("always_invoice");
+    expect(body.get("proration_date")).toBe("1781712000");
     expect(body.get("payment_behavior")).toBe("error_if_incomplete");
     expect(body.get("metadata[userId]")).toBe("user_123");
     expect(body.get("metadata[planCode]")).toBe("premium");
+  });
+
+  it("creates a preview invoice for an existing subscription price change", async () => {
+    const { fetcher, requests } = createRecordingFetcher();
+    const stripe = createStripeClient({ apiKey: "sk_test", fetcher });
+
+    await stripe.createPreviewInvoice({
+      customerId: "cus_123",
+      subscriptionId: "sub_123",
+      itemId: "si_123",
+      priceId: "price_premium_monthly",
+      prorationDate: 1781712000,
+    });
+
+    const body = new URLSearchParams(String(requests[0]?.init?.body));
+    expect(requests[0]?.url).toBe(
+      "https://api.stripe.com/v1/invoices/create_preview",
+    );
+    expect(requests[0]?.init?.method).toBe("POST");
+    expect(body.get("customer")).toBe("cus_123");
+    expect(body.get("subscription")).toBe("sub_123");
+    expect(body.get("subscription_details[items][0][id]")).toBe("si_123");
+    expect(body.get("subscription_details[items][0][price]")).toBe(
+      "price_premium_monthly",
+    );
+    expect(body.get("subscription_details[proration_date]")).toBe("1781712000");
   });
 });

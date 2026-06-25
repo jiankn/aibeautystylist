@@ -71,7 +71,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Plans, credits, cancellation, and refunds",
-          body: "The checkout page shows the binding plan, price, renewal period, and benefits. Failed or cancelled generation tasks are designed to return credits. Subscription cancellation stops the next renewal while current-period access remains. Refund requests are reviewed according to applicable law and the circumstances of the purchase.",
+          body: "The checkout page shows the binding plan, price, renewal period, and benefits. Subscription fees are generally non-refundable once AI generation credits or paid features have been used, except where required by law or approved after review. Cancellation stops the next renewal while current-period access remains. Failed, timed-out, or system-canceled generations return credits automatically; completed generations consume credits even if the result is not preferred.",
         },
         {
           title: "5. Rights, changes, and contact",
@@ -157,7 +157,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. 计划、额度、取消与退款",
-          body: "结账页展示的计划、价格、续费周期和权益为准。失败或取消的生成任务按产品规则返还额度。取消订阅会停止下一次续费，当前周期权益仍保留。退款请求会根据适用法律和购买情况审核。",
+          body: "结账页展示的计划、价格、续费周期和权益为准。订阅费用在已使用 AI 生成额度或付费权益后通常不予退款，除非适用法律要求或经人工审核批准。取消订阅会停止下一次续费，当前已付周期权益继续保留。失败、超时或系统取消的生成任务会自动返还额度；已完成生成的任务即使结果不符合预期，也会消耗额度。",
         },
         {
           title: "5. 权利、变更与联系",
@@ -242,7 +242,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. 方案、點數、取消與退款",
-          body: "以結帳頁顯示的方案、價格、續訂週期與權益為準。失敗或取消的生成任務會依產品規則返還點數。取消訂閱會停止下一次續訂，當期權益仍保留。退款請求依適用法律與購買情況審核。",
+          body: "以結帳頁顯示的方案、價格、續訂週期與權益為準。訂閱費用在已使用 AI 生成點數或付費權益後通常不予退款，除非適用法律要求或經人工審核批准。取消訂閱會停止下一次續費，目前已付週期權益繼續保留。失敗、逾時或系統取消的生成任務會自動返還點數；已完成生成的任務即使結果不符合預期，也會消耗點數。",
         },
         {
           title: "5. 權利、變更與聯絡",
@@ -327,7 +327,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Pläne, Credits, Kündigung und Erstattung",
-          body: "Maßgeblich sind Plan, Preis, Verlängerung und Leistungen im Checkout. Fehlgeschlagene oder abgebrochene Generierungen sollen Credits zurückgeben. Eine Kündigung stoppt die nächste Verlängerung; Erstattungen werden nach geltendem Recht und Kaufumständen geprüft.",
+          body: "Maßgeblich sind Plan, Preis, Verlängerung und Leistungen im Checkout. Abogebühren sind in der Regel nicht erstattungsfähig, sobald KI-Generierungscredits oder kostenpflichtige Funktionen genutzt wurden, außer wenn geltendes Recht es verlangt oder eine Prüfung dies genehmigt. Eine Kündigung stoppt die nächste Verlängerung, während der Zugang im laufenden Zeitraum erhalten bleibt. Fehlgeschlagene, zeitüberschrittene oder vom System abgebrochene Generierungen geben Credits automatisch zurück; abgeschlossene Generierungen verbrauchen Credits, auch wenn das Ergebnis nicht gefällt.",
         },
         {
           title: "5. Rechte, Änderungen und Kontakt",
@@ -413,7 +413,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Offres, crédits, résiliation et remboursement",
-          body: "L'offre, le prix, le renouvellement et les avantages affichés au paiement font foi. Les tâches échouées ou annulées sont conçues pour restituer les crédits. La résiliation bloque le prochain renouvellement; les remboursements sont étudiés selon la loi applicable.",
+          body: "L'offre, le prix, le renouvellement et les avantages affichés au paiement font foi. Les frais d’abonnement ne sont généralement pas remboursables une fois que des crédits de génération IA ou des fonctionnalités payantes ont été utilisés, sauf obligation légale ou approbation après examen. La résiliation bloque le prochain renouvellement tout en conservant l’accès jusqu’à la fin de la période en cours. Les générations échouées, expirées ou annulées par le système restituent automatiquement les crédits; les générations terminées consomment des crédits même si le résultat ne vous convient pas.",
         },
         {
           title: "5. Droits, modifications et contact",
@@ -499,7 +499,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. プラン、クレジット、解約、返金",
-          body: "決済画面に表示されるプラン、価格、更新期間、特典が適用されます。失敗・中止した生成はクレジット返却の対象です。解約すると次回更新が停止し、返金は適用法と購入状況に基づき審査されます。",
+          body: "決済画面に表示されるプラン、価格、更新期間、特典が適用されます。AI生成クレジットまたは有料機能の利用後、サブスクリプション料金は原則返金されません。ただし、適用法で求められる場合、または審査後に承認された場合を除きます。解約すると次回更新は停止し、現在の支払済み期間のアクセスは維持されます。失敗、タイムアウト、システムによるキャンセルの生成は自動でクレジットを返却します。完了した生成は、結果が希望と異なる場合でもクレジットを消費します。",
         },
         {
           title: "5. 権利、変更、連絡先",
@@ -584,7 +584,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. 요금제, 크레딧, 해지 및 환불",
-          body: "결제 화면의 요금제, 가격, 갱신 주기 및 혜택이 적용됩니다. 실패하거나 취소된 생성 작업은 크레딧 반환 대상입니다. 해지는 다음 갱신을 중단하며, 환불은 관련 법률과 구매 상황에 따라 검토됩니다.",
+          body: "결제 화면의 요금제, 가격, 갱신 주기 및 혜택이 적용됩니다. AI 생성 크레딧 또는 유료 기능을 사용한 뒤에는 구독 요금이 일반적으로 환불되지 않습니다. 단, 관련 법률상 필요하거나 검토 후 승인된 경우는 예외입니다. 해지하면 다음 갱신이 중단되고 현재 결제 기간의 접근 권한은 유지됩니다. 실패, 시간 초과, 시스템에서 취소된 생성은 크레딧이 자동으로 반환됩니다. 완료된 생성은 결과가 기대와 달라도 크레딧을 사용합니다.",
         },
         {
           title: "5. 권리, 변경 및 연락처",
@@ -670,7 +670,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Planes, créditos, cancelación y reembolsos",
-          body: "Se aplican el plan, precio, renovación y ventajas mostrados al pagar. Las tareas fallidas o canceladas están diseñadas para devolver créditos. Cancelar detiene la próxima renovación; los reembolsos se revisan según la ley aplicable.",
+          body: "Se aplican el plan, precio, renovación y ventajas mostrados al pagar. Las cuotas de suscripción generalmente no se reembolsan una vez usados créditos de generación con IA o funciones pagas, salvo que lo exija la ley aplicable o se apruebe tras revisión. Cancelar detiene la próxima renovación y mantiene el acceso del periodo actual. Las generaciones fallidas, agotadas o canceladas por el sistema devuelven créditos automáticamente; las generaciones completadas consumen créditos aunque el resultado no sea el preferido.",
         },
         {
           title: "5. Derechos, cambios y contacto",
@@ -757,7 +757,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Planos, créditos, cancelamento e reembolso",
-          body: "Valem o plano, preço, renovação e benefícios exibidos no checkout. Tarefas com falha ou canceladas foram projetadas para devolver créditos. O cancelamento impede a próxima renovação; reembolsos são avaliados conforme a lei aplicável.",
+          body: "Valem o plano, preço, renovação e benefícios exibidos no checkout. As taxas de assinatura geralmente não são reembolsáveis após o uso de créditos de geração por IA ou recursos pagos, exceto quando exigido por lei aplicável ou aprovado após análise. Cancelar impede a próxima renovação e mantém o acesso do período atual. Gerações com falha, expiradas ou canceladas pelo sistema devolvem créditos automaticamente; gerações concluídas consomem créditos mesmo que o resultado não seja o preferido.",
         },
         {
           title: "5. Direitos, alterações e contato",

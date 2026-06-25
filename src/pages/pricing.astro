@@ -77,8 +77,8 @@ const fallbackCopy = isEnglish
           "A diagnosis or a try-on task uses one generation credit.",
         ],
         [
-          "Refund on failure",
-          "Failed, timed-out, or cancelled tasks are refunded automatically.",
+          "Credit return on failure",
+          "Failed, timed-out, or system-canceled tasks return credits automatically.",
         ],
         [
           "Cancel anytime",
@@ -171,7 +171,7 @@ const fallbackCopy = isEnglish
         ],
         [
           "What happens if generation fails?",
-          "Failed, timed-out, or cancelled tasks refund the reserved credit automatically.",
+          "Failed, timed-out, or system-canceled tasks return the reserved credit automatically. Completed generations consume credits even if the result is not preferred.",
         ],
         [
           "Can I use downloaded images commercially?",
@@ -180,7 +180,7 @@ const fallbackCopy = isEnglish
       ],
       policyTitle: "Billing and policy",
       policyText:
-        "Subscriptions renew automatically. You can cancel from the customer portal. Paid fees are not refunded, but cancellation prevents the next renewal.",
+        "Subscription fees are generally non-refundable once AI generation credits or paid features have been used, except where required by law or approved after review. Canceling stops the next renewal and keeps current-period access active. Failed, timed-out, or system-canceled generations return credits automatically; completed generations consume credits even if the result is not preferred.",
       policyKicker: "Billing clarity",
       policyFacts: [
         ["Renewal", "Renews automatically for the selected billing cycle"],
@@ -188,7 +188,10 @@ const fallbackCopy = isEnglish
           "After cancellation",
           "Benefits stay active until the paid period ends",
         ],
-        ["Refunds", "Paid subscription fees are not refunded"],
+        [
+          "Refunds",
+          "Cash refunds are reviewed only where required by law or approved by support; eligible system failures return generation credits.",
+        ],
       ],
       policySupportLead: "Still unsure about billing or cancellation?",
       policySupportCta: "Contact support",
@@ -231,7 +234,7 @@ const fallbackCopy = isEnglish
       ],
       heroPoints: [
         ["统一额度", "一次诊断或一次试妆都使用 1 次月度生成额度。"],
-        ["失败返还", "失败、超时或取消的任务会自动返还预占额度。"],
+        ["失败返还", "失败、超时或系统取消的任务会自动返还预占额度。"],
         ["随时取消", "取消后权益保留到当前已付周期结束。"],
       ],
       planContent: {
@@ -313,17 +316,23 @@ const fallbackCopy = isEnglish
           "诊断额度是单独计算的吗？",
           "不是。AI 妆容诊断和试妆都使用同一套月度生成额度。",
         ],
-        ["生成失败会扣额度吗？", "失败、超时或取消任务会自动返还预占额度。"],
+        [
+          "生成失败会扣额度吗？",
+          "失败、超时或系统取消的任务会自动返还预占额度；已完成生成的任务即使结果不符合预期，也会消耗额度。",
+        ],
         ["下载图片可以商用吗？", "默认支持个人使用；商业使用需要单独授权。"],
       ],
       policyTitle: "扣费与取消说明",
       policyText:
-        "订阅会按所选周期自动续费，可在客户门户随时取消；取消后当前周期内权益保留。已支付费用不退款，但不会再产生下一周期扣费。",
+        "订阅费用在已使用 AI 生成额度或付费权益后通常不予退款，除非适用法律要求或经人工审核批准。取消订阅会停止下一次续费，当前已付周期权益继续保留。失败、超时或系统取消的生成任务会自动返还额度；已完成生成的任务即使结果不符合预期，也会消耗额度。",
       policyKicker: "订阅规则",
       policyFacts: [
         ["续费方式", "按所选月付或年付周期自动续费"],
         ["取消之后", "当前已付周期内的权益继续保留"],
-        ["退款规则", "已支付的订阅费用不予退款"],
+        [
+          "退款规则",
+          "现金退款仅在适用法律要求或客服审核批准时处理；系统失败按规则返还生成额度。",
+        ],
       ],
       policySupportLead: "对扣费、取消或账户状态仍有疑问？",
       policySupportCta: "联系支持",
@@ -546,10 +555,110 @@ const proToPremiumCopyByLocale: Record<
 };
 const proToPremiumCopy =
   proToPremiumCopyByLocale[currentLocale] ?? proToPremiumCopyByLocale.en;
+const proToPremiumPreviewCopyByLocale: Record<
+  string,
+  {
+    dueToday: string;
+    planDifference: string;
+    previewLoading: string;
+    previewFallback: string;
+    previewFailed: string;
+  }
+> = {
+  en: {
+    dueToday: "Due today",
+    planDifference: "Plan difference",
+    previewLoading: "Calculating with Stripe...",
+    previewFallback:
+      "Stripe will calculate the final prorated charge at confirmation.",
+    previewFailed:
+      "Unable to preview today's charge. Stripe will calculate it at confirmation.",
+  },
+  "zh-CN": {
+    dueToday: "今日应付",
+    planDifference: "计划价差",
+    previewLoading: "正在通过 Stripe 计算实际扣款...",
+    previewFallback: "Stripe 会在确认时按剩余账期计算最终扣款。",
+    previewFailed: "暂时无法预览今日扣款，Stripe 会在确认时计算。",
+  },
+  "zh-TW": {
+    dueToday: "今日應付",
+    planDifference: "方案差價",
+    previewLoading: "正在透過 Stripe 計算實際扣款...",
+    previewFallback: "Stripe 會在確認時依剩餘週期計算最終扣款。",
+    previewFailed: "暫時無法預覽今日扣款，Stripe 會在確認時重新計算。",
+  },
+  "de-DE": {
+    dueToday: "Heute fällig",
+    planDifference: "Tarifdifferenz",
+    previewLoading: "Berechnung mit Stripe...",
+    previewFallback:
+      "Stripe berechnet die endgültige anteilige Zahlung bei der Bestätigung.",
+    previewFailed:
+      "Die heutige Zahlung konnte nicht vorab berechnet werden. Stripe berechnet sie bei der Bestätigung.",
+  },
+  "fr-FR": {
+    dueToday: "Dû aujourd'hui",
+    planDifference: "Différence d'offre",
+    previewLoading: "Calcul avec Stripe...",
+    previewFallback:
+      "Stripe calculera le montant final au prorata lors de la confirmation.",
+    previewFailed:
+      "Impossible de prévisualiser le montant du jour. Stripe le calculera lors de la confirmation.",
+  },
+  "ja-JP": {
+    dueToday: "本日のお支払い",
+    planDifference: "プラン差額",
+    previewLoading: "Stripe で計算中...",
+    previewFallback: "確定時に Stripe が日割りの最終請求額を計算します。",
+    previewFailed:
+      "本日の請求額をプレビューできません。確定時に Stripe が計算します。",
+  },
+  "ko-KR": {
+    dueToday: "오늘 결제 금액",
+    planDifference: "플랜 차액",
+    previewLoading: "Stripe로 계산 중...",
+    previewFallback:
+      "확인 시 Stripe가 비례 계산된 최종 결제 금액을 계산합니다.",
+    previewFailed:
+      "오늘 결제 금액을 미리 계산할 수 없습니다. 확인 시 Stripe가 계산합니다.",
+  },
+  "es-ES": {
+    dueToday: "Pago hoy",
+    planDifference: "Diferencia del plan",
+    previewLoading: "Calculando con Stripe...",
+    previewFallback:
+      "Stripe calculará el cargo prorrateado final al confirmar.",
+    previewFailed:
+      "No se pudo previsualizar el cargo de hoy. Stripe lo calculará al confirmar.",
+  },
+  "es-419": {
+    dueToday: "Pago hoy",
+    planDifference: "Diferencia del plan",
+    previewLoading: "Calculando con Stripe...",
+    previewFallback:
+      "Stripe calculará el cargo prorrateado final al confirmar.",
+    previewFailed:
+      "No se pudo previsualizar el cargo de hoy. Stripe lo calculará al confirmar.",
+  },
+  "pt-BR": {
+    dueToday: "Cobrado hoje",
+    planDifference: "Diferença do plano",
+    previewLoading: "Calculando com a Stripe...",
+    previewFallback:
+      "A Stripe calculará a cobrança proporcional final na confirmação.",
+    previewFailed:
+      "Não foi possível pré-visualizar a cobrança de hoje. A Stripe calculará na confirmação.",
+  },
+};
+const proToPremiumPreviewCopy =
+  proToPremiumPreviewCopyByLocale[currentLocale] ??
+  proToPremiumPreviewCopyByLocale.en;
 const proToPremiumUpgrade = {
   monthlyPrice: proToPremiumMonthlyDelta.toFixed(2),
   yearlyPrice: (proToPremiumMonthlyDelta * yearlyFactor).toFixed(2),
   ...proToPremiumCopy,
+  ...proToPremiumPreviewCopy,
 };
 
 const structuredDataUrl = new URL(
@@ -609,6 +718,11 @@ const checkoutCopy = {
   upgradeFromProCta: proToPremiumUpgrade.cta,
   upgradeFromProSummary: proToPremiumUpgrade.summary,
   upgradeSuccess: proToPremiumUpgrade.success,
+  upgradeDueToday: proToPremiumUpgrade.dueToday,
+  upgradePlanDifference: proToPremiumUpgrade.planDifference,
+  upgradePreviewLoading: proToPremiumUpgrade.previewLoading,
+  upgradePreviewFallback: proToPremiumUpgrade.previewFallback,
+  upgradePreviewFailed: proToPremiumUpgrade.previewFailed,
   dashboardHref,
 };
 ---
@@ -1004,6 +1118,8 @@ const checkoutCopy = {
       let interval = "monthly";
       let pendingPlan = null;
       let currentPlan = null;
+      let pendingProrationDate = null;
+      let previewRequestToken = 0;
 
       function toast(msg) {
         if (window.showToast) {
@@ -1117,6 +1233,99 @@ const checkoutCopy = {
         return price?.dataset[key] || price?.dataset[interval] || "0";
       }
 
+      function intervalUnit() {
+        return interval === "yearly"
+          ? checkoutCopy.yearlyUnit
+          : checkoutCopy.monthlyUnit;
+      }
+
+      function formatMinorAmount(amount, currency) {
+        const code = String(currency || "usd").toUpperCase();
+        const value = Number(amount || 0) / 100;
+        try {
+          return new Intl.NumberFormat(document.documentElement.lang || "en", {
+            style: "currency",
+            currency: code,
+          }).format(value);
+        } catch {
+          return `${code} ${value.toFixed(2)}`;
+        }
+      }
+
+      function renderCheckoutSummary(card, state = {}) {
+        if (!summary || !card) return;
+        const title = card.querySelector("h2")?.textContent?.trim() || "";
+        const price = priceFor(card);
+        const isUpgrade = isProToPremiumCard(card);
+        if (!isUpgrade) {
+          summary.innerHTML = `
+            <div class="checkout-summary-main">
+              <b>${title}</b>
+            </div>
+            <div class="checkout-summary-due">
+              <strong>$${price} ${intervalUnit()}</strong>
+            </div>
+          `;
+          return;
+        }
+
+        const dueText = state.preview
+          ? formatMinorAmount(state.preview.amountDue, state.preview.currency)
+          : state.loading
+            ? checkoutCopy.upgradePreviewLoading
+            : "";
+        const helperText = state.error
+          ? checkoutCopy.upgradePreviewFailed
+          : state.preview
+            ? checkoutCopy.upgradeFromProSummary
+            : checkoutCopy.upgradePreviewFallback;
+
+        summary.innerHTML = `
+          <div class="checkout-summary-main">
+            <b>${checkoutCopy.upgradeFromProCta}</b>
+            <small>${checkoutCopy.upgradePlanDifference}: +$${price} ${intervalUnit()}</small>
+          </div>
+          <div class="checkout-summary-due">
+            <small>${checkoutCopy.upgradeDueToday}</small>
+            <strong>${dueText}</strong>
+          </div>
+          <em>${helperText}</em>
+        `;
+      }
+
+      async function loadUpgradePreview(card) {
+        const token = ++previewRequestToken;
+        pendingProrationDate = null;
+        renderCheckoutSummary(card, { loading: true });
+        if (confirmBtn) confirmBtn.disabled = true;
+        try {
+          const res = await fetch("/api/billing/upgrade-preview", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              planCode: "premium",
+              interval,
+            }),
+          });
+          const body = await res.json().catch(() => null);
+          if (token !== previewRequestToken) return;
+          if (body?.ok && body.data?.prorationDate) {
+            pendingProrationDate = body.data.prorationDate;
+            renderCheckoutSummary(card, { preview: body.data });
+            return;
+          }
+          renderCheckoutSummary(card, { error: true });
+        } catch {
+          if (token === previewRequestToken) {
+            renderCheckoutSummary(card, { error: true });
+          }
+        } finally {
+          if (token === previewRequestToken && confirmBtn) {
+            confirmBtn.disabled = false;
+          }
+        }
+      }
+
       function updatePrices() {
         cards.forEach((card) => {
           const price = card.querySelector(".plan-price");
@@ -1150,24 +1359,17 @@ const checkoutCopy = {
         const card = cards.find((item) => item.dataset.plan === plan);
         if (!card) return;
         pendingPlan = plan;
-        const title = card.querySelector("h2")?.textContent?.trim() || plan;
-        const price = priceFor(card);
         const isUpgrade = isProToPremiumCard(card);
-        if (summary) {
-          summary.innerHTML = `
-            <b>${isUpgrade ? checkoutCopy.upgradeFromProCta : title}</b>
-            <span>${isUpgrade ? "+$" : "$"}${price} ${
-              interval === "yearly"
-                ? checkoutCopy.yearlyUnit
-                : checkoutCopy.monthlyUnit
-            }</span>
-            ${isUpgrade ? `<em>${checkoutCopy.upgradeFromProSummary}</em>` : ""}
-          `;
-        }
+        pendingProrationDate = null;
+        previewRequestToken += 1;
+        renderCheckoutSummary(card, isUpgrade ? { loading: true } : {});
+        if (confirmBtn) confirmBtn.disabled = isUpgrade;
         if (dialog && typeof dialog.showModal === "function") {
           dialog.showModal();
+          if (isUpgrade) loadUpgradePreview(card);
         } else {
-          startCheckout();
+          if (isUpgrade) loadUpgradePreview(card).finally(startCheckout);
+          else startCheckout();
         }
       }
 
@@ -1181,6 +1383,9 @@ const checkoutCopy = {
             pricingPath: window.location.pathname,
             locale: document.documentElement.lang || undefined,
           };
+          if (pendingProrationDate) {
+            payload.prorationDate = pendingProrationDate;
+          }
           const returnTo = getCheckoutReturnTo();
           if (returnTo) payload.returnTo = returnTo;
 
@@ -2565,9 +2770,29 @@ const checkoutCopy = {
       background: var(--soft);
       color: var(--heading);
     }
-    .checkout-summary span {
+    .checkout-summary-main,
+    .checkout-summary-due {
+      display: grid;
+      gap: 5px;
+      align-content: start;
+      min-width: 0;
+    }
+    .checkout-summary-main small,
+    .checkout-summary-due small {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .checkout-summary-due {
+      justify-items: end;
+      text-align: right;
+    }
+    .checkout-summary-due strong {
+      font-size: 16px;
       font-weight: 900;
-      white-space: nowrap;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
     }
     .checkout-summary em {
       grid-column: 1 / -1;
@@ -2581,6 +2806,10 @@ const checkoutCopy = {
       display: grid;
       grid-template-columns: 1fr 1.2fr;
       gap: 10px;
+    }
+    .checkout-actions button:disabled {
+      cursor: wait;
+      opacity: 0.68;
     }
 
     @media (max-width: 980px) {
@@ -2622,6 +2851,13 @@ const checkoutCopy = {
     }
 
     @media (max-width: 700px) {
+      .checkout-summary {
+        grid-template-columns: 1fr;
+      }
+      .checkout-summary-due {
+        justify-items: start;
+        text-align: left;
+      }
       .pricing-main {
         padding-top: calc(52px + 20px);
       }

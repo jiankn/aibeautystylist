@@ -59,8 +59,8 @@
   "errors": {
     "quotaExhausted": "Monthly generation credits exhausted",
     "consentRequired": "Please confirm the photo consent before uploading",
-    "aiTimeout": "Generation timed out. Quota refunded, please try again",
-    "aiUnavailable": "Service temporarily unavailable. Quota refunded"
+    "aiTimeout": "Generation timed out. Quota returned, please try again",
+    "aiUnavailable": "Service temporarily unavailable. Quota returned"
   },
   "footer": {
     "brandDesc": "Upload a selfie, compare makeup looks on your own face, and choose with context from scene, skin tone, and finish.",
@@ -337,7 +337,7 @@
       {
         "index": "03",
         "title": "No generation, no quota used",
-        "copy": "Quota is used only when generation begins, and failed tasks are refunded."
+        "copy": "Quota is used only when generation begins, and failed tasks return credits."
       }
     ],
     "upgradeTitle": "Want to compare a few more looks first?",
@@ -403,7 +403,7 @@
     "loginToUseDesc": "You can browse looks first. Signing in is required before uploading your selfie.",
     "previewPlaceholderTitle": "Your result will appear here",
     "previewPlaceholderDesc": "Upload your selfie and select a look to begin",
-    "ruleStrip": "No quota deduction before upload. Failed tasks are automatically refunded.",
+    "ruleStrip": "No quota deduction before upload. Failed tasks automatically return credits.",
     "learnRules": "Learn Rules",
     "waitingUpload": "Waiting to upload",
     "cancelUpload": "Cancel upload",

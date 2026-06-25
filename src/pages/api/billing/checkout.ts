@@ -38,11 +38,27 @@ interface CheckoutBody {
   pricingPath?: string;
   returnTo?: string;
   locale?: string;
+  prorationDate?: number;
 }
 
 function withCheckoutSessionId(url: string): string {
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}session_id={CHECKOUT_SESSION_ID}`;
+}
+
+function safeProrationDate(
+  value: unknown,
+  now = new Date(),
+): number | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== "number") return undefined;
+  if (!Number.isInteger(value)) return undefined;
+  const currentSeconds = Math.floor(now.getTime() / 1000);
+  // The preview must be recent, otherwise Stripe's actual prorated amount can drift.
+  if (value < currentSeconds - 10 * 60 || value > currentSeconds + 2 * 60) {
+    return undefined;
+  }
+  return value;
 }
 
 function buildPortalReturnUrl(input: {
@@ -94,6 +110,7 @@ function resolveCheckoutAppLocale(input: {
 
 export const POST: APIRoute = async ({ cookies, locals, request }) => {
   const body = (await request.json().catch(() => null)) as CheckoutBody | null;
+  const requestNow = new Date();
   const interval: BillingInterval =
     body?.interval === "yearly" ? "yearly" : "monthly";
 
@@ -108,6 +125,17 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     );
   }
   const planCode = body.planCode as Exclude<PlanCode, "free">;
+  const prorationDate = safeProrationDate(body?.prorationDate, requestNow);
+  if (body?.prorationDate !== undefined && !prorationDate) {
+    return apiError(
+      {
+        code: "PRORATION_PREVIEW_EXPIRED",
+        message: "升级金额预览已过期，请重新确认后再升级。",
+        retryable: true,
+      },
+      409,
+    );
+  }
 
   const bindings = getRuntimeBindings();
   if (!bindings.STRIPE_SECRET_KEY) {
@@ -202,6 +230,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
             priceId,
             stripe,
             DB: bindings.DB,
+            prorationDate,
             metadata: {
               ...(appLocale ? { locale: appLocale } : {}),
             },
