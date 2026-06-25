@@ -7,6 +7,7 @@ import { getVariantById } from "../data/makeup/marketVariants";
 import { getRecipeById } from "../data/makeup/recipes";
 import { recordAiCall } from "./aiCallLogs";
 import { saveDiagnosisRecord } from "./diagnosisRecords";
+import { quotaPeriodForEffectivePlan } from "./entitlements";
 import { EvolinkImageError, generateEvolinkMakeupImage } from "./evolinkImage";
 import {
   DiagnosisProviderError,
@@ -30,6 +31,7 @@ import {
   getQuotaSnapshot,
   refundQuota,
   reserveQuota,
+  type QuotaPeriodInput,
   type QuotaSnapshot,
 } from "./quota";
 import type { RuntimeBindings } from "./runtime";
@@ -120,6 +122,7 @@ export async function createTryOnJob(
 
   const plan = await getEffectivePlan(userId, bindings.DB);
   const monthlyQuota = getMonthlyQuota(plan.planCode);
+  const quotaPeriod = quotaPeriodForEffectivePlan(plan);
 
   if (provider === "gemini") {
     return createGeminiQueuedJob({
@@ -130,6 +133,7 @@ export async function createTryOnJob(
       retryOfJobId,
       bindings,
       monthlyQuota,
+      quotaPeriod,
       audienceContext,
       purpose,
     });
@@ -143,6 +147,7 @@ export async function createTryOnJob(
     retryOfJobId,
     bindings,
     monthlyQuota,
+    quotaPeriod,
     audienceContext,
     purpose,
   });
@@ -156,6 +161,7 @@ async function createMockReferenceJob(options: {
   retryOfJobId?: string;
   bindings: RuntimeBindings;
   monthlyQuota: number;
+  quotaPeriod?: QuotaPeriodInput;
   audienceContext?: AudienceContext;
   purpose: TryOnJobPurpose;
 }): Promise<CreateTryOnJobResult> {
@@ -167,6 +173,7 @@ async function createMockReferenceJob(options: {
     options.bindings.DB,
     new Date(),
     options.monthlyQuota,
+    options.quotaPeriod,
   );
   if (!reservation.reserved) {
     throw quotaError(reservation.duplicate);
@@ -187,7 +194,14 @@ async function createMockReferenceJob(options: {
   try {
     await saveStoredJob(storedJob, options.bindings.DB);
   } catch {
-    await refundQuota(options.userId, job.id, options.bindings.DB);
+    await refundQuota(
+      options.userId,
+      job.id,
+      options.bindings.DB,
+      new Date(),
+      options.monthlyQuota,
+      options.quotaPeriod,
+    );
     throw new TryOnJobServiceError(
       "AI_UNAVAILABLE",
       "任务创建失败，额度已自动返还",
@@ -206,6 +220,7 @@ async function createGeminiQueuedJob(options: {
   retryOfJobId?: string;
   bindings: RuntimeBindings;
   monthlyQuota: number;
+  quotaPeriod?: QuotaPeriodInput;
   audienceContext?: AudienceContext;
   purpose: TryOnJobPurpose;
 }): Promise<CreateTryOnJobResult> {
@@ -241,6 +256,7 @@ async function createGeminiQueuedJob(options: {
     options.bindings.DB,
     new Date(),
     options.monthlyQuota,
+    options.quotaPeriod,
   );
   if (!reservation.reserved) {
     throw quotaError(reservation.duplicate);
@@ -249,7 +265,14 @@ async function createGeminiQueuedJob(options: {
   try {
     await saveStoredJob(job, options.bindings.DB);
   } catch {
-    await refundQuota(options.userId, job.id, options.bindings.DB);
+    await refundQuota(
+      options.userId,
+      job.id,
+      options.bindings.DB,
+      new Date(),
+      options.monthlyQuota,
+      options.quotaPeriod,
+    );
     throw new TryOnJobServiceError(
       "AI_UNAVAILABLE",
       "任务创建失败，额度已自动返还",
@@ -280,6 +303,7 @@ export async function processTryOnJob(
 
   const plan = await getEffectivePlan(options.userId, options.bindings.DB);
   const monthlyQuota = getMonthlyQuota(plan.planCode);
+  const quotaPeriod = quotaPeriodForEffectivePlan(plan);
   const upload = await getOwnedUpload(
     options.userId,
     existingJob.uploadId,
@@ -291,6 +315,7 @@ export async function processTryOnJob(
       errorCode: "UPLOAD_NOT_FOUND",
       bindings: options.bindings,
       monthlyQuota,
+      quotaPeriod,
     });
   }
   if (!upload.r2Key || !options.bindings.USER_UPLOADS) {
@@ -299,6 +324,7 @@ export async function processTryOnJob(
       errorCode: "UPLOAD_STORAGE_REQUIRED",
       bindings: options.bindings,
       monthlyQuota,
+      quotaPeriod,
     });
   }
 
@@ -309,6 +335,7 @@ export async function processTryOnJob(
     job: existingJob,
     bindings: options.bindings,
     monthlyQuota,
+    quotaPeriod,
     audienceContext: {
       locale: options.audienceContext?.locale ?? existingJob.locale,
     },
@@ -326,6 +353,7 @@ async function runGeminiImageTryOnJob(options: {
   job: StoredTryOnJob;
   bindings: RuntimeBindings;
   monthlyQuota: number;
+  quotaPeriod?: QuotaPeriodInput;
   audienceContext?: ProcessingAudienceContext;
 }): Promise<CreateTryOnJobResult> {
   let currentJob = options.job;
@@ -335,6 +363,7 @@ async function runGeminiImageTryOnJob(options: {
       errorCode: "UPLOAD_STORAGE_REQUIRED",
       bindings: options.bindings,
       monthlyQuota: options.monthlyQuota,
+      quotaPeriod: options.quotaPeriod,
     });
   }
 
@@ -378,6 +407,7 @@ async function runGeminiImageTryOnJob(options: {
         options.bindings.DB,
         new Date(),
         options.monthlyQuota,
+        options.quotaPeriod,
       ),
     };
   } catch (error) {
@@ -420,6 +450,7 @@ async function runGeminiImageTryOnJob(options: {
       options.bindings.DB,
       new Date(),
       options.monthlyQuota,
+      options.quotaPeriod,
     );
     return {
       job: failed,
@@ -428,6 +459,7 @@ async function runGeminiImageTryOnJob(options: {
         options.bindings.DB,
         new Date(),
         options.monthlyQuota,
+        options.quotaPeriod,
       ),
     };
   }
@@ -440,6 +472,7 @@ async function runGeminiDiagnosisJob(options: {
   job: StoredTryOnJob;
   bindings: RuntimeBindings;
   monthlyQuota: number;
+  quotaPeriod?: QuotaPeriodInput;
   audienceContext?: ProcessingAudienceContext;
 }): Promise<CreateTryOnJobResult> {
   let currentJob = options.job;
@@ -449,6 +482,7 @@ async function runGeminiDiagnosisJob(options: {
       errorCode: "UPLOAD_STORAGE_REQUIRED",
       bindings: options.bindings,
       monthlyQuota: options.monthlyQuota,
+      quotaPeriod: options.quotaPeriod,
     });
   }
 
@@ -536,6 +570,7 @@ async function runGeminiDiagnosisJob(options: {
         options.bindings.DB,
         new Date(),
         options.monthlyQuota,
+        options.quotaPeriod,
       ),
     };
   } catch (error) {
@@ -577,6 +612,7 @@ async function runGeminiDiagnosisJob(options: {
       options.bindings.DB,
       new Date(),
       options.monthlyQuota,
+      options.quotaPeriod,
     );
     return {
       job: failed,
@@ -585,6 +621,7 @@ async function runGeminiDiagnosisJob(options: {
         options.bindings.DB,
         new Date(),
         options.monthlyQuota,
+        options.quotaPeriod,
       ),
     };
   }
@@ -594,6 +631,7 @@ interface ProcessingContext {
   userId: string;
   bindings: RuntimeBindings;
   monthlyQuota: number;
+  quotaPeriod?: QuotaPeriodInput;
 }
 
 async function transitionIfRunning(
@@ -632,6 +670,7 @@ async function failRunningJob(
     options.bindings.DB,
     new Date(),
     options.monthlyQuota,
+    options.quotaPeriod,
   );
   return {
     job: failed,
@@ -640,6 +679,7 @@ async function failRunningJob(
       options.bindings.DB,
       new Date(),
       options.monthlyQuota,
+      options.quotaPeriod,
     ),
   };
 }
@@ -657,6 +697,7 @@ async function unchangedJobResult(
       options.bindings.DB,
       new Date(),
       options.monthlyQuota,
+      options.quotaPeriod,
     ),
   };
 }
@@ -671,6 +712,7 @@ async function quotaSnapshotFor(
     bindings.DB,
     new Date(),
     getMonthlyQuota(plan.planCode),
+    quotaPeriodForEffectivePlan(plan),
   );
 }
 

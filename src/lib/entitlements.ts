@@ -4,7 +4,11 @@ import {
   type PlanCode,
   type PlanFeatures,
 } from "./plans";
-import { getQuotaSnapshot, type QuotaSnapshot } from "./quota";
+import {
+  getQuotaSnapshot,
+  type QuotaPeriodInput,
+  type QuotaSnapshot,
+} from "./quota";
 import type { D1DatabaseLike } from "./runtime";
 import { getEffectivePlan, type EffectivePlan } from "./subscriptions";
 
@@ -26,6 +30,7 @@ export async function getEntitlementContext(
     DB,
     now,
     getMonthlyQuota(plan.planCode),
+    quotaPeriodForEffectivePlan(plan),
   );
   return { plan, quota };
 }
@@ -58,4 +63,14 @@ export async function requirePlan(
 
 function planRank(code: PlanCode): number {
   return code === "premium" ? 3 : code === "pro" ? 2 : 1;
+}
+
+export function quotaPeriodForEffectivePlan(
+  plan: EffectivePlan,
+): QuotaPeriodInput | undefined {
+  if (plan.source !== "subscription") return undefined;
+  return {
+    start: plan.currentPeriodStart,
+    end: plan.currentPeriodEnd,
+  };
 }

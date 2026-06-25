@@ -29,6 +29,7 @@ function createStripeMock(options: { missingItem?: boolean } = {}) {
         id: subscriptionId,
         status: "active",
         customer: "cus_123",
+        current_period_start: Math.floor(now.getTime() / 1000),
         current_period_end: nextPeriod,
         items: {
           data: options.missingItem
@@ -43,6 +44,7 @@ function createStripeMock(options: { missingItem?: boolean } = {}) {
         id: input.subscriptionId,
         status: "active",
         customer: "cus_123",
+        current_period_start: Math.floor(now.getTime() / 1000),
         current_period_end: nextPeriod,
         items: { data: [{ id: input.itemId, price: { id: input.priceId } }] },
       };
@@ -110,7 +112,13 @@ describe("subscription upgrades", () => {
       upgraded: true,
       fromPlanCode: "pro",
       toPlanCode: "premium",
-      quota: { total: 150, remaining: 150 },
+      subscription: { currentPeriodStart: "2026-06-18T00:00:00.000Z" },
+      quota: {
+        total: 150,
+        remaining: 150,
+        periodStart: "2026-06-18T00:00:00.000Z",
+        nextRefreshAt: "2026-07-18T00:00:00.000Z",
+      },
     });
     await expect(
       getEffectivePlan("user_123", undefined, now),

@@ -119,15 +119,21 @@ export async function syncCheckoutSessionForUser(input: {
   if (customerId) {
     await saveStripeCustomer(input.userId, customerId, input.bindings.DB, now);
   }
+  const currentPeriodStart = subscription.current_period_start
+    ? new Date(subscription.current_period_start * 1000).toISOString()
+    : undefined;
+  const currentPeriodEnd = subscription.current_period_end
+    ? new Date(subscription.current_period_end * 1000).toISOString()
+    : undefined;
+
   await upsertSubscription(
     {
       userId: input.userId,
       stripeSubscriptionId: subscription.id,
       planCode,
       status: subscription.status || "active",
-      currentPeriodEnd: subscription.current_period_end
-        ? new Date(subscription.current_period_end * 1000).toISOString()
-        : undefined,
+      currentPeriodStart,
+      currentPeriodEnd,
     },
     input.bindings.DB,
     now,
@@ -141,6 +147,7 @@ export async function syncCheckoutSessionForUser(input: {
       DB: input.bindings.DB,
       now,
       allowSamePlan: true,
+      quotaPeriod: { start: currentPeriodStart, end: currentPeriodEnd },
     });
   }
 
@@ -154,7 +161,11 @@ export async function syncCheckoutSessionForUser(input: {
     plan: plan.planCode,
     subscription:
       plan.source === "subscription"
-        ? { status: plan.status, currentPeriodEnd: plan.currentPeriodEnd }
+        ? {
+            status: plan.status,
+            currentPeriodStart: plan.currentPeriodStart,
+            currentPeriodEnd: plan.currentPeriodEnd,
+          }
         : null,
     quota,
   };

@@ -34,6 +34,7 @@ function subscriptionEvent(
         status: "active",
         customer: "cus_1",
         client_reference_id: "visitor_1",
+        current_period_start: Math.floor(now.getTime() / 1000),
         current_period_end: Math.floor(
           new Date("2026-07-07T00:00:00.000Z").getTime() / 1000,
         ),
@@ -92,6 +93,65 @@ describe("handleStripeEvent", () => {
     ).resolves.toMatchObject({
       plan: { planCode: "pro" },
       quota: { total: 70, remaining: 70 },
+    });
+  });
+
+  it("refreshes paid quota when a subscription renewal advances the period", async () => {
+    await handleStripeEvent(
+      subscriptionEvent("evt_create", "customer.subscription.updated"),
+      bindings,
+      now,
+    );
+    const current = await getEntitlementContext("visitor_1", undefined, now);
+    await reserveQuota(
+      "visitor_1",
+      "job_paid_1",
+      "request_paid_1",
+      undefined,
+      new Date("2026-06-08T00:00:00.000Z"),
+      70,
+      {
+        start: current.quota.periodStart,
+        end: current.quota.nextRefreshAt,
+      },
+    );
+
+    await expect(
+      getEntitlementContext(
+        "visitor_1",
+        undefined,
+        new Date("2026-07-01T00:00:00.000Z"),
+      ),
+    ).resolves.toMatchObject({
+      quota: { total: 70, remaining: 69 },
+    });
+
+    await handleStripeEvent(
+      subscriptionEvent("evt_renew", "customer.subscription.updated", {
+        current_period_start: Math.floor(
+          new Date("2026-07-07T00:00:00.000Z").getTime() / 1000,
+        ),
+        current_period_end: Math.floor(
+          new Date("2026-08-07T00:00:00.000Z").getTime() / 1000,
+        ),
+      }),
+      bindings,
+      new Date("2026-07-07T00:00:00.000Z"),
+    );
+
+    await expect(
+      getEntitlementContext(
+        "visitor_1",
+        undefined,
+        new Date("2026-07-07T00:00:00.000Z"),
+      ),
+    ).resolves.toMatchObject({
+      quota: {
+        total: 70,
+        remaining: 70,
+        periodStart: "2026-07-07T00:00:00.000Z",
+        nextRefreshAt: "2026-08-07T00:00:00.000Z",
+      },
     });
   });
 

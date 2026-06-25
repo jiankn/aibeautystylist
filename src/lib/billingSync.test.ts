@@ -46,6 +46,7 @@ function createStripeMock(
         id: subscriptionId,
         status: "active",
         customer: "cus_123",
+        current_period_start: Math.floor(now.getTime() / 1000),
         current_period_end: Math.floor(
           new Date("2026-07-18T00:00:00.000Z").getTime() / 1000,
         ),
@@ -79,7 +80,16 @@ describe("billing checkout sync", () => {
     expect(result).toMatchObject({
       synced: true,
       plan: "pro",
-      quota: { total: 70, remaining: 70 },
+      quota: {
+        total: 70,
+        remaining: 70,
+        periodStart: "2026-06-18T00:00:00.000Z",
+        nextRefreshAt: "2026-07-18T00:00:00.000Z",
+      },
+      subscription: {
+        currentPeriodStart: "2026-06-18T00:00:00.000Z",
+        currentPeriodEnd: "2026-07-18T00:00:00.000Z",
+      },
     });
     await expect(
       getEffectivePlan("user_123", undefined, now),

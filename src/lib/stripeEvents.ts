@@ -62,13 +62,16 @@ export async function handleStripeEvent(
   }
 
   const previousPlan = await getEffectivePlan(userId, bindings.DB, now);
+  const currentPeriodStart = extractCurrentPeriodStart(object);
+  const currentPeriodEnd = extractCurrentPeriodEnd(object);
   await upsertSubscription(
     {
       userId,
       stripeSubscriptionId,
       planCode,
       status,
-      currentPeriodEnd: extractCurrentPeriodEnd(object),
+      currentPeriodStart,
+      currentPeriodEnd,
     },
     bindings.DB,
     now,
@@ -82,6 +85,7 @@ export async function handleStripeEvent(
       DB: bindings.DB,
       now,
       allowSamePlan: event.type === "checkout.session.completed",
+      quotaPeriod: { start: currentPeriodStart, end: currentPeriodEnd },
     });
   }
   return { handled: true, duplicate: false, planCode, status };
@@ -194,6 +198,16 @@ function extractCurrentPeriodEnd(
   object: Record<string, unknown>,
 ): string | undefined {
   const value = object["current_period_end"];
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return new Date(value * 1000).toISOString();
+  }
+  return undefined;
+}
+
+function extractCurrentPeriodStart(
+  object: Record<string, unknown>,
+): string | undefined {
+  const value = object["current_period_start"];
   if (typeof value === "number" && Number.isFinite(value)) {
     return new Date(value * 1000).toISOString();
   }

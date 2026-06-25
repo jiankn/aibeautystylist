@@ -1628,6 +1628,124 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .result-placeholder .upload-camera { width: 72px; height: 72px; background: var(--surface-neutral) !important; color: var(--muted) !important; font-size: 30px; }
 .upload-box h3, .result-placeholder h3 { margin: 2px 0 0; color: var(--navy); font-size: 18px; line-height: 1.35; text-wrap: balance; }
 .upload-box p, .result-placeholder p { max-width: 260px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.upload-box-guided { min-height: 520px; }
+.selfie-photo-guide {
+  display: grid;
+  gap: 9px;
+  width: min(100%, 292px);
+  color: var(--muted);
+  text-align: left;
+}
+.selfie-photo-guide-copy {
+  display: grid;
+  gap: 3px;
+}
+.selfie-photo-guide-copy b {
+  color: var(--navy);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.selfie-photo-guide-copy span {
+  font-size: 11px;
+  line-height: 1.45;
+}
+.selfie-photo-guide-visuals {
+  display: grid;
+  grid-template-columns: minmax(86px, .82fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 8px;
+}
+.selfie-photo-guide-good {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  margin: 0;
+}
+.selfie-photo-guide-good svg {
+  display: block;
+  width: 100%;
+  min-height: 108px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--bg-elevated), var(--surface-active));
+}
+.selfie-photo-guide svg {
+  overflow: visible;
+}
+.selfie-photo-guide svg * {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.selfie-photo-guide-good .phone,
+.selfie-photo-guide-good .face-frame {
+  stroke: var(--rose-border);
+  stroke-width: 2;
+}
+.selfie-photo-guide-good .face,
+.selfie-photo-guide-good .hair,
+.selfie-photo-guide-good .features,
+.selfie-photo-guide-good .shoulders {
+  stroke: var(--navy);
+  stroke-width: 2;
+}
+.selfie-photo-guide-good .light {
+  stroke: var(--teal);
+  stroke-width: 2;
+}
+.selfie-photo-guide-good figcaption {
+  display: grid;
+  gap: 1px;
+  font-size: 10.5px;
+  line-height: 1.25;
+  text-align: center;
+}
+.selfie-photo-guide-good figcaption strong {
+  color: var(--navy);
+  font-size: 11px;
+}
+.selfie-photo-guide-avoid {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-width: 0;
+}
+.selfie-photo-guide-avoid > b {
+  color: var(--danger-text);
+  font-size: 11px;
+  line-height: 1.3;
+}
+.selfie-photo-guide-avoid > div {
+  display: grid;
+  gap: 5px;
+}
+.selfie-photo-guide-avoid-item {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.22;
+}
+.selfie-photo-guide-avoid-item svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+.selfie-photo-guide-avoid-item circle {
+  stroke: var(--danger-border);
+  stroke-width: 2;
+}
+.selfie-photo-guide-avoid-item path {
+  stroke: var(--muted);
+  stroke-width: 2;
+}
+.selfie-photo-guide-avoid-item .slash {
+  stroke: var(--danger-text);
+  stroke-width: 2.5;
+}
 [data-result-target] { display: grid; min-width: 0; width: 100%; max-width: 100%; height: 100%; overflow: hidden; }
 .generated-result {
   position: relative;
@@ -1747,6 +1865,7 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .upload-box.has-photo > .upload-camera,
 .upload-box.has-photo > h3,
 .upload-box.has-photo > p,
+.upload-box.has-photo > .selfie-photo-guide,
 .upload-box.has-photo > .privacy-promise,
 .upload-box.has-photo > .upload-auth-lock,
 .upload-box.has-photo > .privacy-consent,
@@ -2610,6 +2729,9 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   .result-placeholder,
   .generated-result {
     min-height: clamp(300px, 86vw, 420px);
+  }
+  .upload-box.upload-box-guided {
+    min-height: clamp(520px, 150vw, 620px);
   }
   .upload-box.has-photo {
     min-height: clamp(320px, 92vw, 460px);

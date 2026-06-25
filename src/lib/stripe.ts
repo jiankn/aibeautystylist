@@ -233,6 +233,7 @@ export function createStripeClient(options: StripeClientOptions) {
 export interface StripeSubscription {
   id: string;
   status: string;
+  current_period_start?: number;
   current_period_end?: number;
   customer?: string;
   client_reference_id?: string;

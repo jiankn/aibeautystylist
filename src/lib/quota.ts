@@ -11,6 +11,16 @@ export interface QuotaSnapshot {
   nextRefreshAt: string;
 }
 
+export interface QuotaPeriodInput {
+  start?: string;
+  end?: string;
+}
+
+interface ResolvedQuotaPeriod {
+  periodStart: string;
+  nextRefreshAt: string;
+}
+
 export interface QuotaReservation {
   reserved: boolean;
   duplicate: boolean;
@@ -51,9 +61,9 @@ export async function getQuotaSnapshot(
   DB?: D1DatabaseLike,
   now = new Date(),
   monthlyQuota: number = FREE_MONTHLY_QUOTA,
+  quotaPeriod?: QuotaPeriodInput,
 ): Promise<QuotaSnapshot> {
-  const periodStart = getUtcMonthStart(now);
-  const nextRefreshAt = getNextUtcMonthStart(now);
+  const { periodStart, nextRefreshAt } = resolveQuotaPeriod(now, quotaPeriod);
   let balanceChange = 0;
 
   if (DB) {
@@ -86,6 +96,7 @@ export async function reserveQuota(
   DB?: D1DatabaseLike,
   now = new Date(),
   monthlyQuota: number = FREE_MONTHLY_QUOTA,
+  quotaPeriod?: QuotaPeriodInput,
 ): Promise<QuotaReservation> {
   const usageKey = `reserve:${userId}:${idempotencyKey}`;
 
@@ -93,11 +104,23 @@ export async function reserveQuota(
     return {
       reserved: false,
       duplicate: true,
-      snapshot: await getQuotaSnapshot(userId, DB, now, monthlyQuota),
+      snapshot: await getQuotaSnapshot(
+        userId,
+        DB,
+        now,
+        monthlyQuota,
+        quotaPeriod,
+      ),
     };
   }
 
-  const before = await getQuotaSnapshot(userId, DB, now, monthlyQuota);
+  const before = await getQuotaSnapshot(
+    userId,
+    DB,
+    now,
+    monthlyQuota,
+    quotaPeriod,
+  );
   if (before.remaining <= 0) {
     return { reserved: false, duplicate: false, snapshot: before };
   }
@@ -106,7 +129,13 @@ export async function reserveQuota(
   return {
     reserved: true,
     duplicate: false,
-    snapshot: await getQuotaSnapshot(userId, DB, now, monthlyQuota),
+    snapshot: await getQuotaSnapshot(
+      userId,
+      DB,
+      now,
+      monthlyQuota,
+      quotaPeriod,
+    ),
   };
 }
 
@@ -116,12 +145,13 @@ export async function refundQuota(
   DB?: D1DatabaseLike,
   now = new Date(),
   monthlyQuota: number = FREE_MONTHLY_QUOTA,
+  quotaPeriod?: QuotaPeriodInput,
 ): Promise<QuotaSnapshot> {
   const usageKey = `refund:${userId}:${jobId}`;
   if (!(await hasUsageRecord(userId, usageKey, DB))) {
     await appendUsageRecord(userId, jobId, "refund", 1, usageKey, DB, now);
   }
-  return getQuotaSnapshot(userId, DB, now, monthlyQuota);
+  return getQuotaSnapshot(userId, DB, now, monthlyQuota, quotaPeriod);
 }
 
 export async function grantShareReward(
@@ -130,6 +160,7 @@ export async function grantShareReward(
   DB?: D1DatabaseLike,
   now = new Date(),
   monthlyQuota: number = FREE_MONTHLY_QUOTA,
+  quotaPeriod?: QuotaPeriodInput,
 ): Promise<ShareRewardGrant> {
   const rewardDate = now.toISOString().slice(0, 10);
   const usageKey = `share_reward:${userId}:${rewardDate}`;
@@ -138,7 +169,13 @@ export async function grantShareReward(
     return {
       rewarded: false,
       duplicate: true,
-      snapshot: await getQuotaSnapshot(userId, DB, now, monthlyQuota),
+      snapshot: await getQuotaSnapshot(
+        userId,
+        DB,
+        now,
+        monthlyQuota,
+        quotaPeriod,
+      ),
     };
   }
 
@@ -156,13 +193,25 @@ export async function grantShareReward(
     return {
       rewarded: false,
       duplicate: true,
-      snapshot: await getQuotaSnapshot(userId, DB, now, monthlyQuota),
+      snapshot: await getQuotaSnapshot(
+        userId,
+        DB,
+        now,
+        monthlyQuota,
+        quotaPeriod,
+      ),
     };
   }
   return {
     rewarded: true,
     duplicate: false,
-    snapshot: await getQuotaSnapshot(userId, DB, now, monthlyQuota),
+    snapshot: await getQuotaSnapshot(
+      userId,
+      DB,
+      now,
+      monthlyQuota,
+      quotaPeriod,
+    ),
   };
 }
 
@@ -174,6 +223,7 @@ export async function resetQuotaForPlanUpgrade(input: {
   DB?: D1DatabaseLike;
   now?: Date;
   allowSamePlan?: boolean;
+  quotaPeriod?: QuotaPeriodInput;
 }): Promise<PlanQuotaReset> {
   const now = input.now ?? new Date();
   const monthlyQuota = getMonthlyQuota(input.toPlanCode);
@@ -182,6 +232,7 @@ export async function resetQuotaForPlanUpgrade(input: {
     input.DB,
     now,
     monthlyQuota,
+    input.quotaPeriod,
   );
 
   const isUpgrade =
@@ -217,7 +268,13 @@ export async function resetQuotaForPlanUpgrade(input: {
     reset: amount > 0,
     duplicate: false,
     amount,
-    snapshot: await getQuotaSnapshot(input.userId, input.DB, now, monthlyQuota),
+    snapshot: await getQuotaSnapshot(
+      input.userId,
+      input.DB,
+      now,
+      monthlyQuota,
+      input.quotaPeriod,
+    ),
   };
 }
 
@@ -235,6 +292,88 @@ export function getNextUtcMonthStart(now = new Date()): string {
   return new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1),
   ).toISOString();
+}
+
+export function resolveQuotaPeriod(
+  now = new Date(),
+  quotaPeriod?: QuotaPeriodInput,
+): ResolvedQuotaPeriod {
+  const explicitStart = parseIsoDate(quotaPeriod?.start);
+  const explicitEnd = parseIsoDate(quotaPeriod?.end);
+
+  if (
+    explicitStart &&
+    explicitEnd &&
+    explicitEnd.getTime() > explicitStart.getTime() &&
+    now.getTime() >= explicitStart.getTime() &&
+    now.getTime() < explicitEnd.getTime()
+  ) {
+    return {
+      periodStart: explicitStart.toISOString(),
+      nextRefreshAt: explicitEnd.toISOString(),
+    };
+  }
+
+  if (explicitEnd) {
+    return inferMonthlyQuotaPeriodFromEnd(explicitEnd, now);
+  }
+
+  return {
+    periodStart: getUtcMonthStart(now),
+    nextRefreshAt: getNextUtcMonthStart(now),
+  };
+}
+
+function inferMonthlyQuotaPeriodFromEnd(
+  anchorEnd: Date,
+  now: Date,
+): ResolvedQuotaPeriod {
+  let nextRefresh = anchorEnd;
+  while (nextRefresh.getTime() <= now.getTime()) {
+    nextRefresh = addUtcMonthsClamped(nextRefresh, 1);
+  }
+  while (addUtcMonthsClamped(nextRefresh, -1).getTime() > now.getTime()) {
+    nextRefresh = addUtcMonthsClamped(nextRefresh, -1);
+  }
+
+  return {
+    periodStart: addUtcMonthsClamped(nextRefresh, -1).toISOString(),
+    nextRefreshAt: nextRefresh.toISOString(),
+  };
+}
+
+function addUtcMonthsClamped(date: Date, months: number): Date {
+  const firstOfTarget = new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1),
+  );
+  const targetYear = firstOfTarget.getUTCFullYear();
+  const targetMonth = firstOfTarget.getUTCMonth();
+  const targetDay = Math.min(
+    date.getUTCDate(),
+    daysInUtcMonth(targetYear, targetMonth),
+  );
+
+  return new Date(
+    Date.UTC(
+      targetYear,
+      targetMonth,
+      targetDay,
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds(),
+      date.getUTCMilliseconds(),
+    ),
+  );
+}
+
+function daysInUtcMonth(year: number, month: number): number {
+  return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+}
+
+function parseIsoDate(value?: string): Date | undefined {
+  if (!value) return undefined;
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? date : undefined;
 }
 
 async function hasUsageRecord(

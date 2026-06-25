@@ -11,6 +11,7 @@ export interface StoredSubscription {
   stripeSubscriptionId: string;
   planCode: PlanCode;
   status: string;
+  currentPeriodStart?: string;
   currentPeriodEnd?: string;
   createdAt: string;
   updatedAt: string;
@@ -21,6 +22,7 @@ export interface UpsertSubscriptionInput {
   stripeSubscriptionId: string;
   planCode: PlanCode;
   status: string;
+  currentPeriodStart?: string;
   currentPeriodEnd?: string;
 }
 
@@ -28,6 +30,7 @@ export interface EffectivePlan {
   planCode: PlanCode;
   source: "subscription" | "default";
   status?: string;
+  currentPeriodStart?: string;
   currentPeriodEnd?: string;
 }
 
@@ -37,6 +40,7 @@ interface SubscriptionRow {
   stripe_subscription_id: string;
   plan_code: string;
   status: string;
+  current_period_start: string | null;
   current_period_end: string | null;
   created_at: string;
   updated_at: string;
@@ -60,6 +64,7 @@ export async function getEffectivePlan(
     planCode: effective.planCode,
     source: "subscription",
     status: effective.status,
+    currentPeriodStart: effective.currentPeriodStart,
     currentPeriodEnd: effective.currentPeriodEnd,
   };
 }
@@ -84,20 +89,26 @@ export async function upsertSubscription(
 
   if (DB) {
     const existing = await DB.prepare(
-      "SELECT id, user_id, stripe_subscription_id, plan_code, status, current_period_end, created_at, updated_at FROM subscriptions WHERE stripe_subscription_id = ?",
+      "SELECT id, user_id, stripe_subscription_id, plan_code, status, current_period_start, current_period_end, created_at, updated_at FROM subscriptions WHERE stripe_subscription_id = ?",
     )
       .bind(input.stripeSubscriptionId)
       .first<SubscriptionRow>();
 
     if (existing) {
+      const currentPeriodStart =
+        input.currentPeriodStart ?? existing.current_period_start ?? undefined;
+      const currentPeriodEnd =
+        input.currentPeriodEnd ?? existing.current_period_end ?? undefined;
+
       await DB.prepare(
-        "UPDATE subscriptions SET user_id = ?, plan_code = ?, status = ?, current_period_end = ?, updated_at = ? WHERE stripe_subscription_id = ?",
+        "UPDATE subscriptions SET user_id = ?, plan_code = ?, status = ?, current_period_start = ?, current_period_end = ?, updated_at = ? WHERE stripe_subscription_id = ?",
       )
         .bind(
           input.userId,
           input.planCode,
           input.status,
-          input.currentPeriodEnd ?? null,
+          currentPeriodStart ?? null,
+          currentPeriodEnd ?? null,
           timestamp,
           input.stripeSubscriptionId,
         )
@@ -107,7 +118,8 @@ export async function upsertSubscription(
         userId: input.userId,
         planCode: input.planCode,
         status: input.status,
-        currentPeriodEnd: input.currentPeriodEnd,
+        currentPeriodStart,
+        currentPeriodEnd,
         updatedAt: timestamp,
       };
     }
@@ -119,7 +131,7 @@ export async function upsertSubscription(
       .run();
     const id = crypto.randomUUID();
     await DB.prepare(
-      "INSERT INTO subscriptions (id, user_id, stripe_subscription_id, plan_code, status, current_period_end, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO subscriptions (id, user_id, stripe_subscription_id, plan_code, status, current_period_start, current_period_end, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
       .bind(
         id,
@@ -127,6 +139,7 @@ export async function upsertSubscription(
         input.stripeSubscriptionId,
         input.planCode,
         input.status,
+        input.currentPeriodStart ?? null,
         input.currentPeriodEnd ?? null,
         timestamp,
         timestamp,
@@ -138,6 +151,7 @@ export async function upsertSubscription(
       stripeSubscriptionId: input.stripeSubscriptionId,
       planCode: input.planCode,
       status: input.status,
+      currentPeriodStart: input.currentPeriodStart,
       currentPeriodEnd: input.currentPeriodEnd,
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -151,7 +165,9 @@ export async function upsertSubscription(
     stripeSubscriptionId: input.stripeSubscriptionId,
     planCode: input.planCode,
     status: input.status,
-    currentPeriodEnd: input.currentPeriodEnd,
+    currentPeriodStart:
+      input.currentPeriodStart ?? existing?.currentPeriodStart,
+    currentPeriodEnd: input.currentPeriodEnd ?? existing?.currentPeriodEnd,
     createdAt: existing?.createdAt ?? timestamp,
     updatedAt: timestamp,
   };
@@ -165,7 +181,7 @@ export async function listUserSubscriptions(
 ): Promise<StoredSubscription[]> {
   if (DB) {
     const rows = await DB.prepare(
-      "SELECT id, user_id, stripe_subscription_id, plan_code, status, current_period_end, created_at, updated_at FROM subscriptions WHERE user_id = ?",
+      "SELECT id, user_id, stripe_subscription_id, plan_code, status, current_period_start, current_period_end, created_at, updated_at FROM subscriptions WHERE user_id = ?",
     )
       .bind(userId)
       .all<SubscriptionRow>();
@@ -237,6 +253,7 @@ function fromRow(row: SubscriptionRow): StoredSubscription {
     stripeSubscriptionId: row.stripe_subscription_id,
     planCode: isPlanCode(row.plan_code) ? row.plan_code : "free",
     status: row.status,
+    currentPeriodStart: row.current_period_start ?? undefined,
     currentPeriodEnd: row.current_period_end ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,

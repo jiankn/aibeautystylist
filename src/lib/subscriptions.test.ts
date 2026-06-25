@@ -27,6 +27,7 @@ describe("subscriptions", () => {
         stripeSubscriptionId: "sub_1",
         planCode: "pro",
         status: "active",
+        currentPeriodStart: "2026-06-07T00:00:00.000Z",
         currentPeriodEnd: "2026-07-07T00:00:00.000Z",
       },
       undefined,
@@ -39,6 +40,7 @@ describe("subscriptions", () => {
       planCode: "pro",
       source: "subscription",
       status: "active",
+      currentPeriodStart: "2026-06-07T00:00:00.000Z",
     });
   });
 
@@ -131,5 +133,36 @@ describe("subscriptions", () => {
     const subscriptions = await listUserSubscriptions("visitor_1");
     expect(subscriptions).toHaveLength(1);
     expect(subscriptions[0]).toMatchObject({ status: "canceled" });
+  });
+
+  it("preserves existing period dates when a later event omits them", async () => {
+    await upsertSubscription(
+      {
+        userId: "visitor_1",
+        stripeSubscriptionId: "sub_1",
+        planCode: "pro",
+        status: "active",
+        currentPeriodStart: "2026-06-07T00:00:00.000Z",
+        currentPeriodEnd: "2026-07-07T00:00:00.000Z",
+      },
+      undefined,
+      now,
+    );
+    await upsertSubscription(
+      {
+        userId: "visitor_1",
+        stripeSubscriptionId: "sub_1",
+        planCode: "pro",
+        status: "active",
+      },
+      undefined,
+      now,
+    );
+
+    const subscriptions = await listUserSubscriptions("visitor_1");
+    expect(subscriptions[0]).toMatchObject({
+      currentPeriodStart: "2026-06-07T00:00:00.000Z",
+      currentPeriodEnd: "2026-07-07T00:00:00.000Z",
+    });
   });
 });

@@ -121,6 +121,8 @@ export async function upgradeActiveSubscriptionPlan(input: {
   });
 
   const stripeSubscriptionId = updated.id || current.stripeSubscriptionId;
+  const currentPeriodStart =
+    updated.current_period_start ?? subscription.current_period_start;
   const currentPeriodEnd =
     updated.current_period_end ?? subscription.current_period_end;
   const customerId =
@@ -139,6 +141,9 @@ export async function upgradeActiveSubscriptionPlan(input: {
       stripeSubscriptionId,
       planCode: input.toPlanCode,
       status: updated.status || current.status,
+      currentPeriodStart: currentPeriodStart
+        ? new Date(currentPeriodStart * 1000).toISOString()
+        : current.currentPeriodStart,
       currentPeriodEnd: currentPeriodEnd
         ? new Date(currentPeriodEnd * 1000).toISOString()
         : current.currentPeriodEnd,
@@ -157,6 +162,14 @@ export async function upgradeActiveSubscriptionPlan(input: {
           sourceId: stripeSubscriptionId,
           DB: input.DB,
           now,
+          quotaPeriod: {
+            start: currentPeriodStart
+              ? new Date(currentPeriodStart * 1000).toISOString()
+              : current.currentPeriodStart,
+            end: currentPeriodEnd
+              ? new Date(currentPeriodEnd * 1000).toISOString()
+              : current.currentPeriodEnd,
+          },
         })
       ).snapshot
     : await getQuotaSnapshot(
@@ -173,6 +186,9 @@ export async function upgradeActiveSubscriptionPlan(input: {
     subscription: {
       id: stripeSubscriptionId,
       status,
+      currentPeriodStart: currentPeriodStart
+        ? new Date(currentPeriodStart * 1000).toISOString()
+        : current.currentPeriodStart,
       currentPeriodEnd: currentPeriodEnd
         ? new Date(currentPeriodEnd * 1000).toISOString()
         : current.currentPeriodEnd,

@@ -7,6 +7,7 @@ import {
   grantShareReward,
   refundQuota,
   reserveQuota,
+  resolveQuotaPeriod,
   resetQuotaForPlanUpgrade,
   resetMockQuota,
 } from "./quota";
@@ -141,11 +142,71 @@ describe("quota ledger", () => {
       snapshot: { total: 70, remaining: 69 },
     });
   });
+
+  it("scopes paid usage to the subscription renewal period", async () => {
+    const currentPeriod = {
+      start: "2026-06-18T00:00:00.000Z",
+      end: "2026-07-18T00:00:00.000Z",
+    };
+    await reserveQuota(
+      "subscriber_1",
+      "job_1",
+      "request_1",
+      undefined,
+      new Date("2026-06-20T00:00:00.000Z"),
+      70,
+      currentPeriod,
+    );
+
+    await expect(
+      getQuotaSnapshot(
+        "subscriber_1",
+        undefined,
+        new Date("2026-07-01T00:00:00.000Z"),
+        70,
+        currentPeriod,
+      ),
+    ).resolves.toMatchObject({
+      total: 70,
+      remaining: 69,
+      periodStart: "2026-06-18T00:00:00.000Z",
+      nextRefreshAt: "2026-07-18T00:00:00.000Z",
+    });
+
+    await expect(
+      getQuotaSnapshot(
+        "subscriber_1",
+        undefined,
+        new Date("2026-07-18T00:00:00.000Z"),
+        70,
+        {
+          start: "2026-07-18T00:00:00.000Z",
+          end: "2026-08-18T00:00:00.000Z",
+        },
+      ),
+    ).resolves.toMatchObject({
+      total: 70,
+      remaining: 70,
+      periodStart: "2026-07-18T00:00:00.000Z",
+      nextRefreshAt: "2026-08-18T00:00:00.000Z",
+    });
+  });
 });
 
 describe("UTC quota periods", () => {
   it("calculates current and next month boundaries", () => {
     expect(getUtcMonthStart(now)).toBe("2026-06-01T00:00:00.000Z");
     expect(getNextUtcMonthStart(now)).toBe("2026-07-01T00:00:00.000Z");
+  });
+
+  it("infers a monthly subscription quota window from a renewal date", () => {
+    expect(
+      resolveQuotaPeriod(new Date("2026-07-20T00:00:00.000Z"), {
+        end: "2026-07-18T00:00:00.000Z",
+      }),
+    ).toEqual({
+      periodStart: "2026-07-18T00:00:00.000Z",
+      nextRefreshAt: "2026-08-18T00:00:00.000Z",
+    });
   });
 });

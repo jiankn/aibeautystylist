@@ -29,6 +29,8 @@ describe("entitlements", () => {
         stripeSubscriptionId: "sub_pro",
         planCode: "pro",
         status: "active",
+        currentPeriodStart: "2026-06-07T00:00:00.000Z",
+        currentPeriodEnd: "2026-07-07T00:00:00.000Z",
       },
       undefined,
       now,
@@ -36,7 +38,12 @@ describe("entitlements", () => {
 
     const context = await getEntitlementContext("visitor_1", undefined, now);
     expect(context.plan.planCode).toBe("pro");
-    expect(context.quota).toMatchObject({ total: 70, remaining: 70 });
+    expect(context.quota).toMatchObject({
+      total: 70,
+      remaining: 70,
+      periodStart: "2026-06-07T00:00:00.000Z",
+      nextRefreshAt: "2026-07-07T00:00:00.000Z",
+    });
   });
 
   it("gates a feature behind the plan that includes it", async () => {

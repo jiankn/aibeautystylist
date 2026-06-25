@@ -24,7 +24,11 @@ export const GET: APIRoute = async ({ cookies }) => {
     plan: plan.planCode,
     subscription:
       plan.source === "subscription"
-        ? { status: plan.status, currentPeriodEnd: plan.currentPeriodEnd }
+        ? {
+            status: plan.status,
+            currentPeriodStart: plan.currentPeriodStart,
+            currentPeriodEnd: plan.currentPeriodEnd,
+          }
         : null,
     quota: {
       ...quota,

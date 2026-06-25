@@ -2,6 +2,7 @@
 import LookSelector from "../components/LookSelector.astro";
 import MobileAppTopBar from "../components/MobileAppTopBar.astro";
 import MobileBottomNav from "../components/MobileBottomNav.astro";
+import SelfiePhotoGuide from "../components/SelfiePhotoGuide.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
@@ -140,10 +141,11 @@ const premiumClientMessages = {
 
             <!-- 上传区 -->
             <div class="upload-preview" id="prem-upload-area">
-              <div class="upload-box">
+              <div class="upload-box upload-box-guided">
                 <span class="upload-camera">▣</span>
                 <h3>{t("tryon", "uploadSelfie")}</h3>
                 <p>{t("tryon", "uploadFormatDesc")}</p>
+                <SelfiePhotoGuide />
                 <div class="privacy-promise">
                   <span>✓ {t("privacy", "photoPurpose")}</span>
                   <span>✓ {t("tryon", "premiumNote")}</span>

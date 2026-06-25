@@ -1,0 +1,72 @@
+---
+import { t } from "../lib/i18n";
+
+const avoidItems = [
+  {
+    key: "angle",
+    label: t("tryon", "photoGuideAvoidAngle"),
+    path: "M18 30c8-10 20-9 26 2M32 19c2 6 0 14-4 18",
+  },
+  {
+    key: "dark",
+    label: t("tryon", "photoGuideAvoidDark"),
+    path: "M18 38h28M22 31h20M26 24h12",
+  },
+  {
+    key: "cover",
+    label: t("tryon", "photoGuideAvoidCover"),
+    path: "M18 34c8-8 20-8 28 0M20 25h24M25 40h14",
+  },
+];
+---
+
+<section class="selfie-photo-guide" aria-labelledby="selfie-photo-guide-title">
+  <div class="selfie-photo-guide-copy">
+    <b id="selfie-photo-guide-title">{t("tryon", "photoGuideTitle")}</b>
+    <span>{t("tryon", "photoGuideDesc")}</span>
+  </div>
+  <div class="selfie-photo-guide-visuals">
+    <figure
+      class="selfie-photo-guide-good"
+      aria-label={t("tryon", "photoGuideGoodAlt")}
+    >
+      <svg viewBox="0 0 96 112" aria-hidden="true" focusable="false">
+        <rect class="phone" x="24" y="8" width="48" height="96" rx="16"></rect>
+        <rect class="face-frame" x="32" y="22" width="32" height="48" rx="16"
+        ></rect>
+        <path
+          class="face"
+          d="M36 46c3-13 21-13 24 0v10c0 9-5 16-12 16s-12-7-12-16z"></path>
+        <path class="hair" d="M36 45c2-12 9-17 16-17 6 0 12 4 14 13"></path>
+        <path class="features" d="M41 52h.1M55 52h.1M43 62c3 2 7 2 10 0"></path>
+        <path class="shoulders" d="M31 88c6-10 28-10 34 0"></path>
+        <path class="light left" d="M12 24l9 5M10 42h10M12 60l9-5"></path>
+        <path class="light right" d="M84 24l-9 5M86 42H76M84 60l-9-5"></path>
+      </svg>
+      <figcaption>
+        <strong>{t("tryon", "photoGuideGoodLabel")}</strong>
+        <span>{t("tryon", "photoGuideGoodCaption")}</span>
+      </figcaption>
+    </figure>
+    <div
+      class="selfie-photo-guide-avoid"
+      aria-label={t("tryon", "photoGuideAvoidTitle")}
+    >
+      <b>{t("tryon", "photoGuideAvoidTitle")}</b>
+      <div>
+        {
+          avoidItems.map((item) => (
+            <span class="selfie-photo-guide-avoid-item">
+              <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+                <circle cx="32" cy="32" r="23" />
+                <path d={item.path} />
+                <path class="slash" d="M18 46L46 18" />
+              </svg>
+              <span>{item.label}</span>
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
