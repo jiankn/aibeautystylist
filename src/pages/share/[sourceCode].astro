@@ -755,6 +755,12 @@ const hrefs = {
     }
 
     .public-share-actions {
+      --public-share-home-bg: rgba(255, 255, 255, 0.9);
+      --public-share-home-bg-hover: #fff;
+      --public-share-home-border: rgba(23, 35, 61, 0.36);
+      --public-share-home-border-hover: rgba(23, 35, 61, 0.52);
+      --public-share-home-text: #17233d;
+      --public-share-home-text-hover: #0c1830;
       display: flex;
       justify-content: center;
       gap: 10px;
@@ -768,8 +774,45 @@ const hrefs = {
       justify-content: center;
     }
 
+    .public-share-actions .btn-outline {
+      border-color: var(--public-share-home-border);
+      background: var(--public-share-home-bg);
+      color: var(--public-share-home-text);
+      font-weight: 800;
+      box-shadow:
+        0 8px 18px rgba(31, 45, 65, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.82);
+    }
+
+    .public-share-actions .btn-outline:hover,
+    .public-share-actions .btn-outline:focus-visible {
+      border-color: var(--public-share-home-border-hover);
+      background: var(--public-share-home-bg-hover);
+      color: var(--public-share-home-text-hover);
+    }
+
     .public-share-actions .public-share-try {
       min-width: min(100%, 220px);
+    }
+
+    :global([data-theme="dark"]) .public-share-actions {
+      --public-share-home-bg: rgba(17, 27, 49, 0.94);
+      --public-share-home-bg-hover: #111b31;
+      --public-share-home-border: rgba(247, 249, 255, 0.42);
+      --public-share-home-border-hover: rgba(247, 249, 255, 0.66);
+      --public-share-home-text: #f7f9ff;
+      --public-share-home-text-hover: #fff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"])) .public-share-actions {
+        --public-share-home-bg: rgba(17, 27, 49, 0.94);
+        --public-share-home-bg-hover: #111b31;
+        --public-share-home-border: rgba(247, 249, 255, 0.42);
+        --public-share-home-border-hover: rgba(247, 249, 255, 0.66);
+        --public-share-home-text: #f7f9ff;
+        --public-share-home-text-hover: #fff;
+      }
     }
 
     @media (max-width: 760px) {
