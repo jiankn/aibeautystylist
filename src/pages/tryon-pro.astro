@@ -279,6 +279,7 @@ const proClientMessages = {
     const uploadArea = document.getElementById("pro-upload-area");
     const actionsDiv = document.getElementById("pro-actions");
     const resultImg = document.getElementById("pro-result-img");
+    const originalImg = document.getElementById("pro-original-img");
     const downloadBtn = document.getElementById("pro-download-btn");
     const historyList = document.getElementById("pro-history");
     const shareCardLink = document.querySelector("[data-share-card-link]");
@@ -427,6 +428,7 @@ const proClientMessages = {
                 job.resultDisplayImage || job.resultImage,
                 jobId,
                 job.resultImage,
+                job.originalImage,
               );
             loadHistory();
             setTaskNavSuppressed(false);
@@ -481,7 +483,11 @@ const proClientMessages = {
       return shareUrl;
     }
 
-    function showResult(imageUrl, jobId, fallbackUrl) {
+    function originalImageUrlForJob(jobId) {
+      return "/api/tryon-jobs/" + encodeURIComponent(jobId) + "/original";
+    }
+
+    function showResult(imageUrl, jobId, fallbackUrl, originalUrl) {
       currentJobId = jobId;
       if (uploadArea) uploadArea.hidden = true;
       if (compareDiv) {
@@ -498,6 +504,12 @@ const proClientMessages = {
               }
             : null;
         resultImg.src = imageUrl;
+      }
+      if (originalImg) {
+        originalImg.onerror = () => {
+          originalImg.removeAttribute("src");
+        };
+        originalImg.src = originalUrl || originalImageUrlForJob(jobId);
       }
       if (actionsDiv) actionsDiv.hidden = false;
       if (downloadBtn)
@@ -631,6 +643,7 @@ const proClientMessages = {
                   job.resultDisplayImage || job.resultImage,
                   job.id,
                   job.resultImage,
+                  originalImageUrlForJob(job.id),
                 );
               }
             });

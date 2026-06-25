@@ -1565,7 +1565,36 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .result-head h2 { margin: 0; font-size: 20px; line-height: 1.32; }
 .result-head .panel-subtitle { margin-top: 6px; font-size: 12px; line-height: 1.5; }
 .result-head .pill { margin-left: auto; }
-.result-compare { height: 500px; border-radius: 13px; }
+.result-compare {
+  display: grid;
+  height: 500px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-radius: 13px;
+  cursor: default;
+  touch-action: auto;
+}
+.result-compare .compare-half {
+  position: relative;
+  inset: auto;
+  min-width: 0;
+  width: auto;
+  height: 100%;
+  background: var(--bg-elevated);
+}
+.result-compare .compare-half.left {
+  order: 1;
+  width: auto;
+  clip-path: none;
+}
+.result-compare .compare-half.right { order: 2; }
+.result-compare .compare-half img {
+  display: block;
+  object-fit: contain;
+  background: var(--bg-elevated);
+}
+.result-compare::after {
+  left: 50%;
+}
 .result-caption { margin: 16px 0 0; color: var(--muted); font-size: 13px; text-align: center; }
 .upload-preview { display: grid; min-width: 0; max-width: 100%; min-height: 420px; grid-template-columns: minmax(224px, .9fr) 22px minmax(272px, 1.1fr); align-items: stretch; gap: 8px; overflow: hidden; }
 .upload-preview.has-photo-preview { grid-template-columns: minmax(260px, 1fr) 22px minmax(260px, 1fr); }
