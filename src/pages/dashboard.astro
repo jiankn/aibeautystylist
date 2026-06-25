@@ -3344,26 +3344,30 @@ const diagnosisValueAliases =
     }
     .dashboard-metrics {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      width: min(100%, 800px);
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 0.92fr) minmax(
+          0,
+          1.08fr
+        );
+      gap: 8px;
     }
     .metric-card {
       display: flex;
       align-items: center;
-      gap: 12px;
-      min-height: 80px;
-      padding: 16px;
+      gap: 9px;
+      min-height: 58px;
+      padding: 10px 12px;
       border: 1px solid color-mix(in srgb, var(--line) 56%, transparent);
-      border-radius: 12px;
+      border-radius: 9px;
       background: var(--bg-elevated);
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .metric-card:hover {
       border-color: color-mix(in srgb, var(--rose) 28%, var(--line));
       box-shadow:
-        0 8px 24px rgba(18, 39, 66, 0.06),
+        0 5px 16px rgba(18, 39, 66, 0.05),
         0 2px 8px rgba(18, 39, 66, 0.04);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
     .metric-card-plan {
       --dashboard-plan-card-border: color-mix(
@@ -3386,7 +3390,7 @@ const diagnosisValueAliases =
       --dashboard-plan-card-inset-border: rgba(15, 118, 110, 0.12);
       --dashboard-plan-card-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.72),
-        0 18px 42px rgba(10, 81, 83, 0.08);
+        0 8px 22px rgba(10, 81, 83, 0.06);
       position: relative;
       isolation: isolate;
       overflow: hidden;
@@ -3418,7 +3422,7 @@ const diagnosisValueAliases =
       );
       --dashboard-plan-card-inset-border: rgba(255, 210, 224, 0.72);
       --dashboard-plan-card-shadow:
-        0 24px 52px rgba(156, 38, 82, 0.15), 0 8px 18px rgba(156, 38, 82, 0.07),
+        0 10px 26px rgba(156, 38, 82, 0.1), 0 4px 12px rgba(156, 38, 82, 0.05),
         var(--panel-inset);
     }
     .metric-card-plan[data-plan="premium"] {
@@ -3445,7 +3449,7 @@ const diagnosisValueAliases =
       );
       --dashboard-plan-card-inset-border: rgba(255, 235, 175, 0.74);
       --dashboard-plan-card-shadow:
-        0 24px 52px rgba(143, 88, 12, 0.16), 0 8px 18px rgba(143, 88, 12, 0.08),
+        0 10px 26px rgba(143, 88, 12, 0.1), 0 4px 12px rgba(143, 88, 12, 0.05),
         var(--panel-inset);
     }
     :global([data-theme="dark"]) .metric-card-plan {
@@ -3607,7 +3611,7 @@ const diagnosisValueAliases =
     .metric-card-plan::after {
       inset: 1px;
       border: 1px solid var(--dashboard-plan-card-inset-border);
-      border-radius: 11px;
+      border-radius: 8px;
       box-shadow: inset 0 0 0 1px
         color-mix(in srgb, currentColor 4%, transparent);
     }
@@ -3618,6 +3622,10 @@ const diagnosisValueAliases =
     .metric-icon {
       flex: 0 0 auto;
     }
+    .metric-icon :global(.app-icon-badge) {
+      --app-icon-size: 24px;
+      border-radius: 7px;
+    }
     .metric-content {
       flex: 1;
       min-width: 0;
@@ -3625,16 +3633,17 @@ const diagnosisValueAliases =
     .metric-content span {
       display: block;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
+      line-height: 1.1;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      letter-spacing: 0.42px;
+      margin-bottom: 3px;
     }
     .metric-content strong {
       display: block;
       color: var(--navy);
-      font-size: 26px;
+      font-size: 20px;
       font-weight: 900;
       line-height: 1;
       font-variant-numeric: tabular-nums;
@@ -3642,16 +3651,16 @@ const diagnosisValueAliases =
     .metric-card-dual {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
-      gap: 16px;
-      padding: 14px 16px;
+      gap: 10px;
+      padding: 10px 12px;
     }
     .metric-card-dual:hover {
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
     .metric-dual-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 7px;
     }
     .metric-dual-divider {
       width: 1px;
@@ -3666,10 +3675,10 @@ const diagnosisValueAliases =
     }
     .metric-dual-item .metric-content span {
       font-size: 10px;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .metric-dual-item .metric-content strong {
-      font-size: 22px;
+      font-size: 19px;
     }
     .dashboard-panel {
       border-radius: 12px;
@@ -5074,9 +5083,10 @@ const diagnosisValueAliases =
         position: relative;
         grid-template-columns: 1fr;
         gap: 0;
-        padding: 14px 16px 12px;
+        width: 100%;
+        padding: 12px 14px 10px;
         border: 1px solid color-mix(in srgb, var(--line) 64%, transparent);
-        border-radius: 14px;
+        border-radius: 12px;
         background:
           linear-gradient(
             135deg,
@@ -5126,15 +5136,15 @@ const diagnosisValueAliases =
       }
       .dashboard-metrics .metric-card-plan {
         position: absolute;
-        top: 16px;
-        right: 16px;
+        top: 12px;
+        right: 14px;
         z-index: 1;
         display: inline-flex;
-        min-height: 28px;
-        max-width: 42%;
+        min-height: 26px;
+        max-width: 40%;
         align-items: center;
         justify-content: center;
-        padding: 0 10px;
+        padding: 0 9px;
         border: 1px solid var(--dashboard-plan-card-border);
         border-radius: 999px;
         background: var(--dashboard-plan-card-bg);
@@ -5162,36 +5172,36 @@ const diagnosisValueAliases =
       .metric-card-plan .metric-content strong {
         overflow: hidden;
         color: var(--rose);
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 900;
         line-height: 1;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
       .metric-card-quota {
-        padding: 0 92px 13px 0;
+        padding: 0 82px 11px 0;
         border-bottom: 1px solid
           color-mix(in srgb, var(--line) 58%, transparent);
       }
       .metric-card-quota .metric-content span {
-        margin-bottom: 7px;
+        margin-bottom: 6px;
         font-size: 12px;
         letter-spacing: 0;
         text-transform: none;
       }
       .metric-card-quota .metric-content strong {
-        font-size: 34px;
+        font-size: 30px;
         line-height: 0.95;
       }
       .metric-card-dual {
         grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-        gap: 12px;
-        padding: 12px 0 0;
+        gap: 10px;
+        padding: 10px 0 0;
       }
       .metric-dual-divider {
         display: block;
         width: 1px;
-        min-height: 28px;
+        min-height: 26px;
         background: color-mix(in srgb, var(--line) 64%, transparent);
       }
       .metric-dual-item {
@@ -5203,7 +5213,7 @@ const diagnosisValueAliases =
         display: flex;
         min-width: 0;
         align-items: baseline;
-        gap: 8px;
+        gap: 7px;
       }
       .metric-dual-item .metric-content span {
         min-width: 0;
@@ -5217,7 +5227,7 @@ const diagnosisValueAliases =
       }
       .metric-dual-item .metric-content strong {
         flex: 0 0 auto;
-        font-size: 22px;
+        font-size: 20px;
         line-height: 1;
       }
       .next-action-card {
