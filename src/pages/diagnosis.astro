@@ -1368,19 +1368,30 @@ const professionalReportCopy = isEnglish
         }, POLL_INTERVAL);
       }
 
-      // === 加载诊断结果 ===
+      // === 加载诊断结果（含重试） ===
       async function loadDiagnosisResult(jobId) {
-        try {
-          const res = await fetch("/api/diagnoses");
-          const data = await res.json();
-          if (!data.ok) return false;
-          const item = data.data.items.find((i) => i.jobId === jobId);
-          if (item?.diagnosis) {
-            renderDiagnosis(item.diagnosis, item);
+        const MAX_RETRIES = 5;
+        const RETRY_DELAY = 2000;
+        for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+          try {
+            const res = await fetch("/api/diagnoses");
+            const data = await res.json();
+            if (!data.ok) continue;
+            const item = data.data.items.find((i) => i.jobId === jobId);
+            if (item?.diagnosis) {
+              renderDiagnosis(item.diagnosis, item);
+              loadHistory();
+              return;
+            }
+          } catch {
+            /* ignore */
           }
-        } catch {
-          /* ignore */
+          if (attempt < MAX_RETRIES) {
+            await new Promise((r) => setTimeout(r, RETRY_DELAY));
+          }
         }
+        // 所有重试失败后仍然刷新历史，确保页面状态一致
+        loadHistory();
       }
 
       const resultLabels = copy.resultLabels || {};
