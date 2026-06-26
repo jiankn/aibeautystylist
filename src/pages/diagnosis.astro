@@ -2413,14 +2413,20 @@ const diagnosisProgressCopy = isEnglish
       padding: 0 22px 22px;
     }
     .portrait-panel h3 {
-      margin: 0 0 12px;
+      margin: 0 0 16px;
       color: var(--heading);
       font-size: 18px;
+      font-weight: 850;
+      letter-spacing: 0.01em;
     }
     .rule-strip {
-      margin-top: 16px;
+      margin-top: 20px;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--surface-rule) 62%, transparent);
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.6;
     }
     .analysis-card {
@@ -2429,10 +2435,33 @@ const diagnosisProgressCopy = isEnglish
     .analysis-row {
       align-items: start;
     }
-    .analysis-row i,
-    .keyword i {
+    .analysis-row i {
       font-size: 12px;
       font-weight: 900;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .keyword:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(184, 118, 103, 0.12);
+      }
+    }
+    :global([data-theme="dark"]) .keyword {
+      background: linear-gradient(135deg, var(--surface-warm), rgba(255, 255, 255, 0.04));
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    }
+    :global([data-theme="dark"]) .keyword i {
+      background: linear-gradient(135deg, var(--gold-soft), rgba(240, 168, 50, 0.22));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :global(:root:not([data-theme="light"])) .keyword {
+        background: linear-gradient(135deg, var(--surface-warm), rgba(255, 255, 255, 0.04));
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+      }
+      :global(:root:not([data-theme="light"])) .keyword i {
+        background: linear-gradient(135deg, var(--gold-soft), rgba(240, 168, 50, 0.22));
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
     }
     .recommend {
       min-width: 0;
@@ -2829,8 +2858,23 @@ const diagnosisProgressCopy = isEnglish
         max-height: 320px;
       }
       .keyword {
-        border-radius: 16px;
-        padding: 9px 11px;
+        padding: 12px 14px;
+        gap: 10px;
+        grid-template-columns: 38px 1fr;
+      }
+      .keyword i {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        font-size: 13px;
+      }
+      .keyword b {
+        font-size: 13px;
+        margin-bottom: 3px;
+      }
+      .keyword span {
+        font-size: 11px;
+        -webkit-line-clamp: 4;
       }
     }
   </style>
