@@ -2982,7 +2982,7 @@ const professionalReportCopy = isEnglish
       min-width: 0;
       padding: 14px;
       border: 1px solid var(--report-card-border);
-      border-radius: 16px;
+      border-radius: 18px;
       background: var(--report-card-bg);
     }
     .diagnosis-report-facts dl {
@@ -2999,20 +2999,20 @@ const professionalReportCopy = isEnglish
       border-bottom: 1px solid var(--report-card-border);
     }
     .diagnosis-report-facts div:last-child {
-      padding-bottom: 0;
+      padding-bottom: 4px;
       border-bottom: 0;
     }
     .diagnosis-report-facts dt {
       color: var(--report-muted);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 750;
       line-height: 1.35;
     }
     .diagnosis-report-facts dd {
       margin: 0;
       color: var(--report-ink);
-      font-size: 12px;
-      font-weight: 850;
+      font-size: 13px;
+      font-weight: 800;
       line-height: 1.35;
       text-align: right;
       overflow-wrap: anywhere;
@@ -3311,8 +3311,8 @@ const professionalReportCopy = isEnglish
     .routine-step h3 {
       margin: 0 0 6px;
       color: var(--report-ink);
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 750;
       line-height: 1.35;
     }
     .routine-step p {
@@ -3324,15 +3324,15 @@ const professionalReportCopy = isEnglish
     .diagnosis-scenario-block {
       display: grid;
       gap: 14px;
-      margin-top: 18px;
-      padding-top: 18px;
+      margin-top: 24px;
+      padding-top: 22px;
       border-top: 1px solid var(--report-card-border);
     }
     .diagnosis-scenario-block h3 {
       margin: 0 0 6px;
       color: var(--report-ink);
       font-family: var(--font-display);
-      font-size: clamp(20px, 2vw, 28px);
+      font-size: clamp(22px, 2.2vw, 30px);
       line-height: 1.18;
     }
     .diagnosis-scenario-block p {
@@ -3351,19 +3351,19 @@ const professionalReportCopy = isEnglish
       display: grid;
       min-width: 0;
       gap: 8px;
-      padding: 14px;
+      padding: 16px;
       border: 1px solid var(--report-card-border);
       border-radius: 16px;
       background: var(--report-card-bg);
     }
     .scenario-card strong {
       color: var(--rose);
-      font-size: 12px;
-      font-weight: 900;
+      font-size: 13px;
+      font-weight: 850;
     }
     .scenario-card b {
       color: var(--report-ink);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       line-height: 1.35;
     }
@@ -3374,14 +3374,14 @@ const professionalReportCopy = isEnglish
     }
     .scenario-card dt {
       color: var(--report-muted);
-      font-size: 11px;
-      font-weight: 850;
+      font-size: 12px;
+      font-weight: 800;
       letter-spacing: 0.04em;
     }
     .scenario-card dd {
       margin: 2px 0 0;
       color: var(--report-body);
-      font-size: 12px;
+      font-size: 13px;
       line-height: 1.6;
     }
     .report-recommend p b {
@@ -3583,12 +3583,13 @@ const professionalReportCopy = isEnglish
       display: block;
       color: var(--heading);
       font-size: 15px;
+      font-weight: 750;
       line-height: 1.35;
     }
     :global(.diag-history-head p) {
       margin: 5px 0 0;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 13px;
       line-height: 1.5;
     }
     :global(.diag-history-head time) {
@@ -3609,7 +3610,13 @@ const professionalReportCopy = isEnglish
     }
     :global(.btn-sm) {
       font-size: 0.85rem;
-      padding: 4px 12px;
+      padding: 6px 14px;
+      min-height: 34px;
+      border-radius: 8px;
+    }
+    :global(.diag-history-tags .pill) {
+      background: var(--neutral-pill-bg);
+      color: var(--neutral-pill-text);
     }
 
     @media (max-width: 980px) {
@@ -3833,6 +3840,9 @@ const professionalReportCopy = isEnglish
       }
       :global(.diag-history-actions .btn) {
         width: 100%;
+      }
+      :global(.diag-history-head b) {
+        font-size: 14px;
       }
       .portrait-panel > img {
         height: auto;
