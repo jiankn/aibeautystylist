@@ -29,7 +29,13 @@
       "Bash(ls -1 src/pages/scenarios/*.astro)",
       "Bash(ls -1 src/pages/for/*.astro)",
       "Bash(ls -1 src/pages/guides/*.astro)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(grep -rn \"\\\\-\\\\-text\\\\|--body-secondary\\\\|--page-surface\\\\|--ink\\\\|--muted\\\\|font-family\\\\|--font-\" src/styles/*.css src/layouts/*.astro)",
+      "Bash(awk '/^    \\\\.keyword \\\\{/{f=1} f{print NR\": \"$0} /^    \\\\}/{if\\(f\\){c++; if\\(c>=1 && /^    \\\\}/\\){f=0}}}' src/pages/diagnosis.astro)",
+      "Bash(awk *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }

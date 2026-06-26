@@ -46,6 +46,9 @@ describe("Gemini diagnosis provider", () => {
       expect(request.contents[0].parts[0].text).toContain(
         "Make makeupPlan concrete and zone-based",
       );
+      expect(request.contents[0].parts[0].text).toContain(
+        "Do not mix makeup product categories",
+      );
       expect(request.contents[0].parts[1].inlineData).toEqual({
         mimeType: "image/jpeg",
         data: "AQID",

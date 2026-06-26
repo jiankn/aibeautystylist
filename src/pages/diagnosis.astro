@@ -360,18 +360,13 @@ const professionalReportCopy = isEnglish
       stabilityMedium: "Medium",
       stabilityLow: "Needs confirmation",
       photoEvidenceTitle: "Original photo evidence",
-      photoEvidenceSubtitle:
-        "AI uses this uploaded photo to evaluate tone, facial structure, and makeup direction.",
       photoEvidenceMissingTitle: "Original photo no longer available",
       photoEvidenceMissingBody:
         "The report remains available, but the source photo was deleted or expired.",
       photoPrivateNote: "Visible only to you",
-      photoObservationTitle: "AI observation focus",
-      photoObservationSkin: "Tone and undertone",
-      photoObservationStructure: "Face shape and balance",
-      photoObservationEyes: "Eye shape and eye makeup",
-      photoObservationColor: "Color direction",
-      reportMetaTitle: "Report details",
+      photoStatusQualityPrefix: "Photo: ",
+      photoStatusStabilityPrefix: "Stability: ",
+      photoStatusJoiner: " · ",
       summaryTitle: "Executive beauty summary",
       summarySubtitle:
         "Use this one-page summary before choosing base, lip-cheek colors, eye makeup, or virtual try-on looks.",
@@ -380,9 +375,47 @@ const professionalReportCopy = isEnglish
       evidenceTitle: "Professional analysis",
       evidenceSubtitle:
         "The report separates visible facial cues from makeup execution advice, so the recommendation is easier to judge.",
+      routineEyebrow: "Zone-by-zone routine",
       routineTitle: "Your practical makeup plan",
       routineSubtitle:
         "A zone-by-zone routine translated from the diagnosis, designed for real application rather than abstract labels.",
+      routineColorFallbacks: {
+        eyes: "taupe, soft brown, or muted rose",
+        cheeks: "muted rose, peach beige, or tea nude",
+        lips: "muted rose, tea nude, or soft peach",
+      },
+      routineActions: {
+        base: [
+          "Apply a thin, skin-like base from the center of the face outward, keeping natural dimension on the cheeks.",
+          "Spot-conceal under the eyes, around the nose, and near the mouth corners; set only the T-zone or areas that crease.",
+          "Avoid a base that looks too light, too gray, too thick, or overly matte across the whole face.",
+        ],
+        brows: [
+          "Fill sparse areas by following the natural brow shape; keep the brow tail clean but soft.",
+          "Use a soft brown or ash-brown shade close to the hair color rather than drawing a hard carved edge.",
+          "Let the brows support facial balance without making the expression look severe.",
+        ],
+        eyes: [
+          "Use {colors} to add definition mainly on the outer third of the eye.",
+          "Keep liner close to the lash root and place mascara emphasis toward the outer lashes.",
+          "Avoid enclosing the whole eye with heavy dark color.",
+        ],
+        cheeks: [
+          "Choose {colors} and sweep blush lightly from the mid-cheek toward the outer cheekbone.",
+          "Keep blush and lip color in the same family so the complexion looks fresher.",
+          "Avoid high-saturation blush or a heavy edge that competes with the eyes.",
+        ],
+        lips: [
+          "Choose {colors} in a satin, sheer, or softly blurred finish.",
+          "Apply thinly and soften the edge so the lip color lifts the complexion without overpowering the face.",
+          "Avoid very deep or very bright statement colors for daily use.",
+        ],
+        contour: [
+          "Use subtle contour only where dimension is needed, keeping naturally soft structure intact.",
+          "Place highlight in small areas such as the bridge of the nose, center face, and cheekbone high points.",
+          "Avoid sharpening the face with strong contour lines.",
+        ],
+      },
       scenarioTitle: "Scenario strategy matrix",
       scenarioSubtitle:
         "Choose intensity by scene; keep the same color direction so looks remain coherent.",
@@ -434,28 +467,28 @@ const professionalReportCopy = isEnglish
         [
           "work",
           "Clean daily polish",
-          "Keep colors muted and edges soft",
-          "Heavy contrast",
-          "Looks natural in daylight",
+          "Keep the base thin, softly define the outer eye, and keep lip-cheek color muted and coherent.",
+          "Heavy contrast or obvious makeup edges",
+          "Looks clean and fresh in daylight",
         ],
         [
           "date",
           "Soft rosy focus",
-          "Unify lip and cheek color",
-          "Over-matte base",
-          "Complexion looks lifted",
+          "Unify blush and lip color in a soft rose, peach, or tea-nude family with a slight center-face lift.",
+          "Over-matte base or a lip color that is too deep",
+          "Complexion looks lifted at close distance",
         ],
         [
           "camera",
           "Defined but lightweight",
-          "Slightly strengthen eye tail and dimension",
-          "Flat flashback base",
+          "Slightly strengthen the outer eye and facial dimension while keeping base flashback under control.",
+          "Flat flashback base or heavy shimmer",
           "Features stay clear on camera",
         ],
         [
           "daily",
           "Fast fresh tone",
-          "Use one palette family across face",
+          "Use one low-saturation color family across cheeks, lips, and the outer eye for a quick coherent look.",
           "Too many competing colors",
           "Still feels like you",
         ],
@@ -480,17 +513,12 @@ const professionalReportCopy = isEnglish
       stabilityMedium: "中等",
       stabilityLow: "需二次确认",
       photoEvidenceTitle: "原图分析样本",
-      photoEvidenceSubtitle:
-        "AI 根据这张上传照片判断肤色、面部结构与妆容方向。",
       photoEvidenceMissingTitle: "原图已删除",
       photoEvidenceMissingBody: "仍可查看本次诊断报告和妆容建议。",
       photoPrivateNote: "仅本人可见",
-      photoObservationTitle: "AI 观察重点",
-      photoObservationSkin: "肤色 / 底色",
-      photoObservationStructure: "脸型与面部重心",
-      photoObservationEyes: "眼型与眼妆方向",
-      photoObservationColor: "色彩方向",
-      reportMetaTitle: "报告档案",
+      photoStatusQualityPrefix: "照片",
+      photoStatusStabilityPrefix: "稳定性",
+      photoStatusJoiner: " · ",
       summaryTitle: "美妆诊断摘要",
       summarySubtitle: "这部分适合在选底妆、唇颊色、眼妆和试妆前快速对照。",
       keywordsTitle: "你的美妆档案关键词",
@@ -498,8 +526,46 @@ const professionalReportCopy = isEnglish
       evidenceTitle: "专业维度分析",
       evidenceSubtitle:
         "报告将可见特征和上妆建议拆开呈现，方便你判断为什么适合、应该怎么化。",
+      routineEyebrow: "分区执行建议",
       routineTitle: "你的实操上妆方案",
       routineSubtitle: "把诊断结论转成底妆、眉眼、唇颊和轮廓的具体执行建议。",
+      routineColorFallbacks: {
+        eyes: "浅棕、灰棕或低饱和玫瑰色",
+        cheeks: "低饱和玫瑰、蜜桃或奶茶色",
+        lips: "豆沙、奶茶或柔和玫瑰色",
+      },
+      routineActions: {
+        base: [
+          "从面中向外薄涂轻薄贴肤底妆，保留面颊自然光泽。",
+          "眼下、鼻翼和嘴角局部遮瑕，T 区或易卡粉位置轻压定妆即可。",
+          "避免底妆过白、全脸厚涂或过度雾面。",
+        ],
+        brows: [
+          "顺着原生眉形补空隙，眉峰和眉尾保持干净但不要画硬边。",
+          "眉色选择柔和棕灰或接近发色的颜色，让眉毛支撑脸部结构。",
+          "避免眉形过硬导致表情被压住。",
+        ],
+        eyes: [
+          "用{colors}在眼尾后三分之一加强层次。",
+          "眼线贴近睫毛根部，睫毛重点放在眼尾。",
+          "避免用深色完整包围眼睛。",
+        ],
+        cheeks: [
+          "腮红选择{colors}，从面中向颧骨外侧轻扫。",
+          "与唇色保持同色相，优先改善气色。",
+          "避免大面积高饱和腮红或边界过重。",
+        ],
+        lips: [
+          "唇色选择{colors}，薄涂或柔化边缘。",
+          "质地优先选择缎光、柔雾或水润感，让气色自然抬起来。",
+          "避免过深过艳导致妆面抢戏。",
+        ],
+        contour: [
+          "修容只在脸侧、鼻影等需要立体的位置轻扫，保留柔和轮廓。",
+          "高光放在鼻梁、面中和颧骨高点的小范围。",
+          "避免把自然柔和的轮廓修得过锐。",
+        ],
+      },
       scenarioTitle: "场景妆容策略矩阵",
       scenarioSubtitle: "不同场景调整强度，但保持同一色彩方向，妆面会更稳定。",
       detailTitle: "证据、局限与慎选项",
@@ -546,28 +612,28 @@ const professionalReportCopy = isEnglish
         [
           "work",
           "清透通勤",
-          "降低饱和度，边界保持柔和",
-          "强对比眼影",
+          "底妆保持轻薄，眼尾只做轻微定义，唇颊使用低饱和同色系。",
+          "强对比眼影或明显妆面边界",
           "自然光下干净提气色",
         ],
         [
           "date",
           "柔和唇颊",
-          "唇色和腮红统一色相",
-          "过度雾面底妆",
-          "面中看起来更有精神",
+          "腮红和唇色统一在柔和玫瑰、蜜桃或奶茶色系，面中轻微提亮。",
+          "过度雾面底妆或唇色过深",
+          "近距离看柔和、有气色",
         ],
         [
           "camera",
           "轻轮廓上镜",
-          "眼尾和面部立体度轻微加强",
-          "底妆反白或太平",
+          "眼尾和面部立体度轻微加强，底妆控制反白和大面积反光。",
+          "底妆反白、太平或高光过闪",
           "镜头里五官仍然清晰",
         ],
         [
           "daily",
           "快速提气色",
-          "全脸使用同一色彩家族",
+          "用同一低饱和色彩家族快速统一腮红、唇色和眼尾层次。",
           "多个颜色互相抢戏",
           "保留本人气质不过度化妆",
         ],
@@ -860,7 +926,7 @@ const professionalReportCopy = isEnglish
           <div class="diagnosis-section-head">
             <div>
               <span class="section-eyebrow"
-                >{professionalReportCopy.routineTitle}</span
+                >{professionalReportCopy.routineEyebrow}</span
               >
               <h2 class="panel-title">{professionalReportCopy.routineTitle}</h2>
               <p class="panel-subtitle">
@@ -1460,31 +1526,16 @@ const professionalReportCopy = isEnglish
         );
       }
 
-      function buildFacts(rows) {
-        return `<dl>${rows
-          .filter(([label, value]) => label || value)
-          .map(
-            ([label, value]) =>
-              `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`,
-          )
-          .join("")}</dl>`;
-      }
-
-      function buildPhotoEvidenceCard({
-        originalImage,
-        quality,
-        stability,
-        observations,
-        facts,
-      }) {
+      function buildPhotoEvidenceCard({ originalImage, quality, stability }) {
         const hasOriginal = Boolean(originalImage);
         const title = hasOriginal
           ? reportCopy.photoEvidenceTitle || reportCopy.photoQuality || "Photo"
           : reportCopy.photoEvidenceMissingTitle ||
             "Original photo unavailable";
-        const body = hasOriginal
-          ? reportCopy.photoEvidenceSubtitle || ""
-          : reportCopy.photoEvidenceMissingBody || "";
+        const status = [
+          `${reportCopy.photoStatusQualityPrefix || ""}${quality}`,
+          `${reportCopy.photoStatusStabilityPrefix || ""}${stability}`,
+        ].join(reportCopy.photoStatusJoiner || " · ");
         return `
           <div class="diagnosis-report-photo-card">
             <div class="diagnosis-report-photo-media${hasOriginal ? "" : " is-missing"}">
@@ -1497,41 +1548,14 @@ const professionalReportCopy = isEnglish
                 <b>${escapeHtml(reportCopy.photoEvidenceMissingTitle || "Photo")}</b>
                 <span>${escapeHtml(reportCopy.photoEvidenceMissingBody || "")}</span>
               </div>
-              <div class="diagnosis-photo-badges" aria-label="${escapeHtml(reportCopy.reportMetaTitle || "Report details")}">
-                <span>${escapeHtml(reportCopy.photoEvidenceTitle || "Photo")}</span>
-                <span>${escapeHtml(quality)}</span>
-                <span>${escapeHtml(stability)}</span>
+              <div class="diagnosis-photo-badges" aria-label="${escapeHtml(title)}">
+                <span>${escapeHtml(title)}</span>
+              </div>
+              <div class="diagnosis-photo-status">
+                <span>${escapeHtml(status)}</span>
+                <small>${escapeHtml(reportCopy.photoPrivateNote || "")}</small>
               </div>
             </div>
-            <div class="diagnosis-photo-caption">
-              <strong>${escapeHtml(title)}</strong>
-              <p>${escapeHtml(body)}</p>
-              <small>${escapeHtml(reportCopy.photoPrivateNote || "")}</small>
-            </div>
-          </div>
-          <div class="diagnosis-photo-evidence">
-            <b>${escapeHtml(reportCopy.photoObservationTitle || "AI observations")}</b>
-            <dl>
-              ${observations
-                .filter(([label, value]) => label || value)
-                .map(
-                  ([label, value]) =>
-                    `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`,
-                )
-                .join("")}
-            </dl>
-          </div>
-          <div class="diagnosis-report-meta">
-            <b>${escapeHtml(reportCopy.reportMetaTitle || "Report details")}</b>
-            <dl>
-              ${facts
-                .filter(([label, value]) => label || value)
-                .map(
-                  ([label, value]) =>
-                    `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`,
-                )
-                .join("")}
-            </dl>
           </div>
         `;
       }
@@ -1620,79 +1644,270 @@ const professionalReportCopy = isEnglish
       }
 
       function buildRoutine(d, labels) {
-        const paletteText = labels.palette.length
-          ? labels.palette.slice(0, 4).join(resultLabels.paletteJoiner || ", ")
-          : labels.seasonLabel;
         const plan = d.makeupPlan || {};
-        const base =
-          joinPlan(plan.base) ||
-          [d.skinTone?.summary, reportCopy.fallbacks?.base]
-            .filter(Boolean)
-            .join(" ");
-        const brows =
-          joinPlan(plan.brows) ||
-          [joinEvidence(d.faceShape?.evidence), reportCopy.fallbacks?.brows]
-            .filter(Boolean)
-            .join(" ");
-        const eyes =
-          joinPlan(plan.eyes) ||
-          [joinEvidence(d.eyeShape?.evidence), reportCopy.fallbacks?.eyes]
-            .filter(Boolean)
-            .join(" ");
-        const cheeks =
-          joinPlan(plan.cheeks) ||
-          (paletteText
-            ? `${paletteText}。${reportCopy.fallbacks?.cheeks || ""}`
-            : reportCopy.fallbacks?.cheeks);
-        const lips =
-          joinPlan(plan.lips) ||
-          (paletteText
-            ? `${paletteText}。${reportCopy.fallbacks?.lips || ""}`
-            : reportCopy.fallbacks?.lips);
-        const contour =
-          joinPlan(plan.contourHighlight) ||
-          [labels.faceLabel, reportCopy.fallbacks?.contour]
-            .filter(Boolean)
-            .join("。 ");
-        return [
-          { key: "base", title: reportCopy.rows?.base, body: base },
-          { key: "brows", title: reportCopy.rows?.brows, body: brows },
-          { key: "eyes", title: reportCopy.rows?.eyes, body: eyes },
-          { key: "cheeks", title: reportCopy.rows?.cheeks, body: cheeks },
-          { key: "lips", title: reportCopy.rows?.lips, body: lips },
-          { key: "contour", title: reportCopy.rows?.contour, body: contour },
-        ].filter((item) => item.title && item.body);
+        const colorFallbacks = reportCopy.routineColorFallbacks || {};
+        const colors = {
+          eyes: paletteForUsage(
+            d,
+            "eyes",
+            ["eyes", "multi"],
+            colorFallbacks.eyes,
+          ),
+          cheeks: paletteForUsage(
+            d,
+            "cheeks",
+            ["cheeks", "multi"],
+            colorFallbacks.cheeks,
+          ),
+          lips: paletteForUsage(
+            d,
+            "lips",
+            ["lips", "multi"],
+            colorFallbacks.lips,
+          ),
+        };
+        const evidence = {
+          base: [d.skinTone?.summary],
+          brows: [joinEvidence(d.faceShape?.evidence), labels.faceLabel],
+          eyes: [joinEvidence(d.eyeShape?.evidence), labels.eyeLabel],
+          contour: [joinEvidence(d.faceShape?.evidence), labels.faceLabel],
+        };
+        const fallbackPoints = reportCopy.routineActions || {};
+        const steps = [
+          {
+            key: "base",
+            title: reportCopy.rows?.base,
+            points: routinePoints(
+              "base",
+              plan.base,
+              fallbackPoints.base,
+              evidence.base,
+            ),
+          },
+          {
+            key: "brows",
+            title: reportCopy.rows?.brows,
+            points: routinePoints(
+              "brows",
+              plan.brows,
+              fallbackPoints.brows,
+              evidence.brows,
+            ),
+          },
+          {
+            key: "eyes",
+            title: reportCopy.rows?.eyes,
+            points: routinePoints(
+              "eyes",
+              plan.eyes,
+              fallbackPoints.eyes,
+              evidence.eyes,
+              colors.eyes,
+            ),
+          },
+          {
+            key: "cheeks",
+            title: reportCopy.rows?.cheeks,
+            points: routinePoints(
+              "cheeks",
+              plan.cheeks,
+              fallbackPoints.cheeks,
+              [],
+              colors.cheeks,
+            ),
+          },
+          {
+            key: "lips",
+            title: reportCopy.rows?.lips,
+            points: routinePoints(
+              "lips",
+              plan.lips,
+              fallbackPoints.lips,
+              [],
+              colors.lips,
+            ),
+          },
+          {
+            key: "contour",
+            title: reportCopy.rows?.contour,
+            points: routinePoints(
+              "contour",
+              plan.contourHighlight,
+              fallbackPoints.contour,
+              evidence.contour,
+            ),
+          },
+        ];
+        return steps
+          .map((item) => ({
+            ...item,
+            body: item.points.join(" "),
+          }))
+          .filter((item) => item.title && item.body);
       }
 
-      function joinPlan(items) {
-        return Array.isArray(items) ? items.filter(Boolean).join(" ") : "";
+      function routinePoints(
+        key,
+        items,
+        fallbackItems,
+        evidence = [],
+        colors = "",
+      ) {
+        const cleaned = normalizePlanItems(items, evidence)
+          .map((item) => applyRoutineColors(item, colors))
+          .filter((item) => !hasCategoryLeak(key, item));
+        const source = cleaned.length >= 2 ? cleaned : fallbackItems || cleaned;
+        return normalizePlanItems(source, [])
+          .map((item) => applyRoutineColors(item, colors))
+          .filter(Boolean)
+          .slice(0, 3);
       }
 
-      function buildScenarioMatrix(d, palette) {
+      function normalizePlanItems(items, evidence = []) {
+        const list = Array.isArray(items) ? items : items ? [items] : [];
+        return list
+          .map((item) => stripEvidenceLead(String(item || ""), evidence))
+          .map((item) => item.replace(/\s+/g, " ").trim())
+          .filter(Boolean);
+      }
+
+      function stripEvidenceLead(text, evidence = []) {
+        let next = text.trim();
+        evidence
+          .map((item) => String(item || "").trim())
+          .filter(Boolean)
+          .sort((a, b) => b.length - a.length)
+          .forEach((item) => {
+            if (next.startsWith(item)) {
+              next = next
+                .slice(item.length)
+                .replace(/^[。.!?！？、,，;；\s]+/u, "")
+                .trim();
+            }
+          });
+        return next;
+      }
+
+      function applyRoutineColors(text, colors) {
+        return String(text || "").replaceAll("{colors}", colors || "");
+      }
+
+      function paletteForUsage(d, target, usages, fallback) {
+        const seen = new Set();
+        const colors = [];
+        (d.colorPalette?.recommended || []).forEach((color) => {
+          const usage = String(color?.usage || "");
+          const name = String(color?.name || "").trim();
+          const key = name.toLowerCase();
+          if (
+            name &&
+            usages.includes(usage) &&
+            !seen.has(key) &&
+            isPaletteNameAllowed(target, usage, name)
+          ) {
+            seen.add(key);
+            colors.push(name);
+          }
+        });
+        return colors.length
+          ? colors.slice(0, 3).join(resultLabels.paletteJoiner || ", ")
+          : fallback || "";
+      }
+
+      function isPaletteNameAllowed(target, usage, name) {
+        if (isBaseProductName(name)) return false;
+        if (usage === "multi") return isGenericColorFamily(name);
+        return !hasProductCategoryLeak(target, name);
+      }
+
+      function isGenericColorFamily(value) {
+        return !/(粉底|底妆|遮瑕|散粉|定妆|眼影|眼线|睫毛膏|睫毛|腮红|唇膏|口红|唇釉|foundation|concealer|powder|eyeshadow|eye shadow|eyeliner|liner|mascara|lash|blush|cheek|lipstick|lip gloss|lip|rouge)/i.test(
+          String(value || ""),
+        );
+      }
+
+      function hasProductCategoryLeak(target, value) {
+        const text = String(value || "");
+        const eyeProduct =
+          /眼影|眼线|睫毛膏|睫毛|eyeshadow|eye shadow|eyeliner|liner|mascara|lash/i.test(
+            text,
+          );
+        const cheekProduct = /腮红|blush|cheek/i.test(text);
+        const lipProduct =
+          /唇膏|口红|唇釉|唇彩|lipstick|lip gloss|lip\b|rouge/i.test(text);
+        if (target === "eyes") return cheekProduct || lipProduct;
+        if (target === "cheeks") return eyeProduct || lipProduct;
+        if (target === "lips") return eyeProduct || cheekProduct;
+        return false;
+      }
+
+      function isBaseProductName(value) {
+        return /粉底|底妆|遮瑕|散粉|定妆|foundation|concealer|powder|setting powder/i.test(
+          String(value || ""),
+        );
+      }
+
+      function hasCategoryLeak(key, value) {
+        const text = String(value || "");
+        const baseLeak = isBaseProductName(text);
+        const eyeLeak =
+          /眼影|眼线|睫毛膏|睫毛|eyeshadow|eye shadow|eyeliner|liner|mascara|lash/i.test(
+            text,
+          );
+        if (key === "cheeks" || key === "lips") {
+          return baseLeak || eyeLeak || hasProductCategoryLeak(key, text);
+        }
+        if (key === "eyes")
+          return baseLeak || hasProductCategoryLeak(key, text);
+        return false;
+      }
+
+      function buildScenarioMatrix(d) {
         if (
           Array.isArray(d.scenarioStrategies) &&
           d.scenarioStrategies.length
         ) {
-          return d.scenarioStrategies.map((item) => ({
-            title: reportCopy.rows?.[item.scenario] || item.scenario,
-            look: item.lookName,
-            technique: joinEvidence(item.keyTechniques),
-            avoid: joinEvidence(item.avoid),
-            validation: item.validation,
-          }));
+          return d.scenarioStrategies.map((item) => {
+            const technique = normalizePlanItems(item.keyTechniques, [])
+              .filter((text) => !hasCategoryLeak("scenario", text))
+              .join(resultLabels.paletteJoiner || ", ");
+            const colors = safeScenarioColors(item.colors);
+            return {
+              title: reportCopy.rows?.[item.scenario] || item.scenario,
+              look: item.lookName,
+              technique:
+                colors && technique
+                  ? `${technique}：${colors}`
+                  : technique || colors,
+              avoid: joinEvidence(item.avoid),
+              validation: item.validation,
+            };
+          });
         }
-        const paletteHint = palette.length
-          ? palette.slice(0, 3).join(resultLabels.paletteJoiner || ", ")
-          : "";
         return (reportCopy.scenarios || []).map(
           ([key, look, technique, avoid, validation]) => ({
             title: reportCopy.rows?.[key] || key,
             look,
-            technique: paletteHint ? `${technique}：${paletteHint}` : technique,
+            technique,
             avoid,
             validation,
           }),
         );
+      }
+
+      function safeScenarioColors(colors) {
+        if (!Array.isArray(colors)) return "";
+        const seen = new Set();
+        const safe = colors
+          .map((color) => String(color || "").trim())
+          .filter((color) => color && isGenericColorFamily(color))
+          .filter((color) => {
+            const key = color.toLowerCase();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+        return safe.slice(0, 3).join(resultLabels.paletteJoiner || ", ");
       }
 
       function renderDiagnosis(d, record) {
@@ -1764,8 +1979,6 @@ const professionalReportCopy = isEnglish
               },
             )
           : "";
-        const reportId = record?.id || record?.jobId || "—";
-        const reportIdShort = String(reportId).slice(0, 8).toUpperCase();
         const quality = qualityLabel(d);
         const stability = stabilityLabel(d.confidence);
 
@@ -1796,30 +2009,6 @@ const professionalReportCopy = isEnglish
             originalImage: record?.originalImage,
             quality,
             stability,
-            observations: [
-              [
-                reportCopy.photoObservationSkin || resultLabels.skinTone,
-                `${skinDepthLabel} / ${skinLabel}`,
-              ],
-              [
-                reportCopy.photoObservationStructure ||
-                  resultLabels.facialFocus,
-                faceLabel,
-              ],
-              [
-                reportCopy.photoObservationEyes || resultLabels.rows?.eyeShape,
-                eyeLabel,
-              ],
-              [
-                reportCopy.photoObservationColor || resultLabels.colorDirection,
-                seasonLabel,
-              ],
-            ],
-            facts: [
-              [reportCopy.reportNo, reportIdShort],
-              [reportCopy.generatedAt, dateLabel || "—"],
-              [reportCopy.version, d.schemaVersion || "2026"],
-            ],
           });
           installReportPhotoFallback(reportFacts);
         }
@@ -1907,7 +2096,9 @@ const professionalReportCopy = isEnglish
                   <span>${String(index + 1).padStart(2, "0")}</span>
                   <div>
                     <h3>${escapeHtml(item.title)}</h3>
-                    <p>${escapeHtml(item.body)}</p>
+                    <ul>
+                      ${item.points.map((point) => `<li>${escapeHtml(point)}</li>`).join("")}
+                    </ul>
                   </div>
                 </article>
               `,
@@ -1915,7 +2106,7 @@ const professionalReportCopy = isEnglish
             .join("");
         }
         if (scenarioGrid) {
-          scenarioGrid.innerHTML = buildScenarioMatrix(d, palette)
+          scenarioGrid.innerHTML = buildScenarioMatrix(d)
             .map(
               (item) => `
                 <article class="scenario-card">
@@ -3130,23 +3321,23 @@ const professionalReportCopy = isEnglish
     .diagnosis-report-facts {
       display: grid;
       min-width: 0;
-      gap: 12px;
-      padding: 14px;
+      padding: 0;
       border: 1px solid var(--report-card-border);
       border-radius: 20px;
       background: var(--report-card-bg);
       box-shadow: var(--report-card-shadow);
+      overflow: hidden;
     }
     .diagnosis-report-photo-card {
       display: grid;
-      gap: 11px;
+      min-width: 0;
     }
     .diagnosis-report-photo-media {
       position: relative;
       min-height: 300px;
+      max-height: 420px;
       overflow: hidden;
-      border: 1px solid var(--report-card-border);
-      border-radius: 18px;
+      border-radius: 20px;
       background:
         linear-gradient(180deg, transparent, rgba(18, 39, 66, 0.18)),
         var(--surface-rose);
@@ -3189,86 +3380,52 @@ const professionalReportCopy = isEnglish
       .diagnosis-report-photo-placeholder {
       display: grid;
     }
-    .diagnosis-photo-badges {
+    .diagnosis-report-photo-media.is-missing .diagnosis-photo-status {
+      display: none;
+    }
+    .diagnosis-photo-badges,
+    .diagnosis-photo-status {
       position: absolute;
-      inset: 12px 12px auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
       z-index: 1;
     }
-    .diagnosis-photo-badges span {
+    .diagnosis-photo-badges {
+      inset: 12px auto auto 12px;
+      display: flex;
+    }
+    .diagnosis-photo-badges span,
+    .diagnosis-photo-status {
       min-width: 0;
-      padding: 6px 9px;
       border: 1px solid color-mix(in srgb, #fff 48%, transparent);
-      border-radius: 999px;
       background: color-mix(in srgb, var(--bg-elevated) 88%, transparent);
       color: var(--report-ink);
-      font-size: 11px;
-      font-weight: 850;
-      line-height: 1.1;
       box-shadow: 0 8px 24px rgba(18, 39, 66, 0.12);
       backdrop-filter: blur(12px);
     }
-    .diagnosis-photo-caption {
-      display: grid;
-      gap: 5px;
-    }
-    .diagnosis-photo-caption strong,
-    .diagnosis-photo-evidence > b,
-    .diagnosis-report-meta > b {
-      color: var(--report-ink);
-      font-size: 15px;
+    .diagnosis-photo-badges span {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
       font-weight: 850;
-      line-height: 1.35;
+      line-height: 1.1;
     }
-    .diagnosis-photo-caption p {
-      margin: 0;
-      color: var(--report-body);
-      font-size: 13.5px;
-      line-height: 1.62;
-    }
-    .diagnosis-photo-caption small {
-      color: var(--report-muted);
+    .diagnosis-photo-status {
+      inset: auto 12px 12px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: 14px;
       font-size: 12px;
-      font-weight: 750;
-    }
-    .diagnosis-photo-evidence,
-    .diagnosis-report-meta {
-      display: grid;
-      gap: 10px;
-      padding-top: 12px;
-      border-top: 1px solid var(--report-card-border);
-    }
-    .diagnosis-photo-evidence dl,
-    .diagnosis-report-meta dl {
-      display: grid;
-      gap: 8px;
-      margin: 0;
-    }
-    .diagnosis-photo-evidence div,
-    .diagnosis-report-meta div {
-      display: grid;
-      grid-template-columns: minmax(0, 0.88fr) minmax(0, 1fr);
-      gap: 10px;
-      align-items: baseline;
-    }
-    .diagnosis-photo-evidence dt,
-    .diagnosis-report-meta dt {
-      color: var(--report-muted);
-      font-size: 12px;
-      font-weight: 750;
-      line-height: 1.35;
-    }
-    .diagnosis-photo-evidence dd,
-    .diagnosis-report-meta dd {
-      margin: 0;
-      color: var(--report-ink);
-      font-size: 13px;
       font-weight: 850;
-      line-height: 1.38;
-      text-align: right;
-      overflow-wrap: anywhere;
+      line-height: 1.25;
+    }
+    .diagnosis-photo-status small {
+      color: var(--report-muted);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.25;
     }
     .diagnosis-result-actions {
       display: flex;
@@ -3569,11 +3726,29 @@ const professionalReportCopy = isEnglish
       font-weight: 850;
       line-height: 1.35;
     }
-    .routine-step p {
+    .routine-step ul {
+      display: grid;
+      gap: 7px;
       margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .routine-step li {
+      position: relative;
+      padding-left: 15px;
       color: var(--report-body);
       font-size: 15px;
-      line-height: 1.72;
+      line-height: 1.68;
+    }
+    .routine-step li::before {
+      content: "";
+      position: absolute;
+      top: 0.72em;
+      left: 0;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--teal);
     }
     .diagnosis-scenario-block {
       display: grid;
