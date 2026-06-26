@@ -77,6 +77,15 @@
   --content-body-size: 16px;
   --content-supporting-size: 14px;
   --content-label-size: 13px;
+  /* 诊断报告语义令牌（亮色） */
+  --report-ink: var(--heading);
+  --report-body: var(--body-secondary);
+  --report-muted: var(--muted);
+  --report-card-bg: var(--soft);
+  --report-card-border: var(--border);
+  --report-card-accent-teal: color-mix(in srgb, var(--teal) 8%, var(--soft));
+  --report-card-accent-rose: color-mix(in srgb, var(--rose) 7%, var(--soft));
+  --report-card-shadow: 0 4px 16px rgba(26, 49, 84, 0.05);
 }
 html:lang(en) {
   --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
@@ -153,6 +162,15 @@ html:lang(en) {
     --btn-shadow-active: inset 0 1px 0 rgba(255, 255, 255, 0.02);
     --btn-primary-shadow: 0 2px 6px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     --btn-primary-shadow-hover: 0 8px 18px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    /* 诊断报告语义令牌（暗色） */
+    --report-ink: var(--heading);
+    --report-body: var(--body-secondary);
+    --report-muted: var(--muted);
+    --report-card-bg: #1d2636;
+    --report-card-border: rgba(255, 255, 255, 0.1);
+    --report-card-accent-teal: color-mix(in srgb, var(--teal) 14%, #1d2636);
+    --report-card-accent-rose: color-mix(in srgb, var(--rose) 13%, #1d2636);
+    --report-card-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
   }
 }
 [data-theme="dark"] {
@@ -213,6 +231,15 @@ html:lang(en) {
   --btn-shadow-active: inset 0 1px 0 rgba(255, 255, 255, 0.02);
   --btn-primary-shadow: 0 2px 6px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   --btn-primary-shadow-hover: 0 8px 18px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  /* 诊断报告语义令牌（暗色） */
+  --report-ink: var(--heading);
+  --report-body: var(--body-secondary);
+  --report-muted: var(--muted);
+  --report-card-bg: #1d2636;
+  --report-card-border: rgba(255, 255, 255, 0.1);
+  --report-card-accent-teal: color-mix(in srgb, var(--teal) 14%, #1d2636);
+  --report-card-accent-rose: color-mix(in srgb, var(--rose) 13%, #1d2636);
+  --report-card-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
   color-scheme: dark;
 }
 

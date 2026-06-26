@@ -2721,7 +2721,7 @@ const professionalReportCopy = isEnglish
       place-items: center;
       border-radius: 14px;
       background: var(--teal-soft);
-      color: #0b7069;
+      color: var(--teal);
       font-size: 12px;
       font-weight: 900;
     }
@@ -2921,11 +2921,10 @@ const professionalReportCopy = isEnglish
       align-items: start;
       padding: 28px;
       background:
-        linear-gradient(135deg, rgba(255, 250, 244, 0.88), transparent 48%),
         radial-gradient(
           circle at 14% 0,
-          rgba(199, 49, 103, 0.1),
-          transparent 34%
+          color-mix(in srgb, var(--rose) 10%, transparent),
+          transparent 36%
         ),
         var(--bg-elevated);
     }
@@ -2936,7 +2935,7 @@ const professionalReportCopy = isEnglish
     }
     .diagnosis-report-type {
       margin: -2px 0 0;
-      color: var(--muted);
+      color: var(--report-muted);
       font-size: 12px;
       font-weight: 800;
       letter-spacing: 0.08em;
@@ -2945,7 +2944,7 @@ const professionalReportCopy = isEnglish
     .diagnosis-result-copy h2 {
       margin: 0;
       max-width: 820px;
-      color: var(--heading);
+      color: var(--report-ink);
       font-family: var(--font-display);
       font-size: clamp(32px, 3.4vw, 48px);
       line-height: 1.08;
@@ -2953,7 +2952,7 @@ const professionalReportCopy = isEnglish
     .diagnosis-result-copy p {
       margin: 0;
       max-width: 760px;
-      color: var(--text);
+      color: var(--report-body);
       font-size: 15px;
       line-height: 1.7;
     }
@@ -2967,25 +2966,24 @@ const professionalReportCopy = isEnglish
       min-width: 116px;
       gap: 3px;
       padding: 10px 12px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--report-card-border);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.74);
+      background: var(--report-card-bg);
     }
     .diagnosis-result-chips small {
-      color: var(--muted);
+      color: var(--report-muted);
       font-size: 11px;
     }
     .diagnosis-result-chips b {
-      color: var(--heading);
+      color: var(--report-ink);
       font-size: 13px;
     }
     .diagnosis-report-facts {
       min-width: 0;
       padding: 14px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--report-card-border);
       border-radius: 16px;
-      background: color-mix(in srgb, var(--bg-elevated) 78%, transparent);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+      background: var(--report-card-bg);
     }
     .diagnosis-report-facts dl {
       display: grid;
@@ -2998,21 +2996,21 @@ const professionalReportCopy = isEnglish
       gap: 10px;
       align-items: baseline;
       padding-bottom: 9px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--report-card-border);
     }
     .diagnosis-report-facts div:last-child {
       padding-bottom: 0;
       border-bottom: 0;
     }
     .diagnosis-report-facts dt {
-      color: var(--muted);
+      color: var(--report-muted);
       font-size: 11px;
       font-weight: 750;
       line-height: 1.35;
     }
     .diagnosis-report-facts dd {
       margin: 0;
-      color: var(--heading);
+      color: var(--report-ink);
       font-size: 12px;
       font-weight: 850;
       line-height: 1.35;
@@ -3061,34 +3059,30 @@ const professionalReportCopy = isEnglish
       min-width: 0;
       gap: 10px;
       padding: 18px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--report-card-border);
       border-radius: 18px;
-      background:
-        linear-gradient(135deg, rgba(255, 248, 242, 0.72), transparent 54%),
-        var(--soft);
+      background: var(--report-card-accent-rose);
     }
     .diagnosis-summary-card small {
-      color: var(--muted);
+      color: var(--report-muted);
       font-size: 12px;
       font-weight: 850;
       letter-spacing: 0.04em;
     }
     .diagnosis-summary-card strong {
-      color: var(--heading);
+      color: var(--report-ink);
       font-family: var(--font-display);
       font-size: clamp(24px, 2.2vw, 34px);
       line-height: 1.12;
     }
     .diagnosis-summary-card p {
       margin: 0;
-      color: var(--text);
+      color: var(--report-body);
       font-size: 14px;
       line-height: 1.72;
     }
     .diagnosis-strategy-card {
-      background:
-        linear-gradient(135deg, rgba(21, 151, 140, 0.09), transparent 58%),
-        var(--soft);
+      background: var(--report-card-accent-teal);
     }
     .diagnosis-palette-card {
       align-content: start;
@@ -3104,10 +3098,10 @@ const professionalReportCopy = isEnglish
       align-items: center;
       gap: 7px;
       padding: 7px 9px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--report-card-border);
       border-radius: 999px;
-      background: var(--bg-elevated);
-      color: var(--text);
+      background: var(--report-card-bg);
+      color: var(--report-body);
       font-size: 12px;
       font-weight: 800;
       line-height: 1.2;
@@ -3150,7 +3144,7 @@ const professionalReportCopy = isEnglish
       align-items: center;
       padding: 10px;
       border-radius: 14px;
-      background: var(--bg-elevated);
+      background: var(--report-card-bg);
     }
     .diagnosis-result-shell .recommend h3 {
       margin-top: 0;
@@ -3180,21 +3174,21 @@ const professionalReportCopy = isEnglish
       min-width: 0;
       gap: 14px;
       padding: 18px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--report-card-border);
       border-radius: 18px;
-      background: var(--soft);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62);
+      background: var(--report-card-bg);
+      box-shadow: var(--report-card-shadow);
     }
     .report-section-card h2 {
       margin: 0;
-      color: var(--heading);
+      color: var(--report-ink);
       font-size: 16px;
       line-height: 1.35;
       letter-spacing: 0.01em;
     }
     .report-section-card .analysis-row {
       padding-top: 12px;
-      border-top: 1px solid var(--line);
+      border-top: 1px solid var(--report-card-border);
     }
     .diagnosis-detail-panel {
       padding: 0;
@@ -3208,7 +3202,7 @@ const professionalReportCopy = isEnglish
       min-height: 56px;
       padding: 18px 22px;
       cursor: pointer;
-      color: var(--heading);
+      color: var(--report-ink);
       font-weight: 900;
       list-style: none;
     }
@@ -3229,7 +3223,7 @@ const professionalReportCopy = isEnglish
       content: "-";
     }
     .diagnosis-detail-panel summary small {
-      color: var(--muted);
+      color: var(--report-muted);
       font-size: 12px;
       font-weight: 600;
     }
@@ -3238,7 +3232,7 @@ const professionalReportCopy = isEnglish
     }
     .portrait-panel h3 {
       margin: 0 0 16px;
-      color: var(--heading);
+      color: var(--report-ink);
       font-size: 18px;
       font-weight: 850;
       letter-spacing: 0.01em;
@@ -3248,8 +3242,8 @@ const professionalReportCopy = isEnglish
       padding: 12px 14px;
       border: 0;
       border-radius: 12px;
-      background: color-mix(in srgb, var(--surface-rule) 62%, transparent);
-      color: var(--muted);
+      background: var(--report-card-accent-rose);
+      color: var(--report-muted);
       font-size: 11px;
       line-height: 1.6;
     }
@@ -3277,15 +3271,16 @@ const professionalReportCopy = isEnglish
     .analysis-row b {
       display: block;
       margin-bottom: 4px;
-      color: var(--heading);
-      font-size: 13px;
+      color: var(--report-ink);
+      font-size: 14px;
+      font-weight: 700;
       line-height: 1.35;
     }
     .analysis-row span {
       display: block;
-      color: var(--text);
-      font-size: 12px;
-      line-height: 1.65;
+      color: var(--report-body);
+      font-size: 13px;
+      line-height: 1.7;
     }
     .diagnosis-routine-grid {
       display: grid;
@@ -3298,9 +3293,9 @@ const professionalReportCopy = isEnglish
       gap: 12px;
       min-width: 0;
       padding: 16px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--report-card-border);
       border-radius: 18px;
-      background: var(--soft);
+      background: var(--report-card-bg);
     }
     .routine-step > span {
       display: grid;
@@ -3309,32 +3304,33 @@ const professionalReportCopy = isEnglish
       place-items: center;
       border-radius: 14px;
       background: var(--teal-soft);
-      color: #0b7069;
+      color: var(--teal);
       font-size: 12px;
       font-weight: 900;
     }
     .routine-step h3 {
       margin: 0 0 6px;
-      color: var(--heading);
-      font-size: 15px;
+      color: var(--report-ink);
+      font-size: 16px;
+      font-weight: 700;
       line-height: 1.35;
     }
     .routine-step p {
       margin: 0;
-      color: var(--text);
-      font-size: 12px;
-      line-height: 1.65;
+      color: var(--report-body);
+      font-size: 13px;
+      line-height: 1.7;
     }
     .diagnosis-scenario-block {
       display: grid;
       gap: 14px;
       margin-top: 18px;
       padding-top: 18px;
-      border-top: 1px solid var(--line);
+      border-top: 1px solid var(--report-card-border);
     }
     .diagnosis-scenario-block h3 {
       margin: 0 0 6px;
-      color: var(--heading);
+      color: var(--report-ink);
       font-family: var(--font-display);
       font-size: clamp(20px, 2vw, 28px);
       line-height: 1.18;
@@ -3342,7 +3338,7 @@ const professionalReportCopy = isEnglish
     .diagnosis-scenario-block p {
       margin: 0;
       max-width: 720px;
-      color: var(--muted);
+      color: var(--report-muted);
       font-size: 13px;
       line-height: 1.7;
     }
@@ -3356,9 +3352,9 @@ const professionalReportCopy = isEnglish
       min-width: 0;
       gap: 8px;
       padding: 14px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--report-card-border);
       border-radius: 16px;
-      background: var(--bg-elevated);
+      background: var(--report-card-bg);
     }
     .scenario-card strong {
       color: var(--rose);
@@ -3366,8 +3362,9 @@ const professionalReportCopy = isEnglish
       font-weight: 900;
     }
     .scenario-card b {
-      color: var(--heading);
+      color: var(--report-ink);
       font-size: 14px;
+      font-weight: 700;
       line-height: 1.35;
     }
     .scenario-card dl {
@@ -3376,16 +3373,16 @@ const professionalReportCopy = isEnglish
       margin: 0;
     }
     .scenario-card dt {
-      color: var(--muted);
-      font-size: 10px;
+      color: var(--report-muted);
+      font-size: 11px;
       font-weight: 850;
       letter-spacing: 0.04em;
     }
     .scenario-card dd {
       margin: 2px 0 0;
-      color: var(--text);
-      font-size: 11px;
-      line-height: 1.55;
+      color: var(--report-body);
+      font-size: 12px;
+      line-height: 1.6;
     }
     .report-recommend p b {
       color: var(--heading);
@@ -3515,7 +3512,7 @@ const professionalReportCopy = isEnglish
       place-items: center;
       border-radius: 16px;
       background: var(--teal-soft);
-      color: #0b7069;
+      color: var(--teal);
       font-size: 12px;
       font-weight: 900;
     }
