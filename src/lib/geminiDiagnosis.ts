@@ -204,9 +204,12 @@ function diagnosisPrompt(options: {
     "Do not identify the person, infer health, ethnicity, age, or other sensitive traits.",
     "Be cautious about lighting and camera uncertainty. Use 'uncertain' when evidence is weak.",
     `The active UI locale is "${locale}". Write every user-visible free-text field in ${languageInstruction}.`,
-    "User-visible free-text fields include confidence.limitations, skinTone.summary, faceShape.evidence, eyeShape.evidence, colorSeason.rationale, strengths, cautions, and every makeupDirections title, rationale, and palette entry.",
-    "Keep schema enum values exactly as defined in English, including depth, undertone, face shape, eye shape, color season, and confidence band.",
-    "Return exactly three practical makeup directions and no product or shade guarantees.",
+    "User-visible free-text fields include confidence.limitations, skinTone.summary, faceShape.evidence, eyeShape.evidence, colorSeason.rationale, strengths, cautions, every makeupDirections title, rationale, and palette entry, reportSummary, photoQuality.notes, makeupPlan, colorPalette names and avoid entries, scenarioStrategies, and recommendationReasoning.",
+    "Keep schema enum values exactly as defined in English, including depth, undertone, face shape, eye shape, color season, confidence band, photo quality level, palette usage, and scenario keys.",
+    "Make reportSummary sound like a professional beauty consultant: define the user's overall makeup positioning, core strategy, and one concise next action.",
+    "Make makeupPlan concrete and zone-based for base, brows, eyes, cheeks, lips, contour and highlight. Use practical application advice, not generic labels.",
+    "Return exactly four scenarioStrategies using scenario values work, date, camera, and daily. Each scenario must explain colors, technique, what to avoid, and how the user can validate the result in real lighting.",
+    "Return exactly three practical makeup directions and exactly three recommendationReasoning entries aligned with those direction titles. Do not include product or shade guarantees.",
     options.preferredLookSlug
       ? `The user's selected style preference is "${options.preferredLookSlug}". Treat it as a preference, not a requirement.`
       : "",

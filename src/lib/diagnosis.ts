@@ -1,4 +1,4 @@
-export const DIAGNOSIS_SCHEMA_VERSION = "2026-06-07";
+export const DIAGNOSIS_SCHEMA_VERSION = "2026-06-26";
 export const DIAGNOSIS_DISCLAIMER =
   "AI 建议仅供美妆参考，不构成医疗或专业意见；实际效果因光线、设备和个人条件而异。";
 
@@ -38,6 +38,9 @@ const colorSeasons = [
   "uncertain",
 ] as const;
 const confidenceBands = ["low", "medium", "high"] as const;
+const photoQualityLevels = ["good", "usable", "limited"] as const;
+const paletteUsages = ["base", "eyes", "cheeks", "lips", "multi"] as const;
+const makeupScenarios = ["work", "date", "camera", "daily"] as const;
 
 type SkinDepth = (typeof skinDepths)[number];
 type Undertone = (typeof undertones)[number];
@@ -45,6 +48,9 @@ type FaceShape = (typeof faceShapes)[number];
 type EyeShape = (typeof eyeShapes)[number];
 type ColorSeason = (typeof colorSeasons)[number];
 type ConfidenceBand = (typeof confidenceBands)[number];
+type PhotoQualityLevel = (typeof photoQualityLevels)[number];
+type PaletteUsage = (typeof paletteUsages)[number];
+type MakeupScenario = (typeof makeupScenarios)[number];
 
 export interface DiagnosisResult {
   schemaVersion: typeof DIAGNOSIS_SCHEMA_VERSION;
@@ -76,6 +82,43 @@ export interface DiagnosisResult {
     title: string;
     rationale: string;
     palette: string[];
+  }>;
+  reportSummary: {
+    archetype: string;
+    primaryStrategy: string;
+    oneLineAdvice: string;
+  };
+  photoQuality: {
+    level: PhotoQualityLevel;
+    notes: string[];
+  };
+  makeupPlan: {
+    base: string[];
+    brows: string[];
+    eyes: string[];
+    cheeks: string[];
+    lips: string[];
+    contourHighlight: string[];
+  };
+  colorPalette: {
+    recommended: Array<{
+      name: string;
+      usage: PaletteUsage;
+    }>;
+    avoid: string[];
+  };
+  scenarioStrategies: Array<{
+    scenario: MakeupScenario;
+    lookName: string;
+    colors: string[];
+    keyTechniques: string[];
+    avoid: string[];
+    validation: string;
+  }>;
+  recommendationReasoning: Array<{
+    directionTitle: string;
+    matchedFactors: string[];
+    watchOut: string[];
   }>;
   disclaimer: typeof DIAGNOSIS_DISCLAIMER;
 }
@@ -156,6 +199,158 @@ export const diagnosisJsonSchema = {
         required: ["title", "rationale", "palette"],
       },
     },
+    reportSummary: {
+      type: "object",
+      properties: {
+        archetype: { type: "string" },
+        primaryStrategy: { type: "string" },
+        oneLineAdvice: { type: "string" },
+      },
+      required: ["archetype", "primaryStrategy", "oneLineAdvice"],
+    },
+    photoQuality: {
+      type: "object",
+      properties: {
+        level: { type: "string", enum: photoQualityLevels },
+        notes: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 1,
+          maxItems: 4,
+        },
+      },
+      required: ["level", "notes"],
+    },
+    makeupPlan: {
+      type: "object",
+      properties: {
+        base: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 1,
+          maxItems: 3,
+        },
+        brows: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 1,
+          maxItems: 3,
+        },
+        eyes: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 1,
+          maxItems: 3,
+        },
+        cheeks: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 1,
+          maxItems: 3,
+        },
+        lips: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 1,
+          maxItems: 3,
+        },
+        contourHighlight: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 1,
+          maxItems: 3,
+        },
+      },
+      required: ["base", "brows", "eyes", "cheeks", "lips", "contourHighlight"],
+    },
+    colorPalette: {
+      type: "object",
+      properties: {
+        recommended: {
+          type: "array",
+          minItems: 4,
+          maxItems: 8,
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              usage: { type: "string", enum: paletteUsages },
+            },
+            required: ["name", "usage"],
+          },
+        },
+        avoid: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 1,
+          maxItems: 5,
+        },
+      },
+      required: ["recommended", "avoid"],
+    },
+    scenarioStrategies: {
+      type: "array",
+      minItems: 4,
+      maxItems: 4,
+      items: {
+        type: "object",
+        properties: {
+          scenario: { type: "string", enum: makeupScenarios },
+          lookName: { type: "string" },
+          colors: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 1,
+            maxItems: 4,
+          },
+          keyTechniques: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 1,
+            maxItems: 4,
+          },
+          avoid: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 1,
+            maxItems: 4,
+          },
+          validation: { type: "string" },
+        },
+        required: [
+          "scenario",
+          "lookName",
+          "colors",
+          "keyTechniques",
+          "avoid",
+          "validation",
+        ],
+      },
+    },
+    recommendationReasoning: {
+      type: "array",
+      minItems: 3,
+      maxItems: 3,
+      items: {
+        type: "object",
+        properties: {
+          directionTitle: { type: "string" },
+          matchedFactors: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 1,
+            maxItems: 4,
+          },
+          watchOut: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 1,
+            maxItems: 4,
+          },
+        },
+        required: ["directionTitle", "matchedFactors", "watchOut"],
+      },
+    },
   },
   required: [
     "confidence",
@@ -166,6 +361,12 @@ export const diagnosisJsonSchema = {
     "strengths",
     "cautions",
     "makeupDirections",
+    "reportSummary",
+    "photoQuality",
+    "makeupPlan",
+    "colorPalette",
+    "scenarioStrategies",
+    "recommendationReasoning",
   ],
 } as const;
 
@@ -189,6 +390,26 @@ export function parseDiagnosisResult(input: unknown): DiagnosisResult {
   const colorSeason = objectValue(root.colorSeason, "colorSeason");
   const directions = arrayValue(root.makeupDirections, "makeupDirections");
   if (directions.length !== 3) invalid("makeupDirections");
+  const reportSummary = objectValue(root.reportSummary, "reportSummary");
+  const photoQuality = objectValue(root.photoQuality, "photoQuality");
+  const makeupPlan = objectValue(root.makeupPlan, "makeupPlan");
+  const colorPalette = objectValue(root.colorPalette, "colorPalette");
+  const recommendedColors = arrayValue(
+    colorPalette.recommended,
+    "colorPalette.recommended",
+  );
+  if (recommendedColors.length < 4 || recommendedColors.length > 8)
+    invalid("colorPalette.recommended");
+  const scenarioStrategies = arrayValue(
+    root.scenarioStrategies,
+    "scenarioStrategies",
+  );
+  if (scenarioStrategies.length !== 4) invalid("scenarioStrategies");
+  const recommendationReasoning = arrayValue(
+    root.recommendationReasoning,
+    "recommendationReasoning",
+  );
+  if (recommendationReasoning.length !== 3) invalid("recommendationReasoning");
 
   return {
     schemaVersion: DIAGNOSIS_SCHEMA_VERSION,
@@ -236,6 +457,115 @@ export function parseDiagnosisResult(input: unknown): DiagnosisResult {
           `makeupDirections.${index}.palette`,
           2,
           5,
+        ),
+      };
+    }),
+    reportSummary: {
+      archetype: stringValue(
+        reportSummary.archetype,
+        "reportSummary.archetype",
+      ),
+      primaryStrategy: stringValue(
+        reportSummary.primaryStrategy,
+        "reportSummary.primaryStrategy",
+      ),
+      oneLineAdvice: stringValue(
+        reportSummary.oneLineAdvice,
+        "reportSummary.oneLineAdvice",
+      ),
+    },
+    photoQuality: {
+      level: enumValue(
+        photoQuality.level,
+        photoQualityLevels,
+        "photoQuality.level",
+      ),
+      notes: stringArray(photoQuality.notes, "photoQuality.notes", 1, 4),
+    },
+    makeupPlan: {
+      base: stringArray(makeupPlan.base, "makeupPlan.base", 1, 3),
+      brows: stringArray(makeupPlan.brows, "makeupPlan.brows", 1, 3),
+      eyes: stringArray(makeupPlan.eyes, "makeupPlan.eyes", 1, 3),
+      cheeks: stringArray(makeupPlan.cheeks, "makeupPlan.cheeks", 1, 3),
+      lips: stringArray(makeupPlan.lips, "makeupPlan.lips", 1, 3),
+      contourHighlight: stringArray(
+        makeupPlan.contourHighlight,
+        "makeupPlan.contourHighlight",
+        1,
+        3,
+      ),
+    },
+    colorPalette: {
+      recommended: recommendedColors.map((item, index) => {
+        const value = objectValue(item, `colorPalette.recommended.${index}`);
+        return {
+          name: stringValue(
+            value.name,
+            `colorPalette.recommended.${index}.name`,
+          ),
+          usage: enumValue(
+            value.usage,
+            paletteUsages,
+            `colorPalette.recommended.${index}.usage`,
+          ),
+        };
+      }),
+      avoid: stringArray(colorPalette.avoid, "colorPalette.avoid", 1, 5),
+    },
+    scenarioStrategies: scenarioStrategies.map((item, index) => {
+      const value = objectValue(item, `scenarioStrategies.${index}`);
+      return {
+        scenario: enumValue(
+          value.scenario,
+          makeupScenarios,
+          `scenarioStrategies.${index}.scenario`,
+        ),
+        lookName: stringValue(
+          value.lookName,
+          `scenarioStrategies.${index}.lookName`,
+        ),
+        colors: stringArray(
+          value.colors,
+          `scenarioStrategies.${index}.colors`,
+          1,
+          4,
+        ),
+        keyTechniques: stringArray(
+          value.keyTechniques,
+          `scenarioStrategies.${index}.keyTechniques`,
+          1,
+          4,
+        ),
+        avoid: stringArray(
+          value.avoid,
+          `scenarioStrategies.${index}.avoid`,
+          1,
+          4,
+        ),
+        validation: stringValue(
+          value.validation,
+          `scenarioStrategies.${index}.validation`,
+        ),
+      };
+    }),
+    recommendationReasoning: recommendationReasoning.map((item, index) => {
+      const value = objectValue(item, `recommendationReasoning.${index}`);
+      return {
+        directionTitle: stringValue(
+          value.directionTitle,
+          `recommendationReasoning.${index}.directionTitle`,
+        ),
+        matchedFactors: stringArray(
+          value.matchedFactors,
+          `recommendationReasoning.${index}.matchedFactors`,
+          1,
+          4,
+        ),
+        watchOut: stringArray(
+          value.watchOut,
+          `recommendationReasoning.${index}.watchOut`,
+          1,
+          4,
         ),
       };
     }),

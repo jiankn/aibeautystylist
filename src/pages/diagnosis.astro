@@ -339,6 +339,215 @@ const diagnosisProgressCopy = isEnglish
         },
       ],
     };
+
+const professionalReportCopy = isEnglish
+  ? {
+      reportType: "Personal makeup fit report",
+      latestReport: "Latest professional report",
+      conclusionLabel: "Overall makeup positioning",
+      strategyLabel: "Core strategy",
+      actionLook: "Start with matched try-on",
+      newReport: "Create new diagnosis",
+      reportNo: "Report ID",
+      generatedAt: "Generated",
+      photoQuality: "Photo quality",
+      stability: "Analysis stability",
+      version: "Report version",
+      qualityGood: "Good",
+      qualityUsable: "Usable",
+      qualityLimited: "Limited",
+      stabilityHigh: "High",
+      stabilityMedium: "Medium",
+      stabilityLow: "Needs confirmation",
+      summaryTitle: "Executive beauty summary",
+      summarySubtitle:
+        "Use this one-page summary before choosing base, lip-cheek colors, eye makeup, or virtual try-on looks.",
+      keywordsTitle: "Beauty profile keywords",
+      paletteTitle: "Recommended color anchors",
+      evidenceTitle: "Professional analysis",
+      evidenceSubtitle:
+        "The report separates visible facial cues from makeup execution advice, so the recommendation is easier to judge.",
+      routineTitle: "Your practical makeup plan",
+      routineSubtitle:
+        "A zone-by-zone routine translated from the diagnosis, designed for real application rather than abstract labels.",
+      scenarioTitle: "Scenario strategy matrix",
+      scenarioSubtitle:
+        "Choose intensity by scene; keep the same color direction so looks remain coherent.",
+      detailTitle: "Evidence, limits and cautions",
+      detailSubtitle:
+        "Photo limitations, analysis confidence, and directions to avoid.",
+      recommendedTitle: "Try-on looks matched to this report",
+      matchedReason: "Why it matches",
+      watchTitle: "When trying it, check",
+      sections: {
+        skin: "01 Skin tone and base",
+        color: "02 Color and lip-cheek direction",
+        structure: "03 Facial structure",
+        eyes: "04 Eye makeup direction",
+        directions: "05 Makeup directions",
+      },
+      rows: {
+        base: "Base makeup",
+        brows: "Brows",
+        eyes: "Eyes",
+        cheeks: "Cheeks",
+        lips: "Lips",
+        contour: "Contour / highlight",
+        work: "Work",
+        date: "Date",
+        camera: "Camera",
+        daily: "Daily",
+        technique: "Key technique",
+        avoid: "Avoid",
+        validation: "Check point",
+      },
+      fallbacks: {
+        archetype: "Refined natural-fit makeup direction",
+        strategy:
+          "Keep skin texture lightweight, use coherent lip-cheek color, and let eye makeup define clarity without over-heavy contrast.",
+        oneLine:
+          "Start from low-to-medium saturation colors and adjust intensity after checking the result in natural light.",
+        base: "Use a thin, skin-like base and avoid a shade that looks obviously too light or too gray.",
+        brows:
+          "Keep brow shape clean but soft so it supports the face without making the expression harsh.",
+        eyes: "Add definition from the outer third of the eye; avoid enclosing the whole eye with heavy dark lines.",
+        cheeks:
+          "Place blush lightly and connect it with the lip color for a fresher complexion.",
+        lips: "Prioritize muted rose, peach, tea, or brown-based colors from the recommended palette.",
+        contour:
+          "Use subtle contour and highlight; do not over-sharpen naturally soft structure.",
+      },
+      scenarios: [
+        [
+          "work",
+          "Clean daily polish",
+          "Keep colors muted and edges soft",
+          "Heavy contrast",
+          "Looks natural in daylight",
+        ],
+        [
+          "date",
+          "Soft rosy focus",
+          "Unify lip and cheek color",
+          "Over-matte base",
+          "Complexion looks lifted",
+        ],
+        [
+          "camera",
+          "Defined but lightweight",
+          "Slightly strengthen eye tail and dimension",
+          "Flat flashback base",
+          "Features stay clear on camera",
+        ],
+        [
+          "daily",
+          "Fast fresh tone",
+          "Use one palette family across face",
+          "Too many competing colors",
+          "Still feels like you",
+        ],
+      ],
+    }
+  : {
+      reportType: "个人妆容适配报告",
+      latestReport: "最新专业报告",
+      conclusionLabel: "整体妆容定位",
+      strategyLabel: "核心妆容策略",
+      actionLook: "按报告试妆",
+      newReport: "重新诊断",
+      reportNo: "报告编号",
+      generatedAt: "生成时间",
+      photoQuality: "照片质量",
+      stability: "分析稳定性",
+      version: "报告版本",
+      qualityGood: "良好",
+      qualityUsable: "可用",
+      qualityLimited: "受限",
+      stabilityHigh: "较高",
+      stabilityMedium: "中等",
+      stabilityLow: "需二次确认",
+      summaryTitle: "美妆诊断摘要",
+      summarySubtitle: "这部分适合在选底妆、唇颊色、眼妆和试妆前快速对照。",
+      keywordsTitle: "你的美妆档案关键词",
+      paletteTitle: "推荐色彩锚点",
+      evidenceTitle: "专业维度分析",
+      evidenceSubtitle:
+        "报告将可见特征和上妆建议拆开呈现，方便你判断为什么适合、应该怎么化。",
+      routineTitle: "你的实操上妆方案",
+      routineSubtitle: "把诊断结论转成底妆、眉眼、唇颊和轮廓的具体执行建议。",
+      scenarioTitle: "场景妆容策略矩阵",
+      scenarioSubtitle: "不同场景调整强度，但保持同一色彩方向，妆面会更稳定。",
+      detailTitle: "证据、局限与慎选项",
+      detailSubtitle: "照片限制、分析稳定性和需要谨慎尝试的妆容元素。",
+      recommendedTitle: "基于报告匹配的试妆",
+      matchedReason: "匹配原因",
+      watchTitle: "试妆时重点观察",
+      sections: {
+        skin: "01 肤色与底妆",
+        color: "02 色彩与唇颊",
+        structure: "03 五官结构",
+        eyes: "04 眼妆方向",
+        directions: "05 妆容方向",
+      },
+      rows: {
+        base: "底妆",
+        brows: "眉毛",
+        eyes: "眼妆",
+        cheeks: "腮红",
+        lips: "唇妆",
+        contour: "修容 / 高光",
+        work: "通勤",
+        date: "约会",
+        camera: "拍照",
+        daily: "日常",
+        technique: "关键方法",
+        avoid: "需要避免",
+        validation: "验收标准",
+      },
+      fallbacks: {
+        archetype: "自然精致型妆容方向",
+        strategy:
+          "保留轻薄肤质，唇颊使用统一色系提气色，眼妆负责增加清晰度但不制造过强对比。",
+        oneLine:
+          "优先从低到中等饱和度颜色开始，在自然光下确认不显灰、不显脏后再增加强度。",
+        base: "选择轻薄、贴肤的底妆，避免明显过白或偏灰的色号。",
+        brows: "眉形保持干净但不要过硬，让眉毛支撑脸部结构而不压表情。",
+        eyes: "眼妆从眼尾后三分之一加强清晰度，避免用深色完整包围眼睛。",
+        cheeks: "腮红轻扫并与唇色保持同色相，优先改善气色。",
+        lips: "优先选择推荐色板中的低饱和玫瑰、蜜桃、奶茶或棕调颜色。",
+        contour: "修容和高光保持克制，不要把自然柔和的轮廓修得过锐。",
+      },
+      scenarios: [
+        [
+          "work",
+          "清透通勤",
+          "降低饱和度，边界保持柔和",
+          "强对比眼影",
+          "自然光下干净提气色",
+        ],
+        [
+          "date",
+          "柔和唇颊",
+          "唇色和腮红统一色相",
+          "过度雾面底妆",
+          "面中看起来更有精神",
+        ],
+        [
+          "camera",
+          "轻轮廓上镜",
+          "眼尾和面部立体度轻微加强",
+          "底妆反白或太平",
+          "镜头里五官仍然清晰",
+        ],
+        [
+          "daily",
+          "快速提气色",
+          "全脸使用同一色彩家族",
+          "多个颜色互相抢戏",
+          "保留本人气质不过度化妆",
+        ],
+      ],
+    };
 ---
 
 <BaseLayout
@@ -546,28 +755,125 @@ const diagnosisProgressCopy = isEnglish
             <span class="section-eyebrow" id="diag-result-meta"
               >{diagnosisCopy.historyKicker}</span
             >
+            <p class="diagnosis-report-type">
+              {professionalReportCopy.reportType}
+            </p>
             <h2 id="diag-result-title">{diagnosisCopy.resultKeywords}</h2>
             <p id="diag-result-summary">{diagnosisCopy.resultNotice}</p>
             <div class="diagnosis-result-chips" id="diag-result-chips"></div>
           </div>
+          <aside class="diagnosis-report-facts" id="diag-report-facts"></aside>
           <div class="diagnosis-result-actions">
             <a
               class="btn btn-primary"
               id="diag-primary-look"
-              href={discoverHref}>{diagnosisCopy.tryLook}</a
+              href={discoverHref}>{professionalReportCopy.actionLook}</a
             >
             <a class="btn" href="#diagnosis-new">
-              {diagnosisCopy.historyEmptyCta}
+              {professionalReportCopy.newReport}
             </a>
           </div>
         </section>
 
+        <section class="diagnosis-executive panel">
+          <div class="diagnosis-section-head">
+            <div>
+              <span class="section-eyebrow"
+                >{professionalReportCopy.latestReport}</span
+              >
+              <h2 class="panel-title">{professionalReportCopy.summaryTitle}</h2>
+              <p class="panel-subtitle">
+                {professionalReportCopy.summarySubtitle}
+              </p>
+            </div>
+          </div>
+          <div class="diagnosis-executive-grid">
+            <article class="diagnosis-summary-card">
+              <small>{professionalReportCopy.conclusionLabel}</small>
+              <strong id="diag-archetype">—</strong>
+              <p id="diag-one-line-advice">{diagnosisCopy.resultNotice}</p>
+            </article>
+            <article class="diagnosis-summary-card diagnosis-strategy-card">
+              <small>{professionalReportCopy.strategyLabel}</small>
+              <p id="diag-core-strategy">{diagnosisCopy.resultNotice}</p>
+            </article>
+            <article class="diagnosis-summary-card diagnosis-palette-card">
+              <small>{professionalReportCopy.paletteTitle}</small>
+              <div class="diagnosis-palette" id="diag-color-palette"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="diagnosis-insight-grid">
+          <aside class="portrait-panel panel diagnosis-profile-panel">
+            <img id="diag-selfie" src="" alt="用户诊断自拍" hidden />
+            <h3>{professionalReportCopy.keywordsTitle}</h3>
+            <div id="diag-keywords"></div>
+            <div class="rule-strip" id="diag-disclaimer">
+              {diagnosisCopy.resultNotice}
+            </div>
+          </aside>
+          <section class="diagnosis-analysis-panel panel">
+            <div class="diagnosis-section-head compact">
+              <div>
+                <span class="section-eyebrow"
+                  >{professionalReportCopy.evidenceTitle}</span
+                >
+                <h2 class="panel-title">
+                  {professionalReportCopy.evidenceTitle}
+                </h2>
+                <p class="panel-subtitle">
+                  {professionalReportCopy.evidenceSubtitle}
+                </p>
+              </div>
+            </div>
+            <div class="analysis-cards" id="diag-cards"></div>
+          </section>
+        </section>
+
+        <section class="diagnosis-routine-panel panel">
+          <div class="diagnosis-section-head">
+            <div>
+              <span class="section-eyebrow"
+                >{professionalReportCopy.routineTitle}</span
+              >
+              <h2 class="panel-title">{professionalReportCopy.routineTitle}</h2>
+              <p class="panel-subtitle">
+                {professionalReportCopy.routineSubtitle}
+              </p>
+            </div>
+          </div>
+          <div class="diagnosis-routine-grid" id="diag-routine-steps"></div>
+          <div class="diagnosis-scenario-block">
+            <div>
+              <h3>{professionalReportCopy.scenarioTitle}</h3>
+              <p>{professionalReportCopy.scenarioSubtitle}</p>
+            </div>
+            <div class="diagnosis-scenario-grid" id="diag-scenario-grid"></div>
+          </div>
+        </section>
+
+        <details class="diagnosis-detail-panel panel" id="diag-detail-panel">
+          <summary>
+            <span>{professionalReportCopy.detailTitle}</span>
+            <small>{professionalReportCopy.detailSubtitle}</small>
+          </summary>
+          <div
+            class="analysis-cards diagnosis-detail-cards"
+            id="diag-detail-cards"
+          >
+          </div>
+        </details>
+
         <section class="recommend-panel panel diagnosis-priority-recommend">
           <div class="diagnosis-section-head">
             <div>
-              <span class="section-eyebrow">{diagnosisCopy.recommendTitle}</span
+              <span class="section-eyebrow"
+                >{professionalReportCopy.recommendedTitle}</span
               >
-              <h2 class="panel-title">{diagnosisCopy.recommendTitle}</h2>
+              <h2 class="panel-title">
+                {professionalReportCopy.recommendedTitle}
+              </h2>
               <p class="panel-subtitle">{diagnosisCopy.recommendSubtitle}</p>
             </div>
             <a class="btn" href={discoverHref}>{diagnosisCopy.recommendMore}</a>
@@ -589,30 +895,6 @@ const diagnosisProgressCopy = isEnglish
             }
           </div>
         </section>
-
-        <section class="diagnosis-insight-grid">
-          <aside class="portrait-panel panel">
-            <img id="diag-selfie" src="" alt="用户诊断自拍" hidden />
-            <h3>{diagnosisCopy.resultKeywords}</h3>
-            <div id="diag-keywords"></div>
-            <div class="rule-strip" id="diag-disclaimer">
-              {diagnosisCopy.resultNotice}
-            </div>
-          </aside>
-          <section class="analysis-cards" id="diag-cards"></section>
-        </section>
-
-        <details class="diagnosis-detail-panel panel" id="diag-detail-panel">
-          <summary>
-            <span>完整分析细节</span>
-            <small>置信度、局限和慎选提醒</small>
-          </summary>
-          <div
-            class="analysis-cards diagnosis-detail-cards"
-            id="diag-detail-cards"
-          >
-          </div>
-        </details>
       </div>
 
       <section
@@ -656,6 +938,7 @@ const diagnosisProgressCopy = isEnglish
     define:vars={{
       diagnosisClientCopy,
       diagnosisProgressCopy,
+      professionalReportCopy,
       discoverHref,
       loginHref,
       tryOnFreeHref,
@@ -681,6 +964,13 @@ const diagnosisProgressCopy = isEnglish
       const detailCardsContainer = document.getElementById("diag-detail-cards");
       const detailPanel = document.getElementById("diag-detail-panel");
       const keywordsContainer = document.getElementById("diag-keywords");
+      const reportFacts = document.getElementById("diag-report-facts");
+      const archetypeNode = document.getElementById("diag-archetype");
+      const oneLineAdvice = document.getElementById("diag-one-line-advice");
+      const coreStrategy = document.getElementById("diag-core-strategy");
+      const colorPalette = document.getElementById("diag-color-palette");
+      const routineSteps = document.getElementById("diag-routine-steps");
+      const scenarioGrid = document.getElementById("diag-scenario-grid");
       const resultMeta = document.getElementById("diag-result-meta");
       const resultTitle = document.getElementById("diag-result-title");
       const resultSummary = document.getElementById("diag-result-summary");
@@ -1096,6 +1386,7 @@ const diagnosisProgressCopy = isEnglish
       const resultLabels = copy.resultLabels || {};
       const valueMaps = resultLabels.valueMaps || {};
       const keywordIcons = resultLabels.keywordIcons || {};
+      const reportCopy = professionalReportCopy || {};
 
       function labelFrom(map, key, fallback) {
         return (key && map?.[key]) || fallback || key || "";
@@ -1121,6 +1412,163 @@ const diagnosisProgressCopy = isEnglish
         );
       }
 
+      function buildFacts(rows) {
+        return `<dl>${rows
+          .filter(([label, value]) => label || value)
+          .map(
+            ([label, value]) =>
+              `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`,
+          )
+          .join("")}</dl>`;
+      }
+
+      function qualityLabel(d) {
+        const level = d?.photoQuality?.level;
+        if (level === "good") return reportCopy.qualityGood || "Good";
+        if (level === "usable") return reportCopy.qualityUsable || "Usable";
+        if (level === "limited") return reportCopy.qualityLimited || "Limited";
+        const overall = Number(d?.confidence?.overall || 0);
+        if (overall >= 0.82) return reportCopy.qualityGood || "Good";
+        if (overall >= 0.62) return reportCopy.qualityUsable || "Usable";
+        return reportCopy.qualityLimited || "Limited";
+      }
+
+      function stabilityLabel(confidence) {
+        const band = confidence?.band;
+        if (band === "high") return reportCopy.stabilityHigh || "High";
+        if (band === "medium") return reportCopy.stabilityMedium || "Medium";
+        return reportCopy.stabilityLow || "Needs confirmation";
+      }
+
+      function extractPalette(d) {
+        const seen = new Set();
+        const palette = [];
+        (d.colorPalette?.recommended || []).forEach((color) => {
+          const normalized = String(color?.name || "").trim();
+          const key = normalized.toLowerCase();
+          if (normalized && !seen.has(key)) {
+            seen.add(key);
+            palette.push(normalized);
+          }
+        });
+        (d.makeupDirections || []).forEach((direction) => {
+          (direction.palette || []).forEach((color) => {
+            const normalized = String(color || "").trim();
+            const key = normalized.toLowerCase();
+            if (normalized && !seen.has(key)) {
+              seen.add(key);
+              palette.push(normalized);
+            }
+          });
+        });
+        return palette;
+      }
+
+      function inferArchetype(d, primaryDirection, seasonLabel) {
+        if (d.reportSummary?.archetype) return d.reportSummary.archetype;
+        if (primaryDirection?.title && seasonLabel) {
+          return `${primaryDirection.title} · ${seasonLabel}`;
+        }
+        return (
+          primaryDirection?.title ||
+          seasonLabel ||
+          reportCopy.fallbacks?.archetype
+        );
+      }
+
+      function inferCoreStrategy(d, skinLabel, faceLabel, eyeLabel) {
+        if (d.reportSummary?.primaryStrategy) {
+          return d.reportSummary.primaryStrategy;
+        }
+        const parts = [];
+        if (d.skinTone?.summary) parts.push(d.skinTone.summary);
+        if (d.colorSeason?.rationale) parts.push(d.colorSeason.rationale);
+        if (d.strengths?.[0]) parts.push(d.strengths[0]);
+        if (parts.length) return parts.slice(0, 3).join(" ");
+        const context = [skinLabel, faceLabel, eyeLabel]
+          .filter(Boolean)
+          .join(" / ");
+        return context
+          ? `${context}。${reportCopy.fallbacks?.strategy || ""}`
+          : reportCopy.fallbacks?.strategy || "";
+      }
+
+      function buildRoutine(d, labels) {
+        const paletteText = labels.palette.length
+          ? labels.palette.slice(0, 4).join(resultLabels.paletteJoiner || ", ")
+          : labels.seasonLabel;
+        const plan = d.makeupPlan || {};
+        const base =
+          joinPlan(plan.base) ||
+          [d.skinTone?.summary, reportCopy.fallbacks?.base]
+            .filter(Boolean)
+            .join(" ");
+        const brows =
+          joinPlan(plan.brows) ||
+          [joinEvidence(d.faceShape?.evidence), reportCopy.fallbacks?.brows]
+            .filter(Boolean)
+            .join(" ");
+        const eyes =
+          joinPlan(plan.eyes) ||
+          [joinEvidence(d.eyeShape?.evidence), reportCopy.fallbacks?.eyes]
+            .filter(Boolean)
+            .join(" ");
+        const cheeks =
+          joinPlan(plan.cheeks) ||
+          (paletteText
+            ? `${paletteText}。${reportCopy.fallbacks?.cheeks || ""}`
+            : reportCopy.fallbacks?.cheeks);
+        const lips =
+          joinPlan(plan.lips) ||
+          (paletteText
+            ? `${paletteText}。${reportCopy.fallbacks?.lips || ""}`
+            : reportCopy.fallbacks?.lips);
+        const contour =
+          joinPlan(plan.contourHighlight) ||
+          [labels.faceLabel, reportCopy.fallbacks?.contour]
+            .filter(Boolean)
+            .join("。 ");
+        return [
+          { key: "base", title: reportCopy.rows?.base, body: base },
+          { key: "brows", title: reportCopy.rows?.brows, body: brows },
+          { key: "eyes", title: reportCopy.rows?.eyes, body: eyes },
+          { key: "cheeks", title: reportCopy.rows?.cheeks, body: cheeks },
+          { key: "lips", title: reportCopy.rows?.lips, body: lips },
+          { key: "contour", title: reportCopy.rows?.contour, body: contour },
+        ].filter((item) => item.title && item.body);
+      }
+
+      function joinPlan(items) {
+        return Array.isArray(items) ? items.filter(Boolean).join(" ") : "";
+      }
+
+      function buildScenarioMatrix(d, palette) {
+        if (
+          Array.isArray(d.scenarioStrategies) &&
+          d.scenarioStrategies.length
+        ) {
+          return d.scenarioStrategies.map((item) => ({
+            title: reportCopy.rows?.[item.scenario] || item.scenario,
+            look: item.lookName,
+            technique: joinEvidence(item.keyTechniques),
+            avoid: joinEvidence(item.avoid),
+            validation: item.validation,
+          }));
+        }
+        const paletteHint = palette.length
+          ? palette.slice(0, 3).join(resultLabels.paletteJoiner || ", ")
+          : "";
+        return (reportCopy.scenarios || []).map(
+          ([key, look, technique, avoid, validation]) => ({
+            title: reportCopy.rows?.[key] || key,
+            look,
+            technique: paletteHint ? `${technique}：${paletteHint}` : technique,
+            avoid,
+            validation,
+          }),
+        );
+      }
+
       function renderDiagnosis(d, record) {
         if (!resultSection || !cardsContainer || !keywordsContainer) return;
         wantsNewDiagnosis = false;
@@ -1128,6 +1576,11 @@ const diagnosisProgressCopy = isEnglish
         newSection.hidden = true;
         resultSection.hidden = false;
 
+        const skinDepthLabel = labelFrom(
+          valueMaps.skinDepth,
+          d.skinTone?.depth,
+          d.skinTone?.depth,
+        );
         const skinLabel = labelFrom(
           valueMaps.undertone,
           d.skinTone?.undertone,
@@ -1152,47 +1605,82 @@ const diagnosisProgressCopy = isEnglish
             )) ||
           resultLabels.colorDirection;
         const primaryDirection = d.makeupDirections?.[0];
-        const resultHeading =
-          primaryDirection?.title || d.skinTone?.summary || copy.reportTitle;
-        const summaryText =
+        const palette = extractPalette(d);
+        const archetype = inferArchetype(d, primaryDirection, seasonLabel);
+        const strategy = inferCoreStrategy(d, skinLabel, faceLabel, eyeLabel);
+        const oneLine =
+          d.reportSummary?.oneLineAdvice ||
           primaryDirection?.rationale ||
           d.skinTone?.summary ||
           d.colorSeason?.rationale ||
+          reportCopy.fallbacks?.oneLine ||
           "";
+        const resultHeading =
+          archetype || primaryDirection?.title || copy.reportTitle;
+        const summaryText = strategy || oneLine || copy.reportTitle;
+        const createdAt = record?.createdAt ? new Date(record.createdAt) : null;
+        const dateLabel = createdAt
+          ? createdAt.toLocaleDateString(
+              document.documentElement.lang || "zh-CN",
+              {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+              },
+            )
+          : "";
+        const shortDateLabel = createdAt
+          ? createdAt.toLocaleDateString(
+              document.documentElement.lang || "zh-CN",
+              {
+                month: "2-digit",
+                day: "2-digit",
+              },
+            )
+          : "";
+        const reportId = record?.id || record?.jobId || "—";
+        const reportIdShort = String(reportId).slice(0, 8).toUpperCase();
+        const quality = qualityLabel(d);
+        const stability = stabilityLabel(d.confidence);
 
         if (resultMeta) {
-          const dateLabel = record?.createdAt
-            ? new Date(record.createdAt).toLocaleDateString(
-                document.documentElement.lang || "zh-CN",
-                { month: "2-digit", day: "2-digit" },
-              )
-            : "";
-          resultMeta.textContent = dateLabel
-            ? (resultLabels.latestDiagnosis || copy.reportTitle) +
+          resultMeta.textContent = shortDateLabel
+            ? (reportCopy.latestReport ||
+                resultLabels.latestDiagnosis ||
+                copy.reportTitle) +
               " · " +
-              dateLabel
-            : resultLabels.latestDiagnosis || copy.reportTitle;
+              shortDateLabel
+            : reportCopy.latestReport ||
+              resultLabels.latestDiagnosis ||
+              copy.reportTitle;
         }
         if (resultTitle) resultTitle.textContent = resultHeading;
         if (resultSummary) resultSummary.textContent = summaryText;
+        if (archetypeNode) archetypeNode.textContent = resultHeading;
+        if (oneLineAdvice) oneLineAdvice.textContent = oneLine;
+        if (coreStrategy) coreStrategy.textContent = strategy;
         if (primaryLook) {
           primaryLook.href = discoverHref;
-          primaryLook.textContent = copy.recommendMore || copy.tryLook;
+          primaryLook.textContent =
+            reportCopy.actionLook || copy.recommendMore || copy.tryLook;
+        }
+
+        if (reportFacts) {
+          reportFacts.innerHTML = buildFacts([
+            [reportCopy.reportNo, reportIdShort],
+            [reportCopy.generatedAt, dateLabel || "—"],
+            [reportCopy.photoQuality, quality],
+            [reportCopy.stability, stability],
+            [reportCopy.version, d.schemaVersion || "2026"],
+          ]);
         }
 
         const resultChipRows = [
-          [resultLabels.skinTone, skinLabel],
+          [resultLabels.skinTone, `${skinDepthLabel} / ${skinLabel}`],
           [resultLabels.facialFocus, `${faceLabel} / ${eyeLabel}`],
           [resultLabels.colorDirection, seasonLabel],
+          [reportCopy.photoQuality, quality],
         ];
-        if (d.confidence?.overall) {
-          resultChipRows.push([
-            resultLabels.confidence,
-            `${labelFrom(valueMaps.band, d.confidence.band, d.confidence.band)} ${Math.round(
-              d.confidence.overall * 100,
-            )}%`.trim(),
-          ]);
-        }
         if (quotaSnapshot) {
           resultChipRows.push([
             resultLabels.monthlyQuota,
@@ -1212,7 +1700,7 @@ const diagnosisProgressCopy = isEnglish
           {
             key: "skin",
             icon: keywordIcons.skin || "S",
-            title: skinLabel,
+            title: `${skinDepthLabel} / ${skinLabel}`,
             desc: d.skinTone?.summary || "",
           },
           {
@@ -1220,6 +1708,12 @@ const diagnosisProgressCopy = isEnglish
             icon: keywordIcons.face || "F",
             title: faceLabel,
             desc: joinEvidence(d.faceShape?.evidence),
+          },
+          {
+            key: "eye",
+            icon: keywordIcons.eye || "E",
+            title: eyeLabel,
+            desc: joinEvidence(d.eyeShape?.evidence),
           },
           {
             key: "color",
@@ -1236,74 +1730,175 @@ const diagnosisProgressCopy = isEnglish
           )
           .join("");
 
-        const insightCards = [];
-
-        insightCards.push(
-          buildCard(resultLabels.sections?.whyRecommended, [
-            {
-              key: "face",
-              icon: keywordIcons.face || "F",
-              title: titleWithValue(resultLabels.rows?.faceShape, faceLabel),
-              desc: joinEvidence(d.faceShape?.evidence),
-            },
-            {
-              key: "eye",
-              icon: keywordIcons.eye || "E",
-              title: titleWithValue(resultLabels.rows?.eyeShape, eyeLabel),
-              desc: joinEvidence(d.eyeShape?.evidence),
-            },
-            ...(d.strengths || []).slice(0, 2).map((s) => ({
-              key: "strength",
-              icon: keywordIcons.strength || "+",
-              title: resultLabels.rows?.strengthenPoint,
-              desc: s,
-            })),
-          ]),
-        );
-
-        insightCards.push(
-          buildCard(resultLabels.sections?.skinAndColor, [
-            {
-              key: "depth",
-              icon: keywordIcons.depth || "D",
-              title: resultLabels.rows?.skinDepth,
-              desc: labelFrom(
-                valueMaps.skinDepth,
-                d.skinTone?.depth,
-                d.skinTone?.depth,
-              ),
-            },
-            {
-              key: "tone",
-              icon: keywordIcons.tone || "T",
-              title: resultLabels.rows?.undertone,
-              desc: [skinLabel, d.skinTone?.summary]
-                .filter(Boolean)
-                .join(" - "),
-            },
-            {
-              key: "season",
-              icon: keywordIcons.season || "C",
-              title: resultLabels.rows?.colorSeason,
-              desc: [seasonLabel, d.colorSeason?.rationale]
-                .filter(Boolean)
-                .join(": "),
-            },
-          ]),
-        );
-
-        if (d.makeupDirections?.length) {
-          const rows = d.makeupDirections.map((dir) => ({
-            key: "makeup",
-            icon: keywordIcons.makeup || "M",
-            title: dir.title,
-            desc: (dir.rationale || "") + paletteSuffix(dir.palette),
-          }));
-          insightCards.push(
-            buildCard(resultLabels.sections?.makeupDirections, rows),
-          );
+        if (colorPalette) {
+          colorPalette.innerHTML = (
+            palette.length ? palette : [seasonLabel, skinLabel]
+          )
+            .slice(0, 8)
+            .map(
+              (color, index) =>
+                `<span class="palette-chip" data-tone="${index % 6}"><i aria-hidden="true"></i>${escapeHtml(color)}</span>`,
+            )
+            .join("");
         }
 
+        const routine = buildRoutine(d, {
+          skinLabel,
+          skinDepthLabel,
+          faceLabel,
+          eyeLabel,
+          seasonLabel,
+          palette,
+        });
+        if (routineSteps) {
+          routineSteps.innerHTML = routine
+            .map(
+              (item, index) => `
+                <article class="routine-step">
+                  <span>${String(index + 1).padStart(2, "0")}</span>
+                  <div>
+                    <h3>${escapeHtml(item.title)}</h3>
+                    <p>${escapeHtml(item.body)}</p>
+                  </div>
+                </article>
+              `,
+            )
+            .join("");
+        }
+        if (scenarioGrid) {
+          scenarioGrid.innerHTML = buildScenarioMatrix(d, palette)
+            .map(
+              (item) => `
+                <article class="scenario-card">
+                  <strong>${escapeHtml(item.title)}</strong>
+                  <b>${escapeHtml(item.look)}</b>
+                  <dl>
+                    <div><dt>${escapeHtml(reportCopy.rows?.technique)}</dt><dd>${escapeHtml(item.technique)}</dd></div>
+                    <div><dt>${escapeHtml(reportCopy.rows?.avoid)}</dt><dd>${escapeHtml(item.avoid)}</dd></div>
+                    <div><dt>${escapeHtml(reportCopy.rows?.validation)}</dt><dd>${escapeHtml(item.validation)}</dd></div>
+                  </dl>
+                </article>
+              `,
+            )
+            .join("");
+        }
+
+        const insightCards = [];
+        insightCards.push(
+          buildCard(
+            reportCopy.sections?.skin || resultLabels.sections?.skinAndColor,
+            [
+              {
+                key: "depth",
+                icon: keywordIcons.depth || "D",
+                title: resultLabels.rows?.skinDepth,
+                desc: skinDepthLabel,
+              },
+              {
+                key: "tone",
+                icon: keywordIcons.tone || "T",
+                title: resultLabels.rows?.undertone,
+                desc: [skinLabel, d.skinTone?.summary]
+                  .filter(Boolean)
+                  .join(" - "),
+              },
+              {
+                key: "makeup",
+                icon: keywordIcons.makeup || "M",
+                title: reportCopy.rows?.base,
+                desc: routine.find((item) => item.key === "base")?.body,
+              },
+            ],
+          ),
+        );
+        insightCards.push(
+          buildCard(
+            reportCopy.sections?.color || resultLabels.sections?.skinAndColor,
+            [
+              {
+                key: "season",
+                icon: keywordIcons.season || "C",
+                title: resultLabels.rows?.colorSeason,
+                desc: [seasonLabel, d.colorSeason?.rationale]
+                  .filter(Boolean)
+                  .join(": "),
+              },
+              {
+                key: "color",
+                icon: keywordIcons.color || "C",
+                title: reportCopy.paletteTitle,
+                desc: palette.length
+                  ? palette.join(resultLabels.paletteJoiner || ", ")
+                  : oneLine,
+              },
+              {
+                key: "caution",
+                icon: keywordIcons.caution || "!",
+                title: resultLabels.sections?.cautions,
+                desc: (d.cautions || [])[0] || reportCopy.fallbacks?.oneLine,
+              },
+            ],
+          ),
+        );
+        insightCards.push(
+          buildCard(
+            reportCopy.sections?.structure ||
+              resultLabels.sections?.whyRecommended,
+            [
+              {
+                key: "face",
+                icon: keywordIcons.face || "F",
+                title: titleWithValue(resultLabels.rows?.faceShape, faceLabel),
+                desc: joinEvidence(d.faceShape?.evidence),
+              },
+              ...(d.strengths || []).slice(0, 3).map((s) => ({
+                key: "strength",
+                icon: keywordIcons.strength || "+",
+                title: resultLabels.rows?.strengthenPoint,
+                desc: s,
+              })),
+              {
+                key: "makeup",
+                icon: keywordIcons.makeup || "M",
+                title: reportCopy.rows?.contour,
+                desc: routine.find((item) => item.key === "contour")?.body,
+              },
+            ],
+          ),
+        );
+        insightCards.push(
+          buildCard(
+            reportCopy.sections?.eyes || resultLabels.sections?.whyRecommended,
+            [
+              {
+                key: "eye",
+                icon: keywordIcons.eye || "E",
+                title: titleWithValue(resultLabels.rows?.eyeShape, eyeLabel),
+                desc: joinEvidence(d.eyeShape?.evidence),
+              },
+              {
+                key: "makeup",
+                icon: keywordIcons.makeup || "M",
+                title: reportCopy.rows?.eyes,
+                desc: routine.find((item) => item.key === "eyes")?.body,
+              },
+            ],
+          ),
+        );
+        if (d.makeupDirections?.length) {
+          insightCards.push(
+            buildCard(
+              reportCopy.sections?.directions ||
+                resultLabels.sections?.makeupDirections,
+              d.makeupDirections.map((dir) => ({
+                key: "makeup",
+                icon: keywordIcons.makeup || "M",
+                title: dir.title,
+                desc: (dir.rationale || "") + paletteSuffix(dir.palette),
+              })),
+            ),
+          );
+        }
         cardsContainer.innerHTML = insightCards.join("");
 
         const detailCards = [];
@@ -1314,13 +1909,19 @@ const diagnosisProgressCopy = isEnglish
               {
                 key: "percent",
                 icon: keywordIcons.percent || "%",
-                title: labelFrom(valueMaps.band, conf.band, conf.band),
+                title: stability,
                 desc:
                   resultLabels.rows?.overallConfidence +
                   " " +
                   Math.round((conf.overall || 0) * 100) +
                   "%",
               },
+              ...(d.photoQuality?.notes || []).map((note) => ({
+                key: "limit",
+                icon: keywordIcons.limit || "L",
+                title: reportCopy.photoQuality,
+                desc: note,
+              })),
               ...(conf.limitations || []).map((l) => ({
                 key: "limit",
                 icon: keywordIcons.limit || "L",
@@ -1330,17 +1931,23 @@ const diagnosisProgressCopy = isEnglish
             ]),
           );
         }
-        if (d.cautions?.length) {
+        const cautionRows = [
+          ...(d.cautions || []).map((c) => ({
+            key: "caution",
+            icon: keywordIcons.caution || "!",
+            title: resultLabels.rows?.suggestion,
+            desc: c,
+          })),
+          ...(d.colorPalette?.avoid || []).map((c) => ({
+            key: "caution",
+            icon: keywordIcons.caution || "!",
+            title: reportCopy.rows?.avoid || resultLabels.rows?.suggestion,
+            desc: c,
+          })),
+        ];
+        if (cautionRows.length) {
           detailCards.push(
-            buildCard(
-              resultLabels.sections?.cautions,
-              d.cautions.map((c) => ({
-                key: "caution",
-                icon: keywordIcons.caution || "!",
-                title: resultLabels.rows?.suggestion,
-                desc: c,
-              })),
-            ),
+            buildCard(resultLabels.sections?.cautions, cautionRows),
           );
         }
         if (detailCardsContainer)
@@ -1354,7 +1961,11 @@ const diagnosisProgressCopy = isEnglish
               .then((looksData) => {
                 if (!looksData.ok) return;
                 const allLooks = looksData.data?.looks || [];
-                const matched = matchRecommends(d.makeupDirections, allLooks);
+                const matched = matchRecommends(
+                  d.makeupDirections,
+                  allLooks,
+                  d.recommendationReasoning,
+                );
                 if (matched.length > 0) {
                   const primary = matched[0];
                   if (primaryLook && primary) {
@@ -1365,11 +1976,12 @@ const diagnosisProgressCopy = isEnglish
                     .slice(0, 4)
                     .map(
                       (m) => `
-              <article class="recommend">
+              <article class="recommend report-recommend">
                 <img src="${escapeHtml(m.image)}" alt="${escapeHtml(m.title)}" />
                 <div>
-                  <h3>${escapeHtml(m.title)}&nbsp; <span class="pill pill-rose">${escapeHtml(resultLabels.recommendationScore)} ${escapeHtml(m.score)}%</span></h3>
-                  <p>${escapeHtml(m.reason)}</p>
+                  <h3>${escapeHtml(m.title)} <span class="pill pill-rose">${escapeHtml(resultLabels.recommendationScore)} ${escapeHtml(m.score)}%</span></h3>
+                  <p><b>${escapeHtml(reportCopy.matchedReason)}：</b>${escapeHtml(m.reason)}</p>
+                  <p class="recommend-watch"><b>${escapeHtml(reportCopy.watchTitle)}：</b>${escapeHtml(m.watch)}</p>
                   <a class="btn btn-primary" href="${escapeHtml(tryOnFreeHref)}?look=${encodeURIComponent(m.slug)}">${escapeHtml(copy.tryLook)}</a>
                 </div>
               </article>
@@ -1385,21 +1997,24 @@ const diagnosisProgressCopy = isEnglish
       }
 
       function buildCard(title, rows) {
-        return `<article class="analysis-card panel"><h2>${escapeHtml(title)}</h2>${rows
-          .filter((r) => r.title || r.desc)
+        const safeRows = Array.isArray(rows) ? rows : [];
+        return `<article class="analysis-card report-section-card"><h2>${escapeHtml(title || copy.reportTitle)}</h2>${safeRows
+          .filter((r) => r?.title || r?.desc)
           .map(
             (r) =>
-              `<div class="analysis-row"><i data-icon="${escapeHtml(r.key || '')}">${escapeHtml(r.icon)}</i><div><b>${escapeHtml(r.title)}</b><span>${escapeHtml(r.desc)}</span></div></div>`,
+              `<div class="analysis-row"><i data-icon="${escapeHtml(r.key || "")}">${escapeHtml(r.icon || "")}</i><div><b>${escapeHtml(r.title || "")}</b><span>${escapeHtml(r.desc || "")}</span></div></div>`,
           )
           .join("")}</article>`;
       }
 
-      function matchRecommends(directions, allLooks) {
+      function matchRecommends(directions, allLooks, reasoning = []) {
         // 简单关键词匹配：用 direction.title 和 palette 作为搜索词
-        const keywords = directions.flatMap((d) => [
-          d.title.toLowerCase(),
-          ...(d.palette || []).map((p) => p.toLowerCase()),
-        ]);
+        const keywords = directions
+          .flatMap((d) => [
+            String(d.title || "").toLowerCase(),
+            ...(d.palette || []).map((p) => String(p || "").toLowerCase()),
+          ])
+          .filter(Boolean);
         return allLooks
           .map((look) => {
             const haystack = [
@@ -1411,10 +2026,30 @@ const diagnosisProgressCopy = isEnglish
               .join(" ")
               .toLowerCase();
             const hits = keywords.filter((kw) => haystack.includes(kw)).length;
+            const firstDirection = directions[0] || {};
+            const matchedReasoning =
+              reasoning.find(
+                (item) =>
+                  item?.directionTitle &&
+                  item.directionTitle === firstDirection.title,
+              ) || reasoning[0];
+            const palette = (firstDirection.palette || []).join(
+              resultLabels.paletteJoiner || ", ",
+            );
             return {
               ...look,
               score: Math.min(95, 70 + hits * 8),
-              reason: directions[0]?.rationale || "",
+              reason:
+                joinEvidence(matchedReasoning?.matchedFactors) ||
+                firstDirection.rationale ||
+                (palette
+                  ? `${resultLabels.palettePrefix || "Palette: "}${palette}`
+                  : reportCopy.fallbacks?.oneLine || ""),
+              watch:
+                joinEvidence(matchedReasoning?.watchOut) ||
+                reportCopy.fallbacks?.oneLine ||
+                firstDirection.rationale ||
+                copy.reportTitle,
             };
           })
           .filter((l) => l.score > 70)
@@ -2281,11 +2916,12 @@ const diagnosisProgressCopy = isEnglish
     }
     .diagnosis-result-hero {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, 0.34fr);
       gap: 18px;
-      align-items: center;
-      padding: 24px;
+      align-items: start;
+      padding: 28px;
       background:
+        linear-gradient(135deg, rgba(255, 250, 244, 0.88), transparent 48%),
         radial-gradient(
           circle at 14% 0,
           rgba(199, 49, 103, 0.1),
@@ -2298,11 +2934,20 @@ const diagnosisProgressCopy = isEnglish
       gap: 12px;
       min-width: 0;
     }
+    .diagnosis-report-type {
+      margin: -2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
     .diagnosis-result-copy h2 {
       margin: 0;
+      max-width: 820px;
       color: var(--heading);
       font-family: var(--font-display);
-      font-size: clamp(30px, 3.2vw, 44px);
+      font-size: clamp(32px, 3.4vw, 48px);
       line-height: 1.08;
     }
     .diagnosis-result-copy p {
@@ -2334,11 +2979,53 @@ const diagnosisProgressCopy = isEnglish
       color: var(--heading);
       font-size: 13px;
     }
+    .diagnosis-report-facts {
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--bg-elevated) 78%, transparent);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+    .diagnosis-report-facts dl {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+    }
+    .diagnosis-report-facts div {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+      gap: 10px;
+      align-items: baseline;
+      padding-bottom: 9px;
+      border-bottom: 1px solid var(--line);
+    }
+    .diagnosis-report-facts div:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+    .diagnosis-report-facts dt {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+    .diagnosis-report-facts dd {
+      margin: 0;
+      color: var(--heading);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.35;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
     .diagnosis-result-actions {
       display: flex;
+      grid-column: 1 / -1;
       flex-wrap: wrap;
       gap: 10px;
-      justify-content: flex-end;
+      justify-content: flex-start;
+      padding-top: 2px;
     }
     .diagnosis-section-head {
       display: grid;
@@ -2352,6 +3039,102 @@ const diagnosisProgressCopy = isEnglish
       font-family: var(--font-display);
       font-size: clamp(24px, 2.4vw, 34px);
       line-height: 1.12;
+    }
+    .diagnosis-section-head.compact {
+      margin-bottom: 14px;
+    }
+    .diagnosis-executive,
+    .diagnosis-analysis-panel,
+    .diagnosis-routine-panel {
+      padding: 24px;
+    }
+    .diagnosis-executive-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr) minmax(
+          280px,
+          0.75fr
+        );
+      gap: 12px;
+    }
+    .diagnosis-summary-card {
+      display: grid;
+      min-width: 0;
+      gap: 10px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(255, 248, 242, 0.72), transparent 54%),
+        var(--soft);
+    }
+    .diagnosis-summary-card small {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+    }
+    .diagnosis-summary-card strong {
+      color: var(--heading);
+      font-family: var(--font-display);
+      font-size: clamp(24px, 2.2vw, 34px);
+      line-height: 1.12;
+    }
+    .diagnosis-summary-card p {
+      margin: 0;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.72;
+    }
+    .diagnosis-strategy-card {
+      background:
+        linear-gradient(135deg, rgba(21, 151, 140, 0.09), transparent 58%),
+        var(--soft);
+    }
+    .diagnosis-palette-card {
+      align-content: start;
+    }
+    .diagnosis-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .palette-chip {
+      display: inline-flex;
+      min-width: 0;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .palette-chip i {
+      display: block;
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: #d89582;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+    .palette-chip[data-tone="1"] i {
+      background: #c98594;
+    }
+    .palette-chip[data-tone="2"] i {
+      background: #b7775f;
+    }
+    .palette-chip[data-tone="3"] i {
+      background: #e2ad85;
+    }
+    .palette-chip[data-tone="4"] i {
+      background: #9f6a59;
+    }
+    .palette-chip[data-tone="5"] i {
+      background: #d7b6a0;
     }
     .diagnosis-priority-recommend {
       padding: 24px;
@@ -2382,8 +3165,36 @@ const diagnosisProgressCopy = isEnglish
       gap: 16px;
       align-items: start;
     }
-    .diagnosis-insight-grid .analysis-cards {
+    .diagnosis-profile-panel,
+    .diagnosis-analysis-panel {
+      min-width: 0;
+    }
+    .diagnosis-insight-grid .analysis-cards,
+    .diagnosis-detail-cards {
+      display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .report-section-card {
+      display: grid;
+      min-width: 0;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--soft);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62);
+    }
+    .report-section-card h2 {
+      margin: 0;
+      color: var(--heading);
+      font-size: 16px;
+      line-height: 1.35;
+      letter-spacing: 0.01em;
+    }
+    .report-section-card .analysis-row {
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
     }
     .diagnosis-detail-panel {
       padding: 0;
@@ -2446,11 +3257,142 @@ const diagnosisProgressCopy = isEnglish
       min-width: 0;
     }
     .analysis-row {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 10px;
       align-items: start;
     }
     .analysis-row i {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--surface-rose);
+      color: var(--rose);
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 900;
+    }
+    .analysis-row b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--heading);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .analysis-row span {
+      display: block;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .diagnosis-routine-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .routine-step {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 12px;
+      min-width: 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--soft);
+    }
+    .routine-step > span {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--teal-soft);
+      color: #0b7069;
       font-size: 12px;
       font-weight: 900;
+    }
+    .routine-step h3 {
+      margin: 0 0 6px;
+      color: var(--heading);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .routine-step p {
+      margin: 0;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .diagnosis-scenario-block {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+    .diagnosis-scenario-block h3 {
+      margin: 0 0 6px;
+      color: var(--heading);
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2vw, 28px);
+      line-height: 1.18;
+    }
+    .diagnosis-scenario-block p {
+      margin: 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .diagnosis-scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .scenario-card {
+      display: grid;
+      min-width: 0;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--bg-elevated);
+    }
+    .scenario-card strong {
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .scenario-card b {
+      color: var(--heading);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .scenario-card dl {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+    }
+    .scenario-card dt {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+    }
+    .scenario-card dd {
+      margin: 2px 0 0;
+      color: var(--text);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+    .report-recommend p b {
+      color: var(--heading);
+    }
+    .recommend-watch {
+      margin-top: 5px;
+      color: var(--muted) !important;
     }
     @media (hover: hover) and (pointer: fine) {
       .keyword:hover {
@@ -2459,20 +3401,36 @@ const diagnosisProgressCopy = isEnglish
       }
     }
     :global([data-theme="dark"]) .keyword {
-      background: linear-gradient(135deg, var(--surface-warm), rgba(255, 255, 255, 0.04));
+      background: linear-gradient(
+        135deg,
+        var(--surface-warm),
+        rgba(255, 255, 255, 0.04)
+      );
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
     }
     :global([data-theme="dark"]) .keyword i {
-      background: linear-gradient(135deg, var(--gold-soft), rgba(240, 168, 50, 0.22));
+      background: linear-gradient(
+        135deg,
+        var(--gold-soft),
+        rgba(240, 168, 50, 0.22)
+      );
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
     @media (prefers-color-scheme: dark) {
       :global(:root:not([data-theme="light"])) .keyword {
-        background: linear-gradient(135deg, var(--surface-warm), rgba(255, 255, 255, 0.04));
+        background: linear-gradient(
+          135deg,
+          var(--surface-warm),
+          rgba(255, 255, 255, 0.04)
+        );
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
       }
       :global(:root:not([data-theme="light"])) .keyword i {
-        background: linear-gradient(135deg, var(--gold-soft), rgba(240, 168, 50, 0.22));
+        background: linear-gradient(
+          135deg,
+          var(--gold-soft),
+          rgba(240, 168, 50, 0.22)
+        );
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
     }
@@ -2678,14 +3636,22 @@ const diagnosisProgressCopy = isEnglish
       }
       .diagnosis-result-hero,
       .diagnosis-section-head,
-      .diagnosis-insight-grid {
+      .diagnosis-insight-grid,
+      .diagnosis-executive-grid {
         grid-template-columns: 1fr;
       }
       .diagnosis-result-actions {
         justify-content: flex-start;
       }
-      .diagnosis-insight-grid .analysis-cards {
+      .diagnosis-insight-grid .analysis-cards,
+      .diagnosis-detail-cards {
         grid-template-columns: 1fr;
+      }
+      .diagnosis-routine-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .diagnosis-scenario-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
@@ -2734,7 +3700,10 @@ const diagnosisProgressCopy = isEnglish
         margin-top: 16px;
       }
       .diagnosis-result-hero,
-      .diagnosis-priority-recommend {
+      .diagnosis-priority-recommend,
+      .diagnosis-executive,
+      .diagnosis-analysis-panel,
+      .diagnosis-routine-panel {
         padding: 18px;
       }
       .diagnosis-result-copy h2 {
@@ -2752,7 +3721,9 @@ const diagnosisProgressCopy = isEnglish
         min-width: 0;
       }
       .diagnosis-result-actions,
-      .diagnosis-section-head {
+      .diagnosis-section-head,
+      .diagnosis-routine-grid,
+      .diagnosis-scenario-grid {
         display: grid;
         grid-template-columns: 1fr;
       }
