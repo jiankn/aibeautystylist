@@ -1210,16 +1210,19 @@ const diagnosisProgressCopy = isEnglish
 
         const kw = [
           {
+            key: "skin",
             icon: keywordIcons.skin || "S",
             title: skinLabel,
             desc: d.skinTone?.summary || "",
           },
           {
+            key: "face",
             icon: keywordIcons.face || "F",
             title: faceLabel,
             desc: joinEvidence(d.faceShape?.evidence),
           },
           {
+            key: "color",
             icon: keywordIcons.color || "C",
             title: seasonLabel,
             desc: d.colorSeason?.rationale || "",
@@ -1228,7 +1231,7 @@ const diagnosisProgressCopy = isEnglish
         keywordsContainer.innerHTML = kw
           .map(
             (k) => `
-      <div class="keyword"><i>${escapeHtml(k.icon)}</i><div><b>${escapeHtml(k.title)}</b><span>${escapeHtml(k.desc)}</span></div></div>
+      <div class="keyword"><i data-icon="${escapeHtml(k.key)}">${escapeHtml(k.icon)}</i><div><b>${escapeHtml(k.title)}</b><span>${escapeHtml(k.desc)}</span></div></div>
     `,
           )
           .join("");
@@ -1238,16 +1241,19 @@ const diagnosisProgressCopy = isEnglish
         insightCards.push(
           buildCard(resultLabels.sections?.whyRecommended, [
             {
+              key: "face",
               icon: keywordIcons.face || "F",
               title: titleWithValue(resultLabels.rows?.faceShape, faceLabel),
               desc: joinEvidence(d.faceShape?.evidence),
             },
             {
+              key: "eye",
               icon: keywordIcons.eye || "E",
               title: titleWithValue(resultLabels.rows?.eyeShape, eyeLabel),
               desc: joinEvidence(d.eyeShape?.evidence),
             },
             ...(d.strengths || []).slice(0, 2).map((s) => ({
+              key: "strength",
               icon: keywordIcons.strength || "+",
               title: resultLabels.rows?.strengthenPoint,
               desc: s,
@@ -1258,6 +1264,7 @@ const diagnosisProgressCopy = isEnglish
         insightCards.push(
           buildCard(resultLabels.sections?.skinAndColor, [
             {
+              key: "depth",
               icon: keywordIcons.depth || "D",
               title: resultLabels.rows?.skinDepth,
               desc: labelFrom(
@@ -1267,6 +1274,7 @@ const diagnosisProgressCopy = isEnglish
               ),
             },
             {
+              key: "tone",
               icon: keywordIcons.tone || "T",
               title: resultLabels.rows?.undertone,
               desc: [skinLabel, d.skinTone?.summary]
@@ -1274,6 +1282,7 @@ const diagnosisProgressCopy = isEnglish
                 .join(" - "),
             },
             {
+              key: "season",
               icon: keywordIcons.season || "C",
               title: resultLabels.rows?.colorSeason,
               desc: [seasonLabel, d.colorSeason?.rationale]
@@ -1285,6 +1294,7 @@ const diagnosisProgressCopy = isEnglish
 
         if (d.makeupDirections?.length) {
           const rows = d.makeupDirections.map((dir) => ({
+            key: "makeup",
             icon: keywordIcons.makeup || "M",
             title: dir.title,
             desc: (dir.rationale || "") + paletteSuffix(dir.palette),
@@ -1302,6 +1312,7 @@ const diagnosisProgressCopy = isEnglish
           detailCards.push(
             buildCard(resultLabels.sections?.analysisConfidence, [
               {
+                key: "percent",
                 icon: keywordIcons.percent || "%",
                 title: labelFrom(valueMaps.band, conf.band, conf.band),
                 desc:
@@ -1311,6 +1322,7 @@ const diagnosisProgressCopy = isEnglish
                   "%",
               },
               ...(conf.limitations || []).map((l) => ({
+                key: "limit",
                 icon: keywordIcons.limit || "L",
                 title: resultLabels.rows?.limitation,
                 desc: l,
@@ -1323,6 +1335,7 @@ const diagnosisProgressCopy = isEnglish
             buildCard(
               resultLabels.sections?.cautions,
               d.cautions.map((c) => ({
+                key: "caution",
                 icon: keywordIcons.caution || "!",
                 title: resultLabels.rows?.suggestion,
                 desc: c,
@@ -1376,7 +1389,7 @@ const diagnosisProgressCopy = isEnglish
           .filter((r) => r.title || r.desc)
           .map(
             (r) =>
-              `<div class="analysis-row"><i>${escapeHtml(r.icon)}</i><div><b>${escapeHtml(r.title)}</b><span>${escapeHtml(r.desc)}</span></div></div>`,
+              `<div class="analysis-row"><i data-icon="${escapeHtml(r.key || '')}">${escapeHtml(r.icon)}</i><div><b>${escapeHtml(r.title)}</b><span>${escapeHtml(r.desc)}</span></div></div>`,
           )
           .join("")}</article>`;
       }
