@@ -4,11 +4,13 @@ import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import { getDiagnosisRecordByJobId } from "../../../lib/diagnosisRecords";
 import { apiError, apiSuccess } from "../../../lib/http";
 import { getRuntimeBindings } from "../../../lib/runtime";
+import { getOwnedUpload } from "../../../lib/uploadRecords";
 
 interface DiagnosisJobRow {
   id: string;
   look_slug: string;
   status: string;
+  upload_id: string;
   created_at: string;
   completed_at: string | null;
 }
@@ -28,7 +30,7 @@ export const GET: APIRoute = async ({ cookies }) => {
 
   // 查询有诊断记录的任务。
   const rows = await DB.prepare(
-    `SELECT j.id, j.look_slug, j.status, j.created_at, j.completed_at
+    `SELECT j.id, j.look_slug, j.status, j.upload_id, j.created_at, j.completed_at
      FROM tryon_jobs j
      INNER JOIN diagnoses d ON d.job_id = j.id
      WHERE j.user_id = ? AND j.deleted_at IS NULL
@@ -40,11 +42,19 @@ export const GET: APIRoute = async ({ cookies }) => {
 
   const items = await Promise.all(
     (rows.results ?? []).map(async (row) => {
-      const record = await getDiagnosisRecordByJobId(row.id, DB);
+      const [record, upload] = await Promise.all([
+        getDiagnosisRecordByJobId(row.id, DB),
+        getOwnedUpload(userId, row.upload_id, DB),
+      ]);
+      const originalImage =
+        upload?.r2Key && !upload.deletedAt
+          ? `/api/tryon-jobs/${row.id}/original`
+          : undefined;
       return {
         jobId: row.id,
         lookSlug: row.look_slug,
         status: row.status,
+        originalImage,
         createdAt: row.created_at,
         completedAt: row.completed_at,
         diagnosis: record?.result ?? null,

@@ -3,7 +3,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { lookCatalog } from "../data/lookCatalog";
 import type { AudienceContext } from "../data/makeup/audienceTypes";
 import { getMockAiCallLogs, resetMockAiCallLogs } from "./aiCallLogs";
-import { type DiagnosisResult } from "./diagnosis";
+import {
+  DIAGNOSIS_DISCLAIMER,
+  DIAGNOSIS_SCHEMA_VERSION,
+  type DiagnosisResult,
+} from "./diagnosis";
 import {
   getDiagnosisRecordByJobId,
   resetMockDiagnosisRecords,
@@ -538,7 +542,7 @@ function bucketWithBytes(bytes: number[]) {
 
 function validDiagnosis(): DiagnosisResult {
   return {
-    schemaVersion: "2026-06-07",
+    schemaVersion: DIAGNOSIS_SCHEMA_VERSION,
     confidence: {
       overall: 0.82,
       band: "high",
@@ -580,7 +584,47 @@ function validDiagnosis(): DiagnosisResult {
         palette: ["梅子色", "灰棕"],
       },
     ],
-    disclaimer:
-      "AI 建议仅供美妆参考，不构成医疗或专业意见；实际效果因光线、设备和个人条件而异。",
+    reportSummary: {
+      archetype: "柔雾通勤 · 柔夏",
+      primaryStrategy: "以低对比、低饱和色彩保持清透感。",
+      oneLineAdvice: "优先使用柔和冷中性色，避免过强对比。",
+    },
+    photoQuality: {
+      level: "good",
+      notes: ["正面照片清晰，适合基础妆容诊断。"],
+    },
+    makeupPlan: {
+      base: ["使用轻薄柔雾底妆。"],
+      brows: ["眉形保持自然干净。"],
+      eyes: ["眼尾轻微加强清晰度。"],
+      cheeks: ["腮红使用低饱和玫瑰调。"],
+      lips: ["唇色选择柔和豆沙或玫瑰色。"],
+      contourHighlight: ["修容和高光保持克制。"],
+    },
+    colorPalette: {
+      recommended: [
+        { name: "灰粉", usage: "cheeks" },
+        { name: "柔棕", usage: "eyes" },
+      ],
+      avoid: ["高饱和橘红"],
+    },
+    scenarioStrategies: [
+      {
+        scenario: "work",
+        lookName: "柔雾通勤",
+        colors: ["灰粉", "柔棕"],
+        keyTechniques: ["降低对比度"],
+        avoid: ["强烈眼线"],
+        validation: "自然光下妆面干净。",
+      },
+    ],
+    recommendationReasoning: [
+      {
+        directionTitle: "柔雾通勤",
+        matchedFactors: ["低对比度", "柔和配色"],
+        watchOut: ["避免显灰"],
+      },
+    ],
+    disclaimer: DIAGNOSIS_DISCLAIMER,
   };
 }

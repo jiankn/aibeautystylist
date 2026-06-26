@@ -359,6 +359,19 @@ const professionalReportCopy = isEnglish
       stabilityHigh: "High",
       stabilityMedium: "Medium",
       stabilityLow: "Needs confirmation",
+      photoEvidenceTitle: "Original photo evidence",
+      photoEvidenceSubtitle:
+        "AI uses this uploaded photo to evaluate tone, facial structure, and makeup direction.",
+      photoEvidenceMissingTitle: "Original photo no longer available",
+      photoEvidenceMissingBody:
+        "The report remains available, but the source photo was deleted or expired.",
+      photoPrivateNote: "Visible only to you",
+      photoObservationTitle: "AI observation focus",
+      photoObservationSkin: "Tone and undertone",
+      photoObservationStructure: "Face shape and balance",
+      photoObservationEyes: "Eye shape and eye makeup",
+      photoObservationColor: "Color direction",
+      reportMetaTitle: "Report details",
       summaryTitle: "Executive beauty summary",
       summarySubtitle:
         "Use this one-page summary before choosing base, lip-cheek colors, eye makeup, or virtual try-on looks.",
@@ -466,6 +479,18 @@ const professionalReportCopy = isEnglish
       stabilityHigh: "较高",
       stabilityMedium: "中等",
       stabilityLow: "需二次确认",
+      photoEvidenceTitle: "原图分析样本",
+      photoEvidenceSubtitle:
+        "AI 根据这张上传照片判断肤色、面部结构与妆容方向。",
+      photoEvidenceMissingTitle: "原图已删除",
+      photoEvidenceMissingBody: "仍可查看本次诊断报告和妆容建议。",
+      photoPrivateNote: "仅本人可见",
+      photoObservationTitle: "AI 观察重点",
+      photoObservationSkin: "肤色 / 底色",
+      photoObservationStructure: "脸型与面部重心",
+      photoObservationEyes: "眼型与眼妆方向",
+      photoObservationColor: "色彩方向",
+      reportMetaTitle: "报告档案",
       summaryTitle: "美妆诊断摘要",
       summarySubtitle: "这部分适合在选底妆、唇颊色、眼妆和试妆前快速对照。",
       keywordsTitle: "你的美妆档案关键词",
@@ -1404,9 +1429,21 @@ const professionalReportCopy = isEnglish
       }
 
       function joinEvidence(items) {
-        return Array.isArray(items)
-          ? items.join(resultLabels.paletteJoiner || ", ")
-          : "";
+        if (!Array.isArray(items)) return "";
+        const normalized = items
+          .map((item) =>
+            String(item || "")
+              .trim()
+              .replace(/[、,，;；\s]+$/u, ""),
+          )
+          .filter(Boolean);
+        if (!normalized.length) return "";
+        const hasSentenceEnd = normalized.some((item) =>
+          /[。.!?！？]$/u.test(item),
+        );
+        return normalized.join(
+          hasSentenceEnd ? " " : resultLabels.paletteJoiner || ", ",
+        );
       }
 
       function titleWithValue(label, value) {
@@ -1431,6 +1468,84 @@ const professionalReportCopy = isEnglish
               `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`,
           )
           .join("")}</dl>`;
+      }
+
+      function buildPhotoEvidenceCard({
+        originalImage,
+        quality,
+        stability,
+        observations,
+        facts,
+      }) {
+        const hasOriginal = Boolean(originalImage);
+        const title = hasOriginal
+          ? reportCopy.photoEvidenceTitle || reportCopy.photoQuality || "Photo"
+          : reportCopy.photoEvidenceMissingTitle ||
+            "Original photo unavailable";
+        const body = hasOriginal
+          ? reportCopy.photoEvidenceSubtitle || ""
+          : reportCopy.photoEvidenceMissingBody || "";
+        return `
+          <div class="diagnosis-report-photo-card">
+            <div class="diagnosis-report-photo-media${hasOriginal ? "" : " is-missing"}">
+              ${
+                hasOriginal
+                  ? `<img src="${escapeHtml(originalImage)}" alt="${escapeHtml(title)}" loading="eager" decoding="async" data-diagnosis-original-image />`
+                  : ""
+              }
+              <div class="diagnosis-report-photo-placeholder">
+                <b>${escapeHtml(reportCopy.photoEvidenceMissingTitle || "Photo")}</b>
+                <span>${escapeHtml(reportCopy.photoEvidenceMissingBody || "")}</span>
+              </div>
+              <div class="diagnosis-photo-badges" aria-label="${escapeHtml(reportCopy.reportMetaTitle || "Report details")}">
+                <span>${escapeHtml(reportCopy.photoEvidenceTitle || "Photo")}</span>
+                <span>${escapeHtml(quality)}</span>
+                <span>${escapeHtml(stability)}</span>
+              </div>
+            </div>
+            <div class="diagnosis-photo-caption">
+              <strong>${escapeHtml(title)}</strong>
+              <p>${escapeHtml(body)}</p>
+              <small>${escapeHtml(reportCopy.photoPrivateNote || "")}</small>
+            </div>
+          </div>
+          <div class="diagnosis-photo-evidence">
+            <b>${escapeHtml(reportCopy.photoObservationTitle || "AI observations")}</b>
+            <dl>
+              ${observations
+                .filter(([label, value]) => label || value)
+                .map(
+                  ([label, value]) =>
+                    `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`,
+                )
+                .join("")}
+            </dl>
+          </div>
+          <div class="diagnosis-report-meta">
+            <b>${escapeHtml(reportCopy.reportMetaTitle || "Report details")}</b>
+            <dl>
+              ${facts
+                .filter(([label, value]) => label || value)
+                .map(
+                  ([label, value]) =>
+                    `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`,
+                )
+                .join("")}
+            </dl>
+          </div>
+        `;
+      }
+
+      function installReportPhotoFallback(container) {
+        const image = container?.querySelector(
+          "[data-diagnosis-original-image]",
+        );
+        if (!(image instanceof HTMLImageElement)) return;
+        image.addEventListener("error", () => {
+          image
+            .closest(".diagnosis-report-photo-media")
+            ?.classList.add("is-missing");
+        });
       }
 
       function qualityLabel(d) {
@@ -1677,13 +1792,36 @@ const professionalReportCopy = isEnglish
         }
 
         if (reportFacts) {
-          reportFacts.innerHTML = buildFacts([
-            [reportCopy.reportNo, reportIdShort],
-            [reportCopy.generatedAt, dateLabel || "—"],
-            [reportCopy.photoQuality, quality],
-            [reportCopy.stability, stability],
-            [reportCopy.version, d.schemaVersion || "2026"],
-          ]);
+          reportFacts.innerHTML = buildPhotoEvidenceCard({
+            originalImage: record?.originalImage,
+            quality,
+            stability,
+            observations: [
+              [
+                reportCopy.photoObservationSkin || resultLabels.skinTone,
+                `${skinDepthLabel} / ${skinLabel}`,
+              ],
+              [
+                reportCopy.photoObservationStructure ||
+                  resultLabels.facialFocus,
+                faceLabel,
+              ],
+              [
+                reportCopy.photoObservationEyes || resultLabels.rows?.eyeShape,
+                eyeLabel,
+              ],
+              [
+                reportCopy.photoObservationColor || resultLabels.colorDirection,
+                seasonLabel,
+              ],
+            ],
+            facts: [
+              [reportCopy.reportNo, reportIdShort],
+              [reportCopy.generatedAt, dateLabel || "—"],
+              [reportCopy.version, d.schemaVersion || "2026"],
+            ],
+          });
+          installReportPhotoFallback(reportFacts);
         }
 
         const resultChipRows = [
@@ -2927,7 +3065,7 @@ const professionalReportCopy = isEnglish
     }
     .diagnosis-result-hero {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(240px, 0.34fr);
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.38fr);
       gap: 18px;
       align-items: start;
       padding: 28px;
@@ -2990,41 +3128,145 @@ const professionalReportCopy = isEnglish
       font-size: 13px;
     }
     .diagnosis-report-facts {
+      display: grid;
       min-width: 0;
+      gap: 12px;
       padding: 14px;
       border: 1px solid var(--report-card-border);
-      border-radius: 18px;
+      border-radius: 20px;
       background: var(--report-card-bg);
+      box-shadow: var(--report-card-shadow);
     }
-    .diagnosis-report-facts dl {
+    .diagnosis-report-photo-card {
+      display: grid;
+      gap: 11px;
+    }
+    .diagnosis-report-photo-media {
+      position: relative;
+      min-height: 300px;
+      overflow: hidden;
+      border: 1px solid var(--report-card-border);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, transparent, rgba(18, 39, 66, 0.18)),
+        var(--surface-rose);
+      aspect-ratio: 4 / 5;
+    }
+    .diagnosis-report-photo-media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 36%;
+    }
+    .diagnosis-report-photo-placeholder {
+      display: none;
+      min-height: 100%;
+      place-items: center;
+      padding: 22px;
+      color: var(--report-muted);
+      text-align: center;
+    }
+    .diagnosis-report-photo-placeholder b,
+    .diagnosis-report-photo-placeholder span {
+      display: block;
+    }
+    .diagnosis-report-photo-placeholder b {
+      color: var(--report-ink);
+      font-size: 16px;
+      font-weight: 850;
+    }
+    .diagnosis-report-photo-placeholder span {
+      max-width: 240px;
+      margin-top: 8px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .diagnosis-report-photo-media.is-missing img {
+      display: none;
+    }
+    .diagnosis-report-photo-media.is-missing
+      .diagnosis-report-photo-placeholder {
+      display: grid;
+    }
+    .diagnosis-photo-badges {
+      position: absolute;
+      inset: 12px 12px auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      z-index: 1;
+    }
+    .diagnosis-photo-badges span {
+      min-width: 0;
+      padding: 6px 9px;
+      border: 1px solid color-mix(in srgb, #fff 48%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--bg-elevated) 88%, transparent);
+      color: var(--report-ink);
+      font-size: 11px;
+      font-weight: 850;
+      line-height: 1.1;
+      box-shadow: 0 8px 24px rgba(18, 39, 66, 0.12);
+      backdrop-filter: blur(12px);
+    }
+    .diagnosis-photo-caption {
+      display: grid;
+      gap: 5px;
+    }
+    .diagnosis-photo-caption strong,
+    .diagnosis-photo-evidence > b,
+    .diagnosis-report-meta > b {
+      color: var(--report-ink);
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+    .diagnosis-photo-caption p {
+      margin: 0;
+      color: var(--report-body);
+      font-size: 13.5px;
+      line-height: 1.62;
+    }
+    .diagnosis-photo-caption small {
+      color: var(--report-muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .diagnosis-photo-evidence,
+    .diagnosis-report-meta {
       display: grid;
       gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid var(--report-card-border);
+    }
+    .diagnosis-photo-evidence dl,
+    .diagnosis-report-meta dl {
+      display: grid;
+      gap: 8px;
       margin: 0;
     }
-    .diagnosis-report-facts div {
+    .diagnosis-photo-evidence div,
+    .diagnosis-report-meta div {
       display: grid;
-      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 0.88fr) minmax(0, 1fr);
       gap: 10px;
       align-items: baseline;
-      padding-bottom: 9px;
-      border-bottom: 1px solid var(--report-card-border);
     }
-    .diagnosis-report-facts div:last-child {
-      padding-bottom: 4px;
-      border-bottom: 0;
-    }
-    .diagnosis-report-facts dt {
+    .diagnosis-photo-evidence dt,
+    .diagnosis-report-meta dt {
       color: var(--report-muted);
       font-size: 12px;
       font-weight: 750;
       line-height: 1.35;
     }
-    .diagnosis-report-facts dd {
+    .diagnosis-photo-evidence dd,
+    .diagnosis-report-meta dd {
       margin: 0;
       color: var(--report-ink);
       font-size: 13px;
-      font-weight: 800;
-      line-height: 1.35;
+      font-weight: 850;
+      line-height: 1.38;
       text-align: right;
       overflow-wrap: anywhere;
     }
@@ -3069,28 +3311,29 @@ const professionalReportCopy = isEnglish
       display: grid;
       min-width: 0;
       gap: 10px;
-      padding: 18px;
+      padding: 20px;
       border: 1px solid var(--report-card-border);
       border-radius: 18px;
       background: var(--report-card-accent-rose);
     }
     .diagnosis-summary-card small {
       color: var(--report-muted);
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 850;
       letter-spacing: 0.04em;
     }
     .diagnosis-summary-card strong {
       color: var(--report-ink);
-      font-family: var(--font-display);
-      font-size: clamp(24px, 2.2vw, 34px);
-      line-height: 1.12;
+      font-family: inherit;
+      font-size: clamp(20px, 1.75vw, 26px);
+      font-weight: 900;
+      line-height: 1.26;
     }
     .diagnosis-summary-card p {
       margin: 0;
       color: var(--report-body);
-      font-size: 14px;
-      line-height: 1.72;
+      font-size: 15.5px;
+      line-height: 1.68;
     }
     .diagnosis-strategy-card {
       background: var(--report-card-accent-teal);
@@ -3108,14 +3351,14 @@ const professionalReportCopy = isEnglish
       min-width: 0;
       align-items: center;
       gap: 7px;
-      padding: 7px 9px;
+      padding: 8px 10px;
       border: 1px solid var(--report-card-border);
       border-radius: 999px;
       background: var(--report-card-bg);
       color: var(--report-body);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
-      line-height: 1.2;
+      line-height: 1.25;
     }
     .palette-chip i {
       display: block;
@@ -3183,8 +3426,8 @@ const professionalReportCopy = isEnglish
     .report-section-card {
       display: grid;
       min-width: 0;
-      gap: 14px;
-      padding: 18px;
+      gap: 16px;
+      padding: 20px;
       border: 1px solid var(--report-card-border);
       border-radius: 18px;
       background: var(--report-card-bg);
@@ -3193,7 +3436,7 @@ const professionalReportCopy = isEnglish
     .report-section-card h2 {
       margin: 0;
       color: var(--report-ink);
-      font-size: 16px;
+      font-size: 18px;
       line-height: 1.35;
       letter-spacing: 0.01em;
     }
@@ -3263,35 +3506,35 @@ const professionalReportCopy = isEnglish
     }
     .analysis-row {
       display: grid;
-      grid-template-columns: 34px minmax(0, 1fr);
-      gap: 10px;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 12px;
       align-items: start;
     }
     .analysis-row i {
       display: grid;
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       place-items: center;
-      border-radius: 12px;
+      border-radius: 13px;
       background: var(--surface-rose);
       color: var(--rose);
-      font-size: 12px;
+      font-size: 13px;
       font-style: normal;
       font-weight: 900;
     }
     .analysis-row b {
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
       color: var(--report-ink);
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 800;
       line-height: 1.35;
     }
     .analysis-row span {
       display: block;
       color: var(--report-body);
-      font-size: 13px;
-      line-height: 1.7;
+      font-size: 15px;
+      line-height: 1.72;
     }
     .diagnosis-routine-grid {
       display: grid;
@@ -3303,7 +3546,7 @@ const professionalReportCopy = isEnglish
       grid-template-columns: 42px minmax(0, 1fr);
       gap: 12px;
       min-width: 0;
-      padding: 16px;
+      padding: 18px;
       border: 1px solid var(--report-card-border);
       border-radius: 18px;
       background: var(--report-card-bg);
@@ -3316,21 +3559,21 @@ const professionalReportCopy = isEnglish
       border-radius: 14px;
       background: var(--teal-soft);
       color: var(--teal);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 900;
     }
     .routine-step h3 {
-      margin: 0 0 6px;
+      margin: 0 0 7px;
       color: var(--report-ink);
-      font-size: 15px;
-      font-weight: 750;
+      font-size: 17px;
+      font-weight: 850;
       line-height: 1.35;
     }
     .routine-step p {
       margin: 0;
       color: var(--report-body);
-      font-size: 13px;
-      line-height: 1.7;
+      font-size: 15px;
+      line-height: 1.72;
     }
     .diagnosis-scenario-block {
       display: grid;
@@ -3350,19 +3593,19 @@ const professionalReportCopy = isEnglish
       margin: 0;
       max-width: 720px;
       color: var(--report-muted);
-      font-size: 13px;
+      font-size: 15px;
       line-height: 1.7;
     }
     .diagnosis-scenario-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
     .scenario-card {
       display: grid;
       min-width: 0;
-      gap: 8px;
-      padding: 16px;
+      gap: 10px;
+      padding: 18px;
       border: 1px solid var(--report-card-border);
       border-radius: 16px;
       background: var(--report-card-bg);
@@ -3374,8 +3617,8 @@ const professionalReportCopy = isEnglish
     }
     .scenario-card b {
       color: var(--report-ink);
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 17px;
+      font-weight: 850;
       line-height: 1.35;
     }
     .scenario-card dl {
@@ -3385,15 +3628,15 @@ const professionalReportCopy = isEnglish
     }
     .scenario-card dt {
       color: var(--report-muted);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
       letter-spacing: 0.04em;
     }
     .scenario-card dd {
-      margin: 2px 0 0;
+      margin: 3px 0 0;
       color: var(--report-body);
-      font-size: 13px;
-      line-height: 1.6;
+      font-size: 14.5px;
+      line-height: 1.65;
     }
     .report-recommend p b {
       color: var(--heading);
