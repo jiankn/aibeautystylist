@@ -46,8 +46,9 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     );
   }
 
-  const baseUrl = (bindings.APP_PUBLIC_URL ?? new URL(request.url).origin)
-    .replace(/\/+$/, "");
+  const baseUrl = (
+    bindings.APP_PUBLIC_URL ?? new URL(request.url).origin
+  ).replace(/\/+$/, "");
   const returnPath = safePortalReturnPath(body?.returnPath);
   const stripe = createStripeClient({
     apiKey: bindings.STRIPE_SECRET_KEY,

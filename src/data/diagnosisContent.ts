@@ -701,7 +701,7 @@ const resultLabelsByLocale: Partial<
         "bright-spring": "明亮春季",
         "warm-spring": "暖调春季",
         "light-spring": "浅色春季",
-        "light-summer": "浅色夏季",
+        "light-summer": "浅夏型",
         "cool-summer": "冷调夏季",
         "soft-summer": "柔和夏季",
         "soft-autumn": "柔和秋季",

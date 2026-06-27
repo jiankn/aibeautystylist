@@ -34,10 +34,10 @@ const diagnosisPageAssets = resolvePageAssets("diagnosis", audienceContext);
 const diagnosisPreviewImage =
   diagnosisPageAssets.exampleImages?.[0] ?? "/images/diagnosis-preview.webp";
 const defaultRecommends = [
-  "commute",
+  "no-makeup",
   "interview-ready",
   "rose-milk-date",
-  "mature-skin-radiance",
+  "photogenic",
 ]
   .map((slug) => resolvedLooks.find((look) => look.slug === slug))
   .filter(Boolean) as typeof resolvedLooks;
@@ -344,6 +344,9 @@ const professionalReportCopy = isEnglish
   ? {
       reportType: "Personal makeup fit report",
       latestReport: "Latest professional report",
+      summaryEyebrow: "Your diagnosis at a glance",
+      evidenceEyebrow: "Why this direction fits",
+      recommendedEyebrow: "Next step",
       conclusionLabel: "Overall makeup positioning",
       strategyLabel: "Core strategy",
       actionLook: "Start with matched try-on",
@@ -359,6 +362,12 @@ const professionalReportCopy = isEnglish
       stabilityHigh: "High",
       stabilityMedium: "Medium",
       stabilityLow: "Needs confirmation",
+      stabilityNotes: {
+        high: "Visible features are consistent enough to use this as a try-on starting point. Confirm color in natural light.",
+        medium:
+          "The overall direction is useful, but lighting or image detail may affect color judgement. Confirm with try-on.",
+        low: "Image conditions limit this result. Treat it as an exploratory direction and consider a new diagnosis in natural light.",
+      },
       photoEvidenceTitle: "Original photo evidence",
       photoEvidenceMissingTitle: "Original photo no longer available",
       photoEvidenceMissingBody:
@@ -371,7 +380,7 @@ const professionalReportCopy = isEnglish
       summarySubtitle:
         "Use this one-page summary before choosing base, lip-cheek colors, eye makeup, or virtual try-on looks.",
       keywordsTitle: "Beauty profile keywords",
-      paletteTitle: "Recommended color anchors",
+      paletteTitle: "Recommended color families",
       evidenceTitle: "Professional analysis",
       evidenceSubtitle:
         "The report separates visible facial cues from makeup execution advice, so the recommendation is easier to judge.",
@@ -423,6 +432,7 @@ const professionalReportCopy = isEnglish
       detailSubtitle:
         "Photo limitations, analysis confidence, and directions to avoid.",
       recommendedTitle: "Try-on looks matched to this report",
+      matchBadge: "Direction match",
       matchedReason: "Why it matches",
       watchTitle: "When trying it, check",
       sections: {
@@ -497,6 +507,9 @@ const professionalReportCopy = isEnglish
   : {
       reportType: "个人妆容适配报告",
       latestReport: "最新专业报告",
+      summaryEyebrow: "结论速览",
+      evidenceEyebrow: "为什么适合你",
+      recommendedEyebrow: "下一步",
       conclusionLabel: "整体妆容定位",
       strategyLabel: "核心妆容策略",
       actionLook: "按报告试妆",
@@ -512,6 +525,12 @@ const professionalReportCopy = isEnglish
       stabilityHigh: "较高",
       stabilityMedium: "中等",
       stabilityLow: "需二次确认",
+      stabilityNotes: {
+        high: "可见特征较一致，可作为试妆起点；色彩仍建议在自然光下复核。",
+        medium:
+          "整体方向可参考，但光线或图像细节可能影响色彩判断，建议结合试妆确认。",
+        low: "当前照片条件限制较多，本次结果仅适合作为探索方向，建议在自然光下重新诊断。",
+      },
       photoEvidenceTitle: "原图分析样本",
       photoEvidenceMissingTitle: "原图已删除",
       photoEvidenceMissingBody: "仍可查看本次诊断报告和妆容建议。",
@@ -519,11 +538,11 @@ const professionalReportCopy = isEnglish
       photoStatusQualityPrefix: "照片",
       photoStatusStabilityPrefix: "稳定性",
       photoStatusJoiner: " · ",
-      summaryTitle: "美妆诊断摘要",
-      summarySubtitle: "这部分适合在选底妆、唇颊色、眼妆和试妆前快速对照。",
-      keywordsTitle: "你的美妆档案关键词",
-      paletteTitle: "推荐色彩锚点",
-      evidenceTitle: "专业维度分析",
+      summaryTitle: "你的妆容结论",
+      summarySubtitle: "先看适合什么，再根据色系与执行重点开始试妆。",
+      keywordsTitle: "诊断依据速览",
+      paletteTitle: "推荐色系",
+      evidenceTitle: "详细诊断依据",
       evidenceSubtitle:
         "报告将可见特征和上妆建议拆开呈现，方便你判断为什么适合、应该怎么化。",
       routineEyebrow: "分区执行建议",
@@ -570,7 +589,8 @@ const professionalReportCopy = isEnglish
       scenarioSubtitle: "不同场景调整强度，但保持同一色彩方向，妆面会更稳定。",
       detailTitle: "证据、局限与慎选项",
       detailSubtitle: "照片限制、分析稳定性和需要谨慎尝试的妆容元素。",
-      recommendedTitle: "基于报告匹配的试妆",
+      recommendedTitle: "适合从这些妆容开始",
+      matchBadge: "方向匹配",
       matchedReason: "匹配原因",
       watchTitle: "试妆时重点观察",
       sections: {
@@ -852,25 +872,25 @@ const professionalReportCopy = isEnglish
             <h2 id="diag-result-title">{diagnosisCopy.resultKeywords}</h2>
             <p id="diag-result-summary">{diagnosisCopy.resultNotice}</p>
             <div class="diagnosis-result-chips" id="diag-result-chips"></div>
+            <div class="diagnosis-result-actions">
+              <a
+                class="btn btn-primary"
+                id="diag-primary-look"
+                href={discoverHref}>{professionalReportCopy.actionLook}</a
+              >
+              <a class="btn" href="#diagnosis-new">
+                {professionalReportCopy.newReport}
+              </a>
+            </div>
           </div>
           <aside class="diagnosis-report-facts" id="diag-report-facts"></aside>
-          <div class="diagnosis-result-actions">
-            <a
-              class="btn btn-primary"
-              id="diag-primary-look"
-              href={discoverHref}>{professionalReportCopy.actionLook}</a
-            >
-            <a class="btn" href="#diagnosis-new">
-              {professionalReportCopy.newReport}
-            </a>
-          </div>
         </section>
 
         <section class="diagnosis-executive panel">
           <div class="diagnosis-section-head">
             <div>
               <span class="section-eyebrow"
-                >{professionalReportCopy.latestReport}</span
+                >{professionalReportCopy.summaryEyebrow}</span
               >
               <h2 class="panel-title">{professionalReportCopy.summaryTitle}</h2>
               <p class="panel-subtitle">
@@ -908,7 +928,7 @@ const professionalReportCopy = isEnglish
             <div class="diagnosis-section-head compact">
               <div>
                 <span class="section-eyebrow"
-                  >{professionalReportCopy.evidenceTitle}</span
+                  >{professionalReportCopy.evidenceEyebrow}</span
                 >
                 <h2 class="panel-title">
                   {professionalReportCopy.evidenceTitle}
@@ -935,13 +955,15 @@ const professionalReportCopy = isEnglish
             </div>
           </div>
           <div class="diagnosis-routine-grid" id="diag-routine-steps"></div>
-          <div class="diagnosis-scenario-block">
-            <div>
-              <h3>{professionalReportCopy.scenarioTitle}</h3>
-              <p>{professionalReportCopy.scenarioSubtitle}</p>
-            </div>
+          <details class="diagnosis-scenario-block">
+            <summary>
+              <div>
+                <h3>{professionalReportCopy.scenarioTitle}</h3>
+                <p>{professionalReportCopy.scenarioSubtitle}</p>
+              </div>
+            </summary>
             <div class="diagnosis-scenario-grid" id="diag-scenario-grid"></div>
-          </div>
+          </details>
         </section>
 
         <details class="diagnosis-detail-panel panel" id="diag-detail-panel">
@@ -960,7 +982,7 @@ const professionalReportCopy = isEnglish
           <div class="diagnosis-section-head">
             <div>
               <span class="section-eyebrow"
-                >{professionalReportCopy.recommendedTitle}</span
+                >{professionalReportCopy.recommendedEyebrow}</span
               >
               <h2 class="panel-title">
                 {professionalReportCopy.recommendedTitle}
@@ -1544,7 +1566,7 @@ const professionalReportCopy = isEnglish
                   ? `<img src="${escapeHtml(originalImage)}" alt="${escapeHtml(title)}" loading="eager" decoding="async" data-diagnosis-original-image />`
                   : ""
               }
-              <div class="diagnosis-report-photo-placeholder">
+              <div class="diagnosis-report-photo-placeholder"${hasOriginal ? " hidden" : ""}>
                 <b>${escapeHtml(reportCopy.photoEvidenceMissingTitle || "Photo")}</b>
                 <span>${escapeHtml(reportCopy.photoEvidenceMissingBody || "")}</span>
               </div>
@@ -1566,9 +1588,17 @@ const professionalReportCopy = isEnglish
         );
         if (!(image instanceof HTMLImageElement)) return;
         image.addEventListener("error", () => {
-          image
-            .closest(".diagnosis-report-photo-media")
-            ?.classList.add("is-missing");
+          const media = image.closest(".diagnosis-report-photo-media");
+          media?.classList.add("is-missing");
+          media
+            ?.querySelector(".diagnosis-report-photo-placeholder")
+            ?.removeAttribute("hidden");
+          const badge = media?.querySelector(".diagnosis-photo-badges span");
+          if (badge) {
+            badge.textContent =
+              reportCopy.photoEvidenceMissingTitle ||
+              "Original photo unavailable";
+          }
         });
       }
 
@@ -1590,11 +1620,28 @@ const professionalReportCopy = isEnglish
         return reportCopy.stabilityLow || "Needs confirmation";
       }
 
+      function stabilityDescription(confidence) {
+        const band = confidence?.band;
+        if (band === "high") return reportCopy.stabilityNotes?.high || "";
+        if (band === "medium") return reportCopy.stabilityNotes?.medium || "";
+        return reportCopy.stabilityNotes?.low || "";
+      }
+
+      function normalizeColorAnchor(value) {
+        return String(value || "")
+          .replace(
+            /(粉底液?|底妆|遮瑕膏?|散粉|定妆粉?|眼影|眼线笔?|睫毛膏|腮红|唇膏|口红|唇釉|唇彩|foundation|concealer|setting powder|powder|eyeshadow|eye shadow|eyeliner|liner|mascara|blush|lipstick|lip gloss)/gi,
+            "",
+          )
+          .replace(/[·|/、,，;；()（）\s]+$/gu, "")
+          .trim();
+      }
+
       function extractPalette(d) {
         const seen = new Set();
         const palette = [];
         (d.colorPalette?.recommended || []).forEach((color) => {
-          const normalized = String(color?.name || "").trim();
+          const normalized = normalizeColorAnchor(color?.name);
           const key = normalized.toLowerCase();
           if (normalized && !seen.has(key)) {
             seen.add(key);
@@ -1603,7 +1650,7 @@ const professionalReportCopy = isEnglish
         });
         (d.makeupDirections || []).forEach((direction) => {
           (direction.palette || []).forEach((color) => {
-            const normalized = String(color || "").trim();
+            const normalized = normalizeColorAnchor(color);
             const key = normalized.toLowerCase();
             if (normalized && !seen.has(key)) {
               seen.add(key);
@@ -1960,16 +2007,6 @@ const professionalReportCopy = isEnglish
           archetype || primaryDirection?.title || copy.reportTitle;
         const summaryText = strategy || oneLine || copy.reportTitle;
         const createdAt = record?.createdAt ? new Date(record.createdAt) : null;
-        const dateLabel = createdAt
-          ? createdAt.toLocaleDateString(
-              document.documentElement.lang || "zh-CN",
-              {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-              },
-            )
-          : "";
         const shortDateLabel = createdAt
           ? createdAt.toLocaleDateString(
               document.documentElement.lang || "zh-CN",
@@ -2250,11 +2287,7 @@ const professionalReportCopy = isEnglish
                 key: "percent",
                 icon: keywordIcons.percent || "%",
                 title: stability,
-                desc:
-                  resultLabels.rows?.overallConfidence +
-                  " " +
-                  Math.round((conf.overall || 0) * 100) +
-                  "%",
+                desc: stabilityDescription(conf),
               },
               ...(d.photoQuality?.notes || []).map((note) => ({
                 key: "limit",
@@ -2302,7 +2335,7 @@ const professionalReportCopy = isEnglish
                 if (!looksData.ok) return;
                 const allLooks = looksData.data?.looks || [];
                 const matched = matchRecommends(
-                  d.makeupDirections,
+                  d,
                   allLooks,
                   d.recommendationReasoning,
                 );
@@ -2319,7 +2352,7 @@ const professionalReportCopy = isEnglish
               <article class="recommend report-recommend">
                 <img src="${escapeHtml(m.image)}" alt="${escapeHtml(m.title)}" />
                 <div>
-                  <h3>${escapeHtml(m.title)} <span class="pill pill-rose">${escapeHtml(resultLabels.recommendationScore)} ${escapeHtml(m.score)}%</span></h3>
+                  <h3>${escapeHtml(m.title)} <span class="pill pill-rose">${escapeHtml(reportCopy.matchBadge)}</span></h3>
                   <p><b>${escapeHtml(reportCopy.matchedReason)}：</b>${escapeHtml(m.reason)}</p>
                   <p class="recommend-watch"><b>${escapeHtml(reportCopy.watchTitle)}：</b>${escapeHtml(m.watch)}</p>
                   <a class="btn btn-primary" href="${escapeHtml(tryOnFreeHref)}?look=${encodeURIComponent(m.slug)}">${escapeHtml(copy.tryLook)}</a>
@@ -2347,38 +2380,94 @@ const professionalReportCopy = isEnglish
           .join("")}</article>`;
       }
 
-      function matchRecommends(directions, allLooks, reasoning = []) {
-        // 简单关键词匹配：用 direction.title 和 palette 作为搜索词
-        const keywords = directions
-          .flatMap((d) => [
-            String(d.title || "").toLowerCase(),
-            ...(d.palette || []).map((p) => String(p || "").toLowerCase()),
-          ])
-          .filter(Boolean);
-        return allLooks
+      function matchRecommends(diagnosis, allLooks, reasoning = []) {
+        const directions = diagnosis?.makeupDirections || [];
+        const firstDirection = directions[0] || {};
+        const diagnosisText = [
+          diagnosis?.reportSummary?.archetype,
+          diagnosis?.reportSummary?.primaryStrategy,
+          diagnosis?.colorSeason?.rationale,
+          ...directions.flatMap((item) => [
+            item?.title,
+            item?.rationale,
+            ...(item?.palette || []),
+          ]),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        const signals = [
+          "清透",
+          "自然",
+          "柔和",
+          "柔雾",
+          "低饱和",
+          "显气色",
+          "通勤",
+          "面试",
+          "约会",
+          "拍照",
+          "水润",
+          "光泽",
+          "natural",
+          "soft",
+          "muted",
+          "work",
+          "date",
+          "camera",
+          "dewy",
+        ].filter((signal) => diagnosisText.includes(signal));
+        const season = String(diagnosis?.colorSeason?.season || "");
+        const isCoolSeason = /summer|winter/i.test(season);
+        const isWarmSeason = /spring|autumn/i.test(season);
+        const matchedReasoning =
+          reasoning.find(
+            (item) =>
+              item?.directionTitle &&
+              item.directionTitle === firstDirection.title,
+          ) || reasoning[0];
+        const palette = (firstDirection.palette || []).join(
+          resultLabels.paletteJoiner || ", ",
+        );
+        const safeFallbackOrder = [
+          "no-makeup",
+          "interview-ready",
+          "rose-milk-date",
+          "photogenic",
+        ];
+        const eligible = allLooks.filter((look) => {
+          const haystack = [look.slug, look.title, look.intent]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          if (/mature|熟龄/.test(haystack)) return false;
+          if (
+            isCoolSeason &&
+            /蜜桃|珊瑚|暖金|鎏金|bronze|warm gold|peach|coral/.test(haystack)
+          )
+            return false;
+          if (isWarmSeason && /灰粉|冷调莓|icy|cool mauve/.test(haystack))
+            return false;
+          return true;
+        });
+        const ranked = eligible
           .map((look) => {
             const haystack = [
+              look.slug,
               look.title,
               look.intent,
               ...(look.scenarios || []),
               ...(look.finish || []),
+              ...(look.anchors || []),
             ]
               .join(" ")
               .toLowerCase();
-            const hits = keywords.filter((kw) => haystack.includes(kw)).length;
-            const firstDirection = directions[0] || {};
-            const matchedReasoning =
-              reasoning.find(
-                (item) =>
-                  item?.directionTitle &&
-                  item.directionTitle === firstDirection.title,
-              ) || reasoning[0];
-            const palette = (firstDirection.palette || []).join(
-              resultLabels.paletteJoiner || ", ",
-            );
+            const hits = signals.filter((signal) =>
+              haystack.includes(signal),
+            ).length;
             return {
               ...look,
-              score: Math.min(95, 70 + hits * 8),
+              score: hits,
               reason:
                 joinEvidence(matchedReasoning?.matchedFactors) ||
                 firstDirection.rationale ||
@@ -2392,8 +2481,19 @@ const professionalReportCopy = isEnglish
                 copy.reportTitle,
             };
           })
-          .filter((l) => l.score > 70)
+          .filter((look) => look.score > 0)
           .sort((a, b) => b.score - a.score);
+        if (ranked.length) return ranked;
+        return safeFallbackOrder
+          .map((slug) => eligible.find((look) => look.slug === slug))
+          .filter(Boolean)
+          .map((look) => ({
+            ...look,
+            score: 0,
+            reason:
+              firstDirection.rationale || reportCopy.fallbacks?.oneLine || "",
+            watch: reportCopy.fallbacks?.oneLine || copy.reportTitle,
+          }));
       }
 
       // === 加载额度 ===
@@ -2921,7 +3021,7 @@ const professionalReportCopy = isEnglish
         linear-gradient(135deg, rgba(62, 201, 189, 0.1), transparent 52%),
         var(--bg-elevated);
     }
-    :global([data-theme="dark"]) .diagnosis-result-chips span {
+    :global([data-theme="dark"]) .diagnosis-result-chips :global(span) {
       border-color: rgba(255, 255, 255, 0.13);
       background: rgba(255, 255, 255, 0.07);
     }
@@ -2935,7 +3035,9 @@ const professionalReportCopy = isEnglish
           linear-gradient(135deg, rgba(62, 201, 189, 0.1), transparent 52%),
           var(--bg-elevated);
       }
-      :global(:root:not([data-theme="light"])) .diagnosis-result-chips span {
+      :global(:root:not([data-theme="light"]))
+        .diagnosis-result-chips
+        :global(span) {
         border-color: rgba(255, 255, 255, 0.13);
         background: rgba(255, 255, 255, 0.07);
       }
@@ -3256,10 +3358,10 @@ const professionalReportCopy = isEnglish
     }
     .diagnosis-result-hero {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.38fr);
-      gap: 18px;
-      align-items: start;
-      padding: 28px;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+      gap: 32px;
+      align-items: stretch;
+      padding: 32px;
       background:
         radial-gradient(
           circle at 14% 0,
@@ -3270,7 +3372,8 @@ const professionalReportCopy = isEnglish
     }
     .diagnosis-result-copy {
       display: grid;
-      gap: 12px;
+      align-content: center;
+      gap: 14px;
       min-width: 0;
     }
     .diagnosis-report-type {
@@ -3286,14 +3389,14 @@ const professionalReportCopy = isEnglish
       max-width: 820px;
       color: var(--report-ink);
       font-family: var(--font-display);
-      font-size: clamp(32px, 3.4vw, 48px);
-      line-height: 1.08;
+      font-size: clamp(36px, 3.2vw, 44px);
+      line-height: 1.14;
     }
     .diagnosis-result-copy p {
       margin: 0;
       max-width: 760px;
       color: var(--report-body);
-      font-size: 15px;
+      font-size: 16px;
       line-height: 1.7;
     }
     .diagnosis-result-chips {
@@ -3301,7 +3404,7 @@ const professionalReportCopy = isEnglish
       flex-wrap: wrap;
       gap: 8px;
     }
-    .diagnosis-result-chips span {
+    .diagnosis-result-chips :global(span) {
       display: grid;
       min-width: 116px;
       gap: 3px;
@@ -3310,13 +3413,13 @@ const professionalReportCopy = isEnglish
       border-radius: 12px;
       background: var(--report-card-bg);
     }
-    .diagnosis-result-chips small {
+    .diagnosis-result-chips :global(small) {
       color: var(--report-muted);
-      font-size: 11px;
+      font-size: 12px;
     }
-    .diagnosis-result-chips b {
+    .diagnosis-result-chips :global(b) {
       color: var(--report-ink);
-      font-size: 13px;
+      font-size: 14px;
     }
     .diagnosis-report-facts {
       display: grid;
@@ -3328,14 +3431,14 @@ const professionalReportCopy = isEnglish
       box-shadow: var(--report-card-shadow);
       overflow: hidden;
     }
-    .diagnosis-report-photo-card {
+    .diagnosis-report-facts :global(.diagnosis-report-photo-card) {
       display: grid;
       min-width: 0;
     }
-    .diagnosis-report-photo-media {
+    .diagnosis-report-facts :global(.diagnosis-report-photo-media) {
       position: relative;
       min-height: 300px;
-      max-height: 420px;
+      max-height: 360px;
       overflow: hidden;
       border-radius: 20px;
       background:
@@ -3343,14 +3446,14 @@ const professionalReportCopy = isEnglish
         var(--surface-rose);
       aspect-ratio: 4 / 5;
     }
-    .diagnosis-report-photo-media img {
+    .diagnosis-report-facts :global(.diagnosis-report-photo-media img) {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: 50% 36%;
     }
-    .diagnosis-report-photo-placeholder {
+    .diagnosis-report-facts :global(.diagnosis-report-photo-placeholder) {
       display: none;
       min-height: 100%;
       place-items: center;
@@ -3358,42 +3461,49 @@ const professionalReportCopy = isEnglish
       color: var(--report-muted);
       text-align: center;
     }
-    .diagnosis-report-photo-placeholder b,
-    .diagnosis-report-photo-placeholder span {
+    .diagnosis-report-facts :global(.diagnosis-report-photo-placeholder b),
+    .diagnosis-report-facts :global(.diagnosis-report-photo-placeholder span) {
       display: block;
     }
-    .diagnosis-report-photo-placeholder b {
+    .diagnosis-report-facts :global(.diagnosis-report-photo-placeholder b) {
       color: var(--report-ink);
       font-size: 16px;
       font-weight: 850;
     }
-    .diagnosis-report-photo-placeholder span {
+    .diagnosis-report-facts :global(.diagnosis-report-photo-placeholder span) {
       max-width: 240px;
       margin-top: 8px;
       font-size: 13px;
       line-height: 1.55;
     }
-    .diagnosis-report-photo-media.is-missing img {
+    .diagnosis-report-facts
+      :global(.diagnosis-report-photo-media.is-missing img) {
       display: none;
     }
-    .diagnosis-report-photo-media.is-missing
-      .diagnosis-report-photo-placeholder {
+    .diagnosis-report-facts
+      :global(
+        .diagnosis-report-photo-media.is-missing
+          .diagnosis-report-photo-placeholder
+      ) {
       display: grid;
     }
-    .diagnosis-report-photo-media.is-missing .diagnosis-photo-status {
+    .diagnosis-report-facts
+      :global(
+        .diagnosis-report-photo-media.is-missing .diagnosis-photo-status
+      ) {
       display: none;
     }
-    .diagnosis-photo-badges,
-    .diagnosis-photo-status {
+    .diagnosis-report-facts :global(.diagnosis-photo-badges),
+    .diagnosis-report-facts :global(.diagnosis-photo-status) {
       position: absolute;
       z-index: 1;
     }
-    .diagnosis-photo-badges {
+    .diagnosis-report-facts :global(.diagnosis-photo-badges) {
       inset: 12px auto auto 12px;
       display: flex;
     }
-    .diagnosis-photo-badges span,
-    .diagnosis-photo-status {
+    .diagnosis-report-facts :global(.diagnosis-photo-badges span),
+    .diagnosis-report-facts :global(.diagnosis-photo-status) {
       min-width: 0;
       border: 1px solid color-mix(in srgb, #fff 48%, transparent);
       background: color-mix(in srgb, var(--bg-elevated) 88%, transparent);
@@ -3401,14 +3511,14 @@ const professionalReportCopy = isEnglish
       box-shadow: 0 8px 24px rgba(18, 39, 66, 0.12);
       backdrop-filter: blur(12px);
     }
-    .diagnosis-photo-badges span {
+    .diagnosis-report-facts :global(.diagnosis-photo-badges span) {
       padding: 6px 10px;
       border-radius: 999px;
       font-size: 11px;
       font-weight: 850;
       line-height: 1.1;
     }
-    .diagnosis-photo-status {
+    .diagnosis-report-facts :global(.diagnosis-photo-status) {
       inset: auto 12px 12px 12px;
       display: flex;
       flex-wrap: wrap;
@@ -3421,7 +3531,7 @@ const professionalReportCopy = isEnglish
       font-weight: 850;
       line-height: 1.25;
     }
-    .diagnosis-photo-status small {
+    .diagnosis-report-facts :global(.diagnosis-photo-status small) {
       color: var(--report-muted);
       font-size: 11px;
       font-weight: 800;
@@ -3429,11 +3539,10 @@ const professionalReportCopy = isEnglish
     }
     .diagnosis-result-actions {
       display: flex;
-      grid-column: 1 / -1;
       flex-wrap: wrap;
       gap: 10px;
       justify-content: flex-start;
-      padding-top: 2px;
+      padding-top: 6px;
     }
     .diagnosis-section-head {
       display: grid;
@@ -3445,8 +3554,8 @@ const professionalReportCopy = isEnglish
     .diagnosis-section-head .panel-title {
       margin-top: 10px;
       font-family: var(--font-display);
-      font-size: clamp(24px, 2.4vw, 34px);
-      line-height: 1.12;
+      font-size: clamp(28px, 2.4vw, 32px);
+      line-height: 1.22;
     }
     .diagnosis-section-head.compact {
       margin-bottom: 14px;
@@ -3458,7 +3567,7 @@ const professionalReportCopy = isEnglish
     }
     .diagnosis-executive-grid {
       display: grid;
-      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr) minmax(
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(
           280px,
           0.75fr
         );
@@ -3489,7 +3598,7 @@ const professionalReportCopy = isEnglish
     .diagnosis-summary-card p {
       margin: 0;
       color: var(--report-body);
-      font-size: 15.5px;
+      font-size: 16px;
       line-height: 1.68;
     }
     .diagnosis-strategy-card {
@@ -3503,7 +3612,7 @@ const professionalReportCopy = isEnglish
       flex-wrap: wrap;
       gap: 8px;
     }
-    .palette-chip {
+    .diagnosis-palette :global(.palette-chip) {
       display: inline-flex;
       min-width: 0;
       align-items: center;
@@ -3513,11 +3622,11 @@ const professionalReportCopy = isEnglish
       border-radius: 999px;
       background: var(--report-card-bg);
       color: var(--report-body);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
       line-height: 1.25;
     }
-    .palette-chip i {
+    .diagnosis-palette :global(.palette-chip i) {
       display: block;
       width: 18px;
       height: 18px;
@@ -3526,19 +3635,19 @@ const professionalReportCopy = isEnglish
       background: #d89582;
       box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
     }
-    .palette-chip[data-tone="1"] i {
+    .diagnosis-palette :global(.palette-chip[data-tone="1"] i) {
       background: #c98594;
     }
-    .palette-chip[data-tone="2"] i {
+    .diagnosis-palette :global(.palette-chip[data-tone="2"] i) {
       background: #b7775f;
     }
-    .palette-chip[data-tone="3"] i {
+    .diagnosis-palette :global(.palette-chip[data-tone="3"] i) {
       background: #e2ad85;
     }
-    .palette-chip[data-tone="4"] i {
+    .diagnosis-palette :global(.palette-chip[data-tone="4"] i) {
       background: #9f6a59;
     }
-    .palette-chip[data-tone="5"] i {
+    .diagnosis-palette :global(.palette-chip[data-tone="5"] i) {
       background: #d7b6a0;
     }
     .diagnosis-priority-recommend {
@@ -3550,25 +3659,53 @@ const professionalReportCopy = isEnglish
       gap: 12px;
       margin-top: 0;
     }
-    .diagnosis-result-shell .recommend {
+    .diagnosis-result-shell :global(.recommend) {
       min-width: 0;
       align-items: center;
       padding: 10px;
       border-radius: 14px;
       background: var(--report-card-bg);
     }
-    .diagnosis-result-shell .recommend h3 {
+    .diagnosis-result-shell :global(.recommend h3) {
       margin-top: 0;
     }
-    .diagnosis-result-shell .recommend .btn {
+    .diagnosis-result-shell :global(.recommend .btn) {
       float: none;
       width: fit-content;
     }
     .diagnosis-insight-grid {
       display: grid;
-      grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       gap: 16px;
       align-items: start;
+    }
+    .diagnosis-profile-panel {
+      padding: 24px;
+    }
+    #diag-keywords {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    #diag-keywords :global(.keyword) {
+      margin: 0;
+      padding: 18px;
+      border-color: var(--report-card-border);
+      background: var(--report-card-bg);
+      box-shadow: none;
+      animation: none;
+    }
+    #diag-keywords :global(.keyword b) {
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    #diag-keywords :global(.keyword span) {
+      display: block;
+      color: var(--report-body);
+      font-size: 14px;
+      line-height: 1.65;
+      overflow: visible;
+      -webkit-line-clamp: unset;
     }
     .diagnosis-profile-panel,
     .diagnosis-analysis-panel {
@@ -3580,7 +3717,7 @@ const professionalReportCopy = isEnglish
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
     }
-    .report-section-card {
+    .diagnosis-result-shell :global(.report-section-card) {
       display: grid;
       min-width: 0;
       gap: 16px;
@@ -3590,14 +3727,14 @@ const professionalReportCopy = isEnglish
       background: var(--report-card-bg);
       box-shadow: var(--report-card-shadow);
     }
-    .report-section-card h2 {
+    .diagnosis-result-shell :global(.report-section-card h2) {
       margin: 0;
       color: var(--report-ink);
-      font-size: 18px;
+      font-size: 20px;
       line-height: 1.35;
       letter-spacing: 0.01em;
     }
-    .report-section-card .analysis-row {
+    .diagnosis-result-shell :global(.report-section-card .analysis-row) {
       padding-top: 12px;
       border-top: 1px solid var(--report-card-border);
     }
@@ -3655,19 +3792,19 @@ const professionalReportCopy = isEnglish
       border-radius: 12px;
       background: var(--report-card-accent-rose);
       color: var(--report-muted);
-      font-size: 11px;
+      font-size: 13px;
       line-height: 1.6;
     }
-    .analysis-card {
+    .diagnosis-result-shell :global(.analysis-card) {
       min-width: 0;
     }
-    .analysis-row {
+    .diagnosis-result-shell :global(.analysis-row) {
       display: grid;
       grid-template-columns: 38px minmax(0, 1fr);
       gap: 12px;
       align-items: start;
     }
-    .analysis-row i {
+    .diagnosis-result-shell :global(.analysis-row i) {
       display: grid;
       width: 38px;
       height: 38px;
@@ -3679,36 +3816,36 @@ const professionalReportCopy = isEnglish
       font-style: normal;
       font-weight: 900;
     }
-    .analysis-row b {
+    .diagnosis-result-shell :global(.analysis-row b) {
       display: block;
       margin-bottom: 5px;
       color: var(--report-ink);
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 800;
       line-height: 1.35;
     }
-    .analysis-row span {
+    .diagnosis-result-shell :global(.analysis-row span) {
       display: block;
       color: var(--report-body);
-      font-size: 15px;
+      font-size: 16px;
       line-height: 1.72;
     }
     .diagnosis-routine-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
     }
-    .routine-step {
+    .diagnosis-routine-grid :global(.routine-step) {
       display: grid;
       grid-template-columns: 42px minmax(0, 1fr);
       gap: 12px;
       min-width: 0;
-      padding: 18px;
+      padding: 22px;
       border: 1px solid var(--report-card-border);
       border-radius: 18px;
       background: var(--report-card-bg);
     }
-    .routine-step > span {
+    .diagnosis-routine-grid :global(.routine-step > span) {
       display: grid;
       width: 42px;
       height: 42px;
@@ -3719,28 +3856,28 @@ const professionalReportCopy = isEnglish
       font-size: 13px;
       font-weight: 900;
     }
-    .routine-step h3 {
+    .diagnosis-routine-grid :global(.routine-step h3) {
       margin: 0 0 7px;
       color: var(--report-ink);
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 850;
       line-height: 1.35;
     }
-    .routine-step ul {
+    .diagnosis-routine-grid :global(.routine-step ul) {
       display: grid;
       gap: 7px;
       margin: 0;
       padding: 0;
       list-style: none;
     }
-    .routine-step li {
+    .diagnosis-routine-grid :global(.routine-step li) {
       position: relative;
       padding-left: 15px;
       color: var(--report-body);
-      font-size: 15px;
+      font-size: 16px;
       line-height: 1.68;
     }
-    .routine-step li::before {
+    .diagnosis-routine-grid :global(.routine-step li::before) {
       content: "";
       position: absolute;
       top: 0.72em;
@@ -3751,11 +3888,38 @@ const professionalReportCopy = isEnglish
       background: var(--teal);
     }
     .diagnosis-scenario-block {
-      display: grid;
-      gap: 14px;
       margin-top: 24px;
       padding-top: 22px;
       border-top: 1px solid var(--report-card-border);
+    }
+    .diagnosis-scenario-block > summary {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 36px;
+      gap: 16px;
+      align-items: center;
+      min-height: 64px;
+      padding-right: 4px;
+      cursor: pointer;
+      list-style: none;
+    }
+    .diagnosis-scenario-block > summary::-webkit-details-marker {
+      display: none;
+    }
+    .diagnosis-scenario-block > summary::after {
+      content: "+";
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--surface-rose);
+      color: var(--rose);
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .diagnosis-scenario-block[open] > summary::after {
+      content: "−";
     }
     .diagnosis-scenario-block h3 {
       margin: 0 0 6px;
@@ -3775,8 +3939,9 @@ const professionalReportCopy = isEnglish
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
+      padding-top: 16px;
     }
-    .scenario-card {
+    .diagnosis-scenario-grid :global(.scenario-card) {
       display: grid;
       min-width: 0;
       gap: 10px;
@@ -3785,38 +3950,38 @@ const professionalReportCopy = isEnglish
       border-radius: 16px;
       background: var(--report-card-bg);
     }
-    .scenario-card strong {
+    .diagnosis-scenario-grid :global(.scenario-card strong) {
       color: var(--rose);
       font-size: 13px;
       font-weight: 850;
     }
-    .scenario-card b {
+    .diagnosis-scenario-grid :global(.scenario-card b) {
       color: var(--report-ink);
       font-size: 17px;
       font-weight: 850;
       line-height: 1.35;
     }
-    .scenario-card dl {
+    .diagnosis-scenario-grid :global(.scenario-card dl) {
       display: grid;
       gap: 8px;
       margin: 0;
     }
-    .scenario-card dt {
+    .diagnosis-scenario-grid :global(.scenario-card dt) {
       color: var(--report-muted);
       font-size: 13px;
       font-weight: 800;
       letter-spacing: 0.04em;
     }
-    .scenario-card dd {
+    .diagnosis-scenario-grid :global(.scenario-card dd) {
       margin: 3px 0 0;
       color: var(--report-body);
-      font-size: 14.5px;
+      font-size: 15px;
       line-height: 1.65;
     }
-    .report-recommend p b {
+    .diagnosis-result-shell :global(.report-recommend p b) {
       color: var(--heading);
     }
-    .recommend-watch {
+    .diagnosis-result-shell :global(.recommend-watch) {
       margin-top: 5px;
       color: var(--muted) !important;
     }
@@ -4073,6 +4238,9 @@ const professionalReportCopy = isEnglish
       .diagnosis-executive-grid {
         grid-template-columns: 1fr;
       }
+      .diagnosis-report-facts {
+        width: min(100%, 420px);
+      }
       .diagnosis-result-actions {
         justify-content: flex-start;
       }
@@ -4140,18 +4308,21 @@ const professionalReportCopy = isEnglish
         padding: 18px;
       }
       .diagnosis-result-copy h2 {
-        font-size: 28px;
+        font-size: 30px;
       }
       .diagnosis-result-copy p {
-        font-size: 14px;
+        font-size: 16px;
         line-height: 1.68;
       }
       .diagnosis-result-chips {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .diagnosis-result-chips span {
+      .diagnosis-result-chips :global(span) {
         min-width: 0;
+      }
+      #diag-keywords {
+        grid-template-columns: 1fr;
       }
       .diagnosis-result-actions,
       .diagnosis-section-head,
@@ -4162,7 +4333,7 @@ const professionalReportCopy = isEnglish
       }
       .diagnosis-result-actions .btn,
       .diagnosis-section-head .btn,
-      .diagnosis-result-shell .recommend .btn {
+      .diagnosis-result-shell :global(.recommend .btn) {
         width: 100%;
       }
       .diagnosis-section-head .panel-title {
@@ -4171,7 +4342,7 @@ const professionalReportCopy = isEnglish
       .diagnosis-priority-recommend .recommend-list {
         grid-template-columns: 1fr;
       }
-      .diagnosis-result-shell .recommend {
+      .diagnosis-result-shell :global(.recommend) {
         grid-template-columns: 96px minmax(0, 1fr);
       }
       .diagnosis-detail-panel summary {
