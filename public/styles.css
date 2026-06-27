@@ -1006,32 +1006,33 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   width: 44px;
   height: 44px;
   place-items: center;
-  border: 1px solid transparent;
-  border-radius: 999px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
   background: transparent;
   color: #fff;
   box-shadow: none;
   cursor: pointer;
+  line-height: 0;
+  appearance: none;
+  -webkit-appearance: none;
   -webkit-tap-highlight-color: transparent;
   transition:
-    transform .15s ease,
-    border-color .15s ease,
-    background .15s ease,
     color .15s ease;
 }
 .look-favorite-button:hover {
-  transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, .34);
-  background: rgba(16, 37, 68, .18);
+  background: transparent;
+  color: var(--rose);
+  box-shadow: none;
 }
 .look-favorite-button:active {
-  transform: scale(.96);
-  background: rgba(16, 37, 68, .26);
+  background: transparent;
+  box-shadow: none;
 }
 .look-favorite-button:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px;
-  background: rgba(16, 37, 68, .24);
+  background: transparent;
 }
 .look-favorite-button:disabled {
   cursor: wait;
@@ -1048,8 +1049,10 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   transition:
     fill .15s ease,
     stroke .15s ease,
-    filter .15s ease;
+    filter .15s ease,
+    transform .15s ease;
 }
+.look-favorite-button:active svg { transform: scale(.94); }
 .look-favorite-button[aria-pressed="true"] {
   border-color: transparent;
   background: transparent;
