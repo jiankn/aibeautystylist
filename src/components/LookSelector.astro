@@ -9,9 +9,10 @@ interface Props {
   looks: LookInput[];
   selectedSlug: string;
   variant?: "list" | "grid";
+  gridColumns?: 1 | 2;
 }
 
-const { looks, selectedSlug, variant = "list" } = Astro.props;
+const { looks, selectedSlug, variant = "list", gridColumns = 2 } = Astro.props;
 const locale = getCurrentLocale();
 const selectorCopyByLocale: Record<
   SupportedLocale,
@@ -35,7 +36,7 @@ const selectorCopy = selectorCopyByLocale[locale];
   variant === "grid" ? (
     <div
       class="featured-grid"
-      style="grid-template-columns:repeat(2,1fr);gap:12px"
+      style={`grid-template-columns:repeat(${gridColumns},minmax(0,1fr));gap:12px`}
     >
       {looks.map((look) => (
         <button
