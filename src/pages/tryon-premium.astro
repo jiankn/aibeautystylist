@@ -2,10 +2,17 @@
 import LookSelector from "../components/LookSelector.astro";
 import MobileAppTopBar from "../components/MobileAppTopBar.astro";
 import MobileBottomNav from "../components/MobileBottomNav.astro";
+import ProductRecommend from "../components/ProductRecommend.astro";
 import SelfiePhotoGuide from "../components/SelfiePhotoGuide.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import TutorialSteps from "../components/TutorialSteps.astro";
 import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
+import {
+  getProductKitsByLookSlug,
+  notRecommendedProducts,
+} from "../data/products";
+import { getTutorialByLookSlug } from "../data/tutorials";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import { t } from "../lib/i18n";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -29,12 +36,32 @@ const shareCardHref = localizeAppHref("/share-card");
 const shareBaseHref = localizeAppHref("/share");
 const allLooks = resolveLookCatalog(audienceContext);
 const requestedSlug = Astro.url.searchParams.get("look");
+<<<<<<< HEAD
 const selected =
   allLooks.find((look) => look.slug === requestedSlug) ?? allLooks[0];
 const selectorLooks = [
   selected,
   ...allLooks.filter((look) => look.slug !== selected.slug),
 ].slice(0, 4);
+=======
+const featuredSlugs = ["commute", "no-makeup", "rose-milk-date", "photogenic"];
+const defaultFeaturedLooks = featuredSlugs
+  .map((slug) => allLooks.find((look) => look.slug === slug))
+  .filter(Boolean) as typeof allLooks;
+const requestedLook = allLooks.find((look) => look.slug === requestedSlug);
+const featuredLooks = requestedLook
+  ? [
+      requestedLook,
+      ...defaultFeaturedLooks.filter(
+        (look) => look.slug !== requestedLook.slug,
+      ),
+    ].slice(0, 4)
+  : defaultFeaturedLooks;
+const selected = requestedLook ?? featuredLooks[0];
+
+const tutorial = getTutorialByLookSlug(selected.slug);
+const productKits = getProductKitsByLookSlug(selected.slug);
+>>>>>>> 2ff231e (refactor(premium): 对齐Pro页面结构，选择器改list模式，侧边栏引入教程和产品推荐)
 const premiumClientMessages = {
   loginTitle: t("tryon", "loginPremiumTitle"),
   loginDesc: t("tryon", "loginWorkspaceDesc"),
@@ -107,17 +134,16 @@ const premiumClientMessages = {
         <div class="workspace-grid premium-grid">
           <aside class="selector-panel panel premium-look-rail">
             <div class="selector-head">
-              <h2 class="panel-title">{t("tryon", "selectLook")}</h2><a
-                href={discoverHref}>{t("tryon", "allLooksBtn")}</a
-              >
+              <div>
+                <h2 class="panel-title">{t("tryon", "selectLook")}</h2><p
+                  class="panel-subtitle"
+                >
+                  {t("tryon", "featuredLooksDesc")}
+                </p>
+              </div>
             </div>
-            <LookSelector
-              looks={selectorLooks}
-              selectedSlug={selected.slug}
-              variant="grid"
-              gridColumns={1}
-            />
-            <a class="btn btn-wide" style="margin-top:14px" href={discoverHref}
+            <LookSelector looks={featuredLooks} selectedSlug={selected.slug} />
+            <a class="btn btn-wide" style="margin-top:12px" href={discoverHref}
               >{t("tryon", "allLooksBtn")}</a
             >
           </aside>
@@ -216,122 +242,61 @@ const premiumClientMessages = {
               >
             </div>
 
-            <div class="panel premium-share-panel" style="margin-top:16px">
-              <h3>{t("tryon", "shareEffectTitle")}</h3>
-              <div>
-                <a
-                  class="btn btn-primary"
-                  href={shareCardHref}
-                  data-share-card-link>▱&nbsp; {t("tryon", "saveShareCard")}</a
-                >
-                <button class="btn" id="prem-copy-link"
-                  >⌘&nbsp; {t("tryon", "copyShareLink")}</button
-                >
-                <button
-                  class="btn"
-                  data-toast={t("tryon", "toastSelectNewLook")}
-                  >↻&nbsp; {t("tryon", "continueTryon")}</button
-                >
-              </div>
-            </div>
           </section>
-          <aside class="premium-side-rail">
-            <section class="explain-panel panel">
-              <h2 class="panel-title">{t("tryon", "productTypeInfo")}</h2>
-              <div class="product-list">
-                {
-                  [
-                    t("tryon", "baseProduct"),
-                    t("tryon", "blush"),
-                    t("tryon", "eyeshadow"),
-                    t("tryon", "lip"),
-                  ].map((name) => (
-                    <div class="enhance">
-                      <>
-                        <i>◉</i>
-                        <div>
-                          <>
-                            <b>{name}</b>
-                            <span>{t("tryon", "profileMatched")}</span>
-                          </>
-                        </div>
-                      </>
-                    </div>
-                  ))
-                }
-              </div>
-              <button
-                class="btn btn-wide"
-                style="margin-top:12px"
-                data-toast={t("tryon", "fullProductListComing")}
-                >{t("tryon", "viewFullProductList")}</button
-              >
-            </section>
-            <section class="explain-panel panel" style="margin-top:16px">
-              <h2 class="panel-title">
-                ◇&nbsp; {t("tryon", "premiumEnhance")}
-              </h2>
-              <div class="enhance-list" style="margin-top:15px">
-                {
-                  [
-                    {
-                      name: t("tryon", "priorityQueue"),
-                      desc: t("tryon", "priorityQueueDesc"),
-                    },
-                    {
-                      name: t("tryon", "highQualityOutput"),
-                      desc: t("tryon", "highQualityOutputDesc"),
-                    },
-                    {
-                      name: t("tryon", "longTermHistory"),
-                      desc: t("tryon", "longTermHistoryDesc"),
-                    },
-                    {
-                      name: t("tryon", "fullCatalog"),
-                      desc: String(t("tryon", "fullCatalogDesc")).replace(
-                        "{count}",
-                        String(allLooks.length),
-                      ),
-                    },
-                  ].map((item) => (
-                    <div class="enhance">
-                      <>
-                        <i>◇</i>
-                        <div>
-                          <>
-                            <b>{item.name}</b>
-                            <span>{item.desc}</span>
-                          </>
-                        </div>
-                      </>
-                    </div>
-                  ))
-                }
-              </div>
-            </section>
+          <aside class="explain-panel panel">
+            {
+              tutorial ? (
+                <TutorialSteps tutorial={tutorial} userPlan="premium" />
+              ) : (
+                <>
+                  <h2 class="panel-title">{t("tryon", "productTypes")}</h2>
+                  <p class="panel-subtitle">{t("tryon", "tutorialComing")}</p>
+                </>
+              )
+            }
+            <div class="section-rule"></div>
+            <ProductRecommend
+              kits={productKits}
+              notRecommended={notRecommendedProducts}
+            />
           </aside>
-          <section class="panel premium-history-panel">
-            <div class="history-panel-head">
-              <div>
-                <h2 class="panel-title">
-                  <a class="history-title-link" href={historyHref}>
-                    {t("tryon", "historyPreviewTitle")}
-                  </a>
-                </h2>
-                <p class="history-panel-subtitle">
-                  {t("tryon", "historyPreviewDesc")}
-                </p>
-              </div>
-              <a class="history-view-all" href={historyHref}>
-                <span>{t("tryon", "historyViewAllShort")}</span>
-                <span aria-hidden="true">›</span>
-              </a>
-            </div>
-            <div id="prem-history" class="diag-history-list">
-              <p class="muted">{t("tryon", "loading")}</p>
-            </div>
-          </section>
         </div>
+        <section class="panel" style="margin-top:24px">
+          <div class="history-panel-head">
+            <div>
+              <h2 class="panel-title">
+                <a class="history-title-link" href={historyHref}>
+                  {t("tryon", "historyPreviewTitle")}
+                </a>
+              </h2>
+              <p class="history-panel-subtitle">
+                {t("tryon", "historyPreviewDesc")}
+              </p>
+            </div>
+            <a class="history-view-all" href={historyHref}>
+              <span>{t("tryon", "historyViewAllShort")}</span>
+              <span aria-hidden="true">›</span>
+            </a>
+          </div>
+          <div id="prem-history" class="diag-history-list">
+            <p class="muted">{t("tryon", "loading")}</p>
+          </div>
+        </section>
+        <section class="share-strip panel">
+          <div>
+            <h3>{t("tryon", "shareEffectTitle")}</h3>
+            <p>{t("tryon", "shareEffectDesc")}</p>
+          </div>
+          <a class="btn" href={shareCardHref} data-share-card-link
+            >▧&nbsp; {t("tryon", "saveShareCard")}</a
+          >
+          <button class="btn" id="prem-copy-link"
+            >⌘&nbsp; {t("tryon", "copyShareLink")}</button
+          >
+          <button class="btn" data-toast={t("tryon", "toastSelectNewLook")}
+            >↻&nbsp; {t("tryon", "continueTryon")}</button
+          >
+        </section>
       </div>
     </div>
   </main>
