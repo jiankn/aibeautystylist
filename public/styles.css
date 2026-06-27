@@ -1658,7 +1658,7 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .upload-box-guided { min-height: 520px; }
 .selfie-photo-guide {
   display: grid;
-  gap: 9px;
+  gap: 10px;
   width: min(100%, 292px);
   color: var(--muted);
   text-align: left;
@@ -1676,102 +1676,50 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   font-size: 11px;
   line-height: 1.45;
 }
-.selfie-photo-guide-visuals {
+.selfie-photo-guide-text {
   display: grid;
-  grid-template-columns: minmax(86px, .82fr) minmax(0, 1fr);
-  align-items: stretch;
   gap: 8px;
-}
-.selfie-photo-guide-good {
-  display: grid;
-  gap: 5px;
   min-width: 0;
-  margin: 0;
-}
-.selfie-photo-guide-good svg {
-  display: block;
-  width: 100%;
-  min-height: 108px;
+  padding: 10px 11px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: linear-gradient(180deg, var(--bg-elevated), var(--surface-active));
+  background: var(--surface-neutral);
 }
-.selfie-photo-guide svg {
-  overflow: visible;
+.selfie-photo-guide-text p,
+.selfie-photo-guide-avoid ul {
+  margin: 0;
 }
-.selfie-photo-guide svg * {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.selfie-photo-guide-good .phone,
-.selfie-photo-guide-good .face-frame {
-  stroke: var(--rose-border);
-  stroke-width: 2;
-}
-.selfie-photo-guide-good .face,
-.selfie-photo-guide-good .hair,
-.selfie-photo-guide-good .features,
-.selfie-photo-guide-good .shoulders {
-  stroke: var(--navy);
-  stroke-width: 2;
-}
-.selfie-photo-guide-good .light {
-  stroke: var(--teal);
-  stroke-width: 2;
-}
-.selfie-photo-guide-good figcaption {
+.selfie-photo-guide-text p {
   display: grid;
-  gap: 1px;
-  font-size: 10.5px;
-  line-height: 1.25;
-  text-align: center;
+  gap: 2px;
 }
-.selfie-photo-guide-good figcaption strong {
+.selfie-photo-guide-text strong,
+.selfie-photo-guide-avoid > b {
   color: var(--navy);
   font-size: 11px;
+  line-height: 1.35;
+}
+.selfie-photo-guide-text span,
+.selfie-photo-guide-avoid li {
+  font-size: 10.5px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 .selfie-photo-guide-avoid {
   display: grid;
-  align-content: start;
-  gap: 5px;
+  gap: 4px;
   min-width: 0;
 }
 .selfie-photo-guide-avoid > b {
   color: var(--danger-text);
-  font-size: 11px;
-  line-height: 1.3;
 }
-.selfie-photo-guide-avoid > div {
+.selfie-photo-guide-avoid ul {
   display: grid;
-  gap: 5px;
+  gap: 3px;
+  padding-left: 16px;
 }
-.selfie-photo-guide-avoid-item {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: 28px minmax(0, 1fr);
-  align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 10.5px;
-  line-height: 1.22;
-}
-.selfie-photo-guide-avoid-item svg {
-  display: block;
-  width: 28px;
-  height: 28px;
-}
-.selfie-photo-guide-avoid-item circle {
-  stroke: var(--danger-border);
-  stroke-width: 2;
-}
-.selfie-photo-guide-avoid-item path {
-  stroke: var(--muted);
-  stroke-width: 2;
-}
-.selfie-photo-guide-avoid-item .slash {
-  stroke: var(--danger-text);
-  stroke-width: 2.5;
+.selfie-photo-guide-avoid li::marker {
+  color: var(--danger-text);
 }
 [data-result-target] { display: grid; min-width: 0; width: 100%; max-width: 100%; height: 100%; overflow: hidden; }
 .generated-result {
@@ -1863,7 +1811,7 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   line-height: 1.48;
   text-align: left;
 }
-.privacy-promise span { display: block; }
+.privacy-promise span { display: block; overflow-wrap: anywhere; }
 .upload-auth-lock {
   display: grid;
   gap: 4px;
@@ -1882,6 +1830,7 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   font-size: 12px;
 }
 .privacy-consent { display: flex; align-items: center; gap: 8px; width: min(100%, 292px); color: var(--text); font-size: 11px; line-height: 1.45; text-align: left; cursor: pointer; }
+.privacy-consent span { min-width: 0; overflow-wrap: anywhere; }
 .privacy-consent input { flex: 0 0 16px; width: 16px; height: 16px; margin: 0; accent-color: var(--rose); }
 .upload-box.has-photo {
   grid-template-rows: minmax(0, 1fr) auto;
@@ -2052,9 +2001,20 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .share-strip { display: grid; grid-template-columns: minmax(220px, 1.15fr) repeat(3, minmax(0, 1fr)); gap: 14px; align-items: center; margin-top: 16px; padding: 18px; }
 .share-strip h3 { margin: 0 0 7px; }
 .share-strip p { margin: 0; color: var(--muted); font-size: 13px; }
+.share-strip .btn,
+.premium-share-panel .btn {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .premium-share-panel { padding: 18px; margin-top: 16px; }
 .premium-share-panel h3 { margin: 0 0 16px; }
-.premium-share-panel > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.premium-share-panel > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .enhance-list { display: grid; gap: 10px; }
 .enhance { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: center; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
 .enhance i { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 50%; background: var(--teal-soft); color: var(--teal); font-style: normal; }
@@ -2910,9 +2870,8 @@ i[data-icon="caution"] { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmln
 /* 无障碍：减弱动画偏好 */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
+    transition: none !important;
     scroll-behavior: auto !important;
   }
 }

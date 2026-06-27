@@ -4,6 +4,9 @@ import CookieConsent from "../components/CookieConsent.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import AuthNav from "../components/AuthNav.astro";
 import BackgroundTaskTray from "../components/BackgroundTaskTray.astro";
+import analyticsScriptUrl from "../../public/analytics.js?url&no-inline";
+import appScriptUrl from "../../public/app.js?url&no-inline";
+import globalStylesUrl from "../../public/styles.css?url&no-inline";
 import {
   buildHreflangLinks,
   getCanonicalPathname,
@@ -63,8 +66,8 @@ const fontStylesheet = currentLocale.startsWith("zh")
   ? undefined
   : "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=optional";
 const idleScriptSources = [
-  ...(appScriptStrategy === "idle" ? ["/app.js"] : []),
-  ...(analyticsScriptStrategy === "idle" ? ["/analytics.js"] : []),
+  ...(appScriptStrategy === "idle" ? [appScriptUrl] : []),
+  ...(analyticsScriptStrategy === "idle" ? [analyticsScriptUrl] : []),
 ];
 const clientMessages = {
   loginRequired: t("tryon", "loginToUseQuota"),
@@ -214,7 +217,7 @@ const clientMessages = {
       inlineGlobalStyles ? (
         <style is:inline set:html={inlineGlobalStyles} />
       ) : (
-        <link rel="stylesheet" href="/styles.css" />
+        <link rel="stylesheet" href={globalStylesUrl} />
       )
     }
     <script is:inline>
@@ -262,10 +265,14 @@ const clientMessages = {
     <CookieConsent />
     <ToastRegion />
     <AuthNav />
-    {appScriptStrategy === "defer" && <script is:inline src="/app.js" defer />}
+    {
+      appScriptStrategy === "defer" && (
+        <script is:inline src={appScriptUrl} defer />
+      )
+    }
     {
       analyticsScriptStrategy === "defer" && (
-        <script is:inline src="/analytics.js" defer />
+        <script is:inline src={analyticsScriptUrl} defer />
       )
     }
     <script is:inline define:vars={{ idleScriptSources }}>

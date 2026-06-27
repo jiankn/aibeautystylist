@@ -162,8 +162,11 @@ const proClientMessages = {
                   <input type="checkbox" id="pro-consent" />
                   <span>{t("tryon", "consentCheckbox")}</span>
                 </label>
-                <button class="btn btn-primary" id="pro-upload-btn" disabled
-                  >{t("tryon", "uploadBtn")}</button
+                <button
+                  class="btn btn-primary"
+                  id="pro-upload-btn"
+                  data-upload
+                  disabled>{t("tryon", "uploadBtn")}</button
                 >
                 <div class="upload-task-status" id="pro-task-status" hidden>
                   <div class="upload-task-head">

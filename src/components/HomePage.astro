@@ -7,7 +7,7 @@ import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import { t } from "../lib/i18n";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import inlineGlobalStyles from "../../public/styles.css?raw";
+import inlineGlobalStyles from "../../public/styles.css?inline";
 
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
@@ -977,10 +977,6 @@ const homepageJsonLd = JSON.stringify({
     border-left: 4px solid var(--line);
     border-radius: 0 10px 10px 0;
     cursor: pointer;
-    transition:
-      border-color 0.3s ease,
-      background 0.3s ease,
-      box-shadow 0.3s ease;
   }
   /* 步骤间竖向连接线 */
   .product-tour-step::after {
@@ -991,7 +987,6 @@ const homepageJsonLd = JSON.stringify({
     width: 4px;
     height: 4px;
     background: var(--line);
-    transition: background 0.3s ease;
   }
   .product-tour-step:last-of-type::after {
     display: none;
@@ -1023,7 +1018,6 @@ const homepageJsonLd = JSON.stringify({
     font-size: 12px;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
-    transition: all 0.3s ease;
   }
   .product-tour-step.active > span {
     background: var(--rose);
@@ -1036,7 +1030,6 @@ const homepageJsonLd = JSON.stringify({
     color: var(--heading);
     font-size: 17px;
     font-weight: 700;
-    transition: color 0.25s ease;
   }
   .product-tour-step.active h3 {
     color: var(--rose);
@@ -1089,6 +1082,7 @@ const homepageJsonLd = JSON.stringify({
       transparent 90%
     );
     box-shadow: 0 0 12px var(--rose);
+    will-change: transform;
     animation: scanAnimation 2.2s linear infinite;
   }
   .scan-text {
@@ -1102,13 +1096,13 @@ const homepageJsonLd = JSON.stringify({
   }
   @keyframes scanAnimation {
     0% {
-      top: 0%;
+      transform: translateY(0);
     }
     50% {
-      top: 100%;
+      transform: translateY(var(--scan-travel, 280px));
     }
     100% {
-      top: 0%;
+      transform: translateY(0);
     }
   }
   .mockup-preview-copy {
