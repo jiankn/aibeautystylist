@@ -1581,45 +1581,45 @@ const detailPanelCopy =
       const reportCopy = professionalReportCopy || {};
 
       function iconSvg(paths) {
-        return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+        return `<svg class="report-icon-svg" viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
       }
 
       const reportIconSvg = {
         skin: iconSvg(
-          `<path d="M12 3.5c-3.5 4-5.5 6.9-5.5 9.6A5.5 5.5 0 0 0 12 18.6a5.5 5.5 0 0 0 5.5-5.5c0-2.7-2-5.6-5.5-9.6Z" /><path d="M9.8 13.4c.4 1.2 1.2 2 2.2 2.4" />`,
+          `<circle cx="12" cy="12" r="8.25" /><path d="M12 3.75v16.5" /><path class="report-icon-accent" d="m15.1 4.35-3.1 3.1m6.05-1.2L12 12.3m8.05-2.4-7.7 7.7m6.25-1.75-3.15 3.15" />`,
         ),
         face: iconSvg(
-          `<path d="M8 6.5c1-1.7 2.4-2.5 4-2.5s3 .8 4 2.5c1 1.5 1.5 3.6 1.5 5.8 0 2.3-.8 4.4-2.1 5.9-.9 1-2.1 1.8-3.4 1.8s-2.5-.8-3.4-1.8C7.3 16.7 6.5 14.6 6.5 12.3c0-2.2.5-4.3 1.5-5.8Z" /><circle cx="9.5" cy="10.5" r="0.8" fill="currentColor" stroke="none" /><circle cx="14.5" cy="10.5" r="0.8" fill="currentColor" stroke="none" /><path d="M10 14.8c.7.5 1.4.8 2 .8s1.3-.3 2-.8" />`,
+          `<path d="M12 3.5c4.1 0 7 3.2 7 7.8 0 5.4-3.15 9.2-7 9.2s-7-3.8-7-9.2c0-2.05.55-3.9 1.55-5.25C8.2 6.4 10.25 5.5 12 3.5Z" /><path d="M8.6 11.2h1.2m4.4 0h1.2M10 16c.65.45 1.32.68 2 .68s1.35-.23 2-.68" />`,
         ),
         eye: iconSvg(
-          `<path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z" /><circle cx="12" cy="12" r="2.4" />`,
+          `<path d="M2.75 12s3.4-4.75 9.25-4.75S21.25 12 21.25 12 17.85 16.75 12 16.75 2.75 12 2.75 12Z" /><circle cx="12" cy="12" r="2.65" /><circle class="report-icon-dot" cx="12" cy="12" r=".9" />`,
         ),
         color: iconSvg(
-          `<rect x="4.5" y="6" width="15" height="12" rx="3" /><circle cx="8.3" cy="10" r="1" fill="currentColor" stroke="none" /><circle cx="12" cy="13" r="1" fill="currentColor" stroke="none" /><circle cx="15.7" cy="10" r="1" fill="currentColor" stroke="none" />`,
+          `<path d="M12 3.75a8.25 8.25 0 1 0 0 16.5h1.15a1.85 1.85 0 0 0 1.1-3.34 1.85 1.85 0 0 1 1.1-3.34h1.9A3.75 3.75 0 0 0 21 9.82C21 6.05 16.95 3.75 12 3.75Z" /><circle class="report-icon-dot report-icon-dot-a" cx="8.25" cy="9" r="1.15" /><circle class="report-icon-dot report-icon-dot-b" cx="11.9" cy="7.2" r="1.15" /><circle class="report-icon-dot report-icon-dot-c" cx="8.7" cy="13" r="1.15" />`,
         ),
         depth: iconSvg(
-          `<path d="M7 17v-5" /><path d="M12 17V8" /><path d="M17 17V5" />`,
+          `<circle cx="12" cy="12" r="8.25" /><path d="M12 3.75v16.5" /><path class="report-icon-accent" d="m15.1 4.35-3.1 3.1m6.05-1.2L12 12.3m8.05-2.4-7.7 7.7m6.25-1.75-3.15 3.15" />`,
         ),
         tone: iconSvg(
-          `<circle cx="12" cy="12" r="6.5" /><path d="M12 5.5a6.5 6.5 0 0 1 0 13" />`,
+          `<path d="M4.25 16.5a7.75 7.75 0 0 1 15.5 0" /><path class="report-icon-accent" d="M7.25 16.5a4.75 4.75 0 0 1 9.5 0" /><path d="M10.25 16.5a1.75 1.75 0 0 1 3.5 0" />`,
         ),
         season: iconSvg(
-          `<path d="M12 4v4" /><path d="M12 16v4" /><path d="M4 12h4" /><path d="M16 12h4" /><path d="m6.5 6.5 2.8 2.8" /><path d="m14.7 14.7 2.8 2.8" /><path d="m17.5 6.5-2.8 2.8" /><path d="m9.3 14.7-2.8 2.8" />`,
+          `<path d="M12 3.75a8.25 8.25 0 1 0 0 16.5h1.15a1.85 1.85 0 0 0 1.1-3.34 1.85 1.85 0 0 1 1.1-3.34h1.9A3.75 3.75 0 0 0 21 9.82C21 6.05 16.95 3.75 12 3.75Z" /><circle class="report-icon-dot report-icon-dot-a" cx="8.25" cy="9" r="1.15" /><circle class="report-icon-dot report-icon-dot-b" cx="11.9" cy="7.2" r="1.15" /><circle class="report-icon-dot report-icon-dot-c" cx="8.7" cy="13" r="1.15" />`,
         ),
         makeup: iconSvg(
-          `<path d="m7 17 8.8-8.8a1.8 1.8 0 0 1 2.5 0l.5.5a1.8 1.8 0 0 1 0 2.5L10 20" /><path d="m6.5 17.5-2 2" /><path d="m14.5 9.5 3 3" />`,
+          `<path d="m9.65 12.85-4.1 6.35a1.45 1.45 0 0 0 2.05 1.95l6.05-4.55" /><path d="m9.65 12.85 4 3.75" /><path d="M11.25 11.25c.85-3.75 3.2-6.8 6.65-7.9 1.55 3.25.75 6.75-2.65 9.65l-4-1.75Z" /><path class="report-icon-accent" d="m14 8.25 3.25 1.4" />`,
         ),
         strength: iconSvg(
-          `<path d="m12 4.5 1.8 4.2 4.2 1.8-4.2 1.8-1.8 4.2-1.8-4.2-4.2-1.8 4.2-1.8L12 4.5Z" />`,
+          `<path d="m12 3.75 2.15 5.1L19.25 11l-5.1 2.15L12 18.25l-2.15-5.1L4.75 11l5.1-2.15L12 3.75Z" /><path class="report-icon-accent" d="m18.35 16.1.75 1.8 1.8.75-1.8.75-.75 1.8-.75-1.8-1.8-.75 1.8-.75.75-1.8Z" />`,
         ),
         percent: iconSvg(
           `<path d="m8.5 15.5 7-7" /><circle cx="8.5" cy="8.5" r="1.4" /><circle cx="15.5" cy="15.5" r="1.4" />`,
         ),
         limit: iconSvg(
-          `<path d="M12 5.5 19 18H5L12 5.5Z" /><path d="M12 10v3.5" /><circle cx="12" cy="15.8" r=".8" fill="currentColor" stroke="none" />`,
+          `<path d="M12 4.25 20.25 19H3.75L12 4.25Z" /><path d="M12 9.5v4.5" /><circle class="report-icon-dot" cx="12" cy="16.8" r=".9" />`,
         ),
         caution: iconSvg(
-          `<path d="M9 3.5h6l5.5 5.5v6L15 20.5H9L3.5 15V9L9 3.5Z" /><path d="M12 8.5v4.8" /><circle cx="12" cy="16.3" r=".8" fill="currentColor" stroke="none" />`,
+          `<path d="M9 3.5h6l5.5 5.5v6L15 20.5H9L3.5 15V9L9 3.5Z" /><path d="M12 8.5v4.8" /><circle class="report-icon-dot" cx="12" cy="16.3" r=".85" />`,
         ),
         info: iconSvg(
           `<circle cx="12" cy="12" r="7" /><path d="M12 10.2v4.4" /><circle cx="12" cy="7.6" r=".8" fill="currentColor" stroke="none" />`,
@@ -3808,7 +3808,7 @@ const detailPanelCopy =
       gap: 12px;
     }
     #diag-keywords :global(.keyword) {
-      grid-template-columns: 48px minmax(0, 1fr);
+      grid-template-columns: 50px minmax(0, 1fr);
       gap: 14px;
       margin: 0;
       padding: 18px;
@@ -3818,14 +3818,22 @@ const detailPanelCopy =
       animation: none;
     }
     #diag-keywords :global(.keyword i) {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
+      display: grid;
+      width: 50px;
+      height: 50px;
+      place-items: center;
+      border-radius: 16px;
+      background: color-mix(
+        in srgb,
+        var(--report-icon-color, var(--rose)) 10%,
+        var(--report-card-bg)
+      );
+      color: var(--report-icon-color, var(--rose));
       font-size: 0;
     }
     #diag-keywords :global(.keyword i svg) {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
     }
     #diag-keywords :global(.keyword b) {
       font-size: 16px;
@@ -3965,52 +3973,92 @@ const detailPanelCopy =
     }
     .diagnosis-result-shell :global(.analysis-row) {
       display: grid;
-      grid-template-columns: 44px minmax(0, 1fr);
+      grid-template-columns: 48px minmax(0, 1fr);
       gap: 14px;
       align-items: start;
     }
     .diagnosis-result-shell :global(.analysis-row i) {
       display: grid;
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       place-items: center;
-      border-radius: 14px;
-      background: var(--surface-rose);
-      color: var(--rose);
+      border: 1px solid
+        color-mix(
+          in srgb,
+          var(--report-icon-color, var(--rose)) 12%,
+          transparent
+        );
+      border-radius: 16px;
+      background: color-mix(
+        in srgb,
+        var(--report-icon-color, var(--rose)) 10%,
+        var(--report-card-bg)
+      );
+      color: var(--report-icon-color, var(--rose));
       font-size: 0;
       font-style: normal;
       font-weight: 900;
     }
     .diagnosis-result-shell :global(.analysis-row i svg) {
-      width: 22px;
-      height: 22px;
+      width: 28px;
+      height: 28px;
+      overflow: visible;
+    }
+    .diagnosis-result-shell :global(.report-ui-icon .report-icon-dot) {
+      fill: currentColor;
+      stroke: none;
+    }
+    .diagnosis-result-shell :global(.report-ui-icon .report-icon-accent) {
+      color: var(--report-icon-accent, currentColor);
+      stroke: var(--report-icon-accent, currentColor);
+    }
+    .diagnosis-result-shell :global(.report-ui-icon .report-icon-dot-a) {
+      fill: var(--report-icon-dot-a, currentColor);
+    }
+    .diagnosis-result-shell :global(.report-ui-icon .report-icon-dot-b) {
+      fill: var(--report-icon-dot-b, currentColor);
+    }
+    .diagnosis-result-shell :global(.report-ui-icon .report-icon-dot-c) {
+      fill: var(--report-icon-dot-c, currentColor);
     }
     #diag-keywords :global(.keyword i[data-icon="skin"]),
     .diagnosis-result-shell :global(.analysis-row i[data-icon="skin"]),
-    .diagnosis-result-shell :global(.analysis-row i[data-icon="tone"]),
     .diagnosis-result-shell :global(.analysis-row i[data-icon="depth"]) {
-      background: color-mix(in srgb, var(--teal) 12%, white);
-      color: var(--teal);
+      --report-icon-color: #129f9a;
+      --report-icon-accent: #0b7f7b;
+    }
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="tone"]) {
+      --report-icon-color: #159fbc;
+      --report-icon-accent: #2d73cf;
+    }
+    #diag-keywords :global(.keyword i[data-icon="face"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="face"]) {
+      --report-icon-color: #e14f7d;
     }
     #diag-keywords :global(.keyword i[data-icon="eye"]),
-    .diagnosis-result-shell :global(.analysis-row i[data-icon="eye"]),
-    .diagnosis-result-shell :global(.analysis-row i[data-icon="face"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="eye"]) {
+      --report-icon-color: #8062d6;
+    }
     .diagnosis-result-shell :global(.analysis-row i[data-icon="strength"]) {
-      background: color-mix(in srgb, var(--rose) 12%, white);
-      color: var(--rose);
+      --report-icon-color: #ef3f73;
+      --report-icon-accent: #9f64d8;
     }
     #diag-keywords :global(.keyword i[data-icon="color"]),
     .diagnosis-result-shell :global(.analysis-row i[data-icon="color"]),
-    .diagnosis-result-shell :global(.analysis-row i[data-icon="season"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="season"]) {
+      --report-icon-color: #eb684b;
+      --report-icon-dot-a: #10a9a3;
+      --report-icon-dot-b: #e34f7a;
+      --report-icon-dot-c: #8062d6;
+    }
     .diagnosis-result-shell :global(.analysis-row i[data-icon="makeup"]) {
-      background: color-mix(in srgb, var(--gold) 14%, white);
-      color: #b86b14;
+      --report-icon-color: #e88616;
+      --report-icon-accent: #efaa32;
     }
     .diagnosis-result-shell :global(.analysis-row i[data-icon="limit"]),
     .diagnosis-result-shell :global(.analysis-row i[data-icon="caution"]),
     .diagnosis-result-shell :global(.analysis-row i[data-icon="percent"]) {
-      background: color-mix(in srgb, var(--rose) 10%, white);
-      color: #d4576c;
+      --report-icon-color: #e83e70;
     }
     .diagnosis-result-shell :global(.analysis-row b) {
       display: block;
@@ -4196,11 +4244,6 @@ const detailPanelCopy =
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
     }
     :global([data-theme="dark"]) .keyword i {
-      background: linear-gradient(
-        135deg,
-        var(--gold-soft),
-        rgba(240, 168, 50, 0.22)
-      );
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
     @media (prefers-color-scheme: dark) {
@@ -4213,11 +4256,6 @@ const detailPanelCopy =
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
       }
       :global(:root:not([data-theme="light"])) .keyword i {
-        background: linear-gradient(
-          135deg,
-          var(--gold-soft),
-          rgba(240, 168, 50, 0.22)
-        );
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
     }
@@ -4657,17 +4695,17 @@ const detailPanelCopy =
       .keyword {
         padding: 12px 14px;
         gap: 10px;
-        grid-template-columns: 44px 1fr;
+        grid-template-columns: 46px 1fr;
       }
       .keyword i {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
         font-size: 0;
       }
       .keyword i svg {
-        width: 22px;
-        height: 22px;
+        width: 26px;
+        height: 26px;
       }
       .keyword b {
         font-size: 13px;
