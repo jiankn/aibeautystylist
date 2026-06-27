@@ -659,6 +659,69 @@ const professionalReportCopy = isEnglish
         ],
       ],
     };
+
+const detailPanelCopyByLocale = {
+  en: {
+    title: "Before you try",
+    subtitle:
+      "See what this result is based on, how solid it looks, and what to test more gently first.",
+    pills: ["What it's based on", "How solid it looks", "What to test gently"],
+  },
+  "zh-CN": {
+    title: "试妆前先看",
+    subtitle: "先看这次判断是怎么来的、稳不稳，再决定哪些地方先轻一点试。",
+    pills: ["怎么看出来的", "这次稳不稳", "先轻一点试"],
+  },
+  "zh-TW": {
+    title: "試妝前先看",
+    subtitle: "先看這次判斷是怎麼來的、穩不穩，再決定哪些地方先輕一點試。",
+    pills: ["怎麼看出來的", "這次穩不穩", "先輕一點試"],
+  },
+  "de-DE": {
+    title: "Bevor du loslegst",
+    subtitle:
+      "Schau kurz, worauf das Ergebnis basiert, wie stabil es ist und womit du erst vorsichtig testen solltest.",
+    pills: ["Worauf es basiert", "Wie stabil es ist", "Erst vorsichtig testen"],
+  },
+  "fr-FR": {
+    title: "Avant d'essayer",
+    subtitle:
+      "Regardez sur quoi repose le résultat, s'il tient bien la route et ce qu'il vaut mieux tester en douceur.",
+    pills: ["Ce qui le fonde", "S'il tient la route", "À tester doucement"],
+  },
+  "ja-JP": {
+    title: "試す前にチェック",
+    subtitle:
+      "この結果が何を見て出たのか、どれくらい安定しているか、まずは薄めに試したい方向を確認できます。",
+    pills: ["どこを見たか", "どれくらい安定か", "まずは薄めに試す"],
+  },
+  "ko-KR": {
+    title: "시도하기 전에 보기",
+    subtitle:
+      "이번 결과가 무엇을 보고 나왔는지, 얼마나 안정적인지, 어떤 방향은 먼저 약하게 시도하면 되는지 확인하세요.",
+    pills: ["무엇을 보고 나왔는지", "얼마나 안정적인지", "먼저 약하게 시도"],
+  },
+  "es-ES": {
+    title: "Antes de probar",
+    subtitle:
+      "Mira en qué se basa el resultado, qué tan firme se ve y qué conviene probar con más suavidad.",
+    pills: ["En qué se basa", "Qué tan firme se ve", "Qué probar con calma"],
+  },
+  "es-419": {
+    title: "Antes de probar",
+    subtitle:
+      "Mira en qué se basa el resultado, qué tan firme se ve y qué conviene probar con más suavidad.",
+    pills: ["En qué se basa", "Qué tan firme se ve", "Qué probar con calma"],
+  },
+  "pt-BR": {
+    title: "Antes de testar",
+    subtitle:
+      "Veja no que este resultado se apoia, quão estável ele parece e o que vale testar com mais leveza primeiro.",
+    pills: ["No que se apoia", "Quão estável parece", "Testar com leveza"],
+  },
+} as const;
+const detailPanelCopy =
+  detailPanelCopyByLocale[currentLocale] ?? detailPanelCopyByLocale.en;
 ---
 
 <BaseLayout
@@ -968,8 +1031,13 @@ const professionalReportCopy = isEnglish
 
         <details class="diagnosis-detail-panel panel" id="diag-detail-panel">
           <summary>
-            <span>{professionalReportCopy.detailTitle}</span>
-            <small>{professionalReportCopy.detailSubtitle}</small>
+            <div class="diagnosis-detail-summary">
+              <strong>{detailPanelCopy.title}</strong>
+              <small>{detailPanelCopy.subtitle}</small>
+              <div class="diagnosis-detail-pills">
+                {detailPanelCopy.pills.map((pill) => <span>{pill}</span>)}
+              </div>
+            </div>
           </summary>
           <div
             class="analysis-cards diagnosis-detail-cards"
@@ -1511,6 +1579,58 @@ const professionalReportCopy = isEnglish
       const valueMaps = resultLabels.valueMaps || {};
       const keywordIcons = resultLabels.keywordIcons || {};
       const reportCopy = professionalReportCopy || {};
+
+      function iconSvg(paths) {
+        return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+      }
+
+      const reportIconSvg = {
+        skin: iconSvg(
+          `<path d="M12 3.5c-3.5 4-5.5 6.9-5.5 9.6A5.5 5.5 0 0 0 12 18.6a5.5 5.5 0 0 0 5.5-5.5c0-2.7-2-5.6-5.5-9.6Z" /><path d="M9.8 13.4c.4 1.2 1.2 2 2.2 2.4" />`,
+        ),
+        face: iconSvg(
+          `<path d="M8 6.5c1-1.7 2.4-2.5 4-2.5s3 .8 4 2.5c1 1.5 1.5 3.6 1.5 5.8 0 2.3-.8 4.4-2.1 5.9-.9 1-2.1 1.8-3.4 1.8s-2.5-.8-3.4-1.8C7.3 16.7 6.5 14.6 6.5 12.3c0-2.2.5-4.3 1.5-5.8Z" /><circle cx="9.5" cy="10.5" r="0.8" fill="currentColor" stroke="none" /><circle cx="14.5" cy="10.5" r="0.8" fill="currentColor" stroke="none" /><path d="M10 14.8c.7.5 1.4.8 2 .8s1.3-.3 2-.8" />`,
+        ),
+        eye: iconSvg(
+          `<path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z" /><circle cx="12" cy="12" r="2.4" />`,
+        ),
+        color: iconSvg(
+          `<rect x="4.5" y="6" width="15" height="12" rx="3" /><circle cx="8.3" cy="10" r="1" fill="currentColor" stroke="none" /><circle cx="12" cy="13" r="1" fill="currentColor" stroke="none" /><circle cx="15.7" cy="10" r="1" fill="currentColor" stroke="none" />`,
+        ),
+        depth: iconSvg(
+          `<path d="M7 17v-5" /><path d="M12 17V8" /><path d="M17 17V5" />`,
+        ),
+        tone: iconSvg(
+          `<circle cx="12" cy="12" r="6.5" /><path d="M12 5.5a6.5 6.5 0 0 1 0 13" />`,
+        ),
+        season: iconSvg(
+          `<path d="M12 4v4" /><path d="M12 16v4" /><path d="M4 12h4" /><path d="M16 12h4" /><path d="m6.5 6.5 2.8 2.8" /><path d="m14.7 14.7 2.8 2.8" /><path d="m17.5 6.5-2.8 2.8" /><path d="m9.3 14.7-2.8 2.8" />`,
+        ),
+        makeup: iconSvg(
+          `<path d="m7 17 8.8-8.8a1.8 1.8 0 0 1 2.5 0l.5.5a1.8 1.8 0 0 1 0 2.5L10 20" /><path d="m6.5 17.5-2 2" /><path d="m14.5 9.5 3 3" />`,
+        ),
+        strength: iconSvg(
+          `<path d="m12 4.5 1.8 4.2 4.2 1.8-4.2 1.8-1.8 4.2-1.8-4.2-4.2-1.8 4.2-1.8L12 4.5Z" />`,
+        ),
+        percent: iconSvg(
+          `<path d="m8.5 15.5 7-7" /><circle cx="8.5" cy="8.5" r="1.4" /><circle cx="15.5" cy="15.5" r="1.4" />`,
+        ),
+        limit: iconSvg(
+          `<path d="M12 5.5 19 18H5L12 5.5Z" /><path d="M12 10v3.5" /><circle cx="12" cy="15.8" r=".8" fill="currentColor" stroke="none" />`,
+        ),
+        caution: iconSvg(
+          `<path d="M9 3.5h6l5.5 5.5v6L15 20.5H9L3.5 15V9L9 3.5Z" /><path d="M12 8.5v4.8" /><circle cx="12" cy="16.3" r=".8" fill="currentColor" stroke="none" />`,
+        ),
+        info: iconSvg(
+          `<circle cx="12" cy="12" r="7" /><path d="M12 10.2v4.4" /><circle cx="12" cy="7.6" r=".8" fill="currentColor" stroke="none" />`,
+        ),
+      };
+
+      function renderReportIcon(key) {
+        const safeKey = String(key || "");
+        const icon = reportIconSvg[safeKey] || reportIconSvg.info;
+        return `<i class="report-ui-icon" data-icon="${escapeHtml(safeKey)}" aria-hidden="true">${icon}</i>`;
+      }
 
       function labelFrom(map, key, fallback) {
         return (key && map?.[key]) || fallback || key || "";
@@ -2100,7 +2220,7 @@ const professionalReportCopy = isEnglish
         keywordsContainer.innerHTML = kw
           .map(
             (k) => `
-      <div class="keyword"><i data-icon="${escapeHtml(k.key)}">${escapeHtml(k.icon)}</i><div><b>${escapeHtml(k.title)}</b><span>${escapeHtml(k.desc)}</span></div></div>
+      <div class="keyword">${renderReportIcon(k.key)}<div><b>${escapeHtml(k.title)}</b><span>${escapeHtml(k.desc)}</span></div></div>
     `,
           )
           .join("");
@@ -2375,7 +2495,7 @@ const professionalReportCopy = isEnglish
           .filter((r) => r?.title || r?.desc)
           .map(
             (r) =>
-              `<div class="analysis-row"><i data-icon="${escapeHtml(r.key || "")}">${escapeHtml(r.icon || "")}</i><div><b>${escapeHtml(r.title || "")}</b><span>${escapeHtml(r.desc || "")}</span></div></div>`,
+              `<div class="analysis-row">${renderReportIcon(r.key || "")}<div><b>${escapeHtml(r.title || "")}</b><span>${escapeHtml(r.desc || "")}</span></div></div>`,
           )
           .join("")}</article>`;
       }
@@ -3688,12 +3808,24 @@ const professionalReportCopy = isEnglish
       gap: 12px;
     }
     #diag-keywords :global(.keyword) {
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: 14px;
       margin: 0;
       padding: 18px;
       border-color: var(--report-card-border);
       background: var(--report-card-bg);
       box-shadow: none;
       animation: none;
+    }
+    #diag-keywords :global(.keyword i) {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      font-size: 0;
+    }
+    #diag-keywords :global(.keyword i svg) {
+      width: 24px;
+      height: 24px;
     }
     #diag-keywords :global(.keyword b) {
       font-size: 16px;
@@ -3747,12 +3879,24 @@ const professionalReportCopy = isEnglish
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 14px;
       align-items: center;
-      min-height: 56px;
+      min-height: 72px;
       padding: 18px 22px;
       cursor: pointer;
       color: var(--report-ink);
       font-weight: 900;
       list-style: none;
+    }
+    .diagnosis-detail-summary {
+      display: grid;
+      min-width: 0;
+      gap: 10px;
+    }
+    .diagnosis-detail-summary strong {
+      display: block;
+      color: var(--report-ink);
+      font-size: clamp(20px, 2vw, 24px);
+      line-height: 1.24;
+      letter-spacing: 0.01em;
     }
     .diagnosis-detail-panel summary::-webkit-details-marker {
       display: none;
@@ -3766,14 +3910,35 @@ const professionalReportCopy = isEnglish
       border-radius: 50%;
       background: var(--surface-rose);
       color: var(--rose);
+      font-size: 18px;
     }
     .diagnosis-detail-panel[open] summary::after {
       content: "-";
     }
-    .diagnosis-detail-panel summary small {
+    .diagnosis-detail-summary small {
+      display: block;
       color: var(--report-muted);
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 600;
+      line-height: 1.6;
+    }
+    .diagnosis-detail-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .diagnosis-detail-pills span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 10px;
+      border: 1px solid var(--report-card-border);
+      border-radius: 999px;
+      background: var(--report-card-accent-rose);
+      color: var(--report-ink);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.2;
     }
     .diagnosis-detail-cards {
       padding: 0 22px 22px;
@@ -3800,21 +3965,52 @@ const professionalReportCopy = isEnglish
     }
     .diagnosis-result-shell :global(.analysis-row) {
       display: grid;
-      grid-template-columns: 38px minmax(0, 1fr);
-      gap: 12px;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 14px;
       align-items: start;
     }
     .diagnosis-result-shell :global(.analysis-row i) {
       display: grid;
-      width: 38px;
-      height: 38px;
+      width: 44px;
+      height: 44px;
       place-items: center;
-      border-radius: 13px;
+      border-radius: 14px;
       background: var(--surface-rose);
       color: var(--rose);
-      font-size: 13px;
+      font-size: 0;
       font-style: normal;
       font-weight: 900;
+    }
+    .diagnosis-result-shell :global(.analysis-row i svg) {
+      width: 22px;
+      height: 22px;
+    }
+    #diag-keywords :global(.keyword i[data-icon="skin"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="skin"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="tone"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="depth"]) {
+      background: color-mix(in srgb, var(--teal) 12%, white);
+      color: var(--teal);
+    }
+    #diag-keywords :global(.keyword i[data-icon="eye"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="eye"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="face"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="strength"]) {
+      background: color-mix(in srgb, var(--rose) 12%, white);
+      color: var(--rose);
+    }
+    #diag-keywords :global(.keyword i[data-icon="color"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="color"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="season"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="makeup"]) {
+      background: color-mix(in srgb, var(--gold) 14%, white);
+      color: #b86b14;
+    }
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="limit"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="caution"]),
+    .diagnosis-result-shell :global(.analysis-row i[data-icon="percent"]) {
+      background: color-mix(in srgb, var(--rose) 10%, white);
+      color: #d4576c;
     }
     .diagnosis-result-shell :global(.analysis-row b) {
       display: block;
@@ -4240,6 +4436,8 @@ const professionalReportCopy = isEnglish
       }
       .diagnosis-report-facts {
         width: min(100%, 420px);
+        margin-inline: auto;
+        justify-self: center;
       }
       .diagnosis-result-actions {
         justify-content: flex-start;
@@ -4349,8 +4547,16 @@ const professionalReportCopy = isEnglish
         grid-template-columns: 1fr auto;
         padding: 16px 18px;
       }
-      .diagnosis-detail-panel summary small {
-        grid-column: 1 / -1;
+      .diagnosis-detail-summary strong {
+        font-size: 20px;
+      }
+      .diagnosis-detail-summary small {
+        font-size: 13px;
+      }
+      .diagnosis-detail-pills span {
+        min-height: 28px;
+        padding: 5px 9px;
+        font-size: 11px;
       }
       .diagnosis-detail-cards {
         padding: 0 18px 18px;
@@ -4451,13 +4657,17 @@ const professionalReportCopy = isEnglish
       .keyword {
         padding: 12px 14px;
         gap: 10px;
-        grid-template-columns: 38px 1fr;
+        grid-template-columns: 44px 1fr;
       }
       .keyword i {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        font-size: 13px;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        font-size: 0;
+      }
+      .keyword i svg {
+        width: 22px;
+        height: 22px;
       }
       .keyword b {
         font-size: 13px;
