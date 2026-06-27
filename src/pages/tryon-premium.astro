@@ -36,14 +36,6 @@ const shareCardHref = localizeAppHref("/share-card");
 const shareBaseHref = localizeAppHref("/share");
 const allLooks = resolveLookCatalog(audienceContext);
 const requestedSlug = Astro.url.searchParams.get("look");
-<<<<<<< HEAD
-const selected =
-  allLooks.find((look) => look.slug === requestedSlug) ?? allLooks[0];
-const selectorLooks = [
-  selected,
-  ...allLooks.filter((look) => look.slug !== selected.slug),
-].slice(0, 4);
-=======
 const featuredSlugs = ["commute", "no-makeup", "rose-milk-date", "photogenic"];
 const defaultFeaturedLooks = featuredSlugs
   .map((slug) => allLooks.find((look) => look.slug === slug))
@@ -61,7 +53,6 @@ const selected = requestedLook ?? featuredLooks[0];
 
 const tutorial = getTutorialByLookSlug(selected.slug);
 const productKits = getProductKitsByLookSlug(selected.slug);
->>>>>>> 2ff231e (refactor(premium): 对齐Pro页面结构，选择器改list模式，侧边栏引入教程和产品推荐)
 const premiumClientMessages = {
   loginTitle: t("tryon", "loginPremiumTitle"),
   loginDesc: t("tryon", "loginWorkspaceDesc"),
