@@ -34,7 +34,7 @@ const selected =
 const selectorLooks = [
   selected,
   ...allLooks.filter((look) => look.slug !== selected.slug),
-].slice(0, 5);
+].slice(0, 4);
 const premiumClientMessages = {
   loginTitle: t("tryon", "loginPremiumTitle"),
   loginDesc: t("tryon", "loginWorkspaceDesc"),
@@ -807,8 +807,8 @@ const premiumClientMessages = {
       border-radius: 10px;
     }
     :global(.premium-look-rail .featured-card img) {
-      aspect-ratio: 16 / 10;
-      object-position: 50% 24%;
+      aspect-ratio: 4 / 3;
+      object-position: 50% 30%;
     }
     :global(.premium-look-rail .featured-card strong) {
       padding: 9px 9px 3px;
