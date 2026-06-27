@@ -29,6 +29,7 @@ interface Props {
   }>;
   appScriptStrategy?: "defer" | "idle" | "none";
   analyticsScriptStrategy?: "defer" | "idle" | "none";
+  inlineGlobalStyles?: string;
 }
 
 const {
@@ -42,6 +43,7 @@ const {
   preloadImages = [],
   appScriptStrategy = "defer",
   analyticsScriptStrategy = "defer",
+  inlineGlobalStyles,
 } = Astro.props;
 
 const currentLocale = getCurrentLocale();
@@ -208,7 +210,13 @@ const clientMessages = {
       )
     }
     <title>{title}</title>
-    <link rel="stylesheet" href="/styles.css" />
+    {
+      inlineGlobalStyles ? (
+        <style is:inline set:html={inlineGlobalStyles} />
+      ) : (
+        <link rel="stylesheet" href="/styles.css" />
+      )
+    }
     <script is:inline>
       (function () {
         try {

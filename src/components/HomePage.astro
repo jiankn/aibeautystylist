@@ -7,6 +7,7 @@ import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import { t } from "../lib/i18n";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import inlineGlobalStyles from "../../public/styles.css?raw";
 
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
@@ -295,6 +296,7 @@ const homepageJsonLd = JSON.stringify({
   preloadImages={heroPreloadImages}
   appScriptStrategy="idle"
   analyticsScriptStrategy="idle"
+  inlineGlobalStyles={inlineGlobalStyles}
 >
   <SiteHeader active="tryOn" mobileHidden />
   <MobileAppTopBar
