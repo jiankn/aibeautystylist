@@ -21,6 +21,24 @@ const heroImageAfter =
 const heroImageBefore = pageAssets.heroImagesBefore?.light ?? heroImageAfter;
 const diagnosisPreviewImage =
   pageAssets.diagnosisPreviewImage ?? "/images/diagnosis-preview.webp";
+const responsiveWebpSrcset = (
+  image: string,
+  widths: number[],
+  originalWidth: number,
+) =>
+  [
+    ...widths.map(
+      (width) => `${image.replace(/\.webp$/i, `-${width}.webp`)} ${width}w`,
+    ),
+    `${image} ${originalWidth}w`,
+  ].join(", ");
+const diagnosisPreviewSrcset = responsiveWebpSrcset(
+  diagnosisPreviewImage,
+  [480, 640],
+  1024,
+);
+const scenarioImageSrcset = (image: string) =>
+  responsiveWebpSrcset(image, [480, 640], 960);
 const getLookThumbnail = (image: string) =>
   image.startsWith("/images/looks/")
     ? image.replace("/images/looks/", "/images/looks/thumbs/")
@@ -465,10 +483,13 @@ const homepageJsonLd = JSON.stringify({
             >
               <img
                 src={item.scenarioImage}
+                srcset={scenarioImageSrcset(item.scenarioImage)}
+                sizes="(max-width: 700px) 74vw, (max-width: 980px) 46vw, 30vw"
                 alt={item.look.imageAlt}
-                width="600"
-                height="800"
+                width="960"
+                height="960"
                 loading="lazy"
+                decoding="async"
               />
               <span class="scenario-shade" aria-hidden="true" />
               <div class="scenario-copy">
@@ -608,8 +629,13 @@ const homepageJsonLd = JSON.stringify({
         <figure class="ai-visual fade-in-on-scroll">
           <img
             src={diagnosisPreviewImage}
+            srcset={diagnosisPreviewSrcset}
+            sizes="(max-width: 700px) calc(100vw - 56px), (max-width: 980px) calc(100vw - 84px), 55vw"
+            width="1024"
+            height="1024"
             alt={t("homepage", "aiVisualAlt")}
             loading="lazy"
+            decoding="async"
           />
           <div class="ai-callout-row">
             <span class="ai-callout ai-callout-light"
@@ -806,6 +832,8 @@ const homepageJsonLd = JSON.stringify({
   }
 
   .home-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 820px;
     margin-top: clamp(54px, 6vw, 84px);
     scroll-margin-top: 72px;
   }

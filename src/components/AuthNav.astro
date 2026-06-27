@@ -1,8 +1,9 @@
 ---
 // 全站登录状态入口：复用现有入口，缺失时再创建。
+const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
 ---
 
-<script is:inline>
+<script is:inline define:vars={{ initialLoggedIn }}>
   (() => {
     const actions = document.querySelector(".nav-actions");
     if (!actions) return;
@@ -560,19 +561,38 @@
       return body;
     }
 
-    fetchSessionWithCheckoutRefresh()
-      .then((body) => {
-        const data = body?.data;
-        const email = data?.user?.email;
-        if (email) {
-          renderAccountMenu(link, data);
-          setMobileAuthSignedIn(data);
+    const syncSession = () => {
+      fetchSessionWithCheckoutRefresh()
+        .then((body) => {
+          const data = body?.data;
+          const email = data?.user?.email;
+          if (email) {
+            renderAccountMenu(link, data);
+            setMobileAuthSignedIn(data);
+          } else {
+            link.href = authHref;
+            setAuthLabel(link);
+            setMobileAuthSignedOut();
+          }
+        })
+        .catch(() => {});
+    };
+
+    if (checkoutSucceeded || initialLoggedIn) {
+      syncSession();
+    } else {
+      const scheduleSessionSync = () => {
+        if ("requestIdleCallback" in window) {
+          window.requestIdleCallback(syncSession, { timeout: 2400 });
         } else {
-          link.href = authHref;
-          setAuthLabel(link);
-          setMobileAuthSignedOut();
+          window.setTimeout(syncSession, 1200);
         }
-      })
-      .catch(() => {});
+      };
+      if (document.readyState === "complete") {
+        scheduleSessionSync();
+      } else {
+        window.addEventListener("load", scheduleSessionSync, { once: true });
+      }
+    }
   })();
 </script>
