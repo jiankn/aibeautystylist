@@ -1061,12 +1061,17 @@ const detailPanelCopy =
           </div>
           <div class="recommend-list" id="diag-recommends">
             {
-              defaultRecommends.map((look) => (
-                <article class="recommend">
-                  <img src={look.image} alt={look.title} />
+              defaultRecommends.slice(0, 3).map((look) => (
+                <article class="recommend report-recommend">
+                  <img
+                    src={look.image}
+                    alt={look.title}
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div>
                     <h3>{look.title}</h3>
-                    <p>{look.scenarios.join(" / ")}</p>
+                    <p class="recommend-meta">{look.scenarios.join(" · ")}</p>
                     <a class="btn btn-primary" href={tryLookHref(look.slug)}>
                       {diagnosisCopy.tryLook}
                     </a>
@@ -2465,22 +2470,35 @@ const detailPanelCopy =
                     primaryLook.href = `${tryOnFreeHref}?look=${encodeURIComponent(primary.slug)}`;
                     primaryLook.textContent = copy.tryLook;
                   }
-                  recommendsContainer.innerHTML = matched
-                    .slice(0, 4)
-                    .map(
-                      (m) => `
+                  const recommendationCards = matched
+                    .slice(0, 3)
+                    .map((m) => {
+                      const meta = [...(m.scenarios || []), ...(m.finish || [])]
+                        .filter(Boolean)
+                        .slice(0, 3)
+                        .join(" · ");
+                      return `
               <article class="recommend report-recommend">
-                <img src="${escapeHtml(m.image)}" alt="${escapeHtml(m.title)}" />
+                <img src="${escapeHtml(m.image)}" alt="${escapeHtml(m.title)}" loading="lazy" decoding="async" />
                 <div>
                   <h3>${escapeHtml(m.title)} <span class="pill pill-rose">${escapeHtml(reportCopy.matchBadge)}</span></h3>
-                  <p><b>${escapeHtml(reportCopy.matchedReason)}：</b>${escapeHtml(m.reason)}</p>
-                  <p class="recommend-watch"><b>${escapeHtml(reportCopy.watchTitle)}：</b>${escapeHtml(m.watch)}</p>
+                  ${meta ? `<p class="recommend-meta">${escapeHtml(meta)}</p>` : ""}
+                  <p class="recommend-reason"><b>${escapeHtml(reportCopy.matchedReason)}</b><span>${escapeHtml(m.intent || m.reason)}</span></p>
                   <a class="btn btn-primary" href="${escapeHtml(tryOnFreeHref)}?look=${encodeURIComponent(m.slug)}">${escapeHtml(copy.tryLook)}</a>
                 </div>
               </article>
-            `,
-                    )
+            `;
+                    })
                     .join("");
+                  const sharedWatch = matched.find((m) => m.watch)?.watch || "";
+                  recommendsContainer.innerHTML = `
+                    ${recommendationCards}
+                    ${
+                      sharedWatch
+                        ? `<div class="recommend-shared-watch"><b>${escapeHtml(reportCopy.watchTitle)}</b><span>${escapeHtml(sharedWatch)}</span></div>`
+                        : ""
+                    }
+                  `;
                 }
               });
           } catch {
@@ -3775,23 +3793,104 @@ const detailPanelCopy =
     }
     .diagnosis-priority-recommend .recommend-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
       margin-top: 0;
     }
-    .diagnosis-result-shell :global(.recommend) {
+    .diagnosis-result-shell :global(.report-recommend) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
       min-width: 0;
-      align-items: center;
-      padding: 10px;
-      border-radius: 14px;
+      align-items: stretch;
+      gap: 0;
+      padding: 0;
+      overflow: hidden;
+      border-radius: 18px;
       background: var(--report-card-bg);
     }
-    .diagnosis-result-shell :global(.recommend h3) {
-      margin-top: 0;
+    .diagnosis-result-shell :global(.report-recommend > img) {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 10;
+      border-radius: 0;
+      object-fit: cover;
+      object-position: center 28%;
     }
-    .diagnosis-result-shell :global(.recommend .btn) {
+    .diagnosis-result-shell :global(.report-recommend > div) {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 13px;
+      padding: 18px;
+    }
+    .diagnosis-result-shell :global(.report-recommend h3) {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0;
+      color: var(--report-ink);
+      font-size: 19px;
+      line-height: 1.35;
+    }
+    .diagnosis-result-shell :global(.report-recommend h3 .pill) {
+      flex: 0 0 auto;
+      font-size: 11px;
+      line-height: 1.2;
+    }
+    .diagnosis-result-shell :global(.report-recommend p) {
+      margin: 0;
+    }
+    .diagnosis-result-shell :global(.recommend-meta) {
+      color: var(--report-muted);
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+    }
+    .diagnosis-result-shell :global(.recommend-reason) {
+      display: grid;
+      gap: 6px;
+    }
+    .diagnosis-result-shell :global(.recommend-reason b) {
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.4;
+    }
+    .diagnosis-result-shell :global(.recommend-reason span) {
+      color: var(--report-body);
+      font-size: 14px;
+      line-height: 1.68;
+    }
+    .diagnosis-result-shell :global(.report-recommend .btn) {
       float: none;
-      width: fit-content;
+      width: 100%;
+      margin-top: auto;
+    }
+    .diagnosis-result-shell :global(.recommend-shared-watch) {
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 10px 14px;
+      align-items: start;
+      padding: 14px 16px;
+      border: 1px solid var(--report-card-border);
+      border-radius: 14px;
+      background: var(--report-card-accent-rose);
+    }
+    .diagnosis-result-shell :global(.recommend-shared-watch b) {
+      color: var(--report-ink);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .diagnosis-result-shell :global(.recommend-shared-watch span) {
+      color: var(--report-muted);
+      font-size: 13px;
+      line-height: 1.65;
     }
     .diagnosis-insight-grid {
       display: grid;
@@ -4231,13 +4330,6 @@ const detailPanelCopy =
       font-size: 15px;
       line-height: 1.65;
     }
-    .diagnosis-result-shell :global(.report-recommend p b) {
-      color: var(--heading);
-    }
-    .diagnosis-result-shell :global(.recommend-watch) {
-      margin-top: 5px;
-      color: var(--muted) !important;
-    }
     @media (hover: hover) and (pointer: fine) {
       .keyword:hover {
         transform: translateY(-2px);
@@ -4499,6 +4591,9 @@ const detailPanelCopy =
       .diagnosis-scenario-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+      .diagnosis-priority-recommend .recommend-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 700px) {
@@ -4587,8 +4682,15 @@ const detailPanelCopy =
       .diagnosis-priority-recommend .recommend-list {
         grid-template-columns: 1fr;
       }
-      .diagnosis-result-shell :global(.recommend) {
-        grid-template-columns: 96px minmax(0, 1fr);
+      .diagnosis-result-shell :global(.report-recommend > img) {
+        aspect-ratio: 16 / 9;
+      }
+      .diagnosis-result-shell :global(.report-recommend > div) {
+        gap: 12px;
+        padding: 16px;
+      }
+      .diagnosis-result-shell :global(.recommend-shared-watch) {
+        grid-template-columns: 1fr;
       }
       .diagnosis-detail-panel summary {
         grid-template-columns: 1fr auto;
