@@ -578,21 +578,8 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
         .catch(() => {});
     };
 
-    if (checkoutSucceeded || initialLoggedIn) {
-      syncSession();
-    } else {
-      const scheduleSessionSync = () => {
-        if ("requestIdleCallback" in window) {
-          window.requestIdleCallback(syncSession, { timeout: 2400 });
-        } else {
-          window.setTimeout(syncSession, 1200);
-        }
-      };
-      if (document.readyState === "complete") {
-        scheduleSessionSync();
-      } else {
-        window.addEventListener("load", scheduleSessionSync, { once: true });
-      }
-    }
+    // SSR already knows whether this request has a valid session. Anonymous
+    // pages do not need a second session lookup after load.
+    if (checkoutSucceeded || initialLoggedIn) syncSession();
   })();
 </script>

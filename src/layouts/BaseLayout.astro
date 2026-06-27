@@ -33,6 +33,7 @@ interface Props {
   appScriptStrategy?: "defer" | "idle" | "none";
   analyticsScriptStrategy?: "defer" | "idle" | "none";
   inlineGlobalStyles?: string;
+  loadExternalFonts?: boolean;
 }
 
 const {
@@ -47,6 +48,7 @@ const {
   appScriptStrategy = "defer",
   analyticsScriptStrategy = "defer",
   inlineGlobalStyles,
+  loadExternalFonts = true,
 } = Astro.props;
 
 const currentLocale = getCurrentLocale();
@@ -62,7 +64,7 @@ const effectiveRobots = shouldNoindexLocalizedFallback(requestedPathname)
 const htmlClass = /\/discover\/?$/i.test(requestedPathname)
   ? "filter-sheet-ready"
   : undefined;
-const fontStylesheet = currentLocale.startsWith("zh")
+const fontStylesheet = !loadExternalFonts || currentLocale.startsWith("zh")
   ? undefined
   : "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=optional";
 const idleScriptSources = [
@@ -178,6 +180,7 @@ const clientMessages = {
       as="font"
       type="font/woff2"
       crossorigin
+      media="(min-width: 701px)"
     />
     {
       fontStylesheet && (

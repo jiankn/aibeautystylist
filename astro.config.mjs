@@ -33,6 +33,11 @@ export default defineConfig({
   output: "server",
   site: "https://aibeautystylist.com",
   trailingSlash: "ignore",
+  build: {
+    // The public pages have small, route-scoped stylesheets. Inlining them
+    // removes multiple render-blocking round trips on throttled mobile links.
+    inlineStylesheets: "always",
+  },
   devToolbar: {
     enabled: false,
   },

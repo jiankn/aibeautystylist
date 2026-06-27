@@ -39,7 +39,9 @@ const diagnosisPreviewSrcset = responsiveWebpSrcset(
   1024,
 );
 const scenarioImageSrcset = (image: string) =>
-  responsiveWebpSrcset(image, [480, 640], 960);
+  image.startsWith("/images/home-scenario-")
+    ? responsiveWebpSrcset(image, [480, 640], 960)
+    : undefined;
 const getLookThumbnail = (image: string) =>
   image.startsWith("/images/looks/")
     ? image.replace("/images/looks/", "/images/looks/thumbs/")
@@ -297,6 +299,7 @@ const homepageJsonLd = JSON.stringify({
   appScriptStrategy="idle"
   analyticsScriptStrategy="idle"
   inlineGlobalStyles={inlineGlobalStyles}
+  loadExternalFonts={false}
 >
   <SiteHeader active="tryOn" mobileHidden />
   <MobileAppTopBar
@@ -2199,7 +2202,7 @@ const homepageJsonLd = JSON.stringify({
         .homeOriginalImage || "/images/home-hero-multicultural.webp";
     const commuteImage =
       mockupLooks[0]?.getAttribute("data-image") || "/images/look-commute.webp";
-    const commuteTitle = previewTitle ? previewTitle.innerText : "";
+    const commuteTitle = previewTitle ? previewTitle.textContent || "" : "";
 
     // 图片切换带 fade 过渡的工具函数
     function fadeToImage(src, onMid) {
@@ -2236,10 +2239,10 @@ const homepageJsonLd = JSON.stringify({
       if (idx === 0) {
         if (mockupLooks[0]) mockupLooks[0].classList.add("active");
         fadeToImage(commuteImage, () => {
-          if (previewTitle) previewTitle.innerText = commuteTitle;
+          if (previewTitle) previewTitle.textContent = commuteTitle;
         });
         if (previewStatus) {
-          previewStatus.innerText =
+          previewStatus.textContent =
             previewStatus.getAttribute("data-text-preview") || "AI 生成预览";
           previewStatus.style.background = "rgba(9, 20, 35, 0.7)";
         }
@@ -2248,7 +2251,7 @@ const homepageJsonLd = JSON.stringify({
         screen.classList.add("show-scan");
         fadeToImage(originalImage);
         if (previewStatus) {
-          previewStatus.innerText =
+          previewStatus.textContent =
             previewStatus.getAttribute("data-text-uploaded") || "自拍已上传";
           previewStatus.style.background = "var(--rose)";
         }
@@ -2256,10 +2259,10 @@ const homepageJsonLd = JSON.stringify({
       } else if (idx === 2) {
         if (mockupLooks[0]) mockupLooks[0].classList.add("active");
         fadeToImage(commuteImage, () => {
-          if (previewTitle) previewTitle.innerText = commuteTitle;
+          if (previewTitle) previewTitle.textContent = commuteTitle;
         });
         if (previewStatus) {
-          previewStatus.innerText =
+          previewStatus.textContent =
             previewStatus.getAttribute("data-text-ready") || "生成完成";
           previewStatus.style.background = "var(--teal)";
         }
@@ -2288,11 +2291,11 @@ const homepageJsonLd = JSON.stringify({
         mockupLooks.forEach((l) => l.classList.remove("active"));
         look.classList.add("active");
 
-        const lookTitle = look.querySelector("span")?.innerText || "";
+        const lookTitle = look.querySelector("span")?.textContent || "";
         const lookSrc = lookImages[idx] || lookImages[0];
 
         fadeToImage(lookSrc, () => {
-          if (previewTitle) previewTitle.innerText = lookTitle;
+          if (previewTitle) previewTitle.textContent = lookTitle;
         });
 
         // 同步步骤到"查看效果"
@@ -2302,7 +2305,7 @@ const homepageJsonLd = JSON.stringify({
           mockupLooks.forEach((l) => l.classList.remove("active"));
           look.classList.add("active");
           fadeToImage(lookSrc, () => {
-            if (previewTitle) previewTitle.innerText = lookTitle;
+            if (previewTitle) previewTitle.textContent = lookTitle;
           });
         }, 250);
       });
