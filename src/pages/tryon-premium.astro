@@ -309,28 +309,28 @@ const premiumClientMessages = {
                 }
               </div>
             </section>
-            <section class="panel" style="margin-top:16px">
-              <div class="history-panel-head">
-                <div>
-                  <h2 class="panel-title">
-                    <a class="history-title-link" href={historyHref}>
-                      {t("tryon", "historyPreviewTitle")}
-                    </a>
-                  </h2>
-                  <p class="history-panel-subtitle">
-                    {t("tryon", "historyPreviewDesc")}
-                  </p>
-                </div>
-                <a class="history-view-all" href={historyHref}>
-                  <span>{t("tryon", "historyViewAllShort")}</span>
-                  <span aria-hidden="true">›</span>
-                </a>
-              </div>
-              <div id="prem-history" class="diag-history-list">
-                <p class="muted">{t("tryon", "loading")}</p>
-              </div>
-            </section>
           </aside>
+          <section class="panel premium-history-panel">
+            <div class="history-panel-head">
+              <div>
+                <h2 class="panel-title">
+                  <a class="history-title-link" href={historyHref}>
+                    {t("tryon", "historyPreviewTitle")}
+                  </a>
+                </h2>
+                <p class="history-panel-subtitle">
+                  {t("tryon", "historyPreviewDesc")}
+                </p>
+              </div>
+              <a class="history-view-all" href={historyHref}>
+                <span>{t("tryon", "historyViewAllShort")}</span>
+                <span aria-hidden="true">›</span>
+              </a>
+            </div>
+            <div id="prem-history" class="diag-history-list">
+              <p class="muted">{t("tryon", "loading")}</p>
+            </div>
+          </section>
         </div>
       </div>
     </div>
@@ -848,7 +848,7 @@ const premiumClientMessages = {
     .premium-side-rail {
       display: grid;
       grid-column: 1 / -1;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       min-width: 0;
     }
@@ -888,43 +888,51 @@ const premiumClientMessages = {
       line-height: 1.3;
       white-space: normal;
     }
-    :global(.premium-side-rail #prem-history .history-grid-container) {
-      grid-template-columns: 1fr;
-      gap: 8px;
+    .premium-history-panel {
+      grid-column: 1 / -1;
+      min-width: 0;
+      padding: 16px 18px 18px;
+    }
+    .premium-history-panel .history-panel-head {
+      padding: 0;
+    }
+    :global(.premium-history-panel #prem-history .history-grid-container) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
       max-width: none;
     }
-    :global(.premium-side-rail #prem-history .history-item-card) {
+    :global(.premium-history-panel #prem-history .history-item-card) {
       display: grid;
-      min-height: 64px;
-      grid-template-columns: 64px minmax(0, 1fr);
+      min-height: 88px;
+      grid-template-columns: minmax(84px, 38%) minmax(0, 1fr);
       aspect-ratio: auto;
     }
-    :global(.premium-side-rail #prem-history .history-thumb) {
-      width: 64px;
+    :global(.premium-history-panel #prem-history .history-thumb) {
+      width: 100%;
       height: 100%;
-      min-height: 64px;
+      min-height: 88px;
       object-position: 50% 22%;
     }
-    :global(.premium-side-rail #prem-history .history-info) {
+    :global(.premium-history-panel #prem-history .history-info) {
       position: static;
       min-height: 0;
-      padding: 8px 9px;
+      padding: 12px;
       background: transparent;
       color: var(--text);
     }
-    :global(.premium-side-rail #prem-history .history-title) {
+    :global(.premium-history-panel #prem-history .history-title) {
       display: -webkit-box;
       color: var(--navy);
-      font-size: 11.5px;
+      font-size: 13px;
       line-height: 1.3;
       white-space: normal;
       overflow: hidden;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
     }
-    :global(.premium-side-rail #prem-history .history-date) {
+    :global(.premium-history-panel #prem-history .history-date) {
       color: var(--muted);
-      font-size: 10px;
+      font-size: 11px;
     }
   }
 
@@ -954,13 +962,12 @@ const premiumClientMessages = {
     .premium-result-panel {
       padding: 24px;
     }
-    :global(.premium-side-rail #prem-history .history-item-card) {
-      min-height: 68px;
-      grid-template-columns: 68px minmax(0, 1fr);
+    :global(.premium-history-panel #prem-history .history-item-card) {
+      min-height: 104px;
+      grid-template-columns: minmax(104px, 36%) minmax(0, 1fr);
     }
-    :global(.premium-side-rail #prem-history .history-thumb) {
-      width: 68px;
-      min-height: 68px;
+    :global(.premium-history-panel #prem-history .history-thumb) {
+      min-height: 104px;
     }
   }
 
