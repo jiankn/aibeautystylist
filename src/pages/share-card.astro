@@ -12,6 +12,8 @@ const localizeAppHref = (href: string) =>
 const homeHref = localizeAppHref("/");
 const discoverHref = localizeAppHref("/discover");
 const tryOnHref = localizeAppHref("/tryon-free");
+const tryOnProHref = localizeAppHref("/tryon-pro");
+const tryOnPremiumHref = localizeAppHref("/tryon-premium");
 const shareCardHref = localizeAppHref("/share-card");
 const shareBaseHref = localizeAppHref("/share");
 
@@ -23,6 +25,7 @@ type ShareCardCopy = {
   navHome: string;
   navDiscover: string;
   navTryOn: string;
+  navTryOnPaid: string;
   navTryCta: string;
   navTryShort: string;
   cardAria: string;
@@ -71,6 +74,7 @@ const shareCopyByLocale = {
     navHome: "Home",
     navDiscover: "Discover looks",
     navTryOn: "Free try-on",
+    navTryOnPaid: "Try-on",
     navTryCta: "Try this look",
     navTryShort: "Try this",
     cardAria: "Makeup try-on share card",
@@ -116,6 +120,7 @@ const shareCopyByLocale = {
     navHome: "首页",
     navDiscover: "发现妆容",
     navTryOn: "免费试妆",
+    navTryOnPaid: "试妆",
     navTryCta: "试试这个妆",
     navTryShort: "试妆",
     cardAria: "试妆分享卡",
@@ -161,6 +166,7 @@ const shareCopyByLocale = {
     navHome: "首頁",
     navDiscover: "發現妝容",
     navTryOn: "免費試妝",
+    navTryOnPaid: "試妝",
     navTryCta: "試試這個妝",
     navTryShort: "試妝",
     cardAria: "試妝分享卡",
@@ -207,6 +213,7 @@ const shareCopyByLocale = {
     navHome: "Startseite",
     navDiscover: "Looks entdecken",
     navTryOn: "Kostenlos testen",
+    navTryOnPaid: "Testen",
     navTryCta: "Diesen Look testen",
     navTryShort: "Testen",
     cardAria: "Make-up-Try-on-Teilen-Karte",
@@ -256,6 +263,7 @@ const shareCopyByLocale = {
     navHome: "Accueil",
     navDiscover: "Découvrir les looks",
     navTryOn: "Essai gratuit",
+    navTryOnPaid: "Essai",
     navTryCta: "Essayer ce look",
     navTryShort: "Essayer",
     cardAria: "Carte de partage d'essai maquillage",
@@ -304,6 +312,7 @@ const shareCopyByLocale = {
     navHome: "ホーム",
     navDiscover: "メイクを探す",
     navTryOn: "無料試着",
+    navTryOnPaid: "試着",
     navTryCta: "このルックを試す",
     navTryShort: "試す",
     cardAria: "メイク試着共有カード",
@@ -351,6 +360,7 @@ const shareCopyByLocale = {
     navHome: "홈",
     navDiscover: "룩 둘러보기",
     navTryOn: "무료 체험",
+    navTryOnPaid: "체험",
     navTryCta: "이 룩 체험하기",
     navTryShort: "체험",
     cardAria: "메이크업 체험 공유 카드",
@@ -398,6 +408,7 @@ const shareCopyByLocale = {
     navHome: "Inicio",
     navDiscover: "Descubrir looks",
     navTryOn: "Prueba gratis",
+    navTryOnPaid: "Probar",
     navTryCta: "Probar este look",
     navTryShort: "Probar",
     cardAria: "Tarjeta compartida de prueba de maquillaje",
@@ -447,6 +458,7 @@ const shareCopyByLocale = {
     navHome: "Inicio",
     navDiscover: "Descubrir looks",
     navTryOn: "Prueba gratis",
+    navTryOnPaid: "Probar",
     navTryCta: "Probar este look",
     navTryShort: "Probar",
     cardAria: "Tarjeta compartida de prueba de maquillaje",
@@ -496,6 +508,7 @@ const shareCopyByLocale = {
     navHome: "Início",
     navDiscover: "Descobrir looks",
     navTryOn: "Teste grátis",
+    navTryOnPaid: "Testar",
     navTryCta: "Testar este look",
     navTryShort: "Testar",
     cardAria: "Cartão de compartilhamento do teste de maquiagem",
@@ -647,9 +660,9 @@ const posterCopy =
       <div class="share-nav-links">
         <a href={homeHref}>{copy.navHome}</a>
         <a href={discoverHref}>{copy.navDiscover}</a>
-        <a href={tryOnHref}>{copy.navTryOn}</a>
+        <a href={tryOnHref} data-tryon-link data-tryon-nav-label>{copy.navTryOn}</a>
       </div>
-      <a class="btn btn-primary share-nav-cta" href={tryOnHref}>
+      <a class="btn btn-primary share-nav-cta" href={tryOnHref} data-tryon-link>
         {copy.navTryCta}
       </a>
     </nav>
@@ -663,7 +676,7 @@ const posterCopy =
         </svg>
       </a>
       <strong>{copy.navTitle}</strong>
-      <a class="share-mobile-tryon" href={tryOnHref}>{copy.navTryShort}</a>
+      <a class="share-mobile-tryon" href={tryOnHref} data-tryon-link>{copy.navTryShort}</a>
     </header>
 
     <main class="share-page">
@@ -716,7 +729,7 @@ const posterCopy =
         <h2>{copy.emptyTitle}</h2>
         <p>{copy.emptyBody}</p>
         <div class="share-empty-actions">
-          <a class="btn btn-primary" href={tryOnHref}>{copy.emptyCta}</a>
+          <a class="btn btn-primary" href={tryOnHref} data-tryon-link>{copy.emptyCta}</a>
           <a class="btn" href={homeHref}>{copy.emptyHome}</a>
         </div>
       </div>
@@ -726,7 +739,7 @@ const posterCopy =
 
 <script
   is:inline
-  define:vars={{ copy, posterCopy, shareBaseHref, shareCardHref, tryOnHref }}
+  define:vars={{ copy, posterCopy, shareBaseHref, shareCardHref, tryOnHref, tryOnProHref, tryOnPremiumHref }}
 >
   (function () {
     const params = new URLSearchParams(location.search);
@@ -848,8 +861,25 @@ const posterCopy =
         currentPlan = "free";
       }
       hasLoadedPlan = true;
+      updateTryOnLinks();
       updateDownloadButtonLabel();
       refreshRewardButtonState();
+    }
+
+    function updateTryOnLinks() {
+      const targetHref =
+        currentPlan === "premium"
+          ? tryOnPremiumHref
+          : currentPlan === "pro"
+            ? tryOnProHref
+            : tryOnHref;
+      document.querySelectorAll("[data-tryon-link]").forEach(function (el) {
+        el.href = targetHref;
+      });
+      if (isPaidPlan()) {
+        var navLabel = document.querySelector("[data-tryon-nav-label]");
+        if (navLabel) navLabel.textContent = copy.navTryOnPaid;
+      }
     }
 
     function updateDownloadButtonLabel() {
