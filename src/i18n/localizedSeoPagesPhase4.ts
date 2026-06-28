@@ -292,14 +292,14 @@ function priorityForCategory(category: LocalizedSeoCategory): string {
 function buildRelatedLinks(seed: PageSeed) {
   const labels: Record<Phase4LanguageSlug, Record<string, string>> = {
     es: {
-      "/tryon-free": "Probador virtual",
+      "/tryon": "Probador virtual",
       "/pricing": "Ver precios",
       "/ai-beauty-advisor": "Asesor de belleza IA",
       "/looks/natural-makeup": "Maquillaje natural",
       "/scenarios/office": "Maquillaje de oficina",
     },
     "pt-br": {
-      "/tryon-free": "Teste virtual",
+      "/tryon": "Teste virtual",
       "/pricing": "Ver preços",
       "/ai-beauty-advisor": "Consultor de beleza IA",
       "/looks/natural-makeup": "Maquiagem natural",
@@ -307,7 +307,7 @@ function buildRelatedLinks(seed: PageSeed) {
     },
   };
   const defaults = [
-    "/tryon-free",
+    "/tryon",
     "/ai-beauty-advisor",
     "/looks/natural-makeup",
     "/scenarios/office",
@@ -393,13 +393,13 @@ const seeds: readonly PageSeed[] = [
     technique: "comparar tono de piel, forma del rostro y ocasión",
     caution: "un resultado que parezca filtro",
     proof: "que se vea bien en selfie y con luz diaria",
-    related: ["/tryon-free", "/diagnosis", "/discover", "/pricing"],
+    related: ["/tryon", "/diagnosis", "/discover", "/pricing"],
   },
   {
     languageSlug: "es",
     groupKey: "try-on",
     path: "/probar-maquillaje",
-    englishPath: "/tryon-free",
+    englishPath: "/tryon",
     category: "product",
     keyword: "probador de maquillaje virtual",
     topic: "ver un look de maquillaje sobre tu selfie",
@@ -457,7 +457,7 @@ const seeds: readonly PageSeed[] = [
     technique: "separar pruebas por ocasión y frecuencia",
     caution: "elegir funciones que no usarás",
     proof: "saber cuántos looks quieres guardar al mes",
-    related: ["/tryon-free", "/personalized-makeup-recommendation"],
+    related: ["/tryon", "/personalized-makeup-recommendation"],
   },
   {
     languageSlug: "es",
@@ -472,7 +472,7 @@ const seeds: readonly PageSeed[] = [
     technique: "priorizar base, color y foco visual",
     caution: "seguir reglas genéricas sin mirar tu cara",
     proof: "que la recomendación se entienda y se pueda repetir",
-    related: ["/diagnosis", "/tryon-free"],
+    related: ["/diagnosis", "/tryon"],
   },
   {
     languageSlug: "es",
@@ -856,7 +856,7 @@ const seeds: readonly PageSeed[] = [
     proof: "que los tonos favorezcan rostro, cuello y luz diaria",
     related: [
       "/personalized-makeup-recommendation",
-      "/tryon-free",
+      "/tryon",
       "/looks/natural-makeup",
     ],
     intentSections: [
@@ -904,13 +904,13 @@ const seeds: readonly PageSeed[] = [
     technique: "comparar tom de pele, formato do rosto e ocasião",
     caution: "resultado com cara de filtro",
     proof: "ficar bem na selfie e na luz do dia",
-    related: ["/tryon-free", "/diagnosis", "/discover", "/pricing"],
+    related: ["/tryon", "/diagnosis", "/discover", "/pricing"],
   },
   {
     languageSlug: "pt-br",
     groupKey: "try-on",
     path: "/teste-maquiagem",
-    englishPath: "/tryon-free",
+    englishPath: "/tryon",
     category: "product",
     keyword: "teste de maquiagem virtual",
     topic: "visualizar maquiagem na sua selfie",
@@ -934,7 +934,7 @@ const seeds: readonly PageSeed[] = [
     technique: "separar testes por ocasião e frequência",
     caution: "assinar recursos que você não vai usar",
     proof: "saber quantos looks quer salvar por mês",
-    related: ["/tryon-free", "/personalized-makeup-recommendation"],
+    related: ["/tryon", "/personalized-makeup-recommendation"],
   },
   {
     languageSlug: "pt-br",
@@ -949,7 +949,7 @@ const seeds: readonly PageSeed[] = [
     technique: "priorizar pele, cor e ponto focal",
     caution: "seguir regra genérica sem olhar seu rosto",
     proof: "a recomendação ser clara e repetível",
-    related: ["/diagnosis", "/tryon-free"],
+    related: ["/diagnosis", "/tryon"],
   },
   {
     languageSlug: "pt-br",

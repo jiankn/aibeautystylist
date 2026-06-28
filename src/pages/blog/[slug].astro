@@ -34,7 +34,7 @@ const discoverHref = localizeAppHref("/discover");
 const articleUrl = new URL(localizeAppHref(`/blog/${post.slug}`), origin).href;
 const imageUrl = new URL(post.coverImage, origin).href;
 const localizedContent = post.content.replace(
-  /href=(["'])(\/(?:blog|discover|tryon-free|pricing|diagnosis|support|faq|privacy|terms|account|login|share-card)(?:[^"']*)?)\1/g,
+  /href=(["'])(\/(?:blog|discover|tryon|pricing|diagnosis|support|faq|privacy|terms|account|login|share-card)(?:[^"']*)?)\1/g,
   (_match, quote: string, href: string) =>
     `href=${quote}${localizeAppHref(href)}${quote}`,
 );

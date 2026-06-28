@@ -6,7 +6,7 @@ interface Props {
   plan: "Free" | "Pro" | "Premium";
   title: string;
   subtitle: string;
-  active: "tryon-free" | "tryon-pro" | "tryon-premium" | "diagnosis";
+  active: "tryon" | "diagnosis";
   remaining?: number;
   total?: number;
   note?: string;
@@ -51,9 +51,9 @@ const links =
   plan === "Free"
     ? [
         {
-          href: localizeAppHref("/tryon-free"),
+          href: localizeAppHref("/tryon"),
           label: t("workspace", "startTryon"),
-          id: "tryon-free",
+          id: "tryon",
           variant: "primary" as const,
         },
         {
@@ -66,13 +66,13 @@ const links =
     : plan === "Pro"
       ? [
           {
-            href: localizeAppHref("/tryon-pro"),
+            href: localizeAppHref("/tryon"),
             label: t("workspace", "startHdTrypton"),
-            id: "tryon-pro",
+            id: "tryon",
             variant: "primary" as const,
           },
           {
-            href: localizeAppHref("/discover"),
+            href: localizeAppHref("/history"),
             label: t("workspace", "viewHistory"),
             id: "view-history",
             variant: "secondary" as const,
@@ -80,13 +80,13 @@ const links =
         ]
       : [
           {
-            href: localizeAppHref("/tryon-premium"),
+            href: localizeAppHref("/tryon"),
             label: t("workspace", "openFullCatalog"),
-            id: "tryon-premium",
+            id: "tryon",
             variant: "primary" as const,
           },
           {
-            href: localizeAppHref("/discover"),
+            href: localizeAppHref("/history"),
             label: t("workspace", "viewHistory"),
             id: "view-history",
             variant: "secondary" as const,

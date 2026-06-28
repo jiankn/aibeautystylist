@@ -160,9 +160,7 @@ const localizableAppRoutes = new Set([
   "/support",
   "/subscription",
   "/terms",
-  "/tryon-free",
-  "/tryon-premium",
-  "/tryon-pro",
+  "/tryon",
 ]);
 
 const appRouteOverrides = new Set(["/pricing"]);

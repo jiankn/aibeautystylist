@@ -2,17 +2,50 @@
 import LookSelector from "../components/LookSelector.astro";
 import MobileAppTopBar from "../components/MobileAppTopBar.astro";
 import MobileBottomNav from "../components/MobileBottomNav.astro";
+import ProductRecommend from "../components/ProductRecommend.astro";
 import ResultState from "../components/ResultState.astro";
 import SelfiePhotoGuide from "../components/SelfiePhotoGuide.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import TutorialSteps from "../components/TutorialSteps.astro";
+import TryOnHistoryPreview from "../components/TryOnHistoryPreview.astro";
 import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
+import {
+  getProductKitsByLookSlug,
+  notRecommendedProducts,
+} from "../data/products";
+import { getTutorialByLookSlug } from "../data/tutorials";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { getEntitlementContext } from "../lib/entitlements";
 import { t } from "../lib/i18n";
+import { getRuntimeBindings } from "../lib/runtime";
+import { resolveTryOnExperience } from "../lib/tryonExperience";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const audienceContext = Astro.locals.audienceContext;
-const isLoggedIn = Astro.locals.isLoggedIn;
+const { DB } = getRuntimeBindings();
+const currentUserId = Astro.locals.currentUserId;
+let authenticated = Boolean(currentUserId);
+let planCode: "free" | "pro" | "premium" = "free";
+let quota = { remaining: 3, total: 3 };
+
+if (authenticated) {
+  try {
+    if (currentUserId) {
+      const entitlement = await getEntitlementContext(currentUserId, DB);
+      planCode = entitlement.plan.planCode;
+      quota = {
+        remaining: entitlement.quota.remaining,
+        total: entitlement.quota.total,
+      };
+    }
+  } catch {
+    planCode = "free";
+  }
+}
+
+const experience = resolveTryOnExperience({ authenticated, planCode });
+const isLoggedIn = experience.authenticated;
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
@@ -38,13 +71,12 @@ const pricingHref = localizeAppHref(
 const discoverHref = localizeAppHref("/discover");
 const diagnosisHref = localizeAppHref("/diagnosis");
 const loginHref = localizeAppHref(
-  `/login?mode=register&next=${encodeURIComponent(localizeAppHref("/tryon-free"))}`,
+  `/login?mode=register&next=${encodeURIComponent(localizeAppHref("/tryon"))}`,
 );
 const shareCardHref = localizeAppHref("/share-card");
 const shareBaseHref = localizeAppHref("/share");
 const subscriptionHref = localizeAppHref("/subscription");
-const tryonProHref = localizeAppHref("/tryon-pro");
-const tryonPremiumHref = localizeAppHref("/tryon-premium");
+const tryonHref = localizeAppHref("/tryon");
 const resolvedLooks = resolveLookCatalog(audienceContext);
 const featuredSlugs = ["commute", "no-makeup", "rose-milk-date", "photogenic"];
 const defaultFeaturedLooks = featuredSlugs
@@ -61,6 +93,8 @@ const featuredLooks = requestedLook
     ].slice(0, 4)
   : defaultFeaturedLooks;
 const selected = requestedLook ?? featuredLooks[0];
+const tutorial = getTutorialByLookSlug(selected.slug);
+const productKits = getProductKitsByLookSlug(selected.slug);
 const hasExternalSelection =
   requestedLook && !featuredSlugs.includes(requestedLook.slug);
 const isChineseLocale = currentRoute.language.locale.startsWith("zh");
@@ -164,8 +198,8 @@ const upgradeBannerCopy = {
 const upgradeBannerHrefs = {
   pricing: pricingHref,
   account: subscriptionHref,
-  pro: tryonProHref,
-  premium: tryonPremiumHref,
+  pro: tryonHref,
+  premium: tryonHref,
 };
 const workspaceStatusCopy = {
   planNames: {
@@ -203,17 +237,23 @@ const workspaceStatusCopy = {
   },
 };
 const workspaceStatusHrefs = {
-  free: localizeAppHref("/tryon-free"),
-  pro: tryonProHref,
-  premium: tryonPremiumHref,
+  free: tryonHref,
+  pro: tryonHref,
+  premium: tryonHref,
   diagnosis: diagnosisHref,
   pricing: pricingHref,
 };
+const experienceTitle = workspaceStatusCopy.titles[experience.planCode];
+const experienceSubtitle =
+  experience.planCode === "free"
+    ? workspaceStatusCopy.subtitles.free
+    : workspaceStatusCopy.perks[experience.planCode];
+const experienceNote = workspaceStatusCopy.notes[experience.planCode];
 ---
 
 <BaseLayout
-  title={t("tryon", "title") + " | " + t("brand", "name")}
-  description={t("tryon", "subtitle")}
+  title={experienceTitle + " | " + t("brand", "name")}
+  description={experienceSubtitle}
   bodyClass="workspace-body"
 >
   <SiteHeader active="tryOn" mobileHidden />
@@ -223,18 +263,22 @@ const workspaceStatusHrefs = {
     rightAction="help"
     rightHref={diagnosisHref}
   />
-  <main class="workspace-main">
+  <main
+    class="workspace-main"
+    data-tryon-audience={experience.audience}
+    data-tryon-plan={experience.planCode}
+  >
     <div class="shell">
       {
         isLoggedIn ? (
           <WorkspaceStatusBar
-            plan="Free"
-            title={t("tryon", "title")}
-            subtitle={t("tryon", "subtitle")}
-            active="tryon-free"
-            remaining={3}
-            total={3}
-            note={t("tryon", "remainingPrefix")}
+            plan={experience.planLabel}
+            title={experienceTitle}
+            subtitle={experienceSubtitle}
+            active="tryon"
+            remaining={quota.remaining}
+            total={quota.total}
+            note={experienceNote}
             live
           />
         ) : (
@@ -263,7 +307,12 @@ const workspaceStatusHrefs = {
           </section>
         )
       }
-      <div class="workspace-grid">
+      <div
+        class:list={[
+          "workspace-grid",
+          experience.showMemberGuidance && "member-workspace-grid",
+        ]}
+      >
         <aside class="selector-panel panel">
           <div class="selector-head">
             <div>
@@ -439,6 +488,19 @@ const workspaceStatusHrefs = {
             <button class="btn" id="free-copy-link" disabled
               >⌘&nbsp; {t("tryon", "copyLink")}</button
             >
+            {
+              experience.features.hdDownload && (
+                <a
+                  class="btn btn-primary"
+                  id="member-download-result"
+                  href="#"
+                  download
+                  aria-disabled="true"
+                >
+                  ↓&nbsp; {t("tryon", "downloadHd")}
+                </a>
+              )
+            }
             <button
               class="btn btn-outline-rose"
               id="free-share-reward"
@@ -447,43 +509,83 @@ const workspaceStatusHrefs = {
             >
           </section>
         </section>
-        <aside
-          class="explain-panel panel advisor-panel"
-          data-look-advisor
-          aria-labelledby="look-advisor-title"
-        >
-          <div class="advisor-head">
-            <span class="advisor-kicker">{t("tryon", "advisorKicker")}</span>
-            <h2 class="panel-title" id="look-advisor-title" data-advisor-title>
-              {selected.title}
-            </h2>
-          </div>
-          <section class="advisor-section">
-            <h3>{t("tryon", "advisorFit")}</h3>
-            <p data-advisor-fit-text>{selected.advisor.fit}</p>
-          </section>
-          <section class="advisor-section">
-            <h3>{t("tryon", "advisorEffect")}</h3>
-            <p data-advisor-effect-text>{selected.advisor.effect}</p>
-          </section>
-          <section class="advisor-section">
-            <h3>{t("tryon", "advisorAnchors")}</h3>
-            <ul data-advisor-anchor-list>
-              {selected.advisor.anchors.map((item) => <li>{item}</li>)}
-            </ul>
-          </section>
-          <section class="advisor-section advisor-caution">
-            <h3>{t("tryon", "advisorCaution")}</h3>
-            <p data-advisor-caution-text>{selected.advisor.caution}</p>
-          </section>
-          <section class="advisor-section">
-            <h3>{t("tryon", "advisorJudge")}</h3>
-            <ul data-advisor-judge-list>
-              {selected.advisor.judge.map((item) => <li>{item}</li>)}
-            </ul>
-          </section>
-        </aside>
+        {
+          experience.showAdvisor && (
+            <aside
+              class="explain-panel panel advisor-panel"
+              data-look-advisor
+              aria-labelledby="look-advisor-title"
+            >
+              <div class="advisor-head">
+                <span class="advisor-kicker">
+                  {t("tryon", "advisorKicker")}
+                </span>
+                <h2
+                  class="panel-title"
+                  id="look-advisor-title"
+                  data-advisor-title
+                >
+                  {selected.title}
+                </h2>
+              </div>
+              <section class="advisor-section">
+                <h3>{t("tryon", "advisorFit")}</h3>
+                <p data-advisor-fit-text>{selected.advisor.fit}</p>
+              </section>
+              <section class="advisor-section">
+                <h3>{t("tryon", "advisorEffect")}</h3>
+                <p data-advisor-effect-text>{selected.advisor.effect}</p>
+              </section>
+              <section class="advisor-section">
+                <h3>{t("tryon", "advisorAnchors")}</h3>
+                <ul data-advisor-anchor-list>
+                  {selected.advisor.anchors.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </section>
+              <section class="advisor-section advisor-caution">
+                <h3>{t("tryon", "advisorCaution")}</h3>
+                <p data-advisor-caution-text>{selected.advisor.caution}</p>
+              </section>
+              <section class="advisor-section">
+                <h3>{t("tryon", "advisorJudge")}</h3>
+                <ul data-advisor-judge-list>
+                  {selected.advisor.judge.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </section>
+            </aside>
+          )
+        }
       </div>
+      {
+        experience.showMemberGuidance && (
+          <section
+            class="panel member-guidance"
+            aria-label={t("tryon", "productTypes")}
+          >
+            {tutorial ? (
+              <TutorialSteps
+                tutorial={tutorial}
+                userPlan={experience.planCode}
+              />
+            ) : (
+              <div class="member-guidance-empty">
+                <h2 class="panel-title">{t("tryon", "productTypes")}</h2>
+                <p class="panel-subtitle">{t("tryon", "tutorialComing")}</p>
+              </div>
+            )}
+            <div class="section-rule" />
+            <ProductRecommend
+              kits={productKits}
+              notRecommended={notRecommendedProducts}
+            />
+          </section>
+        )
+      }
+      {experience.showHistoryPreview && <TryOnHistoryPreview />}
       <section class="panel upgrade-banner" id="free-upgrade" hidden>
         <div>
           <h3 data-upgrade-title>{t("tryon", "upgradeTitle")}</h3>
@@ -519,6 +621,7 @@ const workspaceStatusHrefs = {
     upgradeBannerHrefs,
     workspaceStatusCopy,
     workspaceStatusHrefs,
+    reloadGuidanceOnLookChange: experience.showMemberGuidance,
   }}
 >
   (function () {
@@ -537,6 +640,10 @@ const workspaceStatusHrefs = {
     const delay = (ms) =>
       new Promise((resolve) => window.setTimeout(resolve, ms));
     const preferenceStorageKey = "abs:tryon-waiting-preferences";
+    document.addEventListener("abs:look-selected", (event) => {
+      if (!reloadGuidanceOnLookChange || !event.detail?.changed) return;
+      window.location.assign(event.detail.href || window.location.href);
+    });
 
     function readWaitingPreferences() {
       try {
@@ -892,6 +999,10 @@ const workspaceStatusHrefs = {
       const remaining = Number(session?.quota?.remaining);
       const exhausted = Number.isFinite(remaining) && remaining <= 0;
       const state = plan;
+      if (state !== "free" && !exhausted) {
+        upgrade.hidden = true;
+        return;
+      }
       const copy =
         state !== "free" && exhausted
           ? upgradeBannerCopy.exhausted
@@ -956,6 +1067,16 @@ const workspaceStatusHrefs = {
           if (btn) btn.disabled = false;
         },
       );
+      const downloadLink = document.getElementById("member-download-result");
+      if (downloadLink) {
+        downloadLink.href =
+          "/api/tryon-jobs/" + encodeURIComponent(jobId) + "/result";
+        downloadLink.setAttribute(
+          "download",
+          (lastSucceededLookSlug || "tryon-result") + ".webp",
+        );
+        downloadLink.setAttribute("aria-disabled", "false");
+      }
       refreshRewardButtonState();
       loadSavedLooks().then(renderSaveButton);
     }
@@ -1081,6 +1202,23 @@ const workspaceStatusHrefs = {
 </script>
 
 <style>
+  .workspace-grid.member-workspace-grid {
+    grid-template-columns: minmax(238px, 252px) minmax(0, 1fr);
+  }
+  .member-guidance {
+    margin-top: 24px;
+    overflow: hidden;
+  }
+  .member-guidance > :global(.tutorial-panel),
+  .member-guidance > :global(.product-recommend-panel) {
+    padding: 24px;
+  }
+  .member-guidance > .section-rule {
+    margin: 0 24px;
+  }
+  .member-guidance-empty {
+    padding: 24px;
+  }
   .upgrade-banner {
     display: flex;
     align-items: center;
@@ -1124,5 +1262,10 @@ const workspaceStatusHrefs = {
   }
   .upgrade-banner-actions .btn {
     min-height: 44px;
+  }
+  @media (max-width: 960px) {
+    .workspace-grid.member-workspace-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

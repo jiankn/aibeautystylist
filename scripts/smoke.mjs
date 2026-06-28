@@ -55,9 +55,7 @@ const routes = [
   "/diagnosis",
   "/pricing",
   "/share-card",
-  "/tryon-free",
-  "/tryon-pro",
-  "/tryon-premium",
+  "/tryon",
   "/privacy",
   "/terms",
   "/ai-disclaimer",
@@ -81,17 +79,7 @@ const darkModeRoutes = [
   },
   { route: "/pricing", surface: ".pricing-main", panel: ".pricing-plan-card" },
   {
-    route: "/tryon-free",
-    surface: "body.workspace-body",
-    panel: ".selector-panel",
-  },
-  {
-    route: "/tryon-pro",
-    surface: "body.workspace-body",
-    panel: ".selector-panel",
-  },
-  {
-    route: "/tryon-premium",
+    route: "/tryon",
     surface: "body.workspace-body",
     panel: ".selector-panel",
   },
@@ -205,7 +193,7 @@ try {
   }
 
   const noConsentPage = await browser.newPage();
-  await noConsentPage.goto(`${baseUrl}/tryon-free`, {
+  await noConsentPage.goto(`${baseUrl}/tryon`, {
     waitUntil: "networkidle",
   });
   const noConsentStatus = await noConsentPage.evaluate(
@@ -230,7 +218,7 @@ try {
   }
 
   const loginGatePage = await browser.newPage();
-  await loginGatePage.goto(`${baseUrl}/tryon-free?look=no-makeup`, {
+  await loginGatePage.goto(`${baseUrl}/tryon?look=no-makeup`, {
     waitUntil: "networkidle",
   });
   await loginGatePage.waitForFunction(
@@ -240,7 +228,7 @@ try {
   );
   await loginGatePage.locator("[data-upload]").click();
   await loginGatePage.waitForURL(/\/login\?next=/);
-  const expectedLoginNext = new URL(`${baseUrl}/tryon-free?look=no-makeup`);
+  const expectedLoginNext = new URL(`${baseUrl}/tryon?look=no-makeup`);
   const expectedNextValue = `${expectedLoginNext.pathname}${expectedLoginNext.search}`;
   if (!loginGatePage.url().includes(encodeURIComponent(expectedNextValue))) {
     throw new Error(`未登录上传没有保留回跳地址：${loginGatePage.url()}`);
@@ -334,7 +322,7 @@ try {
     scenarioHrefs.some((href) => {
       const target = new URL(href, new URL(baseUrl).origin);
       return (
-        !target.pathname.endsWith("/tryon-free") ||
+        !target.pathname.endsWith("/tryon") ||
         !target.searchParams.get("look") ||
         target.searchParams.get("source") !== "home_scenario"
       );
@@ -442,7 +430,7 @@ try {
     throw new Error("首页对比图键盘控制未生效。");
   }
 
-  await desktop.goto(`${baseUrl}/tryon-free?look=burgundy-velvet`, {
+  await desktop.goto(`${baseUrl}/tryon?look=burgundy-velvet`, {
     waitUntil: "networkidle",
   });
   const burgundyActive = desktop.locator(
@@ -487,7 +475,7 @@ try {
     throw new Error("Free 工作台切换妆容后未刷新右侧顾问卡。");
   }
 
-  await desktop.goto(`${baseUrl}/tryon-free?look=rose-milk-date`, {
+  await desktop.goto(`${baseUrl}/tryon?look=rose-milk-date`, {
     waitUntil: "networkidle",
   });
   const roseMilkTitle = await desktop
@@ -888,100 +876,6 @@ try {
   }
   await cancelRetryPage.close();
 
-  await desktop.route(/\/api\/session$/, (route) =>
-    fulfillApi(route, {
-      user: {
-        id: "smoke-pro-user",
-        kind: "account",
-        email: "smoke-pro@example.com",
-      },
-      plan: "pro",
-      subscription: {
-        status: "active",
-        currentPeriodEnd: "2026-07-01T00:00:00.000Z",
-      },
-      quota: {
-        remaining: 2,
-        total: 70,
-        used: 68,
-        periodStart: "2026-06-01T00:00:00.000Z",
-        nextRefreshAt: "2026-07-01T00:00:00.000Z",
-        shareRewardAvailableToday: false,
-      },
-    }),
-  );
-  await desktop.goto(`${baseUrl}/tryon-pro?look=french-natural-chic`, {
-    waitUntil: "networkidle",
-  });
-  const proFrenchActive = desktop.locator(
-    '#pro-content [data-look-slug="french-natural-chic"].active',
-  );
-  const proFrenchTitle = await proFrenchActive.getAttribute("data-look");
-  if (
-    !proFrenchTitle ||
-    (await desktop.locator("[data-look-title]").textContent())?.trim() !==
-      proFrenchTitle ||
-    (await proFrenchActive.count()) !== 1
-  ) {
-    throw new Error("Pro 工作台未带入非精选妆容参数。");
-  }
-  await desktop.locator('#pro-content [data-look-slug="no-makeup"]').click();
-  if (!desktop.url().includes("look=no-makeup")) {
-    throw new Error("工作台选择妆容后未更新 URL 参数。");
-  }
-  const selectedLookTitle = (
-    await desktop.locator("[data-look-title]").textContent()
-  )?.trim();
-  const selectedNoMakeupTitle = await desktop
-    .locator('#pro-content [data-look-slug="no-makeup"].active')
-    .getAttribute("data-look");
-  if (!selectedNoMakeupTitle || selectedLookTitle !== selectedNoMakeupTitle) {
-    throw new Error(
-      `工作台选择妆容后未更新标题，实际为 ${selectedLookTitle ?? "空"}`,
-    );
-  }
-  await desktop.unroute(/\/api\/session$/);
-
-  await desktop.route(/\/api\/session$/, (route) =>
-    fulfillApi(route, {
-      user: {
-        id: "smoke-premium-user",
-        kind: "account",
-        email: "smoke-premium@example.com",
-      },
-      plan: "premium",
-      subscription: {
-        status: "active",
-        currentPeriodEnd: "2026-07-01T00:00:00.000Z",
-      },
-      quota: {
-        remaining: 3,
-        total: 150,
-        used: 147,
-        periodStart: "2026-06-01T00:00:00.000Z",
-        nextRefreshAt: "2026-07-01T00:00:00.000Z",
-        shareRewardAvailableToday: false,
-      },
-    }),
-  );
-  await desktop.goto(`${baseUrl}/tryon-premium?look=french-natural-chic`, {
-    waitUntil: "networkidle",
-  });
-  const premiumFrenchActive = desktop.locator(
-    '#prem-content [data-look-slug="french-natural-chic"].active',
-  );
-  const premiumFrenchTitle =
-    await premiumFrenchActive.getAttribute("data-look");
-  if (
-    !premiumFrenchTitle ||
-    (await desktop.locator("[data-look-title]").textContent())?.trim() !==
-      premiumFrenchTitle ||
-    (await premiumFrenchActive.count()) !== 1
-  ) {
-    throw new Error("Premium 工作台未带入选择器首屏外的妆容参数。");
-  }
-  await desktop.unroute(/\/api\/session$/);
-
   for (const viewport of [
     { width: 375, height: 812 },
     { width: 768, height: 1024 },
@@ -1213,7 +1107,7 @@ async function assertDarkSurface(page, route, selector) {
 }
 
 async function runMockedUpload(page) {
-  await page.goto(`${baseUrl}/tryon-free`, { waitUntil: "networkidle" });
+  await page.goto(`${baseUrl}/tryon`, { waitUntil: "networkidle" });
   await page.locator("[data-photo-consent]").check();
   const chooserPromise = page.waitForEvent("filechooser");
   await page.locator("[data-upload]").click();

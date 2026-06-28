@@ -290,14 +290,14 @@ function priorityForCategory(category: LocalizedSeoCategory): string {
 function buildRelatedLinks(seed: PageSeed) {
   const labels: Record<Phase3LanguageSlug, Record<string, string>> = {
     ko: {
-      "/tryon-free": "가상 메이크업 체험",
+      "/tryon": "가상 메이크업 체험",
       "/pricing": "요금제 보기",
       "/ai-beauty-advisor": "AI 메이크업 진단",
       "/looks/natural-makeup": "내추럴 메이크업",
       "/scenarios/office": "오피스 메이크업",
     },
     "zh-tw": {
-      "/tryon-free": "線上試妝",
+      "/tryon": "線上試妝",
       "/pricing": "方案價格",
       "/ai-beauty-advisor": "AI 妝容診斷",
       "/looks/natural-makeup": "自然妝感",
@@ -305,7 +305,7 @@ function buildRelatedLinks(seed: PageSeed) {
     },
   };
   const defaults = [
-    "/tryon-free",
+    "/tryon",
     "/ai-beauty-advisor",
     "/looks/natural-makeup",
     "/scenarios/office",
@@ -416,13 +416,13 @@ const seeds: readonly PageSeed[] = [
     technique: "얼굴형, 톤, 상황을 함께 비교하기",
     caution: "필터처럼 과장되어 보이는 것",
     proof: "셀피와 실제 조명에서 모두 어울리는 것",
-    related: ["/tryon-free", "/diagnosis", "/discover", "/pricing"],
+    related: ["/tryon", "/diagnosis", "/discover", "/pricing"],
   },
   {
     languageSlug: "ko",
     groupKey: "try-on",
     path: "/try-on",
-    englishPath: "/tryon-free",
+    englishPath: "/tryon",
     category: "product",
     keyword: "가상 메이크업 체험",
     topic: "셀피 위에서 메이크업을 비교하는 과정",
@@ -446,7 +446,7 @@ const seeds: readonly PageSeed[] = [
     technique: "상황별 테스트 횟수를 나눠 보기",
     caution: "쓰지 않는 기능까지 선택하는 것",
     proof: "저장하고 싶은 룩 수가 분명한 것",
-    related: ["/tryon-free", "/personalized-makeup-recommendation"],
+    related: ["/tryon", "/personalized-makeup-recommendation"],
   },
   {
     languageSlug: "ko",
@@ -827,13 +827,13 @@ const seeds: readonly PageSeed[] = [
     technique: "把膚色、臉型和場合一起比較",
     caution: "像濾鏡一樣不真實",
     proof: "自拍和日常光線都成立",
-    related: ["/tryon-free", "/diagnosis", "/discover", "/pricing"],
+    related: ["/tryon", "/diagnosis", "/discover", "/pricing"],
   },
   {
     languageSlug: "zh-tw",
     groupKey: "try-on",
     path: "/try-on",
-    englishPath: "/tryon-free",
+    englishPath: "/tryon",
     category: "product",
     keyword: "虛擬試妝",
     topic: "用自拍預覽不同妝容",
@@ -857,7 +857,7 @@ const seeds: readonly PageSeed[] = [
     technique: "按場合、試妝次數和保存需求分配",
     caution: "選到超過實際需求的方案",
     proof: "想保存和比較的妝容數量明確",
-    related: ["/tryon-free", "/personalized-makeup-recommendation"],
+    related: ["/tryon", "/personalized-makeup-recommendation"],
   },
   {
     languageSlug: "zh-tw",
@@ -1014,11 +1014,7 @@ const seeds: readonly PageSeed[] = [
     technique: "同亮度下比較冷暖和飽和度",
     caution: "只用季節名稱決定產品",
     proof: "口紅和腮紅一起看仍協調",
-    related: [
-      "/personalized-makeup-recommendation",
-      "/tryon-free",
-      "/guides/步驟",
-    ],
+    related: ["/personalized-makeup-recommendation", "/tryon", "/guides/步驟"],
     intentSections: [
       {
         kind: "paragraphs",
@@ -1120,7 +1116,7 @@ const seeds: readonly PageSeed[] = [
     technique: "先決定要改善哪個區域",
     caution: "順序錯了導致不好修正",
     proof: "同一流程能穩定重現",
-    related: ["/guides/順序", "/guides/新手教學", "/tryon-free"],
+    related: ["/guides/順序", "/guides/新手教學", "/tryon"],
     intentSections: [
       {
         kind: "paragraphs",

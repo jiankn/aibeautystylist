@@ -24,9 +24,9 @@ const pricingHref = localizeAppHref(
 );
 const discoverHref = localizeAppHref("/discover");
 const loginHref = localizeAppHref("/login");
-const tryOnFreeHref = localizeAppHref("/tryon-free");
+const tryOnFreeHref = localizeAppHref("/tryon");
 const tryLookHref = (slug: string) =>
-  localizeAppHref(`/tryon-free?look=${encodeURIComponent(slug)}`);
+  localizeAppHref(`/tryon?look=${encodeURIComponent(slug)}`);
 const isEnglish = !currentLocale.startsWith("zh");
 const audienceContext = Astro.locals.audienceContext;
 const resolvedLooks = resolveLookCatalog(audienceContext);

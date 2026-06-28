@@ -520,21 +520,21 @@ function priorityForCategory(category: LocalizedSeoCategory): string {
 function buildRelatedLinks(seed: PageSeed) {
   const labels: Record<Phase2LanguageSlug, Record<string, string>> = {
     de: {
-      "/tryon-free": "Virtuell testen",
+      "/tryon": "Virtuell testen",
       "/pricing": "Preise ansehen",
       "/ai-beauty-advisor": "Make-up Beratung",
       "/looks/natural-makeup": "Natürliches Make-up",
       "/scenarios/office": "Büro Make-up",
     },
     fr: {
-      "/tryon-free": "Essai virtuel",
+      "/tryon": "Essai virtuel",
       "/pricing": "Tarifs",
       "/ai-beauty-advisor": "Conseil maquillage",
       "/looks/natural-makeup": "Maquillage naturel",
       "/scenarios/office": "Maquillage bureau",
     },
     ja: {
-      "/tryon-free": "バーチャルメイク",
+      "/tryon": "バーチャルメイク",
       "/pricing": "料金を見る",
       "/ai-beauty-advisor": "AIメイク診断",
       "/looks/natural-makeup": "ナチュラルメイク",
@@ -542,7 +542,7 @@ function buildRelatedLinks(seed: PageSeed) {
     },
   };
   const defaults = [
-    "/tryon-free",
+    "/tryon",
     "/ai-beauty-advisor",
     "/looks/natural-makeup",
     "/scenarios/office",
@@ -570,13 +570,13 @@ const seeds: readonly PageSeed[] = [
     technique: "sanfte Platzierung von Teint, Augen und Lippen",
     caution: "ein Filtereffekt oder zu harte Kontraste",
     proof: "Tageslicht, Selfie und Terminrealität",
-    related: ["/tryon-free", "/discover", "/diagnosis", "/pricing"],
+    related: ["/tryon", "/discover", "/diagnosis", "/pricing"],
   },
   {
     languageSlug: "de",
     groupKey: "try-on",
     path: "/try-on",
-    englishPath: "/tryon-free",
+    englishPath: "/tryon",
     category: "product",
     keyword: "virtuelles Make-up Testen",
     topic: "Make-up Varianten direkt auf deinem Selfie",
@@ -600,7 +600,7 @@ const seeds: readonly PageSeed[] = [
     technique: "Credits nach Anlass, Häufigkeit und Detailtiefe einteilen",
     caution: "ein Plan mehr kostet, als du wirklich nutzt",
     proof: "wie oft du Looks testen oder speichern willst",
-    related: ["/tryon-free", "/personalized-makeup-recommendation"],
+    related: ["/tryon", "/personalized-makeup-recommendation"],
   },
   {
     languageSlug: "de",
@@ -825,7 +825,7 @@ const seeds: readonly PageSeed[] = [
     proof: "dünn und deckend aufgetragen stimmig bleibt",
     related: [
       "/for/hauttyp-bestimmen",
-      "/tryon-free",
+      "/tryon",
       "/personalized-makeup-recommendation",
     ],
     intentSections: [
@@ -920,13 +920,13 @@ const seeds: readonly PageSeed[] = [
     technique: "comparaison avant-après avec sous-ton et contexte",
     caution: "un filtre embellit sans aider à choisir",
     proof: "lumière du jour, selfie et usage réel concordent",
-    related: ["/tryon-free", "/diagnosis", "/discover", "/pricing"],
+    related: ["/tryon", "/diagnosis", "/discover", "/pricing"],
   },
   {
     languageSlug: "fr",
     groupKey: "try-on",
     path: "/try-on",
-    englishPath: "/tryon-free",
+    englishPath: "/tryon",
     category: "product",
     keyword: "essai virtuel maquillage",
     topic: "tester plusieurs styles sur votre photo",
@@ -950,7 +950,7 @@ const seeds: readonly PageSeed[] = [
     technique: "organiser les crédits par événement et niveau de détail",
     caution: "un abonnement dépasse votre rythme réel",
     proof: "le nombre de looks sauvegardés justifie le plan",
-    related: ["/tryon-free", "/personalized-makeup-recommendation"],
+    related: ["/tryon", "/personalized-makeup-recommendation"],
   },
   {
     languageSlug: "fr",
@@ -1297,7 +1297,7 @@ const seeds: readonly PageSeed[] = [
     technique: "tester sous-ton, profondeur, couvrance et oxydation",
     caution: "la teinte s'oxyde ou crée une démarcation au cou",
     proof: "cou, visage et lumière du jour correspondent",
-    related: ["/for/analyse-colorimetrie", "/tryon-free", "/looks/naturel"],
+    related: ["/for/analyse-colorimetrie", "/tryon", "/looks/naturel"],
     intentSections: [
       {
         kind: "paragraphs",
@@ -1346,7 +1346,7 @@ const seeds: readonly PageSeed[] = [
     related: [
       "/personalized-makeup-recommendation",
       "/for/choisir-fond-de-teint",
-      "/tryon-free",
+      "/tryon",
     ],
     intentSections: [
       {
@@ -1449,13 +1449,13 @@ const seeds: readonly PageSeed[] = [
     technique: "顔立ち、肌色、シーンを合わせて比較する",
     caution: "フィルター感が強くなること",
     proof: "日常光と写真の両方で違和感がないこと",
-    related: ["/tryon-free", "/diagnosis", "/discover", "/pricing"],
+    related: ["/tryon", "/diagnosis", "/discover", "/pricing"],
   },
   {
     languageSlug: "ja",
     groupKey: "try-on",
     path: "/try-on",
-    englishPath: "/tryon-free",
+    englishPath: "/tryon",
     category: "product",
     keyword: "バーチャルメイク",
     topic: "自分の写真でメイクを試すこと",
@@ -1479,7 +1479,7 @@ const seeds: readonly PageSeed[] = [
     technique: "シーン別に試す回数を分ける",
     caution: "使わない機能まで選ぶこと",
     proof: "保存したいメイク数が明確なこと",
-    related: ["/tryon-free", "/personalized-makeup-recommendation"],
+    related: ["/tryon", "/personalized-makeup-recommendation"],
   },
   {
     languageSlug: "ja",
@@ -2027,7 +2027,7 @@ const zhCnSeoPages: readonly LocalizedSeoPage[] = [
       },
     ],
     relatedLinks: [
-      { label: "免费试妆", url: "/tryon-free" },
+      { label: "免费试妆", url: "/tryon" },
       { label: "AI 妆容诊断", url: "/diagnosis" },
       { label: "妆容灵感", url: "/discover" },
       { label: "价格方案", url: "/pricing" },
@@ -2158,7 +2158,7 @@ const zhCnSeoPages: readonly LocalizedSeoPage[] = [
       { label: "新手化妆教程", url: "/guides/beginner-tutorial" },
       { label: "一步一步化妆", url: "/guides/apply-step-by-step" },
       { label: "日常自然妆", url: "/looks/natural-makeup" },
-      { label: "免费试妆", url: "/tryon-free" },
+      { label: "免费试妆", url: "/tryon" },
     ],
     priority: "0.6",
     changefreq: "monthly",

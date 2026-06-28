@@ -1,0 +1,228 @@
+---
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import { t } from "../lib/i18n";
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const historyHref = getLocalizedAppHref("/history", currentRoute.language.slug);
+const resultBaseHref = getLocalizedAppHref(
+  "/result",
+  currentRoute.language.slug,
+).replace(/\/+$/, "");
+const copy = {
+  empty: t("tryon", "noSuccessHistory"),
+  failed: t("tryon", "historyLoadFailed"),
+};
+---
+
+<section
+  class="panel tryon-history-preview"
+  aria-labelledby="tryon-history-title"
+>
+  <div class="history-panel-head">
+    <div>
+      <h2 class="panel-title" id="tryon-history-title">
+        <a class="history-title-link" href={historyHref}>
+          {t("tryon", "historyPreviewTitle")}
+        </a>
+      </h2>
+      <p class="history-panel-subtitle">{t("tryon", "historyPreviewDesc")}</p>
+    </div>
+    <a class="history-view-all" href={historyHref}>
+      <span>{t("tryon", "historyViewAllShort")}</span>
+      <span aria-hidden="true">›</span>
+    </a>
+  </div>
+  <div
+    class="history-grid-container"
+    data-tryon-history-preview
+    aria-live="polite"
+    aria-busy="true"
+  >
+    <p class="muted">{t("tryon", "loading")}</p>
+  </div>
+</section>
+
+<script is:inline define:vars={{ copy, resultBaseHref }}>
+  (function () {
+    const container = document.querySelector("[data-tryon-history-preview]");
+    if (!container) return;
+
+    const showMessage = (message) => {
+      const paragraph = document.createElement("p");
+      paragraph.className = "muted";
+      paragraph.textContent = message;
+      container.replaceChildren(paragraph);
+      container.setAttribute("aria-busy", "false");
+    };
+
+    fetch("/api/tryon-jobs?limit=12")
+      .then((response) => response.json())
+      .then((payload) => {
+        const jobs = Array.isArray(payload?.data?.items)
+          ? payload.data.items
+              .filter((job) => job.status === "succeeded" && job.resultImage)
+              .slice(0, 3)
+          : [];
+        if (!payload?.ok || jobs.length === 0) {
+          showMessage(copy.empty);
+          return;
+        }
+
+        const locale = document.documentElement.lang || "en";
+        const cards = jobs.map((job) => {
+          const card = document.createElement("a");
+          card.className = "history-item-card";
+          card.href =
+            resultBaseHref + "/" + encodeURIComponent(String(job.id || ""));
+
+          const image = document.createElement("img");
+          image.className = "history-thumb";
+          image.src =
+            job.resultThumbImage || job.resultDisplayImage || job.resultImage;
+          image.alt = String(job.lookTitle || "");
+          image.loading = "lazy";
+          image.decoding = "async";
+
+          const info = document.createElement("span");
+          info.className = "history-info";
+          const title = document.createElement("span");
+          title.className = "history-title";
+          title.textContent = String(job.lookTitle || "");
+          const date = document.createElement("span");
+          date.className = "history-date";
+          date.textContent = new Date(job.createdAt).toLocaleDateString(
+            locale,
+            {
+              month: "2-digit",
+              day: "2-digit",
+            },
+          );
+          info.append(title, date);
+          card.append(image, info);
+          return card;
+        });
+
+        container.replaceChildren(...cards);
+        container.setAttribute("aria-busy", "false");
+      })
+      .catch(() => showMessage(copy.failed));
+  })();
+</script>
+
+<style>
+  .tryon-history-preview {
+    margin-top: 24px;
+    padding: 18px;
+  }
+  .history-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .history-panel-head .panel-title {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.25;
+  }
+  .history-title-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .history-title-link:hover,
+  .history-title-link:focus-visible {
+    color: var(--rose);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .history-panel-subtitle {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .history-view-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 8px 0 12px;
+    color: var(--rose);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .history-view-all:hover,
+  .history-view-all:focus-visible {
+    color: var(--navy);
+  }
+  .history-grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: min(100%, 460px);
+  }
+  :global(.tryon-history-preview .history-item-card) {
+    position: relative;
+    min-width: 0;
+    aspect-ratio: 4 / 5;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--soft);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  :global(.tryon-history-preview .history-item-card:hover),
+  :global(.tryon-history-preview .history-item-card:focus-visible) {
+    border-color: rgba(190, 90, 111, 0.46);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  }
+  :global(.tryon-history-preview .history-thumb) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  :global(.tryon-history-preview .history-info) {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 46%;
+    justify-content: flex-end;
+    padding: 28px 8px 8px;
+    color: #fff;
+    background: linear-gradient(
+      180deg,
+      rgba(10, 16, 28, 0),
+      rgba(10, 16, 28, 0.82)
+    );
+  }
+  :global(.tryon-history-preview .history-title) {
+    overflow: hidden;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(.tryon-history-preview .history-date) {
+    margin-top: 2px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 520px) {
+    .history-grid-container {
+      gap: 8px;
+    }
+  }
+</style>

@@ -73,7 +73,7 @@ const localizeAppHref = (href: string) =>
 const localizeHref = (href: string) =>
   getLocalizedPathname(href, currentRoute.language.slug);
 const appRoutePathnames = new Set([
-  "/tryon-free",
+  "/tryon",
   "/discover",
   "/diagnosis",
   "/pricing",
@@ -82,8 +82,6 @@ const appRoutePathnames = new Set([
   "/login",
   "/dashboard",
   "/support",
-  "/tryon-pro",
-  "/tryon-premium",
 ]);
 const languageSwitchHref = (languageSlug: string) => {
   if (appRoutePathnames.has(currentRoute.routePathname)) {

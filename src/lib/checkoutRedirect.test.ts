@@ -23,9 +23,9 @@ describe("checkout redirect helpers", () => {
   });
 
   it("accepts internal product return targets", () => {
-    expect(
-      safeCheckoutReturnPath("/zh-cn/tryon-free?look=rose-milk-date"),
-    ).toBe("/zh-cn/tryon-free?look=rose-milk-date");
+    expect(safeCheckoutReturnPath("/zh-cn/tryon?look=rose-milk-date")).toBe(
+      "/zh-cn/tryon?look=rose-milk-date",
+    );
   });
 
   it("rejects unsafe or non-product return targets", () => {
@@ -42,10 +42,10 @@ describe("checkout redirect helpers", () => {
       buildCheckoutStatusPath({
         pricingPath: "/zh-cn/pricing",
         status: "success",
-        returnTo: "/zh-cn/tryon-free?look=rose-milk-date",
+        returnTo: "/zh-cn/tryon?look=rose-milk-date",
       }),
     ).toBe(
-      "/zh-cn/pricing?checkout=success&return_to=%2Fzh-cn%2Ftryon-free%3Flook%3Drose-milk-date",
+      "/zh-cn/pricing?checkout=success&return_to=%2Fzh-cn%2Ftryon%3Flook%3Drose-milk-date",
     );
   });
 

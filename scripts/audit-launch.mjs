@@ -27,9 +27,7 @@ const locales = [
 const routes = [
   "/",
   "/discover",
-  "/tryon-free",
-  "/tryon-pro",
-  "/tryon-premium",
+  "/tryon",
   "/diagnosis",
   "/pricing",
   "/faq",

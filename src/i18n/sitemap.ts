@@ -15,7 +15,7 @@ export const sitemapLastmod = "2026-06-14";
 const corePages: SitemapPage[] = [
   { url: "/", priority: "1.0", changefreq: "weekly" },
   { url: "/discover", priority: "0.9", changefreq: "weekly" },
-  { url: "/tryon-free", priority: "0.9", changefreq: "monthly" },
+  { url: "/tryon", priority: "0.9", changefreq: "monthly" },
   { url: "/diagnosis", priority: "0.8", changefreq: "monthly" },
   { url: "/pricing", priority: "0.8", changefreq: "weekly" },
   { url: "/blog", priority: "0.7", changefreq: "weekly" },

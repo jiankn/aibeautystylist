@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { languageConfigs } from "./config";
-import { getLanguageSwitchPathname, resolveLocaleRoute } from "./routing";
+import {
+  getLanguageSwitchPathname,
+  getLocalizedAppHref,
+  resolveLocaleRoute,
+  shouldRewriteLocaleRoute,
+} from "./routing";
 import {
   getLocalizedSeoPagesByLanguage,
   getLocalizedSeoGroupForRoute,
@@ -8,6 +13,14 @@ import {
 } from "./localizedSeoPages";
 
 describe("localized route switching", () => {
+  it("localizes the canonical try-on workspace route", () => {
+    expect(getLocalizedAppHref("/tryon?look=commute", "zh-cn")).toBe(
+      "/zh-cn/tryon?look=commute",
+    );
+    expect(shouldRewriteLocaleRoute("/zh-cn/tryon")).toBe(true);
+    expect(resolveLocaleRoute("/zh-cn/tryon").routePathname).toBe("/tryon");
+  });
+
   it("maps the Korean makeup order guide to the Simplified Chinese article", () => {
     const href = getLanguageSwitchPathname("/ko/guides/메이크업-순서", "zh-cn");
     const route = resolveLocaleRoute(href);

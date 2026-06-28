@@ -2216,7 +2216,7 @@ function renderLocalizedContent(
       <ol>${steps}</ol>
       <h2>${escapeHtml(copy.aiHeading)}: ${escapeHtml(seed.title)}</h2>
       <p>${escapeHtml(copy.aiText)} ${escapeHtml(seed.takeaways[0] ?? seed.summary)}</p>
-      <p>${escapeHtml(copy.nextText)} <a href="/diagnosis">${escapeHtml(seed.category)}</a> · <a href="/tryon-free">${escapeHtml(secondary)}</a>.</p>
+      <p>${escapeHtml(copy.nextText)} <a href="/diagnosis">${escapeHtml(seed.category)}</a> · <a href="/tryon">${escapeHtml(secondary)}</a>.</p>
       <aside class="article-note"><strong>${escapeHtml(copy.aiHeading)}:</strong> ${escapeHtml(copy.note)}</aside>
       <h2>${escapeHtml(copy.mistakesHeading)}: ${escapeHtml(seed.title)}</h2>
       <p>${escapeHtml(copy.intentText)} ${escapeHtml(seed.summary)}</p>

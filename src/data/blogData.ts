@@ -158,7 +158,7 @@ const zhPosts: BlogPost[] = [
       </div>
       <h2>上传、保存和分享前的边界</h2>
       <p>使用任何在线试妆工具前，都应确认照片是你有权使用、也愿意交给该服务处理的内容。上传前检查背景中是否出现其他人、证件、住址或不希望公开的信息；分享生成结果时，也要避免暗示它是未经编辑的真实照片。</p>
-      <p>如果你的任务需要更稳定的比较，先按<a href="/blog/ai-makeup-photo-guide">AI 试妆基准照片标准</a>准备输入，再到<a href="/tryon-free">免费试妆</a>里一次比较一个变量。使用方式越明确，生成图越可能成为决策工具，而不是一张只适合浏览的漂亮图片。</p>
+      <p>如果你的任务需要更稳定的比较，先按<a href="/blog/ai-makeup-photo-guide">AI 试妆基准照片标准</a>准备输入，再到<a href="/tryon">免费试妆</a>里一次比较一个变量。使用方式越明确，生成图越可能成为决策工具，而不是一张只适合浏览的漂亮图片。</p>
       <h2>更有效的使用方式</h2>
       <p>一次只比较一个主要变量，例如唇色冷暖、底妆光泽或眼妆重心。完成后写下一个现实中的下一步：寻找相近色、调整腮红位置、测试目标灯光，或放弃不稳定的方向。只有当预览能帮助你更快做出下一步决定时，它才真正完成了任务。</p>
     `,
@@ -397,7 +397,7 @@ const zhPosts: BlogPost[] = [
       <p>同一套眼妆可以通过改变一个杠杆切换场景：日常保留轻薄过渡，通勤加强睫毛根部，拍照扩大少量眼尾可见区。这样比每次重做完全不同的复杂眼妆更容易复现。</p>
       <h2>用左右眼对照练习，快速找出有效动作</h2>
       <p>练习时可以在两侧使用同一组颜色，但只改变一个位置，例如一侧把深色放得更高，另一侧更贴近根部；或一侧扩大亮点，另一侧保持小面积。自然睁眼后先看整脸，再拍正常社交距离照片。记录哪一侧眼神更集中、边界更干净，以及在眨眼后是否仍然成立。</p>
-      <p>找到更稳定的位置后，可以在<a href="/tryon-free?look=hooded-eyes-lift">肿眼泡提拉眼妆</a>中比较整体方向，再结合<a href="/blog/makeup-for-camera-and-real-life">上镜妆的拍摄检查</a>调整照片中的存在感。目标不是让眼睛看起来属于另一种类型，而是让你的颜色与线条在真实表情里发挥作用。</p>
+      <p>找到更稳定的位置后，可以在<a href="/tryon?look=hooded-eyes-lift">肿眼泡提拉眼妆</a>中比较整体方向，再结合<a href="/blog/makeup-for-camera-and-real-life">上镜妆的拍摄检查</a>调整照片中的存在感。目标不是让眼睛看起来属于另一种类型，而是让你的颜色与线条在真实表情里发挥作用。</p>
       <h2>用两张照片检查，不靠贴近镜子的瞬间</h2>
       <p>完成后分别拍一张平视近照和一张正常社交距离照片。近照用于检查边界，远一点的照片用于看眼神是否更集中。如果近看精致、远看却只剩一块深色，就减少面积；如果远看完全没有方向感，再局部增强眼尾或睫毛根部。</p>
       <p>眼妆的方向也可以和<a href="/blog/face-shape-and-makeup-gravity">整体妆容重心</a>一起判断。你需要的是可控制的视觉效果，而不是把某种眼型“修正”成另一种眼型。</p>
@@ -619,7 +619,7 @@ const zhPosts: BlogPost[] = [
       <p>还应明确自己的补妆节奏，例如在仪式后、晚宴前检查一次，而不是每次照镜子都重新评估整张脸。固定检查时间能减少焦虑，也让你把注意力放回活动本身。</p>
       <aside class="article-note"><strong>彩排的退出条件：</strong>如果某个新产品出现明显不适、难以修补，或需要你不断关注它，就不适合放进重要活动方案。</aside>
       <h2>先比较方向，再决定细节</h2>
-      <p>你可以先在妆容库比较<a href="/tryon-free?look=summer-wedding-guest">夏日婚礼宾客妆</a>与<a href="/tryon-free?look=wedding-guest">婚礼宾客妆</a>的整体重心，再结合<a href="/blog/makeup-for-camera-and-real-life">现实与镜头的两轮检查</a>缩小选择。如果唇色承担主焦点，再使用<a href="/blog/lipstick-color-comparison">三张照片与半唇对比</a>确认目标灯光下的表现。最终方案应该让你能把注意力放回婚礼，而不是一直检查妆容。</p>
+      <p>你可以先在妆容库比较<a href="/tryon?look=summer-wedding-guest">夏日婚礼宾客妆</a>与<a href="/tryon?look=wedding-guest">婚礼宾客妆</a>的整体重心，再结合<a href="/blog/makeup-for-camera-and-real-life">现实与镜头的两轮检查</a>缩小选择。如果唇色承担主焦点，再使用<a href="/blog/lipstick-color-comparison">三张照片与半唇对比</a>确认目标灯光下的表现。最终方案应该让你能把注意力放回婚礼，而不是一直检查妆容。</p>
     `,
   },
   {
@@ -803,7 +803,7 @@ const zhPosts: BlogPost[] = [
       </ol>
       <h2>保存一份简短的生成比较记录</h2>
       <p>每轮只记录输入照片、比较变量、保留的结论和现实下一步。例如：“同一张基准图比较柔雾与光泽；光泽方向让面中更突出；下一步在自然光测试局部提亮。”不要只保存最喜欢的图片却忘记它解决了什么问题。</p>
-      <p>记录还能帮助你识别不稳定方向：如果同一个妆容每次都产生不同眼型或唇形，就应降低信任；如果主要颜色和重心在多次结果中仍然一致，则可以把它带入现实试色。开始前可以先阅读<a href="/blog/ai-tryon-vs-beauty-filters">AI 试妆与美颜滤镜的差异</a>，再前往<a href="/tryon-free">免费试妆</a>。输入照片越适合比较，你越容易从结果里得到可执行的下一步。</p>
+      <p>记录还能帮助你识别不稳定方向：如果同一个妆容每次都产生不同眼型或唇形，就应降低信任；如果主要颜色和重心在多次结果中仍然一致，则可以把它带入现实试色。开始前可以先阅读<a href="/blog/ai-tryon-vs-beauty-filters">AI 试妆与美颜滤镜的差异</a>，再前往<a href="/tryon">免费试妆</a>。输入照片越适合比较，你越容易从结果里得到可执行的下一步。</p>
     `,
   },
 ];
@@ -1231,7 +1231,7 @@ const englishArticleDepthAdditions: Record<string, string> = {
         <li>For diagnosis-style guidance, keep the result separate from medical or skin-care claims.</li>
       </ul>
       <p>When two outputs disagree, keep the one that preserves your facial structure and discard the one that only looks more polished. A reliable preview is less exciting than a fantasy image, but it is far more useful for deciding what to try next.</p>
-      <p>Start with a controlled input from <a href="/blog/ai-makeup-photo-guide">How to take a better photo for AI makeup try-on</a>, then compare full-look options in <a href="/tryon-free">free try-on</a>. That sequence reduces random variation and makes the output easier to act on.</p>
+      <p>Start with a controlled input from <a href="/blog/ai-makeup-photo-guide">How to take a better photo for AI makeup try-on</a>, then compare full-look options in <a href="/tryon">free try-on</a>. That sequence reduces random variation and makes the output easier to act on.</p>
     `,
   "face-shape-and-makeup-gravity": `
       <h2>Create a viewing-order note</h2>

@@ -53,7 +53,7 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 
 const tryOnHref = getLocalizedAppHref(
-  `/tryon-free?look=${look.slug}&scenario=${encodeURIComponent(look.scenarios[0])}&source=${source}`,
+  `/tryon?look=${look.slug}&scenario=${encodeURIComponent(look.scenarios[0])}&source=${source}`,
   currentRoute.language.slug,
 );
 const imageLoading = priority || highPriority ? "eager" : "lazy";
