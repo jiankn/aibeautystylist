@@ -44,9 +44,8 @@ const currentRoute =
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 
-// Build links based on plan state
-// Free plan: conditional - unlogged vs logged-in
-// Pro / Premium: fixed links, no "view plans"
+// Keep paid workspaces focused on the actual try-on action below this status bar.
+// Paid-plan links are secondary destinations only; never link back to the current page.
 const links =
   plan === "Free"
     ? [
@@ -66,12 +65,6 @@ const links =
     : plan === "Pro"
       ? [
           {
-            href: localizeAppHref("/tryon"),
-            label: t("workspace", "startHdTrypton"),
-            id: "tryon",
-            variant: "primary" as const,
-          },
-          {
             href: localizeAppHref("/history"),
             label: t("workspace", "viewHistory"),
             id: "view-history",
@@ -80,10 +73,10 @@ const links =
         ]
       : [
           {
-            href: localizeAppHref("/tryon"),
+            href: localizeAppHref("/discover"),
             label: t("workspace", "openFullCatalog"),
-            id: "tryon",
-            variant: "primary" as const,
+            id: "view-catalog",
+            variant: "secondary" as const,
           },
           {
             href: localizeAppHref("/history"),
@@ -106,6 +99,7 @@ const statusSubtitle = perksText ?? subtitle;
 <section
   class="workspace-status panel"
   data-plan={plan}
+  data-active={active}
   data-quota-live={live || undefined}
   aria-label={`${title}${t("workspace", "statusSuffix")}`}
 >
