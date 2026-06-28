@@ -175,7 +175,7 @@ const scenarioHighlights = (
     look,
     scenarioImage,
     href: localizeAppHref(
-      `/tryon-free?look=${look.slug}&scenario=${encodeURIComponent(item.scenario)}&source=home_scenario`,
+      `/tryon?look=${look.slug}&scenario=${encodeURIComponent(item.scenario)}&source=home_scenario`,
     ),
   };
 });
@@ -327,7 +327,7 @@ const homepageJsonLd = JSON.stringify({
         <div class="hero-actions">
           <a
             class="btn btn-primary"
-            href={localizeAppHref("/tryon-free")}
+            href={localizeAppHref("/tryon")}
             onclick="window.__track&&window.__track('home_start_tryon_click')"
             >{t("homepage", "startTryOn")}</a
           >
@@ -565,8 +565,7 @@ const homepageJsonLd = JSON.stringify({
           }
           <a
             class="btn btn-primary product-tour-cta"
-            href={localizeAppHref("/tryon-free")}
-            >{t("homepage", "startTryOn")}</a
+            href={localizeAppHref("/tryon")}>{t("homepage", "startTryOn")}</a
           >
         </div>
         <div class="product-tour-screen">
@@ -696,7 +695,7 @@ const homepageJsonLd = JSON.stringify({
                 { "decision-case-lead": index === 0 },
               ]}
               href={localizeAppHref(
-                `/tryon-free?look=${item.look.slug}&scenario=${encodeURIComponent(item.look.scenarios[0])}&source=home_decision_case`,
+                `/tryon?look=${item.look.slug}&scenario=${encodeURIComponent(item.look.scenarios[0])}&source=home_decision_case`,
               )}
             >
               <div class="decision-media">
@@ -747,7 +746,7 @@ const homepageJsonLd = JSON.stringify({
           <p class="muted">{t("homepage", "assuranceSubtitle")}</p>
           <a
             class="btn btn-primary assurance-cta"
-            href={localizeAppHref("/tryon-free")}
+            href={localizeAppHref("/tryon")}
           >
             {t("homepage", "assuranceCta")}
           </a>
@@ -785,7 +784,7 @@ const homepageJsonLd = JSON.stringify({
       <div class="shell final-cta-inner">
         <h2>{t("homepage", "finalCtaTitle")}</h2>
         <p>{t("homepage", "finalCtaSubtitle")}</p>
-        <a class="btn btn-primary btn-lg" href={localizeAppHref("/tryon-free")}
+        <a class="btn btn-primary btn-lg" href={localizeAppHref("/tryon")}
           >{t("homepage", "finalCtaCta")}</a
         >
       </div>

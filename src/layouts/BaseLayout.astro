@@ -64,9 +64,10 @@ const effectiveRobots = shouldNoindexLocalizedFallback(requestedPathname)
 const htmlClass = /\/discover\/?$/i.test(requestedPathname)
   ? "filter-sheet-ready"
   : undefined;
-const fontStylesheet = !loadExternalFonts || currentLocale.startsWith("zh")
-  ? undefined
-  : "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=optional";
+const fontStylesheet =
+  !loadExternalFonts || currentLocale.startsWith("zh")
+    ? undefined
+    : "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=optional";
 const idleScriptSources = [
   ...(appScriptStrategy === "idle" ? [appScriptUrl] : []),
   ...(analyticsScriptStrategy === "idle" ? [analyticsScriptUrl] : []),

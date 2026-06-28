@@ -453,7 +453,7 @@ function parseEnglishSeoPages() {
     "src/pages/ai-makeup-try-on.astro",
     "src/pages/virtual-makeup-app.astro",
     "src/pages/virtual-makeup-tester.astro",
-    "src/pages/tryon-free.astro",
+    "src/pages/tryon.astro",
     "src/pages/pricing.astro",
     "src/pages/ai-beauty-advisor.astro",
     "src/pages/personalized-makeup-recommendation.astro",

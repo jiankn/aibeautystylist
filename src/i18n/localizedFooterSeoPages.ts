@@ -936,7 +936,7 @@ function relatedLinks(spec: KeywordSpec) {
     });
 
   return [
-    { label: spec.secondaryKeyword, url: "/tryon-free" },
+    { label: spec.secondaryKeyword, url: "/tryon" },
     ...(supplementalLinks[`${spec.languageSlug}:${spec.englishPath}`] ?? []),
     ...siblingPaths,
     { label: "AI Beauty Stylist", url: "/discover" },

@@ -6,7 +6,7 @@ interface Props {
   plan: "Free" | "Pro" | "Premium";
   title: string;
   subtitle: string;
-  active: "tryon-free" | "tryon-pro" | "tryon-premium" | "diagnosis";
+  active: "tryon" | "diagnosis";
   remaining?: number;
   total?: number;
   note?: string;
@@ -50,9 +50,9 @@ const links =
   plan === "Free"
     ? [
         {
-          href: localizeAppHref("/tryon-free"),
+          href: localizeAppHref("/tryon"),
           label: t("workspace", "startTryon"),
-          id: "tryon-free",
+          id: "tryon",
           variant: "primary" as const,
         },
         {

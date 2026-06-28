@@ -48,14 +48,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // 2. 解析 Audience Context：账户偏好优先，其次 Cookie 与 locale。
   let userPreferences;
+  let authenticatedUserId: string | undefined;
   const { DB } = getRuntimeBindings();
   if (DB) {
     try {
-      const userId = await resolveSessionUserId(
+      authenticatedUserId = await resolveSessionUserId(
         cookies.get(AUTH_COOKIE)?.value,
         DB,
       );
-      if (userId) userPreferences = await getUserContentPreferences(userId, DB);
+      if (authenticatedUserId) {
+        userPreferences = await getUserContentPreferences(
+          authenticatedUserId,
+          DB,
+        );
+      }
     } catch {
       // 偏好表尚未迁移或读取失败时，页面仍可使用 Cookie/locale 安全回退。
     }
@@ -68,19 +74,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
   context.locals.audienceContext = audienceContext;
 
   // 2b. 注入当前用户（登录/匿名），供页面做条件渲染。
-  let isLoggedIn = false;
-  if (DB) {
-    try {
-      const userId = await resolveSessionUserId(
-        cookies.get(AUTH_COOKIE)?.value,
-        DB,
-      );
-      isLoggedIn = !!userId;
-    } catch {
-      /* ignore */
-    }
-  }
-  context.locals.isLoggedIn = isLoggedIn;
+  context.locals.currentUserId = authenticatedUserId;
+  context.locals.isLoggedIn = Boolean(authenticatedUserId);
 
   // 3. 在 i18n 的 AsyncLocalStorage 上下文内运行页面生成与响应头组装
   return localeStorage.run(locale, async () => {

@@ -34,6 +34,8 @@ declare namespace App {
     audienceContext: import("./data/makeup/audienceTypes").AudienceContext;
     /** 当前用户是否已登录 — 由 middleware 注入 */
     isLoggedIn: boolean;
+    /** 当前已登录账户 id；匿名访问时为空 */
+    currentUserId?: string;
     /** URL 级语言路由信息 — 由 middleware 注入 */
     localeRoute: import("./i18n/routing").LocaleRoute;
     /** Cloudflare adapter runtime context，用于 waitUntil 后台任务 */

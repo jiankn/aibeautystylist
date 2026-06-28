@@ -149,6 +149,8 @@ const selectorCopy = selectorCopyByLocale[locale];
 
   document.querySelectorAll<HTMLElement>("[data-look-slug]").forEach((item) => {
     const selectLook = () => {
+      const previousUrl = new URL(window.location.href);
+      const previousSlug = previousUrl.searchParams.get("look");
       const container = item.closest(".selector-list, .featured-grid");
       container
         ?.querySelectorAll("[data-look-slug]")
@@ -169,6 +171,15 @@ const selectorCopy = selectorCopyByLocale[locale];
       const url = new URL(window.location.href);
       url.searchParams.set("look", item.dataset.lookSlug || "");
       window.history.replaceState({}, "", url);
+      document.dispatchEvent(
+        new CustomEvent("abs:look-selected", {
+          detail: {
+            changed: previousSlug !== (item.dataset.lookSlug || ""),
+            href: url.toString(),
+            slug: item.dataset.lookSlug || "",
+          },
+        }),
+      );
       window.showToast?.(
         window.msg?.("selectedLook", {
           look: item.dataset.look || window.msg?.("fallbackLookShort"),

@@ -10,9 +10,6 @@ const routeMap: Record<string, string> = {
   "diagnosis.html": "/diagnosis",
   "pricing.html": "/pricing",
   "share-card.html": "/share-card",
-  "tryon-free.html": "/tryon-free",
-  "tryon-pro.html": "/tryon-pro",
-  "tryon-premium.html": "/tryon-premium",
 };
 
 export function parsePrototype(source: string): PrototypePage {

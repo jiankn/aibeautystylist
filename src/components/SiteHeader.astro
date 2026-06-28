@@ -36,7 +36,7 @@ const localizeSeoHref = (href: string) => {
     : href;
 };
 const appRoutePathnames = new Set([
-  "/tryon-free",
+  "/tryon",
   "/discover",
   "/diagnosis",
   "/pricing",
@@ -45,8 +45,6 @@ const appRoutePathnames = new Set([
   "/login",
   "/dashboard",
   "/support",
-  "/tryon-pro",
-  "/tryon-premium",
 ]);
 const languageSwitchHref = (languageSlug: string) => {
   if (appRoutePathnames.has(currentRoute.routePathname)) {
@@ -105,7 +103,7 @@ const {
 const links = [
   {
     id: "tryOn",
-    href: localizeAppHref("/tryon-free"),
+    href: localizeAppHref("/tryon"),
     label: t("navigation", "tryOn"),
   },
   {
@@ -177,7 +175,7 @@ const mobileDiagnosisHref = localizeAppHref("/diagnosis");
 const mobilePricingHref = localizeAppHref("/pricing");
 const mobileFaqHref = localizeAppHref("/faq");
 const mobileHistoryHref = localizeAppHref("/history");
-const mobileWorkspaceHref = localizeAppHref("/tryon-free");
+const mobileWorkspaceHref = localizeAppHref("/tryon");
 const mobileDashboardHref = localizeAppHref("/dashboard");
 const mobileAccountPanelHref = `${mobileDashboardHref}#account-panel`;
 const mobilePreferencesHref = `${mobileDashboardHref}#preferences-panel`;

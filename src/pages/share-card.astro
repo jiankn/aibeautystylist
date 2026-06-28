@@ -11,9 +11,9 @@ const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 const homeHref = localizeAppHref("/");
 const discoverHref = localizeAppHref("/discover");
-const tryOnHref = localizeAppHref("/tryon-free");
-const tryOnProHref = localizeAppHref("/tryon-pro");
-const tryOnPremiumHref = localizeAppHref("/tryon-premium");
+const tryOnHref = localizeAppHref("/tryon");
+const tryOnProHref = localizeAppHref("/tryon");
+const tryOnPremiumHref = localizeAppHref("/tryon");
 const shareCardHref = localizeAppHref("/share-card");
 const shareBaseHref = localizeAppHref("/share");
 
@@ -660,7 +660,9 @@ const posterCopy =
       <div class="share-nav-links">
         <a href={homeHref}>{copy.navHome}</a>
         <a href={discoverHref}>{copy.navDiscover}</a>
-        <a href={tryOnHref} data-tryon-link data-tryon-nav-label>{copy.navTryOn}</a>
+        <a href={tryOnHref} data-tryon-link data-tryon-nav-label
+          >{copy.navTryOn}</a
+        >
       </div>
       <a class="btn btn-primary share-nav-cta" href={tryOnHref} data-tryon-link>
         {copy.navTryCta}
@@ -676,7 +678,9 @@ const posterCopy =
         </svg>
       </a>
       <strong>{copy.navTitle}</strong>
-      <a class="share-mobile-tryon" href={tryOnHref} data-tryon-link>{copy.navTryShort}</a>
+      <a class="share-mobile-tryon" href={tryOnHref} data-tryon-link
+        >{copy.navTryShort}</a
+      >
     </header>
 
     <main class="share-page">
@@ -729,7 +733,9 @@ const posterCopy =
         <h2>{copy.emptyTitle}</h2>
         <p>{copy.emptyBody}</p>
         <div class="share-empty-actions">
-          <a class="btn btn-primary" href={tryOnHref} data-tryon-link>{copy.emptyCta}</a>
+          <a class="btn btn-primary" href={tryOnHref} data-tryon-link
+            >{copy.emptyCta}</a
+          >
           <a class="btn" href={homeHref}>{copy.emptyHome}</a>
         </div>
       </div>
@@ -739,7 +745,15 @@ const posterCopy =
 
 <script
   is:inline
-  define:vars={{ copy, posterCopy, shareBaseHref, shareCardHref, tryOnHref, tryOnProHref, tryOnPremiumHref }}
+  define:vars={{
+    copy,
+    posterCopy,
+    shareBaseHref,
+    shareCardHref,
+    tryOnHref,
+    tryOnProHref,
+    tryOnPremiumHref,
+  }}
 >
   (function () {
     const params = new URLSearchParams(location.search);

@@ -10,7 +10,7 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
-const tryOnHref = localizeAppHref("/tryon-free");
+const tryOnHref = localizeAppHref("/tryon");
 const diagnosisHref = localizeAppHref("/diagnosis");
 const isEn = !getCurrentLocale().startsWith("zh");
 const fallbackCopy = isEn
