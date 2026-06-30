@@ -2,7 +2,6 @@
 import LookSelector from "../components/LookSelector.astro";
 import MobileAppTopBar from "../components/MobileAppTopBar.astro";
 import MobileBottomNav from "../components/MobileBottomNav.astro";
-import ProductRecommend from "../components/ProductRecommend.astro";
 import ResultState from "../components/ResultState.astro";
 import SelfiePhotoGuide from "../components/SelfiePhotoGuide.astro";
 import SiteHeader from "../components/SiteHeader.astro";
@@ -10,11 +9,7 @@ import TutorialSteps from "../components/TutorialSteps.astro";
 import TryOnHistoryPreview from "../components/TryOnHistoryPreview.astro";
 import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
-import {
-  getProductKitsByLookSlug,
-  notRecommendedProducts,
-} from "../data/products";
-import { getTutorialByLookSlug } from "../data/tutorials";
+import { getTutorialByLookSlug, getTutorialUiCopy } from "../data/tutorials";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import { getEntitlementContext } from "../lib/entitlements";
 import { t } from "../lib/i18n";
@@ -95,8 +90,11 @@ const featuredLooks = requestedLook
     ].slice(0, 4)
   : defaultFeaturedLooks;
 const selected = requestedLook ?? featuredLooks[0];
-const tutorial = getTutorialByLookSlug(selected.slug);
-const productKits = getProductKitsByLookSlug(selected.slug);
+const tutorial = getTutorialByLookSlug(
+  selected.slug,
+  currentRoute.language.locale,
+);
+const tutorialUiCopy = getTutorialUiCopy(currentRoute.language.locale);
 const hasExternalSelection =
   requestedLook && !featuredSlugs.includes(requestedLook.slug);
 const isChineseLocale = currentRoute.language.locale.startsWith("zh");
@@ -577,12 +575,13 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
         experience.showMemberGuidance && (
           <section
             class="panel member-guidance"
-            aria-label={t("tryon", "productTypes")}
+            aria-label={tutorialUiCopy.ariaLabel}
           >
             {tutorial ? (
               <TutorialSteps
                 tutorial={tutorial}
                 userPlan={experience.planCode}
+                locale={currentRoute.language.locale}
               />
             ) : (
               <div class="member-guidance-empty">
@@ -590,11 +589,6 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
                 <p class="panel-subtitle">{t("tryon", "tutorialComing")}</p>
               </div>
             )}
-            <div class="section-rule" />
-            <ProductRecommend
-              kits={productKits}
-              notRecommended={notRecommendedProducts}
-            />
           </section>
         )
       }
@@ -1279,12 +1273,8 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     margin-top: 24px;
     overflow: hidden;
   }
-  .member-guidance > :global(.tutorial-panel),
-  .member-guidance > :global(.product-recommend-panel) {
+  .member-guidance > :global(.tutorial-panel) {
     padding: 24px;
-  }
-  .member-guidance > .section-rule {
-    margin: 0 24px;
   }
   .member-guidance-empty {
     padding: 24px;
