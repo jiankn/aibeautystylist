@@ -42,7 +42,10 @@ type ShareCardCopy = {
   ctaHighlight: string;
   ctaBody: string;
   download: string;
-  cleanDownload?: string;
+  downloadHint: string;
+  downloadPreparing: string;
+  downloadSuccess: string;
+  downloadFailed: string;
   share: string;
   copyLink: string;
   reward: string;
@@ -90,8 +93,12 @@ const shareCopyByLocale = {
     ctaTitle: "Free try-ons every day",
     ctaHighlight: "Share once daily to unlock one more AI makeup generation.",
     ctaBody: "Create a real before-and-after card to save or share.",
-    download: "Save share card",
-    cleanDownload: "Download clean try-on image",
+    download: "Download share image",
+    downloadHint:
+      "Includes the look name and AI Beauty Stylist, ready to post.",
+    downloadPreparing: "Creating your share image…",
+    downloadSuccess: "Share image downloaded — ready to post.",
+    downloadFailed: "Couldn't create the share image. Try again.",
     share: "Share card",
     copyLink: "Copy link",
     reward: "Get share reward (+1 credit)",
@@ -136,8 +143,11 @@ const shareCopyByLocale = {
     ctaTitle: "每天都有免费试妆",
     ctaHighlight: "每天分享一次，可解锁 1 次 AI 妆容生成。",
     ctaBody: "生成真实前后对比图，适合保存和分享。",
-    download: "保存分享卡",
-    cleanDownload: "下载纯试妆图",
+    download: "下载分享图",
+    downloadHint: "包含妆容名称和应用信息，保存后即可发布。",
+    downloadPreparing: "正在生成分享图…",
+    downloadSuccess: "分享图已下载，可以去发布了。",
+    downloadFailed: "分享图生成失败，请重试。",
     share: "分享卡片",
     copyLink: "复制链接",
     reward: "获取分享奖励 (+1 额度)",
@@ -182,8 +192,11 @@ const shareCopyByLocale = {
     ctaTitle: "每天都有免費試妝",
     ctaHighlight: "每天分享一次，可解鎖 1 次 AI 妝容生成。",
     ctaBody: "生成真實前後對比圖，適合保存和分享。",
-    download: "保存分享卡",
-    cleanDownload: "下載純試妝圖",
+    download: "下載分享圖",
+    downloadHint: "包含妝容名稱與應用資訊，儲存後即可發布。",
+    downloadPreparing: "正在製作分享圖…",
+    downloadSuccess: "分享圖已下載，可以去發布了。",
+    downloadFailed: "無法製作分享圖，請再試一次。",
     share: "分享卡片",
     copyLink: "複製連結",
     reward: "領取分享獎勵 (+1 額度)",
@@ -231,8 +244,13 @@ const shareCopyByLocale = {
       "Teile einmal täglich und schalte eine weitere AI Make-up-Generierung frei.",
     ctaBody:
       "Erstelle eine echte Vorher-nachher-Karte zum Speichern oder Teilen.",
-    download: "Teilen-Karte speichern",
-    cleanDownload: "Reines Try-on-Bild herunterladen",
+    download: "Bild zum Teilen herunterladen",
+    downloadHint:
+      "Mit Look-Name und AI Beauty Stylist – direkt zum Posten bereit.",
+    downloadPreparing: "Dein Share-Bild wird erstellt…",
+    downloadSuccess: "Share-Bild heruntergeladen – bereit zum Posten.",
+    downloadFailed:
+      "Das Share-Bild konnte nicht erstellt werden. Versuch es erneut.",
     share: "Karte teilen",
     copyLink: "Link kopieren",
     reward: "Teilen-Bonus erhalten (+1 Credit)",
@@ -280,8 +298,12 @@ const shareCopyByLocale = {
     ctaHighlight:
       "Partagez une fois par jour pour débloquer une génération maquillage IA en plus.",
     ctaBody: "Créez une vraie carte avant/après à enregistrer ou partager.",
-    download: "Enregistrer la carte",
-    cleanDownload: "Télécharger l'image seule",
+    download: "Télécharger l’image à partager",
+    downloadHint:
+      "Avec le nom du look et AI Beauty Stylist, prête à être publiée.",
+    downloadPreparing: "Création de votre image de partage…",
+    downloadSuccess: "Image téléchargée, prête à être publiée.",
+    downloadFailed: "Impossible de créer l’image. Réessayez.",
     share: "Partager la carte",
     copyLink: "Copier le lien",
     reward: "Obtenir la récompense (+1 crédit)",
@@ -329,8 +351,12 @@ const shareCopyByLocale = {
     ctaHighlight:
       "1日1回シェアすると、AIメイク生成をもう1回アンロックできます。",
     ctaBody: "保存や共有に使えるリアルなビフォーアフターを作成します。",
-    download: "共有カードを保存",
-    cleanDownload: "試着画像のみをダウンロード",
+    download: "シェア画像をダウンロード",
+    downloadHint: "メイク名とAI Beauty Stylist入り。そのまま投稿できます。",
+    downloadPreparing: "シェア画像を作成中…",
+    downloadSuccess: "シェア画像を保存しました。すぐに投稿できます。",
+    downloadFailed:
+      "シェア画像を作成できませんでした。もう一度お試しください。",
     share: "カードを共有",
     copyLink: "リンクをコピー",
     reward: "共有特典を受け取る（+1クレジット）",
@@ -377,8 +403,11 @@ const shareCopyByLocale = {
     ctaHighlight:
       "하루 한 번 공유하면 AI 메이크업 생성 1회를 더 받을 수 있어요.",
     ctaBody: "저장하고 공유하기 좋은 실제 전후 비교 카드를 만듭니다.",
-    download: "공유 카드 저장",
-    cleanDownload: "순수 시착 이미지 다운로드",
+    download: "공유 이미지 다운로드",
+    downloadHint: "룩 이름과 AI Beauty Stylist가 포함되어 바로 올릴 수 있어요.",
+    downloadPreparing: "공유 이미지 만드는 중…",
+    downloadSuccess: "공유 이미지를 저장했어요. 이제 바로 올려 보세요.",
+    downloadFailed: "공유 이미지를 만들지 못했어요. 다시 시도해 주세요.",
     share: "카드 공유",
     copyLink: "링크 복사",
     reward: "공유 보상 받기 (+1 크레딧)",
@@ -426,8 +455,12 @@ const shareCopyByLocale = {
       "Comparte una vez al día para desbloquear una generación de maquillaje IA más.",
     ctaBody:
       "Crea una tarjeta real de antes y después para guardar o compartir.",
-    download: "Guardar tarjeta",
-    cleanDownload: "Descargar imagen limpia",
+    download: "Descargar imagen para compartir",
+    downloadHint:
+      "Incluye el nombre del look y AI Beauty Stylist, lista para publicar.",
+    downloadPreparing: "Creando tu imagen para compartir…",
+    downloadSuccess: "Imagen descargada. Ya está lista para publicar.",
+    downloadFailed: "No pudimos crear la imagen. Inténtalo de nuevo.",
     share: "Compartir tarjeta",
     copyLink: "Copiar enlace",
     reward: "Obtener recompensa (+1 crédito)",
@@ -476,8 +509,12 @@ const shareCopyByLocale = {
       "Comparte una vez al día para desbloquear una generación de maquillaje IA más.",
     ctaBody:
       "Crea una tarjeta real de antes y después para guardar o compartir.",
-    download: "Guardar tarjeta",
-    cleanDownload: "Descargar imagen limpia",
+    download: "Descargar imagen para compartir",
+    downloadHint:
+      "Incluye el nombre del look y AI Beauty Stylist, lista para publicar.",
+    downloadPreparing: "Creando tu imagen para compartir…",
+    downloadSuccess: "Imagen descargada. Ya está lista para publicar.",
+    downloadFailed: "No pudimos crear la imagen. Inténtalo de nuevo.",
     share: "Compartir tarjeta",
     copyLink: "Copiar enlace",
     reward: "Obtener recompensa (+1 crédito)",
@@ -526,8 +563,12 @@ const shareCopyByLocale = {
       "Compartilhe uma vez por dia para liberar mais uma geração de maquiagem IA.",
     ctaBody:
       "Crie um cartão real de antes e depois para salvar ou compartilhar.",
-    download: "Salvar cartão",
-    cleanDownload: "Baixar imagem limpa",
+    download: "Baixar imagem para compartilhar",
+    downloadHint:
+      "Inclui o nome do look e AI Beauty Stylist, pronta para postar.",
+    downloadPreparing: "Criando sua imagem para compartilhar…",
+    downloadSuccess: "Imagem baixada. Agora é só postar.",
+    downloadFailed: "Não foi possível criar a imagem. Tente novamente.",
     share: "Compartilhar cartão",
     copyLink: "Copiar link",
     reward: "Receber recompensa (+1 crédito)",
@@ -557,70 +598,70 @@ const posterCopyByLocale = {
   en: {
     eyebrow: "AI makeup try-on",
     prefix: "I tried",
-    subtext: "A real makeup preview made for my face.",
+    subtext: "Here’s how this look turned out on me.",
     rewardTop: "Share daily",
     rewardBottom: "get +1 try-on",
   },
   "zh-CN": {
     eyebrow: "AI 在线试妆",
     prefix: "我试了",
-    subtext: "用我的脸生成真实妆容预览。",
+    subtext: "看看这个妆在我脸上的效果。",
     rewardTop: "每日分享",
     rewardBottom: "+1 次试妆",
   },
   "zh-TW": {
     eyebrow: "AI 線上試妝",
     prefix: "我試了",
-    subtext: "用我的臉生成真實妝容預覽。",
+    subtext: "看看這個妝在我臉上的效果。",
     rewardTop: "每日分享",
     rewardBottom: "+1 次試妝",
   },
   "de-DE": {
     eyebrow: "AI Make-up-Try-on",
     prefix: "Ich teste",
-    subtext: "Eine echte Make-up-Vorschau für mein Gesicht.",
+    subtext: "So sieht der Look an mir aus.",
     rewardTop: "Täglich teilen",
     rewardBottom: "+1 Try-on erhalten",
   },
   "fr-FR": {
     eyebrow: "Essai maquillage IA",
     prefix: "J'essaie",
-    subtext: "Un aperçu maquillage créé pour mon visage.",
+    subtext: "Voilà ce que donne ce look sur moi.",
     rewardTop: "Partager chaque jour",
     rewardBottom: "+1 essai offert",
   },
   "ja-JP": {
     eyebrow: "AIメイク試着",
     prefix: "試したルック",
-    subtext: "自分の顔に合わせたリアルなメイクプレビュー。",
+    subtext: "このメイク、私の顔だとこんな感じ。",
     rewardTop: "毎日シェア",
     rewardBottom: "+1回試着",
   },
   "ko-KR": {
     eyebrow: "AI 메이크업 체험",
     prefix: "체험한 룩",
-    subtext: "내 얼굴에 맞춘 실제 메이크업 미리보기.",
+    subtext: "이 메이크업, 내 얼굴에는 이런 느낌이에요.",
     rewardTop: "매일 공유",
     rewardBottom: "+1회 체험",
   },
   "es-ES": {
     eyebrow: "Prueba de maquillaje IA",
     prefix: "Probé",
-    subtext: "Una vista previa de maquillaje hecha para mi rostro.",
+    subtext: "Así se ve este look en mí.",
     rewardTop: "Comparte a diario",
     rewardBottom: "+1 prueba gratis",
   },
   "es-419": {
     eyebrow: "Prueba de maquillaje IA",
     prefix: "Probé",
-    subtext: "Una vista previa de maquillaje hecha para mi rostro.",
+    subtext: "Así se ve este look en mí.",
     rewardTop: "Comparte a diario",
     rewardBottom: "+1 prueba gratis",
   },
   "pt-BR": {
     eyebrow: "Teste de maquiagem IA",
     prefix: "Testei",
-    subtext: "Uma prévia de maquiagem feita para o meu rosto.",
+    subtext: "Olha como esse look ficou em mim.",
     rewardTop: "Compartilhe todo dia",
     rewardBottom: "+1 teste grátis",
   },
@@ -717,15 +758,28 @@ const posterCopy =
       </article>
 
       <!-- 操作按钮 -->
-      <div class="share-actions" id="share-actions">
-        <button class="btn btn-primary" id="share-download-btn">
-          ↓&nbsp; {copy.download}</button
+      <div class="share-action-area" id="share-actions">
+        <div class="share-actions">
+          <button class="btn btn-primary" id="share-download-btn">
+            ↓&nbsp; {copy.download}</button
+          >
+          <button class="btn" id="share-web-btn">↗&nbsp; {copy.share}</button>
+          <button class="btn" id="share-copy-btn"
+            >⌘&nbsp; {copy.copyLink}</button
+          >
+          <button class="btn btn-outline-rose" id="share-reward-btn" hidden>
+            +&nbsp; {copy.reward}</button
+          >
+        </div>
+        <p class="share-download-hint">{copy.downloadHint}</p>
+        <p
+          class="share-action-status"
+          id="share-action-status"
+          role="status"
+          aria-live="polite"
+          hidden
         >
-        <button class="btn" id="share-web-btn">↗&nbsp; {copy.share}</button>
-        <button class="btn" id="share-copy-btn">⌘&nbsp; {copy.copyLink}</button>
-        <button class="btn btn-outline-rose" id="share-reward-btn" hidden>
-          +&nbsp; {copy.reward}</button
-        >
+        </p>
       </div>
 
       <!-- 无结果时展示 -->
@@ -765,6 +819,7 @@ const posterCopy =
     const cardEl = document.getElementById("share-card");
     const rewardBtn = document.getElementById("share-reward-btn");
     const downloadBtn = document.getElementById("share-download-btn");
+    const actionStatus = document.getElementById("share-action-status");
     const webShareBtn = document.getElementById("share-web-btn");
     const copyBtn = document.getElementById("share-copy-btn");
     let currentPlan = "free";
@@ -876,7 +931,6 @@ const posterCopy =
       }
       hasLoadedPlan = true;
       updateTryOnLinks();
-      updateDownloadButtonLabel();
       refreshRewardButtonState();
     }
 
@@ -894,13 +948,6 @@ const posterCopy =
         var navLabel = document.querySelector("[data-tryon-nav-label]");
         if (navLabel) navLabel.textContent = copy.navTryOnPaid;
       }
-    }
-
-    function updateDownloadButtonLabel() {
-      if (!downloadBtn) return;
-      downloadBtn.textContent =
-        "↓  " +
-        (isPaidPlan() ? copy.cleanDownload || copy.download : copy.download);
     }
 
     fetch("/api/tryon-jobs/" + jobId)
@@ -1116,26 +1163,34 @@ const posterCopy =
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    function downloadCleanResultImage() {
-      const img = imageArea?.querySelector("[data-share-result-img]");
-      if (!img?.src) return;
-      const a = document.createElement("a");
-      a.href = img.src;
-      a.download = "ai-beauty-stylist-result.png";
-      a.click();
+    function setDownloadPending(pending) {
+      if (!downloadBtn) return;
+      downloadBtn.disabled = pending;
+      downloadBtn.setAttribute("aria-busy", String(pending));
+      downloadBtn.textContent = pending
+        ? copy.downloadPreparing
+        : "↓  " + copy.download;
+    }
+
+    function showActionStatus(message, isError = false) {
+      if (!actionStatus) return;
+      actionStatus.hidden = false;
+      actionStatus.textContent = message;
+      actionStatus.classList.toggle("is-error", isError);
     }
 
     if (downloadBtn) {
       downloadBtn.addEventListener("click", async () => {
+        setDownloadPending(true);
         try {
-          if (isPaidPlan()) {
-            downloadCleanResultImage();
-            return;
-          }
           const blob = await createShareCardBlob();
+          if (!blob) throw new Error("SHARE_IMAGE_UNAVAILABLE");
           downloadBlob(blob, "ai-beauty-stylist-share-card.png");
+          showActionStatus(copy.downloadSuccess);
         } catch {
-          /* ignore */
+          showActionStatus(copy.downloadFailed, true);
+        } finally {
+          setDownloadPending(false);
         }
       });
     }
@@ -1431,13 +1486,30 @@ const posterCopy =
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .share-action-area {
+    margin: 24px auto;
+    max-width: 680px;
+    text-align: center;
+  }
   .share-actions {
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
-    margin: 24px auto;
-    max-width: 600px;
+  }
+  .share-download-hint,
+  .share-action-status {
+    margin: 10px 16px 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .share-action-status {
+    color: var(--teal);
+    font-weight: 700;
+  }
+  .share-action-status.is-error {
+    color: var(--rose);
   }
   .share-loading {
     display: flex;
