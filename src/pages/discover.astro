@@ -658,26 +658,80 @@ const searchCopy = isKo
                     placeholder: "Search looks, scenarios, or effects",
                     clear: "Clear search",
                   };
-const referenceCta = isZhTW
+const referenceCta = isKo
   ? {
       badge: "Premium",
-      title: "找不到喜歡的妝容？上傳參考圖",
-      body: "把任何喜歡的妝容私密套用到自己的自拍，不會進入公開妝容庫。",
-      action: "開始參考圖試妝",
+      title: "원하는 메이크업을 찾지 못했나요? 참고 이미지 업로드",
+      body: "참고 이미지의 메이크업을 내 셀피에 비공개로 적용하세요. 공개 메이크업 라이브러리에는 추가되지 않습니다.",
+      mobileBody: "비공개이며 공개 라이브러리에 추가되지 않습니다.",
+      action: "참고 이미지로 체험하기",
     }
-  : isZh
+  : isDe
     ? {
         badge: "Premium",
-        title: "找不到喜欢的妆容？上传参考图",
-        body: "把任何喜欢的妆容私有复刻到自己的自拍，不会进入公开妆容库。",
-        action: "开始参考图试妆",
+        title: "Nicht das passende Make-up gefunden? Referenzbild hochladen",
+        body: "Übertrage einen Referenz-Look privat auf dein Selfie. Deine Referenz erscheint nicht in der öffentlichen Look-Bibliothek.",
+        mobileBody: "Privat. Nicht in der öffentlichen Bibliothek.",
+        action: "Referenz-Look testen",
       }
-    : {
-        badge: "Premium",
-        title: "Can’t find the right look? Upload a reference",
-        body: "Privately transfer any makeup inspiration to your own selfie without adding it to the public library.",
-        action: "Start reference try-on",
-      };
+    : isFr
+      ? {
+          badge: "Premium",
+          title:
+            "Vous ne trouvez pas le bon maquillage ? Importez une référence",
+          body: "Appliquez un maquillage de référence à votre selfie en toute confidentialité. Il ne sera pas ajouté à la galerie publique.",
+          mobileBody: "Privé, sans ajout à la galerie publique.",
+          action: "Essayer avec une référence",
+        }
+      : isJa
+        ? {
+            badge: "Premium",
+            title: "好みのメイクが見つからない？参考画像をアップロード",
+            body: "参考画像のメイクを自分のセルフィーに非公開で適用できます。公開メイクライブラリには追加されません。",
+            mobileBody: "非公開。公開ライブラリには追加されません。",
+            action: "参考画像で試す",
+          }
+        : isZhTW
+          ? {
+              badge: "Premium",
+              title: "找不到喜歡的妝容？上傳參考圖",
+              body: "將喜歡的參考妝容私密套用到自拍，不會進入公開妝容庫。",
+              mobileBody: "私密套用到自拍，不會進入公開妝容庫。",
+              action: "開始參考圖試妝",
+            }
+          : isZh
+            ? {
+                badge: "Premium",
+                title: "找不到喜欢的妆容？上传参考图",
+                body: "将喜欢的参考妆容私密套用到自拍，不会进入公开妆容库。",
+                mobileBody: "私密套用到自拍，不会进入公开妆容库。",
+                action: "开始参考图试妆",
+              }
+            : isEs
+              ? {
+                  badge: "Premium",
+                  title:
+                    "¿No encuentras el maquillaje ideal? Sube una referencia",
+                  body: "Aplica de forma privada un maquillaje de referencia a tu selfie. No se añadirá a la galería pública.",
+                  mobileBody: "Privado, sin añadirlo a la galería pública.",
+                  action: "Probar con una referencia",
+                }
+              : isPt
+                ? {
+                    badge: "Premium",
+                    title:
+                      "Não encontrou a maquiagem ideal? Envie uma referência",
+                    body: "Aplique com privacidade uma maquiagem de referência à sua selfie. Ela não será adicionada à galeria pública.",
+                    mobileBody: "Privado, sem entrar na galeria pública.",
+                    action: "Testar com referência",
+                  }
+                : {
+                    badge: "Premium",
+                    title: "Can’t find the right look? Upload a reference",
+                    body: "Privately apply a reference makeup look to your selfie. It won’t be added to the public look library.",
+                    mobileBody: "Private. Not added to the public library.",
+                    action: "Try a reference look",
+                  };
 const referenceTryOnHref = localizeAppHref("/reference-tryon?source=discover");
 
 function matchValues(option: { value: string; match?: string[] }) {
@@ -723,9 +777,12 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
         <span class="private-reference-copy">
           <small>{referenceCta.badge}</small>
           <strong>{referenceCta.title}</strong>
-          <span>{referenceCta.body}</span>
+          <span class="reference-body-desktop">{referenceCta.body}</span>
+          <span class="reference-body-mobile">{referenceCta.mobileBody}</span>
         </span>
-        <b>{referenceCta.action}<i aria-hidden="true">→</i></b>
+        <span class="private-reference-action">
+          {referenceCta.action}<i aria-hidden="true">→</i>
+        </span>
       </a>
       <dialog
         class="inspiration-dialog"
@@ -974,15 +1031,6 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
       .page-heading {
         display: none;
       }
-      .private-reference-cta {
-        grid-template-columns: auto 1fr;
-        margin: 0 0 12px;
-        padding: 14px;
-      }
-      .private-reference-cta > b {
-        grid-column: 2;
-        justify-self: start;
-      }
       .look-library.panel {
         padding: 0;
         border: 0;
@@ -1003,19 +1051,34 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
       align-items: center;
       margin: 0 0 18px;
       padding: 16px 18px;
-      border: 1px solid color-mix(in srgb, var(--gold) 58%, var(--line));
+      border: 1px solid color-mix(in srgb, var(--gold) 48%, var(--line));
       border-radius: 12px;
-      background: var(--bg-elevated);
+      background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--gold-soft) 58%, var(--bg-elevated)),
+        var(--bg-elevated) 72%
+      );
       color: var(--heading);
       text-decoration: none;
+      box-shadow: 0 8px 20px color-mix(in srgb, var(--gold) 7%, transparent);
       transition:
         border-color 180ms ease,
+        box-shadow 180ms ease,
         transform 180ms ease;
     }
-    .private-reference-cta:hover,
-    .private-reference-cta:focus-visible {
-      border-color: var(--gold-deep);
+    .private-reference-cta:hover {
+      border-color: var(--gold-border);
+      box-shadow: 0 10px 24px color-mix(in srgb, var(--gold) 13%, transparent);
       transform: translateY(-1px);
+    }
+    .private-reference-cta:focus-visible {
+      border-color: var(--gold-border);
+      outline: 3px solid var(--gold-text);
+      outline-offset: 3px;
+    }
+    .private-reference-cta:active {
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--gold) 8%, transparent);
+      transform: translateY(0);
     }
     .private-reference-mark {
       width: 48px;
@@ -1023,8 +1086,8 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
       display: grid;
       place-items: center;
       border-radius: 10px;
-      background: var(--gold-pale);
-      color: var(--gold-deep);
+      background: var(--gold-soft);
+      color: var(--gold-text);
     }
     .private-reference-mark svg {
       width: 26px;
@@ -1040,7 +1103,12 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
       gap: 3px;
     }
     .private-reference-copy small {
-      color: var(--gold-deep);
+      width: max-content;
+      padding: 3px 7px;
+      border: 1px solid color-mix(in srgb, var(--gold) 42%, transparent);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--gold-soft) 80%, var(--bg-elevated));
+      color: var(--gold-text);
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.1em;
@@ -1054,24 +1122,92 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
       font-size: 0.88rem;
       line-height: 1.5;
     }
-    .private-reference-cta > b {
-      display: flex;
+    .reference-body-mobile {
+      display: none;
+    }
+    .private-reference-action {
+      min-height: 36px;
+      display: inline-flex;
       gap: 8px;
       align-items: center;
-      color: var(--gold-deep);
+      justify-content: center;
+      padding: 7px 12px;
+      border: 1px solid color-mix(in srgb, var(--gold) 48%, var(--gold-border));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--gold-soft) 74%, var(--bg-elevated));
+      color: var(--gold-text);
       font-size: 0.88rem;
+      font-weight: 750;
       white-space: nowrap;
+    }
+    .private-reference-action i {
+      font-style: normal;
+      transition: transform 180ms ease;
+    }
+    .private-reference-cta:hover .private-reference-action i {
+      transform: translateX(2px);
     }
     .empty-state .btn + .btn {
       margin-left: 8px;
     }
     @media (max-width: 767px) {
       .private-reference-cta {
-        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4px 10px;
+        margin: 0 0 12px;
+        padding: 12px 14px;
       }
-      .private-reference-cta > b {
+      .private-reference-mark {
+        display: none;
+      }
+      .private-reference-copy {
+        display: contents;
+      }
+      .private-reference-copy small {
+        grid-column: 1;
+        grid-row: 3;
+        align-self: center;
+        padding: 2px 6px;
+        font-size: 0.64rem;
+      }
+      .private-reference-copy strong {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        font-size: 0.96rem;
+        line-height: 1.35;
+      }
+      .reference-body-desktop {
+        display: none;
+      }
+      .reference-body-mobile {
+        display: inline;
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+      .private-reference-action {
         grid-column: 2;
+        grid-row: 3;
         justify-self: start;
+        min-height: 32px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+      }
+    }
+    @media (max-width: 340px) {
+      .private-reference-action {
+        grid-column: 1 / -1;
+        grid-row: 4;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .private-reference-cta,
+      .private-reference-action i {
+        transition: none;
+      }
+      .private-reference-cta:hover,
+      .private-reference-cta:active,
+      .private-reference-cta:hover .private-reference-action i {
+        transform: none;
       }
     }
   </style>
