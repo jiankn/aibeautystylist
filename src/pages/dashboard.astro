@@ -9,6 +9,7 @@ import AppIconBadge from "../components/AppIconBadge.astro";
 import MobileAppTopBar from "../components/MobileAppTopBar.astro";
 import MobileBottomNav from "../components/MobileBottomNav.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import CreditPackPanel from "../components/CreditPackPanel.astro";
 import { getMarketProfileOptions } from "../data/makeup/audienceProfiles";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
@@ -2927,6 +2928,10 @@ const diagnosisValueAliases =
               </p>
             </section>
 
+            <div id="billing-credit-packs" data-dashboard-view="billing">
+              <CreditPackPanel returnTo={`${dashboardHref}#billing-panel`} />
+            </div>
+
             <section
               class="panel dashboard-panel dashboard-panel-compact dashboard-account-panel"
               id="account-panel"
@@ -3739,6 +3744,7 @@ const diagnosisValueAliases =
       }
       .dashboard-main[data-active-view="overview"] #preferences-panel,
       .dashboard-main[data-active-view="overview"] #billing-panel,
+      .dashboard-main[data-active-view="overview"] #billing-credit-packs,
       .dashboard-main[data-active-view="overview"] #account-panel {
         display: none;
       }
@@ -5348,6 +5354,7 @@ const diagnosisValueAliases =
       }
       .dashboard-main[data-active-view="overview"] #preferences-panel,
       .dashboard-main[data-active-view="overview"] #billing-panel,
+      .dashboard-main[data-active-view="overview"] #billing-credit-packs,
       .dashboard-main[data-active-view="overview"] #account-panel {
         display: none;
       }

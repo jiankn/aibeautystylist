@@ -491,7 +491,7 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
         label: authCopy.account,
       });
       const billing = createMenuItem({
-        href: localized("/pricing"),
+        href: localized("/dashboard#billing-panel"),
         label: authCopy.billing,
       });
       const logout = createMenuItem({
