@@ -1234,6 +1234,20 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .workspace-status[data-plan="Premium"]::before {
   background: linear-gradient(90deg, #9a6111 0%, #d7a23a 28%, #fff0b4 50%, #c98c24 72%, #7c4c0a 100%);
 }
+.workspace-status[data-plan="Pro"] h1 {
+  color: #5f1735;
+}
+.workspace-status[data-plan="Pro"] p,
+.workspace-status[data-plan="Pro"] .workspace-status-quota small {
+  color: #6d4555;
+}
+.workspace-status[data-plan="Premium"] h1 {
+  color: #4d3105;
+}
+.workspace-status[data-plan="Premium"] p,
+.workspace-status[data-plan="Premium"] .workspace-status-quota small {
+  color: #6b5427;
+}
 .workspace-status-main {
   display: flex;
   min-width: 0;
@@ -1347,6 +1361,34 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   padding-inline: 11px;
   border-radius: 8px;
   font-size: 12px;
+}
+.workspace-status[data-plan="Pro"] .workspace-status-actions .btn-outline,
+.workspace-status[data-plan="Premium"] .workspace-status-actions .btn-outline {
+  background: rgba(255, 255, 255, 0.76);
+  font-weight: 750;
+  box-shadow:
+    0 3px 9px rgba(77, 43, 8, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+.workspace-status[data-plan="Pro"] .workspace-status-actions .btn-outline {
+  border-color: rgba(126, 29, 66, 0.72);
+  color: #6f1739;
+}
+.workspace-status[data-plan="Premium"] .workspace-status-actions .btn-outline {
+  border-color: rgba(117, 72, 5, 0.76);
+  color: #573400;
+}
+.workspace-status[data-plan="Pro"] .workspace-status-actions .btn-outline:hover,
+.workspace-status[data-plan="Pro"] .workspace-status-actions .btn-outline:focus-visible {
+  border-color: #7e1d42;
+  background: #fff4f8;
+  color: #59102c;
+}
+.workspace-status[data-plan="Premium"] .workspace-status-actions .btn-outline:hover,
+.workspace-status[data-plan="Premium"] .workspace-status-actions .btn-outline:focus-visible {
+  border-color: #754805;
+  background: #fff8df;
+  color: #452900;
 }
 .workspace-status-link.active {
   border-color: var(--navy-control);
