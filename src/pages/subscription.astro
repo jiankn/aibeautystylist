@@ -10,7 +10,7 @@ import MobileBottomNav from "../components/MobileBottomNav.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCurrentLocale } from "../lib/i18n";
+import { getCurrentLocale, t } from "../lib/i18n";
 import { PLAN_DEFINITIONS } from "../lib/plans";
 
 const locale = getCurrentLocale();
@@ -579,6 +579,9 @@ const planMeta = Object.fromEntries(
               <a class="btn btn-outline" href={hrefs.pricing}
                 >{copy.comparePlans}</a
               >
+              <a class="btn btn-outline" href="#credit-packs">
+                {t("creditPacks", "buy")}
+              </a>
               <a class="btn btn-outline-rose" href={hrefs.support}
                 >{copy.support}</a
               >
@@ -757,6 +760,13 @@ const planMeta = Object.fromEntries(
           }
           renderSubscription(body.data);
           showState("content");
+          if (window.location.hash === "#credit-packs") {
+            window.requestAnimationFrame(() => {
+              const panel = document.getElementById("credit-packs");
+              panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+              panel?.focus({ preventScroll: true });
+            });
+          }
         } catch (error) {
           showState("loading");
           const loading = query("[data-subscription-loading]");

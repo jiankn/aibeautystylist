@@ -388,6 +388,7 @@
     "buy": "Buy credits",
     "perCredit": "per credit",
     "membersOnly": "Available to active Pro and Premium members. Unused credits expire when the current billing cycle renews.",
+    "lowQuota": "Credits are running low. Add a pack now to avoid interrupting your next try-on.",
     "processing": "Preparing secure checkout...",
     "success": "{credits} credits added. You can continue creating now.",
     "cancel": "Purchase canceled. No charge was made.",

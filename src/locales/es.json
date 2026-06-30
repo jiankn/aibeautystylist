@@ -374,6 +374,7 @@
     "buy": "Comprar créditos",
     "perCredit": "por crédito",
     "membersOnly": "Disponible para miembros Pro y Premium activos. Los créditos no usados vencen al renovar.",
+    "lowQuota": "Te quedan pocos créditos. Añade un paquete para que tu próxima prueba no se interrumpa.",
     "processing": "Preparando el pago seguro...",
     "success": "Se añadieron {credits} créditos. Ya puedes continuar.",
     "cancel": "Compra cancelada. No se realizó ningún cargo.",

@@ -374,6 +374,7 @@
     "buy": "Credits kaufen",
     "perCredit": "pro Credit",
     "membersOnly": "Für aktive Pro- und Premium-Mitglieder. Nicht genutzte Credits verfallen bei der nächsten Verlängerung.",
+    "lowQuota": "Deine Credits werden knapp. Lade jetzt auf, damit dein nächstes Try-on nicht unterbrochen wird.",
     "processing": "Sichere Zahlung wird vorbereitet...",
     "success": "{credits} Credits wurden hinzugefügt. Du kannst jetzt fortfahren.",
     "cancel": "Kauf abgebrochen. Es wurde nichts berechnet.",

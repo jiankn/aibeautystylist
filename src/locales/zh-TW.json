@@ -370,6 +370,7 @@
     "buy": "購買額度",
     "perCredit": "/ 次",
     "membersOnly": "僅限有效的 Pro 與 Premium 會員購買。未使用額度將在目前計費週期續費時失效。",
+    "lowQuota": "額度不多了，可提前加購，避免下次試妝中斷。",
     "processing": "正在準備安全付款...",
     "success": "已增加 {credits} 次額度，現在可以繼續生成。",
     "cancel": "已取消購買，未產生扣款。",

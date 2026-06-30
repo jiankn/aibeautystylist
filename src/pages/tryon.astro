@@ -245,6 +245,10 @@ const workspaceStatusCopy = {
     buyCredits: t("creditPacks", "buy"),
     browseLooks: t("workspace", "browseLooks"),
   },
+  lowQuota: {
+    free: t("workspace", "lowQuotaHint"),
+    paid: t("creditPacks", "lowQuota"),
+  },
 };
 const workspaceStatusHrefs = {
   free: tryonHref,
@@ -843,6 +847,43 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
             ? Math.min(100, (safeUsed / safeTotal) * 100) + "%"
             : "0%";
       }
+      updateQuotaWarning(currentPlan, {
+        remaining: safeRemaining,
+        total: safeTotal,
+      });
+    }
+
+    function updateQuotaWarning(plan, quota) {
+      const status = document.querySelector(".workspace-status");
+      const content = status?.querySelector(".workspace-status-main > div");
+      if (!content) return;
+      const remaining = Number(quota?.remaining);
+      const total = Number(quota?.total);
+      const showFree =
+        plan === "free" && Number.isFinite(remaining) && remaining < 2;
+      const showPaid =
+        plan !== "free" &&
+        Number.isFinite(remaining) &&
+        Number.isFinite(total) &&
+        total > 0 &&
+        remaining > 0 &&
+        remaining / total <= 0.2;
+      const message = showFree
+        ? workspaceStatusCopy.lowQuota.free
+        : showPaid
+          ? workspaceStatusCopy.lowQuota.paid
+          : "";
+      let warning = content.querySelector(".workspace-status-low");
+      if (!message) {
+        warning?.remove();
+        return;
+      }
+      if (!warning) {
+        warning = document.createElement("p");
+        warning.className = "workspace-status-low";
+        content.appendChild(warning);
+      }
+      warning.textContent = message;
     }
 
     function updateWorkspaceLinks(status, plan, exhausted) {
@@ -881,6 +922,12 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
                   primary: false,
                   hidden: false,
                 },
+                {
+                  label: workspaceStatusCopy.actions.buyCredits,
+                  href: workspaceStatusHrefs.credits,
+                  primary: false,
+                  hidden: false,
+                },
               ]
             : plan === "pro" && exhausted
               ? [
@@ -914,6 +961,12 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
                     {
                       label: workspaceStatusCopy.actions.viewHistory,
                       href: workspaceStatusHrefs.history,
+                      primary: false,
+                      hidden: false,
+                    },
+                    {
+                      label: workspaceStatusCopy.actions.buyCredits,
+                      href: workspaceStatusHrefs.credits,
                       primary: false,
                       hidden: false,
                     },
@@ -1004,7 +1057,6 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
         subtitle.textContent = paidStatusText || "";
         subtitle.classList.toggle("workspace-status-perks", plan !== "free");
       }
-      status.querySelector(".workspace-status-low")?.remove();
       if (refresh) refresh.textContent = workspaceStatusCopy.notes[plan];
       renderWorkspaceQuota(session.quota);
       updateWorkspaceLinks(status, plan, exhausted);

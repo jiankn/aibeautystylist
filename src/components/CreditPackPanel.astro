@@ -1,6 +1,7 @@
 ---
 import { CREDIT_PACKS } from "../lib/creditPacks";
 import { getCurrentLocale, t } from "../lib/i18n";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 
 interface Props {
   returnTo: string;
@@ -9,13 +10,20 @@ interface Props {
 const { returnTo } = Astro.props;
 const locale = getCurrentLocale();
 const packs = Object.values(CREDIT_PACKS);
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const pricingHref = getLocalizedAppHref(
+  `/pricing?return_to=${encodeURIComponent(returnTo)}`,
+  currentRoute.language.slug,
+);
 ---
 
 <section
   class="credit-pack-panel panel"
   id="credit-packs"
   data-credit-pack-panel
-  hidden
+  tabindex="-1"
 >
   <div class="credit-pack-head">
     <div>
@@ -57,9 +65,18 @@ const packs = Object.values(CREDIT_PACKS);
             class:list={["btn", pack.featured && "btn-primary"]}
             type="button"
             data-credit-pack-buy={pack.code}
+            hidden
           >
             {t("creditPacks", "buy")}
           </button>
+          <a
+            class:list={["btn", pack.featured && "btn-primary"]}
+            href={pricingHref}
+            data-credit-pack-upgrade
+            hidden
+          >
+            {t("workspace", "upgradeGetMore")}
+          </a>
         </article>
       ))
     }
@@ -88,6 +105,9 @@ const packs = Object.values(CREDIT_PACKS);
     const buttons = Array.from(
       panel.querySelectorAll("[data-credit-pack-buy]"),
     );
+    const upgradeLinks = Array.from(
+      panel.querySelectorAll("[data-credit-pack-upgrade]"),
+    );
     const setStatus = (message) => {
       if (status) status.textContent = message || "";
     };
@@ -101,9 +121,20 @@ const packs = Object.values(CREDIT_PACKS);
       .then((response) => response.json())
       .then((body) => {
         const plan = body?.data?.plan;
-        panel.hidden = plan !== "pro" && plan !== "premium";
+        const canBuy = plan === "pro" || plan === "premium";
+        panel.dataset.plan = canBuy ? plan : "free";
+        buttons.forEach((button) => {
+          button.hidden = !canBuy;
+        });
+        upgradeLinks.forEach((link) => {
+          link.hidden = canBuy;
+        });
       })
-      .catch(() => {});
+      .catch(() => {
+        upgradeLinks.forEach((link) => {
+          link.hidden = false;
+        });
+      });
 
     buttons.forEach((button) => {
       button.addEventListener("click", async () => {
@@ -136,7 +167,6 @@ const packs = Object.values(CREDIT_PACKS);
     const sessionId = params.get("session_id");
     if (checkoutState === "cancel") setStatus(messages.cancel);
     if (checkoutState === "success" && sessionId) {
-      panel.hidden = false;
       setBusy(true);
       setStatus(messages.processing);
       let syncSucceeded = false;
@@ -180,8 +210,9 @@ const packs = Object.values(CREDIT_PACKS);
     margin-top: 20px;
     padding: 24px;
   }
-  .credit-pack-panel[hidden] {
-    display: none;
+  .credit-pack-panel:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--rose) 55%, transparent);
+    outline-offset: 4px;
   }
   .credit-pack-head {
     display: flex;
@@ -261,6 +292,9 @@ const packs = Object.values(CREDIT_PACKS);
   .credit-pack-card .btn {
     grid-column: 1 / -1;
     min-height: 44px;
+  }
+  .credit-pack-card [hidden] {
+    display: none !important;
   }
   .credit-pack-note,
   .credit-pack-status {

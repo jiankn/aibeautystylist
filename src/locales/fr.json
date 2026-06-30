@@ -374,6 +374,7 @@
     "buy": "Acheter des crédits",
     "perCredit": "par crédit",
     "membersOnly": "Réservé aux membres Pro et Premium actifs. Les crédits restants expirent au renouvellement.",
+    "lowQuota": "Vos crédits diminuent. Rechargez maintenant pour éviter d’interrompre votre prochain essai.",
     "processing": "Préparation du paiement sécurisé...",
     "success": "{credits} crédits ajoutés. Vous pouvez continuer.",
     "cancel": "Achat annulé. Aucun montant débité.",

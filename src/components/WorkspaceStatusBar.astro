@@ -32,6 +32,12 @@ const percentage = hasQuota
   : 0;
 const quotaValue = hasQuota ? `${remaining}/${total}` : "";
 const lowQuota = hasQuota && remaining < 2 && remaining >= 0;
+const lowPaidQuota =
+  hasQuota &&
+  plan !== "Free" &&
+  total > 0 &&
+  remaining > 0 &&
+  remaining / total <= 0.2;
 const quotaExhausted = hasQuota && remaining <= 0;
 const planClass =
   plan === "Premium"
@@ -112,6 +118,12 @@ const links =
                 id: "view-history",
                 variant: "secondary" as const,
               },
+              {
+                href: `${localizeAppHref("/subscription")}#credit-packs`,
+                label: t("creditPacks", "buy"),
+                id: "buy-credits",
+                variant: "secondary" as const,
+              },
             ]
           : quotaExhausted
             ? [
@@ -139,6 +151,12 @@ const links =
                   href: localizeAppHref("/history"),
                   label: t("workspace", "viewHistory"),
                   id: "view-history",
+                  variant: "secondary" as const,
+                },
+                {
+                  href: `${localizeAppHref("/subscription")}#credit-packs`,
+                  label: t("creditPacks", "buy"),
+                  id: "buy-credits",
                   variant: "secondary" as const,
                 },
               ];
@@ -175,6 +193,11 @@ const statusSubtitle = perksText ?? subtitle;
       {
         lowQuota && plan === "Free" && (
           <p class="workspace-status-low">{t("workspace", "lowQuotaHint")}</p>
+        )
+      }
+      {
+        lowPaidQuota && (
+          <p class="workspace-status-low">{t("creditPacks", "lowQuota")}</p>
         )
       }
     </div>

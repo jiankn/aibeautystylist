@@ -388,6 +388,7 @@
     "buy": "购买额度",
     "perCredit": "/ 次",
     "membersOnly": "仅限有效的 Pro 和 Premium 会员购买。未使用额度将在当前计费周期续费时失效。",
+    "lowQuota": "额度不多了，可提前加购，避免下次试妆中断。",
     "processing": "正在准备安全支付...",
     "success": "已增加 {credits} 次额度，现在可以继续生成。",
     "cancel": "已取消购买，未产生扣款。",

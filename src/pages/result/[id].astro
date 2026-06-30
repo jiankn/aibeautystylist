@@ -333,7 +333,6 @@ const hrefs = {
   login: localizeAppHref(
     `/login?mode=login&next=${encodeURIComponent(resultHref)}`,
   ),
-  shareBase: localizeAppHref("/share"),
   shareCard: localizeAppHref("/share-card"),
   tryonFree: localizeAppHref("/tryon"),
 };
@@ -371,29 +370,14 @@ const hrefs = {
           </div>
         </dl>
         <div class="result-actions" data-result-actions hidden>
-          <button class="btn btn-primary" type="button" data-result-share>
+          <a class="btn btn-primary" href="#" data-result-share>
             {copy.share}
-          </button>
-          <button class="btn" type="button" data-result-copy>
-            {copy.copyLink}
-          </button>
+          </a>
           <a class="btn" href="#" data-result-download download>
             {copy.download}
           </a>
           <button class="btn" type="button" data-result-save>
             {copy.save}
-          </button>
-          <a class="btn" href="#" data-result-share-card>
-            {copy.shareCard}
-          </a>
-          <button
-            class="btn btn-outline-rose"
-            type="button"
-            data-result-reward
-            disabled
-            hidden
-          >
-            {copy.reward}
           </button>
           <a class="btn btn-outline" href={hrefs.tryonFree} data-result-retry>
             {copy.retry}
@@ -428,16 +412,10 @@ const hrefs = {
       const look = root.querySelector("[data-result-look]");
       const date = root.querySelector("[data-result-date]");
       const shareBtn = root.querySelector("[data-result-share]");
-      const copyBtn = root.querySelector("[data-result-copy]");
       const download = root.querySelector("[data-result-download]");
       const saveBtn = root.querySelector("[data-result-save]");
-      const shareCard = root.querySelector("[data-result-share-card]");
-      const rewardBtn = root.querySelector("[data-result-reward]");
       const retry = root.querySelector("[data-result-retry]");
-      let currentPlan = "free";
-      let hasLoadedPlan = false;
       let currentJob;
-      let publicShareUrl;
 
       function showFeedback(message) {
         window.showToast?.(message);
@@ -452,99 +430,6 @@ const hrefs = {
           throw error;
         }
         return body.data;
-      }
-
-      function shareClaimStorageKey(value) {
-        return "abs:share-claim:" + value;
-      }
-
-      function getStoredShareClaim() {
-        try {
-          const raw = sessionStorage.getItem(shareClaimStorageKey(jobId));
-          if (!raw) return null;
-          const claim = JSON.parse(raw);
-          if (!claim?.claimToken || !claim?.expiresAt) return null;
-          if (claim.expiresAt <= new Date().toISOString()) {
-            sessionStorage.removeItem(shareClaimStorageKey(jobId));
-            return null;
-          }
-          return claim;
-        } catch {
-          return null;
-        }
-      }
-
-      function storeShareClaim(claim) {
-        try {
-          sessionStorage.setItem(
-            shareClaimStorageKey(jobId),
-            JSON.stringify(claim),
-          );
-        } catch {
-          /* ignore private storage failures */
-        }
-      }
-
-      function refreshRewardState() {
-        if (!rewardBtn) return;
-        if (!hasLoadedPlan || isPaidPlan()) {
-          rewardBtn.hidden = true;
-          rewardBtn.disabled = true;
-          return;
-        }
-        rewardBtn.hidden = false;
-        rewardBtn.disabled = !getStoredShareClaim();
-      }
-
-      function normalizePlan(plan) {
-        return plan === "premium" ? "premium" : plan === "pro" ? "pro" : "free";
-      }
-
-      function isPaidPlan() {
-        return currentPlan === "pro" || currentPlan === "premium";
-      }
-
-      async function loadSessionPlan() {
-        try {
-          const session = await getJson("/api/session");
-          currentPlan = normalizePlan(session?.plan);
-        } catch {
-          currentPlan = "free";
-        }
-        hasLoadedPlan = true;
-        refreshRewardState();
-      }
-
-      refreshRewardState();
-      loadSessionPlan();
-
-      async function recordShareIntent(method) {
-        try {
-          const claim = await getJson("/api/shares/intent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ jobId, method }),
-          });
-          storeShareClaim(claim);
-          refreshRewardState();
-        } catch {
-          refreshRewardState();
-        }
-      }
-
-      async function ensurePublicShareUrl() {
-        if (publicShareUrl) return publicShareUrl;
-        const share = await getJson("/api/shares", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ jobId }),
-        });
-        const base = String(hrefs.shareBase || "/share").replace(/\/+$/, "");
-        publicShareUrl = new URL(
-          `${base}/${encodeURIComponent(share.sourceCode)}`,
-          location.origin,
-        ).toString();
-        return publicShareUrl;
       }
 
       function renderImage(job) {
@@ -617,15 +502,14 @@ const hrefs = {
           renderImage(job);
           if (download)
             download.href = `/api/tryon-jobs/${encodeURIComponent(job.id)}/result`;
-          if (shareCard)
-            shareCard.href = `${hrefs.shareCard}?jobId=${encodeURIComponent(job.id)}`;
+          if (shareBtn)
+            shareBtn.href = `${hrefs.shareCard}?jobId=${encodeURIComponent(job.id)}`;
           if (retry) {
             const retryUrl = new URL(hrefs.tryonFree, location.origin);
             if (job.lookSlug) retryUrl.searchParams.set("look", job.lookSlug);
             retry.href = `${retryUrl.pathname}${retryUrl.search}`;
           }
           if (actions) actions.hidden = false;
-          refreshRewardState();
           loadSavedState();
           return;
         }
@@ -656,41 +540,6 @@ const hrefs = {
           /* keep default save state */
         }
       }
-
-      shareBtn?.addEventListener("click", async () => {
-        if (!currentJob) return;
-        try {
-          const url = await ensurePublicShareUrl();
-          if (navigator.share) {
-            await navigator.share({
-              title: currentJob.lookTitle || copy.title,
-              text: copy.description,
-              url,
-            });
-            await recordShareIntent("web_share");
-          } else if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(url);
-            await recordShareIntent("copy_link");
-            showFeedback(copy.copied);
-          }
-        } catch {
-          showFeedback(copy.shareFailed);
-        }
-      });
-
-      copyBtn?.addEventListener("click", async () => {
-        try {
-          const url = await ensurePublicShareUrl();
-          await navigator.clipboard?.writeText(url);
-          await recordShareIntent("copy_link");
-          copyBtn.textContent = copy.copied;
-          window.setTimeout(() => {
-            copyBtn.textContent = copy.copyLink;
-          }, 2200);
-        } catch {
-          showFeedback(copy.shareFailed);
-        }
-      });
 
       saveBtn?.addEventListener("click", async () => {
         if (!currentJob) return;
@@ -725,28 +574,6 @@ const hrefs = {
           );
         } finally {
           saveBtn.disabled = false;
-        }
-      });
-
-      rewardBtn?.addEventListener("click", async () => {
-        const claim = getStoredShareClaim();
-        if (!claim) {
-          refreshRewardState();
-          return;
-        }
-        rewardBtn.disabled = true;
-        try {
-          await getJson("/api/shares/reward", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              jobId,
-              shareClaimToken: claim.claimToken,
-            }),
-          });
-          rewardBtn.textContent = copy.rewarded;
-        } catch {
-          refreshRewardState();
         }
       });
 
