@@ -34,11 +34,14 @@ export const TRYON_JOB_TIMEOUT_MS = 10 * 60_000;
 
 export type JobStatus = (typeof jobStatuses)[number];
 export type TryOnJobPurpose = "tryon" | "diagnosis";
+export type TryOnLookSource = "catalog" | "private-template";
 
 export interface TryOnJobResult {
   id: string;
   status: JobStatus;
   purpose?: TryOnJobPurpose;
+  lookSource?: TryOnLookSource;
+  privateTemplateId?: string;
   lookSlug: string;
   lookTitle: string;
   resultImage?: string;
@@ -159,13 +162,16 @@ export function toLocalizedJobResponse(
   job: StoredTryOnJob,
   audienceContext: AudienceContext,
 ): TryOnJobResult {
-  const localizedLook = resolveBySnapshot(
-    {
-      ...job,
-      locale: audienceContext.locale,
-    },
-    audienceContext,
-  );
+  const localizedLook =
+    job.lookSource === "private-template"
+      ? undefined
+      : resolveBySnapshot(
+          {
+            ...job,
+            locale: audienceContext.locale,
+          },
+          audienceContext,
+        );
   return {
     ...toJobResponse(job),
     lookTitle: localizedLook?.title ?? job.lookTitle,
@@ -222,7 +228,7 @@ export async function saveStoredJob(
 ): Promise<void> {
   if (DB) {
     await DB.prepare(
-      "INSERT INTO tryon_jobs (id, user_id, upload_id, look_slug, status, idempotency_key, retry_of_job_id, result_json, result_r2_key, error_code, created_at, updated_at, completed_at, deleted_at, look_recipe_id, look_recipe_version, market_variant_id, reference_asset_id, locale, market_profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO tryon_jobs (id, user_id, upload_id, look_slug, status, idempotency_key, retry_of_job_id, result_json, result_r2_key, error_code, created_at, updated_at, completed_at, deleted_at, look_recipe_id, look_recipe_version, market_variant_id, reference_asset_id, locale, market_profile, private_template_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
       .bind(
         job.id,
@@ -245,6 +251,7 @@ export async function saveStoredJob(
         job.referenceAssetId ?? null,
         job.locale ?? null,
         job.marketProfile ?? null,
+        job.privateTemplateId ?? null,
       )
       .run();
     return;

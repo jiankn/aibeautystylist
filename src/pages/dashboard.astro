@@ -48,8 +48,22 @@ const hrefs = {
   tryonFree: localizeAppHref("/tryon"),
   tryonPro: localizeAppHref("/tryon"),
   tryonPremium: localizeAppHref("/tryon"),
+  referenceTryOn: localizeAppHref("/reference-tryon?source=dashboard"),
 };
 const accountCenterCopy = getAccountCenterCopy(locale);
+const referenceDashboardCopy = locale.startsWith("zh")
+  ? {
+      kicker: "Premium 私有功能",
+      title: "我的参考妆容",
+      body: "上传喜欢的妆容参考图，私有生成到自己的自拍，并重复使用已保存模板。",
+      action: "打开参考图试妆",
+    }
+  : {
+      kicker: "Premium private feature",
+      title: "My reference makeup",
+      body: "Upload makeup inspiration, privately transfer it to your selfie, and reuse saved references.",
+      action: "Open reference try-on",
+    };
 const avatarCopy = {
   en: {
     change: "Change avatar",
@@ -2817,6 +2831,19 @@ const diagnosisValueAliases =
 
           <aside class="dashboard-quick-links">
             <section
+              class="panel dashboard-panel dashboard-panel-compact dashboard-reference-entry"
+              data-dashboard-view="overview"
+            >
+              <div class="dashboard-reference-entry-copy">
+                <p class="section-kicker">{referenceDashboardCopy.kicker}</p>
+                <h2>{referenceDashboardCopy.title}</h2>
+                <p>{referenceDashboardCopy.body}</p>
+              </div>
+              <a class="btn btn-gold" href={hrefs.referenceTryOn}>
+                {referenceDashboardCopy.action}
+              </a>
+            </section>
+            <section
               class="panel dashboard-panel dashboard-panel-compact"
               id="saved-panel"
               data-dashboard-view="saved"
@@ -3833,6 +3860,31 @@ const diagnosisValueAliases =
       gap: 16px;
       position: sticky;
       top: 100px;
+    }
+    .dashboard-reference-entry {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      border-color: var(--gold-border);
+      background: var(--surface-gold);
+    }
+    .dashboard-reference-entry h2 {
+      margin: 4px 0 6px;
+    }
+    .dashboard-reference-entry-copy > p:last-child {
+      margin: 0;
+      color: var(--body-secondary);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    @media (max-width: 620px) {
+      .dashboard-reference-entry {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-reference-entry .btn {
+        width: 100%;
+      }
     }
     @media (min-width: 1061px) {
       .dashboard-main[data-active-view]:not([data-active-view="overview"])

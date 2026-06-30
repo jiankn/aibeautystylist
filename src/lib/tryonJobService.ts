@@ -36,8 +36,12 @@ import {
 } from "./quota";
 import type { RuntimeBindings } from "./runtime";
 import { getEffectivePlan } from "./subscriptions";
-import { getMonthlyQuota } from "./plans";
+import { getMonthlyQuota, planHasFeature } from "./plans";
 import { getOwnedUpload, type StoredUploadRecord } from "./uploadRecords";
+import {
+  getOwnedPrivateLookTemplate,
+  type PrivateLookTemplate,
+} from "./privateLookTemplates";
 
 export interface CreateTryOnJobOptions {
   userId: string;
@@ -49,6 +53,7 @@ export interface CreateTryOnJobOptions {
   /** 区域化上下文（Phase 1 新增，可选） */
   audienceContext?: AudienceContext;
   purpose?: TryOnJobPurpose;
+  privateTemplate?: PrivateLookTemplate;
 }
 
 interface ProcessingAudienceContext {
@@ -74,6 +79,8 @@ export type TryOnJobServiceErrorCode =
   | "UPLOAD_NOT_FOUND"
   | "UPLOAD_STORAGE_REQUIRED"
   | "JOB_ALREADY_EXISTS"
+  | "FEATURE_UNAVAILABLE"
+  | "PRIVATE_TEMPLATE_NOT_FOUND"
   | "QUOTA_EXHAUSTED";
 
 export class TryOnJobServiceError extends Error {
@@ -99,6 +106,7 @@ export async function createTryOnJob(
     bindings,
     audienceContext,
     purpose = "tryon",
+    privateTemplate,
   } = options;
   const provider = bindings.TRYON_PROVIDER ?? "mock";
 
@@ -121,6 +129,25 @@ export async function createTryOnJob(
   }
 
   const plan = await getEffectivePlan(userId, bindings.DB);
+  if (privateTemplate && privateTemplate.userId !== userId) {
+    throw new TryOnJobServiceError(
+      "PRIVATE_TEMPLATE_NOT_FOUND",
+      "没有找到该私有参考妆容",
+      false,
+      404,
+    );
+  }
+  if (
+    privateTemplate &&
+    !planHasFeature(plan.planCode, "privateReferenceTryOn")
+  ) {
+    throw new TryOnJobServiceError(
+      "FEATURE_UNAVAILABLE",
+      "上传参考妆容是 Premium 专属功能",
+      false,
+      403,
+    );
+  }
   const monthlyQuota = getMonthlyQuota(plan.planCode);
   const quotaPeriod = quotaPeriodForEffectivePlan(plan);
 
@@ -136,6 +163,7 @@ export async function createTryOnJob(
       quotaPeriod,
       audienceContext,
       purpose,
+      privateTemplate,
     });
   }
 
@@ -150,6 +178,7 @@ export async function createTryOnJob(
     quotaPeriod,
     audienceContext,
     purpose,
+    privateTemplate,
   });
 }
 
@@ -164,6 +193,7 @@ async function createMockReferenceJob(options: {
   quotaPeriod?: QuotaPeriodInput;
   audienceContext?: AudienceContext;
   purpose: TryOnJobPurpose;
+  privateTemplate?: PrivateLookTemplate;
 }): Promise<CreateTryOnJobResult> {
   const job = createReferenceFallbackJob(options.look);
   const reservation = await reserveQuota(
@@ -189,6 +219,8 @@ async function createMockReferenceJob(options: {
     ...lookSnapshot(options.look),
     locale: options.audienceContext?.locale,
     marketProfile: options.audienceContext?.marketProfile,
+    lookSource: options.privateTemplate ? "private-template" : "catalog",
+    privateTemplateId: options.privateTemplate?.id,
   };
 
   try {
@@ -223,6 +255,7 @@ async function createGeminiQueuedJob(options: {
   quotaPeriod?: QuotaPeriodInput;
   audienceContext?: AudienceContext;
   purpose: TryOnJobPurpose;
+  privateTemplate?: PrivateLookTemplate;
 }): Promise<CreateTryOnJobResult> {
   if (!options.upload.r2Key || !options.bindings.USER_UPLOADS) {
     throw new TryOnJobServiceError(
@@ -248,6 +281,8 @@ async function createGeminiQueuedJob(options: {
     ...lookSnapshot(options.look),
     locale: options.audienceContext?.locale,
     marketProfile: options.audienceContext?.marketProfile,
+    lookSource: options.privateTemplate ? "private-template" : "catalog",
+    privateTemplateId: options.privateTemplate?.id,
   };
   const reservation = await reserveQuota(
     options.userId,
@@ -327,6 +362,27 @@ export async function processTryOnJob(
       quotaPeriod,
     });
   }
+  const privateTemplate =
+    existingJob.lookSource === "private-template" &&
+    existingJob.privateTemplateId
+      ? await getOwnedPrivateLookTemplate(
+          options.userId,
+          existingJob.privateTemplateId,
+          options.bindings.DB,
+        )
+      : undefined;
+  if (
+    existingJob.lookSource === "private-template" &&
+    (!privateTemplate || !privateTemplate.r2Key)
+  ) {
+    return failRunningJob(existingJob, {
+      userId: options.userId,
+      errorCode: "PRIVATE_TEMPLATE_NOT_FOUND",
+      bindings: options.bindings,
+      monthlyQuota,
+      quotaPeriod,
+    });
+  }
 
   const runOptions = {
     userId: options.userId,
@@ -339,6 +395,7 @@ export async function processTryOnJob(
     audienceContext: {
       locale: options.audienceContext?.locale ?? existingJob.locale,
     },
+    privateTemplate,
   };
 
   return getTryOnJobPurpose(existingJob) === "diagnosis"
@@ -355,6 +412,7 @@ async function runGeminiImageTryOnJob(options: {
   monthlyQuota: number;
   quotaPeriod?: QuotaPeriodInput;
   audienceContext?: ProcessingAudienceContext;
+  privateTemplate?: PrivateLookTemplate;
 }): Promise<CreateTryOnJobResult> {
   let currentJob = options.job;
   if (!options.upload.r2Key || !options.bindings.USER_UPLOADS) {
@@ -382,12 +440,27 @@ async function runGeminiImageTryOnJob(options: {
     if (!object) throw new Error("UPLOAD_OBJECT_NOT_FOUND");
 
     const photoData = await r2BodyToArrayBuffer(object.body);
+    let referenceData: ArrayBuffer | undefined;
+    let referenceMimeType: string | undefined;
+    if (options.privateTemplate) {
+      const referenceObject = await options.bindings.USER_UPLOADS.get(
+        options.privateTemplate.r2Key,
+      );
+      if (!referenceObject)
+        throw new Error("PRIVATE_TEMPLATE_OBJECT_NOT_FOUND");
+      referenceData = await r2BodyToArrayBuffer(referenceObject.body);
+      referenceMimeType =
+        referenceObject.httpMetadata?.contentType ??
+        options.privateTemplate.contentType;
+    }
     const completed = await completeImageStage({
       job: currentJob,
       userId: options.userId,
       look: options.look,
       photoData,
       photoMimeType: options.upload.contentType,
+      referenceData,
+      referenceMimeType,
       bindings: options.bindings,
     });
 
@@ -722,6 +795,8 @@ async function completeImageStage(options: {
   look: LookCatalogItem | ResolvedLook;
   photoData: ArrayBuffer;
   photoMimeType: string;
+  referenceData?: ArrayBuffer;
+  referenceMimeType?: string;
   bindings: RuntimeBindings;
 }): Promise<StoredTryOnJob> {
   if (!options.bindings.USER_UPLOADS) {
@@ -732,7 +807,10 @@ async function completeImageStage(options: {
     );
   }
 
-  const provider = options.bindings.IMAGE_PROVIDER ?? "gemini";
+  const provider =
+    options.job.lookSource === "private-template"
+      ? "gemini"
+      : (options.bindings.IMAGE_PROVIDER ?? "gemini");
   if (provider === "evolink") {
     return completeImageStageWithEvolink(options);
   }
@@ -745,10 +823,18 @@ async function completeImageStageWithGemini(options: {
   look: LookCatalogItem | ResolvedLook;
   photoData: ArrayBuffer;
   photoMimeType: string;
+  referenceData?: ArrayBuffer;
+  referenceMimeType?: string;
   bindings: RuntimeBindings;
 }): Promise<StoredTryOnJob> {
   const apiKey = options.bindings.GEMINI_API_KEY;
   if (!apiKey || !options.bindings.USER_UPLOADS) {
+    if (options.job.lookSource === "private-template") {
+      throw new GeminiImageError(
+        "GEMINI_IMAGE_UNAVAILABLE",
+        "私有参考妆容生成服务暂不可用",
+      );
+    }
     return completeWithReferenceFallback(
       options.job,
       options.look,
@@ -761,11 +847,29 @@ async function completeImageStageWithGemini(options: {
     const generated = await generateGeminiMakeupImage({
       apiKey,
       model,
-      prompt: makeupImagePrompt(options.look),
-      photo: {
-        data: options.photoData,
-        mimeType: options.photoMimeType,
-      },
+      prompt:
+        options.job.lookSource === "private-template"
+          ? privateMakeupImagePrompt(options.look.title)
+          : makeupImagePrompt(options.look),
+      ...(options.referenceData && options.referenceMimeType
+        ? {
+            images: [
+              {
+                data: options.referenceData,
+                mimeType: options.referenceMimeType,
+              },
+              {
+                data: options.photoData,
+                mimeType: options.photoMimeType,
+              },
+            ],
+          }
+        : {
+            photo: {
+              data: options.photoData,
+              mimeType: options.photoMimeType,
+            },
+          }),
       timeoutMs: parseTimeout(options.bindings.GEMINI_IMAGE_TIMEOUT_MS),
       fetcher: options.bindings.OUTBOUND_PROXY_URL
         ? createProxyFetcher(options.bindings.OUTBOUND_PROXY_URL)
@@ -813,6 +917,7 @@ async function completeImageStageWithGemini(options: {
       completedAt,
     };
   } catch (error) {
+    if (options.job.lookSource === "private-template") throw error;
     await recordAiCall(
       {
         userId: options.userId,
@@ -960,6 +1065,13 @@ function quotaError(duplicate: boolean): TryOnJobServiceError {
 
 function providerErrorCode(error: unknown): string {
   if (error instanceof DiagnosisProviderError) return error.code;
+  if (error instanceof GeminiImageError) return error.code;
+  if (
+    error instanceof Error &&
+    error.message === "PRIVATE_TEMPLATE_OBJECT_NOT_FOUND"
+  ) {
+    return "PRIVATE_TEMPLATE_NOT_FOUND";
+  }
   return error instanceof Error && error.message === "UPLOAD_OBJECT_NOT_FOUND"
     ? "UPLOAD_NOT_FOUND"
     : "AI_UNAVAILABLE";
@@ -1049,6 +1161,23 @@ function makeupImagePrompt(look: LookCatalogItem | ResolvedLook): string {
   ]
     .filter(Boolean)
     .join(" ");
+}
+
+function privateMakeupImagePrompt(title: string): string {
+  return [
+    "You are performing a private makeup transfer using exactly two input images.",
+    "Image 1 is the makeup reference only. Extract only cosmetic design information from it: base finish, eyeshadow colors and placement, eyeliner shape, brow styling, blush placement, contour, highlight, lip color, texture, and overall intensity.",
+    "Image 2 is the user's selfie and the only identity reference. Keep the person in Image 2 unmistakably the same person.",
+    "Apply the makeup design from Image 1 onto Image 2, adapting placement naturally to the facial proportions, skin depth, undertone cues, eye shape, brow shape, and lip shape visible in Image 2.",
+    "Do not copy or blend the identity, facial structure, age, expression, hairstyle, hair color, clothing, jewelry, pose, lighting, camera angle, or background from Image 1.",
+    "Preserve Image 2's facial structure, expression, hairstyle, clothing, background, lighting, framing, and natural asymmetry.",
+    "Critically preserve the original skin texture from Image 2: pores, fine lines, natural grain, moles, freckles, and real surface detail must remain visible.",
+    "Do not beautify, smooth, retouch, airbrush, blur, slim the face, enlarge eyes, reshape the nose, or apply a generic beauty filter.",
+    "Only add makeup. Keep the result photorealistic and physically plausible on the user's own face.",
+    "Do not infer sensitive attributes. Use only visible makeup-relevant appearance cues.",
+    "No text, labels, watermark, product packaging, extra people, surgery effects, or diagnostic annotations.",
+    `Private template title: ${title}.`,
+  ].join(" ");
 }
 
 function isResolvedLook(

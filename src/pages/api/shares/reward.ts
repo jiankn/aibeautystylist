@@ -69,6 +69,16 @@ export const POST: APIRoute = async ({ cookies, request }) => {
       404,
     );
   }
+  if (job.lookSource === "private-template") {
+    return apiError(
+      {
+        code: "PRIVATE_RESULT_NOT_SHAREABLE",
+        message: "私有参考妆容结果不参与分享奖励",
+        retryable: false,
+      },
+      403,
+    );
+  }
 
   if (job.status !== "succeeded") {
     return apiError(

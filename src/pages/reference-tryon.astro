@@ -1,0 +1,890 @@
+---
+import MobileBottomNav from "../components/MobileBottomNav.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCurrentLocale } from "../lib/i18n";
+import { PHOTO_CONSENT_VERSION } from "../lib/uploads";
+
+const locale = getCurrentLocale();
+const isZh = locale.startsWith("zh");
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const pageHref = localizeAppHref("/reference-tryon");
+const copy = isZh
+  ? {
+      title: "参考图试妆 · Premium | AI Beauty Stylist",
+      description:
+        "上传喜欢的妆容参考图和自己的自拍，私有生成妆容上脸效果。仅限 Premium 用户。",
+      eyebrow: "Premium 私有功能",
+      heading: "把喜欢的妆容，试到自己的脸上",
+      intro:
+        "参考图只提供妆容颜色、位置和质感；自拍是唯一身份来源。生成结果和参考图默认只有你能看到。",
+      referenceTitle: "1. 选择妆容参考",
+      referenceHelp: "清晰单人正脸、妆容完整、无遮挡的图片效果最好。",
+      referenceLabel: "上传新的参考图",
+      templateName: "模板名称（可选）",
+      templatePlaceholder: "例如：暖棕烟熏妆",
+      savedTitle: "或者使用已保存的参考妆容",
+      noSaved: "还没有保存的参考妆容。",
+      selfieTitle: "2. 上传自己的自拍",
+      selfieHelp: "请使用自然光、正脸、面部无遮挡的清晰自拍。",
+      selfieLabel: "选择自拍",
+      rights: "我确认有权将参考图片用于个人私有试妆，不会用于公开传播。",
+      consent: "我同意按照照片处理说明上传自拍并生成试妆结果。",
+      generate: "生成我的参考图试妆",
+      generating: "正在保存参考图并生成私有试妆，请稍候…",
+      privacyTitle: "默认私有",
+      privacy:
+        "参考图存放在私有空间，不进入 Discover，也不提供公开分享。你可以随时删除模板和生成记录。",
+      loginTitle: "登录后使用参考图试妆",
+      loginBody: "此功能需要登录，并且只向 Premium 用户开放。",
+      loginCta: "登录",
+      premiumTitle: "这是 Premium 专属功能",
+      premiumBody:
+        "Pro 可以使用妆容库试妆；Premium 额外支持上传任意参考妆容并私有复刻。",
+      premiumCta: "查看 Premium 权益",
+      manageExisting: "管理以前保存的私有参考妆容",
+      resultTitle: "你的私有试妆已完成",
+      resultNote:
+        "结果仅供妆容方向参考，真实产品质感会受到光线和上妆方式影响。",
+      history: "查看历史记录",
+      again: "继续试另一个妆容",
+      delete: "删除",
+      deleting: "正在删除…",
+      selected: "已选择",
+      failed: "生成失败，额度已自动返还，请检查图片后重试。",
+      loadFailed: "暂时无法加载账户信息，请刷新后重试。",
+    }
+  : {
+      title: "Reference Makeup Try-On · Premium | AI Beauty Stylist",
+      description:
+        "Upload a makeup reference and your selfie to privately generate the look on your own face. Available with Premium.",
+      eyebrow: "Premium private feature",
+      heading: "Try any makeup reference on your own face",
+      intro:
+        "The reference supplies makeup color, placement, and finish. Your selfie remains the only identity source. References and results stay private to your account.",
+      referenceTitle: "1. Choose a makeup reference",
+      referenceHelp:
+        "A clear, front-facing photo with one visible face and complete makeup works best.",
+      referenceLabel: "Upload a new reference",
+      templateName: "Template name (optional)",
+      templatePlaceholder: "Example: warm brown smoky eye",
+      savedTitle: "Or reuse a saved private reference",
+      noSaved: "You have no saved private references yet.",
+      selfieTitle: "2. Upload your selfie",
+      selfieHelp:
+        "Use a clear, front-facing selfie in natural light with no face obstruction.",
+      selfieLabel: "Choose selfie",
+      rights:
+        "I have the right to use this reference for personal, private try-on and will not publish it.",
+      consent:
+        "I agree to the photo processing notice for uploading my selfie and generating this result.",
+      generate: "Generate my reference try-on",
+      generating: "Saving the reference and generating your private try-on…",
+      privacyTitle: "Private by default",
+      privacy:
+        "References stay in private storage, never enter Discover, and cannot be publicly shared. Delete templates and results whenever you want.",
+      loginTitle: "Sign in to use reference try-on",
+      loginBody: "This feature requires an account and a Premium plan.",
+      loginCta: "Sign in",
+      premiumTitle: "Premium exclusive",
+      premiumBody:
+        "Pro includes catalog try-on. Premium additionally lets you upload any makeup reference and privately transfer it to your selfie.",
+      premiumCta: "View Premium benefits",
+      manageExisting: "Manage previously saved private references",
+      resultTitle: "Your private try-on is ready",
+      resultNote:
+        "Use this as a makeup direction. Real product texture varies with lighting, skin preparation, and application.",
+      history: "View history",
+      again: "Try another reference",
+      delete: "Delete",
+      deleting: "Deleting…",
+      selected: "Selected",
+      failed:
+        "Generation failed and the credit was returned. Check both photos and try again.",
+      loadFailed: "Unable to load your account. Refresh and try again.",
+    };
+
+const hrefs = {
+  login: localizeAppHref(
+    `/login?mode=login&next=${encodeURIComponent(pageHref)}`,
+  ),
+  pricing: `${localizeAppHref("/pricing")}#pricing-comparison`,
+  history: localizeAppHref("/history"),
+};
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  bodyClass="reference-tryon-body"
+  robots="noindex,follow"
+>
+  <SiteHeader active="discover" />
+  <main
+    class="reference-tryon-main"
+    data-reference-tryon
+    data-photo-consent-version={PHOTO_CONSENT_VERSION}
+  >
+    <section class="reference-hero">
+      <div>
+        <span>{copy.eyebrow}</span>
+        <h1>{copy.heading}</h1>
+        <p>{copy.intro}</p>
+      </div>
+      <aside>
+        <strong>{copy.privacyTitle}</strong>
+        <p>{copy.privacy}</p>
+      </aside>
+    </section>
+
+    <section class="reference-state" data-loading-state aria-live="polite">
+      <span class="reference-spinner" aria-hidden="true"></span>
+    </section>
+
+    <section class="reference-gate" data-login-gate hidden>
+      <h2>{copy.loginTitle}</h2>
+      <p>{copy.loginBody}</p>
+      <a class="btn btn-primary" href={hrefs.login}>{copy.loginCta}</a>
+    </section>
+
+    <section class="reference-gate reference-premium" data-premium-gate hidden>
+      <span>Premium</span>
+      <h2>{copy.premiumTitle}</h2>
+      <p>{copy.premiumBody}</p>
+      <a class="btn btn-gold" href={hrefs.pricing}>{copy.premiumCta}</a>
+      <div class="premium-template-manager" data-template-manager hidden>
+        <h3>{copy.manageExisting}</h3>
+        <div class="saved-reference-list" data-template-list></div>
+      </div>
+    </section>
+
+    <form class="reference-workflow" data-reference-form hidden>
+      <section class="reference-step">
+        <div class="reference-step-heading">
+          <div>
+            <h2>{copy.referenceTitle}</h2>
+            <p>{copy.referenceHelp}</p>
+          </div>
+          <span>01</span>
+        </div>
+        <div class="reference-upload-grid">
+          <label class="reference-dropzone">
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              data-reference-input
+            />
+            <span>{copy.referenceLabel}</span>
+            <small>JPG / PNG / WebP · 4MB WebP after compression</small>
+            <img data-reference-preview alt="" hidden />
+          </label>
+          <label class="reference-name">
+            <span>{copy.templateName}</span>
+            <input
+              type="text"
+              maxlength="60"
+              placeholder={copy.templatePlaceholder}
+              data-template-title
+            />
+          </label>
+        </div>
+        <label class="reference-check">
+          <input type="checkbox" data-rights-check />
+          <span>{copy.rights}</span>
+        </label>
+        <div class="saved-reference-block">
+          <h3>{copy.savedTitle}</h3>
+          <div class="saved-reference-list" data-template-list>
+            <p>{copy.noSaved}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="reference-step">
+        <div class="reference-step-heading">
+          <div>
+            <h2>{copy.selfieTitle}</h2>
+            <p>{copy.selfieHelp}</p>
+          </div>
+          <span>02</span>
+        </div>
+        <label class="reference-dropzone reference-selfie">
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            data-selfie-input
+            required
+          />
+          <span>{copy.selfieLabel}</span>
+          <small>JPG / PNG / WebP</small>
+          <img data-selfie-preview alt="" hidden />
+        </label>
+        <label class="reference-check">
+          <input type="checkbox" data-consent-check required />
+          <span>{copy.consent}</span>
+        </label>
+      </section>
+
+      <div class="reference-submit">
+        <button class="btn btn-gold btn-lg" type="submit" data-generate>
+          {copy.generate}
+        </button>
+        <p data-reference-status role="status"></p>
+      </div>
+    </form>
+
+    <section class="reference-result" data-result hidden>
+      <div>
+        <span>Premium · Private</span>
+        <h2>{copy.resultTitle}</h2>
+        <p>{copy.resultNote}</p>
+        <div class="reference-result-actions">
+          <a class="btn btn-primary" href={hrefs.history}>{copy.history}</a>
+          <button class="btn btn-outline" type="button" data-again>
+            {copy.again}
+          </button>
+        </div>
+      </div>
+      <figure>
+        <img data-result-image alt={copy.resultTitle} />
+      </figure>
+    </section>
+  </main>
+  <MobileBottomNav active="tryon" />
+
+  <script is:inline define:vars={{ copy, hrefs }}>
+    (() => {
+      const root = document.querySelector("[data-reference-tryon]");
+      if (!root) return;
+      const loading = root.querySelector("[data-loading-state]");
+      const loginGate = root.querySelector("[data-login-gate]");
+      const premiumGate = root.querySelector("[data-premium-gate]");
+      const form = root.querySelector("[data-reference-form]");
+      const result = root.querySelector("[data-result]");
+      const status = root.querySelector("[data-reference-status]");
+      const generate = root.querySelector("[data-generate]");
+      const referenceInput = root.querySelector("[data-reference-input]");
+      const selfieInput = root.querySelector("[data-selfie-input]");
+      const referencePreview = root.querySelector("[data-reference-preview]");
+      const selfiePreview = root.querySelector("[data-selfie-preview]");
+      const templateLists = Array.from(
+        root.querySelectorAll("[data-template-list]"),
+      );
+      const templateManager = root.querySelector("[data-template-manager]");
+      let selectedTemplateId = "";
+      let templates = [];
+
+      const showOnly = (target) => {
+        [loading, loginGate, premiumGate, form, result].forEach((node) => {
+          if (node) node.hidden = node !== target;
+        });
+      };
+
+      async function readJson(response) {
+        const body = await response.json().catch(() => null);
+        if (!response.ok || !body?.ok) {
+          throw new Error(body?.error?.message || copy.failed);
+        }
+        return body.data;
+      }
+
+      async function loadSession() {
+        try {
+          const data = await readJson(await fetch("/api/session"));
+          if (data?.user?.kind !== "account") {
+            showOnly(loginGate);
+            return;
+          }
+          if (data.plan !== "premium") {
+            await loadTemplates();
+            if (templateManager)
+              templateManager.hidden = templates.length === 0;
+            showOnly(premiumGate);
+            return;
+          }
+          showOnly(form);
+          await loadTemplates();
+        } catch {
+          if (loading) loading.textContent = copy.loadFailed;
+        }
+      }
+
+      async function loadTemplates() {
+        const data = await readJson(await fetch("/api/private-look-templates"));
+        templates = data.items || [];
+        renderTemplates();
+      }
+
+      function renderTemplates() {
+        templateLists.forEach((templateList) => {
+          templateList.replaceChildren();
+          if (!templates.length) {
+            const empty = document.createElement("p");
+            empty.textContent = copy.noSaved;
+            templateList.append(empty);
+            return;
+          }
+          templates.forEach((template) => {
+            const card = document.createElement("article");
+            card.className = "saved-reference-card";
+            card.dataset.selected = String(template.id === selectedTemplateId);
+
+            const choose = document.createElement("button");
+            choose.type = "button";
+            choose.className = "saved-reference-choose";
+            const image = document.createElement("img");
+            image.src = template.image;
+            image.alt = template.title;
+            const title = document.createElement("strong");
+            title.textContent = template.title;
+            const state = document.createElement("small");
+            state.textContent =
+              template.id === selectedTemplateId ? copy.selected : "";
+            choose.append(image, title, state);
+            choose.addEventListener("click", () => {
+              if (premiumGate && !premiumGate.hidden) return;
+              selectedTemplateId = template.id;
+              referenceInput.value = "";
+              referencePreview.hidden = true;
+              root.querySelector("[data-rights-check]").checked = false;
+              renderTemplates();
+            });
+
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "saved-reference-delete";
+            remove.textContent = copy.delete;
+            remove.addEventListener("click", async () => {
+              remove.disabled = true;
+              remove.textContent = copy.deleting;
+              try {
+                await readJson(
+                  await fetch(
+                    `/api/private-look-templates/${encodeURIComponent(template.id)}`,
+                    { method: "DELETE" },
+                  ),
+                );
+                templates = templates.filter((item) => item.id !== template.id);
+                if (selectedTemplateId === template.id) selectedTemplateId = "";
+                if (templateManager) {
+                  templateManager.hidden = templates.length === 0;
+                }
+                renderTemplates();
+              } catch (error) {
+                if (status) status.textContent = error.message;
+                remove.disabled = false;
+                remove.textContent = copy.delete;
+              }
+            });
+            card.append(choose, remove);
+            templateList.append(card);
+          });
+        });
+      }
+
+      function previewFile(input, image) {
+        const file = input.files?.[0];
+        if (!file) {
+          image.hidden = true;
+          return;
+        }
+        image.src = URL.createObjectURL(file);
+        image.hidden = false;
+      }
+
+      referenceInput.addEventListener("change", () => {
+        selectedTemplateId = "";
+        renderTemplates();
+        previewFile(referenceInput, referencePreview);
+      });
+      selfieInput.addEventListener("change", () =>
+        previewFile(selfieInput, selfiePreview),
+      );
+
+      async function compressToWebp(file, maxSide, quality) {
+        const bitmap = await createImageBitmap(file);
+        const scale = Math.min(
+          1,
+          maxSide / Math.max(bitmap.width, bitmap.height),
+        );
+        const width = Math.max(1, Math.round(bitmap.width * scale));
+        const height = Math.max(1, Math.round(bitmap.height * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d", { alpha: false });
+        context.drawImage(bitmap, 0, 0, width, height);
+        bitmap.close?.();
+        const blob = await new Promise((resolve, reject) => {
+          canvas.toBlob(
+            (value) =>
+              value
+                ? resolve(value)
+                : reject(new Error("WEBP_COMPRESS_FAILED")),
+            "image/webp",
+            quality,
+          );
+        });
+        return blob;
+      }
+
+      async function createTemplate() {
+        if (selectedTemplateId) return selectedTemplateId;
+        const file = referenceInput.files?.[0];
+        if (!file) throw new Error(copy.referenceHelp);
+        if (!root.querySelector("[data-rights-check]").checked) {
+          throw new Error(copy.rights);
+        }
+        const webp = await compressToWebp(file, 1600, 0.84);
+        const data = new FormData();
+        data.set("reference", webp, "reference.webp");
+        data.set(
+          "title",
+          root.querySelector("[data-template-title]").value.trim(),
+        );
+        data.set("rightsAccepted", "true");
+        const template = await readJson(
+          await fetch("/api/private-look-templates", {
+            method: "POST",
+            body: data,
+          }),
+        );
+        selectedTemplateId = template.id;
+        templates.unshift(template);
+        return template.id;
+      }
+
+      async function uploadSelfie() {
+        const file = selfieInput.files?.[0];
+        if (!file) throw new Error(copy.selfieHelp);
+        if (!root.querySelector("[data-consent-check]").checked) {
+          throw new Error(copy.consent);
+        }
+        const webp = await compressToWebp(file, 1800, 0.86);
+        const data = new FormData();
+        data.set("photo", webp, "selfie.webp");
+        data.set("consentVersion", root.dataset.photoConsentVersion || "");
+        return readJson(
+          await fetch("/api/uploads", { method: "POST", body: data }),
+        );
+      }
+
+      async function pollJob(jobId) {
+        for (let attempt = 0; attempt < 150; attempt += 1) {
+          const job = await readJson(
+            await fetch(`/api/tryon-jobs/${encodeURIComponent(jobId)}`),
+          );
+          if (job.status === "succeeded") return job;
+          if (["failed", "cancelled", "timed_out"].includes(job.status)) {
+            throw new Error(job.errorCode || copy.failed);
+          }
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+        throw new Error(copy.failed);
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        generate.disabled = true;
+        status.textContent = copy.generating;
+        try {
+          const [templateId, upload] = await Promise.all([
+            createTemplate(),
+            uploadSelfie(),
+          ]);
+          const job = await readJson(
+            await fetch("/api/tryon-jobs", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                uploadId: upload.id,
+                privateTemplateId: templateId,
+                idempotencyKey: crypto.randomUUID(),
+                requiredPlan: "premium",
+                purpose: "tryon",
+              }),
+            }),
+          );
+          const completed = await pollJob(job.id);
+          root.querySelector("[data-result-image]").src = completed.resultImage;
+          showOnly(result);
+        } catch (error) {
+          status.textContent = error?.message || copy.failed;
+        } finally {
+          generate.disabled = false;
+        }
+      });
+
+      root.querySelector("[data-again]")?.addEventListener("click", () => {
+        selfieInput.value = "";
+        selfiePreview.hidden = true;
+        status.textContent = "";
+        showOnly(form);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      loadSession();
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .reference-tryon-main {
+    width: min(calc(100% - 2rem), 1040px);
+    min-height: 72vh;
+    margin: 0 auto;
+    padding: 3rem 0 6rem;
+  }
+  .reference-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr);
+    gap: 2rem;
+    align-items: end;
+    margin-bottom: 2rem;
+  }
+  .reference-hero > div > span,
+  .reference-result > div > span {
+    color: var(--gold-deep);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .reference-hero h1 {
+    max-width: 15ch;
+    margin: 0.55rem 0 0.9rem;
+    color: var(--heading);
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.05;
+  }
+  .reference-hero p,
+  .reference-step-heading p,
+  .reference-gate p,
+  .reference-result p {
+    color: var(--body-secondary);
+    line-height: 1.65;
+  }
+  .reference-hero aside {
+    padding: 1.25rem;
+    border: 1px solid var(--warm-border);
+    border-radius: 12px;
+    background: var(--bg-elevated);
+  }
+  .reference-hero aside strong {
+    color: var(--heading);
+  }
+  .reference-hero aside p {
+    margin: 0.45rem 0 0;
+    font-size: 0.9rem;
+  }
+  .reference-state,
+  .reference-gate {
+    min-height: 260px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 0.75rem;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg-elevated);
+    text-align: center;
+  }
+  .reference-state[hidden],
+  .reference-gate[hidden],
+  .reference-workflow[hidden],
+  .reference-result[hidden] {
+    display: none;
+  }
+  .reference-spinner {
+    width: 34px;
+    height: 34px;
+    border: 3px solid var(--line);
+    border-top-color: var(--rose);
+    border-radius: 50%;
+    animation: reference-spin 0.8s linear infinite;
+  }
+  .reference-gate h2 {
+    margin: 0;
+    color: var(--heading);
+  }
+  .reference-premium > span {
+    padding: 0.32rem 0.7rem;
+    border-radius: 999px;
+    background: var(--gold-pale);
+    color: var(--gold-deep);
+    font-weight: 800;
+  }
+  .premium-template-manager {
+    width: min(100%, 620px);
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    text-align: left;
+  }
+  .premium-template-manager h3 {
+    margin: 0 0 0.8rem;
+    color: var(--heading);
+    font-size: 1rem;
+    text-align: center;
+  }
+  .reference-workflow {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .reference-step {
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg-elevated);
+  }
+  .reference-step-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .reference-step-heading h2 {
+    margin: 0;
+    color: var(--heading);
+    font-size: 1.3rem;
+  }
+  .reference-step-heading p {
+    margin: 0.4rem 0 0;
+  }
+  .reference-step-heading > span {
+    color: var(--line);
+    font-size: 2.5rem;
+    font-weight: 800;
+  }
+  .reference-upload-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.7fr);
+    gap: 1rem;
+  }
+  .reference-dropzone {
+    position: relative;
+    min-height: 210px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 0.4rem;
+    overflow: hidden;
+    padding: 1.25rem;
+    border: 1.5px dashed var(--rose);
+    border-radius: 12px;
+    background: var(--surface-rose);
+    color: var(--heading);
+    cursor: pointer;
+    text-align: center;
+  }
+  .reference-dropzone input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .reference-dropzone span {
+    font-weight: 800;
+  }
+  .reference-dropzone small {
+    color: var(--body-secondary);
+  }
+  .reference-dropzone img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .reference-dropzone img:not([hidden]) ~ * {
+    display: none;
+  }
+  .reference-name {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+  }
+  .reference-name span {
+    color: var(--heading);
+    font-weight: 700;
+  }
+  .reference-name input {
+    min-height: 48px;
+    padding: 0 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--heading);
+    font: inherit;
+  }
+  .reference-check {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-top: 1rem;
+    color: var(--body-secondary);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  .reference-check input {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    margin-top: 0.1rem;
+    accent-color: var(--rose);
+  }
+  .saved-reference-block {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+  .saved-reference-block h3 {
+    margin: 0 0 0.9rem;
+    color: var(--heading);
+    font-size: 1rem;
+  }
+  .saved-reference-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+  .saved-reference-list > p {
+    grid-column: 1 / -1;
+    color: var(--body-secondary);
+  }
+  :global(.saved-reference-card) {
+    position: relative;
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  :global(.saved-reference-card[data-selected="true"]) {
+    border-color: var(--gold-deep);
+    box-shadow: 0 0 0 2px var(--gold-pale);
+  }
+  :global(.saved-reference-choose) {
+    width: 100%;
+    min-height: 44px;
+    display: grid;
+    gap: 0.35rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--heading);
+    cursor: pointer;
+    text-align: left;
+  }
+  :global(.saved-reference-choose img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  :global(.saved-reference-choose strong),
+  :global(.saved-reference-choose small) {
+    padding-inline: 0.7rem;
+  }
+  :global(.saved-reference-choose small) {
+    min-height: 1.2em;
+    padding-bottom: 0.55rem;
+    color: var(--gold-deep);
+  }
+  :global(.saved-reference-delete) {
+    min-height: 36px;
+    margin: 0 0.7rem 0.7rem;
+    border: 0;
+    background: transparent;
+    color: var(--danger, #a63d40);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.82rem;
+  }
+  .reference-selfie {
+    width: min(100%, 520px);
+  }
+  .reference-submit {
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+  }
+  .reference-submit p {
+    min-height: 1.5em;
+    margin: 0;
+    color: var(--body-secondary);
+  }
+  .reference-result {
+    display: grid;
+    grid-template-columns: 1fr minmax(280px, 440px);
+    gap: 2rem;
+    align-items: center;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border: 1px solid var(--gold);
+    border-radius: 14px;
+    background: var(--bg-elevated);
+  }
+  .reference-result h2 {
+    margin: 0.6rem 0;
+    color: var(--heading);
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+  }
+  .reference-result figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--surface-warm);
+  }
+  .reference-result img {
+    width: 100%;
+    display: block;
+  }
+  .reference-result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+  @keyframes reference-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (max-width: 760px) {
+    .reference-tryon-main {
+      width: min(calc(100% - 1.25rem), 620px);
+      padding-top: 1.5rem;
+    }
+    .reference-hero,
+    .reference-upload-grid,
+    .reference-result {
+      grid-template-columns: 1fr;
+    }
+    .reference-hero {
+      align-items: start;
+    }
+    .reference-hero h1 {
+      max-width: none;
+    }
+    .saved-reference-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .reference-result-actions .btn {
+      width: 100%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reference-spinner {
+      animation-duration: 1.8s;
+    }
+  }
+</style>

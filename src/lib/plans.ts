@@ -12,6 +12,7 @@ export interface PlanFeatures {
   priorityQueue: boolean;
   longTermHistory: boolean;
   fullLookLibrary: boolean;
+  privateReferenceTryOn: boolean;
 }
 
 export interface PlanDefinition {
@@ -32,6 +33,7 @@ const NO_FEATURES: PlanFeatures = {
   priorityQueue: false,
   longTermHistory: false,
   fullLookLibrary: false,
+  privateReferenceTryOn: false,
 };
 
 export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
@@ -73,6 +75,7 @@ export const PLAN_DEFINITIONS: Record<PlanCode, PlanDefinition> = {
       priorityQueue: true,
       longTermHistory: true,
       fullLookLibrary: true,
+      privateReferenceTryOn: true,
     },
     priceEnvKeys: {
       monthly: "STRIPE_PRICE_PREMIUM_MONTHLY",

@@ -17,10 +17,14 @@ export interface GeminiImageOptions {
   apiKey: string;
   model: string;
   prompt: string;
-  photo: {
+  photo?: {
     data: ArrayBuffer;
     mimeType: string;
   };
+  images?: Array<{
+    data: ArrayBuffer;
+    mimeType: string;
+  }>;
   timeoutMs?: number;
   fetcher?: typeof fetch;
 }
@@ -68,6 +72,17 @@ export async function generateGeminiMakeupImage(
       "Gemini 图像配置不完整",
     );
   }
+  const images = options.images?.length
+    ? options.images
+    : options.photo
+      ? [options.photo]
+      : [];
+  if (images.length === 0) {
+    throw new GeminiImageError(
+      "GEMINI_IMAGE_INVALID_RESPONSE",
+      "Gemini 图像请求缺少输入图片",
+    );
+  }
 
   const startedAt = Date.now();
   const controller = new AbortController();
@@ -92,12 +107,12 @@ export async function generateGeminiMakeupImage(
               role: "user",
               parts: [
                 { text: options.prompt },
-                {
+                ...images.map((image) => ({
                   inlineData: {
-                    mimeType: options.photo.mimeType,
-                    data: arrayBufferToBase64(options.photo.data),
+                    mimeType: image.mimeType,
+                    data: arrayBufferToBase64(image.data),
                   },
-                },
+                })),
               ],
             },
           ],

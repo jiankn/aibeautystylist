@@ -334,6 +334,7 @@ const hrefs = {
     `/login?mode=login&next=${encodeURIComponent(resultHref)}`,
   ),
   shareCard: localizeAppHref("/share-card"),
+  referenceTryOn: localizeAppHref("/reference-tryon"),
   tryonFree: localizeAppHref("/tryon"),
 };
 ---
@@ -499,15 +500,24 @@ const hrefs = {
             : "-";
         }
         if (job.status === "succeeded" && job.resultImage) {
+          const isPrivateReference = job.lookSource === "private-template";
           renderImage(job);
           if (download)
             download.href = `/api/tryon-jobs/${encodeURIComponent(job.id)}/result`;
-          if (shareBtn)
-            shareBtn.href = `${hrefs.shareCard}?jobId=${encodeURIComponent(job.id)}`;
+          if (shareBtn) {
+            shareBtn.hidden = isPrivateReference;
+            if (!isPrivateReference) {
+              shareBtn.href = `${hrefs.shareCard}?jobId=${encodeURIComponent(job.id)}`;
+            }
+          }
           if (retry) {
-            const retryUrl = new URL(hrefs.tryonFree, location.origin);
-            if (job.lookSlug) retryUrl.searchParams.set("look", job.lookSlug);
-            retry.href = `${retryUrl.pathname}${retryUrl.search}`;
+            if (isPrivateReference) {
+              retry.href = hrefs.referenceTryOn;
+            } else {
+              const retryUrl = new URL(hrefs.tryonFree, location.origin);
+              if (job.lookSlug) retryUrl.searchParams.set("look", job.lookSlug);
+              retry.href = `${retryUrl.pathname}${retryUrl.search}`;
+            }
           }
           if (actions) actions.hidden = false;
           loadSavedState();

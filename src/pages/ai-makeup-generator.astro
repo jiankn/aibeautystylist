@@ -1,0 +1,166 @@
+---
+import SeoLandingLayout from "../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "AI Makeup Generator: Create and Try Makeup on Your Photo",
+  description:
+    "Use an AI makeup generator to preview curated looks or privately transfer a makeup reference to your selfie while preserving your identity and natural skin texture.",
+  heroImage: "/images/article-ai-tryon-comparison.webp",
+  ogImage: "/images/article-ai-tryon-comparison.webp",
+  heroCtaHref: "/reference-tryon?source=seo_ai_makeup_generator",
+  heroCtaLabel: "Generate Makeup from a Reference",
+  faq: [
+    {
+      q: "What is an AI makeup generator?",
+      a: "An AI makeup generator creates a visual makeup preview on an uploaded portrait. AI Beauty Stylist supports curated catalog looks and a Premium reference mode that uses one image for makeup direction and your selfie as the only identity source.",
+    },
+    {
+      q: "Can I upload a makeup reference?",
+      a: "Yes. Premium members can upload a private makeup reference, then upload a selfie to transfer the reference colors, placement, intensity, and finish to their own face.",
+    },
+    {
+      q: "Will the generator change my face?",
+      a: "The generation instructions preserve the selfie’s identity, facial structure, expression, hair, clothing, lighting, and background. AI output can still vary, so treat the image as a visual decision aid rather than an exact guarantee.",
+    },
+    {
+      q: "Are reference images public?",
+      a: "No. Private reference templates do not appear in Discover and cannot be turned into public share cards. They are served through owner-authenticated endpoints and can be deleted by the account owner.",
+    },
+  ],
+};
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>AI Makeup Generator for Your Own Face</h1>
+    <p>
+      Generate a realistic makeup direction on your selfie from a curated look
+      or a private reference image. Compare color, placement, intensity, and
+      finish without replacing the person in the original photo.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <div class="content-section">
+      <h2>Two Ways to Generate a Makeup Preview</h2>
+      <p>
+        A useful makeup generator should start with the decision you are trying
+        to make. Browse the look library when you need direction. Use a
+        reference image when you already know the makeup you want to evaluate.
+      </p>
+      <div class="compare-table-scroll">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Mode</th>
+              <th>Best when</th>
+              <th>Input</th>
+              <th>Availability</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Look library</td>
+              <td>You want curated ideas by occasion and finish</td>
+              <td>One selfie</td>
+              <td>Free, Pro, Premium</td>
+            </tr>
+            <tr>
+              <td>Reference transfer</td>
+              <td>You already have a specific makeup inspiration</td>
+              <td>Reference + selfie</td>
+              <td>Premium</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>How Reference Makeup Generation Works</h2>
+      <div class="step-list">
+        <article class="step-card">
+          <span class="step-num">1</span>
+          <div>
+            <h4>Upload the reference</h4>
+            <p>
+              Choose one clear face where eyes, cheeks, lips, and base finish
+              are visible.
+            </p>
+          </div>
+        </article>
+        <article class="step-card">
+          <span class="step-num">2</span>
+          <div>
+            <h4>Add your selfie</h4>
+            <p>
+              A front-facing selfie in neutral light gives the generator a
+              stable identity and skin-texture source.
+            </p>
+          </div>
+        </article>
+        <article class="step-card">
+          <span class="step-num">3</span>
+          <div>
+            <h4>Transfer makeup only</h4>
+            <p>
+              The AI adapts cosmetic placement to your proportions without
+              copying the reference person’s face, hair, clothing, or setting.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <h2>What a Good Result Should Preserve</h2>
+      <ul>
+        <li>Your recognizable facial structure and natural asymmetry.</li>
+        <li>
+          Real skin texture including pores, fine lines, freckles, and moles.
+        </li>
+        <li>Your expression, hairstyle, clothing, lighting, and background.</li>
+        <li>
+          The makeup idea: palette, placement, finish, contrast, and intensity.
+        </li>
+      </ul>
+
+      <div class="highlight-box">
+        <p>
+          The generated image is a makeup planning reference. Foundation
+          formula, skin preparation, brush technique, and real-world lighting
+          still affect the final result.
+        </p>
+      </div>
+
+      <h2>Privacy Boundaries</h2>
+      <p>
+        Reference mode is deliberately separate from public sharing. The
+        reference is stored privately for reuse, the generated result stays in
+        your account history, and the server checks ownership before serving
+        either image. Deleting a reference removes its private source image.
+      </p>
+    </div>
+  </div>
+
+  <div class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Already Have a Makeup Inspiration?</h2>
+      <p>
+        Use Premium reference try-on to evaluate that direction on your own
+        face.
+      </p>
+      <a href="/reference-tryon?source=seo_ai_makeup_generator" class="cta-btn">
+        Start Private Reference Try-On
+      </a>
+    </div>
+  </div>
+
+  <div class="seo-related" slot="related">
+    <div class="related-inner">
+      <h3>Related tools and guides</h3>
+      <ul class="related-list">
+        <li><a href="/makeup-photo-editor">Makeup Photo Editor</a></li>
+        <li><a href="/ai-makeup-try-on">AI Makeup Try-On</a></li>
+        <li><a href="/virtual-makeup-tester">Virtual Makeup Tester</a></li>
+        <li><a href="/pricing">Compare Membership Plans</a></li>
+      </ul>
+    </div>
+  </div>
+</SeoLandingLayout>

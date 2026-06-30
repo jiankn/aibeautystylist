@@ -5,7 +5,11 @@ import {
   resolveBySnapshot,
 } from "../../../data/makeup/resolveCatalog";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
-import { getEntitlementContext, requirePlan } from "../../../lib/entitlements";
+import {
+  getEntitlementContext,
+  requireFeature,
+  requirePlan,
+} from "../../../lib/entitlements";
 import { apiError, apiSuccess } from "../../../lib/http";
 import {
   getStoredJobByIdempotencyKey,
@@ -15,6 +19,10 @@ import {
   type TryOnJobPurpose,
 } from "../../../lib/jobs";
 import { isPlanCode, type PlanCode } from "../../../lib/plans";
+import {
+  getOwnedPrivateLookTemplate,
+  privateTemplateToLook,
+} from "../../../lib/privateLookTemplates";
 import { getRuntimeBindings } from "../../../lib/runtime";
 import { enqueueTryOnJob } from "../../../lib/tryonQueue";
 import {
@@ -27,6 +35,7 @@ import {
 interface CreateJobBody {
   uploadId?: string;
   lookSlug?: string;
+  privateTemplateId?: string;
   idempotencyKey?: string;
   requiredPlan?: string;
   purpose?: string;
@@ -77,19 +86,65 @@ export const GET: APIRoute = async ({ cookies, locals, url }) => {
 
 export const POST: APIRoute = async ({ cookies, locals, request }) => {
   const body = (await request.json().catch(() => null)) as CreateJobBody | null;
-  if (!body?.uploadId || !body.lookSlug || !body.idempotencyKey) {
+  const hasCatalogLook = Boolean(body?.lookSlug);
+  const hasPrivateTemplate = Boolean(body?.privateTemplateId);
+  if (
+    !body?.uploadId ||
+    !body.idempotencyKey ||
+    hasCatalogLook === hasPrivateTemplate
+  ) {
     return apiError(
       {
         code: "INVALID_JOB_REQUEST",
-        message: "缺少上传记录、妆容或幂等键",
+        message: "请选择一个妆容库妆容或一个私有参考妆容",
         retryable: false,
       },
       422,
     );
   }
 
+  const bindings = getRuntimeBindings();
+  const auth = await requireAuthenticatedUser(cookies, bindings.DB);
+  if (!auth.ok) return auth.response;
+  const userId = auth.user.id;
   const audienceContext = locals.audienceContext;
-  const look = resolveBySlug(body.lookSlug, audienceContext);
+  const privateTemplate = body.privateTemplateId
+    ? await getOwnedPrivateLookTemplate(
+        userId,
+        body.privateTemplateId,
+        bindings.DB,
+      )
+    : undefined;
+  if (body.privateTemplateId && !privateTemplate) {
+    return apiError(
+      {
+        code: "PRIVATE_TEMPLATE_NOT_FOUND",
+        message: "没有找到该私有参考妆容",
+        retryable: false,
+      },
+      404,
+    );
+  }
+  if (privateTemplate) {
+    const entitlement = await requireFeature(
+      userId,
+      "privateReferenceTryOn",
+      bindings.DB,
+    );
+    if (!entitlement.allowed) {
+      return apiError(
+        {
+          code: "PREMIUM_REQUIRED",
+          message: "上传参考妆容是 Premium 专属功能",
+          retryable: false,
+        },
+        403,
+      );
+    }
+  }
+  const look = privateTemplate
+    ? privateTemplateToLook(privateTemplate)
+    : resolveBySlug(body.lookSlug ?? "", audienceContext);
   if (!look) {
     return apiError(
       {
@@ -100,11 +155,6 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       404,
     );
   }
-
-  const bindings = getRuntimeBindings();
-  const auth = await requireAuthenticatedUser(cookies, bindings.DB);
-  if (!auth.ok) return auth.response;
-  const userId = auth.user.id;
   const requiredPlan = normalizeRequiredPlan(body.requiredPlan);
   if (!requiredPlan) {
     return apiError(
@@ -122,6 +172,16 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       {
         code: "INVALID_JOB_PURPOSE",
         message: "请求的任务类型无效",
+        retryable: false,
+      },
+      422,
+    );
+  }
+  if (privateTemplate && purpose !== "tryon") {
+    return apiError(
+      {
+        code: "INVALID_JOB_PURPOSE",
+        message: "私有参考妆容仅用于试妆生成",
         retryable: false,
       },
       422,
@@ -148,7 +208,18 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     bindings.DB,
   );
   if (existingJob) {
-    const replayLook = resolveBySnapshot(existingJob, audienceContext) ?? look;
+    const replayTemplate =
+      existingJob.lookSource === "private-template" &&
+      existingJob.privateTemplateId
+        ? await getOwnedPrivateLookTemplate(
+            userId,
+            existingJob.privateTemplateId,
+            bindings.DB,
+          )
+        : undefined;
+    const replayLook = replayTemplate
+      ? privateTemplateToLook(replayTemplate)
+      : (resolveBySnapshot(existingJob, audienceContext) ?? look);
     await scheduleTryOnJobProcessing(locals, existingJob, {
       userId,
       jobId: existingJob.id,
@@ -173,6 +244,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       bindings,
       audienceContext,
       purpose,
+      privateTemplate,
     });
     await scheduleTryOnJobProcessing(locals, result.job, {
       userId,

@@ -1,0 +1,153 @@
+---
+import SeoLandingLayout from "../components/SeoLandingLayout.astro";
+
+const page = {
+  title: "Makeup Photo Editor: Try a Reference Look on Your Selfie",
+  description:
+    "Use a makeup photo editor to preview makeup on your selfie. Choose a curated look or privately upload a reference image for AI makeup transfer.",
+  heroImage: "/images/article-ai-photo-baseline.webp",
+  ogImage: "/images/article-ai-photo-baseline.webp",
+  heroCtaHref: "/reference-tryon?source=seo_makeup_photo_editor",
+  heroCtaLabel: "Edit My Selfie with a Makeup Reference",
+  faq: [
+    {
+      q: "Can a makeup photo editor copy a reference look?",
+      a: "Reference-based AI can extract cosmetic direction such as eyeshadow, eyeliner, blush, lips, and base finish from one image and adapt it to a different selfie. It should not copy the reference person’s identity.",
+    },
+    {
+      q: "Is this a manual makeup editor?",
+      a: "No. AI Beauty Stylist is decision-focused rather than a brush-by-brush retouching tool. You choose a curated look or reference image and the AI creates a complete preview.",
+    },
+    {
+      q: "Which photo gives the best result?",
+      a: "Use a sharp, front-facing selfie in neutral light. Avoid beauty filters, heavy shadows, hands over the face, sunglasses, and very small faces in group photos.",
+    },
+    {
+      q: "Can I share a private reference result?",
+      a: "Not in the initial private-reference experience. Reference templates and their generated results are owner-only and public sharing is disabled.",
+    },
+  ],
+};
+---
+
+<SeoLandingLayout {...page}>
+  <Fragment slot="hero">
+    <h1>Makeup Photo Editor for Real Try-On Decisions</h1>
+    <p>
+      Add makeup to your own photo without manually painting every feature.
+      Start from a curated direction or upload a private reference when you
+      already know the look you want to test.
+    </p>
+  </Fragment>
+
+  <div class="seo-content">
+    <div class="content-section">
+      <h2>Photo Editing vs. Makeup Try-On</h2>
+      <p>
+        Many photo editors are designed to retouch a finished image. A makeup
+        decision tool has a different job: it should help you judge whether a
+        palette, placement, and finish suit your face before you recreate the
+        makeup in real life.
+      </p>
+      <div class="compare-table-scroll">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Reference makeup editor</th>
+              <th>Generic beauty filter</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Starting point</td>
+              <td>Your chosen makeup inspiration</td>
+              <td>A preset overlay</td>
+            </tr>
+            <tr>
+              <td>Placement</td>
+              <td>Adapted to the selfie’s visible proportions</td>
+              <td>Often fixed or generalized</td>
+            </tr>
+            <tr>
+              <td>Identity goal</td>
+              <td>Preserve the original person</td>
+              <td>May retouch or reshape</td>
+            </tr>
+            <tr>
+              <td>Primary use</td>
+              <td>Evaluate a makeup direction</td>
+              <td>Polish a social photo</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Choose the Right Two Photos</h2>
+      <h3>The reference image</h3>
+      <ul>
+        <li>
+          One clearly visible face with complete eye, cheek, and lip makeup.
+        </li>
+        <li>Neutral enough lighting to read the true makeup colors.</li>
+        <li>
+          No collage, heavy text, watermark across the face, or obstruction.
+        </li>
+      </ul>
+      <h3>Your selfie</h3>
+      <ul>
+        <li>
+          Front-facing, sharp, and large enough to see natural skin texture.
+        </li>
+        <li>Neutral expression and lighting without a beauty filter.</li>
+        <li>Eyes, brows, cheeks, and lips fully visible.</li>
+      </ul>
+
+      <h2>What the AI Is Asked to Edit</h2>
+      <p>
+        The editor uses the reference for cosmetic information only: base
+        finish, contour, highlight, blush, brow styling, eye makeup, and lip
+        design. Your selfie remains the source for identity, facial structure,
+        expression, hair, clothing, framing, and background.
+      </p>
+
+      <div class="highlight-box">
+        <p>
+          If the reference has a different face shape or eye shape, a useful
+          result adapts the placement instead of pasting it at the same pixel
+          coordinates.
+        </p>
+      </div>
+
+      <h2>Private Template Reuse</h2>
+      <p>
+        Premium users can name and save up to 30 private reference templates.
+        Reusing a template does not require uploading the inspiration again.
+        Generating a new result uses one normal generation credit; saving or
+        deleting the template does not consume a credit.
+      </p>
+    </div>
+  </div>
+
+  <div class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Turn Your Inspiration into a Private Try-On</h2>
+      <p>Upload the reference, add your selfie, and judge the makeup on you.</p>
+      <a href="/reference-tryon?source=seo_makeup_photo_editor" class="cta-btn">
+        Open Premium Reference Try-On
+      </a>
+    </div>
+  </div>
+
+  <div class="seo-related" slot="related">
+    <div class="related-inner">
+      <h3>Related tools and guides</h3>
+      <ul class="related-list">
+        <li><a href="/ai-makeup-generator">AI Makeup Generator</a></li>
+        <li><a href="/ai-makeup-try-on">AI Makeup Try-On</a></li>
+        <li><a href="/virtual-makeup-app">Virtual Makeup App</a></li>
+        <li><a href="/privacy">Photo Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+</SeoLandingLayout>

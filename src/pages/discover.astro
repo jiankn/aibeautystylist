@@ -6,6 +6,7 @@ import SiteHeader from "../components/SiteHeader.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { getCurrentLocale } from "../lib/i18n";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import {
   getMarketProfileLabel,
   getMarketProfileOptions,
@@ -68,6 +69,11 @@ import {
 // 获取 Audience Context（由中间件注入）
 const audienceContext = Astro.locals.audienceContext;
 const locale = getCurrentLocale();
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
 const localeValue = String(locale);
 const isKo = locale.startsWith("ko");
 const isDe = locale.startsWith("de");
@@ -652,6 +658,27 @@ const searchCopy = isKo
                     placeholder: "Search looks, scenarios, or effects",
                     clear: "Clear search",
                   };
+const referenceCta = isZhTW
+  ? {
+      badge: "Premium",
+      title: "找不到喜歡的妝容？上傳參考圖",
+      body: "把任何喜歡的妝容私密套用到自己的自拍，不會進入公開妝容庫。",
+      action: "開始參考圖試妝",
+    }
+  : isZh
+    ? {
+        badge: "Premium",
+        title: "找不到喜欢的妆容？上传参考图",
+        body: "把任何喜欢的妆容私有复刻到自己的自拍，不会进入公开妆容库。",
+        action: "开始参考图试妆",
+      }
+    : {
+        badge: "Premium",
+        title: "Can’t find the right look? Upload a reference",
+        body: "Privately transfer any makeup inspiration to your own selfie without adding it to the public library.",
+        action: "Start reference try-on",
+      };
+const referenceTryOnHref = localizeAppHref("/reference-tryon?source=discover");
 
 function matchValues(option: { value: string; match?: string[] }) {
   return (option.match ?? [option.value]).join("|");
@@ -684,6 +711,22 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
           <p>{ui.pageSubtitle}</p>
         </div>
       </div>
+      <a class="private-reference-cta" href={referenceTryOnHref}>
+        <span class="private-reference-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 7.5h14v11H5z"></path>
+            <path d="m7.5 15 3-3 2.2 2.1 2.2-2.2 2.1 2.1"></path>
+            <circle cx="9" cy="10" r="1.2"></circle>
+            <path d="M12 3v4M10 5h4"></path>
+          </svg>
+        </span>
+        <span class="private-reference-copy">
+          <small>{referenceCta.badge}</small>
+          <strong>{referenceCta.title}</strong>
+          <span>{referenceCta.body}</span>
+        </span>
+        <b>{referenceCta.action}<i aria-hidden="true">→</i></b>
+      </a>
       <dialog
         class="inspiration-dialog"
         data-inspiration-dialog
@@ -904,6 +947,9 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
             <button class="btn btn-primary" type="button" data-clear-filters
               >{ui.clearFilters}</button
             >
+            <a class="btn btn-outline" href={referenceTryOnHref}>
+              {referenceCta.action}
+            </a>
           </div>
           <div
             class="library-footer"
@@ -928,6 +974,15 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
       .page-heading {
         display: none;
       }
+      .private-reference-cta {
+        grid-template-columns: auto 1fr;
+        margin: 0 0 12px;
+        padding: 14px;
+      }
+      .private-reference-cta > b {
+        grid-column: 2;
+        justify-self: start;
+      }
       .look-library.panel {
         padding: 0;
         border: 0;
@@ -939,6 +994,84 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
       }
       .library-footer {
         margin-bottom: 8px;
+      }
+    }
+    .private-reference-cta {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      margin: 0 0 18px;
+      padding: 16px 18px;
+      border: 1px solid color-mix(in srgb, var(--gold) 58%, var(--line));
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      color: var(--heading);
+      text-decoration: none;
+      transition:
+        border-color 180ms ease,
+        transform 180ms ease;
+    }
+    .private-reference-cta:hover,
+    .private-reference-cta:focus-visible {
+      border-color: var(--gold-deep);
+      transform: translateY(-1px);
+    }
+    .private-reference-mark {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--gold-pale);
+      color: var(--gold-deep);
+    }
+    .private-reference-mark svg {
+      width: 26px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .private-reference-copy {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+    .private-reference-copy small {
+      color: var(--gold-deep);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .private-reference-copy strong {
+      font-size: 1.02rem;
+    }
+    .private-reference-copy > span {
+      color: var(--body-secondary);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .private-reference-cta > b {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--gold-deep);
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+    .empty-state .btn + .btn {
+      margin-left: 8px;
+    }
+    @media (max-width: 767px) {
+      .private-reference-cta {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+      .private-reference-cta > b {
+        grid-column: 2;
+        justify-self: start;
       }
     }
   </style>

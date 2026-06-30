@@ -117,6 +117,7 @@ const fallbackCopy = isEnglish
             "Designed for faster iteration, more saved context, and complete look access.",
           features: [
             "150 monthly generation credits",
+            "Private reference makeup transfer",
             "Priority queue",
             "Long-term history",
             "Full look library access",
@@ -266,6 +267,7 @@ const fallbackCopy = isEnglish
           reason: "更适合频繁迭代、需要完整妆容库和更长历史记录的用户。",
           features: [
             "每月 150 次生成额度",
+            "上传参考妆容并私有复刻",
             "优先队列",
             "长期历史记录",
             "完整妆容库",
@@ -357,6 +359,7 @@ const comparisonLabels = localizedPricingContent?.comparisonLabels ?? {
   credits: isEnglish ? "Monthly generation credits" : "月度生成额度",
   diagnosis: isEnglish ? "AI diagnosis uses credits" : "妆容诊断使用额度",
   tryon: isEnglish ? "AI try-on uses credits" : "AI 试妆使用额度",
+  reference: isEnglish ? "Private reference makeup transfer" : "私有参考图试妆",
   hd: isEnglish ? "HD download" : "高清下载",
   tutorials: isEnglish ? "Makeup tutorials" : "详细妆容教程",
   priority: isEnglish ? "Priority queue" : "优先队列",
@@ -404,6 +407,17 @@ const comparisonRows = [
       pro: featureText.yes,
       premium: featureText.yes,
     },
+  },
+  {
+    label:
+      comparisonLabels.reference ??
+      (isEnglish ? "Private reference makeup transfer" : "私有参考图试妆"),
+    values: Object.fromEntries(
+      planOrder.map((code) => [
+        code,
+        boolText(PLAN_DEFINITIONS[code].features.privateReferenceTryOn),
+      ]),
+    ) as Record<PlanCode, string>,
   },
   {
     label: comparisonLabels.hd,

@@ -19,8 +19,14 @@ import {
 } from "./geminiDiagnosis";
 import { GeminiImageError, generateGeminiMakeupImage } from "./geminiImage";
 import { getStoredJobById, resetMockJobs } from "./jobs";
+import {
+  privateTemplateToLook,
+  resetMockPrivateLookTemplates,
+  savePrivateLookTemplate,
+} from "./privateLookTemplates";
 import { getQuotaSnapshot, resetMockQuota } from "./quota";
 import type { RuntimeBindings } from "./runtime";
+import { resetMockSubscriptions, upsertSubscription } from "./subscriptions";
 import {
   createTryOnJob,
   processTryOnJob,
@@ -66,7 +72,9 @@ describe("createTryOnJob", () => {
     resetMockAiCallLogs();
     resetMockDiagnosisRecords();
     resetMockJobs();
+    resetMockPrivateLookTemplates();
     resetMockQuota();
+    resetMockSubscriptions();
     resetMockUploads();
     vi.mocked(generateGeminiDiagnosis).mockReset();
     vi.mocked(generateEvolinkMakeupImage).mockReset();
@@ -165,6 +173,103 @@ describe("createTryOnJob", () => {
       vi.mocked(generateGeminiMakeupImage).mock.calls[0]?.[0].prompt ?? "";
     expect(imagePrompt).not.toContain("Beauty diagnosis context");
     expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
+  });
+
+  it("uses a Premium private reference as image 1 and the selfie as image 2", async () => {
+    const privateTemplate = {
+      id: "template_1",
+      userId: "visitor_1",
+      title: "Soft plum reference",
+      r2Key: "private-templates/visitor_1/template_1/reference.webp",
+      contentType: "image/webp",
+      sizeBytes: 2,
+      width: 900,
+      height: 1200,
+      status: "active" as const,
+      createdAt: "2026-06-30T00:00:00.000Z",
+      updatedAt: "2026-06-30T00:00:00.000Z",
+    };
+    await upsertSubscription({
+      userId: "visitor_1",
+      stripeSubscriptionId: "sub_premium_private",
+      planCode: "premium",
+      status: "active",
+      currentPeriodEnd: "2026-07-30T00:00:00.000Z",
+    });
+    await savePrivateLookTemplate(privateTemplate);
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(generateGeminiMakeupImage).mockResolvedValue({
+      image: {
+        data: new Uint8Array([9, 9]).buffer,
+        contentType: "image/png",
+      },
+      model: "gemini-image-test",
+      durationMs: 800,
+      usage: {},
+    });
+    const bucket = {
+      get: vi.fn(async (key: string) => ({
+        body:
+          key === privateTemplate.r2Key
+            ? new Uint8Array([1, 2]).buffer
+            : new Uint8Array([3, 4]).buffer,
+        httpMetadata: {
+          contentType:
+            key === privateTemplate.r2Key ? "image/webp" : "image/jpeg",
+        },
+      })),
+      put: vi.fn(async () => undefined),
+      delete: vi.fn(async () => undefined),
+    };
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      IMAGE_PROVIDER: "evolink",
+      GEMINI_API_KEY: "secret",
+      GEMINI_IMAGE_MODEL: "gemini-image-test",
+      EVOLINK_API_KEY: "evolink-secret",
+      USER_UPLOADS: bucket,
+    };
+    const privateLook = privateTemplateToLook(privateTemplate);
+    const created = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look: privateLook,
+      idempotencyKey: "private_request_1",
+      bindings,
+      privateTemplate,
+    });
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look: privateLook,
+      bindings,
+    });
+
+    expect(result?.job).toMatchObject({
+      status: "succeeded",
+      lookSource: "private-template",
+      privateTemplateId: privateTemplate.id,
+      resultKind: "ai-generated",
+    });
+    expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
+    expect(generateGeminiMakeupImage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prompt: expect.stringContaining(
+          "Image 2 is the user's selfie and the only identity reference",
+        ),
+        images: [
+          expect.objectContaining({ mimeType: "image/webp" }),
+          expect.objectContaining({ mimeType: "image/jpeg" }),
+        ],
+      }),
+    );
+    const images =
+      vi.mocked(generateGeminiMakeupImage).mock.calls[0]?.[0].images ?? [];
+    expect([...new Uint8Array(images[0]!.data)]).toEqual([1, 2]);
+    expect([...new Uint8Array(images[1]!.data)]).toEqual([3, 4]);
   });
 
   it("runs professional diagnosis only for diagnosis-purpose jobs", async () => {

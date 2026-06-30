@@ -47,6 +47,7 @@ describe("resolveTryOnExperience", () => {
     });
     expect(experience.features.hdDownload).toBe(true);
     expect(experience.features.priorityQueue).toBe(false);
+    expect(experience.features.privateReferenceTryOn).toBe(false);
   });
 
   it("adds Premium-only capabilities without changing the shared layout", () => {
@@ -66,6 +67,7 @@ describe("resolveTryOnExperience", () => {
       priorityQueue: true,
       longTermHistory: true,
       fullLookLibrary: true,
+      privateReferenceTryOn: true,
     });
   });
 });

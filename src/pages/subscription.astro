@@ -92,6 +92,7 @@ type SubscriptionCopy = {
   featurePriority: string;
   featureHistory: string;
   featureLibrary: string;
+  featureReference: string;
   includedYes: string;
   includedNo: string;
   planNotes: Record<string, string>;
@@ -145,13 +146,14 @@ const enCopy: SubscriptionCopy = {
   featurePriority: "Priority queue",
   featureHistory: "Long-term history",
   featureLibrary: "Full look library",
+  featureReference: "Private reference makeup transfer",
   includedYes: "Included",
   includedNo: "Not included",
   planNotes: {
     free: "Free is best for checking the workflow before committing to a paid plan.",
     pro: "Pro is designed for regular weekly try-ons and diagnosis-backed choices.",
     premium:
-      "Premium is for frequent creation, deeper history, and complete look-library access.",
+      "Premium adds private reference makeup transfer for frequent creation, deeper history, and complete look-library access.",
   },
   loadFailed: "Unable to load subscription details. Refresh and try again.",
   portalFailed: "Unable to open subscription management.",
@@ -203,12 +205,13 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     featurePriority: "优先队列",
     featureHistory: "长期历史记录",
     featureLibrary: "完整妆容库",
+    featureReference: "私有参考图试妆",
     includedYes: "已包含",
     includedNo: "未包含",
     planNotes: {
       free: "Free 适合先确认上传流程、生成效果和照片处理方式。",
       pro: "Pro 适合经常进行日常试妆，并结合诊断结果继续选择妆容。",
-      premium: "Premium 适合高频创作、长期复盘和完整妆容库使用。",
+      premium: "Premium 支持上传任意参考妆容私有复刻，适合高频创作与长期复盘。",
     },
     loadFailed: "无法加载会员信息，请刷新后重试。",
     portalFailed: "无法打开订阅管理。",
@@ -249,12 +252,13 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     featurePriority: "優先佇列",
     featureHistory: "長期歷史記錄",
     featureLibrary: "完整妝容庫",
+    featureReference: "私密參考圖試妝",
     includedYes: "已包含",
     includedNo: "未包含",
     planNotes: {
       free: "Free 適合先確認上傳流程、生成效果和照片處理方式。",
       pro: "Pro 適合經常進行日常試妝，並結合診斷結果繼續選擇妝容。",
-      premium: "Premium 適合高頻創作、長期複盤和完整妝容庫使用。",
+      premium: "Premium 支援上傳參考妝容私密套用，適合高頻創作與長期複盤。",
     },
     loadFailed: "無法載入會員資訊，請刷新後重試。",
     portalFailed: "無法開啟訂閱管理。",
@@ -641,6 +645,11 @@ const planMeta = Object.fromEntries(
               <span>{copy.featureLibrary}</span>
               <b data-feature-library>--</b>
             </article>
+            <article>
+              <AppIconBadge icon="tryon" tone="gold" />
+              <span>{copy.featureReference}</span>
+              <b data-feature-reference>--</b>
+            </article>
           </div>
         </section>
         <CreditPackPanel returnTo={`${hrefs.dashboard}#billing-panel`} />
@@ -737,6 +746,10 @@ const planMeta = Object.fromEntries(
           "[data-feature-library]",
           yesNo(meta.features?.fullLookLibrary),
         );
+        setText(
+          "[data-feature-reference]",
+          yesNo(meta.features?.privateReferenceTryOn),
+        );
 
         const manage = query("[data-manage-billing]");
         const upgrade = query("[data-upgrade-plan]");
@@ -783,7 +796,10 @@ const planMeta = Object.fromEntries(
           const res = await fetch("/api/billing/portal", {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ returnPath: window.location.pathname, locale }),
+            body: JSON.stringify({
+              returnPath: window.location.pathname,
+              locale,
+            }),
           });
           const body = await res.json().catch(() => null);
           if (body?.ok && body.data?.url) {

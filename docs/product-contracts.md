@@ -13,7 +13,7 @@
 | `free_generated` | Free 用户已有成功结果 | 分享、继续试妆、升级 | 展示结果限制和自然升级入口 |
 | `free_exhausted` | Free 基础额度与奖励额度均为 0 | 分享换额度或升级 | 禁止创建新任务，仍可查看已有结果 |
 | `pro_active` | Pro 订阅有效 | 完整教程、保存、高清下载 | 显示当前计划和 70 次月额度 |
-| `premium_active` | Premium 订阅有效 | 优先生成、长期历史、完整妆容库 | 显示当前计划和 150 次月额度 |
+| `premium_active` | Premium 订阅有效 | 优先生成、长期历史、完整妆容库、私有参考图试妆 | 显示当前计划、额度和私有参考入口 |
 | `subscription_grace` | 已取消但计费周期未结束 | 继续使用当前权益 | 显示到期日期和管理订阅 |
 | `subscription_expired` | 订阅已到期 | 查看历史、升级 | 禁止创建付费等级任务 |
 | `job_running` | 存在当前生成任务 | 查看进度、取消 | 禁止重复提交同一请求 |
@@ -146,6 +146,10 @@
 | `POST /api/share-cards` | 创建分享卡 | 必须拥有成功结果 |
 | `POST /api/shares/intent` | 创建分享领奖凭证 | Free 用户、本人成功任务、分享动作确认后调用 |
 | `POST /api/shares/reward` | 发放分享奖励 | Free 用户、每日幂等、必须携带未过期分享凭证 |
+| `GET/POST /api/private-look-templates` | 列出或创建私有参考妆容 | 登录且 Premium；上传文件必须为压缩后的 WebP |
+| `GET /api/private-look-templates/:id/image` | 读取私有参考图 | Premium 且资源归当前用户所有 |
+| `DELETE /api/private-look-templates/:id` | 删除私有参考模板和对象 | Premium 且资源归当前用户所有 |
+| `POST /api/tryon-jobs`（`privateTemplateId`） | 创建参考图试妆 | Premium；模板和自拍必须归当前用户所有 |
 | `POST /api/billing/checkout` | 创建 Checkout | 登录用户，成功 URL 带 `session_id={CHECKOUT_SESSION_ID}` |
 | `POST /api/billing/sync-checkout` | 回跳后主动同步 Checkout Session | 登录用户，校验 session 属于当前账户 |
 | `POST /api/billing/credit-pack-checkout` | 创建一次性额度包 Checkout | 有效 Pro / Premium，服务端决定价格和额度 |
@@ -185,7 +189,8 @@
 | `usage_records` | `id`、`userId`、`jobId`、`type`、`amount`、`idempotencyKey`、`occurredAt` |
 | `photo_consents` | `id`、`userId`、`version`、`acceptedAt`、`revokedAt` |
 | `uploads` | `id`、`userId`、`r2Key`、`status`、`contentType`、`sizeBytes`、`width`、`height`、`orientation`、`deleteAfter`、`deletedAt` |
-| `tryon_jobs` | `id`、`userId`、`uploadId`、`lookSlug`、`status`、`confidence`、`idempotencyKey`、`retryOfJobId`、`resultJson`、`resultR2Key`、`errorCode`、`completedAt`、`deletedAt` |
+| `tryon_jobs` | `id`、`userId`、`uploadId`、`lookSlug`、`privateTemplateId`、`status`、`confidence`、`idempotencyKey`、`retryOfJobId`、`resultJson`、`resultR2Key`、`errorCode`、`completedAt`、`deletedAt` |
+| `private_look_templates` | `id`、`userId`、`title`、`r2Key`、`contentType`、`sizeBytes`、`width`、`height`、`status`、`deletedAt` |
 | `diagnoses` | `id`、`jobId`、`resultJson`、`createdAt` |
 | `saved_looks` | `id`、`userId`、`jobId`、`lookSlug`、`createdAt` |
 | `favorite_looks` | `id`、`userId`、`lookSlug`、`createdAt` |
@@ -212,6 +217,7 @@
 | 对象 | 默认访问 | 生命周期 |
 |---|---|---|
 | 原始自拍 | 私有，使用 `originals/` 对象前缀 | 诊断完成后尽快删除，R2 生命周期保证最长不超过 30 天 |
+| 私有参考妆容 | 私有，使用 `private-templates/` 对象前缀 | 仅限所有者读取，保留到用户删除模板；不得公开分享 |
 | 妆效结果图 | 私有 | 用户删除或账户删除时删除 |
 | 分享卡 | 可撤销的公开链接 | 用户删除结果或分享卡时删除 |
 | 静态妆容素材 | 公开 | 随版本发布长期保留 |
@@ -231,6 +237,7 @@
 - P95 首个结果等待时间不高于 45 秒。
 - 任务失败、取消和超时均自动返还额度。
 - 用户可删除原图、结果图和诊断记录。
-- Pro/Premium 权限必须经过服务端校验。
+- Pro/Premium 权限必须经过服务端校验；私有参考图试妆只允许 Premium。
+- 私有参考模板与生成结果不得进入 Discover、公共分享卡或分享奖励链路。
 - 8 个核心页面在 375px、768px、1440px 无横向溢出。
 - 关键按钮支持键盘操作，文字与背景满足 WCAG 2.1 AA。

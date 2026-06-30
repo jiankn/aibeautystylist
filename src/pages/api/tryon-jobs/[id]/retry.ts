@@ -18,6 +18,10 @@ import { refundQuota } from "../../../../lib/quota";
 import { getRuntimeBindings } from "../../../../lib/runtime";
 import { enqueueTryOnJob } from "../../../../lib/tryonQueue";
 import {
+  getOwnedPrivateLookTemplate,
+  privateTemplateToLook,
+} from "../../../../lib/privateLookTemplates";
+import {
   createTryOnJob,
   processTryOnJob,
   type ProcessTryOnJobOptions,
@@ -95,7 +99,18 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
     bindings.DB,
   );
   if (existingRetry) {
-    const retryLook = resolveBySnapshot(existingRetry, audienceContext);
+    const retryTemplate =
+      existingRetry.lookSource === "private-template" &&
+      existingRetry.privateTemplateId
+        ? await getOwnedPrivateLookTemplate(
+            userId,
+            existingRetry.privateTemplateId,
+            bindings.DB,
+          )
+        : undefined;
+    const retryLook = retryTemplate
+      ? privateTemplateToLook(retryTemplate)
+      : resolveBySnapshot(existingRetry, audienceContext);
     if (retryLook) {
       await scheduleTryOnJobProcessing(locals, existingRetry, {
         userId,
@@ -113,7 +128,18 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
     });
   }
 
-  const look = resolveBySnapshot(timeoutResult.job, audienceContext);
+  const privateTemplate =
+    timeoutResult.job.lookSource === "private-template" &&
+    timeoutResult.job.privateTemplateId
+      ? await getOwnedPrivateLookTemplate(
+          userId,
+          timeoutResult.job.privateTemplateId,
+          bindings.DB,
+        )
+      : undefined;
+  const look = privateTemplate
+    ? privateTemplateToLook(privateTemplate)
+    : resolveBySnapshot(timeoutResult.job, audienceContext);
   if (!look) {
     return apiError(
       {
@@ -135,6 +161,7 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
       bindings,
       audienceContext,
       purpose: getTryOnJobPurpose(originalJob),
+      privateTemplate,
     });
     await scheduleTryOnJobProcessing(locals, result.job, {
       userId,

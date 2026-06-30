@@ -69,6 +69,7 @@ export interface LocalizedPricingContent {
     credits: string;
     diagnosis: string;
     tryon: string;
+    reference?: string;
     hd: string;
     tutorials: string;
     priority: string;
@@ -149,6 +150,7 @@ const de: LocalizedPricingContent = {
           "Für schnelle Iterationen, mehr gespeicherten Kontext und vollen Look-Zugang.",
         features: [
           "150 Credits pro Monat",
+          "Privater Make-up-Transfer aus einem Referenzbild",
           "Prioritätswarteschlange",
           "Langfristige Historie",
           "Vollständiger Look-Katalog",
@@ -246,6 +248,7 @@ const de: LocalizedPricingContent = {
     credits: "Monatliche Credits",
     diagnosis: "KI-Diagnose nutzt Credits",
     tryon: "KI-Try-on nutzt Credits",
+    reference: "Privater Referenz-Make-up-Transfer",
     hd: "HD-Download",
     tutorials: "Make-up-Anleitungen",
     priority: "Prioritätswarteschlange",
@@ -332,6 +335,7 @@ const fr: LocalizedPricingContent = {
           "Pour itérer plus vite, conserver plus de contexte et accéder à tous les looks.",
         features: [
           "150 crédits par mois",
+          "Transfert privé depuis une photo de référence",
           "File prioritaire",
           "Historique longue durée",
           "Catalogue complet",
@@ -427,6 +431,7 @@ const fr: LocalizedPricingContent = {
     credits: "Crédits mensuels",
     diagnosis: "Le diagnostic IA utilise des crédits",
     tryon: "L’essai IA utilise des crédits",
+    reference: "Transfert privé depuis une référence",
     hd: "Téléchargement HD",
     tutorials: "Tutoriels maquillage",
     priority: "File prioritaire",
@@ -501,6 +506,7 @@ const ja: LocalizedPricingContent = {
         reason: "すばやい比較、より長い履歴、全ルックへのアクセス向けです。",
         features: [
           "月150クレジット",
+          "参考画像からのプライベートメイク転写",
           "優先キュー",
           "長期履歴",
           "全ルックカタログ",
@@ -591,6 +597,7 @@ const ja: LocalizedPricingContent = {
     credits: "月間クレジット",
     diagnosis: "AI診断でクレジットを使用",
     tryon: "AI試着でクレジットを使用",
+    reference: "参考画像からのプライベート試着",
     hd: "HDダウンロード",
     tutorials: "メイク手順",
     priority: "優先キュー",
@@ -665,6 +672,7 @@ const ko: LocalizedPricingContent = {
         reason: "빠른 반복, 더 긴 기록, 전체 룩 접근을 위한 플랜입니다.",
         features: [
           "월 150 크레딧",
+          "참고 이미지 기반 비공개 메이크업 전송",
           "우선 처리",
           "장기 기록",
           "전체 룩 카탈로그",
@@ -755,6 +763,7 @@ const ko: LocalizedPricingContent = {
     credits: "월간 크레딧",
     diagnosis: "AI 진단 크레딧 사용",
     tryon: "가상 메이크업 크레딧 사용",
+    reference: "참고 이미지 비공개 메이크업 전송",
     hd: "HD 다운로드",
     tutorials: "메이크업 튜토리얼",
     priority: "우선 처리",
@@ -818,6 +827,7 @@ const zhTW: LocalizedPricingContent = {
         reason: "適合快速比較、更長紀錄與完整妝容庫。",
         features: [
           "每月 150 點",
+          "上傳參考妝容並私密套用",
           "優先佇列",
           "長期紀錄",
           "完整妝容庫",
@@ -895,6 +905,7 @@ const zhTW: LocalizedPricingContent = {
     credits: "每月點數",
     diagnosis: "AI 診斷使用點數",
     tryon: "AI 試妝使用點數",
+    reference: "私密參考圖試妝",
     hd: "HD 下載",
     tutorials: "彩妝教學",
     priority: "優先佇列",
@@ -975,6 +986,7 @@ const es: LocalizedPricingContent = {
           "Pensado para iterar rápido, guardar más contexto y acceder a todos los looks.",
         features: [
           "150 créditos al mes",
+          "Transferencia privada desde una foto de referencia",
           "Cola prioritaria",
           "Historial a largo plazo",
           "Catálogo completo",
@@ -1069,6 +1081,7 @@ const es: LocalizedPricingContent = {
     credits: "Créditos mensuales",
     diagnosis: "El diagnóstico IA usa créditos",
     tryon: "La prueba IA usa créditos",
+    reference: "Transferencia privada por referencia",
     hd: "Descarga HD",
     tutorials: "Tutoriales de maquillaje",
     priority: "Cola prioritaria",
@@ -1146,6 +1159,7 @@ const ptBR: LocalizedPricingContent = {
           "Feito para testar mais rápido, guardar contexto e acessar todos os looks.",
         features: [
           "150 créditos por mês",
+          "Transferência privada de maquiagem por referência",
           "Fila prioritária",
           "Histórico de longo prazo",
           "Catálogo completo",
@@ -1237,6 +1251,7 @@ const ptBR: LocalizedPricingContent = {
     credits: "Créditos mensais",
     diagnosis: "Diagnóstico com IA usa créditos",
     tryon: "Teste com IA usa créditos",
+    reference: "Transferência privada por referência",
     hd: "Download HD",
     tutorials: "Tutoriais de maquiagem",
     priority: "Fila prioritária",

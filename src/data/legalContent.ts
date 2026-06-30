@@ -24,7 +24,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
   en: {
     badge: "Legal & privacy",
     updatedLabel: "Updated",
-    updated: "June 14, 2026",
+    updated: "June 30, 2026",
     privacy: {
       title: "Privacy Policy",
       description:
@@ -44,7 +44,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Retention, deletion, and sharing",
-          body: "Original photos are deleted as soon as operationally practical and no later than 30 days under the storage lifecycle policy. Product controls let you delete related results and records. We share only the minimum necessary data with vetted infrastructure, AI, storage, payment, and email providers.",
+          body: "Selfies and other one-time original photos are deleted as soon as operationally practical and no later than 30 days under the storage lifecycle policy. A Premium reference template is private to its owner and remains available for reuse until the owner deletes it; deleting the template removes its stored reference image. Private-reference results cannot be published through our sharing tools. Product controls let you delete related results and records. We share only the minimum necessary data with vetted infrastructure, AI, storage, payment, and email providers.",
         },
         {
           title: "5. Cookies, rights, and contact",
@@ -110,7 +110,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
   "zh-CN": {
     badge: "法律与隐私",
     updatedLabel: "更新日期",
-    updated: "2026 年 6 月 14 日",
+    updated: "2026 年 6 月 30 日",
     privacy: {
       title: "隐私政策",
       description:
@@ -130,7 +130,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. 保存、删除与共享",
-          body: "原始照片会在运行允许的情况下尽快删除，并由存储生命周期策略保证最长不超过 30 天。你可通过产品入口删除相关结果和记录。我们仅向经过审核的基础设施、AI、存储、支付和邮件服务商提供完成服务所必需的数据。",
+          body: "自拍及其他一次性原始照片会在运行允许的情况下尽快删除，并由存储生命周期策略保证最长不超过 30 天。Premium 私有参考妆容模板仅限账户本人访问，并会保留至本人主动删除；删除模板时会同时移除其参考图片。私有参考妆容的生成结果不能通过本站分享工具公开。你可通过产品入口删除相关结果和记录。我们仅向经过审核的基础设施、AI、存储、支付和邮件服务商提供完成服务所必需的数据。",
         },
         {
           title: "5. Cookie、用户权利与联系",
@@ -195,7 +195,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
   "zh-TW": {
     badge: "法律與隱私",
     updatedLabel: "更新日期",
-    updated: "2026 年 6 月 14 日",
+    updated: "2026 年 6 月 30 日",
     privacy: {
       title: "隱私政策",
       description:
@@ -215,7 +215,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. 保存、刪除與分享",
-          body: "原始照片會在作業允許時儘快刪除，且依儲存生命週期政策最長不超過 30 天。你可透過產品控制刪除相關結果與紀錄。我們只向經審核的服務商提供完成服務所需的最少資料。",
+          body: "自拍及其他一次性原始照片會在作業允許時儘快刪除，且依儲存生命週期政策最長不超過 30 天。Premium 私人參考妝容範本僅限帳戶本人存取，並保留至本人主動刪除；刪除範本時會一併移除參考圖片。私人參考妝容結果不能透過本站分享工具公開。你可透過產品控制刪除相關結果與紀錄。我們只向經審核的服務商提供完成服務所需的最少資料。",
         },
         {
           title: "5. Cookie、權利與聯絡",
@@ -280,7 +280,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
   "de-DE": {
     badge: "Rechtliches & Datenschutz",
     updatedLabel: "Aktualisiert",
-    updated: "14. Juni 2026",
+    updated: "30. Juni 2026",
     privacy: {
       title: "Datenschutzerklärung",
       description:
@@ -300,7 +300,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Aufbewahrung, Löschung und Weitergabe",
-          body: "Originalfotos werden so schnell wie betrieblich möglich und spätestens nach 30 Tagen gelöscht. Produktfunktionen ermöglichen das Löschen verbundener Ergebnisse. Dienstleister erhalten nur die für Infrastruktur, KI, Speicher, Zahlung und E-Mail nötigen Daten.",
+          body: "Selfies und andere einmalig verwendete Originalfotos werden so schnell wie möglich und spätestens nach 30 Tagen gelöscht. Eine private Premium-Referenzvorlage ist nur für den Kontoinhaber zugänglich und bleibt bis zur Löschung durch ihn gespeichert; dabei wird auch das Referenzbild entfernt. Ergebnisse aus privaten Referenzen können nicht über unsere Freigabefunktionen veröffentlicht werden. Dienstleister erhalten nur die für den Dienst nötigen Daten.",
         },
         {
           title: "5. Cookies, Rechte und Kontakt",
@@ -366,7 +366,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
   "fr-FR": {
     badge: "Juridique et confidentialité",
     updatedLabel: "Mise à jour",
-    updated: "14 juin 2026",
+    updated: "30 juin 2026",
     privacy: {
       title: "Politique de confidentialité",
       description:
@@ -386,7 +386,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Conservation, suppression et partage",
-          body: "Les photos originales sont supprimées dès que possible et au plus tard sous 30 jours. Les contrôles du produit permettent de supprimer les résultats associés. Les prestataires ne reçoivent que les données nécessaires au service.",
+          body: "Les selfies et autres photos originales à usage unique sont supprimés dès que possible et au plus tard sous 30 jours. Un modèle de référence Premium privé n'est accessible qu'à son propriétaire et reste enregistré jusqu'à ce qu'il le supprime, ce qui supprime aussi l'image de référence. Les résultats issus d'une référence privée ne peuvent pas être publiés avec nos outils de partage. Les prestataires ne reçoivent que les données nécessaires au service.",
         },
         {
           title: "5. Cookies, droits et contact",
@@ -452,7 +452,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
   "ja-JP": {
     badge: "法務・プライバシー",
     updatedLabel: "更新日",
-    updated: "2026年6月14日",
+    updated: "2026年6月30日",
     privacy: {
       title: "プライバシーポリシー",
       description:
@@ -472,7 +472,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. 保存、削除、共有",
-          body: "元写真は運用上可能な限り早く、遅くとも30日以内に削除します。製品内の操作で関連結果を削除できます。委託先にはサービス提供に必要な最小限のデータのみ共有します。",
+          body: "セルフィーなど一度だけ使用する元写真は、運用上可能な限り早く、遅くとも30日以内に削除します。Premium の非公開参照テンプレートは所有者だけがアクセスでき、所有者が削除するまで保存されます。削除時には参照画像も消去されます。非公開参照から生成した結果は当社の共有機能では公開できません。委託先にはサービス提供に必要な最小限のデータのみ共有します。",
         },
         {
           title: "5. Cookie、権利、連絡先",
@@ -537,7 +537,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
   "ko-KR": {
     badge: "법률 및 개인정보",
     updatedLabel: "업데이트",
-    updated: "2026년 6월 14일",
+    updated: "2026년 6월 30일",
     privacy: {
       title: "개인정보 처리방침",
       description:
@@ -557,7 +557,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. 보관, 삭제 및 공유",
-          body: "원본 사진은 운영상 가능한 한 빨리, 늦어도 30일 이내 삭제됩니다. 제품 내 기능으로 관련 결과를 삭제할 수 있습니다. 서비스 제공업체에는 필요한 최소 데이터만 공유합니다.",
+          body: "셀피 등 일회성 원본 사진은 가능한 한 빨리, 늦어도 30일 이내 삭제됩니다. Premium 비공개 참조 템플릿은 계정 소유자만 접근할 수 있으며 소유자가 삭제할 때까지 보관됩니다. 삭제 시 참조 이미지도 제거됩니다. 비공개 참조 결과는 서비스의 공유 기능으로 공개할 수 없습니다. 서비스 제공업체에는 필요한 최소 데이터만 공유합니다.",
         },
         {
           title: "5. 쿠키, 권리 및 연락처",
@@ -623,7 +623,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
   "es-ES": {
     badge: "Legal y privacidad",
     updatedLabel: "Actualizado",
-    updated: "14 de junio de 2026",
+    updated: "30 de junio de 2026",
     privacy: {
       title: "Política de privacidad",
       description:
@@ -643,7 +643,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Conservación, eliminación y uso compartido",
-          body: "Las fotos originales se eliminan lo antes posible y como máximo en 30 días. Los controles del producto permiten borrar resultados relacionados. Los proveedores reciben solo los datos mínimos necesarios.",
+          body: "Los selfies y otras fotos originales de un solo uso se eliminan lo antes posible y, como máximo, en 30 días. Una plantilla de referencia Premium privada solo es accesible para su propietario y se conserva hasta que este la elimina; al hacerlo también se borra la imagen de referencia. Los resultados de referencias privadas no pueden publicarse con nuestras herramientas para compartir. Los proveedores reciben solo los datos mínimos necesarios.",
         },
         {
           title: "5. Cookies, derechos y contacto",
@@ -710,7 +710,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
   "pt-BR": {
     badge: "Legal e privacidade",
     updatedLabel: "Atualizado",
-    updated: "14 de junho de 2026",
+    updated: "30 de junho de 2026",
     privacy: {
       title: "Política de privacidade",
       description:
@@ -730,7 +730,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "4. Retenção, exclusão e compartilhamento",
-          body: "Fotos originais são excluídas assim que possível e em até 30 dias. Os controles do produto permitem apagar resultados relacionados. Prestadores recebem apenas os dados mínimos necessários.",
+          body: "Selfies e outras fotos originais de uso único são excluídos assim que possível e em até 30 dias. Um modelo de referência Premium privado só pode ser acessado pelo proprietário e permanece salvo até que ele o exclua; a exclusão também remove a imagem de referência. Resultados de referências privadas não podem ser publicados por nossas ferramentas de compartilhamento. Prestadores recebem apenas os dados mínimos necessários.",
         },
         {
           title: "5. Cookies, direitos e contato",
