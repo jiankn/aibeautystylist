@@ -3,6 +3,7 @@
  * 产品推荐面板：展示平价/标准/进阶三档工具包 + "不建议买什么"。
  */
 import type { ProductKit, ProductSku } from "../data/products";
+import { t } from "../lib/i18n";
 
 interface Props {
   kits: ProductKit[];
@@ -12,9 +13,9 @@ interface Props {
 const { kits, notRecommended = [] } = Astro.props;
 
 const tierLabels: Record<string, string> = {
-  budget: "平价参考",
-  standard: "标准参考",
-  premium: "进阶参考",
+  budget: t("productRecommend", "tierBudget"),
+  standard: t("productRecommend", "tierStandard"),
+  premium: t("productRecommend", "tierPremium"),
 };
 
 const tierColors: Record<string, string> = {
@@ -24,25 +25,46 @@ const tierColors: Record<string, string> = {
 };
 
 const categoryLabels: Record<string, string> = {
-  base: "底妆",
-  eyes: "眼妆",
-  brows: "眉部",
-  cheeks: "腮红",
-  lips: "唇妆",
-  tools: "工具",
+  base: t("productRecommend", "categoryBase"),
+  eyes: t("productRecommend", "categoryEyes"),
+  brows: t("productRecommend", "categoryBrows"),
+  cheeks: t("productRecommend", "categoryCheeks"),
+  lips: t("productRecommend", "categoryLips"),
+  tools: t("productRecommend", "categoryTools"),
+};
+
+const kitTitleLabels: Record<string, string> = {
+  "kit-commute-budget": t("productRecommend", "kitCommuteBudget"),
+  "kit-commute-standard": t("productRecommend", "kitCommuteStandard"),
+};
+
+const productNameLabels: Record<string, string> = {
+  p1: t("productRecommend", "productLightCushion"),
+  p2: t("productRecommend", "productBrowPencil"),
+  p3: t("productRecommend", "productFourColorEyeshadow"),
+  p4: t("productRecommend", "productLongwearFoundation"),
+  p5: t("productRecommend", "productPrecisionBrowPencil"),
+  p6: t("productRecommend", "productMatteEyeshadow"),
+  nr1: t("productRecommend", "avoidFullCoverageFoundation"),
+  nr2: t("productRecommend", "avoidChunkyGlitterEyeshadow"),
+};
+
+const notRecommendedReasonLabels: Record<string, string> = {
+  nr1: t("productRecommend", "avoidFullCoverageFoundationReason"),
+  nr2: t("productRecommend", "avoidChunkyGlitterEyeshadowReason"),
 };
 ---
 
 <section class="product-recommend-panel">
-  <h2 class="panel-title">产品参考</h2>
+  <h2 class="panel-title">{t("productRecommend", "title")}</h2>
   <p class="panel-subtitle">
-    根据妆容特点整理的产品类型参考，可按预算选择相近产品
+    {t("productRecommend", "subtitle")}
   </p>
 
   {
     kits.length === 0 ? (
       <p class="muted" style="text-align:center;padding:20px">
-        产品参考还在整理中，当前可先按教程里的产品类型准备。
+        {t("productRecommend", "empty")}
       </p>
     ) : (
       <div class="kit-tabs">
@@ -54,7 +76,7 @@ const categoryLabels: Record<string, string> = {
               </span>
               <span class="kit-price">{kit.totalPriceRange}</span>
             </div>
-            <h3>{kit.title}</h3>
+            <h3>{kitTitleLabels[kit.id] || kit.title}</h3>
             <ul class="kit-products">
               {kit.products.map((product) => (
                 <li class="kit-product-item">
@@ -62,7 +84,7 @@ const categoryLabels: Record<string, string> = {
                     {categoryLabels[product.category] || product.category}
                   </span>
                   <div>
-                    <b>{product.name}</b>
+                    <b>{productNameLabels[product.id] || product.name}</b>
                     <span class="small muted">
                       {product.brand} · {product.priceRange}
                     </span>
@@ -74,10 +96,12 @@ const categoryLabels: Record<string, string> = {
                       target="_blank"
                       rel="noopener"
                     >
-                      查看
+                      {t("productRecommend", "view")}
                     </a>
                   ) : (
-                    <span class="small muted">暂未接入</span>
+                    <span class="small muted">
+                      {t("productRecommend", "purchaseLinkComing")}
+                    </span>
                   )}
                 </li>
               ))}
@@ -91,13 +115,17 @@ const categoryLabels: Record<string, string> = {
   {
     notRecommended.length > 0 && (
       <div class="not-recommended">
-        <h3>当前妆容可先避开的产品</h3>
+        <h3>{t("productRecommend", "avoidTitle")}</h3>
         <ul>
           {notRecommended.map((item) => (
             <li>
-              <b>{item.name}</b>
+              <b>{productNameLabels[item.id] || item.name}</b>
               {item.notRecommendedReason && (
-                <span> — {item.notRecommendedReason}</span>
+                <span>
+                  :{" "}
+                  {notRecommendedReasonLabels[item.id] ||
+                    item.notRecommendedReason}
+                </span>
               )}
             </li>
           ))}

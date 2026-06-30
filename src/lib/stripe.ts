@@ -135,12 +135,39 @@ export function createStripeClient(options: StripeClientOptions) {
         client_reference_id: input.clientReferenceId,
         customer: input.customerId,
         customer_email: input.customerId ? undefined : input.customerEmail,
-        allow_promotion_codes: true,
         locale: input.locale,
       };
       for (const [key, value] of Object.entries(input.metadata ?? {})) {
         params[`metadata[${key}]`] = value;
         params[`subscription_data[metadata][${key}]`] = value;
+      }
+      return request("POST", "/v1/checkout/sessions", params);
+    },
+
+    createOneTimeCheckoutSession(input: {
+      priceId: string;
+      successUrl: string;
+      cancelUrl: string;
+      clientReferenceId: string;
+      customerId?: string;
+      customerEmail?: string;
+      locale?: StripeCheckoutLocale;
+      metadata?: Record<string, string>;
+    }): Promise<{ id: string; url: string | null }> {
+      const params: Record<string, string | number | boolean | undefined> = {
+        mode: "payment",
+        "line_items[0][price]": input.priceId,
+        "line_items[0][quantity]": 1,
+        success_url: input.successUrl,
+        cancel_url: input.cancelUrl,
+        client_reference_id: input.clientReferenceId,
+        customer: input.customerId,
+        customer_email: input.customerId ? undefined : input.customerEmail,
+        allow_promotion_codes: true,
+        locale: input.locale,
+      };
+      for (const [key, value] of Object.entries(input.metadata ?? {})) {
+        params[`metadata[${key}]`] = value;
       }
       return request("POST", "/v1/checkout/sessions", params);
     },
@@ -248,6 +275,8 @@ export interface StripeCheckoutSession {
   mode?: string;
   status?: string;
   payment_status?: string;
+  amount_total?: number;
+  currency?: string;
   subscription?: string;
   customer?: string;
   client_reference_id?: string;

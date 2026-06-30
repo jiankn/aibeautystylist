@@ -4,6 +4,7 @@ import {
   getAccountCenterCopy,
 } from "../data/accountCenterContent";
 import AppIconBadge from "../components/AppIconBadge.astro";
+import CreditPackPanel from "../components/CreditPackPanel.astro";
 import MobileAppTopBar from "../components/MobileAppTopBar.astro";
 import MobileBottomNav from "../components/MobileBottomNav.astro";
 import SiteHeader from "../components/SiteHeader.astro";
@@ -639,6 +640,7 @@ const planMeta = Object.fromEntries(
             </article>
           </div>
         </section>
+        <CreditPackPanel returnTo={`${subscriptionHref}#credit-packs`} />
       </div>
     </div>
   </main>

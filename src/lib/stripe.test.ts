@@ -54,6 +54,26 @@ describe("Stripe client", () => {
     expect(body.get("locale")).toBe("en");
   });
 
+  it("creates one-time Checkout Sessions for credit packs", async () => {
+    const { fetcher, requests } = createRecordingFetcher();
+    const stripe = createStripeClient({ apiKey: "sk_test", fetcher });
+
+    await stripe.createOneTimeCheckoutSession({
+      ...checkoutInput(),
+      priceId: "price_credits_20",
+      metadata: {
+        purchaseType: "credit_pack",
+        packCode: "boost_20",
+      },
+    });
+
+    const body = new URLSearchParams(String(requests[0]?.init?.body));
+    expect(body.get("mode")).toBe("payment");
+    expect(body.get("line_items[0][price]")).toBe("price_credits_20");
+    expect(body.get("metadata[purchaseType]")).toBe("credit_pack");
+    expect(body.has("subscription_data[metadata][packCode]")).toBe(false);
+  });
+
   it("passes the account email to Checkout when creating a new customer", async () => {
     const { fetcher, requests } = createRecordingFetcher();
     const stripe = createStripeClient({ apiKey: "sk_test", fetcher });

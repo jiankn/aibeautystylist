@@ -32,6 +32,7 @@ const percentage = hasQuota
   : 0;
 const quotaValue = hasQuota ? `${remaining}/${total}` : "";
 const lowQuota = hasQuota && remaining < 2 && remaining >= 0;
+const quotaExhausted = hasQuota && remaining <= 0;
 const planClass =
   plan === "Premium"
     ? "workspace-status-plan-gold"
@@ -44,47 +45,103 @@ const currentRoute =
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 
-// Keep paid workspaces focused on the actual try-on action below this status bar.
-// Paid-plan links are secondary destinations only; never link back to the current page.
+// Give paid users useful next destinations and never link back to the current page.
 const links =
-  plan === "Free"
+  plan === "Free" && quotaExhausted
     ? [
         {
-          href: localizeAppHref("/tryon"),
-          label: t("workspace", "startTryon"),
-          id: "tryon",
+          href: localizeAppHref("/pricing"),
+          label: t("workspace", "upgradeGetMore"),
+          id: "upgrade",
           variant: "primary" as const,
         },
         {
-          href: localizeAppHref("/diagnosis"),
-          label: t("workspace", "diagnosis"),
-          id: "diagnosis",
+          href: localizeAppHref("/discover"),
+          label: t("workspace", "browseLooks"),
+          id: "browse-looks",
           variant: "secondary" as const,
         },
       ]
-    : plan === "Pro"
+    : plan === "Free"
       ? [
           {
-            href: localizeAppHref("/history"),
-            label: t("workspace", "viewHistory"),
-            id: "view-history",
+            href: localizeAppHref("/tryon"),
+            label: t("workspace", "startTryon"),
+            id: "tryon",
+            variant: "primary" as const,
+          },
+          {
+            href: localizeAppHref("/diagnosis"),
+            label: t("workspace", "diagnosis"),
+            id: "diagnosis",
             variant: "secondary" as const,
           },
         ]
-      : [
-          {
-            href: localizeAppHref("/discover"),
-            label: t("workspace", "openFullCatalog"),
-            id: "view-catalog",
-            variant: "secondary" as const,
-          },
-          {
-            href: localizeAppHref("/history"),
-            label: t("workspace", "viewHistory"),
-            id: "view-history",
-            variant: "secondary" as const,
-          },
-        ];
+      : plan === "Pro" && quotaExhausted
+        ? [
+            {
+              href: localizeAppHref("/pricing"),
+              label: t("tryon", "learnPremium"),
+              id: "upgrade-premium",
+              variant: "primary" as const,
+            },
+            {
+              href: `${localizeAppHref("/subscription")}#credit-packs`,
+              label: t("creditPacks", "buy"),
+              id: "buy-credits",
+              variant: "secondary" as const,
+            },
+            {
+              href: localizeAppHref("/history"),
+              label: t("workspace", "viewHistory"),
+              id: "view-history",
+              variant: "secondary" as const,
+            },
+          ]
+        : plan === "Pro"
+          ? [
+              {
+                href: localizeAppHref("/diagnosis"),
+                label: t("workspace", "diagnosis"),
+                id: "diagnosis",
+                variant: "primary" as const,
+              },
+              {
+                href: localizeAppHref("/history"),
+                label: t("workspace", "viewHistory"),
+                id: "view-history",
+                variant: "secondary" as const,
+              },
+            ]
+          : quotaExhausted
+            ? [
+                {
+                  href: `${localizeAppHref("/subscription")}#credit-packs`,
+                  label: t("creditPacks", "buy"),
+                  id: "buy-credits",
+                  variant: "primary" as const,
+                },
+                {
+                  href: localizeAppHref("/history"),
+                  label: t("workspace", "viewHistory"),
+                  id: "view-history",
+                  variant: "secondary" as const,
+                },
+              ]
+            : [
+                {
+                  href: localizeAppHref("/discover"),
+                  label: t("workspace", "openFullCatalog"),
+                  id: "view-catalog",
+                  variant: "primary" as const,
+                },
+                {
+                  href: localizeAppHref("/history"),
+                  label: t("workspace", "viewHistory"),
+                  id: "view-history",
+                  variant: "secondary" as const,
+                },
+              ];
 
 // Perks text for paid users
 const perksText =
@@ -161,7 +218,7 @@ const statusSubtitle = perksText ?? subtitle;
     }
     <!-- "View Plans" only for Free plan (conversion) -->
     {
-      plan === "Free" && (
+      plan === "Free" && !quotaExhausted && (
         <a class="btn workspace-status-link" href={localizeAppHref("/pricing")}>
           {t("workspace", "upgradeGetMore")}
         </a>

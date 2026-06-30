@@ -40,8 +40,16 @@ export interface PlanQuotaReset {
   snapshot: QuotaSnapshot;
 }
 
+export interface CreditPackGrant {
+  granted: boolean;
+  duplicate: boolean;
+  amount: number;
+  snapshot: QuotaSnapshot;
+}
+
 interface UsageBalanceRow {
   balance_change: number | string | null;
+  bonus_credits: number | string | null;
 }
 
 interface ExistingUsageRow {
@@ -50,6 +58,7 @@ interface ExistingUsageRow {
 
 interface MockUsageRecord {
   amount: number;
+  type: string;
   idempotencyKey: string;
   occurredAt: string;
 }
@@ -65,25 +74,38 @@ export async function getQuotaSnapshot(
 ): Promise<QuotaSnapshot> {
   const { periodStart, nextRefreshAt } = resolveQuotaPeriod(now, quotaPeriod);
   let balanceChange = 0;
+  let bonusCredits = 0;
 
   if (DB) {
     const row = await DB.prepare(
-      "SELECT COALESCE(SUM(amount), 0) AS balance_change FROM usage_records WHERE user_id = ? AND occurred_at >= ?",
+      "SELECT COALESCE(SUM(amount), 0) AS balance_change, COALESCE(SUM(CASE WHEN type IN ('share_reward', 'credit_pack') THEN amount ELSE 0 END), 0) AS bonus_credits FROM usage_records WHERE user_id = ? AND occurred_at >= ?",
     )
       .bind(userId, periodStart)
       .first<UsageBalanceRow>();
     balanceChange = Number(row?.balance_change ?? 0);
+    bonusCredits = Number(row?.bonus_credits ?? 0);
   } else {
-    balanceChange = (mockUsage.get(userId) ?? [])
-      .filter((record) => record.occurredAt >= periodStart)
+    const periodRecords = (mockUsage.get(userId) ?? []).filter(
+      (record) => record.occurredAt >= periodStart,
+    );
+    balanceChange = periodRecords.reduce(
+      (total, record) => total + record.amount,
+      0,
+    );
+    bonusCredits = periodRecords
+      .filter(
+        (record) =>
+          record.type === "share_reward" || record.type === "credit_pack",
+      )
       .reduce((total, record) => total + record.amount, 0);
   }
 
   const remaining = Math.max(0, monthlyQuota + balanceChange);
+  const total = monthlyQuota + Math.max(0, bonusCredits);
   return {
     remaining,
-    total: monthlyQuota,
-    used: Math.max(0, monthlyQuota - remaining),
+    total,
+    used: Math.max(0, total - remaining),
     periodStart,
     nextRefreshAt,
   };
@@ -211,6 +233,45 @@ export async function grantShareReward(
       now,
       monthlyQuota,
       quotaPeriod,
+    ),
+  };
+}
+
+export async function grantCreditPack(input: {
+  userId: string;
+  checkoutSessionId: string;
+  credits: number;
+  DB?: D1DatabaseLike;
+  now?: Date;
+  monthlyQuota: number;
+  quotaPeriod?: QuotaPeriodInput;
+}): Promise<CreditPackGrant> {
+  const now = input.now ?? new Date();
+  const credits = Math.max(0, Math.floor(input.credits));
+  const usageKey = `credit_pack:${input.userId}:${input.checkoutSessionId}`;
+  const inserted =
+    credits > 0
+      ? await appendUsageRecord(
+          input.userId,
+          input.checkoutSessionId,
+          "credit_pack",
+          credits,
+          usageKey,
+          input.DB,
+          now,
+          true,
+        )
+      : false;
+  return {
+    granted: inserted,
+    duplicate: credits > 0 && !inserted,
+    amount: inserted ? credits : 0,
+    snapshot: await getQuotaSnapshot(
+      input.userId,
+      input.DB,
+      now,
+      input.monthlyQuota,
+      input.quotaPeriod,
     ),
   };
 }
@@ -398,7 +459,7 @@ async function hasUsageRecord(
 async function appendUsageRecord(
   userId: string,
   jobId: string,
-  type: "reserve" | "refund" | "share_reward" | "plan_reset",
+  type: "reserve" | "refund" | "share_reward" | "plan_reset" | "credit_pack",
   amount: number,
   idempotencyKey: string,
   DB?: D1DatabaseLike,
@@ -436,7 +497,7 @@ async function appendUsageRecord(
   ) {
     return false;
   }
-  records.push({ amount, idempotencyKey, occurredAt });
+  records.push({ amount, type, idempotencyKey, occurredAt });
   mockUsage.set(userId, records);
   return true;
 }

@@ -35,6 +35,13 @@
 | Pro | 70 | 无 | 每个订阅周期 |
 | Premium | 150 | 无 | 每个订阅周期 |
 
+一次性额度包：
+
+| 额度包 | 价格 | 购买资格 | 有效期 |
+|---|---:|---|---|
+| 20 次应急包 | US$7.99 | 有效 Pro / Premium | 当前订阅周期 |
+| 60 次畅用包 | US$18.99 | 有效 Pro / Premium | 当前订阅周期 |
+
 规则：
 
 - 只有服务端成功创建唯一任务后才预占 1 次额度。
@@ -43,6 +50,8 @@
 - `idempotencyKey` 相同的请求只能创建一个任务并扣减一次。
 - 分享奖励按 `userId + UTC 日期 + rewardType` 保证幂等。
 - 额度账目以不可变 `usage_records` 流水为准，不直接覆盖历史记录。
+- 额度包通过 Stripe 一次性 Checkout 购买，同一 Checkout Session 只能到账一次。
+- 未使用的额度包次数不跨订阅周期结转。
 
 ## 3. 任务状态
 
@@ -139,6 +148,8 @@
 | `POST /api/shares/reward` | 发放分享奖励 | Free 用户、每日幂等、必须携带未过期分享凭证 |
 | `POST /api/billing/checkout` | 创建 Checkout | 登录用户，成功 URL 带 `session_id={CHECKOUT_SESSION_ID}` |
 | `POST /api/billing/sync-checkout` | 回跳后主动同步 Checkout Session | 登录用户，校验 session 属于当前账户 |
+| `POST /api/billing/credit-pack-checkout` | 创建一次性额度包 Checkout | 有效 Pro / Premium，服务端决定价格和额度 |
+| `POST /api/billing/credit-pack-sync` | 支付回跳后主动同步额度包 | 登录用户、本人订单、支付已完成 |
 | `POST /api/billing/portal` | 创建客户 Portal | 有 Stripe customer |
 | `POST /api/billing/webhook` | 同步订阅状态 | 验证 Stripe 签名 |
 | `POST /api/stripe/webhook` | Stripe Webhook 兼容入口 | 与 `/api/billing/webhook` 同处理器，避免后台旧路径 404 |
