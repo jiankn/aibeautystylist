@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { getEntitlementContext } from "./entitlements";
-import { reserveQuota, resetMockQuota } from "./quota";
+import { getQuotaSnapshot, reserveQuota, resetMockQuota } from "./quota";
 import { getEffectivePlan, resetMockSubscriptions } from "./subscriptions";
 import {
   handleStripeEvent,
@@ -15,6 +15,8 @@ const bindings = {
   STRIPE_PRICE_PRO_YEARLY: "price_pro_yearly",
   STRIPE_PRICE_PREMIUM_MONTHLY: "price_premium_monthly",
   STRIPE_PRICE_PREMIUM_YEARLY: "price_premium_yearly",
+  STRIPE_PRICE_CREDITS_20: "price_credits_20",
+  STRIPE_PRICE_CREDITS_60: "price_credits_60",
 };
 
 const now = new Date("2026-06-07T00:00:00.000Z");
@@ -167,6 +169,45 @@ describe("handleStripeEvent", () => {
       now,
     );
     expect(second).toMatchObject({ handled: false, duplicate: true });
+  });
+
+  it("fulfills a paid credit pack checkout once", async () => {
+    const event: StripeEvent = {
+      id: "evt_pack",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_pack",
+          mode: "payment",
+          payment_status: "paid",
+          amount_total: 799,
+          currency: "usd",
+          client_reference_id: "visitor_1",
+          metadata: {
+            purchaseType: "credit_pack",
+            userId: "visitor_1",
+            planCode: "pro",
+            packCode: "boost_20",
+            priceId: "price_credits_20",
+            periodStart: "2026-06-01T00:00:00.000Z",
+            periodEnd: "2026-07-01T00:00:00.000Z",
+          },
+        },
+      },
+    };
+
+    await expect(
+      handleStripeEvent(event, bindings, now),
+    ).resolves.toMatchObject({ handled: true, duplicate: false });
+    await expect(
+      getQuotaSnapshot("visitor_1", undefined, now, 70, {
+        start: "2026-06-01T00:00:00.000Z",
+        end: "2026-07-01T00:00:00.000Z",
+      }),
+    ).resolves.toMatchObject({ total: 90, remaining: 90 });
+    await expect(
+      handleStripeEvent(event, bindings, now),
+    ).resolves.toMatchObject({ handled: false, duplicate: true });
   });
 
   it("downgrades to free when a subscription is deleted", async () => {

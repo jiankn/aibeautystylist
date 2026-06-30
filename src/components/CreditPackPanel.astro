@@ -1,0 +1,288 @@
+---
+import { CREDIT_PACKS } from "../lib/creditPacks";
+import { getCurrentLocale, t } from "../lib/i18n";
+
+interface Props {
+  returnTo: string;
+}
+
+const { returnTo } = Astro.props;
+const locale = getCurrentLocale();
+const packs = Object.values(CREDIT_PACKS);
+---
+
+<section
+  class="credit-pack-panel panel"
+  id="credit-packs"
+  data-credit-pack-panel
+  hidden
+>
+  <div class="credit-pack-head">
+    <div>
+      <p class="section-kicker">{t("creditPacks", "eyebrow")}</p>
+      <h2>{t("creditPacks", "title")}</h2>
+      <p>{t("creditPacks", "subtitle")}</p>
+    </div>
+    <span>{t("creditPacks", "currentCycle")}</span>
+  </div>
+  <div class="credit-pack-grid">
+    {
+      packs.map((pack) => (
+        <article class:list={["credit-pack-card", pack.featured && "featured"]}>
+          {pack.featured && (
+            <span class="credit-pack-popular">
+              {t("creditPacks", "popular")}
+            </span>
+          )}
+          <div>
+            <strong>
+              {pack.code === "boost_20"
+                ? t("creditPacks", "boost20Title")
+                : t("creditPacks", "boost60Title")}
+            </strong>
+            <p>
+              {pack.code === "boost_20"
+                ? t("creditPacks", "boost20Desc")
+                : t("creditPacks", "boost60Desc")}
+            </p>
+          </div>
+          <div class="credit-pack-price">
+            <b>${(pack.priceUsdCents / 100).toFixed(2)}</b>
+            <small>
+              ${(pack.priceUsdCents / pack.credits / 100).toFixed(2)}{" "}
+              {t("creditPacks", "perCredit")}
+            </small>
+          </div>
+          <button
+            class:list={["btn", pack.featured && "btn-primary"]}
+            type="button"
+            data-credit-pack-buy={pack.code}
+          >
+            {t("creditPacks", "buy")}
+          </button>
+        </article>
+      ))
+    }
+  </div>
+  <p class="credit-pack-note">{t("creditPacks", "membersOnly")}</p>
+  <p class="credit-pack-status" data-credit-pack-status role="status"></p>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    locale,
+    returnTo,
+    messages: {
+      processing: t("creditPacks", "processing"),
+      success: t("creditPacks", "success"),
+      cancel: t("creditPacks", "cancel"),
+      failed: t("creditPacks", "failed"),
+    },
+  }}
+>
+  (() => {
+    const panel = document.querySelector("[data-credit-pack-panel]");
+    if (!panel) return;
+    const status = panel.querySelector("[data-credit-pack-status]");
+    const buttons = Array.from(
+      panel.querySelectorAll("[data-credit-pack-buy]"),
+    );
+    const setStatus = (message) => {
+      if (status) status.textContent = message || "";
+    };
+    const setBusy = (busy) => {
+      buttons.forEach((button) => {
+        button.disabled = busy;
+      });
+    };
+
+    fetch("/api/session")
+      .then((response) => response.json())
+      .then((body) => {
+        const plan = body?.data?.plan;
+        panel.hidden = plan !== "pro" && plan !== "premium";
+      })
+      .catch(() => {});
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        setBusy(true);
+        setStatus(messages.processing);
+        try {
+          const response = await fetch("/api/billing/credit-pack-checkout", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              packCode: button.dataset.creditPackBuy,
+              returnTo,
+              locale,
+            }),
+          });
+          const body = await response.json();
+          if (!response.ok || !body?.ok || !body.data?.url) {
+            throw new Error(body?.error?.message || messages.failed);
+          }
+          window.location.assign(body.data.url);
+        } catch (error) {
+          setStatus(error instanceof Error ? error.message : messages.failed);
+          setBusy(false);
+        }
+      });
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const checkoutState = params.get("credit_pack");
+    const sessionId = params.get("session_id");
+    if (checkoutState === "cancel") setStatus(messages.cancel);
+    if (checkoutState === "success" && sessionId) {
+      panel.hidden = false;
+      setBusy(true);
+      setStatus(messages.processing);
+      let syncSucceeded = false;
+      fetch("/api/billing/credit-pack-sync", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      })
+        .then(async (response) => {
+          const body = await response.json();
+          if (!response.ok || !body?.ok) {
+            throw new Error(body?.error?.message || messages.failed);
+          }
+          setStatus(
+            messages.success.replace(
+              "{credits}",
+              String(body.data.credits || ""),
+            ),
+          );
+          syncSucceeded = true;
+        })
+        .catch((error) => {
+          setStatus(error instanceof Error ? error.message : messages.failed);
+        })
+        .finally(() => {
+          setBusy(false);
+          const url = new URL(window.location.href);
+          url.searchParams.delete("credit_pack");
+          url.searchParams.delete("session_id");
+          history.replaceState(null, "", url.pathname + url.search + url.hash);
+          if (syncSucceeded) {
+            window.setTimeout(() => window.location.reload(), 900);
+          }
+        });
+    }
+  })();
+</script>
+
+<style>
+  .credit-pack-panel {
+    margin-top: 20px;
+    padding: 24px;
+  }
+  .credit-pack-panel[hidden] {
+    display: none;
+  }
+  .credit-pack-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .credit-pack-head h2 {
+    margin: 4px 0 8px;
+  }
+  .credit-pack-head p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .credit-pack-head > span {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--soft);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .credit-pack-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .credit-pack-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .credit-pack-card.featured {
+    border-color: var(--rose);
+    background: var(--rose-soft);
+  }
+  .credit-pack-card strong {
+    font-size: 18px;
+  }
+  .credit-pack-card p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .credit-pack-popular {
+    position: absolute;
+    top: -11px;
+    right: 16px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: var(--rose);
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .credit-pack-price {
+    text-align: right;
+  }
+  .credit-pack-price b,
+  .credit-pack-price small {
+    display: block;
+  }
+  .credit-pack-price b {
+    font-size: 22px;
+  }
+  .credit-pack-price small {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .credit-pack-card .btn {
+    grid-column: 1 / -1;
+    min-height: 44px;
+  }
+  .credit-pack-note,
+  .credit-pack-status {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .credit-pack-status:not(:empty) {
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--soft);
+    color: var(--text);
+  }
+  @media (max-width: 720px) {
+    .credit-pack-head {
+      display: grid;
+    }
+    .credit-pack-head > span {
+      width: fit-content;
+    }
+    .credit-pack-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

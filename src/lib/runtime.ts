@@ -60,6 +60,8 @@ export interface RuntimeBindings {
   STRIPE_PRICE_PRO_YEARLY?: string;
   STRIPE_PRICE_PREMIUM_MONTHLY?: string;
   STRIPE_PRICE_PREMIUM_YEARLY?: string;
+  STRIPE_PRICE_CREDITS_20?: string;
+  STRIPE_PRICE_CREDITS_60?: string;
   APP_PUBLIC_URL?: string;
   // 邮件（Postal）与第三方登录（OAuth）
   POSTAL_API_URL?: string;

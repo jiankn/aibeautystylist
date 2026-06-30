@@ -490,6 +490,8 @@ function createNativeImagePicker(anchor) {
 
 function syncUploadAuthGate(session) {
   const authenticated = isAccountSession(session);
+  const quotaExhausted =
+    authenticated && Number(session?.quota?.remaining) <= 0;
   document.querySelectorAll("[data-upload]").forEach((button) => {
     const uploadBox = button.closest(".upload-box");
     const consent = uploadBox?.querySelector("[data-photo-consent]");
@@ -511,6 +513,14 @@ function syncUploadAuthGate(session) {
     }
 
     delete button.dataset.loginRequired;
+    if (quotaExhausted) {
+      button.disabled = true;
+      button.textContent = msg("quotaExhausted");
+      if (consent) consent.disabled = true;
+      if (consentRow) consentRow.hidden = false;
+      if (lockPanel) lockPanel.hidden = true;
+      return;
+    }
     button.textContent = button.dataset.defaultLabel || msg("uploadButton");
     if (consent) {
       consent.disabled = false;
@@ -1872,6 +1882,9 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       controller = undefined;
       button.textContent = originalLabel;
       button.disabled = !uploadBox?.querySelector("[data-photo-consent]")?.checked;
+      void getCurrentSession({ refresh: true })
+        .then((session) => syncUploadAuthGate(session))
+        .catch(() => {});
       syncTaskNavSuppression();
     }
   };

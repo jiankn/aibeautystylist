@@ -4,6 +4,7 @@ import {
   type BillingInterval,
   type PlanCode,
 } from "./plans";
+import { fulfillCreditPackCheckout } from "./creditPackFulfillment";
 import { resetQuotaForPlanUpgrade } from "./quota";
 import type { D1DatabaseLike, RuntimeBindings } from "./runtime";
 import {
@@ -12,6 +13,7 @@ import {
   upsertSubscription,
 } from "./subscriptions";
 import type { StripeEvent } from "./stripeWebhook";
+import type { StripeCheckoutSession } from "./stripe";
 
 // 处理与订阅生命周期相关的 Stripe 事件，把订阅状态同步到本地 subscriptions 表。
 // Webhook 幂等由 stripe_events 去重表保证（见 recordEventOnce）。
@@ -34,18 +36,30 @@ export async function handleStripeEvent(
   bindings: RuntimeBindings,
   now = new Date(),
 ): Promise<HandleEventResult> {
-  const firstTime = await recordEventOnce(event.id, event.type, bindings.DB);
-  if (!firstTime) {
+  if (await hasRecordedStripeEvent(event.id, bindings.DB)) {
     return { handled: false, duplicate: true };
   }
   if (!HANDLED_TYPES.has(event.type)) {
+    await recordStripeEvent(event.id, event.type, bindings.DB);
     return { handled: false, duplicate: false };
   }
 
   const object = event.data.object;
+  if (
+    event.type === "checkout.session.completed" &&
+    extractMetadataValue(object, "purchaseType") === "credit_pack"
+  ) {
+    const session = checkoutSessionFromEvent(object);
+    if (!session) return { handled: false, duplicate: false };
+    await fulfillCreditPackCheckout({ session, bindings, now });
+    await recordStripeEvent(event.id, event.type, bindings.DB);
+    return { handled: true, duplicate: false };
+  }
+
   const userId = extractUserId(object);
   const stripeSubscriptionId = extractSubscriptionId(object);
   if (!userId || !stripeSubscriptionId) {
+    await recordStripeEvent(event.id, event.type, bindings.DB);
     return { handled: false, duplicate: false };
   }
 
@@ -53,6 +67,7 @@ export async function handleStripeEvent(
   const planCode = priceId ? priceToPlan(priceId, bindings) : undefined;
   const status = normalizeStatus(event.type, object);
   if (!planCode) {
+    await recordStripeEvent(event.id, event.type, bindings.DB);
     return { handled: false, duplicate: false };
   }
 
@@ -88,6 +103,7 @@ export async function handleStripeEvent(
       quotaPeriod: { start: currentPeriodStart, end: currentPeriodEnd },
     });
   }
+  await recordStripeEvent(event.id, event.type, bindings.DB);
   return { handled: true, duplicate: false, planCode, status };
 }
 
@@ -107,39 +123,84 @@ export function priceToPlan(
   return undefined;
 }
 
-// 幂等去重：首次见到该 event id 返回 true，重复返回 false。
-async function recordEventOnce(
+async function hasRecordedStripeEvent(
   eventId: string,
-  eventType: string,
   DB?: D1DatabaseLike,
 ): Promise<boolean> {
-  if (!DB) return mockRecordEventOnce(eventId);
-
-  const result = (await DB.prepare(
-    "INSERT OR IGNORE INTO stripe_events (id, type, received_at) VALUES (?, ?, ?)",
-  )
-    .bind(eventId, eventType, new Date().toISOString())
-    .run()) as { meta?: { changes?: number } } | undefined;
-  // D1 run() 返回 meta.changes；INSERT OR IGNORE 重复时 changes=0。
-  const changes = result?.meta?.changes;
-  if (typeof changes === "number") return changes > 0;
-  // 回退：无 meta 时显式查存在性。
+  if (!DB) return mockSeenEvents.has(eventId);
   const row = await DB.prepare("SELECT id FROM stripe_events WHERE id = ?")
     .bind(eventId)
     .first<{ id: string }>();
   return Boolean(row);
 }
 
-const mockSeenEvents = new Set<string>();
+async function recordStripeEvent(
+  eventId: string,
+  eventType: string,
+  DB?: D1DatabaseLike,
+): Promise<void> {
+  if (!DB) {
+    mockSeenEvents.add(eventId);
+    return;
+  }
 
-function mockRecordEventOnce(eventId: string): boolean {
-  if (mockSeenEvents.has(eventId)) return false;
-  mockSeenEvents.add(eventId);
-  return true;
+  await DB.prepare(
+    "INSERT OR IGNORE INTO stripe_events (id, type, received_at) VALUES (?, ?, ?)",
+  )
+    .bind(eventId, eventType, new Date().toISOString())
+    .run();
 }
+
+const mockSeenEvents = new Set<string>();
 
 export function resetMockStripeEvents(): void {
   mockSeenEvents.clear();
+}
+
+function extractMetadataValue(
+  object: Record<string, unknown>,
+  key: string,
+): string | undefined {
+  const metadata = object["metadata"];
+  if (!metadata || typeof metadata !== "object") return undefined;
+  const value = (metadata as Record<string, unknown>)[key];
+  return typeof value === "string" ? value : undefined;
+}
+
+function checkoutSessionFromEvent(
+  object: Record<string, unknown>,
+): StripeCheckoutSession | undefined {
+  const id = object["id"];
+  if (typeof id !== "string" || !id) return undefined;
+  const metadataValue = object["metadata"];
+  const metadata =
+    metadataValue && typeof metadataValue === "object"
+      ? Object.fromEntries(
+          Object.entries(metadataValue).filter(
+            (entry): entry is [string, string] => typeof entry[1] === "string",
+          ),
+        )
+      : undefined;
+  return {
+    id,
+    mode: stringValue(object["mode"]),
+    payment_status: stringValue(object["payment_status"]),
+    amount_total: numberValue(object["amount_total"]),
+    currency: stringValue(object["currency"]),
+    client_reference_id: stringValue(object["client_reference_id"]),
+    customer: stringValue(object["customer"]),
+    metadata,
+  };
+}
+
+function stringValue(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+function numberValue(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value)
+    ? value
+    : undefined;
 }
 
 function extractUserId(object: Record<string, unknown>): string | undefined {

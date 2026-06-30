@@ -70,12 +70,14 @@ const pricingHref = localizeAppHref(
 );
 const discoverHref = localizeAppHref("/discover");
 const diagnosisHref = localizeAppHref("/diagnosis");
+const historyHref = localizeAppHref("/history");
 const loginHref = localizeAppHref(
   `/login?mode=register&next=${encodeURIComponent(localizeAppHref("/tryon"))}`,
 );
 const shareCardHref = localizeAppHref("/share-card");
 const shareBaseHref = localizeAppHref("/share");
 const subscriptionHref = localizeAppHref("/subscription");
+const creditPacksHref = `${subscriptionHref}#credit-packs`;
 const tryonHref = localizeAppHref("/tryon");
 const resolvedLooks = resolveLookCatalog(audienceContext);
 const featuredSlugs = ["commute", "no-makeup", "rose-milk-date", "photogenic"];
@@ -188,16 +190,24 @@ const upgradeBannerCopy = {
     desc: t("tryon", "premiumActiveDesc"),
     primary: t("tryon", "continuePremium"),
   },
-  exhausted: {
+  proExhausted: {
     title: t("tryon", "memberQuotaExhaustedTitle"),
     desc: t("tryon", "memberQuotaExhaustedDesc"),
-    primary: t("tryon", "viewPlansShort"),
-    secondary: t("tryon", "manageSubscriptionShort"),
+    primary: t("tryon", "learnPremium"),
+    secondary: t("creditPacks", "buy"),
+  },
+  premiumExhausted: {
+    title: t("tryon", "memberQuotaExhaustedTitle"),
+    desc: t("creditPacks", "subtitle"),
+    primary: t("creditPacks", "buy"),
+    secondary: t("workspace", "viewHistory"),
   },
 };
 const upgradeBannerHrefs = {
   pricing: pricingHref,
   account: subscriptionHref,
+  credits: creditPacksHref,
+  history: historyHref,
   pro: tryonHref,
   premium: tryonHref,
 };
@@ -229,19 +239,22 @@ const workspaceStatusCopy = {
   },
   actions: {
     startFree: t("workspace", "startTryon"),
-    continuePro: t("tryon", "continuePro"),
-    continuePremium: t("tryon", "continuePremium"),
+    openFullCatalog: t("workspace", "openFullCatalog"),
+    viewHistory: t("workspace", "viewHistory"),
     diagnosis: t("workspace", "diagnosis"),
     upgrade: t("workspace", "upgradeGetMore"),
     learnPremium: t("tryon", "learnPremium"),
+    buyCredits: t("creditPacks", "buy"),
+    browseLooks: t("workspace", "browseLooks"),
   },
 };
 const workspaceStatusHrefs = {
   free: tryonHref,
-  pro: tryonHref,
-  premium: tryonHref,
+  discover: discoverHref,
+  history: historyHref,
   diagnosis: diagnosisHref,
   pricing: pricingHref,
+  credits: creditPacksHref,
 };
 const experienceTitle = workspaceStatusCopy.titles[experience.planCode];
 const experienceSubtitle =
@@ -838,70 +851,114 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
       }
     }
 
-    function updateWorkspaceLinks(status, plan) {
+    function updateWorkspaceLinks(status, plan, exhausted) {
       const actions = status.querySelector(".workspace-status-actions");
       if (!actions) return;
       const links = Array.from(
         actions.querySelectorAll(".workspace-status-link"),
       );
       const configs =
-        plan === "premium"
+        plan === "premium" && exhausted
           ? [
               {
-                label: workspaceStatusCopy.actions.continuePremium,
-                href: workspaceStatusHrefs.premium,
+                label: workspaceStatusCopy.actions.buyCredits,
+                href: workspaceStatusHrefs.credits,
                 primary: true,
                 hidden: false,
               },
               {
-                label: workspaceStatusCopy.actions.diagnosis,
-                href: workspaceStatusHrefs.diagnosis,
+                label: workspaceStatusCopy.actions.viewHistory,
+                href: workspaceStatusHrefs.history,
                 primary: false,
                 hidden: false,
               },
-              { hidden: true },
             ]
-          : plan === "pro"
+          : plan === "premium"
             ? [
                 {
-                  label: workspaceStatusCopy.actions.continuePro,
-                  href: workspaceStatusHrefs.pro,
+                  label: workspaceStatusCopy.actions.openFullCatalog,
+                  href: workspaceStatusHrefs.discover,
                   primary: true,
                   hidden: false,
                 },
                 {
-                  label: workspaceStatusCopy.actions.diagnosis,
-                  href: workspaceStatusHrefs.diagnosis,
-                  primary: false,
-                  hidden: false,
-                },
-                {
-                  label: workspaceStatusCopy.actions.learnPremium,
-                  href: workspaceStatusHrefs.pricing,
+                  label: workspaceStatusCopy.actions.viewHistory,
+                  href: workspaceStatusHrefs.history,
                   primary: false,
                   hidden: false,
                 },
               ]
-            : [
-                {
-                  label: workspaceStatusCopy.actions.startFree,
-                  href: workspaceStatusHrefs.free,
-                  primary: true,
-                  hidden: false,
-                },
-                {
-                  label: workspaceStatusCopy.actions.diagnosis,
-                  href: workspaceStatusHrefs.diagnosis,
-                  primary: false,
-                  hidden: false,
-                },
-                {
-                  label: workspaceStatusCopy.actions.upgrade,
-                  href: workspaceStatusHrefs.pricing,
-                  primary: false,
-                  hidden: false,
-                },
-              ];
+            : plan === "pro" && exhausted
+              ? [
+                  {
+                    label: workspaceStatusCopy.actions.learnPremium,
+                    href: workspaceStatusHrefs.pricing,
+                    primary: true,
+                    hidden: false,
+                  },
+                  {
+                    label: workspaceStatusCopy.actions.buyCredits,
+                    href: workspaceStatusHrefs.credits,
+                    primary: false,
+                    hidden: false,
+                  },
+                  {
+                    label: workspaceStatusCopy.actions.viewHistory,
+                    href: workspaceStatusHrefs.history,
+                    primary: false,
+                    hidden: false,
+                  },
+                ]
+              : plan === "pro"
+                ? [
+                    {
+                      label: workspaceStatusCopy.actions.diagnosis,
+                      href: workspaceStatusHrefs.diagnosis,
+                      primary: true,
+                      hidden: false,
+                    },
+                    {
+                      label: workspaceStatusCopy.actions.viewHistory,
+                      href: workspaceStatusHrefs.history,
+                      primary: false,
+                      hidden: false,
+                    },
+                  ]
+                : exhausted
+                  ? [
+                      {
+                        label: workspaceStatusCopy.actions.upgrade,
+                        href: workspaceStatusHrefs.pricing,
+                        primary: true,
+                        hidden: false,
+                      },
+                      {
+                        label: workspaceStatusCopy.actions.browseLooks,
+                        href: workspaceStatusHrefs.discover,
+                        primary: false,
+                        hidden: false,
+                      },
+                    ]
+                  : [
+                      {
+                        label: workspaceStatusCopy.actions.startFree,
+                        href: workspaceStatusHrefs.free,
+                        primary: true,
+                        hidden: false,
+                      },
+                      {
+                        label: workspaceStatusCopy.actions.diagnosis,
+                        href: workspaceStatusHrefs.diagnosis,
+                        primary: false,
+                        hidden: false,
+                      },
+                      {
+                        label: workspaceStatusCopy.actions.upgrade,
+                        href: workspaceStatusHrefs.pricing,
+                        primary: false,
+                        hidden: false,
+                      },
+                    ];
 
       configs.forEach((config, index) => {
         const link = links[index];
@@ -917,6 +974,9 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
         link.classList.toggle("btn-outline", !config.primary);
         link.classList.remove("active");
       });
+      links.slice(configs.length).forEach((link) => {
+        link.hidden = true;
+      });
     }
 
     function renderWorkspaceStatus(session) {
@@ -924,6 +984,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
       const status = document.querySelector(".workspace-status");
       if (!status) return;
       const plan = normalizePlan(session.plan);
+      const exhausted = Number(session?.quota?.remaining) <= 0;
       const planLabel = workspaceStatusCopy.planNames[plan] || plan;
       const planNode = status.querySelector(".workspace-status-plan");
       const title = status.querySelector(".workspace-status-main h1");
@@ -952,7 +1013,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
       status.querySelector(".workspace-status-low")?.remove();
       if (refresh) refresh.textContent = workspaceStatusCopy.notes[plan];
       renderWorkspaceQuota(session.quota);
-      updateWorkspaceLinks(status, plan);
+      updateWorkspaceLinks(status, plan, exhausted);
     }
 
     window.updateQuotaDisplay = renderWorkspaceQuota;
@@ -1004,9 +1065,11 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
         return;
       }
       const copy =
-        state !== "free" && exhausted
-          ? upgradeBannerCopy.exhausted
-          : upgradeBannerCopy[state] || upgradeBannerCopy.free;
+        state === "pro" && exhausted
+          ? upgradeBannerCopy.proExhausted
+          : state === "premium" && exhausted
+            ? upgradeBannerCopy.premiumExhausted
+            : upgradeBannerCopy[state] || upgradeBannerCopy.free;
       const title = upgrade.querySelector("[data-upgrade-title]");
       const desc = upgrade.querySelector("[data-upgrade-desc]");
       const primary = upgrade.querySelector("[data-upgrade-primary]");
@@ -1019,21 +1082,27 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
       if (primary) {
         primary.textContent = copy.primary;
         primary.href =
-          state === "premium" && !exhausted
-            ? upgradeBannerHrefs.premium
-            : state === "pro" && !exhausted
-              ? upgradeBannerHrefs.pro
-              : upgradeBannerHrefs.pricing;
+          state === "premium" && exhausted
+            ? upgradeBannerHrefs.credits
+            : state === "premium" && !exhausted
+              ? upgradeBannerHrefs.premium
+              : state === "pro" && !exhausted
+                ? upgradeBannerHrefs.pro
+                : upgradeBannerHrefs.pricing;
       }
       if (secondary) {
         if (state === "pro" && !exhausted) {
           secondary.hidden = false;
           secondary.textContent = copy.secondary;
           secondary.href = upgradeBannerHrefs.pricing;
-        } else if (state !== "free" && exhausted) {
+        } else if (state === "pro" && exhausted) {
           secondary.hidden = false;
           secondary.textContent = copy.secondary;
-          secondary.href = upgradeBannerHrefs.account;
+          secondary.href = upgradeBannerHrefs.credits;
+        } else if (state === "premium" && exhausted) {
+          secondary.hidden = false;
+          secondary.textContent = copy.secondary;
+          secondary.href = upgradeBannerHrefs.history;
         } else {
           secondary.hidden = true;
         }
@@ -1086,6 +1155,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     });
     if (lastSucceededJobId) activateShareActions(lastSucceededJobId);
     refreshWorkspaceStatus();
+    refreshUpgradeBanner();
 
     const copyBtn = document.getElementById("free-copy-link");
     if (copyBtn) {
