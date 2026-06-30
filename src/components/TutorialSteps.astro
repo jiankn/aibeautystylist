@@ -3,47 +3,51 @@
  * 教程步骤组件：根据用户计划展示不同数量的步骤。
  * Free 用户仅展示前 3 步（后续步骤模糊遮罩），Pro/Premium 展示全部。
  */
-import type { Tutorial } from "../data/tutorials";
+import { getTutorialUiCopy, type Tutorial } from "../data/tutorials";
+import type { AppLocale } from "../i18n/config";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 
 interface Props {
   tutorial: Tutorial;
   userPlan?: "free" | "pro" | "premium";
+  locale: AppLocale;
 }
 
-const { tutorial, userPlan = "free" } = Astro.props;
+const { tutorial, userPlan = "free", locale } = Astro.props;
 const showAll = userPlan !== "free";
 const freeLimit = 3;
+const copy = getTutorialUiCopy(locale);
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const pricingHref = getLocalizedAppHref("/pricing", currentRoute.language.slug);
-
-const regionLabels: Record<string, string> = {
-  base: "底妆",
-  eyes: "眼妆",
-  brows: "眉部",
-  cheeks: "腮红",
-  lips: "唇妆",
-  contour: "修容",
-};
-
-const difficultyLabels: Record<string, string> = {
-  beginner: "新手友好",
-  intermediate: "进阶",
-  advanced: "高阶",
-};
+const formatMessage = (
+  template: string,
+  values: Record<string, string | number>,
+) =>
+  Object.entries(values).reduce(
+    (message, [key, value]) => message.replaceAll(`{${key}}`, String(value)),
+    template,
+  );
 ---
 
-<section class="tutorial-panel">
+<section class="tutorial-panel" aria-label={copy.ariaLabel}>
   <div class="tutorial-header">
     <h2 class="panel-title">{tutorial.title}</h2>
     <div class="tutorial-meta">
       <span class="pill pill-teal"
-        >{difficultyLabels[tutorial.difficulty] || tutorial.difficulty}</span
+        >{copy.difficulties[tutorial.difficulty]}</span
       >
-      <span class="small muted">预计 {tutorial.estimatedMinutes} 分钟</span>
-      <span class="small muted">共 {tutorial.steps.length} 步</span>
+      <span class="small muted">
+        {
+          formatMessage(copy.estimatedMinutes, {
+            minutes: tutorial.estimatedMinutes,
+          })
+        }
+      </span>
+      <span class="small muted">
+        {formatMessage(copy.stepCount, { count: tutorial.steps.length })}
+      </span>
     </div>
   </div>
   <p class="panel-subtitle">{tutorial.description}</p>
@@ -56,23 +60,27 @@ const difficultyLabels: Record<string, string> = {
           <li class:list={["tutorial-step", { locked: isLocked }]}>
             <div class="step-indicator">
               <span class="step-dot">{isLocked ? "Pro" : step.order}</span>
-              <span class="step-region pill">
-                {regionLabels[step.region] || step.region}
-              </span>
+              <span class="step-region pill">{copy.regions[step.region]}</span>
             </div>
             <div class="step-content">
               <h3>{step.title}</h3>
               {isLocked ? (
-                <p class="locked-text">Pro 可查看完整步骤</p>
+                <p class="locked-text">{copy.lockedText}</p>
               ) : (
                 <>
-                  <p class="step-tool">工具：{step.tool}</p>
+                  <p class="step-tool">
+                    {copy.toolLabel}: {step.tool}
+                  </p>
                   <p class="step-action">{step.action}</p>
                   {step.errorWarning && (
-                    <p class="step-warning">提醒：{step.errorWarning}</p>
+                    <p class="step-warning">
+                      {copy.warningLabel}: {step.errorWarning}
+                    </p>
                   )}
                   {step.selfCheck && (
-                    <p class="step-check">✓ 自检：{step.selfCheck}</p>
+                    <p class="step-check">
+                      ✓ {copy.selfCheckLabel}: {step.selfCheck}
+                    </p>
                   )}
                 </>
               )}
@@ -87,10 +95,12 @@ const difficultyLabels: Record<string, string> = {
     !showAll && tutorial.steps.length > freeLimit && (
       <div class="tutorial-upgrade">
         <p>
-          还有 {tutorial.steps.length - freeLimit} 个步骤可在 Pro 以上方案查看
+          {formatMessage(copy.remainingSteps, {
+            count: tutorial.steps.length - freeLimit,
+          })}
         </p>
         <a class="btn btn-primary" href={pricingHref}>
-          查看会员方案
+          {copy.viewPlans}
         </a>
       </div>
     )
