@@ -1,5 +1,7 @@
 import type { APIRoute } from "astro";
 
+import { isAppLocale, getLanguageByLocale } from "../../../i18n/config";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../../i18n/routing";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import { apiError, apiSuccess } from "../../../lib/http";
 import { createProxyFetcher } from "../../../lib/proxyFetch";
@@ -9,13 +11,27 @@ import { getStripeCustomerId } from "../../../lib/subscriptions";
 
 interface PortalBody {
   returnPath?: string;
+  locale?: string;
 }
 
-function safePortalReturnPath(value: unknown): string {
-  if (typeof value !== "string") return "/pricing";
-  if (!value.startsWith("/") || value.startsWith("//")) return "/pricing";
-  if (value.startsWith("/api/") || value === "/api") return "/pricing";
-  return value;
+function safePortalReturnPath(value: unknown, slug: string): string {
+  const fallback = getLocalizedAppHref("/pricing", slug);
+  if (typeof value !== "string") return fallback;
+  if (
+    !value.startsWith("/") ||
+    value.startsWith("//") ||
+    value.startsWith("/api/") ||
+    value === "/api" ||
+    value.includes("\\") ||
+    /[\u0000-\u001f\u007f]/.test(value)
+  ) {
+    return fallback;
+  }
+  const suffixStart = value.search(/[?#]/);
+  const pathname = suffixStart === -1 ? value : value.slice(0, suffixStart);
+  const suffix = suffixStart === -1 ? "" : value.slice(suffixStart);
+  const route = resolveLocaleRoute(pathname);
+  return getLocalizedAppHref(route.routePathname + suffix, slug);
 }
 
 export const POST: APIRoute = async ({ cookies, request }) => {
@@ -46,10 +62,19 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     );
   }
 
+  const appLocale =
+    body?.locale && isAppLocale(body.locale)
+      ? body.locale
+      : cookies.get("abs_locale")?.value && isAppLocale(cookies.get("abs_locale")!.value)
+        ? cookies.get("abs_locale")!.value
+        : undefined;
+  const language = getLanguageByLocale(appLocale);
+  const slug = language?.slug ?? "en";
+
   const baseUrl = (
     bindings.APP_PUBLIC_URL ?? new URL(request.url).origin
   ).replace(/\/+$/, "");
-  const returnPath = safePortalReturnPath(body?.returnPath);
+  const returnPath = safePortalReturnPath(body?.returnPath, slug);
   const stripe = createStripeClient({
     apiKey: bindings.STRIPE_SECRET_KEY,
     fetcher: bindings.OUTBOUND_PROXY_URL

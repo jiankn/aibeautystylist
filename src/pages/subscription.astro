@@ -649,7 +649,7 @@ const planMeta = Object.fromEntries(
   </main>
   {isLoggedIn && <MobileBottomNav active="account" />}
 
-  <script is:inline define:vars={{ copy, planMeta, hrefs }}>
+  <script is:inline define:vars={{ copy, planMeta, hrefs, locale }}>
     (() => {
       const root = document.querySelector("[data-subscription]");
       if (!root) return;
@@ -783,7 +783,7 @@ const planMeta = Object.fromEntries(
           const res = await fetch("/api/billing/portal", {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ returnPath: window.location.pathname }),
+            body: JSON.stringify({ returnPath: window.location.pathname, locale }),
           });
           const body = await res.json().catch(() => null);
           if (body?.ok && body.data?.url) {

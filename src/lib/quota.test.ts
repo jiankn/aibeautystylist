@@ -4,6 +4,7 @@ import {
   getNextUtcMonthStart,
   getQuotaSnapshot,
   getUtcMonthStart,
+  grantCreditPack,
   grantShareReward,
   refundQuota,
   reserveQuota,
@@ -190,6 +191,113 @@ describe("quota ledger", () => {
       periodStart: "2026-07-18T00:00:00.000Z",
       nextRefreshAt: "2026-08-18T00:00:00.000Z",
     });
+  });
+
+  it("credit pack credits persist across billing periods", async () => {
+    const period1 = {
+      start: "2026-06-01T00:00:00.000Z",
+      end: "2026-07-01T00:00:00.000Z",
+    };
+    // 在周期1购买额度包
+    await grantCreditPack({
+      userId: "pack_user",
+      checkoutSessionId: "cs_pack_1",
+      credits: 20,
+      now: new Date("2026-06-15T00:00:00.000Z"),
+      monthlyQuota: 70,
+      quotaPeriod: period1,
+    });
+
+    // 周期1结束前，额度包 20 + 月度 70 = 90
+    await expect(
+      getQuotaSnapshot(
+        "pack_user",
+        undefined,
+        new Date("2026-06-20T00:00:00.000Z"),
+        70,
+        period1,
+      ),
+    ).resolves.toMatchObject({
+      remaining: 90,
+      packRemaining: 20,
+    });
+
+    // 进入周期2：月度额度重置为 70，额度包仍有 20
+    const period2 = {
+      start: "2026-07-01T00:00:00.000Z",
+      end: "2026-08-01T00:00:00.000Z",
+    };
+    await expect(
+      getQuotaSnapshot(
+        "pack_user",
+        undefined,
+        new Date("2026-07-05T00:00:00.000Z"),
+        70,
+        period2,
+      ),
+    ).resolves.toMatchObject({
+      remaining: 90,
+      packRemaining: 20,
+    });
+  });
+
+  it("consumes monthly credits before pack credits", async () => {
+    // 月度额度 = 3（Free 用户），先购买额度包
+    await grantCreditPack({
+      userId: "order_user",
+      checkoutSessionId: "cs_order_1",
+      credits: 5,
+      now,
+      monthlyQuota: 3,
+    });
+
+    // 总额度 = 3 + 5 = 8
+    const snap0 = await getQuotaSnapshot("order_user", undefined, now);
+    expect(snap0.remaining).toBe(8);
+    expect(snap0.packRemaining).toBe(5);
+
+    // 消耗 1、2、3 次 → 应先消耗月度额度
+    await reserveQuota("order_user", "j1", "r1", undefined, now);
+    await reserveQuota("order_user", "j2", "r2", undefined, now);
+    await reserveQuota("order_user", "j3", "r3", undefined, now);
+
+    const snap3 = await getQuotaSnapshot("order_user", undefined, now);
+    expect(snap3.remaining).toBe(5);
+    expect(snap3.packRemaining).toBe(5); // 额度包未动
+
+    // 消耗第 4 次 → 月度已耗尽，应消耗额度包
+    await reserveQuota("order_user", "j4", "r4", undefined, now);
+
+    const snap4 = await getQuotaSnapshot("order_user", undefined, now);
+    expect(snap4.remaining).toBe(4);
+    expect(snap4.packRemaining).toBe(4); // 额度包减 1
+  });
+
+  it("refunds pack credits back to the pack pool", async () => {
+    await grantCreditPack({
+      userId: "refund_user",
+      checkoutSessionId: "cs_refund_1",
+      credits: 5,
+      now,
+      monthlyQuota: 3,
+    });
+
+    // 用完月度 3 次
+    await reserveQuota("refund_user", "j1", "r1", undefined, now);
+    await reserveQuota("refund_user", "j2", "r2", undefined, now);
+    await reserveQuota("refund_user", "j3", "r3", undefined, now);
+    // 消耗 1 次额度包
+    await reserveQuota("refund_user", "j4", "r4", undefined, now);
+
+    const beforeRefund = await getQuotaSnapshot("refund_user", undefined, now);
+    expect(beforeRefund.packRemaining).toBe(4);
+
+    // 退还 j4（额度包消耗的那次）→ 应退回额度包
+    await refundQuota("refund_user", "j4", undefined, now);
+
+    const afterRefund = await getQuotaSnapshot("refund_user", undefined, now);
+    expect(afterRefund.packRemaining).toBe(5);
+    expect(afterRefund.remaining).toBe(5); // 月度仍为 0 + 额度包 5
   });
 });
 

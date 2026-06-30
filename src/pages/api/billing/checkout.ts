@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 
-import { isAppLocale } from "../../../i18n/config";
+import { isAppLocale, getLanguageByLocale } from "../../../i18n/config";
 import { resolveLocaleRoute } from "../../../i18n/routing";
 import { getAccountByUserId } from "../../../lib/accounts";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
@@ -64,10 +64,11 @@ function safeProrationDate(
 function buildPortalReturnUrl(input: {
   baseUrl: string;
   pricingPath?: string | null;
+  languageSlug?: string;
 }): string {
   const base = new URL(input.baseUrl);
   return new URL(
-    safeCheckoutPricingPath(input.pricingPath),
+    safeCheckoutPricingPath(input.pricingPath, input.languageSlug),
     base.origin,
   ).toString();
 }
@@ -173,6 +174,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     cookieLocale: cookies.get("abs_locale")?.value,
     localsLocale: locals.audienceContext?.locale,
   });
+  const languageSlug = getLanguageByLocale(appLocale)?.slug ?? "en";
   const stripeLocale = toStripeCheckoutLocale(appLocale);
   const stripe = createStripeClient({
     apiKey: bindings.STRIPE_SECRET_KEY,
@@ -192,6 +194,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     const portalReturnUrl = buildPortalReturnUrl({
       baseUrl,
       pricingPath: body?.pricingPath,
+      languageSlug,
     });
     const openPortal = async () =>
       customerId
@@ -272,6 +275,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
           pricingPath: body?.pricingPath,
           status: "success",
           returnTo: body?.returnTo,
+          languageSlug,
         }),
       ),
       cancelUrl: buildCheckoutStatusUrl({
@@ -279,6 +283,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
         pricingPath: body?.pricingPath,
         status: "cancel",
         returnTo: body?.returnTo,
+        languageSlug,
       }),
       clientReferenceId: userId,
       customerId,

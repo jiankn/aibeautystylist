@@ -9,6 +9,8 @@ export interface QuotaSnapshot {
   used: number;
   periodStart: string;
   nextRefreshAt: string;
+  /** 额度包剩余额度（会员期间持续有效，不随计费周期重置） */
+  packRemaining: number;
 }
 
 export interface QuotaPeriodInput {
@@ -48,8 +50,10 @@ export interface CreditPackGrant {
 }
 
 interface UsageBalanceRow {
-  balance_change: number | string | null;
-  bonus_credits: number | string | null;
+  monthly_balance: number | string | null;
+  share_bonus: number | string | null;
+  pack_balance: number | string | null;
+  pack_granted: number | string | null;
 }
 
 interface ExistingUsageRow {
@@ -59,11 +63,15 @@ interface ExistingUsageRow {
 interface MockUsageRecord {
   amount: number;
   type: string;
+  jobId: string;
   idempotencyKey: string;
   occurredAt: string;
 }
 
 const mockUsage = new Map<string, MockUsageRecord[]>();
+
+/** 额度包相关的 usage 类型集合 */
+const PACK_TYPES = new Set(["credit_pack", "reserve_pack", "refund_pack"]);
 
 export async function getQuotaSnapshot(
   userId: string,
@@ -73,41 +81,53 @@ export async function getQuotaSnapshot(
   quotaPeriod?: QuotaPeriodInput,
 ): Promise<QuotaSnapshot> {
   const { periodStart, nextRefreshAt } = resolveQuotaPeriod(now, quotaPeriod);
-  let balanceChange = 0;
-  let bonusCredits = 0;
+  let monthlyBalance = 0;
+  let shareBonus = 0;
+  let packBalance = 0;
+  let packGranted = 0;
 
   if (DB) {
+    // 月度记录按当前周期筛选，额度包记录不限周期（会员期间持续有效）
     const row = await DB.prepare(
-      "SELECT COALESCE(SUM(amount), 0) AS balance_change, COALESCE(SUM(CASE WHEN type IN ('share_reward', 'credit_pack') THEN amount ELSE 0 END), 0) AS bonus_credits FROM usage_records WHERE user_id = ? AND occurred_at >= ?",
+      `SELECT
+        COALESCE(SUM(CASE WHEN type NOT IN ('credit_pack','reserve_pack','refund_pack') AND occurred_at >= ? THEN amount ELSE 0 END), 0) AS monthly_balance,
+        COALESCE(SUM(CASE WHEN type = 'share_reward' AND occurred_at >= ? THEN amount ELSE 0 END), 0) AS share_bonus,
+        COALESCE(SUM(CASE WHEN type IN ('credit_pack','reserve_pack','refund_pack') THEN amount ELSE 0 END), 0) AS pack_balance,
+        COALESCE(SUM(CASE WHEN type = 'credit_pack' THEN amount ELSE 0 END), 0) AS pack_granted
+      FROM usage_records WHERE user_id = ?`,
     )
-      .bind(userId, periodStart)
+      .bind(periodStart, periodStart, userId)
       .first<UsageBalanceRow>();
-    balanceChange = Number(row?.balance_change ?? 0);
-    bonusCredits = Number(row?.bonus_credits ?? 0);
+    monthlyBalance = Number(row?.monthly_balance ?? 0);
+    shareBonus = Number(row?.share_bonus ?? 0);
+    packBalance = Number(row?.pack_balance ?? 0);
+    packGranted = Number(row?.pack_granted ?? 0);
   } else {
-    const periodRecords = (mockUsage.get(userId) ?? []).filter(
-      (record) => record.occurredAt >= periodStart,
-    );
-    balanceChange = periodRecords.reduce(
-      (total, record) => total + record.amount,
-      0,
-    );
-    bonusCredits = periodRecords
-      .filter(
-        (record) =>
-          record.type === "share_reward" || record.type === "credit_pack",
-      )
-      .reduce((total, record) => total + record.amount, 0);
+    const allRecords = mockUsage.get(userId) ?? [];
+    for (const record of allRecords) {
+      if (PACK_TYPES.has(record.type)) {
+        // 额度包记录：不限周期
+        packBalance += record.amount;
+        if (record.type === "credit_pack") packGranted += record.amount;
+      } else if (record.occurredAt >= periodStart) {
+        // 月度记录：当前周期内
+        monthlyBalance += record.amount;
+        if (record.type === "share_reward") shareBonus += record.amount;
+      }
+    }
   }
 
-  const remaining = Math.max(0, monthlyQuota + balanceChange);
-  const total = monthlyQuota + Math.max(0, bonusCredits);
+  const monthlyRemaining = Math.max(0, monthlyQuota + monthlyBalance);
+  const packRemaining = Math.max(0, packBalance);
+  const remaining = monthlyRemaining + packRemaining;
+  const total = monthlyQuota + Math.max(0, shareBonus) + Math.max(0, packGranted);
   return {
     remaining,
     total,
     used: Math.max(0, total - remaining),
     periodStart,
     nextRefreshAt,
+    packRemaining,
   };
 }
 
@@ -122,7 +142,12 @@ export async function reserveQuota(
 ): Promise<QuotaReservation> {
   const usageKey = `reserve:${userId}:${idempotencyKey}`;
 
-  if (await hasUsageRecord(userId, usageKey, DB)) {
+  // 幂等检查：同一 reserve key 下的额度包变体也算重复
+  const packUsageKey = `reserve_pack:${userId}:${idempotencyKey}`;
+  if (
+    (await hasUsageRecord(userId, usageKey, DB)) ||
+    (await hasUsageRecord(userId, packUsageKey, DB))
+  ) {
     return {
       reserved: false,
       duplicate: true,
@@ -147,7 +172,21 @@ export async function reserveQuota(
     return { reserved: false, duplicate: false, snapshot: before };
   }
 
-  await appendUsageRecord(userId, jobId, "reserve", -1, usageKey, DB, now);
+  // 先消耗月度额度；月度用完后再消耗额度包额度
+  const monthlyRemaining = before.remaining - before.packRemaining;
+  if (monthlyRemaining > 0) {
+    await appendUsageRecord(userId, jobId, "reserve", -1, usageKey, DB, now);
+  } else {
+    await appendUsageRecord(
+      userId,
+      jobId,
+      "reserve_pack",
+      -1,
+      packUsageKey,
+      DB,
+      now,
+    );
+  }
   return {
     reserved: true,
     duplicate: false,
@@ -170,8 +209,26 @@ export async function refundQuota(
   quotaPeriod?: QuotaPeriodInput,
 ): Promise<QuotaSnapshot> {
   const usageKey = `refund:${userId}:${jobId}`;
-  if (!(await hasUsageRecord(userId, usageKey, DB))) {
-    await appendUsageRecord(userId, jobId, "refund", 1, usageKey, DB, now);
+  const packUsageKey = `refund_pack:${userId}:${jobId}`;
+  if (
+    !(await hasUsageRecord(userId, usageKey, DB)) &&
+    !(await hasUsageRecord(userId, packUsageKey, DB))
+  ) {
+    // 查找原始 reserve 记录类型，决定退回到哪个池
+    const wasPackReserve = await hasOriginalPackReserve(userId, jobId, DB);
+    if (wasPackReserve) {
+      await appendUsageRecord(
+        userId,
+        jobId,
+        "refund_pack",
+        1,
+        packUsageKey,
+        DB,
+        now,
+      );
+    } else {
+      await appendUsageRecord(userId, jobId, "refund", 1, usageKey, DB, now);
+    }
   }
   return getQuotaSnapshot(userId, DB, now, monthlyQuota, quotaPeriod);
 }
@@ -456,10 +513,19 @@ async function hasUsageRecord(
   );
 }
 
+type UsageRecordType =
+  | "reserve"
+  | "reserve_pack"
+  | "refund"
+  | "refund_pack"
+  | "share_reward"
+  | "plan_reset"
+  | "credit_pack";
+
 async function appendUsageRecord(
   userId: string,
   jobId: string,
-  type: "reserve" | "refund" | "share_reward" | "plan_reset" | "credit_pack",
+  type: UsageRecordType,
   amount: number,
   idempotencyKey: string,
   DB?: D1DatabaseLike,
@@ -497,7 +563,26 @@ async function appendUsageRecord(
   ) {
     return false;
   }
-  records.push({ amount, type, idempotencyKey, occurredAt });
+  records.push({ amount, type, jobId, idempotencyKey, occurredAt });
   mockUsage.set(userId, records);
   return true;
+}
+
+/** 检查指定 jobId 的原始预留是否消耗了额度包额度 */
+async function hasOriginalPackReserve(
+  userId: string,
+  jobId: string,
+  DB?: D1DatabaseLike,
+): Promise<boolean> {
+  if (DB) {
+    const row = await DB.prepare(
+      "SELECT id FROM usage_records WHERE user_id = ? AND job_id = ? AND type = 'reserve_pack' LIMIT 1",
+    )
+      .bind(userId, jobId)
+      .first<ExistingUsageRow>();
+    return Boolean(row);
+  }
+  return (mockUsage.get(userId) ?? []).some(
+    (record) => record.type === "reserve_pack" && record.jobId === jobId,
+  );
 }

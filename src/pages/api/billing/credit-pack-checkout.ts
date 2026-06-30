@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 
-import { isAppLocale } from "../../../i18n/config";
+import { isAppLocale, getLanguageByLocale } from "../../../i18n/config";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../../i18n/routing";
 import { getAccountByUserId } from "../../../lib/accounts";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import {
@@ -71,20 +72,30 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     );
   }
 
-  const baseUrl = bindings.APP_PUBLIC_URL ?? new URL(request.url).origin;
+  const appLocale =
+    body?.locale && isAppLocale(body.locale) ? body.locale : undefined;
+  const language = getLanguageByLocale(appLocale);
+  const slug = language?.slug ?? "en";
+
   const returnPath = safeInternalPath(body?.returnTo) ?? "/tryon";
-  const successUrl = new URL(returnPath, baseUrl);
+  const suffixStart = returnPath.search(/[?#]/);
+  const rawPathname = suffixStart === -1 ? returnPath : returnPath.slice(0, suffixStart);
+  const suffix = suffixStart === -1 ? "" : returnPath.slice(suffixStart);
+
+  const route = resolveLocaleRoute(rawPathname);
+  const localizedReturnPath = getLocalizedAppHref(route.routePathname + suffix, slug);
+
+  const baseUrl = bindings.APP_PUBLIC_URL ?? new URL(request.url).origin;
+  const successUrl = new URL(localizedReturnPath, baseUrl);
   successUrl.searchParams.set("credit_pack", "success");
   successUrl.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
-  const cancelUrl = new URL(returnPath, baseUrl);
+  const cancelUrl = new URL(localizedReturnPath, baseUrl);
   cancelUrl.searchParams.set("credit_pack", "cancel");
 
   const account = bindings.DB
     ? await getAccountByUserId(auth.user.id, bindings.DB)
     : undefined;
   const customerId = await getStripeCustomerId(auth.user.id, bindings.DB);
-  const appLocale =
-    body?.locale && isAppLocale(body.locale) ? body.locale : undefined;
   const pack = CREDIT_PACKS[body.packCode];
   const stripe = createStripeClient({
     apiKey: bindings.STRIPE_SECRET_KEY,

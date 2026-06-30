@@ -61,4 +61,28 @@ describe("checkout redirect helpers", () => {
       "https://aibeautystylist.com/ja/pricing?checkout=cancel&return_to=%2Fja%2Fdiagnosis",
     );
   });
+
+  it("enforces languageSlug if provided", () => {
+    // 1. safeCheckoutPricingPath with languageSlug
+    expect(safeCheckoutPricingPath(undefined, "zh-cn")).toBe("/zh-cn/pricing");
+    expect(safeCheckoutPricingPath("/pricing", "ja")).toBe("/ja/pricing");
+    expect(safeCheckoutPricingPath("/zh-cn/pricing?foo=bar", "ja")).toBe("/ja/pricing?foo=bar");
+
+    // 2. safeCheckoutReturnPath with languageSlug
+    expect(safeCheckoutReturnPath("/tryon", "zh-cn")).toBe("/zh-cn/tryon");
+    expect(safeCheckoutReturnPath("/ja/tryon?x=1", "zh-cn")).toBe("/zh-cn/tryon?x=1");
+
+    // 3. buildCheckoutStatusUrl with languageSlug
+    expect(
+      buildCheckoutStatusUrl({
+        baseUrl: "https://aibeautystylist.com",
+        pricingPath: undefined,
+        status: "success",
+        returnTo: "/tryon",
+        languageSlug: "ja",
+      }),
+    ).toBe(
+      "https://aibeautystylist.com/ja/pricing?checkout=success&return_to=%2Fja%2Ftryon",
+    );
+  });
 });
