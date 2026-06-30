@@ -209,6 +209,7 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
       new URLSearchParams(location.search).get("checkout") === "success";
     const delay = (ms) =>
       new Promise((resolve) => window.setTimeout(resolve, ms));
+    let currentSession = null;
 
     function setAuthLabel(anchor) {
       const desktopLabel = anchor.querySelector(".auth-entry-label-desktop");
@@ -235,6 +236,31 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
         code: normalizedPlan,
         label: planNames[normalizedPlan] || String(rawPlan || "Free"),
       };
+    }
+
+    function setAvatarContent(node, avatarUrl, fallback) {
+      if (!node) return;
+      node.replaceChildren();
+      if (!avatarUrl) {
+        node.textContent = fallback;
+        return;
+      }
+      const image = document.createElement("img");
+      image.className = "account-avatar-image";
+      image.src = avatarUrl;
+      image.alt = "";
+      image.width = 64;
+      image.height = 64;
+      image.decoding = "async";
+      image.addEventListener(
+        "error",
+        () => {
+          node.replaceChildren();
+          node.textContent = fallback;
+        },
+        { once: true },
+      );
+      node.append(image);
     }
 
     function createPlanBadge(planState) {
@@ -330,7 +356,7 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
           ? `${planLabel}: ${plan} · ${quotaText}`
           : `${planLabel}: ${plan}`;
         summary.href = summary.dataset.accountHref || localized("/dashboard");
-        if (avatar) avatar.textContent = initial;
+        setAvatarContent(avatar, session?.user?.avatarUrl, initial);
         if (title) title.textContent = email || authCopy.accountMenu;
         if (note) {
           note.classList.add("mobile-account-plan-line");
@@ -386,7 +412,7 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
         if (label) label.textContent = plan;
         else anchor.textContent = plan;
         if (avatar) {
-          avatar.textContent = initial;
+          setAvatarContent(avatar, session?.user?.avatarUrl, initial);
           avatar.removeAttribute("hidden");
         }
         anchor.setAttribute(
@@ -400,7 +426,7 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
         const avatar = anchor.querySelector("[data-mobile-top-avatar]");
         anchor.href = anchor.dataset.accountHref || localized("/dashboard");
         if (label) label.textContent = plan;
-        if (avatar) avatar.textContent = initial;
+        setAvatarContent(avatar, session?.user?.avatarUrl, initial);
         anchor.setAttribute(
           "aria-label",
           `${authCopy.accountMenu}: ${email}. ${authCopy.plan}: ${plan}`,
@@ -457,7 +483,7 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
       const avatar = document.createElement("span");
       avatar.className = "account-avatar";
       avatar.setAttribute("aria-hidden", "true");
-      avatar.textContent = initial;
+      setAvatarContent(avatar, session?.user?.avatarUrl, initial);
 
       trigger.append(avatar);
 
@@ -567,6 +593,7 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
           const data = body?.data;
           const email = data?.user?.email;
           if (email) {
+            currentSession = data;
             renderAccountMenu(link, data);
             setMobileAuthSignedIn(data);
           } else {
@@ -577,6 +604,19 @@ const initialLoggedIn = Boolean(Astro.locals.isLoggedIn);
         })
         .catch(() => {});
     };
+
+    document.addEventListener("profile-avatar-updated", (event) => {
+      const avatarUrl = event.detail?.avatarUrl;
+      if (!avatarUrl || !currentSession?.user) return;
+      currentSession.user.avatarUrl = avatarUrl;
+      const email = currentSession.user.email || "";
+      const initial = (email.trim()[0] || "A").toUpperCase();
+      document
+        .querySelectorAll(
+          ".account-avatar, [data-mobile-menu-auth-avatar], [data-mobile-account-summary-avatar], [data-mobile-top-avatar]",
+        )
+        .forEach((avatar) => setAvatarContent(avatar, avatarUrl, initial));
+    });
 
     // SSR already knows whether this request has a valid session. Anonymous
     // pages do not need a second session lookup after load.

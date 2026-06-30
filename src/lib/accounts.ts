@@ -6,6 +6,8 @@ export interface AuthAccount {
   emailVerifiedAt?: string;
   passwordHash?: string;
   passwordSalt?: string;
+  avatarR2Key?: string;
+  avatarUpdatedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,9 +18,14 @@ interface AuthAccountRow {
   email_verified_at: string | null;
   password_hash: string | null;
   password_salt: string | null;
+  avatar_r2_key: string | null;
+  avatar_updated_at: string | null;
   created_at: string;
   updated_at: string;
 }
+
+const ACCOUNT_COLUMNS =
+  "user_id, email, email_verified_at, password_hash, password_salt, avatar_r2_key, avatar_updated_at, created_at, updated_at";
 
 export type TokenPurpose = "email_verify" | "password_reset";
 
@@ -31,7 +38,7 @@ export async function getAccountByEmail(
   DB: D1DatabaseLike,
 ): Promise<AuthAccount | undefined> {
   const row = await DB.prepare(
-    "SELECT user_id, email, email_verified_at, password_hash, password_salt, created_at, updated_at FROM auth_accounts WHERE email = ?",
+    `SELECT ${ACCOUNT_COLUMNS} FROM auth_accounts WHERE email = ?`,
   )
     .bind(normalizeEmail(email))
     .first<AuthAccountRow>();
@@ -43,7 +50,7 @@ export async function getAccountByUserId(
   DB: D1DatabaseLike,
 ): Promise<AuthAccount | undefined> {
   const row = await DB.prepare(
-    "SELECT user_id, email, email_verified_at, password_hash, password_salt, created_at, updated_at FROM auth_accounts WHERE user_id = ?",
+    `SELECT ${ACCOUNT_COLUMNS} FROM auth_accounts WHERE user_id = ?`,
   )
     .bind(userId)
     .first<AuthAccountRow>();
@@ -122,6 +129,21 @@ export async function markEmailVerified(
     .run();
 }
 
+export async function setAccountAvatar(
+  userId: string,
+  avatarR2Key: string,
+  DB: D1DatabaseLike,
+  now = new Date(),
+): Promise<string> {
+  const timestamp = now.toISOString();
+  await DB.prepare(
+    "UPDATE auth_accounts SET avatar_r2_key = ?, avatar_updated_at = ?, updated_at = ? WHERE user_id = ?",
+  )
+    .bind(avatarR2Key, timestamp, timestamp, userId)
+    .run();
+  return timestamp;
+}
+
 export interface OAuthIdentity {
   userId: string;
   provider: string;
@@ -180,6 +202,8 @@ function fromRow(row: AuthAccountRow): AuthAccount {
     emailVerifiedAt: row.email_verified_at ?? undefined,
     passwordHash: row.password_hash ?? undefined,
     passwordSalt: row.password_salt ?? undefined,
+    avatarR2Key: row.avatar_r2_key ?? undefined,
+    avatarUpdatedAt: row.avatar_updated_at ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };

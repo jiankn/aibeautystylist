@@ -20,6 +20,10 @@ export const GET: APIRoute = async ({ cookies }) => {
       id: user.id,
       kind: user.authenticated ? "account" : "anonymous",
       email: account?.email,
+      avatarUrl:
+        account?.avatarR2Key && account.avatarUpdatedAt
+          ? `/api/profile/avatar?v=${encodeURIComponent(account.avatarUpdatedAt)}`
+          : undefined,
     },
     plan: plan.planCode,
     subscription:
