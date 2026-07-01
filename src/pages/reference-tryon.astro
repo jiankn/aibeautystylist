@@ -1287,7 +1287,7 @@ const hrefs = {
     width: min(calc(100% - 2rem), 1080px);
     min-height: 72vh;
     margin: 0 auto;
-    padding: 3rem 0 6rem;
+    padding: clamp(4rem, 6vw, 6rem) 0 6rem;
     overflow: hidden;
   }
   .rt-glow {
@@ -1998,7 +1998,7 @@ const hrefs = {
   @media (max-width: 760px) {
     .reference-tryon-main {
       width: min(calc(100% - 1.25rem), 620px);
-      padding-top: 1.5rem;
+      padding-top: 2.5rem;
     }
     .rt-glow {
       width: 260px;
