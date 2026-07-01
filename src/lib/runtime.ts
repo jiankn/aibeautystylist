@@ -39,6 +39,7 @@ export interface RuntimeBindings {
   GEMINI_MODEL?: string;
   GEMINI_MODEL_FREE?: string;
   GEMINI_IMAGE_MODEL?: string;
+  GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL?: string;
   GEMINI_TIMEOUT_MS?: string;
   GEMINI_IMAGE_TIMEOUT_MS?: string;
   GEMINI_THINKING_LEVEL?: string;

@@ -261,7 +261,8 @@ describe("createTryOnJob", () => {
       TRYON_PROVIDER: "gemini",
       IMAGE_PROVIDER: "evolink",
       GEMINI_API_KEY: "secret",
-      GEMINI_IMAGE_MODEL: "gemini-image-test",
+      GEMINI_IMAGE_MODEL: "gemini-2.5-flash-image",
+      GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL: "gemini-3.1-flash-image",
       EVOLINK_API_KEY: "evolink-secret",
       USER_UPLOADS: bucket,
     };
@@ -291,6 +292,7 @@ describe("createTryOnJob", () => {
     expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
     expect(generateGeminiMakeupImage).toHaveBeenCalledWith(
       expect.objectContaining({
+        model: "gemini-3.1-flash-image",
         prompt: expect.stringContaining(
           "output must visibly change the selfie's makeup",
         ),
@@ -706,6 +708,9 @@ describe("createTryOnJob", () => {
     ).resolves.toBeUndefined();
     expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
     expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
+    expect(generateGeminiMakeupImage).toHaveBeenCalledWith(
+      expect.objectContaining({ model: "gemini-2.5-flash-image" }),
+    );
   });
 
   it("generates an Evolink makeup image and stores the private result in R2", async () => {

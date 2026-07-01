@@ -522,7 +522,12 @@ async function runGeminiImageTryOnJob(options: {
         model:
           options.bindings.IMAGE_PROVIDER === "evolink"
             ? (options.bindings.EVOLINK_IMAGE_MODEL ?? "wan2.5-image-to-image")
-            : (options.bindings.GEMINI_IMAGE_MODEL ?? "gemini-2.5-flash-image"),
+            : options.job.lookSource === "private-template"
+              ? (options.bindings.GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL ??
+                options.bindings.GEMINI_IMAGE_MODEL ??
+                "gemini-2.5-flash-image")
+              : (options.bindings.GEMINI_IMAGE_MODEL ??
+                "gemini-2.5-flash-image"),
         status: "failed",
         durationMs: Date.now() - new Date(currentJob.updatedAt).getTime(),
         errorCode,
@@ -977,7 +982,9 @@ async function completePrivateImageStageWithGemini(options: {
     options.bindings.GEMINI_MODEL_FREE ??
     "gemini-2.5-flash";
   const imageModel =
-    options.bindings.GEMINI_IMAGE_MODEL ?? "gemini-2.5-flash-image";
+    options.bindings.GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL ??
+    options.bindings.GEMINI_IMAGE_MODEL ??
+    "gemini-2.5-flash-image";
   const referenceSha256 =
     options.privateTemplate.referenceSha256 ??
     (await sha256Hex(options.referenceData));
