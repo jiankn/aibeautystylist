@@ -133,7 +133,7 @@
 | `POST /api/uploads` | 校验并私有上传自拍 | 必须先有有效同意 |
 | `DELETE /api/uploads/:id` | 删除原图 | 仅资源所有者 |
 | `POST /api/internal/cleanup/uploads` | 清理过期原图并记录审计 | 仅持有 `CLEANUP_SECRET` 的内部调度任务 |
-| `POST /api/tryon-jobs` | 创建诊断与试妆任务 | 权限、额度、幂等校验 |
+| `POST /api/tryon-jobs` | 创建诊断与试妆任务 | 权限、额度、幂等校验；幂等键绑定自拍、妆容来源和任务用途，不允许跨请求重放 |
 | `GET /api/tryon-jobs/:id` | 查询任务状态和结果 | 仅资源所有者 |
 | `GET /api/tryon-jobs/:id/result` | 读取私有 AI 妆效结果图 | 仅资源所有者，静态参考图不走此接口 |
 | `POST /api/tryon-jobs/:id/cancel` | 取消运行中任务 | 仅资源所有者 |
@@ -146,10 +146,10 @@
 | `POST /api/share-cards` | 创建分享卡 | 必须拥有成功结果 |
 | `POST /api/shares/intent` | 创建分享领奖凭证 | Free 用户、本人成功任务、分享动作确认后调用 |
 | `POST /api/shares/reward` | 发放分享奖励 | Free 用户、每日幂等、必须携带未过期分享凭证 |
-| `GET/POST /api/private-look-templates` | 列出或创建私有参考妆容 | 登录且 Premium；上传文件必须为压缩后的 WebP |
+| `GET/POST /api/private-look-templates` | 列出或创建私有参考妆容 | 登录且 Premium；上传文件必须为压缩后的 WebP；返回结构化妆容解析状态 |
 | `GET /api/private-look-templates/:id/image` | 读取私有参考图 | Premium 且资源归当前用户所有 |
 | `DELETE /api/private-look-templates/:id` | 删除私有参考模板和对象 | Premium 且资源归当前用户所有 |
-| `POST /api/tryon-jobs`（`privateTemplateId`） | 创建参考图试妆 | Premium；模板和自拍必须归当前用户所有 |
+| `POST /api/tryon-jobs`（`privateTemplateId`） | 创建参考图试妆 | Premium；模板和自拍必须归当前用户所有；生成结果须通过妆容一致性检查，最多自动纠偏重试一次 |
 | `POST /api/billing/checkout` | 创建 Checkout | 登录用户，成功 URL 带 `session_id={CHECKOUT_SESSION_ID}` |
 | `POST /api/billing/sync-checkout` | 回跳后主动同步 Checkout Session | 登录用户，校验 session 属于当前账户 |
 | `POST /api/billing/credit-pack-checkout` | 创建一次性额度包 Checkout | 有效 Pro / Premium，服务端决定价格和额度 |

@@ -8,6 +8,7 @@ import {
   privateTemplateToLook,
   resetMockPrivateLookTemplates,
   savePrivateLookTemplate,
+  updatePrivateLookTemplateMakeupSpec,
   type PrivateLookTemplate,
 } from "./privateLookTemplates";
 
@@ -72,5 +73,41 @@ describe("private look templates", () => {
       image: "/api/private-look-templates/template_1/image",
     });
     expect(JSON.stringify(look)).not.toContain(template.r2Key);
+  });
+
+  it("caches the structured makeup specification for later reuse", async () => {
+    await savePrivateLookTemplate(template);
+    const area = {
+      colors: ["silver"],
+      placement: ["mobile lid"],
+      finish: ["wet-look"],
+      intensity: "strong" as const,
+    };
+    await updatePrivateLookTemplateMakeupSpec("user_1", template.id, {
+      status: "ready",
+      referenceSha256: "abc123",
+      spec: {
+        schemaVersion: "1.0.0",
+        summary: "Reflective silver lid",
+        focalAreas: ["eyes"],
+        base: area,
+        eyes: area,
+        brows: area,
+        cheeks: area,
+        lips: area,
+        contourHighlight: area,
+        mustMatch: ["wet-look lid"],
+        mustAvoid: ["matte brown shadow"],
+      },
+    });
+
+    await expect(
+      getOwnedPrivateLookTemplate("user_1", template.id),
+    ).resolves.toMatchObject({
+      referenceSha256: "abc123",
+      makeupSpecStatus: "ready",
+      makeupSpecVersion: "1.0.0",
+      makeupSpec: { summary: "Reflective silver lid" },
+    });
   });
 });

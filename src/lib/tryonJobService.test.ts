@@ -18,6 +18,16 @@ import {
   generateGeminiDiagnosis,
 } from "./geminiDiagnosis";
 import { GeminiImageError, generateGeminiMakeupImage } from "./geminiImage";
+import {
+  analyzeMakeupReference,
+  evaluateMakeupTransfer,
+} from "./geminiMakeupTransfer";
+import {
+  MAKEUP_REFERENCE_SPEC_VERSION,
+  MAKEUP_TRANSFER_QUALITY_VERSION,
+  type MakeupReferenceSpec,
+  type MakeupTransferQuality,
+} from "./makeupTransfer";
 import { getStoredJobById, resetMockJobs } from "./jobs";
 import {
   privateTemplateToLook,
@@ -58,6 +68,16 @@ vi.mock("./geminiImage", async (importOriginal) => {
   };
 });
 
+vi.mock("./geminiMakeupTransfer", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("./geminiMakeupTransfer")>();
+  return {
+    ...actual,
+    analyzeMakeupReference: vi.fn(),
+    evaluateMakeupTransfer: vi.fn(),
+  };
+});
+
 const look = lookCatalog.find((item) => item.slug === "commute")!;
 const jaAudienceContext: AudienceContext = {
   locale: "ja-JP",
@@ -79,6 +99,8 @@ describe("createTryOnJob", () => {
     vi.mocked(generateGeminiDiagnosis).mockReset();
     vi.mocked(generateEvolinkMakeupImage).mockReset();
     vi.mocked(generateGeminiMakeupImage).mockReset();
+    vi.mocked(analyzeMakeupReference).mockReset();
+    vi.mocked(evaluateMakeupTransfer).mockReset();
   });
 
   it("keeps the mock reference fallback path for local smoke tests", async () => {
@@ -209,6 +231,18 @@ describe("createTryOnJob", () => {
       durationMs: 800,
       usage: {},
     });
+    vi.mocked(analyzeMakeupReference).mockResolvedValue({
+      result: reflectiveMakeupSpec(),
+      model: "gemini-analysis-test",
+      durationMs: 300,
+      usage: {},
+    });
+    vi.mocked(evaluateMakeupTransfer).mockResolvedValue({
+      result: passingMakeupQuality(),
+      model: "gemini-analysis-test",
+      durationMs: 300,
+      usage: {},
+    });
     const bucket = {
       get: vi.fn(async (key: string) => ({
         body:
@@ -258,18 +292,185 @@ describe("createTryOnJob", () => {
     expect(generateGeminiMakeupImage).toHaveBeenCalledWith(
       expect.objectContaining({
         prompt: expect.stringContaining(
-          "Image 2 is the user's selfie and the only identity reference",
+          "Makeup fidelity is a primary acceptance requirement",
         ),
-        images: [
-          expect.objectContaining({ mimeType: "image/webp" }),
-          expect.objectContaining({ mimeType: "image/jpeg" }),
+        labeledImages: [
+          expect.objectContaining({
+            label: expect.stringContaining("MAKEUP REFERENCE IMAGE"),
+            mimeType: "image/webp",
+          }),
+          expect.objectContaining({
+            label: expect.stringContaining("USER SELFIE"),
+            mimeType: "image/jpeg",
+          }),
         ],
       }),
     );
     const images =
-      vi.mocked(generateGeminiMakeupImage).mock.calls[0]?.[0].images ?? [];
+      vi.mocked(generateGeminiMakeupImage).mock.calls[0]?.[0].labeledImages ??
+      [];
     expect([...new Uint8Array(images[0]!.data)]).toEqual([1, 2]);
     expect([...new Uint8Array(images[1]!.data)]).toEqual([3, 4]);
+    expect(analyzeMakeupReference).toHaveBeenCalledOnce();
+    expect(evaluateMakeupTransfer).toHaveBeenCalledOnce();
+    expect(result?.job).toMatchObject({
+      makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+      makeupQualityScore: 92,
+      makeupGenerationAttempts: 1,
+    });
+  });
+
+  it("retries a private transfer once with quality-review corrections", async () => {
+    const privateTemplate = {
+      id: "template_retry",
+      userId: "visitor_1",
+      title: "Reflective lid reference",
+      r2Key: "private-templates/visitor_1/template_retry/reference.webp",
+      contentType: "image/webp",
+      sizeBytes: 2,
+      width: 900,
+      height: 1200,
+      status: "active" as const,
+      createdAt: "2026-06-30T00:00:00.000Z",
+      updatedAt: "2026-06-30T00:00:00.000Z",
+    };
+    await upsertSubscription({
+      userId: "visitor_1",
+      stripeSubscriptionId: "sub_premium_retry",
+      planCode: "premium",
+      status: "active",
+      currentPeriodEnd: "2026-07-30T00:00:00.000Z",
+    });
+    await savePrivateLookTemplate(privateTemplate);
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(analyzeMakeupReference).mockResolvedValue({
+      result: reflectiveMakeupSpec(),
+      model: "gemini-analysis-test",
+      durationMs: 300,
+      usage: {},
+    });
+    vi.mocked(generateGeminiMakeupImage)
+      .mockResolvedValueOnce(generatedImage([7]))
+      .mockResolvedValueOnce(generatedImage([8]));
+    vi.mocked(evaluateMakeupTransfer)
+      .mockResolvedValueOnce({
+        result: failingMakeupQuality(),
+        model: "gemini-analysis-test",
+        durationMs: 300,
+        usage: {},
+      })
+      .mockResolvedValueOnce({
+        result: passingMakeupQuality(),
+        model: "gemini-analysis-test",
+        durationMs: 300,
+        usage: {},
+      });
+    const bucket = bucketWithBytes([1, 2]);
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_IMAGE_MODEL: "gemini-image-test",
+      USER_UPLOADS: bucket,
+    };
+    const privateLook = privateTemplateToLook(privateTemplate);
+    const created = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look: privateLook,
+      idempotencyKey: "private_retry_request",
+      bindings,
+      privateTemplate,
+    });
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look: privateLook,
+      bindings,
+    });
+
+    expect(result?.job).toMatchObject({
+      status: "succeeded",
+      makeupGenerationAttempts: 2,
+      makeupQualityScore: 92,
+    });
+    expect(generateGeminiMakeupImage).toHaveBeenCalledTimes(2);
+    expect(
+      vi.mocked(generateGeminiMakeupImage).mock.calls[1]?.[0].prompt,
+    ).toContain("Missing critical features: wet-look silver lid shimmer");
+    expect(evaluateMakeupTransfer).toHaveBeenCalledTimes(2);
+  });
+
+  it("rejects and refunds a private result that fails both quality checks", async () => {
+    const privateTemplate = {
+      id: "template_rejected",
+      userId: "visitor_1",
+      title: "Reflective lid reference",
+      r2Key: "private-templates/visitor_1/template_rejected/reference.webp",
+      contentType: "image/webp",
+      sizeBytes: 2,
+      width: 900,
+      height: 1200,
+      status: "active" as const,
+      referenceSha256: "reference-hash",
+      makeupSpecStatus: "ready" as const,
+      makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+      makeupSpec: reflectiveMakeupSpec(),
+      createdAt: "2026-06-30T00:00:00.000Z",
+      updatedAt: "2026-06-30T00:00:00.000Z",
+    };
+    await upsertSubscription({
+      userId: "visitor_1",
+      stripeSubscriptionId: "sub_premium_rejected",
+      planCode: "premium",
+      status: "active",
+      currentPeriodEnd: "2026-07-30T00:00:00.000Z",
+    });
+    await savePrivateLookTemplate(privateTemplate);
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(generateGeminiMakeupImage).mockResolvedValue(generatedImage([7]));
+    vi.mocked(evaluateMakeupTransfer).mockResolvedValue({
+      result: failingMakeupQuality(),
+      model: "gemini-analysis-test",
+      durationMs: 300,
+      usage: {},
+    });
+    const bucket = bucketWithBytes([1, 2]);
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_IMAGE_MODEL: "gemini-image-test",
+      USER_UPLOADS: bucket,
+    };
+    const privateLook = privateTemplateToLook(privateTemplate);
+    const created = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look: privateLook,
+      idempotencyKey: "private_rejected_request",
+      bindings,
+      privateTemplate,
+    });
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look: privateLook,
+      bindings,
+    });
+
+    expect(result?.job).toMatchObject({
+      status: "failed",
+      errorCode: "MAKEUP_TRANSFER_QUALITY_FAILED",
+    });
+    expect(result?.quota).toMatchObject({ remaining: 150 });
+    expect(generateGeminiMakeupImage).toHaveBeenCalledTimes(2);
+    expect(evaluateMakeupTransfer).toHaveBeenCalledTimes(2);
+    expect(bucket.put).not.toHaveBeenCalled();
   });
 
   it("runs professional diagnosis only for diagnosis-purpose jobs", async () => {
@@ -642,6 +843,93 @@ function bucketWithBytes(bytes: number[]) {
     })),
     put: vi.fn(async () => undefined),
     delete: vi.fn(async () => undefined),
+  };
+}
+
+function reflectiveMakeupSpec(): MakeupReferenceSpec {
+  const subtleArea = {
+    colors: ["neutral"],
+    placement: ["natural placement"],
+    finish: ["natural"],
+    intensity: "subtle" as const,
+  };
+  return {
+    schemaVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+    summary: "Silver-gold reflective wet-look eyelids with nude glossy lips",
+    focalAreas: ["mobile eyelids", "inner corners"],
+    base: { ...subtleArea, finish: ["luminous", "dewy"] },
+    eyes: {
+      colors: ["silver white", "pale gold"],
+      placement: ["mobile lid", "inner corner", "lower inner lash line"],
+      finish: ["wet-look", "reflective shimmer"],
+      intensity: "strong",
+    },
+    brows: subtleArea,
+    cheeks: {
+      ...subtleArea,
+      colors: ["neutral pale pink"],
+      finish: ["luminous"],
+    },
+    lips: {
+      colors: ["nude pink"],
+      placement: ["full lips"],
+      finish: ["transparent gloss"],
+      intensity: "subtle",
+    },
+    contourHighlight: {
+      ...subtleArea,
+      placement: ["inner corners", "brow bone", "cheekbone"],
+      finish: ["luminous highlight"],
+    },
+    mustMatch: [
+      "wet-look silver-gold mobile lid shimmer",
+      "bright reflective inner corners",
+      "nude-pink glossy lips",
+    ],
+    mustAvoid: [
+      "matte warm brown eyeshadow",
+      "large-area peach blush",
+      "matte brick-red lips",
+    ],
+  };
+}
+
+function passingMakeupQuality(): MakeupTransferQuality {
+  return {
+    schemaVersion: MAKEUP_TRANSFER_QUALITY_VERSION,
+    overallScore: 92,
+    makeupSimilarityScore: 94,
+    identityPreservationScore: 96,
+    criticalMissing: [],
+    conflicts: [],
+    correctionInstructions: [],
+  };
+}
+
+function failingMakeupQuality(): MakeupTransferQuality {
+  return {
+    schemaVersion: MAKEUP_TRANSFER_QUALITY_VERSION,
+    overallScore: 52,
+    makeupSimilarityScore: 40,
+    identityPreservationScore: 95,
+    criticalMissing: ["wet-look silver lid shimmer"],
+    conflicts: ["large-area peach blush"],
+    correctionInstructions: [
+      "add reflective silver shimmer across the visible mobile lid",
+      "reduce peach blush",
+    ],
+  };
+}
+
+function generatedImage(bytes: number[]) {
+  return {
+    image: {
+      data: new Uint8Array(bytes).buffer,
+      contentType: "image/png",
+    },
+    model: "gemini-image-test",
+    durationMs: 800,
+    usage: {},
   };
 }
 

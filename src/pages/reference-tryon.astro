@@ -95,6 +95,8 @@ const copy = isZh
       cancelled: "任务已取消，额度已自动返还。你可以修改图片后重新生成。",
       timedOut: "任务处理超时，额度已自动返还。请稍后重试。",
       createFailed: "暂时无法创建生成任务，请检查网络后重试。",
+      requestChanged:
+        "所选参考妆容或自拍已发生变化，请确认当前选择后重新生成。",
       loadFailed: "暂时无法加载账户信息，请重试。",
     }
   : {
@@ -193,6 +195,8 @@ const copy = isZh
         "The task timed out and the credit was returned. Please try again later.",
       createFailed:
         "Unable to create the generation task. Check your connection and retry.",
+      requestChanged:
+        "The selected reference or selfie changed. Confirm the current selection and generate again.",
       loadFailed: "Unable to load your account. Try again.",
     };
 
@@ -685,6 +689,9 @@ const hrefs = {
             choose.append(image, title, state);
             choose.addEventListener("click", () => {
               if (!isPremium) return;
+              if (selectedTemplateId !== template.id) {
+                pendingIdempotencyKey = "";
+              }
               selectedTemplateId = template.id;
               pendingTemplateId = template.id;
               referenceInput.value = "";
@@ -759,6 +766,7 @@ const hrefs = {
       }
 
       referenceInput.addEventListener("change", () => {
+        pendingIdempotencyKey = "";
         selectedTemplateId = "";
         pendingTemplateId = "";
         rightsCheck.checked = false;
@@ -768,6 +776,7 @@ const hrefs = {
         previewFile(referenceInput, referencePreview);
       });
       selfieInput.addEventListener("change", () => {
+        pendingIdempotencyKey = "";
         pendingUploadId = "";
         consentCheck.checked = false;
         clearFieldError("selfie");
@@ -972,6 +981,7 @@ const hrefs = {
             }),
             copy.createFailed,
           );
+          assertPrivateJobMatches(job, templateId, upload.id);
           activeJobId = job.id;
           upsertBackgroundTask(job);
           status.textContent = copy.backgroundRunning;
@@ -981,6 +991,7 @@ const hrefs = {
             status.textContent = copy.backgroundNetwork;
             return;
           }
+          assertPrivateJobMatches(completed, templateId, upload.id);
           root.querySelector("[data-result-image]").src = completed.resultImage;
           activeJobId = "";
           pendingUploadId = "";
@@ -1011,6 +1022,20 @@ const hrefs = {
           if (!activeJobId) setGenerating(false);
         }
       });
+
+      function assertPrivateJobMatches(job, templateId, uploadId) {
+        if (
+          job?.lookSource !== "private-template" ||
+          job?.privateTemplateId !== templateId ||
+          (selectedTemplateId !== templateId &&
+            pendingTemplateId !== templateId) ||
+          pendingUploadId !== uploadId
+        ) {
+          pendingIdempotencyKey = "";
+          activeJobId = "";
+          throw new Error(copy.requestChanged);
+        }
+      }
 
       root.querySelector("[data-again]")?.addEventListener("click", () => {
         selectedTemplateId = "";

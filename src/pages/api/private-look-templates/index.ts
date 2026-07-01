@@ -113,6 +113,7 @@ export const POST: APIRoute = async ({ cookies, request }) => {
   const id = crypto.randomUUID();
   const title = normalizeTitle(requestedTitle, activeCount + 1);
   const r2Key = `private-templates/${auth.user.id}/${id}/reference.webp`;
+  const referenceSha256 = await sha256Hex(image.bytes);
   const template = {
     id,
     userId: auth.user.id,
@@ -123,6 +124,8 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     width: image.width,
     height: image.height,
     status: "active" as const,
+    referenceSha256,
+    makeupSpecStatus: "pending" as const,
     createdAt: now,
     updatedAt: now,
   };
@@ -175,6 +178,11 @@ function toResponse(template: {
   height: number;
   createdAt: string;
   updatedAt: string;
+  makeupSpecStatus?: "pending" | "ready" | "failed";
+  makeupSpec?: {
+    summary: string;
+    focalAreas: string[];
+  };
 }) {
   return {
     id: template.id,
@@ -184,5 +192,15 @@ function toResponse(template: {
     image: `/api/private-look-templates/${encodeURIComponent(template.id)}/image`,
     createdAt: template.createdAt,
     updatedAt: template.updatedAt,
+    makeupSpecStatus: template.makeupSpecStatus ?? "pending",
+    makeupSummary: template.makeupSpec?.summary,
+    focalAreas: template.makeupSpec?.focalAreas ?? [],
   };
+}
+
+async function sha256Hex(value: ArrayBuffer): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", value);
+  return [...new Uint8Array(digest)]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }

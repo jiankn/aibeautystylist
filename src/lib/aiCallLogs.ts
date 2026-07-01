@@ -5,7 +5,11 @@ export interface AiCallLog {
   userId: string;
   jobId?: string;
   provider: "gemini" | "evolink";
-  operation: "diagnosis" | "image_generation";
+  operation:
+    | "diagnosis"
+    | "image_generation"
+    | "makeup_reference_analysis"
+    | "makeup_transfer_quality";
   model?: string;
   status: "succeeded" | "failed";
   durationMs?: number;
@@ -14,6 +18,7 @@ export interface AiCallLog {
   totalTokens?: number;
   estimatedCostMicros?: number;
   errorCode?: string;
+  metadata?: Record<string, unknown>;
   createdAt?: string;
 }
 
@@ -27,7 +32,7 @@ export async function recordAiCall(
 
   if (DB) {
     await DB.prepare(
-      "INSERT INTO ai_call_logs (id, user_id, job_id, provider, operation, model, status, duration_ms, prompt_tokens, output_tokens, total_tokens, estimated_cost_micros, error_code, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO ai_call_logs (id, user_id, job_id, provider, operation, model, status, duration_ms, prompt_tokens, output_tokens, total_tokens, estimated_cost_micros, error_code, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
       .bind(
         record.id,
@@ -43,6 +48,9 @@ export async function recordAiCall(
         nullableNumber(record.totalTokens),
         nullableNumber(record.estimatedCostMicros),
         record.errorCode || null,
+        Object.keys(record.metadata).length
+          ? JSON.stringify(record.metadata)
+          : null,
         record.createdAt,
       )
       .run();
@@ -75,6 +83,7 @@ function normalizeLog(log: AiCallLog): Required<AiCallLog> {
     totalTokens: log.totalTokens ?? 0,
     estimatedCostMicros: log.estimatedCostMicros ?? 0,
     errorCode: log.errorCode ?? "",
+    metadata: log.metadata ?? {},
     createdAt: log.createdAt ?? new Date().toISOString(),
   };
 }

@@ -1,4 +1,9 @@
 import type { LookCatalogItem } from "../data/lookCatalog";
+import {
+  MAKEUP_REFERENCE_SPEC_VERSION,
+  parseMakeupReferenceSpec,
+  type MakeupReferenceSpec,
+} from "./makeupTransfer";
 import type { D1DatabaseLike, R2BucketLike } from "./runtime";
 
 export const PRIVATE_TEMPLATE_LIMIT = 30;
@@ -16,6 +21,10 @@ export interface PrivateLookTemplate {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
+  referenceSha256?: string;
+  makeupSpecStatus?: "pending" | "ready" | "failed";
+  makeupSpecVersion?: string;
+  makeupSpec?: MakeupReferenceSpec;
 }
 
 interface PrivateLookTemplateRow {
@@ -31,6 +40,10 @@ interface PrivateLookTemplateRow {
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
+  reference_sha256: string | null;
+  makeup_spec_status: string | null;
+  makeup_spec_version: string | null;
+  makeup_spec_json: string | null;
 }
 
 const mockTemplates = new Map<string, PrivateLookTemplate>();
@@ -62,8 +75,8 @@ export async function savePrivateLookTemplate(
   if (DB) {
     await DB.prepare(
       `INSERT INTO private_look_templates
-       (id, user_id, title, r2_key, content_type, size_bytes, width, height, status, created_at, updated_at, deleted_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (id, user_id, title, r2_key, content_type, size_bytes, width, height, status, created_at, updated_at, deleted_at, reference_sha256, makeup_spec_status, makeup_spec_version, makeup_spec_json)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
       .bind(
         template.id,
@@ -78,6 +91,10 @@ export async function savePrivateLookTemplate(
         template.createdAt,
         template.updatedAt,
         template.deletedAt ?? null,
+        template.referenceSha256 ?? null,
+        template.makeupSpecStatus ?? "pending",
+        template.makeupSpecVersion ?? null,
+        template.makeupSpec ? JSON.stringify(template.makeupSpec) : null,
       )
       .run();
     return;
@@ -92,7 +109,7 @@ export async function listOwnedPrivateLookTemplates(
 ): Promise<PrivateLookTemplate[]> {
   if (DB) {
     const rows = await DB.prepare(
-      `SELECT id, user_id, title, r2_key, content_type, size_bytes, width, height, status, created_at, updated_at, deleted_at
+      `SELECT id, user_id, title, r2_key, content_type, size_bytes, width, height, status, created_at, updated_at, deleted_at, reference_sha256, makeup_spec_status, makeup_spec_version, makeup_spec_json
        FROM private_look_templates
        WHERE user_id = ? AND status = 'active' AND deleted_at IS NULL
        ORDER BY created_at DESC
@@ -120,7 +137,7 @@ export async function getOwnedPrivateLookTemplate(
 ): Promise<PrivateLookTemplate | undefined> {
   if (DB) {
     const row = await DB.prepare(
-      `SELECT id, user_id, title, r2_key, content_type, size_bytes, width, height, status, created_at, updated_at, deleted_at
+      `SELECT id, user_id, title, r2_key, content_type, size_bytes, width, height, status, created_at, updated_at, deleted_at, reference_sha256, makeup_spec_status, makeup_spec_version, makeup_spec_json
        FROM private_look_templates
        WHERE id = ? AND user_id = ? AND status = 'active' AND deleted_at IS NULL`,
     )
@@ -153,7 +170,7 @@ export async function deleteOwnedPrivateLookTemplate(
   if (DB) {
     await DB.prepare(
       `UPDATE private_look_templates
-       SET status = 'deleted', r2_key = '', deleted_at = ?, updated_at = ?
+       SET status = 'deleted', r2_key = '', reference_sha256 = NULL, makeup_spec_status = 'pending', makeup_spec_version = NULL, makeup_spec_json = NULL, deleted_at = ?, updated_at = ?
        WHERE id = ? AND user_id = ? AND deleted_at IS NULL`,
     )
       .bind(deletedAt, deletedAt, templateId, userId)
@@ -172,10 +189,74 @@ export async function deleteOwnedPrivateLookTemplate(
       status: "deleted",
       deletedAt,
       updatedAt: deletedAt,
+      referenceSha256: undefined,
+      makeupSpecStatus: "pending",
+      makeupSpecVersion: undefined,
+      makeupSpec: undefined,
     });
   }
 
-  return { ...template, status: "deleted", deletedAt, updatedAt: deletedAt };
+  return {
+    ...template,
+    status: "deleted",
+    deletedAt,
+    updatedAt: deletedAt,
+    referenceSha256: undefined,
+    makeupSpecStatus: "pending",
+    makeupSpecVersion: undefined,
+    makeupSpec: undefined,
+  };
+}
+
+export async function updatePrivateLookTemplateMakeupSpec(
+  userId: string,
+  templateId: string,
+  update: {
+    status: "ready" | "failed";
+    referenceSha256: string;
+    spec?: MakeupReferenceSpec;
+  },
+  DB?: D1DatabaseLike,
+  now = new Date(),
+): Promise<void> {
+  const updatedAt = now.toISOString();
+  const specVersion = update.spec ? MAKEUP_REFERENCE_SPEC_VERSION : undefined;
+  if (DB) {
+    await DB.prepare(
+      `UPDATE private_look_templates
+       SET reference_sha256 = ?, makeup_spec_status = ?, makeup_spec_version = ?, makeup_spec_json = ?, updated_at = ?
+       WHERE id = ? AND user_id = ? AND status = 'active' AND deleted_at IS NULL`,
+    )
+      .bind(
+        update.referenceSha256,
+        update.status,
+        specVersion ?? null,
+        update.spec ? JSON.stringify(update.spec) : null,
+        updatedAt,
+        templateId,
+        userId,
+      )
+      .run();
+    return;
+  }
+
+  const template = mockTemplates.get(templateId);
+  if (
+    !template ||
+    template.userId !== userId ||
+    template.status !== "active" ||
+    template.deletedAt
+  ) {
+    return;
+  }
+  mockTemplates.set(templateId, {
+    ...template,
+    referenceSha256: update.referenceSha256,
+    makeupSpecStatus: update.status,
+    makeupSpecVersion: specVersion,
+    makeupSpec: update.spec,
+    updatedAt,
+  });
 }
 
 export function privateTemplateToLook(
@@ -225,5 +306,26 @@ function fromRow(row: PrivateLookTemplateRow): PrivateLookTemplate {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     deletedAt: row.deleted_at ?? undefined,
+    referenceSha256: row.reference_sha256 ?? undefined,
+    makeupSpecStatus: normalizeMakeupSpecStatus(row.makeup_spec_status),
+    makeupSpecVersion: row.makeup_spec_version ?? undefined,
+    makeupSpec: parseStoredMakeupSpec(row.makeup_spec_json),
   };
+}
+
+function normalizeMakeupSpecStatus(
+  value: string | null,
+): PrivateLookTemplate["makeupSpecStatus"] {
+  return value === "ready" || value === "failed" ? value : "pending";
+}
+
+function parseStoredMakeupSpec(
+  value: string | null,
+): MakeupReferenceSpec | undefined {
+  if (!value) return undefined;
+  try {
+    return parseMakeupReferenceSpec(JSON.parse(value));
+  } catch {
+    return undefined;
+  }
 }

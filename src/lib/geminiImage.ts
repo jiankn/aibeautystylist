@@ -25,6 +25,11 @@ export interface GeminiImageOptions {
     data: ArrayBuffer;
     mimeType: string;
   }>;
+  labeledImages?: Array<{
+    label: string;
+    data: ArrayBuffer;
+    mimeType: string;
+  }>;
   timeoutMs?: number;
   fetcher?: typeof fetch;
 }
@@ -72,11 +77,13 @@ export async function generateGeminiMakeupImage(
       "Gemini 图像配置不完整",
     );
   }
-  const images = options.images?.length
-    ? options.images
-    : options.photo
-      ? [options.photo]
-      : [];
+  const images = options.labeledImages?.length
+    ? options.labeledImages
+    : options.images?.length
+      ? options.images
+      : options.photo
+        ? [options.photo]
+        : [];
   if (images.length === 0) {
     throw new GeminiImageError(
       "GEMINI_IMAGE_INVALID_RESPONSE",
@@ -107,12 +114,22 @@ export async function generateGeminiMakeupImage(
               role: "user",
               parts: [
                 { text: options.prompt },
-                ...images.map((image) => ({
-                  inlineData: {
-                    mimeType: image.mimeType,
-                    data: arrayBufferToBase64(image.data),
+                ...images.flatMap((image) => [
+                  ...("label" in image ? [{ text: image.label }] : []),
+                  {
+                    inlineData: {
+                      mimeType: image.mimeType,
+                      data: arrayBufferToBase64(image.data),
+                    },
                   },
-                })),
+                ]),
+                ...(options.labeledImages?.length
+                  ? [
+                      {
+                        text: "Generate the final edited selfie now, following the labeled image roles and all makeup-fidelity requirements above.",
+                      },
+                    ]
+                  : []),
               ],
             },
           ],

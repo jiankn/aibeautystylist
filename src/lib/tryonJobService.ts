@@ -14,6 +14,19 @@ import {
   generateGeminiDiagnosis,
 } from "./geminiDiagnosis";
 import { GeminiImageError, generateGeminiMakeupImage } from "./geminiImage";
+import {
+  analyzeMakeupReference,
+  evaluateMakeupTransfer,
+  GeminiMakeupTransferError,
+} from "./geminiMakeupTransfer";
+import {
+  MAKEUP_REFERENCE_SPEC_VERSION,
+  makeupReferenceSpecPrompt,
+  makeupTransferCorrectionPrompt,
+  passesMakeupTransferQuality,
+  type MakeupReferenceSpec,
+  type MakeupTransferQuality,
+} from "./makeupTransfer";
 import { createProxyFetcher } from "./proxyFetch";
 import { localizedTryOnDisclaimer } from "./tryonDisclaimers";
 import {
@@ -40,6 +53,7 @@ import { getMonthlyQuota, planHasFeature } from "./plans";
 import { getOwnedUpload, type StoredUploadRecord } from "./uploadRecords";
 import {
   getOwnedPrivateLookTemplate,
+  updatePrivateLookTemplateMakeupSpec,
   type PrivateLookTemplate,
 } from "./privateLookTemplates";
 
@@ -461,6 +475,7 @@ async function runGeminiImageTryOnJob(options: {
       photoMimeType: options.upload.contentType,
       referenceData,
       referenceMimeType,
+      privateTemplate: options.privateTemplate,
       bindings: options.bindings,
     });
 
@@ -797,6 +812,7 @@ async function completeImageStage(options: {
   photoMimeType: string;
   referenceData?: ArrayBuffer;
   referenceMimeType?: string;
+  privateTemplate?: PrivateLookTemplate;
   bindings: RuntimeBindings;
 }): Promise<StoredTryOnJob> {
   if (!options.bindings.USER_UPLOADS) {
@@ -825,6 +841,7 @@ async function completeImageStageWithGemini(options: {
   photoMimeType: string;
   referenceData?: ArrayBuffer;
   referenceMimeType?: string;
+  privateTemplate?: PrivateLookTemplate;
   bindings: RuntimeBindings;
 }): Promise<StoredTryOnJob> {
   const apiKey = options.bindings.GEMINI_API_KEY;
@@ -842,34 +859,20 @@ async function completeImageStageWithGemini(options: {
     );
   }
 
+  if (options.job.lookSource === "private-template") {
+    return completePrivateImageStageWithGemini(options);
+  }
+
   const model = options.bindings.GEMINI_IMAGE_MODEL ?? "gemini-2.5-flash-image";
   try {
     const generated = await generateGeminiMakeupImage({
       apiKey,
       model,
-      prompt:
-        options.job.lookSource === "private-template"
-          ? privateMakeupImagePrompt(options.look.title)
-          : makeupImagePrompt(options.look),
-      ...(options.referenceData && options.referenceMimeType
-        ? {
-            images: [
-              {
-                data: options.referenceData,
-                mimeType: options.referenceMimeType,
-              },
-              {
-                data: options.photoData,
-                mimeType: options.photoMimeType,
-              },
-            ],
-          }
-        : {
-            photo: {
-              data: options.photoData,
-              mimeType: options.photoMimeType,
-            },
-          }),
+      prompt: makeupImagePrompt(options.look),
+      photo: {
+        data: options.photoData,
+        mimeType: options.photoMimeType,
+      },
       timeoutMs: parseTimeout(options.bindings.GEMINI_IMAGE_TIMEOUT_MS),
       fetcher: options.bindings.OUTBOUND_PROXY_URL
         ? createProxyFetcher(options.bindings.OUTBOUND_PROXY_URL)
@@ -917,7 +920,6 @@ async function completeImageStageWithGemini(options: {
       completedAt,
     };
   } catch (error) {
-    if (options.job.lookSource === "private-template") throw error;
     await recordAiCall(
       {
         userId: options.userId,
@@ -936,6 +938,411 @@ async function completeImageStageWithGemini(options: {
       localizedTryOnDisclaimer("referenceFallback", options.job.locale),
     );
   }
+}
+
+async function completePrivateImageStageWithGemini(options: {
+  job: StoredTryOnJob;
+  userId: string;
+  look: LookCatalogItem | ResolvedLook;
+  photoData: ArrayBuffer;
+  photoMimeType: string;
+  referenceData?: ArrayBuffer;
+  referenceMimeType?: string;
+  privateTemplate?: PrivateLookTemplate;
+  bindings: RuntimeBindings;
+}): Promise<StoredTryOnJob> {
+  const apiKey = options.bindings.GEMINI_API_KEY;
+  const bucket = options.bindings.USER_UPLOADS;
+  if (
+    !apiKey ||
+    !bucket ||
+    !options.referenceData ||
+    !options.referenceMimeType ||
+    !options.privateTemplate
+  ) {
+    throw new GeminiMakeupTransferError(
+      "MAKEUP_REFERENCE_ANALYSIS_UNAVAILABLE",
+      "私有参考妆容生成输入不完整",
+    );
+  }
+
+  const fetcher = options.bindings.OUTBOUND_PROXY_URL
+    ? createProxyFetcher(options.bindings.OUTBOUND_PROXY_URL)
+    : undefined;
+  const analysisModel =
+    options.bindings.GEMINI_MODEL ??
+    options.bindings.GEMINI_MODEL_FREE ??
+    "gemini-2.5-flash";
+  const imageModel =
+    options.bindings.GEMINI_IMAGE_MODEL ?? "gemini-2.5-flash-image";
+  const referenceSha256 =
+    options.privateTemplate.referenceSha256 ??
+    (await sha256Hex(options.referenceData));
+  const spec = await resolvePrivateMakeupSpec({
+    userId: options.userId,
+    jobId: options.job.id,
+    template: options.privateTemplate,
+    referenceData: options.referenceData,
+    referenceMimeType: options.referenceMimeType,
+    referenceSha256,
+    apiKey,
+    model: analysisModel,
+    bindings: options.bindings,
+    fetcher,
+  });
+
+  let correction: MakeupTransferQuality | undefined;
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const prompt = privateMakeupImagePrompt(
+      options.look.title,
+      spec,
+      correction,
+    );
+    let generated: Awaited<ReturnType<typeof generateGeminiMakeupImage>>;
+    try {
+      generated = await generateGeminiMakeupImage({
+        apiKey,
+        model: imageModel,
+        prompt,
+        labeledImages: [
+          {
+            label:
+              "MAKEUP REFERENCE IMAGE — use only its cosmetic colors, placement, finish, texture, and intensity:",
+            data: options.referenceData,
+            mimeType: options.referenceMimeType,
+          },
+          {
+            label:
+              "USER SELFIE — the only identity, facial structure, hair, clothing, pose, framing, background, and scene source:",
+            data: options.photoData,
+            mimeType: options.photoMimeType,
+          },
+        ],
+        timeoutMs: parseTimeout(options.bindings.GEMINI_IMAGE_TIMEOUT_MS),
+        fetcher,
+      });
+      await recordAiCall(
+        {
+          userId: options.userId,
+          jobId: options.job.id,
+          provider: "gemini",
+          operation: "image_generation",
+          model: generated.model,
+          status: "succeeded",
+          durationMs: generated.durationMs,
+          promptTokens: generated.usage.promptTokens,
+          outputTokens: generated.usage.outputTokens,
+          totalTokens: generated.usage.totalTokens,
+          metadata: {
+            privateTemplateId: options.privateTemplate.id,
+            referenceSha256,
+            makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+            attempt,
+          },
+        },
+        options.bindings.DB,
+      );
+    } catch (error) {
+      await recordAiCall(
+        {
+          userId: options.userId,
+          jobId: options.job.id,
+          provider: "gemini",
+          operation: "image_generation",
+          model: imageModel,
+          status: "failed",
+          errorCode: geminiImageErrorCode(error),
+          metadata: {
+            privateTemplateId: options.privateTemplate.id,
+            referenceSha256,
+            makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+            attempt,
+          },
+        },
+        options.bindings.DB,
+      ).catch(() => undefined);
+      throw error;
+    }
+
+    const quality = await reviewPrivateMakeupTransfer({
+      userId: options.userId,
+      jobId: options.job.id,
+      templateId: options.privateTemplate.id,
+      referenceSha256,
+      attempt,
+      apiKey,
+      model: analysisModel,
+      spec,
+      referenceData: options.referenceData,
+      referenceMimeType: options.referenceMimeType,
+      photoData: options.photoData,
+      photoMimeType: options.photoMimeType,
+      resultData: generated.image.data,
+      resultMimeType: generated.image.contentType,
+      bindings: options.bindings,
+      fetcher,
+    });
+    if (passesMakeupTransferQuality(quality)) {
+      return storePrivateMakeupResult({
+        job: options.job,
+        userId: options.userId,
+        templateId: options.privateTemplate.id,
+        generated,
+        quality,
+        attempt,
+        spec,
+        bindings: options.bindings,
+      });
+    }
+    correction = quality;
+  }
+
+  throw new GeminiMakeupTransferError(
+    "MAKEUP_TRANSFER_QUALITY_FAILED",
+    [
+      "生成结果未通过参考妆容一致性检查",
+      ...(correction?.criticalMissing ?? []),
+      ...(correction?.conflicts ?? []),
+    ].join("；"),
+  );
+}
+
+async function resolvePrivateMakeupSpec(options: {
+  userId: string;
+  jobId: string;
+  template: PrivateLookTemplate;
+  referenceData: ArrayBuffer;
+  referenceMimeType: string;
+  referenceSha256: string;
+  apiKey: string;
+  model: string;
+  bindings: RuntimeBindings;
+  fetcher?: typeof fetch;
+}): Promise<MakeupReferenceSpec> {
+  if (
+    options.template.makeupSpecStatus === "ready" &&
+    options.template.makeupSpecVersion === MAKEUP_REFERENCE_SPEC_VERSION &&
+    options.template.makeupSpec
+  ) {
+    return options.template.makeupSpec;
+  }
+
+  try {
+    const analyzed = await analyzeMakeupReference({
+      apiKey: options.apiKey,
+      model: options.model,
+      reference: {
+        data: options.referenceData,
+        mimeType: options.referenceMimeType,
+      },
+      timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
+      fetcher: options.fetcher,
+    });
+    await updatePrivateLookTemplateMakeupSpec(
+      options.userId,
+      options.template.id,
+      {
+        status: "ready",
+        referenceSha256: options.referenceSha256,
+        spec: analyzed.result,
+      },
+      options.bindings.DB,
+    );
+    await recordAiCall(
+      {
+        userId: options.userId,
+        jobId: options.jobId,
+        provider: "gemini",
+        operation: "makeup_reference_analysis",
+        model: analyzed.model,
+        status: "succeeded",
+        durationMs: analyzed.durationMs,
+        promptTokens: analyzed.usage.promptTokens,
+        outputTokens: analyzed.usage.outputTokens,
+        totalTokens: analyzed.usage.totalTokens,
+        metadata: {
+          privateTemplateId: options.template.id,
+          referenceSha256: options.referenceSha256,
+          makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+          focalAreas: analyzed.result.focalAreas,
+        },
+      },
+      options.bindings.DB,
+    );
+    return analyzed.result;
+  } catch (error) {
+    await updatePrivateLookTemplateMakeupSpec(
+      options.userId,
+      options.template.id,
+      {
+        status: "failed",
+        referenceSha256: options.referenceSha256,
+      },
+      options.bindings.DB,
+    ).catch(() => undefined);
+    await recordAiCall(
+      {
+        userId: options.userId,
+        jobId: options.jobId,
+        provider: "gemini",
+        operation: "makeup_reference_analysis",
+        model: options.model,
+        status: "failed",
+        errorCode: makeupTransferErrorCode(error),
+        metadata: {
+          privateTemplateId: options.template.id,
+          referenceSha256: options.referenceSha256,
+          makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+        },
+      },
+      options.bindings.DB,
+    ).catch(() => undefined);
+    throw error;
+  }
+}
+
+async function reviewPrivateMakeupTransfer(options: {
+  userId: string;
+  jobId: string;
+  templateId: string;
+  referenceSha256: string;
+  attempt: number;
+  apiKey: string;
+  model: string;
+  spec: MakeupReferenceSpec;
+  referenceData: ArrayBuffer;
+  referenceMimeType: string;
+  photoData: ArrayBuffer;
+  photoMimeType: string;
+  resultData: ArrayBuffer;
+  resultMimeType: string;
+  bindings: RuntimeBindings;
+  fetcher?: typeof fetch;
+}): Promise<MakeupTransferQuality> {
+  try {
+    const reviewed = await evaluateMakeupTransfer({
+      apiKey: options.apiKey,
+      model: options.model,
+      reference: {
+        data: options.referenceData,
+        mimeType: options.referenceMimeType,
+      },
+      selfie: {
+        data: options.photoData,
+        mimeType: options.photoMimeType,
+      },
+      result: {
+        data: options.resultData,
+        mimeType: options.resultMimeType,
+      },
+      spec: options.spec,
+      timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
+      fetcher: options.fetcher,
+    });
+    const passed = passesMakeupTransferQuality(reviewed.result);
+    await recordAiCall(
+      {
+        userId: options.userId,
+        jobId: options.jobId,
+        provider: "gemini",
+        operation: "makeup_transfer_quality",
+        model: reviewed.model,
+        status: "succeeded",
+        durationMs: reviewed.durationMs,
+        promptTokens: reviewed.usage.promptTokens,
+        outputTokens: reviewed.usage.outputTokens,
+        totalTokens: reviewed.usage.totalTokens,
+        metadata: {
+          privateTemplateId: options.templateId,
+          referenceSha256: options.referenceSha256,
+          makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+          attempt: options.attempt,
+          passed,
+          overallScore: reviewed.result.overallScore,
+          makeupSimilarityScore: reviewed.result.makeupSimilarityScore,
+          identityPreservationScore: reviewed.result.identityPreservationScore,
+          criticalMissing: reviewed.result.criticalMissing,
+          conflicts: reviewed.result.conflicts,
+        },
+      },
+      options.bindings.DB,
+    );
+    return reviewed.result;
+  } catch (error) {
+    await recordAiCall(
+      {
+        userId: options.userId,
+        jobId: options.jobId,
+        provider: "gemini",
+        operation: "makeup_transfer_quality",
+        model: options.model,
+        status: "failed",
+        errorCode: makeupTransferErrorCode(error),
+        metadata: {
+          privateTemplateId: options.templateId,
+          referenceSha256: options.referenceSha256,
+          makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+          attempt: options.attempt,
+        },
+      },
+      options.bindings.DB,
+    ).catch(() => undefined);
+    throw error;
+  }
+}
+
+async function storePrivateMakeupResult(options: {
+  job: StoredTryOnJob;
+  userId: string;
+  templateId: string;
+  generated: Awaited<ReturnType<typeof generateGeminiMakeupImage>>;
+  quality: MakeupTransferQuality;
+  attempt: number;
+  spec: MakeupReferenceSpec;
+  bindings: RuntimeBindings;
+}): Promise<StoredTryOnJob> {
+  if (!options.bindings.USER_UPLOADS) {
+    throw new GeminiMakeupTransferError(
+      "MAKEUP_TRANSFER_QUALITY_UNAVAILABLE",
+      "私有结果存储不可用",
+    );
+  }
+  const resultR2Key = resultObjectKey(
+    options.userId,
+    options.job.id,
+    options.generated.image.contentType,
+  );
+  await options.bindings.USER_UPLOADS.put(
+    resultR2Key,
+    options.generated.image.data,
+    {
+      httpMetadata: { contentType: options.generated.image.contentType },
+      customMetadata: {
+        userId: options.userId,
+        jobId: options.job.id,
+        provider: "gemini",
+        model: options.generated.model,
+        privateTemplateId: options.templateId,
+        makeupSpecVersion: options.spec.schemaVersion,
+        makeupQualityScore: String(options.quality.overallScore),
+        generationAttempt: String(options.attempt),
+      },
+    },
+  );
+  const completedAt = new Date().toISOString();
+  return {
+    ...options.job,
+    status: "succeeded",
+    resultImage: `/api/tryon-jobs/${options.job.id}/result`,
+    resultKind: "ai-generated",
+    resultR2Key,
+    makeupSpecVersion: options.spec.schemaVersion,
+    makeupQualityScore: options.quality.overallScore,
+    makeupGenerationAttempts: options.attempt,
+    disclaimer: localizedTryOnDisclaimer("generated", options.job.locale),
+    updatedAt: completedAt,
+    completedAt,
+  };
 }
 
 async function completeImageStageWithEvolink(options: {
@@ -1066,6 +1473,7 @@ function quotaError(duplicate: boolean): TryOnJobServiceError {
 function providerErrorCode(error: unknown): string {
   if (error instanceof DiagnosisProviderError) return error.code;
   if (error instanceof GeminiImageError) return error.code;
+  if (error instanceof GeminiMakeupTransferError) return error.code;
   if (
     error instanceof Error &&
     error.message === "PRIVATE_TEMPLATE_OBJECT_NOT_FOUND"
@@ -1085,6 +1493,11 @@ function evolinkErrorCode(error: unknown): string {
 function geminiImageErrorCode(error: unknown): string {
   if (error instanceof GeminiImageError) return error.code;
   return "GEMINI_IMAGE_UNAVAILABLE";
+}
+
+function makeupTransferErrorCode(error: unknown): string {
+  if (error instanceof GeminiMakeupTransferError) return error.code;
+  return error instanceof Error ? error.name : "MAKEUP_TRANSFER_UNAVAILABLE";
 }
 
 // Evolink wan2.5 任务返回 credits_used（积分计费）而非 estimated_cost（美元）。
@@ -1163,21 +1576,37 @@ function makeupImagePrompt(look: LookCatalogItem | ResolvedLook): string {
     .join(" ");
 }
 
-function privateMakeupImagePrompt(title: string): string {
+function privateMakeupImagePrompt(
+  title: string,
+  spec: MakeupReferenceSpec,
+  correction?: MakeupTransferQuality,
+): string {
   return [
-    "You are performing a private makeup transfer using exactly two input images.",
-    "Image 1 is the makeup reference only. Extract only cosmetic design information from it: base finish, eyeshadow colors and placement, eyeliner shape, brow styling, blush placement, contour, highlight, lip color, texture, and overall intensity.",
-    "Image 2 is the user's selfie and the only identity reference. Keep the person in Image 2 unmistakably the same person.",
-    "Apply the makeup design from Image 1 onto Image 2, adapting placement naturally to the facial proportions, skin depth, undertone cues, eye shape, brow shape, and lip shape visible in Image 2.",
-    "Do not copy or blend the identity, facial structure, age, expression, hairstyle, hair color, clothing, jewelry, pose, lighting, camera angle, or background from Image 1.",
-    "Preserve Image 2's facial structure, expression, hairstyle, clothing, background, lighting, framing, and natural asymmetry.",
-    "Critically preserve the original skin texture from Image 2: pores, fine lines, natural grain, moles, freckles, and real surface detail must remain visible.",
+    "Perform a high-fidelity private makeup transfer using the two explicitly labeled input images.",
+    "Makeup fidelity is a primary acceptance requirement, not a loose inspiration. Do not replace the reference with a generic flattering, peach, nude, or soft-glam look.",
+    "Use the MAKEUP REFERENCE only for cosmetic design: base finish, eyeshadow color and placement, liner, brows, blush, contour, highlight, lip color, reflectivity, texture, and intensity.",
+    "Use the USER SELFIE as the only source of identity, facial structure, expression, hairstyle, hair color, clothing, jewelry, pose, framing, background, and scene.",
+    "Adapt makeup placement naturally to the selfie's facial proportions, skin depth, visible undertone cues, eye shape, brow shape, and lip shape without weakening the reference's focal features.",
+    "Preserve the selfie scene lighting, while rendering physically plausible reflections and catchlights required by glossy, wet-look, shimmer, metallic, or luminous makeup.",
+    "Critically preserve the original skin texture from the selfie: pores, fine lines, natural grain, moles, freckles, and real surface detail must remain visible.",
     "Do not beautify, smooth, retouch, airbrush, blur, slim the face, enlarge eyes, reshape the nose, or apply a generic beauty filter.",
     "Only add makeup. Keep the result photorealistic and physically plausible on the user's own face.",
     "Do not infer sensitive attributes. Use only visible makeup-relevant appearance cues.",
     "No text, labels, watermark, product packaging, extra people, surgery effects, or diagnostic annotations.",
     `Private template title: ${title}.`,
-  ].join(" ");
+    makeupReferenceSpecPrompt(spec),
+    correction ? makeupTransferCorrectionPrompt(correction) : "",
+    "Before producing the image, silently verify that every non-negotiable mustMatch feature is visibly present and every mustAvoid conflict is absent.",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+async function sha256Hex(value: ArrayBuffer): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", value);
+  return [...new Uint8Array(digest)]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function isResolvedLook(

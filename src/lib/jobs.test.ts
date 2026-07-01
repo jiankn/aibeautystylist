@@ -6,6 +6,7 @@ import {
   getStoredJobByIdempotencyKey,
   isRetryableJobStatus,
   resetMockJobs,
+  matchesTryOnJobRequest,
   saveStoredJob,
   timeoutStoredJobIfExpired,
   toLocalizedJobResponse,
@@ -187,6 +188,37 @@ describe("try-on job lifecycle", () => {
       deleteOwnedJob(job.userId, job.id, undefined, bucket as never),
     ).resolves.toMatchObject({ alreadyDeleted: false });
     expect(bucket.delete).not.toHaveBeenCalled();
+  });
+
+  it("binds an idempotency key to the original selfie and makeup source", () => {
+    const privateJob: StoredTryOnJob = {
+      ...runningJob(),
+      lookSource: "private-template",
+      privateTemplateId: "template_1",
+      lookSlug: "private-template_1",
+    };
+
+    expect(
+      matchesTryOnJobRequest(privateJob, {
+        uploadId: "upload_1",
+        purpose: "tryon",
+        privateTemplateId: "template_1",
+      }),
+    ).toBe(true);
+    expect(
+      matchesTryOnJobRequest(privateJob, {
+        uploadId: "upload_1",
+        purpose: "tryon",
+        privateTemplateId: "template_2",
+      }),
+    ).toBe(false);
+    expect(
+      matchesTryOnJobRequest(privateJob, {
+        uploadId: "upload_2",
+        purpose: "tryon",
+        privateTemplateId: "template_1",
+      }),
+    ).toBe(false);
   });
 
   it("deletes D1 diagnosis and derived records with private result objects", async () => {

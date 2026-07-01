@@ -14,6 +14,7 @@ import { apiError, apiSuccess } from "../../../lib/http";
 import {
   getStoredJobByIdempotencyKey,
   getTryOnJobPurpose,
+  matchesTryOnJobRequest,
   toLocalizedJobResponse,
   type StoredTryOnJob,
   type TryOnJobPurpose,
@@ -208,6 +209,23 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     bindings.DB,
   );
   if (existingJob) {
+    if (
+      !matchesTryOnJobRequest(existingJob, {
+        uploadId: body.uploadId,
+        purpose,
+        lookSlug: body.lookSlug,
+        privateTemplateId: body.privateTemplateId,
+      })
+    ) {
+      return apiError(
+        {
+          code: "IDEMPOTENCY_KEY_REUSED",
+          message: "当前请求已更换自拍或妆容，请重新提交",
+          retryable: true,
+        },
+        409,
+      );
+    }
     const replayTemplate =
       existingJob.lookSource === "private-template" &&
       existingJob.privateTemplateId

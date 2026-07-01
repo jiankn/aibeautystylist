@@ -53,6 +53,9 @@ export interface TryOnJobResult {
   createdAt: string;
   updatedAt: string;
   completedAt?: string;
+  makeupSpecVersion?: string;
+  makeupQualityScore?: number;
+  makeupGenerationAttempts?: number;
 }
 
 export interface StoredTryOnJob extends TryOnJobResult {
@@ -139,6 +142,34 @@ export function isRetryableJobStatus(status: JobStatus): boolean {
 
 export function getTryOnJobPurpose(job: Pick<StoredTryOnJob, "purpose">) {
   return job.purpose === "diagnosis" ? "diagnosis" : "tryon";
+}
+
+export function matchesTryOnJobRequest(
+  job: StoredTryOnJob,
+  request: {
+    uploadId: string;
+    purpose: TryOnJobPurpose;
+    lookSlug?: string;
+    privateTemplateId?: string;
+  },
+): boolean {
+  if (
+    job.uploadId !== request.uploadId ||
+    getTryOnJobPurpose(job) !== request.purpose
+  ) {
+    return false;
+  }
+  if (request.privateTemplateId) {
+    return (
+      job.lookSource === "private-template" &&
+      job.privateTemplateId === request.privateTemplateId
+    );
+  }
+  return (
+    job.lookSource !== "private-template" &&
+    Boolean(request.lookSlug) &&
+    job.lookSlug === request.lookSlug
+  );
 }
 
 export function toJobResponse(job: StoredTryOnJob): TryOnJobResult {
