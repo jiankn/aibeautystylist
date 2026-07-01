@@ -28,6 +28,7 @@ import {
   type MakeupTransferQuality,
 } from "./makeupTransfer";
 import { createProxyFetcher } from "./proxyFetch";
+import { saveRejectedTryOnCandidate } from "./rejectedTryOnCandidates";
 import { localizedTryOnDisclaimer } from "./tryonDisclaimers";
 import {
   createReferenceFallbackJob,
@@ -1094,6 +1095,38 @@ async function completePrivateImageStageWithGemini(options: {
         bindings: options.bindings,
       });
     }
+    const rejectedCandidate = await saveRejectedTryOnCandidate({
+      userId: options.userId,
+      jobId: options.job.id,
+      attempt,
+      imageData: generated.image.data,
+      contentType: generated.image.contentType,
+      quality,
+      DB: options.bindings.DB,
+      bucket: options.bindings.USER_UPLOADS,
+    }).catch((error) => {
+      console.warn(
+        JSON.stringify({
+          event: "rejected_tryon_candidate_store_failed",
+          jobId: options.job.id,
+          attempt,
+          error: error instanceof Error ? error.message : "STORE_FAILED",
+        }),
+      );
+      return undefined;
+    });
+    console.warn(
+      JSON.stringify({
+        event: "makeup_transfer_rejected",
+        jobId: options.job.id,
+        privateTemplateId: options.privateTemplate.id,
+        attempt,
+        overallScore: quality.overallScore,
+        makeupSimilarityScore: quality.makeupSimilarityScore,
+        identityPreservationScore: quality.identityPreservationScore,
+        candidateR2Key: rejectedCandidate?.r2Key,
+      }),
+    );
     correction = quality;
   }
 
@@ -1582,21 +1615,14 @@ function privateMakeupImagePrompt(
   correction?: MakeupTransferQuality,
 ): string {
   return [
-    "Perform a high-fidelity private makeup transfer using the two explicitly labeled input images.",
-    "Makeup fidelity is a primary acceptance requirement, not a loose inspiration. Do not replace the reference with a generic flattering, peach, nude, or soft-glam look.",
-    "Use the MAKEUP REFERENCE only for cosmetic design: base finish, eyeshadow color and placement, liner, brows, blush, contour, highlight, lip color, reflectivity, texture, and intensity.",
-    "Use the USER SELFIE as the only source of identity, facial structure, expression, hairstyle, hair color, clothing, jewelry, pose, framing, background, and scene.",
-    "Adapt makeup placement naturally to the selfie's facial proportions, skin depth, visible undertone cues, eye shape, brow shape, and lip shape without weakening the reference's focal features.",
-    "Preserve the selfie scene lighting, while rendering physically plausible reflections and catchlights required by glossy, wet-look, shimmer, metallic, or luminous makeup.",
-    "Critically preserve the original skin texture from the selfie: pores, fine lines, natural grain, moles, freckles, and real surface detail must remain visible.",
-    "Do not beautify, smooth, retouch, airbrush, blur, slim the face, enlarge eyes, reshape the nose, or apply a generic beauty filter.",
-    "Only add makeup. Keep the result photorealistic and physically plausible on the user's own face.",
-    "Do not infer sensitive attributes. Use only visible makeup-relevant appearance cues.",
-    "No text, labels, watermark, product packaging, extra people, surgery effects, or diagnostic annotations.",
-    `Private template title: ${title}.`,
+    "Edit the USER SELFIE by applying the cosmetic design from the MAKEUP REFERENCE.",
+    "The output must visibly change the selfie's makeup; an unchanged selfie or generic peach/nude look is a failure.",
     makeupReferenceSpecPrompt(spec),
     correction ? makeupTransferCorrectionPrompt(correction) : "",
-    "Before producing the image, silently verify that every non-negotiable mustMatch feature is visibly present and every mustAvoid conflict is absent.",
+    "Match the focal makeup's color, placement, finish, reflectivity, texture, and intensity, adapted naturally to the selfie's proportions.",
+    "Keep the USER SELFIE as the only source of identity, facial structure, hair, clothing, pose, framing, lighting, and background.",
+    "Preserve natural skin texture and keep the edit photorealistic. Do not reshape, smooth, retouch, add text, or add people.",
+    `Reference name: ${title}. Output only the edited selfie image.`,
   ]
     .filter(Boolean)
     .join(" ");

@@ -92,6 +92,8 @@ const copy = isZh
       deleted: "私有参考妆容已删除。",
       selected: "已选择",
       failed: "生成失败，额度已自动返还，请检查图片后重试。",
+      qualityFailed:
+        "生成妆效与参考妆容差异过大，系统已自动重试并返还额度。请换一张妆容特征更清晰的参考图后重试。",
       cancelled: "任务已取消，额度已自动返还。你可以修改图片后重新生成。",
       timedOut: "任务处理超时，额度已自动返还。请稍后重试。",
       createFailed: "暂时无法创建生成任务，请检查网络后重试。",
@@ -189,6 +191,8 @@ const copy = isZh
       selected: "Selected",
       failed:
         "Generation failed and the credit was returned. Check both photos and try again.",
+      qualityFailed:
+        "The generated makeup differed too much from the reference after an automatic retry. Your credit was returned; use a clearer reference and try again.",
       cancelled:
         "The task was canceled and the credit was returned. Adjust the photos and try again.",
       timedOut:
@@ -892,8 +896,13 @@ const hrefs = {
           type: "tryon",
           title: copy.backgroundTitle,
           status: job.status || "running",
+          errorCode: job.errorCode || "",
           progress: statusProgress(job.status),
-          stage: stage || copy.backgroundRunning,
+          stage:
+            stage ||
+            (["failed", "cancelled", "timed_out"].includes(job.status)
+              ? ""
+              : copy.backgroundRunning),
           href: hrefs.page,
           resultHref: `${hrefs.resultBase}/${encodeURIComponent(job.id)}`,
           persist: true,
@@ -915,7 +924,9 @@ const hrefs = {
             ? copy.cancelled
             : job.status === "timed_out"
               ? copy.timedOut
-              : copy.failed;
+              : job.errorCode === "MAKEUP_TRANSFER_QUALITY_FAILED"
+                ? copy.qualityFailed
+                : copy.failed;
         const error = new Error(message);
         error.terminalStatus = job.status;
         return error;

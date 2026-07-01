@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { MAKEUP_REFERENCE_SPEC_VERSION } from "./makeupTransfer";
 import {
   countActivePrivateLookTemplates,
   deleteOwnedPrivateLookTemplate,
@@ -87,7 +88,7 @@ describe("private look templates", () => {
       status: "ready",
       referenceSha256: "abc123",
       spec: {
-        schemaVersion: "1.0.0",
+        schemaVersion: MAKEUP_REFERENCE_SPEC_VERSION,
         summary: "Reflective silver lid",
         focalAreas: ["eyes"],
         base: area,
@@ -106,7 +107,7 @@ describe("private look templates", () => {
     ).resolves.toMatchObject({
       referenceSha256: "abc123",
       makeupSpecStatus: "ready",
-      makeupSpecVersion: "1.0.0",
+      makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
       makeupSpec: { summary: "Reflective silver lid" },
     });
   });

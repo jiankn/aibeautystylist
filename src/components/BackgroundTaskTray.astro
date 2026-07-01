@@ -24,6 +24,7 @@ type BackgroundTaskCopy = {
   runningState: string;
   doneState: string;
   failedState: string;
+  qualityFailedState?: string;
   tryonTitle: string;
   diagnosisTitle: string;
   tryonDone: string;
@@ -40,6 +41,7 @@ type BackgroundTaskCopy = {
   diagnosisDiagnosis: string;
   diagnosisImage: string;
   failed: string;
+  qualityFailed?: string;
 };
 
 const taskCopyByLocale: Record<SupportedLocale, BackgroundTaskCopy> = {
@@ -50,6 +52,7 @@ const taskCopyByLocale: Record<SupportedLocale, BackgroundTaskCopy> = {
     runningState: "Running in background",
     doneState: "Done",
     failedState: "Needs retry",
+    qualityFailedState: "Makeup match not passed",
     tryonTitle: "Try-on image is generating",
     diagnosisTitle: "AI diagnosis is running",
     tryonDone: "Try-on result is ready",
@@ -66,6 +69,8 @@ const taskCopyByLocale: Record<SupportedLocale, BackgroundTaskCopy> = {
     diagnosisDiagnosis: "Analyzing skin tone, face shape, and placement.",
     diagnosisImage: "Preparing the diagnosis report and makeup advice.",
     failed: "Processing did not finish. Return to retry.",
+    qualityFailed:
+      "The generated makeup differed too much from the reference. Your credit was returned; use a clearer reference and retry.",
   },
   "zh-CN": {
     collapse: "继续浏览",
@@ -74,6 +79,7 @@ const taskCopyByLocale: Record<SupportedLocale, BackgroundTaskCopy> = {
     runningState: "后台处理中",
     doneState: "已完成",
     failedState: "需要重试",
+    qualityFailedState: "妆效检查未通过",
     tryonTitle: "试妆图正在后台生成",
     diagnosisTitle: "AI 诊断正在后台分析",
     tryonDone: "试妆结果已生成",
@@ -90,6 +96,8 @@ const taskCopyByLocale: Record<SupportedLocale, BackgroundTaskCopy> = {
     diagnosisDiagnosis: "正在分析肤色、脸型与五官位置。",
     diagnosisImage: "正在整理诊断报告和妆容建议。",
     failed: "处理没有完成，回到任务页可以重试。",
+    qualityFailed:
+      "生成妆效与参考图差异过大，额度已返还。请换一张妆容特征更清晰的参考图后重试。",
   },
   "zh-TW": {
     collapse: "繼續瀏覽",
@@ -98,6 +106,7 @@ const taskCopyByLocale: Record<SupportedLocale, BackgroundTaskCopy> = {
     runningState: "背景處理中",
     doneState: "已完成",
     failedState: "需要重試",
+    qualityFailedState: "妝效檢查未通過",
     tryonTitle: "試妝圖正在背景生成",
     diagnosisTitle: "AI 診斷正在背景分析",
     tryonDone: "試妝結果已生成",
@@ -114,6 +123,8 @@ const taskCopyByLocale: Record<SupportedLocale, BackgroundTaskCopy> = {
     diagnosisDiagnosis: "正在分析膚色、臉型與五官位置。",
     diagnosisImage: "正在整理診斷報告和妝容建議。",
     failed: "處理沒有完成，回到任務頁可以重試。",
+    qualityFailed:
+      "生成妝效與參考圖差異過大，額度已返還。請換一張妝容特徵更清晰的參考圖後重試。",
   },
   "de-DE": {
     collapse: "Weiter stöbern",
@@ -420,6 +431,7 @@ const copy = taskCopyByLocale[locale];
         id: String(task.id || task.jobId || crypto.randomUUID()),
         type,
         status: task.status || "running",
+        errorCode: task.errorCode || "",
         title:
           task.title ||
           (type === "diagnosis" ? copy.diagnosisTitle : copy.tryonTitle),
@@ -461,6 +473,12 @@ const copy = taskCopyByLocale[locale];
       }
       if (status === "succeeded") {
         return task.type === "diagnosis" ? copy.diagnosisDone : copy.tryonDone;
+      }
+      if (
+        failedStatuses.has(status) &&
+        task.errorCode === "MAKEUP_TRANSFER_QUALITY_FAILED"
+      ) {
+        return copy.qualityFailed || copy.failed;
       }
       if (failedStatuses.has(status)) return copy.failed;
       return task.stage || copy.queued;
@@ -532,7 +550,9 @@ const copy = taskCopyByLocale[locale];
         state.textContent = isDone
           ? copy.doneState
           : isFailed
-            ? copy.failedState
+            ? active.errorCode === "MAKEUP_TRANSFER_QUALITY_FAILED"
+              ? copy.qualityFailedState || copy.failedState
+              : copy.failedState
             : copy.runningState;
       }
       if (stage)
@@ -571,11 +591,12 @@ const copy = taskCopyByLocale[locale];
         const payload = await response.json().catch(() => null);
         if (!response.ok || !payload?.ok || !payload.data) return;
         const job = payload.data;
+        const taskWithError = { ...task, errorCode: job.errorCode || "" };
         const next = {
-          ...task,
+          ...taskWithError,
           status: job.status,
           progress: statusToProgress(job.status),
-          stage: statusToStage(task, job.status),
+          stage: statusToStage(taskWithError, job.status),
           resultHref:
             task.type === "diagnosis"
               ? taskRoutes.diagnosis

@@ -292,7 +292,7 @@ describe("createTryOnJob", () => {
     expect(generateGeminiMakeupImage).toHaveBeenCalledWith(
       expect.objectContaining({
         prompt: expect.stringContaining(
-          "Makeup fidelity is a primary acceptance requirement",
+          "output must visibly change the selfie's makeup",
         ),
         labeledImages: [
           expect.objectContaining({
@@ -399,7 +399,7 @@ describe("createTryOnJob", () => {
     expect(generateGeminiMakeupImage).toHaveBeenCalledTimes(2);
     expect(
       vi.mocked(generateGeminiMakeupImage).mock.calls[1]?.[0].prompt,
-    ).toContain("Missing critical features: wet-look silver lid shimmer");
+    ).toContain("Retry corrections: wet-look silver lid shimmer");
     expect(evaluateMakeupTransfer).toHaveBeenCalledTimes(2);
   });
 

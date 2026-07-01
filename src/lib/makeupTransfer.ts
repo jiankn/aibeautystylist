@@ -1,4 +1,4 @@
-export const MAKEUP_REFERENCE_SPEC_VERSION = "1.0.0";
+export const MAKEUP_REFERENCE_SPEC_VERSION = "1.1.0";
 export const MAKEUP_TRANSFER_QUALITY_VERSION = "1.0.0";
 
 export interface MakeupAreaSpec {
@@ -54,15 +54,29 @@ export const makeupReferenceSpecJsonSchema = {
       enum: [MAKEUP_REFERENCE_SPEC_VERSION],
     },
     summary: { type: "string" },
-    focalAreas: { type: "array", items: { type: "string" } },
+    focalAreas: {
+      type: "array",
+      items: { type: "string" },
+      minItems: 1,
+      maxItems: 3,
+    },
     base: makeupAreaJsonSchema(),
     eyes: makeupAreaJsonSchema(),
     brows: makeupAreaJsonSchema(),
     cheeks: makeupAreaJsonSchema(),
     lips: makeupAreaJsonSchema(),
     contourHighlight: makeupAreaJsonSchema(),
-    mustMatch: { type: "array", items: { type: "string" } },
-    mustAvoid: { type: "array", items: { type: "string" } },
+    mustMatch: {
+      type: "array",
+      items: { type: "string" },
+      minItems: 1,
+      maxItems: 3,
+    },
+    mustAvoid: {
+      type: "array",
+      items: { type: "string" },
+      maxItems: 5,
+    },
   },
 } as const;
 
@@ -98,18 +112,26 @@ export function parseMakeupReferenceSpec(value: unknown): MakeupReferenceSpec {
     throw new Error("Unsupported makeup reference spec version");
   }
 
+  const focalAreas = textArray(record.focalAreas, "focalAreas", 3);
+  const mustMatch = textArray(record.mustMatch, "mustMatch", 3);
+  if (!focalAreas.length || !mustMatch.length) {
+    throw new Error(
+      "Makeup reference spec requires focal areas and must-match features",
+    );
+  }
+
   return {
     schemaVersion: MAKEUP_REFERENCE_SPEC_VERSION,
     summary: requiredText(record.summary, "summary"),
-    focalAreas: textArray(record.focalAreas, "focalAreas"),
+    focalAreas,
     base: parseArea(record.base, "base"),
     eyes: parseArea(record.eyes, "eyes"),
     brows: parseArea(record.brows, "brows"),
     cheeks: parseArea(record.cheeks, "cheeks"),
     lips: parseArea(record.lips, "lips"),
     contourHighlight: parseArea(record.contourHighlight, "contourHighlight"),
-    mustMatch: textArray(record.mustMatch, "mustMatch"),
-    mustAvoid: textArray(record.mustAvoid, "mustAvoid"),
+    mustMatch,
+    mustAvoid: textArray(record.mustAvoid, "mustAvoid", 5),
   };
 }
 
@@ -145,46 +167,54 @@ export function passesMakeupTransferQuality(
   quality: MakeupTransferQuality,
 ): boolean {
   return (
-    quality.overallScore >= 80 &&
-    quality.makeupSimilarityScore >= 80 &&
-    quality.identityPreservationScore >= 75 &&
+    quality.overallScore >= 75 &&
+    quality.makeupSimilarityScore >= 75 &&
+    quality.identityPreservationScore >= 80 &&
     quality.criticalMissing.length === 0
   );
 }
 
 export function makeupReferenceSpecPrompt(spec: MakeupReferenceSpec): string {
   const area = (name: string, value: MakeupAreaSpec) =>
-    `${name}: colors [${value.colors.join(", ")}]; placement [${value.placement.join(", ")}]; finish [${value.finish.join(", ")}]; intensity ${value.intensity}.`;
+    `${name}=${value.colors.slice(0, 2).join("/")}; ${value.placement
+      .slice(0, 2)
+      .join("/")}; ${value.finish.slice(0, 2).join("/")}; ${value.intensity}`;
+  const zoneDetails = [
+    area("base", spec.base),
+    area("eyes", spec.eyes),
+    area("cheeks", spec.cheeks),
+    area("lips", spec.lips),
+    spec.brows.intensity === "medium" || spec.brows.intensity === "strong"
+      ? area("brows", spec.brows)
+      : "",
+    spec.contourHighlight.intensity === "medium" ||
+    spec.contourHighlight.intensity === "strong"
+      ? area("contour/highlight", spec.contourHighlight)
+      : "",
+  ].filter(Boolean);
 
   return [
-    `Reference makeup summary: ${spec.summary}`,
-    `Primary focal areas: ${spec.focalAreas.join(", ")}.`,
-    area("Base", spec.base),
-    area("Eyes", spec.eyes),
-    area("Brows", spec.brows),
-    area("Cheeks", spec.cheeks),
-    area("Lips", spec.lips),
-    area("Contour and highlight", spec.contourHighlight),
-    `Non-negotiable features to match: ${spec.mustMatch.join("; ")}.`,
-    `Features and generic substitutions to avoid: ${spec.mustAvoid.join("; ")}.`,
-  ].join(" ");
+    `Makeup target: ${spec.summary}.`,
+    `Highest-priority visible features: ${spec.mustMatch.join("; ")}.`,
+    `Focal zones: ${spec.focalAreas.join(", ")}.`,
+    `Zone details: ${zoneDetails.join(" | ")}.`,
+    spec.mustAvoid.length ? `Avoid: ${spec.mustAvoid.join("; ")}.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
 export function makeupTransferCorrectionPrompt(
   quality: MakeupTransferQuality,
 ): string {
+  const corrections = [
+    ...quality.criticalMissing,
+    ...quality.conflicts,
+    ...quality.correctionInstructions,
+  ].slice(0, 5);
   return [
-    "The previous result failed the makeup fidelity review.",
-    quality.criticalMissing.length
-      ? `Missing critical features: ${quality.criticalMissing.join("; ")}.`
-      : "",
-    quality.conflicts.length
-      ? `Conflicting or incorrect features: ${quality.conflicts.join("; ")}.`
-      : "",
-    quality.correctionInstructions.length
-      ? `Required corrections: ${quality.correctionInstructions.join("; ")}.`
-      : "",
-    "Correct every listed issue while continuing to preserve the selfie person's identity.",
+    corrections.length ? `Retry corrections: ${corrections.join("; ")}.` : "",
+    "Make these makeup changes clearly visible while preserving the selfie identity.",
   ]
     .filter(Boolean)
     .join(" ");
@@ -240,13 +270,13 @@ function requiredText(value: unknown, field: string): string {
   return value.trim().slice(0, 1_000);
 }
 
-function textArray(value: unknown, field: string): string[] {
+function textArray(value: unknown, field: string, maxItems = 20): string[] {
   if (!Array.isArray(value)) throw new Error(`${field} must be an array`);
   return value
     .filter((item): item is string => typeof item === "string")
     .map((item) => item.trim())
     .filter(Boolean)
-    .slice(0, 20)
+    .slice(0, maxItems)
     .map((item) => item.slice(0, 500));
 }
 

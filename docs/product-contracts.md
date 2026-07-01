@@ -132,7 +132,7 @@
 | `POST /api/consents/photo` | 写入照片处理显式同意 | 必须带同意版本 |
 | `POST /api/uploads` | 校验并私有上传自拍 | 必须先有有效同意 |
 | `DELETE /api/uploads/:id` | 删除原图 | 仅资源所有者 |
-| `POST /api/internal/cleanup/uploads` | 清理过期原图并记录审计 | 仅持有 `CLEANUP_SECRET` 的内部调度任务 |
+| `POST /api/internal/cleanup/uploads` | 清理过期原图，以及保留 24 小时的未通过妆效检查候选图 | 仅持有 `CLEANUP_SECRET` 的内部调度任务 |
 | `POST /api/tryon-jobs` | 创建诊断与试妆任务 | 权限、额度、幂等校验；幂等键绑定自拍、妆容来源和任务用途，不允许跨请求重放 |
 | `GET /api/tryon-jobs/:id` | 查询任务状态和结果 | 仅资源所有者 |
 | `GET /api/tryon-jobs/:id/result` | 读取私有 AI 妆效结果图 | 仅资源所有者，静态参考图不走此接口 |
@@ -227,7 +227,7 @@
 - 前端不得获得永久 R2 私有对象 URL。
 - 私有图片只通过短期签名 URL 或授权 API 读取。
 - 删除操作写入审计记录，并异步重试失败的对象删除。
-- 过期原图由 `POST /api/internal/cleanup/uploads` 清理，调用方必须持有 `CLEANUP_SECRET`。
+- 过期原图和超过 24 小时的妆效检查失败候选图由 `POST /api/internal/cleanup/uploads` 清理，调用方必须持有 `CLEANUP_SECRET`。
 - 删除试妆结果时，仅删除 `resultR2Key` 明确指向的私有对象；静态参考图不属于用户结果对象。
 - 删除试妆结果时同步清理诊断、教程、推荐、收藏和分享记录；额度流水保留为计费审计。
 
