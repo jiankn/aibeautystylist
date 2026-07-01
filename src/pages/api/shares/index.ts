@@ -53,17 +53,6 @@ export const POST: APIRoute = async ({ cookies, request }) => {
       409,
     );
   }
-  if (job.lookSource === "private-template") {
-    return apiError(
-      {
-        code: "PRIVATE_RESULT_NOT_SHAREABLE",
-        message: "私有参考妆容结果目前只对你可见，暂不支持公开分享",
-        retryable: false,
-      },
-      403,
-    );
-  }
-
   const shareCard = await createOrGetPublicShareCard({
     userId: auth.user.id,
     jobId: job.id,

@@ -2378,7 +2378,7 @@ const copy =
       }
 
       async function shareJob(job) {
-        if (!job?.resultImage || job.isPrivateReference) {
+        if (!job?.resultImage) {
           showFeedback(copy.shareFailed);
           return;
         }
@@ -2477,12 +2477,9 @@ const copy =
         shareButton.type = "button";
         shareButton.setAttribute("aria-label", `${copy.share}: ${job.title}`);
         shareButton.innerHTML = `${icons.share}<span>${copy.share}</span>`;
-        if (!hasResultImage || job.isPrivateReference) {
+        if (!hasResultImage) {
           shareButton.disabled = true;
           shareButton.setAttribute("aria-disabled", "true");
-          if (job.isPrivateReference) {
-            shareButton.title = copy.shareFailed;
-          }
         }
         shareButton.addEventListener("click", () => shareJob(job));
 
@@ -2582,9 +2579,7 @@ const copy =
         if (controls.delete) controls.delete.disabled = count === 0;
         if (controls.compare) controls.compare.disabled = count < 2;
         if (controls.share) {
-          const [selectedJob] = selectedJobs();
-          controls.share.disabled =
-            count !== 1 || Boolean(selectedJob?.isPrivateReference);
+          controls.share.disabled = count !== 1;
         }
       }
 
