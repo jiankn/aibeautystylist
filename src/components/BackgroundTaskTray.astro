@@ -313,11 +313,27 @@ const copy = taskCopyByLocale[locale];
     data-background-task-bubble
     hidden
   >
-    <span class="background-task-bubble-mark" aria-hidden="true">AI</span>
+    <span class="background-task-bubble-mark" aria-hidden="true">
+      <img
+        src="/images/logo-ui.webp"
+        alt=""
+        width="30"
+        height="30"
+        decoding="async"
+      />
+    </span>
     <span data-background-task-bubble-text>1</span>
   </button>
   <section class="background-task-card" data-background-task-card>
-    <div class="background-task-mark" aria-hidden="true">AI</div>
+    <div class="background-task-mark" aria-hidden="true">
+      <img
+        src="/images/logo-ui.webp"
+        alt=""
+        width="44"
+        height="44"
+        decoding="async"
+      />
+    </div>
     <div class="background-task-content">
       <div class="background-task-head">
         <strong data-background-task-title></strong>
@@ -671,12 +687,18 @@ const copy = taskCopyByLocale[locale];
   .background-task-mark,
   .background-task-bubble-mark {
     display: grid;
+    overflow: hidden;
     place-items: center;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--rose), #8b5cf6);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 900;
+    border: 1px solid var(--rose-border);
+    border-radius: 999px;
+    background: var(--bg-elevated);
+    box-shadow: 0 6px 16px rgba(199, 49, 103, 0.18);
+  }
+  .background-task-mark img,
+  .background-task-bubble-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
   .background-task-mark {
     width: 44px;
