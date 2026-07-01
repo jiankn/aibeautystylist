@@ -4,6 +4,10 @@ import SiteHeader from "../components/SiteHeader.astro";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCurrentLocale } from "../lib/i18n";
+import {
+  REFERENCE_TRYON_POLL_INTERVAL_MS,
+  REFERENCE_TRYON_POLL_MAX_ATTEMPTS,
+} from "../lib/referenceTryOn";
 import { PHOTO_CONSENT_VERSION } from "../lib/uploads";
 
 const locale = getCurrentLocale();
@@ -26,17 +30,45 @@ const copy = isZh
       referenceTitle: "1. 选择妆容参考",
       referenceHelp: "清晰单人正脸、妆容完整、无遮挡的图片效果最好。",
       referenceLabel: "上传新的参考图",
+      referenceFormat: "JPG、PNG 或 WebP，上传后自动压缩至 4MB 以内",
+      referenceRequired: "请上传一张妆容参考图，或选择一个已保存的参考妆容。",
+      referenceInvalid:
+        "参考图无法处理，请重新选择清晰的 JPG、PNG 或 WebP 图片。",
+      referenceTooLarge: "参考图压缩后仍超过 4MB，请换一张尺寸更小的图片。",
+      templateCreateFailed: "参考妆容暂时无法保存，请检查网络后重试。",
       templateName: "模板名称（可选）",
       templatePlaceholder: "例如：暖棕烟熏妆",
       savedTitle: "或者使用已保存的参考妆容",
       noSaved: "还没有保存的参考妆容。",
+      templateLoadFailed: "已保存的参考妆容暂时无法加载，你仍可上传新图片。",
       selfieTitle: "2. 上传自己的自拍",
       selfieHelp: "请使用自然光、正脸、面部无遮挡的清晰自拍。",
       selfieLabel: "选择自拍",
+      selfieFormat: "JPG、PNG 或 WebP，上传后自动优化",
+      selfieRequired: "请上传一张自己的清晰正脸自拍。",
+      selfieInvalid: "自拍无法处理，请重新选择清晰的 JPG、PNG 或 WebP 图片。",
+      selfieUploadFailed: "自拍暂时无法上传，请检查网络后重试。",
       rights: "我确认有权将参考图片用于个人私有试妆，不会用于公开传播。",
+      rightsRequired: "请确认你有权将这张参考图用于个人私有试妆。",
       consent: "我同意按照照片处理说明上传自拍并生成试妆结果。",
+      consentRequired: "请先同意照片处理说明。",
       generate: "生成我的参考图试妆",
-      generating: "正在保存参考图并生成私有试妆，请稍候…",
+      generating: "正在准备照片并创建私有试妆任务…",
+      generatingButton: "正在创建任务…",
+      loadingAccount: "正在检查账户与会员状态…",
+      retry: "重新加载",
+      fixErrors: "请先修正上方标出的内容。",
+      costNote:
+        "本次生成消耗 1 次额度，通常需要 1–3 分钟；失败、取消或超时会自动返还。",
+      costWithQuota:
+        "本次生成消耗 1 次额度，当前剩余 {remaining}/{total}；通常需要 1–3 分钟，失败、取消或超时会自动返还。",
+      noCredits: "当前生成额度已用完，请先购买额度后再继续。",
+      buyCredits: "购买额度",
+      backgroundTitle: "参考图私有试妆",
+      backgroundRunning: "任务正在后台生成，你可以继续浏览；完成后会通知你。",
+      backgroundNetwork:
+        "任务已创建，但当前网络不稳定。任务会继续在后台运行，请从任务卡片或历史记录查看结果。",
+      viewProgress: "查看任务进度",
       privacyTitle: "默认私有",
       privacy:
         "参考图存放在私有空间，不进入 Discover，也不提供公开分享。你可以随时删除模板和生成记录。",
@@ -55,9 +87,15 @@ const copy = isZh
       again: "继续试另一个妆容",
       delete: "删除",
       deleting: "正在删除…",
+      deleteConfirm: "删除后无法恢复。确定删除这个私有参考妆容吗？",
+      deleteFailed: "删除失败，请检查网络后重试。",
+      deleted: "私有参考妆容已删除。",
       selected: "已选择",
       failed: "生成失败，额度已自动返还，请检查图片后重试。",
-      loadFailed: "暂时无法加载账户信息，请刷新后重试。",
+      cancelled: "任务已取消，额度已自动返还。你可以修改图片后重新生成。",
+      timedOut: "任务处理超时，额度已自动返还。请稍后重试。",
+      createFailed: "暂时无法创建生成任务，请检查网络后重试。",
+      loadFailed: "暂时无法加载账户信息，请重试。",
     }
   : {
       title: "Reference Makeup Try-On · Premium | AI Beauty Stylist",
@@ -71,20 +109,58 @@ const copy = isZh
       referenceHelp:
         "A clear, front-facing photo with one visible face and complete makeup works best.",
       referenceLabel: "Upload a new reference",
+      referenceFormat: "JPG, PNG, or WebP; automatically compressed below 4 MB",
+      referenceRequired:
+        "Upload a makeup reference or choose one of your saved references.",
+      referenceInvalid:
+        "We could not process this reference. Choose a clear JPG, PNG, or WebP image.",
+      referenceTooLarge:
+        "The compressed reference is still over 4 MB. Choose a smaller image.",
+      templateCreateFailed:
+        "Unable to save this reference. Check your connection and retry.",
       templateName: "Template name (optional)",
       templatePlaceholder: "Example: warm brown smoky eye",
       savedTitle: "Or reuse a saved private reference",
       noSaved: "You have no saved private references yet.",
+      templateLoadFailed:
+        "Saved references are temporarily unavailable. You can still upload a new image.",
       selfieTitle: "2. Upload your selfie",
       selfieHelp:
         "Use a clear, front-facing selfie in natural light with no face obstruction.",
       selfieLabel: "Choose selfie",
+      selfieFormat: "JPG, PNG, or WebP; automatically optimized after upload",
+      selfieRequired: "Upload a clear, front-facing selfie of yourself.",
+      selfieInvalid:
+        "We could not process this selfie. Choose a clear JPG, PNG, or WebP image.",
+      selfieUploadFailed:
+        "Unable to upload this selfie. Check your connection and retry.",
       rights:
         "I have the right to use this reference for personal, private try-on and will not publish it.",
+      rightsRequired:
+        "Confirm that you have the right to use this reference for private try-on.",
       consent:
         "I agree to the photo processing notice for uploading my selfie and generating this result.",
+      consentRequired:
+        "Agree to the photo processing notice before generating.",
       generate: "Generate my reference try-on",
-      generating: "Saving the reference and generating your private try-on…",
+      generating: "Preparing your photos and creating a private try-on task…",
+      generatingButton: "Creating task…",
+      loadingAccount: "Checking your account and membership…",
+      retry: "Try again",
+      fixErrors: "Correct the highlighted items above.",
+      costNote:
+        "Uses 1 generation credit and usually takes 1–3 minutes. Failed, canceled, or timed-out tasks return the credit automatically.",
+      costWithQuota:
+        "Uses 1 generation credit. {remaining}/{total} remaining. Usually takes 1–3 minutes; failed, canceled, or timed-out tasks return the credit automatically.",
+      noCredits:
+        "You have no generation credits left. Buy credits to continue.",
+      buyCredits: "Buy credits",
+      backgroundTitle: "Private reference try-on",
+      backgroundRunning:
+        "Your task is generating in the background. You can keep browsing and we will notify you when it is ready.",
+      backgroundNetwork:
+        "The task was created, but the connection is unstable. It will continue in the background; check the task card or history for the result.",
+      viewProgress: "View task progress",
       privacyTitle: "Private by default",
       privacy:
         "References stay in private storage, never enter Discover, and cannot be publicly shared. Delete templates and results whenever you want.",
@@ -103,18 +179,33 @@ const copy = isZh
       again: "Try another reference",
       delete: "Delete",
       deleting: "Deleting…",
+      deleteConfirm:
+        "This cannot be undone. Delete this private makeup reference?",
+      deleteFailed:
+        "Unable to delete this reference. Check your connection and retry.",
+      deleted: "Private reference deleted.",
       selected: "Selected",
       failed:
         "Generation failed and the credit was returned. Check both photos and try again.",
-      loadFailed: "Unable to load your account. Refresh and try again.",
+      cancelled:
+        "The task was canceled and the credit was returned. Adjust the photos and try again.",
+      timedOut:
+        "The task timed out and the credit was returned. Please try again later.",
+      createFailed:
+        "Unable to create the generation task. Check your connection and retry.",
+      loadFailed: "Unable to load your account. Try again.",
     };
 
+const pricingHref = localizeAppHref("/pricing");
 const hrefs = {
   login: localizeAppHref(
     `/login?mode=login&next=${encodeURIComponent(pageHref)}`,
   ),
-  pricing: `${localizeAppHref("/pricing")}#pricing-comparison`,
+  pricing: `${pricingHref}?return_to=${encodeURIComponent(pageHref)}#pricing-comparison`,
   history: localizeAppHref("/history"),
+  page: pageHref,
+  resultBase: localizeAppHref("/result"),
+  credits: `${localizeAppHref("/subscription")}#credit-packs`,
 };
 ---
 
@@ -124,7 +215,7 @@ const hrefs = {
   bodyClass="reference-tryon-body"
   robots="noindex,follow"
 >
-  <SiteHeader active="discover" />
+  <SiteHeader active="tryOn" />
   <main
     class="reference-tryon-main"
     data-reference-tryon
@@ -142,8 +233,18 @@ const hrefs = {
       </aside>
     </section>
 
-    <section class="reference-state" data-loading-state aria-live="polite">
-      <span class="reference-spinner" aria-hidden="true"></span>
+    <section
+      class="reference-state"
+      data-loading-state
+      role="status"
+      aria-live="polite"
+    >
+      <span class="reference-spinner" data-loading-spinner aria-hidden="true"
+      ></span>
+      <p data-loading-message>{copy.loadingAccount}</p>
+      <button class="btn btn-outline" type="button" data-loading-retry hidden>
+        {copy.retry}
+      </button>
     </section>
 
     <section class="reference-gate" data-login-gate hidden>
@@ -160,10 +261,12 @@ const hrefs = {
       <div class="premium-template-manager" data-template-manager hidden>
         <h3>{copy.manageExisting}</h3>
         <div class="saved-reference-list" data-template-list></div>
+        <p class="saved-reference-status" data-template-status role="status">
+        </p>
       </div>
     </section>
 
-    <form class="reference-workflow" data-reference-form hidden>
+    <form class="reference-workflow" data-reference-form hidden novalidate>
       <section class="reference-step">
         <div class="reference-step-heading">
           <div>
@@ -177,10 +280,11 @@ const hrefs = {
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp"
+              aria-describedby="reference-file-help reference-file-error"
               data-reference-input
             />
             <span>{copy.referenceLabel}</span>
-            <small>JPG / PNG / WebP · 4MB WebP after compression</small>
+            <small id="reference-file-help">{copy.referenceFormat}</small>
             <img data-reference-preview alt="" hidden />
           </label>
           <label class="reference-name">
@@ -193,15 +297,37 @@ const hrefs = {
             />
           </label>
         </div>
+        <p
+          class="reference-field-error"
+          id="reference-file-error"
+          data-error="reference"
+          role="alert"
+          hidden
+        >
+        </p>
         <label class="reference-check">
-          <input type="checkbox" data-rights-check />
+          <input
+            type="checkbox"
+            aria-describedby="reference-rights-error"
+            data-rights-check
+          />
           <span>{copy.rights}</span>
         </label>
+        <p
+          class="reference-field-error"
+          id="reference-rights-error"
+          data-error="rights"
+          role="alert"
+          hidden
+        >
+        </p>
         <div class="saved-reference-block">
           <h3>{copy.savedTitle}</h3>
           <div class="saved-reference-list" data-template-list>
             <p>{copy.noSaved}</p>
           </div>
+          <p class="saved-reference-status" data-template-status role="status">
+          </p>
         </div>
       </section>
 
@@ -217,24 +343,63 @@ const hrefs = {
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp"
+            aria-describedby="selfie-file-help selfie-file-error"
             data-selfie-input
             required
           />
           <span>{copy.selfieLabel}</span>
-          <small>JPG / PNG / WebP</small>
+          <small id="selfie-file-help">{copy.selfieFormat}</small>
           <img data-selfie-preview alt="" hidden />
         </label>
+        <p
+          class="reference-field-error"
+          id="selfie-file-error"
+          data-error="selfie"
+          role="alert"
+          hidden
+        >
+        </p>
         <label class="reference-check">
-          <input type="checkbox" data-consent-check required />
+          <input
+            type="checkbox"
+            aria-describedby="selfie-consent-error"
+            data-consent-check
+            required
+          />
           <span>{copy.consent}</span>
         </label>
+        <p
+          class="reference-field-error"
+          id="selfie-consent-error"
+          data-error="consent"
+          role="alert"
+          hidden
+        >
+        </p>
       </section>
 
       <div class="reference-submit">
+        <p class="reference-cost-note" data-cost-note>{copy.costNote}</p>
+        <a
+          class="reference-credit-link"
+          href={hrefs.credits}
+          data-credit-link
+          hidden
+        >
+          {copy.buyCredits}
+        </a>
         <button class="btn btn-gold btn-lg" type="submit" data-generate>
           {copy.generate}
         </button>
         <p data-reference-status role="status"></p>
+        <a
+          class="reference-progress-link"
+          href={hrefs.history}
+          data-progress-link
+          hidden
+        >
+          {copy.viewProgress}
+        </a>
       </div>
     </form>
 
@@ -257,27 +422,66 @@ const hrefs = {
   </main>
   <MobileBottomNav active="tryon" />
 
-  <script is:inline define:vars={{ copy, hrefs }}>
+  <script
+    is:inline
+    define:vars={{
+      copy,
+      hrefs,
+      isZh,
+      pollIntervalMs: REFERENCE_TRYON_POLL_INTERVAL_MS,
+      pollMaxAttempts: REFERENCE_TRYON_POLL_MAX_ATTEMPTS,
+    }}
+  >
     (() => {
       const root = document.querySelector("[data-reference-tryon]");
       if (!root) return;
       const loading = root.querySelector("[data-loading-state]");
+      const loadingSpinner = root.querySelector("[data-loading-spinner]");
+      const loadingMessage = root.querySelector("[data-loading-message]");
+      const loadingRetry = root.querySelector("[data-loading-retry]");
       const loginGate = root.querySelector("[data-login-gate]");
       const premiumGate = root.querySelector("[data-premium-gate]");
       const form = root.querySelector("[data-reference-form]");
       const result = root.querySelector("[data-result]");
       const status = root.querySelector("[data-reference-status]");
+      const progressLink = root.querySelector("[data-progress-link]");
       const generate = root.querySelector("[data-generate]");
       const referenceInput = root.querySelector("[data-reference-input]");
       const selfieInput = root.querySelector("[data-selfie-input]");
       const referencePreview = root.querySelector("[data-reference-preview]");
       const selfiePreview = root.querySelector("[data-selfie-preview]");
+      const rightsCheck = root.querySelector("[data-rights-check]");
+      const consentCheck = root.querySelector("[data-consent-check]");
+      const templateTitle = root.querySelector("[data-template-title]");
+      const costNote = root.querySelector("[data-cost-note]");
+      const creditLink = root.querySelector("[data-credit-link]");
+      const errorNodes = Object.fromEntries(
+        Array.from(root.querySelectorAll("[data-error]")).map((node) => [
+          node.dataset.error,
+          node,
+        ]),
+      );
+      const errorControls = {
+        reference: referenceInput,
+        rights: rightsCheck,
+        selfie: selfieInput,
+        consent: consentCheck,
+      };
       const templateLists = Array.from(
         root.querySelectorAll("[data-template-list]"),
+      );
+      const templateStatuses = Array.from(
+        root.querySelectorAll("[data-template-status]"),
       );
       const templateManager = root.querySelector("[data-template-manager]");
       let selectedTemplateId = "";
       let templates = [];
+      let isPremium = false;
+      let quotaExhausted = false;
+      let activeJobId = "";
+      let pendingTemplateId = "";
+      let pendingUploadId = "";
+      let pendingIdempotencyKey = "";
 
       const showOnly = (target) => {
         [loading, loginGate, premiumGate, form, result].forEach((node) => {
@@ -285,37 +489,165 @@ const hrefs = {
         });
       };
 
-      async function readJson(response) {
+      function setLoadingState(message, failed = false) {
+        showOnly(loading);
+        if (loadingMessage) loadingMessage.textContent = message;
+        if (loadingSpinner) loadingSpinner.hidden = failed;
+        if (loadingRetry) loadingRetry.hidden = !failed;
+      }
+
+      function setTemplateStatus(message) {
+        templateStatuses.forEach((node) => {
+          node.textContent = message;
+        });
+      }
+
+      function clearFieldError(field) {
+        const node = errorNodes[field];
+        const control = errorControls[field];
+        if (node) {
+          node.textContent = "";
+          node.hidden = true;
+        }
+        control?.removeAttribute("aria-invalid");
+      }
+
+      function clearFieldErrors() {
+        Object.keys(errorNodes).forEach(clearFieldError);
+      }
+
+      function markFieldError(field, message) {
+        const node = errorNodes[field];
+        const control = errorControls[field];
+        if (node) {
+          node.textContent = message;
+          node.hidden = false;
+        }
+        control?.setAttribute("aria-invalid", "true");
+      }
+
+      function fieldError(field, message) {
+        const error = new Error(message);
+        error.field = field;
+        return error;
+      }
+
+      function focusField(field) {
+        errorControls[field]?.focus();
+      }
+
+      function validateForm() {
+        clearFieldErrors();
+        const failures = [];
+        if (!selectedTemplateId && !referenceInput.files?.[0]) {
+          failures.push(["reference", copy.referenceRequired]);
+        }
+        if (!selectedTemplateId && !rightsCheck.checked) {
+          failures.push(["rights", copy.rightsRequired]);
+        }
+        if (!selfieInput.files?.[0]) {
+          failures.push(["selfie", copy.selfieRequired]);
+        }
+        if (!consentCheck.checked) {
+          failures.push(["consent", copy.consentRequired]);
+        }
+        failures.forEach(([field, message]) => markFieldError(field, message));
+        if (failures.length) {
+          status.textContent = copy.fixErrors;
+          focusField(failures[0][0]);
+          return false;
+        }
+        return true;
+      }
+
+      function setGenerating(active) {
+        generate.disabled = active || quotaExhausted;
+        generate.setAttribute("aria-busy", String(active));
+        generate.textContent = active ? copy.generatingButton : copy.generate;
+      }
+
+      function updateQuota(quota) {
+        const remaining = Number(quota?.remaining);
+        const total = Number(quota?.total);
+        const hasQuota =
+          Number.isFinite(remaining) &&
+          Number.isFinite(total) &&
+          remaining >= 0 &&
+          total >= 0;
+        quotaExhausted = hasQuota && remaining <= 0;
+        if (costNote) {
+          costNote.textContent = quotaExhausted
+            ? copy.noCredits
+            : hasQuota
+              ? copy.costWithQuota
+                  .replace("{remaining}", String(remaining))
+                  .replace("{total}", String(total))
+              : copy.costNote;
+        }
+        if (creditLink) creditLink.hidden = !quotaExhausted;
+        setGenerating(false);
+      }
+
+      function apiError(body, fallback) {
+        const message =
+          isZh && body?.error?.message ? body.error.message : fallback;
+        const error = new Error(message || copy.createFailed);
+        error.code = body?.error?.code || "";
+        return error;
+      }
+
+      async function readJson(response, fallback) {
         const body = await response.json().catch(() => null);
         if (!response.ok || !body?.ok) {
-          throw new Error(body?.error?.message || copy.failed);
+          throw apiError(body, fallback);
         }
         return body.data;
       }
 
       async function loadSession() {
+        setLoadingState(copy.loadingAccount);
+        setTemplateStatus("");
         try {
-          const data = await readJson(await fetch("/api/session"));
+          const data = await readJson(
+            await fetch("/api/session"),
+            copy.loadFailed,
+          );
           if (data?.user?.kind !== "account") {
             showOnly(loginGate);
             return;
           }
+          updateQuota(data.quota);
+          isPremium = data.plan === "premium";
           if (data.plan !== "premium") {
-            await loadTemplates();
-            if (templateManager)
-              templateManager.hidden = templates.length === 0;
             showOnly(premiumGate);
+            try {
+              await loadTemplates();
+              if (templateManager)
+                templateManager.hidden = templates.length === 0;
+            } catch {
+              if (templateManager) templateManager.hidden = false;
+              setTemplateStatus(copy.templateLoadFailed);
+            }
             return;
           }
           showOnly(form);
-          await loadTemplates();
+          try {
+            await loadTemplates();
+          } catch {
+            templates = [];
+            renderTemplates();
+            setTemplateStatus(copy.templateLoadFailed);
+          }
         } catch {
-          if (loading) loading.textContent = copy.loadFailed;
+          setLoadingState(copy.loadFailed, true);
         }
       }
 
       async function loadTemplates() {
-        const data = await readJson(await fetch("/api/private-look-templates"));
+        const data = await readJson(
+          await fetch("/api/private-look-templates"),
+          copy.templateLoadFailed,
+        );
         templates = data.items || [];
         renderTemplates();
       }
@@ -337,6 +669,11 @@ const hrefs = {
             const choose = document.createElement("button");
             choose.type = "button";
             choose.className = "saved-reference-choose";
+            choose.disabled = !isPremium;
+            choose.setAttribute(
+              "aria-pressed",
+              String(template.id === selectedTemplateId),
+            );
             const image = document.createElement("img");
             image.src = template.image;
             image.alt = template.title;
@@ -347,11 +684,14 @@ const hrefs = {
               template.id === selectedTemplateId ? copy.selected : "";
             choose.append(image, title, state);
             choose.addEventListener("click", () => {
-              if (premiumGate && !premiumGate.hidden) return;
+              if (!isPremium) return;
               selectedTemplateId = template.id;
+              pendingTemplateId = template.id;
               referenceInput.value = "";
               referencePreview.hidden = true;
-              root.querySelector("[data-rights-check]").checked = false;
+              rightsCheck.checked = false;
+              clearFieldError("reference");
+              clearFieldError("rights");
               renderTemplates();
             });
 
@@ -359,7 +699,19 @@ const hrefs = {
             remove.type = "button";
             remove.className = "saved-reference-delete";
             remove.textContent = copy.delete;
+            remove.setAttribute(
+              "aria-label",
+              `${copy.delete}: ${template.title}`,
+            );
             remove.addEventListener("click", async () => {
+              const confirmed =
+                typeof window.absConfirm === "function"
+                  ? await window.absConfirm(copy.deleteConfirm, {
+                      variant: "danger",
+                    })
+                  : window.confirm(copy.deleteConfirm);
+              if (!confirmed) return;
+              setTemplateStatus("");
               remove.disabled = true;
               remove.textContent = copy.deleting;
               try {
@@ -368,15 +720,18 @@ const hrefs = {
                     `/api/private-look-templates/${encodeURIComponent(template.id)}`,
                     { method: "DELETE" },
                   ),
+                  copy.deleteFailed,
                 );
                 templates = templates.filter((item) => item.id !== template.id);
                 if (selectedTemplateId === template.id) selectedTemplateId = "";
+                if (pendingTemplateId === template.id) pendingTemplateId = "";
                 if (templateManager) {
                   templateManager.hidden = templates.length === 0;
                 }
                 renderTemplates();
+                setTemplateStatus(copy.deleted);
               } catch (error) {
-                if (status) status.textContent = error.message;
+                setTemplateStatus(error?.message || copy.deleteFailed);
                 remove.disabled = false;
                 remove.textContent = copy.delete;
               }
@@ -389,25 +744,46 @@ const hrefs = {
 
       function previewFile(input, image) {
         const file = input.files?.[0];
+        if (image.dataset.objectUrl) {
+          URL.revokeObjectURL(image.dataset.objectUrl);
+          delete image.dataset.objectUrl;
+        }
         if (!file) {
           image.hidden = true;
           return;
         }
-        image.src = URL.createObjectURL(file);
+        const objectUrl = URL.createObjectURL(file);
+        image.dataset.objectUrl = objectUrl;
+        image.src = objectUrl;
         image.hidden = false;
       }
 
       referenceInput.addEventListener("change", () => {
         selectedTemplateId = "";
+        pendingTemplateId = "";
+        rightsCheck.checked = false;
+        clearFieldError("reference");
+        clearFieldError("rights");
         renderTemplates();
         previewFile(referenceInput, referencePreview);
       });
-      selfieInput.addEventListener("change", () =>
-        previewFile(selfieInput, selfiePreview),
-      );
+      selfieInput.addEventListener("change", () => {
+        pendingUploadId = "";
+        consentCheck.checked = false;
+        clearFieldError("selfie");
+        clearFieldError("consent");
+        previewFile(selfieInput, selfiePreview);
+      });
+      rightsCheck.addEventListener("change", () => clearFieldError("rights"));
+      consentCheck.addEventListener("change", () => clearFieldError("consent"));
 
       async function compressToWebp(file, maxSide, quality) {
-        const bitmap = await createImageBitmap(file);
+        let bitmap;
+        try {
+          bitmap = await createImageBitmap(file);
+        } catch {
+          throw new Error("IMAGE_DECODE_FAILED");
+        }
         const scale = Math.min(
           1,
           maxSide / Math.max(bitmap.width, bitmap.height),
@@ -434,69 +810,154 @@ const hrefs = {
       }
 
       async function createTemplate() {
+        if (pendingTemplateId) return pendingTemplateId;
         if (selectedTemplateId) return selectedTemplateId;
         const file = referenceInput.files?.[0];
-        if (!file) throw new Error(copy.referenceHelp);
-        if (!root.querySelector("[data-rights-check]").checked) {
-          throw new Error(copy.rights);
+        if (!file) throw fieldError("reference", copy.referenceRequired);
+        if (!rightsCheck.checked)
+          throw fieldError("rights", copy.rightsRequired);
+        let webp;
+        try {
+          webp = await compressToWebp(file, 1600, 0.84);
+        } catch {
+          throw fieldError("reference", copy.referenceInvalid);
         }
-        const webp = await compressToWebp(file, 1600, 0.84);
+        if (webp.size > 4 * 1024 * 1024) {
+          throw fieldError("reference", copy.referenceTooLarge);
+        }
         const data = new FormData();
         data.set("reference", webp, "reference.webp");
-        data.set(
-          "title",
-          root.querySelector("[data-template-title]").value.trim(),
-        );
+        data.set("title", templateTitle.value.trim());
         data.set("rightsAccepted", "true");
         const template = await readJson(
           await fetch("/api/private-look-templates", {
             method: "POST",
             body: data,
           }),
+          copy.templateCreateFailed,
         );
         selectedTemplateId = template.id;
+        pendingTemplateId = template.id;
         templates.unshift(template);
+        renderTemplates();
         return template.id;
       }
 
       async function uploadSelfie() {
+        if (pendingUploadId) return { id: pendingUploadId };
         const file = selfieInput.files?.[0];
-        if (!file) throw new Error(copy.selfieHelp);
-        if (!root.querySelector("[data-consent-check]").checked) {
-          throw new Error(copy.consent);
+        if (!file) throw fieldError("selfie", copy.selfieRequired);
+        if (!consentCheck.checked)
+          throw fieldError("consent", copy.consentRequired);
+        let webp;
+        try {
+          webp = await compressToWebp(file, 1800, 0.86);
+        } catch {
+          throw fieldError("selfie", copy.selfieInvalid);
         }
-        const webp = await compressToWebp(file, 1800, 0.86);
         const data = new FormData();
         data.set("photo", webp, "selfie.webp");
         data.set("consentVersion", root.dataset.photoConsentVersion || "");
-        return readJson(
+        const upload = await readJson(
           await fetch("/api/uploads", { method: "POST", body: data }),
+          copy.selfieUploadFailed,
         );
+        pendingUploadId = upload.id;
+        return upload;
+      }
+
+      function statusProgress(jobStatus) {
+        if (jobStatus === "created") return 34;
+        if (jobStatus === "upload_validating") return 46;
+        if (jobStatus === "diagnosis_running") return 68;
+        if (jobStatus === "image_running") return 88;
+        if (jobStatus === "succeeded") return 100;
+        if (["failed", "cancelled", "timed_out"].includes(jobStatus)) return 0;
+        return 24;
+      }
+
+      function upsertBackgroundTask(job, stage = "") {
+        if (!job?.id) return;
+        const task = {
+          id: job.id,
+          type: "tryon",
+          title: copy.backgroundTitle,
+          status: job.status || "running",
+          progress: statusProgress(job.status),
+          stage: stage || copy.backgroundRunning,
+          href: hrefs.page,
+          resultHref: `${hrefs.resultBase}/${encodeURIComponent(job.id)}`,
+          persist: true,
+        };
+        if (window.__absBackgroundTasks?.upsert) {
+          window.__absBackgroundTasks.upsert(task);
+        } else {
+          document.dispatchEvent(
+            new CustomEvent("abs:background-task", {
+              detail: { action: "upsert", task },
+            }),
+          );
+        }
+      }
+
+      function terminalJobError(job) {
+        const message =
+          job.status === "cancelled"
+            ? copy.cancelled
+            : job.status === "timed_out"
+              ? copy.timedOut
+              : copy.failed;
+        const error = new Error(message);
+        error.terminalStatus = job.status;
+        return error;
       }
 
       async function pollJob(jobId) {
-        for (let attempt = 0; attempt < 150; attempt += 1) {
-          const job = await readJson(
-            await fetch(`/api/tryon-jobs/${encodeURIComponent(jobId)}`),
-          );
-          if (job.status === "succeeded") return job;
-          if (["failed", "cancelled", "timed_out"].includes(job.status)) {
-            throw new Error(job.errorCode || copy.failed);
+        let networkFailures = 0;
+        for (let attempt = 0; attempt < pollMaxAttempts; attempt += 1) {
+          try {
+            const job = await readJson(
+              await fetch(`/api/tryon-jobs/${encodeURIComponent(jobId)}`),
+              copy.backgroundNetwork,
+            );
+            networkFailures = 0;
+            upsertBackgroundTask(job);
+            if (job.status === "succeeded") return job;
+            if (["failed", "cancelled", "timed_out"].includes(job.status)) {
+              throw terminalJobError(job);
+            }
+          } catch (error) {
+            if (error?.terminalStatus) throw error;
+            networkFailures += 1;
+            if (networkFailures >= 3) {
+              upsertBackgroundTask(
+                { id: jobId, status: "running" },
+                copy.backgroundNetwork,
+              );
+              status.textContent = copy.backgroundNetwork;
+              progressLink.hidden = false;
+            }
           }
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
         }
-        throw new Error(copy.failed);
+        return { id: jobId, pending: true };
       }
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
-        generate.disabled = true;
+        if (activeJobId) {
+          status.textContent = copy.backgroundRunning;
+          progressLink.hidden = false;
+          return;
+        }
+        if (quotaExhausted || !validateForm()) return;
+        setGenerating(true);
         status.textContent = copy.generating;
+        progressLink.hidden = true;
         try {
-          const [templateId, upload] = await Promise.all([
-            createTemplate(),
-            uploadSelfie(),
-          ]);
+          const templateId = await createTemplate();
+          const upload = await uploadSelfie();
+          pendingIdempotencyKey ||= crypto.randomUUID();
           const job = await readJson(
             await fetch("/api/tryon-jobs", {
               method: "POST",
@@ -504,30 +965,81 @@ const hrefs = {
               body: JSON.stringify({
                 uploadId: upload.id,
                 privateTemplateId: templateId,
-                idempotencyKey: crypto.randomUUID(),
+                idempotencyKey: pendingIdempotencyKey,
                 requiredPlan: "premium",
                 purpose: "tryon",
               }),
             }),
+            copy.createFailed,
           );
+          activeJobId = job.id;
+          upsertBackgroundTask(job);
+          status.textContent = copy.backgroundRunning;
+          progressLink.hidden = false;
           const completed = await pollJob(job.id);
+          if (completed.pending) {
+            status.textContent = copy.backgroundNetwork;
+            return;
+          }
           root.querySelector("[data-result-image]").src = completed.resultImage;
+          activeJobId = "";
+          pendingUploadId = "";
+          pendingIdempotencyKey = "";
           showOnly(result);
+          const quotaMatch = costNote?.textContent?.match(/(\d+)\/(\d+)/);
+          if (quotaMatch) {
+            updateQuota({
+              remaining: Math.max(0, Number(quotaMatch[1]) - 1),
+              total: Number(quotaMatch[2]),
+            });
+          }
         } catch (error) {
-          status.textContent = error?.message || copy.failed;
+          if (error?.field) {
+            markFieldError(error.field, error.message);
+            focusField(error.field);
+            status.textContent = copy.fixErrors;
+          } else {
+            status.textContent = error?.message || copy.createFailed;
+          }
+          if (error?.terminalStatus) {
+            activeJobId = "";
+            pendingUploadId = "";
+            pendingIdempotencyKey = "";
+            progressLink.hidden = false;
+          }
         } finally {
-          generate.disabled = false;
+          if (!activeJobId) setGenerating(false);
         }
       });
 
       root.querySelector("[data-again]")?.addEventListener("click", () => {
+        selectedTemplateId = "";
+        pendingTemplateId = "";
+        pendingUploadId = "";
+        pendingIdempotencyKey = "";
+        activeJobId = "";
+        referenceInput.value = "";
         selfieInput.value = "";
+        rightsCheck.checked = false;
+        consentCheck.checked = false;
+        templateTitle.value = "";
+        referencePreview.hidden = true;
         selfiePreview.hidden = true;
         status.textContent = "";
+        progressLink.hidden = true;
+        clearFieldErrors();
+        renderTemplates();
         showOnly(form);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({
+          top: 0,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+            ? "auto"
+            : "smooth",
+        });
       });
 
+      loadingRetry?.addEventListener("click", loadSession);
       loadSession();
     })();
   </script>
@@ -549,7 +1061,7 @@ const hrefs = {
   }
   .reference-hero > div > span,
   .reference-result > div > span {
-    color: var(--gold-deep);
+    color: var(--gold);
     font-size: 0.78rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -596,6 +1108,16 @@ const hrefs = {
     background: var(--bg-elevated);
     text-align: center;
   }
+  .reference-state p {
+    margin: 0;
+    color: var(--body-secondary);
+    line-height: 1.55;
+  }
+  .reference-state .btn,
+  .reference-gate .btn,
+  .reference-result-actions .btn {
+    min-height: 44px;
+  }
   .reference-state[hidden],
   .reference-gate[hidden],
   .reference-workflow[hidden],
@@ -616,9 +1138,10 @@ const hrefs = {
   }
   .reference-premium > span {
     padding: 0.32rem 0.7rem;
+    border: 1px solid var(--gold-border);
     border-radius: 999px;
-    background: var(--gold-pale);
-    color: var(--gold-deep);
+    background: var(--surface-gold);
+    color: var(--gold-text);
     font-weight: 800;
   }
   .premium-template-manager {
@@ -684,6 +1207,10 @@ const hrefs = {
     cursor: pointer;
     text-align: center;
   }
+  .reference-dropzone:focus-within {
+    outline: 3px solid color-mix(in srgb, var(--rose) 35%, transparent);
+    outline-offset: 3px;
+  }
   .reference-dropzone input {
     position: absolute;
     width: 1px;
@@ -732,6 +1259,7 @@ const hrefs = {
     color: var(--body-secondary);
     font-size: 0.9rem;
     line-height: 1.55;
+    cursor: pointer;
   }
   .reference-check input {
     width: 18px;
@@ -759,6 +1287,19 @@ const hrefs = {
     grid-column: 1 / -1;
     color: var(--body-secondary);
   }
+  .reference-field-error,
+  .saved-reference-status {
+    margin: 0.55rem 0 0;
+    color: var(--danger, #a63d40);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .reference-field-error[hidden] {
+    display: none;
+  }
+  .saved-reference-status:empty {
+    display: none;
+  }
   :global(.saved-reference-card) {
     position: relative;
     min-width: 0;
@@ -768,8 +1309,8 @@ const hrefs = {
     overflow: hidden;
   }
   :global(.saved-reference-card[data-selected="true"]) {
-    border-color: var(--gold-deep);
-    box-shadow: 0 0 0 2px var(--gold-pale);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 24%, transparent);
   }
   :global(.saved-reference-choose) {
     width: 100%;
@@ -783,6 +1324,9 @@ const hrefs = {
     cursor: pointer;
     text-align: left;
   }
+  :global(.saved-reference-choose:disabled) {
+    cursor: default;
+  }
   :global(.saved-reference-choose img) {
     width: 100%;
     aspect-ratio: 1;
@@ -795,10 +1339,10 @@ const hrefs = {
   :global(.saved-reference-choose small) {
     min-height: 1.2em;
     padding-bottom: 0.55rem;
-    color: var(--gold-deep);
+    color: var(--gold);
   }
   :global(.saved-reference-delete) {
-    min-height: 36px;
+    min-height: 44px;
     margin: 0 0.7rem 0.7rem;
     border: 0;
     background: transparent;
@@ -821,6 +1365,26 @@ const hrefs = {
     min-height: 1.5em;
     margin: 0;
     color: var(--body-secondary);
+  }
+  .reference-submit .reference-cost-note {
+    max-width: 680px;
+    min-height: 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  .reference-credit-link,
+  .reference-progress-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    color: var(--rose);
+    font-weight: 750;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .reference-credit-link[hidden],
+  .reference-progress-link[hidden] {
+    display: none;
   }
   .reference-result {
     display: grid;
@@ -884,7 +1448,7 @@ const hrefs = {
   }
   @media (prefers-reduced-motion: reduce) {
     .reference-spinner {
-      animation-duration: 1.8s;
+      animation: none;
     }
   }
 </style>

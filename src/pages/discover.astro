@@ -6,7 +6,12 @@ import SiteHeader from "../components/SiteHeader.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { getCurrentLocale } from "../lib/i18n";
-import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
+import {
+  getLanguageSwitchPathname,
+  getLocalizedAppHref,
+  resolveLocaleRoute,
+} from "../i18n/routing";
+import { languageConfigs } from "../i18n/config";
 import {
   getMarketProfileLabel,
   getMarketProfileOptions,
@@ -658,6 +663,66 @@ const searchCopy = isKo
                     placeholder: "Search looks, scenarios, or effects",
                     clear: "Clear search",
                   };
+const searchRecoveryCopy = isKo
+  ? {
+      prompt:
+        "이 페이지는 한국어 메이크업 이름만 검색합니다. {language}(으)로 검색할까요?",
+      action: "{language}(으)로 검색",
+    }
+  : isDe
+    ? {
+        prompt:
+          "Diese Seite durchsucht nur deutsche Look-Namen. Auf {language} suchen?",
+        action: "Auf {language} suchen",
+      }
+    : isFr
+      ? {
+          prompt:
+            "Cette page recherche uniquement les noms français. Rechercher en {language} ?",
+          action: "Rechercher en {language}",
+        }
+      : isJa
+        ? {
+            prompt:
+              "このページでは日本語のメイク名だけを検索します。{language}で検索しますか？",
+            action: "{language}で検索",
+          }
+        : isZhTW
+          ? {
+              prompt: "目前頁面只搜尋中文妝容，是否改用 {language} 搜尋？",
+              action: "改用 {language} 搜尋",
+            }
+          : isZh
+            ? {
+                prompt: "当前页面只搜索中文妆容，是否改用 {language} 搜索？",
+                action: "改用 {language} 搜索",
+              }
+            : isEs
+              ? {
+                  prompt:
+                    "Esta página solo busca nombres en español. ¿Buscar en {language}?",
+                  action: "Buscar en {language}",
+                }
+              : isPt
+                ? {
+                    prompt:
+                      "Esta página pesquisa apenas nomes em português. Pesquisar em {language}?",
+                    action: "Pesquisar em {language}",
+                  }
+                : {
+                    prompt:
+                      "This page searches English look names only. Search in {language}?",
+                    action: "Search in {language}",
+                  };
+const searchLanguageTargets = Object.fromEntries(
+  languageConfigs.map((language) => [
+    language.locale,
+    {
+      href: getLanguageSwitchPathname(currentPathname, language.slug),
+      label: language.nativeLabel,
+    },
+  ]),
+);
 const referenceCta = isKo
   ? {
       badge: "Premium",
@@ -842,7 +907,6 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
         class="discover-search-panel"
         id="discover-search-panel"
         data-discover-search-panel
-        hidden
       >
         <label class="sr-only" for="discover-search-input">
           {searchCopy.label}
@@ -997,13 +1061,34 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
               ))
             }
           </div>
-          <div class="empty-state" id="empty-state" hidden>
+          <div
+            class="empty-state"
+            id="empty-state"
+            data-search-language-targets={JSON.stringify(searchLanguageTargets)}
+            data-search-language-prompt={searchRecoveryCopy.prompt}
+            data-search-language-action={searchRecoveryCopy.action}
+            hidden
+          >
             <span class="empty-icon" aria-hidden="true"></span>
-            <h3>{ui.emptyTitle}</h3>
-            <p class="muted">{ui.emptyHint}</p>
-            <button class="btn btn-primary" type="button" data-clear-filters
-              >{ui.clearFilters}</button
+            <div class="empty-state-copy" role="status" aria-live="polite">
+              <h3 data-empty-title>{ui.emptyTitle}</h3>
+              <p class="muted" data-empty-hint data-default-text={ui.emptyHint}>
+                {ui.emptyHint}
+              </p>
+            </div>
+            <button
+              class="btn btn-primary"
+              type="button"
+              data-clear-filters
+              data-search-reset>{ui.clearFilters}</button
             >
+            <a
+              class="btn btn-outline"
+              href={discoverPath}
+              data-search-language-switch
+              hidden
+            >
+            </a>
             <a class="btn btn-outline" href={referenceTryOnHref}>
               {referenceCta.action}
             </a>
@@ -1025,6 +1110,9 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
   <MobileBottomNav active="discover" />
   <style>
     @media (max-width: 767px) {
+      .discover-search-panel:not(.is-open) {
+        display: none;
+      }
       .discover-main {
         padding-top: 12px;
       }
@@ -1147,8 +1235,12 @@ function isActiveFilterOption(groupId: string, option: { value: string }) {
     .private-reference-cta:hover .private-reference-action i {
       transform: translateX(2px);
     }
-    .empty-state .btn + .btn {
-      margin-left: 8px;
+    .empty-state-copy {
+      display: grid;
+      gap: 8px;
+    }
+    .empty-state-copy p {
+      margin: 0;
     }
     @media (max-width: 767px) {
       .private-reference-cta {

@@ -6,6 +6,7 @@ import AuthNav from "../components/AuthNav.astro";
 import BackgroundTaskTray from "../components/BackgroundTaskTray.astro";
 import analyticsScriptUrl from "../../public/analytics.js?url&no-inline";
 import appScriptUrl from "../../public/app.js?url&no-inline";
+import lookSearchScriptUrl from "../../public/look-search.js?url&no-inline";
 import globalStylesUrl from "../../public/styles.css?url&no-inline";
 import {
   buildHreflangLinks,
@@ -69,7 +70,7 @@ const fontStylesheet =
     ? undefined
     : "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=optional";
 const idleScriptSources = [
-  ...(appScriptStrategy === "idle" ? [appScriptUrl] : []),
+  ...(appScriptStrategy === "idle" ? [lookSearchScriptUrl, appScriptUrl] : []),
   ...(analyticsScriptStrategy === "idle" ? [analyticsScriptUrl] : []),
 ];
 const clientMessages = {
@@ -272,7 +273,10 @@ const clientMessages = {
     <AuthNav />
     {
       appScriptStrategy === "defer" && (
-        <script is:inline src={appScriptUrl} defer />
+        <>
+          <script is:inline src={lookSearchScriptUrl} defer />
+          <script is:inline src={appScriptUrl} defer />
+        </>
       )
     }
     {
@@ -289,6 +293,7 @@ const clientMessages = {
           if (document.querySelector(`script[src="${src}"]`)) return;
           const script = document.createElement("script");
           script.src = src;
+          script.async = false;
           script.defer = true;
           document.body.appendChild(script);
         };

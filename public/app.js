@@ -929,9 +929,13 @@ const discoverSearchClear = document.querySelector("[data-look-search-clear]");
 const mobileSearchToggleButtons = document.querySelectorAll(
   "[data-mobile-search-toggle]",
 );
+const lookSearch = window.AbsLookSearch;
 let filterLastFocus = null;
 
 function normalizeLookSearch(value) {
+  if (lookSearch?.normalize) {
+    return lookSearch.normalize(value, APP_LOCALE);
+  }
   return String(value || "")
     .trim()
     .toLocaleLowerCase()
@@ -951,7 +955,7 @@ function updateDiscoverSearchControl() {
 
 function openDiscoverSearch({ focus = true } = {}) {
   if (!discoverSearchPanel) return;
-  discoverSearchPanel.hidden = false;
+  discoverSearchPanel.classList.add("is-open");
   mobileSearchToggleButtons.forEach((button) => {
     button.setAttribute("aria-expanded", "true");
   });
@@ -964,6 +968,17 @@ function openDiscoverSearch({ focus = true } = {}) {
   if (focus) {
     discoverSearchInput?.focus({ preventScroll: true });
     window.setTimeout(() => discoverSearchInput?.focus(), 60);
+  }
+}
+
+if (discoverSearchInput) {
+  const initialSearchQuery = new URL(window.location.href).searchParams.get("q");
+  if (initialSearchQuery) {
+    discoverSearchInput.value = initialSearchQuery;
+    discoverSearchPanel?.classList.add("is-open");
+    mobileSearchToggleButtons.forEach((button) => {
+      button.setAttribute("aria-expanded", "true");
+    });
   }
 }
 
@@ -1112,9 +1127,86 @@ favoriteLookButtons.forEach((button) => {
 });
 hydrateFavoriteLooks();
 
-function matchesLookSearch(card, query) {
-  if (!query) return true;
-  return normalizeLookSearch(card.dataset.searchIndex).includes(query);
+const lookSearchDocuments = new Map(
+  [...document.querySelectorAll("[data-look-card]")].map((card, index) => {
+    card.dataset.searchOrder = String(index);
+    return [
+      card,
+      lookSearch?.createDocument?.({
+        title: card.dataset.searchTitle || "",
+        text: card.dataset.searchIndex || "",
+        locale: APP_LOCALE,
+      }),
+    ];
+  }),
+);
+
+function getLookSearchScore(card, query) {
+  if (!query) return 0;
+  const document = lookSearchDocuments.get(card);
+  if (document && lookSearch?.score) {
+    return lookSearch.score(document, query, APP_LOCALE);
+  }
+  return normalizeLookSearch(card.dataset.searchIndex).includes(query)
+    ? 900
+    : null;
+}
+
+function updateDiscoverSearchUrl(query) {
+  const url = new URL(window.location.href);
+  if (query) {
+    url.searchParams.set("q", discoverSearchInput?.value.trim() || query);
+  } else {
+    url.searchParams.delete("q");
+  }
+  window.history.replaceState(
+    window.history.state,
+    "",
+    `${url.pathname}${url.search}${url.hash}`,
+  );
+}
+
+function updateSearchLanguageRecovery(emptyState, query, searchMatchCount) {
+  if (!emptyState) return;
+  const hint = emptyState.querySelector("[data-empty-hint]");
+  const switchLink = emptyState.querySelector("[data-search-language-switch]");
+  const alternativeLocale =
+    query && searchMatchCount === 0
+      ? lookSearch?.detectAlternativeLocale?.(query, APP_LOCALE)
+      : null;
+
+  let targets = {};
+  try {
+    targets = JSON.parse(emptyState.dataset.searchLanguageTargets || "{}");
+  } catch {
+    targets = {};
+  }
+  const target = alternativeLocale ? targets[alternativeLocale] : null;
+
+  if (!target || !switchLink) {
+    if (hint) hint.textContent = hint.dataset.defaultText || "";
+    if (switchLink) switchLink.hidden = true;
+    return;
+  }
+
+  const language = target.label || alternativeLocale;
+  if (hint) {
+    hint.textContent = (
+      emptyState.dataset.searchLanguagePrompt || hint.dataset.defaultText || ""
+    ).replace("{language}", language);
+  }
+
+  const targetUrl = new URL(target.href, window.location.origin);
+  const currentParams = new URL(window.location.href).searchParams;
+  currentParams.forEach((value, key) => {
+    if (key !== "q") targetUrl.searchParams.set(key, value);
+  });
+  targetUrl.searchParams.set("q", discoverSearchInput?.value.trim() || query);
+  switchLink.href = `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
+  switchLink.textContent = (
+    emptyState.dataset.searchLanguageAction || "Search in {language}"
+  ).replace("{language}", language);
+  switchLink.hidden = false;
 }
 
 function readLookFilterSelections() {
@@ -1227,12 +1319,14 @@ mobileSearchToggleButtons.forEach((button) => {
 });
 discoverSearchInput?.addEventListener("input", () => {
   updateDiscoverSearchControl();
+  updateDiscoverSearchUrl(getLookSearchQuery());
   applyLookFilters();
 });
 discoverSearchClear?.addEventListener("click", () => {
   if (!discoverSearchInput) return;
   discoverSearchInput.value = "";
   updateDiscoverSearchControl();
+  updateDiscoverSearchUrl("");
   applyLookFilters({ track: true });
   discoverSearchInput.focus();
 });
@@ -1270,6 +1364,7 @@ function applyLookFilters({ track = false } = {}) {
   const searchQuery = getLookSearchQuery();
 
   let visibleCount = 0;
+  let searchMatchCount = 0;
   document.querySelectorAll("[data-look-card]").forEach((card) => {
     const scenarioValues = card.dataset.scenarios?.split("|") || [];
     const finishValues = card.dataset.finishes?.split("|") || [];
@@ -1282,7 +1377,9 @@ function applyLookFilters({ track = false } = {}) {
       !selections.favorite?.value ||
       selections.favorite?.isAll ||
       card.dataset.favorite === "true";
-    const matchesSearch = matchesLookSearch(card, searchQuery);
+    const searchScore = getLookSearchScore(card, searchQuery);
+    const matchesSearch = searchScore !== null;
+    if (matchesSearch) searchMatchCount += 1;
     const visible =
       matchesScenario &&
       matchesFinish &&
@@ -1290,6 +1387,14 @@ function applyLookFilters({ track = false } = {}) {
       matchesFavorite &&
       matchesSearch;
     card.classList.toggle("hidden", !visible);
+    card.style.order =
+      visible && searchQuery
+        ? String(
+            100000 -
+              Math.round(searchScore || 0) * 10 +
+              Number(card.dataset.searchOrder || 0),
+          )
+        : "";
     if (visible) visibleCount += 1;
   });
 
@@ -1305,6 +1410,7 @@ function applyLookFilters({ track = false } = {}) {
 
   const emptyState = document.getElementById("empty-state");
   if (emptyState) emptyState.hidden = visibleCount > 0;
+  updateSearchLanguageRecovery(emptyState, searchQuery, searchMatchCount);
   if (summary) summary.hidden = visibleCount === 0;
 
   if (track) {
@@ -1328,6 +1434,10 @@ document.querySelectorAll("[data-clear-filters]").forEach((button) => {
       const allChip = group.querySelector("[data-filter-all]");
       if (allChip) setActiveFilterChip(group, allChip);
     });
+    if (button.hasAttribute("data-search-reset") && discoverSearchInput) {
+      discoverSearchInput.value = "";
+      updateDiscoverSearchUrl("");
+    }
     applyLookFilters({ track: true });
   });
 });

@@ -184,6 +184,12 @@ describe("global makeup localization architecture", () => {
 
     expect(eastLooks).toHaveLength(44);
     expect(globalLooks).toHaveLength(44);
+    expect(globalLooks.every((look) => look.searchTerms.length > 0)).toBe(true);
+    expect(
+      eastLooks.some((look) =>
+        look.searchTerms.some((term) => /[妝澤體]/u.test(term)),
+      ),
+    ).toBe(true);
 
     for (const recipeId of allRecipeIds) {
       expect(eastLooks.find((look) => look.slug === recipeId)).toMatchObject({

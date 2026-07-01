@@ -207,6 +207,8 @@ export interface ResolvedLook {
   intent: string;
   /** 顾问建议 */
   advisor: LocalizedAdvisor;
+  /** 仅用于当前界面语言搜索；中文同时包含简繁体等价文案 */
+  searchTerms: string[];
   /** 排序得分 */
   score: number;
   /** 配方版本 */

@@ -58,6 +58,10 @@ export function resolveLookCatalog(
       variant.id,
       effectiveAudienceContext.locale,
     );
+    const searchTerms = getLocalizedSearchTerms(
+      variant.id,
+      effectiveAudienceContext.locale,
+    );
 
     // 选择最佳资产
     const asset = selectBestAsset(
@@ -84,6 +88,7 @@ export function resolveLookCatalog(
       imageAlt: localization.imageAltTemplate,
       intent: localization.summary,
       advisor: localization.advisor,
+      searchTerms,
       score,
       recipeVersion: recipe.version,
       assetId: asset?.id,
@@ -146,6 +151,70 @@ function getLocalizationList(locale: string): LookLocalization[] {
   if (locale.startsWith("es")) return esLocalizations;
   if (locale.startsWith("pt")) return ptBRLocalizations;
   return enLocalizations;
+}
+
+function findLocalizationInList(
+  localizations: LookLocalization[],
+  marketVariantId: string,
+): LookLocalization | undefined {
+  const recipeId = marketVariantId.split("--")[0] ?? marketVariantId;
+  return (
+    localizations.find(
+      (localization) => localization.marketVariantId === marketVariantId,
+    ) ??
+    localizations.find(
+      (localization) =>
+        localization.marketVariantId === `${recipeId}--global-diverse`,
+    )
+  );
+}
+
+function localizationSearchTerms(
+  localization: LookLocalization | undefined,
+): string[] {
+  if (!localization) return [];
+  return [
+    localization.title,
+    localization.imageAltTemplate,
+    ...localization.scenarios,
+    ...localization.finishLabels,
+    localization.experienceLabel,
+    localization.summary,
+    localization.advisor.fit,
+    localization.advisor.effect,
+    ...localization.advisor.anchors,
+    localization.advisor.caution,
+    ...localization.advisor.judge,
+  ].filter(Boolean);
+}
+
+/**
+ * 搜索严格使用当前界面语言。简体与繁体中文被视为同一语言，
+ * 因此中文页面会同时索引两套中文文案；其他语言不会混入回退文案。
+ */
+function getLocalizedSearchTerms(
+  marketVariantId: string,
+  locale: string,
+): string[] {
+  const primary = findLocalizationInList(
+    getLocalizationList(locale),
+    marketVariantId,
+  );
+  const localizations = [primary];
+
+  if (locale.startsWith("zh")) {
+    const counterpartList =
+      locale === "zh-TW" || locale === "zh-HK"
+        ? zhCNLocalizations
+        : zhTWLocalizations;
+    localizations.push(
+      findLocalizationInList(counterpartList, marketVariantId),
+    );
+  }
+
+  return [
+    ...new Set(localizations.flatMap(localizationSearchTerms).filter(Boolean)),
+  ];
 }
 
 /** 自动生成默认本地化（最后手段） */
@@ -226,6 +295,10 @@ export function resolveBySnapshot(
     variant.id,
     snapshot.locale ?? effectiveFallbackContext.locale,
   );
+  const searchTerms = getLocalizedSearchTerms(
+    variant.id,
+    snapshot.locale ?? effectiveFallbackContext.locale,
+  );
   const snapshotAsset = snapshot.referenceAssetId
     ? getAssetById(snapshot.referenceAssetId)
     : undefined;
@@ -249,6 +322,7 @@ export function resolveBySnapshot(
     imageAlt: localization.imageAltTemplate,
     intent: localization.summary,
     advisor: localization.advisor,
+    searchTerms,
     score: 0,
     recipeVersion: snapshot.lookRecipeVersion ?? recipe.version,
     assetId: asset?.id,
