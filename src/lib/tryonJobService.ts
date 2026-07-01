@@ -20,8 +20,10 @@ import {
   GeminiMakeupTransferError,
 } from "./geminiMakeupTransfer";
 import {
+  isAcceptableMakeupTransferFallback,
   MAKEUP_REFERENCE_SPEC_VERSION,
   makeupReferenceSpecPrompt,
+  makeupTransferCandidateScore,
   makeupTransferCorrectionPrompt,
   passesMakeupTransferQuality,
   type MakeupReferenceSpec,
@@ -992,12 +994,20 @@ async function completePrivateImageStageWithGemini(options: {
     fetcher,
   });
 
+  const candidates: Array<{
+    generated: Awaited<ReturnType<typeof generateGeminiMakeupImage>>;
+    quality: MakeupTransferQuality;
+    attempt: number;
+  }> = [];
   let correction: MakeupTransferQuality | undefined;
   for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const previousCandidate =
+      candidates[candidates.length - 1]?.generated.image;
     const prompt = privateMakeupImagePrompt(
       options.look.title,
       spec,
       correction,
+      Boolean(previousCandidate),
     );
     let generated: Awaited<ReturnType<typeof generateGeminiMakeupImage>>;
     try {
@@ -1018,6 +1028,16 @@ async function completePrivateImageStageWithGemini(options: {
             data: options.photoData,
             mimeType: options.photoMimeType,
           },
+          ...(previousCandidate
+            ? [
+                {
+                  label:
+                    "CURRENT TRY-ON CANDIDATE — edit this image directly, retaining successful makeup and correcting only the listed fidelity issues:",
+                  data: previousCandidate.data,
+                  mimeType: previousCandidate.contentType,
+                },
+              ]
+            : []),
         ],
         timeoutMs: parseTimeout(options.bindings.GEMINI_IMAGE_TIMEOUT_MS),
         fetcher,
@@ -1039,6 +1059,7 @@ async function completePrivateImageStageWithGemini(options: {
             referenceSha256,
             makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
             attempt,
+            editsPreviousCandidate: Boolean(previousCandidate),
           },
         },
         options.bindings.DB,
@@ -1083,6 +1104,7 @@ async function completePrivateImageStageWithGemini(options: {
       bindings: options.bindings,
       fetcher,
     });
+    candidates.push({ generated, quality, attempt });
     if (passesMakeupTransferQuality(quality)) {
       return storePrivateMakeupResult({
         job: options.job,
@@ -1090,7 +1112,8 @@ async function completePrivateImageStageWithGemini(options: {
         templateId: options.privateTemplate.id,
         generated,
         quality,
-        attempt,
+        selectedAttempt: attempt,
+        generationAttempts: attempt,
         spec,
         bindings: options.bindings,
       });
@@ -1128,6 +1151,47 @@ async function completePrivateImageStageWithGemini(options: {
       }),
     );
     correction = quality;
+  }
+
+  const bestCandidate = candidates.reduce<
+    (typeof candidates)[number] | undefined
+  >(
+    (best, candidate) =>
+      !best ||
+      makeupTransferCandidateScore(candidate.quality) >
+        makeupTransferCandidateScore(best.quality)
+        ? candidate
+        : best,
+    undefined,
+  );
+  if (
+    bestCandidate &&
+    isAcceptableMakeupTransferFallback(bestCandidate.quality)
+  ) {
+    console.log(
+      JSON.stringify({
+        event: "makeup_transfer_best_candidate_accepted",
+        jobId: options.job.id,
+        privateTemplateId: options.privateTemplate.id,
+        selectedAttempt: bestCandidate.attempt,
+        generationAttempts: candidates.length,
+        overallScore: bestCandidate.quality.overallScore,
+        makeupSimilarityScore: bestCandidate.quality.makeupSimilarityScore,
+        identityPreservationScore:
+          bestCandidate.quality.identityPreservationScore,
+      }),
+    );
+    return storePrivateMakeupResult({
+      job: options.job,
+      userId: options.userId,
+      templateId: options.privateTemplate.id,
+      generated: bestCandidate.generated,
+      quality: bestCandidate.quality,
+      selectedAttempt: bestCandidate.attempt,
+      generationAttempts: candidates.length,
+      spec,
+      bindings: options.bindings,
+    });
   }
 
   throw new GeminiMakeupTransferError(
@@ -1330,7 +1394,8 @@ async function storePrivateMakeupResult(options: {
   templateId: string;
   generated: Awaited<ReturnType<typeof generateGeminiMakeupImage>>;
   quality: MakeupTransferQuality;
-  attempt: number;
+  selectedAttempt: number;
+  generationAttempts: number;
   spec: MakeupReferenceSpec;
   bindings: RuntimeBindings;
 }): Promise<StoredTryOnJob> {
@@ -1358,7 +1423,8 @@ async function storePrivateMakeupResult(options: {
         privateTemplateId: options.templateId,
         makeupSpecVersion: options.spec.schemaVersion,
         makeupQualityScore: String(options.quality.overallScore),
-        generationAttempt: String(options.attempt),
+        selectedGenerationAttempt: String(options.selectedAttempt),
+        generationAttempts: String(options.generationAttempts),
       },
     },
   );
@@ -1371,7 +1437,7 @@ async function storePrivateMakeupResult(options: {
     resultR2Key,
     makeupSpecVersion: options.spec.schemaVersion,
     makeupQualityScore: options.quality.overallScore,
-    makeupGenerationAttempts: options.attempt,
+    makeupGenerationAttempts: options.generationAttempts,
     disclaimer: localizedTryOnDisclaimer("generated", options.job.locale),
     updatedAt: completedAt,
     completedAt,
@@ -1613,10 +1679,15 @@ function privateMakeupImagePrompt(
   title: string,
   spec: MakeupReferenceSpec,
   correction?: MakeupTransferQuality,
+  editsPreviousCandidate = false,
 ): string {
   return [
-    "Edit the USER SELFIE by applying the cosmetic design from the MAKEUP REFERENCE.",
-    "The output must visibly change the selfie's makeup; an unchanged selfie or generic peach/nude look is a failure.",
+    editsPreviousCandidate
+      ? "Edit the CURRENT TRY-ON CANDIDATE directly. Retain its successful makeup and correct the listed fidelity issues."
+      : "Edit the USER SELFIE by applying the cosmetic design from the MAKEUP REFERENCE.",
+    editsPreviousCandidate
+      ? "Do not restart from or revert to the USER SELFIE; it is provided only to verify identity, structure, scene, and skin texture."
+      : "The output must visibly change the selfie's makeup; an unchanged selfie or generic peach/nude look is a failure.",
     makeupReferenceSpecPrompt(spec),
     correction ? makeupTransferCorrectionPrompt(correction) : "",
     "Match the focal makeup's color, placement, finish, reflectivity, texture, and intensity, adapted naturally to the selfie's proportions.",

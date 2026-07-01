@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  isAcceptableMakeupTransferFallback,
   MAKEUP_REFERENCE_SPEC_VERSION,
   MAKEUP_TRANSFER_QUALITY_VERSION,
+  makeupTransferCandidateScore,
   parseMakeupReferenceSpec,
   passesMakeupTransferQuality,
   type MakeupTransferQuality,
@@ -81,16 +83,41 @@ describe("makeup transfer contracts", () => {
     expect(
       passesMakeupTransferQuality({
         ...quality,
-        overallScore: 75,
-        makeupSimilarityScore: 75,
+        overallScore: 40,
+        makeupSimilarityScore: 65,
         identityPreservationScore: 80,
       }),
     ).toBe(true);
     expect(
       passesMakeupTransferQuality({
         ...quality,
-        makeupSimilarityScore: 74,
+        makeupSimilarityScore: 64,
       }),
     ).toBe(false);
+  });
+
+  it("accepts the best safe partial candidate when a retry becomes worse", () => {
+    const partial: MakeupTransferQuality = {
+      schemaVersion: MAKEUP_TRANSFER_QUALITY_VERSION,
+      overallScore: 45,
+      makeupSimilarityScore: 40,
+      identityPreservationScore: 95,
+      criticalMissing: [],
+      conflicts: ["lip gloss is too subtle"],
+      correctionInstructions: ["increase lip gloss"],
+    };
+    const noOp: MakeupTransferQuality = {
+      ...partial,
+      overallScore: 0,
+      makeupSimilarityScore: 0,
+      identityPreservationScore: 100,
+      criticalMissing: ["silver shimmer eyeshadow", "high gloss lips"],
+    };
+
+    expect(isAcceptableMakeupTransferFallback(partial)).toBe(true);
+    expect(isAcceptableMakeupTransferFallback(noOp)).toBe(false);
+    expect(makeupTransferCandidateScore(partial)).toBeGreaterThan(
+      makeupTransferCandidateScore(noOp),
+    );
   });
 });

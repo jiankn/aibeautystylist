@@ -167,10 +167,32 @@ export function passesMakeupTransferQuality(
   quality: MakeupTransferQuality,
 ): boolean {
   return (
-    quality.overallScore >= 75 &&
-    quality.makeupSimilarityScore >= 75 &&
+    quality.makeupSimilarityScore >= 65 &&
     quality.identityPreservationScore >= 80 &&
     quality.criticalMissing.length === 0
+  );
+}
+
+export function isAcceptableMakeupTransferFallback(
+  quality: MakeupTransferQuality,
+): boolean {
+  return (
+    quality.overallScore >= 40 &&
+    quality.makeupSimilarityScore >= 40 &&
+    quality.identityPreservationScore >= 85 &&
+    quality.criticalMissing.length === 0
+  );
+}
+
+export function makeupTransferCandidateScore(
+  quality: MakeupTransferQuality,
+): number {
+  if (quality.identityPreservationScore < 80) return Number.NEGATIVE_INFINITY;
+  return (
+    quality.makeupSimilarityScore * 0.65 +
+    quality.overallScore * 0.25 +
+    quality.identityPreservationScore * 0.1 -
+    quality.criticalMissing.length * 25
   );
 }
 
@@ -208,12 +230,13 @@ export function makeupTransferCorrectionPrompt(
   quality: MakeupTransferQuality,
 ): string {
   const corrections = [
-    ...quality.criticalMissing,
-    ...quality.conflicts,
-    ...quality.correctionInstructions,
+    ...quality.criticalMissing.slice(0, 3),
+    ...quality.conflicts.slice(0, 2),
+    ...quality.correctionInstructions.slice(0, 2),
   ].slice(0, 5);
   return [
     corrections.length ? `Retry corrections: ${corrections.join("; ")}.` : "",
+    "Prioritize the highest-priority visible features over supporting base, brow, cheek, contour, or highlight details.",
     "Make these makeup changes clearly visible while preserving the selfie identity.",
   ]
     .filter(Boolean)

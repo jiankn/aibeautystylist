@@ -400,7 +400,96 @@ describe("createTryOnJob", () => {
     expect(
       vi.mocked(generateGeminiMakeupImage).mock.calls[1]?.[0].prompt,
     ).toContain("Retry corrections: wet-look silver lid shimmer");
+    expect(
+      vi.mocked(generateGeminiMakeupImage).mock.calls[1]?.[0].prompt,
+    ).toContain("Do not restart from or revert to the USER SELFIE");
+    const retryImages =
+      vi.mocked(generateGeminiMakeupImage).mock.calls[1]?.[0].labeledImages ??
+      [];
+    expect(retryImages).toHaveLength(3);
+    expect(retryImages[2]?.label).toContain("CURRENT TRY-ON CANDIDATE");
+    expect([...new Uint8Array(retryImages[2]!.data)]).toEqual([7]);
     expect(evaluateMakeupTransfer).toHaveBeenCalledTimes(2);
+  });
+
+  it("returns the best safe candidate when the retry regresses to the selfie", async () => {
+    const privateTemplate = {
+      id: "template_best_candidate",
+      userId: "visitor_1",
+      title: "Reflective lid reference",
+      r2Key:
+        "private-templates/visitor_1/template_best_candidate/reference.webp",
+      contentType: "image/webp",
+      sizeBytes: 2,
+      width: 900,
+      height: 1200,
+      status: "active" as const,
+      referenceSha256: "reference-hash",
+      makeupSpecStatus: "ready" as const,
+      makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+      makeupSpec: reflectiveMakeupSpec(),
+      createdAt: "2026-06-30T00:00:00.000Z",
+      updatedAt: "2026-06-30T00:00:00.000Z",
+    };
+    await upsertSubscription({
+      userId: "visitor_1",
+      stripeSubscriptionId: "sub_premium_best_candidate",
+      planCode: "premium",
+      status: "active",
+      currentPeriodEnd: "2026-07-30T00:00:00.000Z",
+    });
+    await savePrivateLookTemplate(privateTemplate);
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(generateGeminiMakeupImage)
+      .mockResolvedValueOnce(generatedImage([7]))
+      .mockResolvedValueOnce(generatedImage([8]));
+    vi.mocked(evaluateMakeupTransfer)
+      .mockResolvedValueOnce({
+        result: partialMakeupQuality(),
+        model: "gemini-analysis-test",
+        durationMs: 300,
+        usage: {},
+      })
+      .mockResolvedValueOnce({
+        result: noOpMakeupQuality(),
+        model: "gemini-analysis-test",
+        durationMs: 300,
+        usage: {},
+      });
+    const bucket = bucketWithBytes([1, 2]);
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_IMAGE_MODEL: "gemini-image-test",
+      USER_UPLOADS: bucket,
+    };
+    const privateLook = privateTemplateToLook(privateTemplate);
+    const created = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look: privateLook,
+      idempotencyKey: "private_best_candidate_request",
+      bindings,
+      privateTemplate,
+    });
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look: privateLook,
+      bindings,
+    });
+
+    expect(result?.job).toMatchObject({
+      status: "succeeded",
+      makeupGenerationAttempts: 2,
+      makeupQualityScore: 45,
+    });
+    expect(result?.quota).toMatchObject({ remaining: 149 });
+    expect(bucket.put).toHaveBeenCalledOnce();
+    expect([...new Uint8Array(bucket.put.mock.calls[0]![1])]).toEqual([7]);
   });
 
   it("rejects and refunds a private result that fails both quality checks", async () => {
@@ -841,7 +930,10 @@ function bucketWithBytes(bytes: number[]) {
       body: new Uint8Array(bytes).buffer,
       httpMetadata: { contentType: "image/jpeg" },
     })),
-    put: vi.fn(async () => undefined),
+    put: vi.fn(
+      async (_key: string, _value: ArrayBuffer, _options?: unknown) =>
+        undefined,
+    ),
     delete: vi.fn(async () => undefined),
   };
 }
@@ -918,6 +1010,30 @@ function failingMakeupQuality(): MakeupTransferQuality {
       "add reflective silver shimmer across the visible mobile lid",
       "reduce peach blush",
     ],
+  };
+}
+
+function partialMakeupQuality(): MakeupTransferQuality {
+  return {
+    schemaVersion: MAKEUP_TRANSFER_QUALITY_VERSION,
+    overallScore: 45,
+    makeupSimilarityScore: 40,
+    identityPreservationScore: 95,
+    criticalMissing: [],
+    conflicts: ["lip gloss is too subtle"],
+    correctionInstructions: ["increase lip gloss"],
+  };
+}
+
+function noOpMakeupQuality(): MakeupTransferQuality {
+  return {
+    schemaVersion: MAKEUP_TRANSFER_QUALITY_VERSION,
+    overallScore: 0,
+    makeupSimilarityScore: 0,
+    identityPreservationScore: 100,
+    criticalMissing: ["silver shimmer eyeshadow", "high gloss lips"],
+    conflicts: [],
+    correctionInstructions: ["restore the focal makeup"],
   };
 }
 
