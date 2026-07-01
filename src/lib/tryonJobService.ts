@@ -33,6 +33,10 @@ import { createProxyFetcher } from "./proxyFetch";
 import { saveRejectedTryOnCandidate } from "./rejectedTryOnCandidates";
 import { localizedTryOnDisclaimer } from "./tryonDisclaimers";
 import {
+  PRIVATE_REFERENCE_TRYON_CREDIT_COST,
+  STANDARD_TRYON_CREDIT_COST,
+} from "./tryonCosts";
+import {
   createReferenceFallbackJob,
   getTryOnJobPurpose,
   getStoredJobById,
@@ -221,6 +225,9 @@ async function createMockReferenceJob(options: {
     new Date(),
     options.monthlyQuota,
     options.quotaPeriod,
+    options.privateTemplate
+      ? PRIVATE_REFERENCE_TRYON_CREDIT_COST
+      : STANDARD_TRYON_CREDIT_COST,
   );
   if (!reservation.reserved) {
     throw quotaError(reservation.duplicate);
@@ -309,6 +316,9 @@ async function createGeminiQueuedJob(options: {
     new Date(),
     options.monthlyQuota,
     options.quotaPeriod,
+    options.privateTemplate
+      ? PRIVATE_REFERENCE_TRYON_CREDIT_COST
+      : STANDARD_TRYON_CREDIT_COST,
   );
   if (!reservation.reserved) {
     throw quotaError(reservation.duplicate);

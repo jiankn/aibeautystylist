@@ -74,7 +74,7 @@ const fallbackCopy = isEnglish
       heroPoints: [
         [
           "One credit model",
-          "A diagnosis or a try-on task uses one generation credit.",
+          "A diagnosis or catalog try-on uses 1 credit; a private reference try-on uses 2 credits.",
         ],
         [
           "Credit return on failure",
@@ -117,7 +117,7 @@ const fallbackCopy = isEnglish
             "Designed for faster iteration, more saved context, and complete look access.",
           features: [
             "150 monthly generation credits",
-            "Private reference makeup transfer",
+            "Upload a makeup reference for a private try-on (2 credits each)",
             "Priority queue",
             "Long-term history",
             "Full look library access",
@@ -234,7 +234,10 @@ const fallbackCopy = isEnglish
         ["Premium", "适合高频对比、活动准备或需要更长历史记录。"],
       ],
       heroPoints: [
-        ["统一额度", "一次诊断或一次试妆都使用 1 次月度生成额度。"],
+        [
+          "统一额度",
+          "一次诊断或妆容库试妆使用 1 次额度；上传参考妆容私密试妆使用 2 次。",
+        ],
         ["失败返还", "失败、超时或系统取消的任务会自动返还预占额度。"],
         ["随时取消", "取消后权益保留到当前已付周期结束。"],
       ],
@@ -267,7 +270,7 @@ const fallbackCopy = isEnglish
           reason: "更适合频繁迭代、需要完整妆容库和更长历史记录的用户。",
           features: [
             "每月 150 次生成额度",
-            "上传参考妆容并私有复刻",
+            "上传参考妆容，生成专属私密试妆（每次 2 额度）",
             "优先队列",
             "长期历史记录",
             "完整妆容库",
@@ -359,7 +362,9 @@ const comparisonLabels = localizedPricingContent?.comparisonLabels ?? {
   credits: isEnglish ? "Monthly generation credits" : "月度生成额度",
   diagnosis: isEnglish ? "AI diagnosis uses credits" : "妆容诊断使用额度",
   tryon: isEnglish ? "AI try-on uses credits" : "AI 试妆使用额度",
-  reference: isEnglish ? "Private reference makeup transfer" : "私有参考图试妆",
+  reference: isEnglish
+    ? "Private reference try-on (2 credits each)"
+    : "私有参考图试妆（每次 2 额度）",
   hd: isEnglish ? "HD download" : "高清下载",
   tutorials: isEnglish ? "Makeup tutorials" : "详细妆容教程",
   priority: isEnglish ? "Priority queue" : "优先队列",
@@ -411,7 +416,9 @@ const comparisonRows = [
   {
     label:
       comparisonLabels.reference ??
-      (isEnglish ? "Private reference makeup transfer" : "私有参考图试妆"),
+      (isEnglish
+        ? "Private reference try-on (2 credits each)"
+        : "私有参考图试妆（每次 2 额度）"),
     values: Object.fromEntries(
       planOrder.map((code) => [
         code,

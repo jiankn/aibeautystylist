@@ -8,6 +8,7 @@ import {
   REFERENCE_TRYON_POLL_INTERVAL_MS,
   REFERENCE_TRYON_POLL_MAX_ATTEMPTS,
 } from "../lib/referenceTryOn";
+import { PRIVATE_REFERENCE_TRYON_CREDIT_COST } from "../lib/tryonCosts";
 import { PHOTO_CONSENT_VERSION } from "../lib/uploads";
 
 const locale = getCurrentLocale();
@@ -59,10 +60,10 @@ const copy = isZh
       retry: "重新加载",
       fixErrors: "请先修正上方标出的内容。",
       costNote:
-        "本次生成消耗 1 次额度，通常需要 1–3 分钟；失败、取消或超时会自动返还。",
+        "本次生成消耗 2 次额度，通常需要 1–3 分钟；失败、取消或超时会自动返还。",
       costWithQuota:
-        "本次生成消耗 1 次额度，当前剩余 {remaining}/{total}；通常需要 1–3 分钟，失败、取消或超时会自动返还。",
-      noCredits: "当前生成额度已用完，请先购买额度后再继续。",
+        "本次生成消耗 2 次额度，当前剩余 {remaining}/{total}；通常需要 1–3 分钟，失败、取消或超时会自动返还。",
+      noCredits: "当前额度不足 2 次，请先购买额度后再继续。",
       buyCredits: "购买额度",
       backgroundTitle: "参考图私有试妆",
       backgroundRunning: "任务正在后台生成，你可以继续浏览；完成后会通知你。",
@@ -153,11 +154,11 @@ const copy = isZh
       retry: "Try again",
       fixErrors: "Correct the highlighted items above.",
       costNote:
-        "Uses 1 generation credit and usually takes 1–3 minutes. Failed, canceled, or timed-out tasks return the credit automatically.",
+        "Uses 2 generation credits and usually takes 1–3 minutes. Failed, canceled, or timed-out tasks return both credits automatically.",
       costWithQuota:
-        "Uses 1 generation credit. {remaining}/{total} remaining. Usually takes 1–3 minutes; failed, canceled, or timed-out tasks return the credit automatically.",
+        "Uses 2 generation credits. {remaining}/{total} remaining. Usually takes 1–3 minutes; failed, canceled, or timed-out tasks return both credits automatically.",
       noCredits:
-        "You have no generation credits left. Buy credits to continue.",
+        "You need at least 2 generation credits. Buy credits to continue.",
       buyCredits: "Buy credits",
       backgroundTitle: "Private reference try-on",
       backgroundRunning:
@@ -236,14 +237,40 @@ const hrefs = {
     <section class="reference-hero">
       <div>
         <span class="rt-eyebrow">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            ><polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+            ></polygon></svg
+          >
           {copy.eyebrow}
         </span>
         <h1>{copy.heading}</h1>
         <p>{copy.intro}</p>
       </div>
       <aside class="rt-privacy-card">
-        <svg class="rt-privacy-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <svg
+          class="rt-privacy-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          ><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path
+            d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg
+        >
         <strong>{copy.privacyTitle}</strong>
         <p>{copy.privacy}</p>
       </aside>
@@ -258,9 +285,31 @@ const hrefs = {
     >
       <div class="rt-loader-ring" data-loading-spinner aria-hidden="true">
         <svg viewBox="0 0 80 80" width="64" height="64">
-          <circle cx="40" cy="40" r="34" fill="none" stroke="var(--line)" stroke-width="4" opacity="0.3"></circle>
-          <circle class="rt-loader-arc" cx="40" cy="40" r="34" fill="none" stroke="url(#rt-grad)" stroke-width="4" stroke-linecap="round" stroke-dasharray="160 54"></circle>
-          <defs><linearGradient id="rt-grad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--rose)"/><stop offset="100%" stop-color="var(--gold)"/></linearGradient></defs>
+          <circle
+            cx="40"
+            cy="40"
+            r="34"
+            fill="none"
+            stroke="var(--line)"
+            stroke-width="4"
+            opacity="0.3"></circle>
+          <circle
+            class="rt-loader-arc"
+            cx="40"
+            cy="40"
+            r="34"
+            fill="none"
+            stroke="url(#rt-grad)"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-dasharray="160 54"></circle>
+          <defs
+            ><linearGradient id="rt-grad" x1="0%" y1="0%" x2="100%" y2="0%"
+              ><stop offset="0%" stop-color="var(--rose)"></stop><stop
+                offset="100%"
+                stop-color="var(--gold)"></stop></linearGradient
+            ></defs
+          >
         </svg>
       </div>
       <p data-loading-message>{copy.loadingAccount}</p>
@@ -271,7 +320,22 @@ const hrefs = {
 
     <!-- 登录门控 -->
     <section class="reference-gate" data-login-gate hidden>
-      <svg class="rt-gate-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <svg
+        class="rt-gate-icon"
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="var(--rose)"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        ><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle
+          cx="12"
+          cy="7"
+          r="4"></circle></svg
+      >
       <h2>{copy.loginTitle}</h2>
       <p>{copy.loginBody}</p>
       <a class="btn btn-primary" href={hrefs.login}>{copy.loginCta}</a>
@@ -297,19 +361,34 @@ const hrefs = {
       <nav class="rt-stepper" aria-label="Progress">
         <div class="rt-stepper-node rt-stepper-node--active" data-step-node="1">
           <span class="rt-stepper-dot">1</span>
-          <span class="rt-stepper-label">{isZh ? '选择参考' : 'Reference'}</span>
+          <span class="rt-stepper-label">{isZh ? "选择参考" : "Reference"}</span
+          >
         </div>
-        <div class="rt-stepper-line"><span class="rt-stepper-line-fill"></span></div>
+        <div class="rt-stepper-line">
+          <span class="rt-stepper-line-fill"></span>
+        </div>
         <div class="rt-stepper-node" data-step-node="2">
           <span class="rt-stepper-dot">2</span>
-          <span class="rt-stepper-label">{isZh ? '上传自拍' : 'Selfie'}</span>
+          <span class="rt-stepper-label">{isZh ? "上传自拍" : "Selfie"}</span>
         </div>
-        <div class="rt-stepper-line"><span class="rt-stepper-line-fill"></span></div>
+        <div class="rt-stepper-line">
+          <span class="rt-stepper-line-fill"></span>
+        </div>
         <div class="rt-stepper-node" data-step-node="3">
           <span class="rt-stepper-dot">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg
+            >
           </span>
-          <span class="rt-stepper-label">{isZh ? '生成妆效' : 'Generate'}</span>
+          <span class="rt-stepper-label">{isZh ? "生成妆效" : "Generate"}</span>
         </div>
       </nav>
 
@@ -330,7 +409,21 @@ const hrefs = {
               aria-describedby="reference-file-help reference-file-error"
               data-reference-input
             />
-            <svg class="rt-upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <svg
+              class="rt-upload-icon"
+              width="40"
+              height="40"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              ><rect x="3" y="3" width="18" height="18" rx="2" ry="2"
+              ></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline
+                points="21 15 16 10 5 21"></polyline></svg
+            >
             <span>{copy.referenceLabel}</span>
             <small id="reference-file-help">{copy.referenceFormat}</small>
             <img data-reference-preview alt="" hidden />
@@ -396,7 +489,22 @@ const hrefs = {
             data-selfie-input
             required
           />
-          <svg class="rt-upload-icon rt-upload-icon--selfie" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <svg
+            class="rt-upload-icon rt-upload-icon--selfie"
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            ><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle
+              cx="12"
+              cy="7"
+              r="4"></circle></svg
+          >
           <span>{copy.selfieLabel}</span>
           <small id="selfie-file-help">{copy.selfieFormat}</small>
           <img data-selfie-preview alt="" hidden />
@@ -440,7 +548,20 @@ const hrefs = {
           {copy.buyCredits}
         </a>
         <button class="btn rt-generate-btn" type="submit" data-generate>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v1m0 16v1m-8-9H3m18 0h-1M5.6 5.6l.7.7m12.1 12.1l.7.7M5.6 18.4l.7-.7M18.4 5.6l.7-.7"/><circle cx="12" cy="12" r="4"/></svg>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            ><path
+              d="M12 3v1m0 16v1m-8-9H3m18 0h-1M5.6 5.6l.7.7m12.1 12.1l.7.7M5.6 18.4l.7-.7M18.4 5.6l.7-.7"
+            ></path><circle cx="12" cy="12" r="4"></circle></svg
+          >
           {copy.generate}
         </button>
         <p data-reference-status role="status"></p>
@@ -483,6 +604,7 @@ const hrefs = {
       isZh,
       pollIntervalMs: REFERENCE_TRYON_POLL_INTERVAL_MS,
       pollMaxAttempts: REFERENCE_TRYON_POLL_MAX_ATTEMPTS,
+      privateReferenceCreditCost: PRIVATE_REFERENCE_TRYON_CREDIT_COST,
     }}
   >
     (() => {
@@ -542,7 +664,7 @@ const hrefs = {
         root.querySelector('[data-step-node="2"]'),
         root.querySelector('[data-step-node="3"]'),
       ];
-      const stepperLines = root.querySelectorAll('.rt-stepper-line');
+      const stepperLines = root.querySelectorAll(".rt-stepper-line");
 
       function updateStepper() {
         const hasRef = !!(selectedTemplateId || referenceInput.files?.[0]);
@@ -552,13 +674,16 @@ const hrefs = {
         stepperNodes.forEach((node, i) => {
           if (!node) return;
           const step = i + 1;
-          node.classList.toggle('rt-stepper-node--active', step === currentStep);
-          node.classList.toggle('rt-stepper-node--done', step < currentStep);
+          node.classList.toggle(
+            "rt-stepper-node--active",
+            step === currentStep,
+          );
+          node.classList.toggle("rt-stepper-node--done", step < currentStep);
         });
         stepperLines.forEach((line, i) => {
           if (!line) return;
           const filled = i < currentStep - 1;
-          line.classList.toggle('rt-stepper-line--active', filled);
+          line.classList.toggle("rt-stepper-line--active", filled);
         });
       }
 
@@ -653,7 +778,8 @@ const hrefs = {
           Number.isFinite(total) &&
           remaining >= 0 &&
           total >= 0;
-        quotaExhausted = hasQuota && remaining <= 0;
+        quotaExhausted =
+          hasQuota && remaining < Number(privateReferenceCreditCost || 2);
         if (costNote) {
           costNote.textContent = quotaExhausted
             ? copy.noCredits
@@ -1015,6 +1141,7 @@ const hrefs = {
               await fetch(`/api/tryon-jobs/${encodeURIComponent(jobId)}`),
               copy.backgroundNetwork,
             );
+            if (job.quota) updateQuota(job.quota);
             networkFailures = 0;
             upsertBackgroundTask(job);
             if (job.status === "succeeded") return job;
@@ -1068,6 +1195,7 @@ const hrefs = {
             copy.createFailed,
           );
           assertPrivateJobMatches(job, templateId, upload.id);
+          if (job.quota) updateQuota(job.quota);
           activeJobId = job.id;
           upsertBackgroundTask(job);
           status.textContent = copy.backgroundRunning;
@@ -1083,13 +1211,6 @@ const hrefs = {
           pendingUploadId = "";
           pendingIdempotencyKey = "";
           showOnly(result);
-          const quotaMatch = costNote?.textContent?.match(/(\d+)\/(\d+)/);
-          if (quotaMatch) {
-            updateQuota({
-              remaining: Math.max(0, Number(quotaMatch[1]) - 1),
-              total: Number(quotaMatch[2]),
-            });
-          }
         } catch (error) {
           if (error?.field) {
             markFieldError(error.field, error.message);
@@ -1382,8 +1503,9 @@ const hrefs = {
     border-color: var(--gold);
     background: var(--surface-gold);
     color: var(--gold-text);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 18%, transparent),
-                0 0 20px color-mix(in srgb, var(--gold) 12%, transparent);
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--gold) 18%, transparent),
+      0 0 20px color-mix(in srgb, var(--gold) 12%, transparent);
   }
   .rt-stepper-node--done .rt-stepper-dot {
     border-color: var(--teal);
@@ -1439,15 +1561,18 @@ const hrefs = {
     background: color-mix(in srgb, var(--bg-elevated) 82%, transparent);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 4px 24px color-mix(in srgb, var(--heading) 4%, transparent),
-                inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
+    box-shadow:
+      0 4px 24px color-mix(in srgb, var(--heading) 4%, transparent),
+      inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
   }
   .reference-step {
     padding: clamp(1.5rem, 4vw, 2.25rem);
     border: 1px solid var(--line);
     border-radius: 18px;
     background: var(--bg-elevated);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
   }
   .reference-step:hover {
     border-color: color-mix(in srgb, var(--rose) 25%, var(--line));
@@ -1498,7 +1623,10 @@ const hrefs = {
     color: var(--heading);
     cursor: pointer;
     text-align: center;
-    transition: border-color 0.3s ease, background 0.3s ease, transform 0.2s ease;
+    transition:
+      border-color 0.3s ease,
+      background 0.3s ease,
+      transform 0.2s ease;
   }
   .reference-dropzone:hover {
     border-color: var(--rose);
@@ -1518,7 +1646,9 @@ const hrefs = {
   .rt-upload-icon {
     color: var(--rose);
     opacity: 0.7;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
   }
   .reference-dropzone:hover .rt-upload-icon {
     opacity: 1;
@@ -1575,7 +1705,9 @@ const hrefs = {
     background: var(--bg);
     color: var(--heading);
     font: inherit;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
   }
   .reference-name input:focus {
     border-color: var(--rose);
@@ -1646,7 +1778,10 @@ const hrefs = {
     border-radius: 12px;
     background: var(--bg);
     overflow: hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      transform 0.2s ease;
   }
   :global(.saved-reference-card:hover) {
     transform: translateY(-2px);
@@ -1654,8 +1789,9 @@ const hrefs = {
   }
   :global(.saved-reference-card[data-selected="true"]) {
     border-color: var(--gold);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 24%, transparent),
-                0 4px 16px color-mix(in srgb, var(--gold) 10%, transparent);
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--gold) 24%, transparent),
+      0 4px 16px color-mix(in srgb, var(--gold) 10%, transparent);
   }
   :global(.saved-reference-choose) {
     width: 100%;
@@ -1742,14 +1878,19 @@ const hrefs = {
     font-weight: 800;
     letter-spacing: 0.02em;
     cursor: pointer;
-    box-shadow: 0 4px 20px color-mix(in srgb, var(--rose) 30%, transparent),
-                0 2px 8px color-mix(in srgb, var(--gold) 20%, transparent);
-    transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.2s ease;
+    box-shadow:
+      0 4px 20px color-mix(in srgb, var(--rose) 30%, transparent),
+      0 2px 8px color-mix(in srgb, var(--gold) 20%, transparent);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.3s ease,
+      opacity 0.2s ease;
   }
   .rt-generate-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px color-mix(in srgb, var(--rose) 35%, transparent),
-                0 4px 12px color-mix(in srgb, var(--gold) 25%, transparent);
+    box-shadow:
+      0 8px 30px color-mix(in srgb, var(--rose) 35%, transparent),
+      0 4px 12px color-mix(in srgb, var(--gold) 25%, transparent);
   }
   .rt-generate-btn:active:not(:disabled) {
     transform: translateY(0);
@@ -1799,8 +1940,9 @@ const hrefs = {
     background: color-mix(in srgb, var(--bg-elevated) 85%, transparent);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--gold) 10%, transparent),
-                0 8px 32px color-mix(in srgb, var(--gold) 8%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--gold) 10%, transparent),
+      0 8px 32px color-mix(in srgb, var(--gold) 8%, transparent);
   }
   .rt-result-badge {
     display: inline-flex;
@@ -1927,4 +2069,3 @@ const hrefs = {
     }
   }
 </style>
-

@@ -112,7 +112,8 @@ const shareCopyByLocale = {
     before: "Before",
     after: "After",
     shareTitle: "My AI makeup try-on result",
-    shareText: "See my AI makeup try-on reference result.",
+    shareText:
+      "Help me choose: is this look better for every day, date night, or photos?",
     shareCopied: "✓ Link copied",
     copied: "✓ Copied",
     rewardSuccess: "✓ Credit +1 reward claimed",
@@ -161,7 +162,7 @@ const shareCopyByLocale = {
     before: "原图",
     after: "试妆后",
     shareTitle: "我的 AI 试妆效果",
-    shareText: "来看看我的 AI 试妆参考效果。",
+    shareText: "帮我选一下：这个妆更适合日常、约会，还是拍照？",
     shareCopied: "✓ 链接已复制",
     copied: "✓ 已复制",
     rewardSuccess: "✓ 额度 +1，奖励已领取！",
@@ -210,7 +211,7 @@ const shareCopyByLocale = {
     before: "原圖",
     after: "試妝後",
     shareTitle: "我的 AI 試妝效果",
-    shareText: "來看看我的 AI 試妝參考效果。",
+    shareText: "幫我選一下：這個妝更適合日常、約會，還是拍照？",
     shareCopied: "✓ 連結已複製",
     copied: "✓ 已複製",
     rewardSuccess: "✓ 額度 +1，獎勵已領取！",
@@ -265,7 +266,7 @@ const shareCopyByLocale = {
     before: "Vorher",
     after: "Nachher",
     shareTitle: "Mein AI Make-up-Try-on-Ergebnis",
-    shareText: "Sieh dir mein AI Make-up-Try-on-Ergebnis an.",
+    shareText: "Hilf mir wählen: Alltag, Date Night oder Fotos?",
     shareCopied: "✓ Link kopiert",
     copied: "✓ Kopiert",
     rewardSuccess: "✓ Credit +1, Bonus erhalten",
@@ -318,7 +319,8 @@ const shareCopyByLocale = {
     before: "Avant",
     after: "Après",
     shareTitle: "Mon résultat d'essai maquillage IA",
-    shareText: "Découvrez mon résultat d'essai maquillage IA.",
+    shareText:
+      "Aide-moi à choisir : plutôt au quotidien, en rendez-vous ou en photo ?",
     shareCopied: "✓ Lien copié",
     copied: "✓ Copié",
     rewardSuccess: "✓ Crédit +1, récompense obtenue",
@@ -370,7 +372,7 @@ const shareCopyByLocale = {
     before: "元画像",
     after: "試着後",
     shareTitle: "私のAIメイク試着結果",
-    shareText: "私のAIメイク試着の参考結果を見てください。",
+    shareText: "このメイク、普段使い・デート・写真ならどれがよさそう？",
     shareCopied: "✓ リンクをコピーしました",
     copied: "✓ コピーしました",
     rewardSuccess: "✓ クレジット +1、特典を受け取りました",
@@ -421,7 +423,7 @@ const shareCopyByLocale = {
     before: "원본",
     after: "체험 후",
     shareTitle: "내 AI 메이크업 체험 결과",
-    shareText: "내 AI 메이크업 체험 참고 결과를 확인해 보세요.",
+    shareText: "이 메이크업, 데일리·데이트·사진 중 언제가 가장 잘 어울릴까?",
     shareCopied: "✓ 링크가 복사되었습니다",
     copied: "✓ 복사됨",
     rewardSuccess: "✓ 크레딧 +1, 보상을 받았습니다",
@@ -475,7 +477,7 @@ const shareCopyByLocale = {
     before: "Antes",
     after: "Después",
     shareTitle: "Mi resultado de maquillaje IA",
-    shareText: "Mira mi resultado de referencia de maquillaje IA.",
+    shareText: "Ayúdame a elegir: ¿para diario, una cita o fotos?",
     shareCopied: "✓ Enlace copiado",
     copied: "✓ Copiado",
     rewardSuccess: "✓ Crédito +1, recompensa recibida",
@@ -529,7 +531,7 @@ const shareCopyByLocale = {
     before: "Antes",
     after: "Después",
     shareTitle: "Mi resultado de maquillaje IA",
-    shareText: "Mira mi resultado de referencia de maquillaje IA.",
+    shareText: "Ayúdame a elegir: ¿para diario, una cita o fotos?",
     shareCopied: "✓ Enlace copiado",
     copied: "✓ Copiado",
     rewardSuccess: "✓ Crédito +1, recompensa recibida",
@@ -583,7 +585,7 @@ const shareCopyByLocale = {
     before: "Antes",
     after: "Depois",
     shareTitle: "Meu resultado de maquiagem IA",
-    shareText: "Veja meu resultado de referência de maquiagem IA.",
+    shareText: "Me ajuda a escolher: dia a dia, encontro ou fotos?",
     shareCopied: "✓ Link copiado",
     copied: "✓ Copiado",
     rewardSuccess: "✓ Crédito +1, recompensa recebida",
@@ -822,7 +824,7 @@ const posterCopy =
     const actionStatus = document.getElementById("share-action-status");
     const webShareBtn = document.getElementById("share-web-btn");
     const copyBtn = document.getElementById("share-copy-btn");
-    let currentPlan = "free";
+    let currentPlan = null;
     let hasLoadedPlan = false;
     let currentJob = null;
     let publicShareUrl;
@@ -901,7 +903,7 @@ const posterCopy =
 
     function refreshRewardButtonState() {
       if (!rewardBtn) return;
-      if (!hasLoadedPlan || isPaidPlan()) {
+      if (!hasLoadedPlan || currentPlan !== "free") {
         rewardBtn.hidden = true;
         rewardBtn.disabled = true;
         return;
@@ -914,7 +916,13 @@ const posterCopy =
     loadSessionPlan();
 
     function normalizePlan(plan) {
-      return plan === "premium" ? "premium" : plan === "pro" ? "pro" : "free";
+      return plan === "premium"
+        ? "premium"
+        : plan === "pro"
+          ? "pro"
+          : plan === "free"
+            ? "free"
+            : null;
     }
 
     function isPaidPlan() {
@@ -927,7 +935,7 @@ const posterCopy =
         const data = await res.json();
         if (data.ok) currentPlan = normalizePlan(data.data?.plan);
       } catch {
-        currentPlan = "free";
+        currentPlan = null;
       }
       hasLoadedPlan = true;
       updateTryOnLinks();

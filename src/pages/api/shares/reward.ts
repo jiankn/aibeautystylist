@@ -4,6 +4,7 @@ import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import { getEntitlementContext } from "../../../lib/entitlements";
 import { apiError, apiSuccess } from "../../../lib/http";
 import { getStoredJobById } from "../../../lib/jobs";
+import { planHasFeature } from "../../../lib/plans";
 import { grantShareReward } from "../../../lib/quota";
 import { getRuntimeBindings } from "../../../lib/runtime";
 import { consumeShareClaimIntent } from "../../../lib/shareIntents";
@@ -47,7 +48,7 @@ export const POST: APIRoute = async ({ cookies, request }) => {
   }
 
   const { plan } = await getEntitlementContext(userId, DB);
-  if (plan.planCode !== "free") {
+  if (!planHasFeature(plan.planCode, "shareReward")) {
     return apiError(
       {
         code: "FORBIDDEN",

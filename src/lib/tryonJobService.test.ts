@@ -489,7 +489,7 @@ describe("createTryOnJob", () => {
       makeupGenerationAttempts: 2,
       makeupQualityScore: 45,
     });
-    expect(result?.quota).toMatchObject({ remaining: 149 });
+    expect(result?.quota).toMatchObject({ remaining: 148 });
     expect(bucket.put).toHaveBeenCalledOnce();
     expect([...new Uint8Array(bucket.put.mock.calls[0]![1])]).toEqual([7]);
   });

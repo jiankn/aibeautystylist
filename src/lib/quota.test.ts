@@ -81,6 +81,49 @@ describe("quota ledger", () => {
     expect(refundedAgain.remaining).toBe(1);
   });
 
+  it("reserves and refunds multiple credits for one task", async () => {
+    const reserved = await reserveQuota(
+      "multi_credit_user",
+      "job_multi",
+      "request_multi",
+      undefined,
+      now,
+      3,
+      undefined,
+      2,
+    );
+    expect(reserved).toMatchObject({
+      reserved: true,
+      snapshot: { remaining: 1 },
+    });
+
+    const insufficient = await reserveQuota(
+      "multi_credit_user",
+      "job_insufficient",
+      "request_insufficient",
+      undefined,
+      now,
+      3,
+      undefined,
+      2,
+    );
+    expect(insufficient).toMatchObject({
+      reserved: false,
+      duplicate: false,
+      snapshot: { remaining: 1 },
+    });
+
+    await refundQuota("multi_credit_user", "job_multi", undefined, now, 3);
+    const refundedAgain = await refundQuota(
+      "multi_credit_user",
+      "job_multi",
+      undefined,
+      now,
+      3,
+    );
+    expect(refundedAgain.remaining).toBe(3);
+  });
+
   it("grants one share reward per UTC day", async () => {
     const first = await grantShareReward("visitor_1", "job_1", undefined, now);
     const duplicate = await grantShareReward(
@@ -298,6 +341,57 @@ describe("quota ledger", () => {
     const afterRefund = await getQuotaSnapshot("refund_user", undefined, now);
     expect(afterRefund.packRemaining).toBe(5);
     expect(afterRefund.remaining).toBe(5); // 月度仍为 0 + 额度包 5
+  });
+
+  it("splits a multi-credit reservation across monthly and pack balances", async () => {
+    await grantCreditPack({
+      userId: "mixed_reserve_user",
+      checkoutSessionId: "cs_mixed",
+      credits: 2,
+      now,
+      monthlyQuota: 3,
+    });
+    await reserveQuota(
+      "mixed_reserve_user",
+      "monthly_1",
+      "monthly_request_1",
+      undefined,
+      now,
+    );
+    await reserveQuota(
+      "mixed_reserve_user",
+      "monthly_2",
+      "monthly_request_2",
+      undefined,
+      now,
+    );
+
+    const reserved = await reserveQuota(
+      "mixed_reserve_user",
+      "mixed_job",
+      "mixed_request",
+      undefined,
+      now,
+      3,
+      undefined,
+      2,
+    );
+    expect(reserved.snapshot).toMatchObject({
+      remaining: 1,
+      packRemaining: 1,
+    });
+
+    const refunded = await refundQuota(
+      "mixed_reserve_user",
+      "mixed_job",
+      undefined,
+      now,
+      3,
+    );
+    expect(refunded).toMatchObject({
+      remaining: 3,
+      packRemaining: 2,
+    });
   });
 });
 

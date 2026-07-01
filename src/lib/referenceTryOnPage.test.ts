@@ -1,12 +1,6 @@
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-
 import { describe, expect, it } from "vitest";
 
-const pageSource = readFileSync(
-  fileURLToPath(new URL("../pages/reference-tryon.astro", import.meta.url)),
-  "utf8",
-);
+import pageSource from "../pages/reference-tryon.astro?raw";
 
 describe("reference try-on launch contracts", () => {
   it("preserves user intent through upgrade checkout", () => {
@@ -24,6 +18,12 @@ describe("reference try-on launch contracts", () => {
     expect(pageSource).toContain("function terminalJobError(job)");
     expect(pageSource).toContain('job.status === "timed_out"');
     expect(pageSource).not.toContain("throw new Error(copy.failed)");
+  });
+
+  it("requires two credits and refreshes quota from server responses", () => {
+    expect(pageSource).toContain("PRIVATE_REFERENCE_TRYON_CREDIT_COST");
+    expect(pageSource).toContain("Uses 2 generation credits");
+    expect(pageSource).toContain("if (job.quota) updateQuota(job.quota)");
   });
 
   it("keeps validation and recovery feedback accessible", () => {

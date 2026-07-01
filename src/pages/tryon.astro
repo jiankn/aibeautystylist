@@ -171,6 +171,19 @@ const freeClientMessages = {
   savedLimitReached: t("tryon", "savedLimitReached"),
   savedResult: t("tryon", "savedResult"),
 };
+const sharePromptCopy = {
+  reward: {
+    title: t("tryon", "shareTitle"),
+    desc: t("tryon", "shareDesc"),
+  },
+  member: {
+    title: t("tryon", "memberShareTitle"),
+    desc: t("tryon", "memberShareDesc"),
+  },
+};
+const initialSharePrompt = experience.features.shareReward
+  ? sharePromptCopy.reward
+  : sharePromptCopy.member;
 const upgradeBannerCopy = {
   free: {
     title: t("tryon", "upgradeTitle"),
@@ -491,8 +504,9 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
             hidden
           >
             <div>
-              <strong>{t("tryon", "shareTitle")}</strong>
-              <span>{t("tryon", "shareDesc")}</span>
+              <strong data-share-prompt-title>{initialSharePrompt.title}</strong
+              >
+              <span data-share-prompt-desc>{initialSharePrompt.desc}</span>
             </div>
             <button class="btn" id="free-share-card" disabled
               >▧&nbsp; {t("tryon", "saveShareCard")}</button
@@ -625,6 +639,8 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
   is:inline
   define:vars={{
     freeClientMessages,
+    initialPlan: experience.planCode,
+    sharePromptCopy,
     shareBaseHref,
     shareCardHref,
     selectedLookSlug: selected.slug,
@@ -642,7 +658,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     const intensityInput = document.querySelector("[data-tryon-intensity]");
     let lastSucceededJobId = window.__absLastSucceededJobId || null;
     let lastSucceededLookSlug = selectedLookSlug || null;
-    let currentPlan = "free";
+    let currentPlan = initialPlan;
     let hasLoadedPlan = false;
     let savedJobIds = new Set();
     const publicShareUrlByJobId = new Map();
@@ -711,12 +727,12 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
         const res = await fetch("/api/session");
         const data = await res.json();
         const session = data.ok ? data.data : null;
-        currentPlan = normalizePlan(session?.plan);
+        currentPlan = session ? normalizePlan(session.plan) : initialPlan;
         hasLoadedPlan = true;
         refreshRewardButtonState();
         return session;
       } catch {
-        currentPlan = "free";
+        currentPlan = initialPlan;
         hasLoadedPlan = true;
         refreshRewardButtonState();
         return null;
@@ -804,11 +820,16 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     function refreshRewardButtonState() {
       const rewardBtn = document.getElementById("free-share-reward");
       if (!rewardBtn) return;
-      if (
-        !hasLoadedPlan ||
-        currentPlan === "pro" ||
-        currentPlan === "premium"
-      ) {
+      const hasShareReward = currentPlan === "free";
+      const isRewardEligible = hasLoadedPlan && hasShareReward;
+      const prompt = hasShareReward
+        ? sharePromptCopy.reward
+        : sharePromptCopy.member;
+      const title = document.querySelector("[data-share-prompt-title]");
+      const desc = document.querySelector("[data-share-prompt-desc]");
+      if (title) title.textContent = prompt.title;
+      if (desc) desc.textContent = prompt.desc;
+      if (!isRewardEligible) {
         rewardBtn.hidden = true;
         rewardBtn.disabled = true;
         return;

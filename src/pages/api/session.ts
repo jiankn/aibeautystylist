@@ -4,6 +4,7 @@ import { getAccountByUserId } from "../../lib/accounts";
 import { resolveCurrentUser } from "../../lib/currentUser";
 import { getEntitlementContext } from "../../lib/entitlements";
 import { apiSuccess } from "../../lib/http";
+import { planHasFeature } from "../../lib/plans";
 import { getRuntimeBindings } from "../../lib/runtime";
 
 export const GET: APIRoute = async ({ cookies }) => {
@@ -36,7 +37,7 @@ export const GET: APIRoute = async ({ cookies }) => {
         : null,
     quota: {
       ...quota,
-      shareRewardAvailableToday: true,
+      shareRewardAvailableToday: planHasFeature(plan.planCode, "shareReward"),
     },
   });
 };

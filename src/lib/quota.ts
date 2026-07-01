@@ -60,6 +60,11 @@ interface ExistingUsageRow {
   id: string;
 }
 
+interface OriginalReservationRow {
+  monthly_reserved: number | string | null;
+  pack_reserved: number | string | null;
+}
+
 interface MockUsageRecord {
   amount: number;
   type: string;
@@ -120,7 +125,8 @@ export async function getQuotaSnapshot(
   const monthlyRemaining = Math.max(0, monthlyQuota + monthlyBalance);
   const packRemaining = Math.max(0, packBalance);
   const remaining = monthlyRemaining + packRemaining;
-  const total = monthlyQuota + Math.max(0, shareBonus) + Math.max(0, packGranted);
+  const total =
+    monthlyQuota + Math.max(0, shareBonus) + Math.max(0, packGranted);
   return {
     remaining,
     total,
@@ -139,7 +145,9 @@ export async function reserveQuota(
   now = new Date(),
   monthlyQuota: number = FREE_MONTHLY_QUOTA,
   quotaPeriod?: QuotaPeriodInput,
+  credits = 1,
 ): Promise<QuotaReservation> {
+  const requestedCredits = Math.max(1, Math.floor(credits));
   const usageKey = `reserve:${userId}:${idempotencyKey}`;
 
   // 幂等检查：同一 reserve key 下的额度包变体也算重复
@@ -168,20 +176,31 @@ export async function reserveQuota(
     monthlyQuota,
     quotaPeriod,
   );
-  if (before.remaining <= 0) {
+  if (before.remaining < requestedCredits) {
     return { reserved: false, duplicate: false, snapshot: before };
   }
 
   // 先消耗月度额度；月度用完后再消耗额度包额度
   const monthlyRemaining = before.remaining - before.packRemaining;
-  if (monthlyRemaining > 0) {
-    await appendUsageRecord(userId, jobId, "reserve", -1, usageKey, DB, now);
-  } else {
+  const monthlyCredits = Math.min(requestedCredits, monthlyRemaining);
+  const packCredits = requestedCredits - monthlyCredits;
+  if (monthlyCredits > 0) {
+    await appendUsageRecord(
+      userId,
+      jobId,
+      "reserve",
+      -monthlyCredits,
+      usageKey,
+      DB,
+      now,
+    );
+  }
+  if (packCredits > 0) {
     await appendUsageRecord(
       userId,
       jobId,
       "reserve_pack",
-      -1,
+      -packCredits,
       packUsageKey,
       DB,
       now,
@@ -210,25 +229,34 @@ export async function refundQuota(
 ): Promise<QuotaSnapshot> {
   const usageKey = `refund:${userId}:${jobId}`;
   const packUsageKey = `refund_pack:${userId}:${jobId}`;
+  const reservation = await getOriginalReservation(userId, jobId, DB);
   if (
-    !(await hasUsageRecord(userId, usageKey, DB)) &&
+    reservation.monthly > 0 &&
+    !(await hasUsageRecord(userId, usageKey, DB))
+  ) {
+    await appendUsageRecord(
+      userId,
+      jobId,
+      "refund",
+      reservation.monthly,
+      usageKey,
+      DB,
+      now,
+    );
+  }
+  if (
+    reservation.pack > 0 &&
     !(await hasUsageRecord(userId, packUsageKey, DB))
   ) {
-    // 查找原始 reserve 记录类型，决定退回到哪个池
-    const wasPackReserve = await hasOriginalPackReserve(userId, jobId, DB);
-    if (wasPackReserve) {
-      await appendUsageRecord(
-        userId,
-        jobId,
-        "refund_pack",
-        1,
-        packUsageKey,
-        DB,
-        now,
-      );
-    } else {
-      await appendUsageRecord(userId, jobId, "refund", 1, usageKey, DB, now);
-    }
+    await appendUsageRecord(
+      userId,
+      jobId,
+      "refund_pack",
+      reservation.pack,
+      packUsageKey,
+      DB,
+      now,
+    );
   }
   return getQuotaSnapshot(userId, DB, now, monthlyQuota, quotaPeriod);
 }
@@ -568,21 +596,34 @@ async function appendUsageRecord(
   return true;
 }
 
-/** 检查指定 jobId 的原始预留是否消耗了额度包额度 */
-async function hasOriginalPackReserve(
+/** 读取指定任务最初从月度额度和额度包各预留了多少额度。 */
+async function getOriginalReservation(
   userId: string,
   jobId: string,
   DB?: D1DatabaseLike,
-): Promise<boolean> {
+): Promise<{ monthly: number; pack: number }> {
   if (DB) {
     const row = await DB.prepare(
-      "SELECT id FROM usage_records WHERE user_id = ? AND job_id = ? AND type = 'reserve_pack' LIMIT 1",
+      `SELECT
+        COALESCE(-SUM(CASE WHEN type = 'reserve' THEN amount ELSE 0 END), 0) AS monthly_reserved,
+        COALESCE(-SUM(CASE WHEN type = 'reserve_pack' THEN amount ELSE 0 END), 0) AS pack_reserved
+       FROM usage_records
+       WHERE user_id = ? AND job_id = ?`,
     )
       .bind(userId, jobId)
-      .first<ExistingUsageRow>();
-    return Boolean(row);
+      .first<OriginalReservationRow>();
+    return {
+      monthly: Math.max(0, Number(row?.monthly_reserved ?? 0)),
+      pack: Math.max(0, Number(row?.pack_reserved ?? 0)),
+    };
   }
-  return (mockUsage.get(userId) ?? []).some(
-    (record) => record.type === "reserve_pack" && record.jobId === jobId,
+  return (mockUsage.get(userId) ?? []).reduce(
+    (reservation, record) => {
+      if (record.jobId !== jobId) return reservation;
+      if (record.type === "reserve") reservation.monthly -= record.amount;
+      if (record.type === "reserve_pack") reservation.pack -= record.amount;
+      return reservation;
+    },
+    { monthly: 0, pack: 0 },
   );
 }

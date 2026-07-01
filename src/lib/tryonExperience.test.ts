@@ -46,6 +46,7 @@ describe("resolveTryOnExperience", () => {
       showHistoryPreview: true,
     });
     expect(experience.features.hdDownload).toBe(true);
+    expect(experience.features.shareReward).toBe(false);
     expect(experience.features.priorityQueue).toBe(false);
     expect(experience.features.privateReferenceTryOn).toBe(false);
   });
@@ -63,6 +64,7 @@ describe("resolveTryOnExperience", () => {
       showHistoryPreview: true,
     });
     expect(experience.features).toMatchObject({
+      shareReward: false,
       hdDownload: true,
       priorityQueue: true,
       longTermHistory: true,

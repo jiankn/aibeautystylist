@@ -67,7 +67,16 @@ const referenceDashboardCopy = locale.startsWith("zh")
 const avatarCopy = {
   en: {
     change: "Change avatar",
-    help: "JPG, PNG or WebP · automatically cropped and compressed",
+    help: "JPG, PNG or WebP · drag to crop before upload",
+    cropTitle: "Crop your avatar",
+    cropHelp:
+      "Drag the image to reposition it, then use the slider to zoom. The circular preview becomes your avatar.",
+    dragHint: "Drag the image to adjust its position",
+    zoom: "Zoom",
+    chooseAnother: "Choose another",
+    cancel: "Cancel",
+    save: "Save avatar",
+    saving: "Saving avatar...",
     uploading: "Compressing and uploading...",
     success: "Avatar updated",
     invalid: "Choose a JPG, PNG, or WebP image up to 20 MB.",
@@ -75,7 +84,15 @@ const avatarCopy = {
   },
   "zh-CN": {
     change: "修改头像",
-    help: "支持 JPG、PNG、WebP，自动裁剪并压缩",
+    help: "支持 JPG、PNG、WebP，上传前可拖动裁剪",
+    cropTitle: "裁剪头像",
+    cropHelp: "拖动图片调整位置，再使用滑杆缩放。圆形预览区域将作为你的头像。",
+    dragHint: "拖动图片调整位置",
+    zoom: "缩放",
+    chooseAnother: "重新选择",
+    cancel: "取消",
+    save: "保存头像",
+    saving: "正在保存头像...",
     uploading: "正在压缩并上传...",
     success: "头像已更新",
     invalid: "请选择 20 MB 以内的 JPG、PNG 或 WebP 图片。",
@@ -83,7 +100,16 @@ const avatarCopy = {
   },
   "zh-TW": {
     change: "修改頭像",
-    help: "支援 JPG、PNG、WebP，自動裁切並壓縮",
+    help: "支援 JPG、PNG、WebP，上傳前可拖曳裁切",
+    cropTitle: "裁切大頭貼",
+    cropHelp:
+      "拖曳圖片調整位置，再使用滑桿縮放。圓形預覽區域會成為你的大頭貼。",
+    dragHint: "拖曳圖片調整位置",
+    zoom: "縮放",
+    chooseAnother: "重新選擇",
+    cancel: "取消",
+    save: "儲存大頭貼",
+    saving: "正在儲存大頭貼...",
     uploading: "正在壓縮並上傳...",
     success: "頭像已更新",
     invalid: "請選擇 20 MB 以內的 JPG、PNG 或 WebP 圖片。",
@@ -91,7 +117,16 @@ const avatarCopy = {
   },
   "de-DE": {
     change: "Profilbild ändern",
-    help: "JPG, PNG oder WebP · automatisch zugeschnitten und komprimiert",
+    help: "JPG, PNG oder WebP · vor dem Hochladen frei zuschneiden",
+    cropTitle: "Profilbild zuschneiden",
+    cropHelp:
+      "Verschiebe das Bild und passe den Zoom mit dem Regler an. Der runde Ausschnitt wird dein Profilbild.",
+    dragHint: "Bild ziehen, um den Ausschnitt anzupassen",
+    zoom: "Zoom",
+    chooseAnother: "Anderes Bild",
+    cancel: "Abbrechen",
+    save: "Profilbild speichern",
+    saving: "Profilbild wird gespeichert...",
     uploading: "Wird komprimiert und hochgeladen...",
     success: "Profilbild aktualisiert",
     invalid: "Wähle ein JPG-, PNG- oder WebP-Bild bis 20 MB.",
@@ -99,7 +134,16 @@ const avatarCopy = {
   },
   "fr-FR": {
     change: "Modifier l’avatar",
-    help: "JPG, PNG ou WebP · recadrage et compression automatiques",
+    help: "JPG, PNG ou WebP · recadrage manuel avant l’import",
+    cropTitle: "Recadrer votre avatar",
+    cropHelp:
+      "Faites glisser l’image pour la repositionner, puis ajustez le zoom. L’aperçu rond deviendra votre avatar.",
+    dragHint: "Faites glisser l’image pour ajuster le cadrage",
+    zoom: "Zoom",
+    chooseAnother: "Choisir une autre",
+    cancel: "Annuler",
+    save: "Enregistrer l’avatar",
+    saving: "Enregistrement de l’avatar...",
     uploading: "Compression et import...",
     success: "Avatar mis à jour",
     invalid: "Choisissez une image JPG, PNG ou WebP de 20 Mo maximum.",
@@ -107,7 +151,16 @@ const avatarCopy = {
   },
   "ja-JP": {
     change: "アバターを変更",
-    help: "JPG・PNG・WebP対応、自動で切り抜き・圧縮",
+    help: "JPG・PNG・WebP対応、アップロード前にドラッグで切り抜き",
+    cropTitle: "アバターを切り抜く",
+    cropHelp:
+      "画像をドラッグして位置を調整し、スライダーで拡大します。円形のプレビューがアバターになります。",
+    dragHint: "画像をドラッグして位置を調整",
+    zoom: "拡大",
+    chooseAnother: "別の画像を選ぶ",
+    cancel: "キャンセル",
+    save: "アバターを保存",
+    saving: "アバターを保存中...",
     uploading: "圧縮してアップロード中...",
     success: "アバターを更新しました",
     invalid: "20MB以下のJPG、PNG、WebP画像を選択してください。",
@@ -115,7 +168,16 @@ const avatarCopy = {
   },
   "ko-KR": {
     change: "프로필 사진 변경",
-    help: "JPG, PNG, WebP · 자동 자르기 및 압축",
+    help: "JPG, PNG, WebP · 업로드 전에 드래그하여 자르기",
+    cropTitle: "프로필 사진 자르기",
+    cropHelp:
+      "이미지를 드래그해 위치를 조정하고 슬라이더로 확대하세요. 원형 미리보기가 프로필 사진으로 저장됩니다.",
+    dragHint: "이미지를 드래그해 위치 조정",
+    zoom: "확대",
+    chooseAnother: "다른 이미지 선택",
+    cancel: "취소",
+    save: "프로필 사진 저장",
+    saving: "프로필 사진 저장 중...",
     uploading: "압축 및 업로드 중...",
     success: "프로필 사진이 업데이트되었습니다",
     invalid: "20MB 이하의 JPG, PNG 또는 WebP 이미지를 선택하세요.",
@@ -123,7 +185,16 @@ const avatarCopy = {
   },
   "es-ES": {
     change: "Cambiar avatar",
-    help: "JPG, PNG o WebP · recorte y compresión automáticos",
+    help: "JPG, PNG o WebP · recorta antes de subir",
+    cropTitle: "Recorta tu avatar",
+    cropHelp:
+      "Arrastra la imagen para colocarla y usa el control para acercarla. La vista circular será tu avatar.",
+    dragHint: "Arrastra la imagen para ajustar la posición",
+    zoom: "Zoom",
+    chooseAnother: "Elegir otra",
+    cancel: "Cancelar",
+    save: "Guardar avatar",
+    saving: "Guardando avatar...",
     uploading: "Comprimiendo y subiendo...",
     success: "Avatar actualizado",
     invalid: "Elige una imagen JPG, PNG o WebP de hasta 20 MB.",
@@ -131,7 +202,16 @@ const avatarCopy = {
   },
   "es-419": {
     change: "Cambiar avatar",
-    help: "JPG, PNG o WebP · recorte y compresión automáticos",
+    help: "JPG, PNG o WebP · recorta antes de subir",
+    cropTitle: "Recorta tu avatar",
+    cropHelp:
+      "Arrastra la imagen para colocarla y usa el control para acercarla. La vista circular será tu avatar.",
+    dragHint: "Arrastra la imagen para ajustar la posición",
+    zoom: "Zoom",
+    chooseAnother: "Elegir otra",
+    cancel: "Cancelar",
+    save: "Guardar avatar",
+    saving: "Guardando avatar...",
     uploading: "Comprimiendo y subiendo...",
     success: "Avatar actualizado",
     invalid: "Elige una imagen JPG, PNG o WebP de hasta 20 MB.",
@@ -139,7 +219,16 @@ const avatarCopy = {
   },
   "pt-BR": {
     change: "Alterar avatar",
-    help: "JPG, PNG ou WebP · corte e compactação automáticos",
+    help: "JPG, PNG ou WebP · recorte antes de enviar",
+    cropTitle: "Recorte seu avatar",
+    cropHelp:
+      "Arraste a imagem para reposicionar e use o controle para ampliar. A prévia circular será o seu avatar.",
+    dragHint: "Arraste a imagem para ajustar a posição",
+    zoom: "Zoom",
+    chooseAnother: "Escolher outra",
+    cancel: "Cancelar",
+    save: "Salvar avatar",
+    saving: "Salvando avatar...",
     uploading: "Compactando e enviando...",
     success: "Avatar atualizado",
     invalid: "Escolha uma imagem JPG, PNG ou WebP de até 20 MB.",
@@ -147,7 +236,16 @@ const avatarCopy = {
   },
 }[locale] ?? {
   change: "Change avatar",
-  help: "JPG, PNG or WebP · automatically cropped and compressed",
+  help: "JPG, PNG or WebP · drag to crop before upload",
+  cropTitle: "Crop your avatar",
+  cropHelp:
+    "Drag the image to reposition it, then use the slider to zoom. The circular preview becomes your avatar.",
+  dragHint: "Drag the image to adjust its position",
+  zoom: "Zoom",
+  chooseAnother: "Choose another",
+  cancel: "Cancel",
+  save: "Save avatar",
+  saving: "Saving avatar...",
   uploading: "Compressing and uploading...",
   success: "Avatar updated",
   invalid: "Choose a JPG, PNG, or WebP image up to 20 MB.",
@@ -3184,6 +3282,75 @@ const diagnosisValueAliases =
   </main>
   {isLoggedIn && <MobileBottomNav active="account" />}
 
+  <dialog
+    class="avatar-crop-dialog"
+    aria-labelledby="avatar-crop-title"
+    aria-describedby="avatar-crop-description"
+    data-avatar-crop-dialog
+  >
+    <div class="avatar-crop-shell">
+      <header class="avatar-crop-header">
+        <div>
+          <p class="section-kicker">{avatarCopy.change}</p>
+          <h2 id="avatar-crop-title">{avatarCopy.cropTitle}</h2>
+        </div>
+        <button
+          class="avatar-crop-close"
+          type="button"
+          aria-label={avatarCopy.cancel}
+          data-avatar-crop-close
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18"></path>
+          </svg>
+        </button>
+      </header>
+      <p id="avatar-crop-description" class="avatar-crop-description">
+        {avatarCopy.cropHelp}
+      </p>
+      <div class="avatar-crop-stage">
+        <canvas
+          width="512"
+          height="512"
+          tabindex="0"
+          role="img"
+          aria-label={avatarCopy.dragHint}
+          data-avatar-crop-canvas></canvas>
+        <span class="avatar-crop-ring" aria-hidden="true"></span>
+      </div>
+      <p class="avatar-crop-drag-hint">{avatarCopy.dragHint}</p>
+      <label class="avatar-crop-zoom">
+        <span>{avatarCopy.zoom}</span>
+        <input
+          type="range"
+          min="1"
+          max="3"
+          step="0.01"
+          value="1"
+          data-avatar-crop-zoom
+        />
+      </label>
+      <p
+        class="avatar-crop-status"
+        role="status"
+        aria-live="polite"
+        data-avatar-crop-status
+      >
+      </p>
+      <div class="avatar-crop-actions">
+        <button class="btn btn-outline" type="button" data-avatar-crop-reselect>
+          {avatarCopy.chooseAnother}
+        </button>
+        <button class="btn btn-outline" type="button" data-avatar-crop-cancel>
+          {avatarCopy.cancel}
+        </button>
+        <button class="btn btn-primary" type="button" data-avatar-crop-save>
+          {avatarCopy.save}
+        </button>
+      </div>
+    </div>
+  </dialog>
+
   <style>
     .dashboard-main {
       min-height: calc(100vh - 64px);
@@ -4656,6 +4823,177 @@ const diagnosisValueAliases =
       font-weight: 650;
       line-height: 1.45;
     }
+    .avatar-crop-dialog {
+      width: min(560px, calc(100vw - 32px));
+      max-width: none;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      margin: auto;
+      overflow: hidden;
+      padding: 0;
+      border: 1px solid color-mix(in srgb, var(--rose) 22%, var(--line));
+      border-radius: 20px;
+      background: var(--bg-elevated);
+      color: var(--navy);
+      box-shadow: 0 28px 80px rgba(18, 39, 66, 0.28);
+    }
+    .avatar-crop-dialog::backdrop {
+      background: rgba(16, 24, 40, 0.58);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .avatar-crop-shell {
+      display: grid;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      gap: 16px;
+      overflow-y: auto;
+      padding: 24px;
+      overscroll-behavior: contain;
+    }
+    .avatar-crop-header {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .avatar-crop-header h2 {
+      margin: 2px 0 0;
+      color: var(--navy);
+      font-size: clamp(22px, 4vw, 28px);
+      line-height: 1.15;
+    }
+    .avatar-crop-header .section-kicker {
+      margin: 0;
+    }
+    .avatar-crop-close {
+      display: grid;
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .avatar-crop-close:hover,
+    .avatar-crop-close:focus-visible {
+      border-color: var(--rose);
+      color: var(--rose);
+      outline: 3px solid color-mix(in srgb, var(--rose) 20%, transparent);
+      outline-offset: 2px;
+    }
+    .avatar-crop-close svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-width: 2;
+    }
+    .avatar-crop-description,
+    .avatar-crop-drag-hint,
+    .avatar-crop-status {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .avatar-crop-stage {
+      position: relative;
+      width: min(360px, calc(100vw - 96px));
+      aspect-ratio: 1;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 999px;
+      background:
+        linear-gradient(
+          45deg,
+          var(--rose-soft) 25%,
+          transparent 25% 75%,
+          var(--rose-soft) 75%
+        ),
+        linear-gradient(
+          45deg,
+          var(--rose-soft) 25%,
+          var(--bg) 25% 75%,
+          var(--rose-soft) 75%
+        );
+      background-position:
+        0 0,
+        8px 8px;
+      background-size: 16px 16px;
+      box-shadow:
+        0 18px 46px rgba(18, 39, 66, 0.16),
+        0 0 0 8px color-mix(in srgb, var(--rose-soft) 58%, var(--bg));
+    }
+    .avatar-crop-stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+    .avatar-crop-stage canvas:active {
+      cursor: grabbing;
+    }
+    .avatar-crop-stage canvas:focus-visible {
+      outline: 4px solid var(--rose);
+      outline-offset: -6px;
+    }
+    .avatar-crop-ring {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border: 3px solid rgba(255, 255, 255, 0.88);
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 1px rgba(18, 39, 66, 0.18);
+    }
+    .avatar-crop-drag-hint {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .avatar-crop-zoom {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      min-height: 44px;
+      color: var(--navy);
+      font-weight: 850;
+    }
+    .avatar-crop-zoom input {
+      width: 100%;
+      min-height: 44px;
+      accent-color: var(--rose);
+      cursor: pointer;
+    }
+    .avatar-crop-status {
+      min-height: 24px;
+      color: var(--rose);
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .avatar-crop-actions {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .avatar-crop-actions [data-avatar-crop-cancel] {
+      justify-self: end;
+    }
+    .avatar-crop-actions .btn {
+      min-height: 46px;
+    }
+    .avatar-crop-dialog [disabled] {
+      cursor: wait;
+      opacity: 0.58;
+    }
     .dashboard-account-stats {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -5692,6 +6030,40 @@ const diagnosisValueAliases =
       }
     }
     @media (max-width: 520px) {
+      .avatar-crop-dialog {
+        width: calc(100vw - 16px);
+        max-height: calc(100vh - 16px);
+        max-height: calc(100dvh - 16px);
+        border-radius: 16px;
+      }
+      .avatar-crop-shell {
+        max-height: calc(100vh - 16px);
+        max-height: calc(100dvh - 16px);
+        gap: 12px;
+        padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+      }
+      .avatar-crop-stage {
+        width: min(300px, calc(100vw - 64px));
+      }
+      .avatar-crop-actions {
+        grid-template-columns: 1fr 1fr;
+      }
+      .avatar-crop-actions .btn {
+        width: 100%;
+      }
+      .avatar-crop-actions [data-avatar-crop-save] {
+        grid-column: 1 / -1;
+        grid-row: 1;
+      }
+      .avatar-crop-actions [data-avatar-crop-reselect] {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      .avatar-crop-actions [data-avatar-crop-cancel] {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: stretch;
+      }
       .dashboard-account-actions {
         grid-template-columns: 1fr;
       }
@@ -6649,6 +7021,37 @@ const diagnosisValueAliases =
       });
       const avatarButton = query("[data-dashboard-avatar-button]");
       const avatarInput = query("[data-dashboard-avatar-input]");
+      const avatarCropDialog = document.querySelector(
+        "[data-avatar-crop-dialog]",
+      );
+      const avatarCropCanvas = document.querySelector(
+        "[data-avatar-crop-canvas]",
+      );
+      const avatarCropZoom = document.querySelector("[data-avatar-crop-zoom]");
+      const avatarCropStatus = document.querySelector(
+        "[data-avatar-crop-status]",
+      );
+      const avatarCropSave = document.querySelector("[data-avatar-crop-save]");
+      const avatarCropReselect = document.querySelector(
+        "[data-avatar-crop-reselect]",
+      );
+      const avatarCropCancel = document.querySelector(
+        "[data-avatar-crop-cancel]",
+      );
+      const avatarCropClose = document.querySelector(
+        "[data-avatar-crop-close]",
+      );
+      const avatarCropControls = [
+        avatarCropSave,
+        avatarCropReselect,
+        avatarCropCancel,
+        avatarCropClose,
+        avatarCropZoom,
+      ].filter(Boolean);
+      const avatarCropSize = 512;
+      let avatarCropState = null;
+      let avatarDragState = null;
+
       avatarButton?.addEventListener("click", () => avatarInput?.click());
       avatarInput?.addEventListener("change", async () => {
         const file = avatarInput.files?.[0];
@@ -6663,13 +7066,178 @@ const diagnosisValueAliases =
         ]);
         if (!supportedTypes.has(file.type) || file.size > 20 * 1024 * 1024) {
           if (status) status.textContent = avatarCopy.invalid;
+          if (avatarCropStatus)
+            avatarCropStatus.textContent = avatarCopy.invalid;
           return;
         }
 
-        avatarButton.disabled = true;
+        try {
+          await openAvatarCrop(file);
+          if (status) status.textContent = "";
+        } catch {
+          if (status) status.textContent = avatarCopy.invalid;
+          if (avatarCropStatus)
+            avatarCropStatus.textContent = avatarCopy.invalid;
+        }
+      });
+
+      async function openAvatarCrop(file) {
+        const source = await loadAvatarImage(file);
+        const width = source.width || source.naturalWidth;
+        const height = source.height || source.naturalHeight;
+        if (!width || !height) {
+          source.close?.();
+          throw new Error("INVALID_IMAGE");
+        }
+        releaseAvatarCropSource();
+        avatarCropState = {
+          source,
+          width,
+          height,
+          zoom: 1,
+          offsetX: 0,
+          offsetY: 0,
+          busy: false,
+        };
+        if (avatarCropZoom) avatarCropZoom.value = "1";
+        if (avatarCropStatus) avatarCropStatus.textContent = "";
+        drawAvatarCrop();
+        if (!avatarCropDialog?.open) avatarCropDialog?.showModal();
+        window.setTimeout(
+          () => avatarCropCanvas?.focus({ preventScroll: true }),
+          0,
+        );
+      }
+
+      function drawAvatarCrop() {
+        if (!avatarCropState || !avatarCropCanvas) return;
+        const context = avatarCropCanvas.getContext("2d", { alpha: false });
+        if (!context) return;
+        const baseScale = Math.max(
+          avatarCropSize / avatarCropState.width,
+          avatarCropSize / avatarCropState.height,
+        );
+        const scale = baseScale * avatarCropState.zoom;
+        const drawWidth = avatarCropState.width * scale;
+        const drawHeight = avatarCropState.height * scale;
+        const maxOffsetX = Math.max(0, (drawWidth - avatarCropSize) / 2);
+        const maxOffsetY = Math.max(0, (drawHeight - avatarCropSize) / 2);
+        avatarCropState.offsetX = clamp(
+          avatarCropState.offsetX,
+          -maxOffsetX,
+          maxOffsetX,
+        );
+        avatarCropState.offsetY = clamp(
+          avatarCropState.offsetY,
+          -maxOffsetY,
+          maxOffsetY,
+        );
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, avatarCropSize, avatarCropSize);
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+        context.drawImage(
+          avatarCropState.source,
+          (avatarCropSize - drawWidth) / 2 + avatarCropState.offsetX,
+          (avatarCropSize - drawHeight) / 2 + avatarCropState.offsetY,
+          drawWidth,
+          drawHeight,
+        );
+      }
+
+      function clamp(value, minimum, maximum) {
+        return Math.min(maximum, Math.max(minimum, value));
+      }
+
+      function moveAvatarCrop(deltaX, deltaY) {
+        if (!avatarCropState || avatarCropState.busy) return;
+        avatarCropState.offsetX += deltaX;
+        avatarCropState.offsetY += deltaY;
+        drawAvatarCrop();
+      }
+
+      avatarCropZoom?.addEventListener("input", () => {
+        if (!avatarCropState || avatarCropState.busy) return;
+        avatarCropState.zoom = clamp(Number(avatarCropZoom.value) || 1, 1, 3);
+        drawAvatarCrop();
+      });
+
+      avatarCropCanvas?.addEventListener("pointerdown", (event) => {
+        if (!avatarCropState || avatarCropState.busy) return;
+        avatarDragState = {
+          pointerId: event.pointerId,
+          clientX: event.clientX,
+          clientY: event.clientY,
+          offsetX: avatarCropState.offsetX,
+          offsetY: avatarCropState.offsetY,
+        };
+        avatarCropCanvas.setPointerCapture(event.pointerId);
+      });
+      avatarCropCanvas?.addEventListener("pointermove", (event) => {
+        if (
+          !avatarCropState ||
+          !avatarDragState ||
+          avatarDragState.pointerId !== event.pointerId
+        )
+          return;
+        const scale =
+          avatarCropSize /
+          Math.max(1, avatarCropCanvas.getBoundingClientRect().width);
+        avatarCropState.offsetX =
+          avatarDragState.offsetX +
+          (event.clientX - avatarDragState.clientX) * scale;
+        avatarCropState.offsetY =
+          avatarDragState.offsetY +
+          (event.clientY - avatarDragState.clientY) * scale;
+        drawAvatarCrop();
+      });
+      const endAvatarDrag = (event) => {
+        if (avatarDragState?.pointerId !== event.pointerId) return;
+        if (avatarCropCanvas?.hasPointerCapture(event.pointerId)) {
+          avatarCropCanvas.releasePointerCapture(event.pointerId);
+        }
+        avatarDragState = null;
+      };
+      avatarCropCanvas?.addEventListener("pointerup", endAvatarDrag);
+      avatarCropCanvas?.addEventListener("pointercancel", endAvatarDrag);
+      avatarCropCanvas?.addEventListener("keydown", (event) => {
+        const step = event.shiftKey ? 32 : 8;
+        const movements = {
+          ArrowLeft: [-step, 0],
+          ArrowRight: [step, 0],
+          ArrowUp: [0, -step],
+          ArrowDown: [0, step],
+        };
+        const movement = movements[event.key];
+        if (!movement) return;
+        event.preventDefault();
+        moveAvatarCrop(movement[0], movement[1]);
+      });
+
+      avatarCropReselect?.addEventListener("click", () => avatarInput?.click());
+      const closeAvatarCrop = () => {
+        if (avatarCropState?.busy) return;
+        avatarCropDialog?.close();
+      };
+      avatarCropCancel?.addEventListener("click", closeAvatarCrop);
+      avatarCropClose?.addEventListener("click", closeAvatarCrop);
+      avatarCropDialog?.addEventListener("cancel", (event) => {
+        if (avatarCropState?.busy) event.preventDefault();
+      });
+      avatarCropDialog?.addEventListener("close", () => {
+        avatarDragState = null;
+        releaseAvatarCropSource();
+        if (avatarCropStatus) avatarCropStatus.textContent = "";
+      });
+
+      avatarCropSave?.addEventListener("click", async () => {
+        if (!avatarCropState || avatarCropState.busy) return;
+        const status = query("[data-dashboard-account-message]");
+        setAvatarCropBusy(true);
+        if (avatarCropStatus) avatarCropStatus.textContent = avatarCopy.saving;
         if (status) status.textContent = avatarCopy.uploading;
         try {
-          const blob = await compressAvatarToWebp(file);
+          const blob = await exportAvatarCrop();
           const form = new FormData();
           form.set("avatar", blob, "avatar.webp");
           const response = await fetch("/api/profile/avatar", {
@@ -6687,32 +7255,49 @@ const diagnosisValueAliases =
             }),
           );
           if (status) status.textContent = avatarCopy.success;
+          avatarCropDialog?.close();
         } catch {
           if (status) status.textContent = avatarCopy.failed;
+          if (avatarCropStatus)
+            avatarCropStatus.textContent = avatarCopy.failed;
         } finally {
-          avatarButton.disabled = false;
+          setAvatarCropBusy(false);
         }
       });
 
-      async function compressAvatarToWebp(file) {
-        const source = await loadAvatarImage(file);
-        const width = source.width || source.naturalWidth;
-        const height = source.height || source.naturalHeight;
-        if (!width || !height) throw new Error("INVALID_IMAGE");
+      function setAvatarCropBusy(active) {
+        if (avatarCropState) avatarCropState.busy = active;
+        avatarCropControls.forEach((control) => {
+          control.disabled = active;
+        });
+        if (avatarButton) avatarButton.disabled = active;
+      }
 
-        const side = Math.min(width, height);
-        const sourceX = (width - side) / 2;
-        const sourceY = (height - side) / 2;
-        const canvas = document.createElement("canvas");
-        canvas.width = 256;
-        canvas.height = 256;
-        const context = canvas.getContext("2d");
+      async function exportAvatarCrop() {
+        if (!avatarCropCanvas || !avatarCropState) {
+          throw new Error("CROP_UNAVAILABLE");
+        }
+        const output = document.createElement("canvas");
+        output.width = 256;
+        output.height = 256;
+        const context = output.getContext("2d", { alpha: false });
         if (!context) throw new Error("CANVAS_UNAVAILABLE");
-        context.drawImage(source, sourceX, sourceY, side, side, 0, 0, 256, 256);
-        source.close?.();
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+        context.drawImage(
+          avatarCropCanvas,
+          0,
+          0,
+          avatarCropSize,
+          avatarCropSize,
+          0,
+          0,
+          256,
+          256,
+        );
 
         const blob = await new Promise((resolve, reject) => {
-          canvas.toBlob(
+          output.toBlob(
             (result) =>
               result?.type === "image/webp"
                 ? resolve(result)
@@ -6723,6 +7308,11 @@ const diagnosisValueAliases =
         });
         if (blob.size > 512 * 1024) throw new Error("AVATAR_TOO_LARGE");
         return blob;
+      }
+
+      function releaseAvatarCropSource() {
+        avatarCropState?.source?.close?.();
+        avatarCropState = null;
       }
 
       async function loadAvatarImage(file) {

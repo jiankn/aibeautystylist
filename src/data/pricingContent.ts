@@ -108,7 +108,7 @@ const de: LocalizedPricingContent = {
     heroPoints: [
       [
         "Ein Credit-Modell",
-        "Eine Diagnose oder ein Try-on nutzt einen Credit.",
+        "Eine Diagnose oder ein Katalog-Try-on kostet 1 Credit; ein privates Referenz-Try-on kostet 2 Credits.",
       ],
       [
         "Credit-Rückgabe bei Fehlern",
@@ -150,7 +150,7 @@ const de: LocalizedPricingContent = {
           "Für schnelle Iterationen, mehr gespeicherten Kontext und vollen Look-Zugang.",
         features: [
           "150 Credits pro Monat",
-          "Privater Make-up-Transfer aus einem Referenzbild",
+          "Eigenes Make-up-Referenzbild hochladen und privat ausprobieren (2 Credits)",
           "Prioritätswarteschlange",
           "Langfristige Historie",
           "Vollständiger Look-Katalog",
@@ -248,7 +248,7 @@ const de: LocalizedPricingContent = {
     credits: "Monatliche Credits",
     diagnosis: "KI-Diagnose nutzt Credits",
     tryon: "KI-Try-on nutzt Credits",
-    reference: "Privater Referenz-Make-up-Transfer",
+    reference: "Privates Referenz-Try-on (2 Credits)",
     hd: "HD-Download",
     tutorials: "Make-up-Anleitungen",
     priority: "Prioritätswarteschlange",
@@ -292,7 +292,7 @@ const fr: LocalizedPricingContent = {
     heroPoints: [
       [
         "Un seul système de crédits",
-        "Un diagnostic ou un essai utilise un crédit.",
+        "Un diagnostic ou un essai du catalogue utilise 1 crédit ; un essai privé à partir d’une référence en utilise 2.",
       ],
       [
         "Crédit rendu en cas d’échec",
@@ -335,7 +335,7 @@ const fr: LocalizedPricingContent = {
           "Pour itérer plus vite, conserver plus de contexte et accéder à tous les looks.",
         features: [
           "150 crédits par mois",
-          "Transfert privé depuis une photo de référence",
+          "Importer une référence maquillage pour un essai privé (2 crédits)",
           "File prioritaire",
           "Historique longue durée",
           "Catalogue complet",
@@ -431,7 +431,7 @@ const fr: LocalizedPricingContent = {
     credits: "Crédits mensuels",
     diagnosis: "Le diagnostic IA utilise des crédits",
     tryon: "L’essai IA utilise des crédits",
-    reference: "Transfert privé depuis une référence",
+    reference: "Essai privé depuis une référence (2 crédits)",
     hd: "Téléchargement HD",
     tutorials: "Tutoriels maquillage",
     priority: "File prioritaire",
@@ -467,7 +467,10 @@ const ja: LocalizedPricingContent = {
       ["Premium", "速度、全カタログ、長期履歴が必要な方向けです。"],
     ],
     heroPoints: [
-      ["共通クレジット", "診断または試着1回につき1クレジットを使用します。"],
+      [
+        "共通クレジット",
+        "診断またはカタログ試着は1クレジット、参考画像を使う非公開試着は2クレジットを使用します。",
+      ],
       [
         "失敗時は返却",
         "失敗、タイムアウト、システムによるキャンセル時は自動で返却されます。",
@@ -506,7 +509,7 @@ const ja: LocalizedPricingContent = {
         reason: "すばやい比較、より長い履歴、全ルックへのアクセス向けです。",
         features: [
           "月150クレジット",
-          "参考画像からのプライベートメイク転写",
+          "参考メイク画像をアップロードして非公開で試着（1回2クレジット）",
           "優先キュー",
           "長期履歴",
           "全ルックカタログ",
@@ -597,7 +600,7 @@ const ja: LocalizedPricingContent = {
     credits: "月間クレジット",
     diagnosis: "AI診断でクレジットを使用",
     tryon: "AI試着でクレジットを使用",
-    reference: "参考画像からのプライベート試着",
+    reference: "参考画像を使う非公開試着（1回2クレジット）",
     hd: "HDダウンロード",
     tutorials: "メイク手順",
     priority: "優先キュー",
@@ -635,7 +638,7 @@ const ko: LocalizedPricingContent = {
     heroPoints: [
       [
         "하나의 크레딧 체계",
-        "진단 또는 가상 메이크업 1회에 크레딧 1개를 사용합니다.",
+        "진단 또는 카탈로그 가상 메이크업은 1크레딧, 참고 이미지를 사용하는 비공개 체험은 2크레딧이 차감됩니다.",
       ],
       [
         "실패 시 반환",
@@ -672,7 +675,7 @@ const ko: LocalizedPricingContent = {
         reason: "빠른 반복, 더 긴 기록, 전체 룩 접근을 위한 플랜입니다.",
         features: [
           "월 150 크레딧",
-          "참고 이미지 기반 비공개 메이크업 전송",
+          "참고 메이크업 이미지를 올려 비공개로 가상 체험(회당 2크레딧)",
           "우선 처리",
           "장기 기록",
           "전체 룩 카탈로그",
@@ -763,7 +766,7 @@ const ko: LocalizedPricingContent = {
     credits: "월간 크레딧",
     diagnosis: "AI 진단 크레딧 사용",
     tryon: "가상 메이크업 크레딧 사용",
-    reference: "참고 이미지 비공개 메이크업 전송",
+    reference: "참고 이미지 비공개 체험(회당 2크레딧)",
     hd: "HD 다운로드",
     tutorials: "메이크업 튜토리얼",
     priority: "우선 처리",
@@ -799,7 +802,10 @@ const zhTW: LocalizedPricingContent = {
       ["Premium", "適合需要速度、完整妝容庫與長期紀錄。"],
     ],
     heroPoints: [
-      ["統一點數", "一次診斷或一次試妝使用 1 點。"],
+      [
+        "統一點數",
+        "一次診斷或妝容庫試妝使用 1 點；上傳參考妝容進行私密試妝使用 2 點。",
+      ],
       ["失敗返還", "失敗、逾時或系統取消的任務會自動返還點數。"],
       ["隨時取消", "取消後權益保留至已付費週期結束。"],
     ],
@@ -827,7 +833,7 @@ const zhTW: LocalizedPricingContent = {
         reason: "適合快速比較、更長紀錄與完整妝容庫。",
         features: [
           "每月 150 點",
-          "上傳參考妝容並私密套用",
+          "上傳參考妝容，建立專屬私密試妝（每次 2 點）",
           "優先佇列",
           "長期紀錄",
           "完整妝容庫",
@@ -905,7 +911,7 @@ const zhTW: LocalizedPricingContent = {
     credits: "每月點數",
     diagnosis: "AI 診斷使用點數",
     tryon: "AI 試妝使用點數",
-    reference: "私密參考圖試妝",
+    reference: "私密參考圖試妝（每次 2 點）",
     hd: "HD 下載",
     tutorials: "彩妝教學",
     priority: "優先佇列",
@@ -943,7 +949,7 @@ const es: LocalizedPricingContent = {
     heroPoints: [
       [
         "Un solo sistema de créditos",
-        "Un diagnóstico o una prueba usa un crédito.",
+        "Un diagnóstico o una prueba del catálogo usa 1 crédito; una prueba privada con una referencia usa 2.",
       ],
       [
         "Devolución si falla",
@@ -986,7 +992,7 @@ const es: LocalizedPricingContent = {
           "Pensado para iterar rápido, guardar más contexto y acceder a todos los looks.",
         features: [
           "150 créditos al mes",
-          "Transferencia privada desde una foto de referencia",
+          "Sube una referencia de maquillaje para probarla en privado (2 créditos)",
           "Cola prioritaria",
           "Historial a largo plazo",
           "Catálogo completo",
@@ -1081,7 +1087,7 @@ const es: LocalizedPricingContent = {
     credits: "Créditos mensuales",
     diagnosis: "El diagnóstico IA usa créditos",
     tryon: "La prueba IA usa créditos",
-    reference: "Transferencia privada por referencia",
+    reference: "Prueba privada con referencia (2 créditos)",
     hd: "Descarga HD",
     tutorials: "Tutoriales de maquillaje",
     priority: "Cola prioritaria",
@@ -1117,7 +1123,10 @@ const ptBR: LocalizedPricingContent = {
       ["Premium", "Para mais velocidade, catálogo completo e histórico longo."],
     ],
     heroPoints: [
-      ["Um sistema de créditos", "Um diagnóstico ou teste usa um crédito."],
+      [
+        "Um sistema de créditos",
+        "Um diagnóstico ou teste do catálogo usa 1 crédito; um teste privado com referência usa 2.",
+      ],
       [
         "Crédito devolvido em falhas",
         "Tarefas com falha, expiradas ou canceladas pelo sistema devolvem créditos automaticamente.",
@@ -1159,7 +1168,7 @@ const ptBR: LocalizedPricingContent = {
           "Feito para testar mais rápido, guardar contexto e acessar todos os looks.",
         features: [
           "150 créditos por mês",
-          "Transferência privada de maquiagem por referência",
+          "Envie uma referência de maquiagem para testar em modo privado (2 créditos)",
           "Fila prioritária",
           "Histórico de longo prazo",
           "Catálogo completo",
@@ -1251,7 +1260,7 @@ const ptBR: LocalizedPricingContent = {
     credits: "Créditos mensais",
     diagnosis: "Diagnóstico com IA usa créditos",
     tryon: "Teste com IA usa créditos",
-    reference: "Transferência privada por referência",
+    reference: "Teste privado com referência (2 créditos)",
     hd: "Download HD",
     tutorials: "Tutoriais de maquiagem",
     priority: "Fila prioritária",
