@@ -307,7 +307,6 @@ function ensureAppDialog() {
     root.dataset.appDialog = "";
     root.innerHTML = `
       <section class="app-dialog-panel" role="dialog" aria-modal="true" aria-labelledby="app-dialog-title" aria-describedby="app-dialog-message">
-        <div class="app-dialog-mark" aria-hidden="true">ABS</div>
         <div class="app-dialog-copy">
           <h2 id="app-dialog-title"></h2>
           <p id="app-dialog-message"></p>
