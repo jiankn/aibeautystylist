@@ -1980,6 +1980,13 @@ const copy =
         "image_running",
       ]);
       const locale = document.documentElement.lang || undefined;
+      const requestedSource = new URLSearchParams(window.location.search).get(
+        "source",
+      );
+      const historySource =
+        requestedSource === "private-template" || requestedSource === "catalog"
+          ? requestedSource
+          : "";
       const recommendationBySlug = new Map(
         recommendations.map((look) => [look.slug, look]),
       );
@@ -2670,6 +2677,7 @@ const copy =
         const params = new URLSearchParams({
           limit: String(HISTORY_PAGE_SIZE),
         });
+        if (historySource) params.set("source", historySource);
         if (!reset && state.nextCursor) params.set("before", state.nextCursor);
 
         const data = await getJson(`/api/tryon-jobs?${params.toString()}`);

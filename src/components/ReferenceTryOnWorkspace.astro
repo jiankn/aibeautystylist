@@ -1,0 +1,1128 @@
+---
+import type { ReferenceTryOnCopy } from "../data/referenceTryOnCopy";
+import ReferenceTryOnHistoryDrawer from "./ReferenceTryOnHistoryDrawer.astro";
+
+interface Props {
+  copy: ReferenceTryOnCopy;
+  hrefs: {
+    login: string;
+    pricing: string;
+    history: string;
+    privateHistory: string;
+    resultBase: string;
+    credits: string;
+  };
+}
+
+const { copy, hrefs } = Astro.props;
+---
+
+<section class="rt-workspace-head" aria-labelledby="reference-workspace-title">
+  <div>
+    <p>{copy.eyebrow}</p>
+    <h1 id="reference-workspace-title">{copy.heading}</h1>
+  </div>
+  <div class="rt-workspace-meta">
+    <span class="rt-meta-item rt-quota-item">
+      <svg viewBox="0 0 24 24" aria-hidden="true"
+        ><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path
+          d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"></path><path
+          d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path></svg
+      >
+      <b data-workspace-quota>--</b>
+    </span>
+    <span class="rt-meta-item">
+      <svg viewBox="0 0 24 24" aria-hidden="true"
+        ><rect x="5" y="10" width="14" height="10" rx="2"></rect><path
+          d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg
+      >
+      {copy.privacyTitle}
+    </span>
+    <button
+      class="rt-history-trigger"
+      type="button"
+      data-reference-history-trigger
+      aria-haspopup="dialog"
+      aria-controls="reference-history-dialog"
+      aria-expanded="false"
+      aria-label={copy.historyDrawerTrigger}
+      hidden
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true"
+        ><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"
+        ></path><path d="M12 7v5l3 2"></path></svg
+      >
+      <span>{copy.historyDrawerTrigger}</span>
+    </button>
+  </div>
+</section>
+
+<section
+  class="reference-state"
+  data-loading-state
+  role="status"
+  aria-live="polite"
+>
+  <span class="rt-loader" data-loading-spinner aria-hidden="true"></span>
+  <p data-loading-message>{copy.loadingAccount}</p>
+  <button type="button" data-loading-retry hidden>{copy.retry}</button>
+</section>
+
+<section class="reference-gate" data-login-gate hidden>
+  <span class="rt-gate-label">{copy.eyebrow}</span>
+  <h2>{copy.loginTitle}</h2>
+  <p>{copy.loginBody}</p>
+  <a class="rt-primary-link" href={hrefs.login}>{copy.loginCta}</a>
+</section>
+
+<section class="reference-gate" data-premium-gate hidden>
+  <span class="rt-gate-label">Premium</span>
+  <h2>{copy.premiumTitle}</h2>
+  <p>{copy.premiumBody}</p>
+  <a class="rt-primary-link" href={hrefs.pricing}>{copy.premiumCta}</a>
+  <div class="premium-template-manager" data-template-manager hidden>
+    <h3>{copy.manageExisting}</h3>
+    <div class="saved-reference-list" data-template-list></div>
+    <p class="saved-reference-status" data-template-status role="status"></p>
+  </div>
+</section>
+
+<div class="reference-workspace-grid">
+  <form class="reference-workflow" data-reference-form hidden novalidate>
+    <nav class="rt-stepper" aria-label={copy.heading}>
+      <div class="rt-stepper-node rt-stepper-node--active" data-step-node="1">
+        <span class="rt-stepper-dot">1</span>
+        <span class="rt-stepper-label">{copy.stepReference}</span>
+      </div>
+      <span class="rt-stepper-line"><i class="rt-stepper-line-fill"></i></span>
+      <div class="rt-stepper-node" data-step-node="2">
+        <span class="rt-stepper-dot">2</span>
+        <span class="rt-stepper-label">{copy.stepSelfie}</span>
+      </div>
+      <span class="rt-stepper-line"><i class="rt-stepper-line-fill"></i></span>
+      <div class="rt-stepper-node" data-step-node="3">
+        <span class="rt-stepper-dot">3</span>
+        <span class="rt-stepper-label">{copy.stepGenerate}</span>
+      </div>
+    </nav>
+
+    <aside class="rt-source-panel">
+      <section class="rt-source-block reference-step">
+        <div class="rt-source-heading">
+          <div>
+            <h2>{copy.referenceTitle}</h2>
+            <p>{copy.referenceHelp}</p>
+          </div>
+          <span data-reference-ready hidden>{copy.ready}</span>
+        </div>
+        <label class="reference-dropzone">
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            aria-describedby="reference-file-help reference-file-error"
+            data-reference-input
+          />
+          <img data-reference-preview alt="" hidden />
+          <span class="rt-upload-placeholder">
+            <svg viewBox="0 0 24 24" aria-hidden="true"
+              ><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path
+                d="M5 20h14"></path></svg
+            >
+            <b>{copy.referenceLabel}</b>
+            <small id="reference-file-help">{copy.referenceFormat}</small>
+          </span>
+        </label>
+        <label class="reference-name">
+          <span>{copy.templateName}</span>
+          <input
+            type="text"
+            maxlength="60"
+            placeholder={copy.templatePlaceholder}
+            data-template-title
+          />
+        </label>
+        <p id="reference-file-error" data-error="reference" role="alert" hidden>
+        </p>
+        <label class="reference-check compact-check">
+          <input
+            type="checkbox"
+            aria-describedby="reference-rights-error"
+            data-rights-check
+          />
+          <span>{copy.rights}</span>
+        </label>
+        <p id="reference-rights-error" data-error="rights" role="alert" hidden>
+        </p>
+        <details class="saved-reference-block">
+          <summary>{copy.savedTitle}</summary>
+          <div class="saved-reference-list" data-template-list>
+            <p>{copy.noSaved}</p>
+          </div>
+          <p class="saved-reference-status" data-template-status role="status">
+          </p>
+        </details>
+      </section>
+
+      <section class="rt-source-block reference-step">
+        <div class="rt-source-heading">
+          <div>
+            <h2>{copy.selfieTitle}</h2>
+            <p>{copy.selfieHelp}</p>
+          </div>
+          <span data-selfie-ready hidden>{copy.ready}</span>
+        </div>
+        <label class="reference-dropzone reference-selfie">
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            aria-describedby="selfie-file-help selfie-file-error"
+            data-selfie-input
+            required
+          />
+          <img data-selfie-preview alt="" hidden />
+          <span class="rt-upload-placeholder">
+            <svg viewBox="0 0 24 24" aria-hidden="true"
+              ><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path
+                d="M5 20h14"></path></svg
+            >
+            <b>{copy.selfieLabel}</b>
+            <small id="selfie-file-help">{copy.selfieFormat}</small>
+          </span>
+        </label>
+        <p id="selfie-file-error" data-error="selfie" role="alert" hidden></p>
+        <label class="reference-check compact-check">
+          <input
+            type="checkbox"
+            aria-describedby="selfie-consent-error"
+            data-consent-check
+            required
+          />
+          <span>{copy.consent}</span>
+        </label>
+        <p id="selfie-consent-error" data-error="consent" role="alert" hidden>
+        </p>
+      </section>
+    </aside>
+
+    <section class="rt-preview-panel" aria-labelledby="preview-title">
+      <header>
+        <div>
+          <h2 id="preview-title">{copy.previewTitle}</h2>
+          <p>{copy.intro}</p>
+        </div>
+        <span>{copy.privacyTitle}</span>
+      </header>
+      <div class="rt-preview-stage">
+        <div class="rt-preview-empty" data-canvas-empty>
+          <svg viewBox="0 0 24 24" aria-hidden="true"
+            ><rect x="3" y="3" width="18" height="18" rx="3"></rect><circle
+              cx="9"
+              cy="9"
+              r="2"></circle><path d="m21 15-5-5L5 21"></path></svg
+          >
+          <strong>{copy.previewEmptyTitle}</strong>
+          <p>{copy.previewEmptyBody}</p>
+        </div>
+        <img data-canvas-image alt={copy.selfieTitle} hidden />
+      </div>
+      <div class="reference-submit">
+        <div>
+          <p class="reference-cost-note" data-cost-note>{copy.costNote}</p>
+          <a href={hrefs.credits} data-credit-link hidden>{copy.buyCredits}</a>
+          <p data-reference-status role="status"></p>
+          <a href={hrefs.history} data-progress-link hidden
+            >{copy.viewProgress}</a
+          >
+        </div>
+        <button type="submit" data-generate>
+          <svg viewBox="0 0 24 24" aria-hidden="true"
+            ><path d="M12 3v3"></path><path d="M12 18v3"></path><path
+              d="M3 12h3"></path><path d="M18 12h3"></path><path
+              d="m5.6 5.6 2.1 2.1"></path><path d="m16.3 16.3 2.1 2.1"
+            ></path><path d="m5.6 18.4 2.1-2.1"></path><path
+              d="m16.3 7.7 2.1-2.1"></path><circle cx="12" cy="12" r="3"
+            ></circle></svg
+          >
+          <span>{copy.generate}</span>
+        </button>
+      </div>
+    </section>
+  </form>
+
+  <section class="reference-result" data-result hidden>
+    <aside class="reference-result-info">
+      <span>{copy.generatedLabel}</span>
+      <h2>{copy.resultTitle}</h2>
+      <p>{copy.resultNote}</p>
+      <div class="reference-result-actions">
+        <button type="button" data-again>{copy.again}</button>
+        <button type="button" data-share-result>{copy.shareBtn}</button>
+      </div>
+      <div data-share-feedback role="status" aria-live="polite" hidden></div>
+    </aside>
+    <figure class="reference-result-figure" data-result-compare>
+      <img
+        class="rt-compare-original"
+        data-result-original
+        alt={copy.originalLabel}
+      />
+      <div class="rt-compare-after">
+        <img data-result-image alt={copy.generatedLabel} />
+      </div>
+      <span class="rt-compare-label rt-compare-label-before"
+        >{copy.originalLabel}</span
+      >
+      <span class="rt-compare-label rt-compare-label-after"
+        >{copy.generatedLabel}</span
+      >
+      <span class="rt-compare-divider" aria-hidden="true"><i>↔</i></span>
+      <input
+        type="range"
+        min="10"
+        max="90"
+        value="50"
+        aria-label={copy.compareLabel}
+        data-compare-slider
+      />
+    </figure>
+  </section>
+
+  <ReferenceTryOnHistoryDrawer
+    copy={{
+      trigger: copy.historyDrawerTrigger,
+      title: copy.historyDrawerTitle,
+      subtitle: copy.historyDrawerSubtitle,
+      close: copy.historyDrawerClose,
+      loading: copy.historyDrawerLoading,
+      emptyTitle: copy.historyDrawerEmptyTitle,
+      emptyBody: copy.historyDrawerEmptyBody,
+      loadFailed: copy.historyDrawerLoadFailed,
+      retry: copy.historyDrawerRetry,
+      viewAll: copy.historyDrawerViewAll,
+      back: copy.historyDrawerBack,
+      reuse: copy.historyDrawerReuse,
+      openResult: copy.historyDrawerOpenResult,
+      templateUnavailable: copy.historyDrawerTemplateUnavailable,
+    }}
+    historyHref={hrefs.privateHistory}
+    resultBaseHref={hrefs.resultBase}
+  />
+</div>
+
+<style>
+  :global(body.reference-tryon-body .reference-tryon-main) {
+    width: 100%;
+    max-width: none;
+    min-height: calc(100dvh - 64px);
+    margin: 0;
+    padding: 52px 0 0;
+    overflow: visible;
+  }
+  :global(.reference-tryon-body) {
+    --rt-bg: #f3f5f8;
+    --rt-surface: #ffffff;
+    --rt-surface-2: #eef1f5;
+    --rt-panel: #f9fafb;
+    --rt-border: #d7dde5;
+    --rt-border-strong: #b9c2cf;
+    --rt-text: #18202c;
+    --rt-muted: #667085;
+    --rt-accent: #d84e64;
+    --rt-accent-strong: #bd354e;
+    --rt-accent-soft: #fff0f3;
+    --rt-success: #16866f;
+    background: var(--rt-bg);
+  }
+  :global([data-theme="dark"] .reference-tryon-body) {
+    --rt-bg: #0d141c;
+    --rt-surface: #151e28;
+    --rt-surface-2: #1b2531;
+    --rt-panel: #111a23;
+    --rt-border: #2d3845;
+    --rt-border-strong: #465363;
+    --rt-text: #f4f7fb;
+    --rt-muted: #a8b1bd;
+    --rt-accent: #ff6b78;
+    --rt-accent-strong: #ff7f8b;
+    --rt-accent-soft: #321d26;
+    --rt-success: #62d0b6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"]) .reference-tryon-body) {
+      --rt-bg: #0d141c;
+      --rt-surface: #151e28;
+      --rt-surface-2: #1b2531;
+      --rt-panel: #111a23;
+      --rt-border: #2d3845;
+      --rt-border-strong: #465363;
+      --rt-text: #f4f7fb;
+      --rt-muted: #a8b1bd;
+      --rt-accent: #ff6b78;
+      --rt-accent-strong: #ff7f8b;
+      --rt-accent-soft: #321d26;
+      --rt-success: #62d0b6;
+    }
+  }
+  .rt-workspace-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 64px;
+    padding: 10px clamp(16px, 2vw, 28px);
+    border-bottom: 1px solid var(--rt-border);
+    background: color-mix(in srgb, var(--rt-surface) 92%, transparent);
+  }
+  .rt-workspace-head h1,
+  .rt-workspace-head p {
+    margin: 0;
+  }
+  .rt-workspace-head h1 {
+    color: var(--rt-text);
+    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+    line-height: 1.2;
+  }
+  .rt-workspace-head p {
+    margin-bottom: 2px;
+    color: var(--rt-accent);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .rt-workspace-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rt-meta-item,
+  .rt-history-trigger {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    border: 1px solid var(--rt-border);
+    border-radius: 10px;
+    background: var(--rt-surface);
+    color: var(--rt-muted);
+    font: inherit;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+  .rt-history-trigger {
+    color: var(--rt-text);
+    cursor: pointer;
+    font-weight: 750;
+  }
+  .rt-meta-item svg,
+  .rt-history-trigger svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .reference-workspace-grid {
+    min-height: calc(100dvh - 136px);
+    display: grid;
+    grid-template-columns: 76px minmax(250px, 310px) minmax(480px, 1fr) minmax(
+        300px,
+        360px
+      );
+    gap: 16px;
+    padding: 16px;
+  }
+  .reference-workflow {
+    display: contents;
+  }
+  .rt-stepper {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 78px 0 24px;
+  }
+  .rt-stepper-node {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    color: var(--rt-muted);
+    text-align: center;
+  }
+  .rt-stepper-dot {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 2px solid var(--rt-border-strong);
+    border-radius: 50%;
+    background: var(--rt-bg);
+    color: var(--rt-muted);
+    font-weight: 800;
+  }
+  .rt-stepper-label {
+    max-width: 70px;
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+  .rt-stepper-node--active .rt-stepper-dot,
+  .rt-stepper-node--done .rt-stepper-dot {
+    border-color: var(--rt-accent);
+    background: var(--rt-accent);
+    color: #fff;
+  }
+  .rt-stepper-node--active .rt-stepper-label {
+    color: var(--rt-accent);
+    font-weight: 800;
+  }
+  .rt-stepper-line {
+    width: 2px;
+    height: 112px;
+    display: block;
+    margin: 8px 0;
+    background: var(--rt-border);
+    overflow: hidden;
+  }
+  .rt-stepper-line-fill {
+    width: 100%;
+    height: 0;
+    display: block;
+    background: var(--rt-accent);
+    transition: height 200ms ease;
+  }
+  .rt-stepper-line--active .rt-stepper-line-fill {
+    height: 100%;
+  }
+  .rt-source-panel {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+  .rt-source-block,
+  .rt-preview-panel,
+  .reference-result,
+  .reference-state,
+  .reference-gate {
+    border: 1px solid var(--rt-border);
+    border-radius: 14px;
+    background: var(--rt-surface);
+    box-shadow: 0 14px 34px color-mix(in srgb, #101828 7%, transparent);
+  }
+  .rt-source-block {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+  }
+  .rt-source-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .rt-source-heading h2,
+  .rt-source-heading p {
+    margin: 0;
+  }
+  .rt-source-heading h2 {
+    color: var(--rt-text);
+    font-size: 0.98rem;
+  }
+  .rt-source-heading p {
+    margin-top: 3px;
+    color: var(--rt-muted);
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+  .rt-source-heading > span {
+    color: var(--rt-success);
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+  .reference-dropzone {
+    position: relative;
+    min-height: 136px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px dashed var(--rt-border-strong);
+    border-radius: 10px;
+    background: var(--rt-panel);
+    cursor: pointer;
+  }
+  .reference-dropzone:focus-within {
+    border-color: var(--rt-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--rt-accent) 22%, transparent);
+  }
+  .reference-dropzone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .reference-dropzone img {
+    width: 100%;
+    height: 100%;
+    min-height: 136px;
+    max-height: 190px;
+    display: block;
+    object-fit: cover;
+  }
+  .reference-dropzone img:not([hidden]) + .rt-upload-placeholder {
+    display: none;
+  }
+  .rt-upload-placeholder {
+    display: grid;
+    justify-items: center;
+    gap: 5px;
+    padding: 16px;
+    color: var(--rt-muted);
+    text-align: center;
+  }
+  .rt-upload-placeholder svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: var(--rt-accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .rt-upload-placeholder b {
+    color: var(--rt-text);
+    font-size: 0.86rem;
+  }
+  .rt-upload-placeholder small {
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+  .reference-name {
+    display: grid;
+    gap: 5px;
+    color: var(--rt-muted);
+    font-size: 0.72rem;
+  }
+  .reference-name input {
+    min-height: 42px;
+    padding: 0 10px;
+    border: 1px solid var(--rt-border);
+    border-radius: 8px;
+    background: var(--rt-panel);
+    color: var(--rt-text);
+    font: inherit;
+    font-size: 0.82rem;
+  }
+  .reference-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--rt-muted);
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+  .reference-check input {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    accent-color: var(--rt-accent);
+  }
+  [data-error] {
+    margin: 0;
+    color: #d92d20;
+    font-size: 0.72rem;
+  }
+  .saved-reference-block {
+    border-top: 1px solid var(--rt-border);
+    padding-top: 8px;
+  }
+  .saved-reference-block summary {
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    color: var(--rt-text);
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 750;
+  }
+  .saved-reference-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .saved-reference-list > p,
+  .saved-reference-status {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--rt-muted);
+    font-size: 0.72rem;
+  }
+  .rt-preview-panel {
+    grid-column: 3;
+    min-width: 0;
+    display: grid;
+    grid-template-rows: auto minmax(360px, 1fr) auto;
+    overflow: hidden;
+  }
+  .rt-preview-panel > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--rt-border);
+  }
+  .rt-preview-panel h2,
+  .rt-preview-panel p {
+    margin: 0;
+  }
+  .rt-preview-panel h2 {
+    color: var(--rt-text);
+    font-size: 1rem;
+  }
+  .rt-preview-panel header p {
+    max-width: 58ch;
+    margin-top: 3px;
+    color: var(--rt-muted);
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+  .rt-preview-panel header > span {
+    color: var(--rt-success);
+    font-size: 0.72rem;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .rt-preview-stage {
+    position: relative;
+    min-height: 360px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background:
+      linear-gradient(var(--rt-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--rt-border) 1px, transparent 1px),
+      var(--rt-panel);
+    background-size: 48px 48px;
+  }
+  .rt-preview-stage > img {
+    width: 100%;
+    height: 100%;
+    max-height: calc(100dvh - 290px);
+    display: block;
+    object-fit: contain;
+  }
+  .rt-preview-empty {
+    max-width: 360px;
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 24px;
+    color: var(--rt-muted);
+    text-align: center;
+  }
+  .rt-preview-empty svg {
+    width: 46px;
+    height: 46px;
+    fill: none;
+    stroke: var(--rt-border-strong);
+    stroke-width: 1.4;
+  }
+  .rt-preview-empty strong {
+    color: var(--rt-text);
+  }
+  .rt-preview-empty p {
+    line-height: 1.5;
+  }
+  .reference-submit {
+    display: grid;
+    grid-template-columns: 1fr minmax(180px, 34%);
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-top: 1px solid var(--rt-border);
+  }
+  .reference-submit p {
+    margin: 0;
+    color: var(--rt-muted);
+    font-size: 0.74rem;
+  }
+  .reference-submit a {
+    color: var(--rt-accent);
+    font-size: 0.74rem;
+    font-weight: 750;
+  }
+  .reference-submit button {
+    min-height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--rt-accent);
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 850;
+    box-shadow: 0 12px 26px
+      color-mix(in srgb, var(--rt-accent) 30%, transparent);
+    transition:
+      background 180ms ease,
+      transform 120ms ease;
+  }
+  .reference-submit button:hover:not(:disabled) {
+    background: var(--rt-accent-strong);
+  }
+  .reference-submit button:active:not(:disabled) {
+    transform: scale(0.985);
+  }
+  .reference-submit button:disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+  }
+  .reference-submit button svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+  .reference-result {
+    grid-column: 1 / 4;
+    display: grid;
+    grid-template-columns: minmax(210px, 0.34fr) minmax(420px, 1fr);
+    gap: 16px;
+    padding: 16px;
+  }
+  .reference-result-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 18px;
+  }
+  .reference-result-info > span {
+    color: var(--rt-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .reference-result-info h2 {
+    margin: 8px 0;
+    color: var(--rt-text);
+    font-size: clamp(1.35rem, 2.5vw, 2rem);
+  }
+  .reference-result-info p {
+    margin: 0;
+    color: var(--rt-muted);
+    line-height: 1.55;
+  }
+  .reference-result-actions {
+    display: grid;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .reference-result-actions button {
+    min-height: 44px;
+    border: 1px solid var(--rt-border-strong);
+    border-radius: 9px;
+    background: var(--rt-surface-2);
+    color: var(--rt-text);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 750;
+  }
+  .reference-result-actions button:first-child {
+    border-color: var(--rt-accent);
+    background: var(--rt-accent);
+    color: #fff;
+  }
+  .reference-result-figure {
+    --compare-position: 50%;
+    position: relative;
+    min-height: 520px;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--rt-panel);
+  }
+  .reference-result-figure > img,
+  .rt-compare-after,
+  .rt-compare-after img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .rt-compare-after {
+    clip-path: inset(0 0 0 var(--compare-position));
+  }
+  .rt-compare-divider {
+    position: absolute;
+    inset: 0 auto 0 var(--compare-position);
+    width: 2px;
+    background: #fff;
+    transform: translateX(-1px);
+    pointer-events: none;
+  }
+  .rt-compare-divider i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.72);
+    color: #fff;
+    font-style: normal;
+    transform: translate(-50%, -50%);
+  }
+  .reference-result-figure input[type="range"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+  }
+  .rt-compare-label {
+    position: absolute;
+    top: 14px;
+    z-index: 2;
+    padding: 6px 9px;
+    border-radius: 7px;
+    background: rgba(15, 23, 42, 0.72);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 750;
+    pointer-events: none;
+  }
+  .rt-compare-label-before {
+    left: 14px;
+  }
+  .rt-compare-label-after {
+    right: 14px;
+  }
+  .reference-state,
+  .reference-gate {
+    min-height: 420px;
+    grid-column: 1 / -1;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 12px;
+    padding: 32px;
+    text-align: center;
+  }
+  .reference-state p,
+  .reference-gate p {
+    max-width: 56ch;
+    margin: 0;
+    color: var(--rt-muted);
+    line-height: 1.55;
+  }
+  .reference-gate h2,
+  .reference-gate h3 {
+    margin: 0;
+    color: var(--rt-text);
+  }
+  .rt-gate-label {
+    color: var(--rt-accent);
+    font-weight: 800;
+  }
+  .rt-primary-link,
+  .reference-state button {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--rt-accent);
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .rt-loader {
+    width: 34px;
+    height: 34px;
+    border: 3px solid var(--rt-border);
+    border-top-color: var(--rt-accent);
+    border-radius: 50%;
+    animation: rt-workspace-spin 800ms linear infinite;
+  }
+  :global(.saved-reference-card) {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--rt-border);
+    border-radius: 8px;
+    background: var(--rt-panel);
+  }
+  :global(.saved-reference-card[data-selected="true"]) {
+    border-color: var(--rt-accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--rt-accent) 18%, transparent);
+  }
+  :global(.saved-reference-choose) {
+    width: 100%;
+    display: grid;
+    gap: 3px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--rt-text);
+    cursor: pointer;
+    text-align: left;
+  }
+  :global(.saved-reference-choose img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  :global(.saved-reference-choose strong),
+  :global(.saved-reference-choose small) {
+    padding-inline: 7px;
+    font-size: 0.68rem;
+  }
+  :global(.saved-reference-choose small) {
+    padding-bottom: 7px;
+    color: var(--rt-accent);
+  }
+  :global(.saved-reference-delete) {
+    min-height: 36px;
+    margin: 0 7px 7px;
+    border: 0;
+    background: transparent;
+    color: #d92d20;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.68rem;
+  }
+  [hidden] {
+    display: none !important;
+  }
+  @keyframes rt-workspace-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (max-width: 1180px) {
+    .reference-workspace-grid {
+      grid-template-columns: 68px minmax(250px, 300px) minmax(0, 1fr);
+    }
+    .reference-result {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 760px) {
+    .rt-workspace-head {
+      align-items: flex-start;
+      padding: 12px 14px;
+    }
+    .rt-workspace-meta .rt-meta-item:not(.rt-quota-item) {
+      display: none;
+    }
+    .rt-history-trigger span {
+      display: none;
+    }
+    .reference-workspace-grid {
+      min-height: auto;
+      display: block;
+      padding: 10px 10px calc(92px + env(safe-area-inset-bottom));
+    }
+    .reference-workflow {
+      display: block;
+    }
+    .rt-stepper {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr auto;
+      padding: 8px 4px 16px;
+    }
+    .rt-stepper-node {
+      gap: 4px;
+    }
+    .rt-stepper-dot {
+      width: 34px;
+      height: 34px;
+    }
+    .rt-stepper-label {
+      font-size: 0.68rem;
+    }
+    .rt-stepper-line {
+      width: 100%;
+      height: 2px;
+      margin: 17px 0 0;
+    }
+    .rt-stepper-line-fill {
+      width: 0;
+      height: 100%;
+      transition: width 200ms ease;
+    }
+    .rt-stepper-line--active .rt-stepper-line-fill {
+      width: 100%;
+      height: 100%;
+    }
+    .rt-source-panel {
+      display: grid;
+      gap: 10px;
+    }
+    .rt-source-block {
+      padding: 12px;
+      box-shadow: none;
+    }
+    .reference-dropzone {
+      min-height: 156px;
+    }
+    .rt-preview-panel {
+      margin-top: 10px;
+      grid-template-rows: auto minmax(300px, 58dvh) auto;
+      box-shadow: none;
+    }
+    .rt-preview-stage {
+      min-height: 300px;
+    }
+    .rt-preview-stage > img {
+      max-height: 58dvh;
+    }
+    .reference-submit {
+      grid-template-columns: 1fr;
+    }
+    .reference-submit button {
+      width: 100%;
+    }
+    .reference-result {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+    .reference-result-figure {
+      min-height: 62dvh;
+      border-radius: 12px 12px 0 0;
+    }
+    .reference-result-info {
+      padding: 16px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rt-loader {
+      animation: none;
+    }
+    .reference-submit button,
+    .rt-stepper-line-fill {
+      transition: none;
+    }
+  }
+</style>

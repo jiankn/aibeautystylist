@@ -1,0 +1,724 @@
+---
+interface HistoryCopy {
+  trigger: string;
+  title: string;
+  subtitle: string;
+  close: string;
+  loading: string;
+  emptyTitle: string;
+  emptyBody: string;
+  loadFailed: string;
+  retry: string;
+  viewAll: string;
+  back: string;
+  reuse: string;
+  openResult: string;
+  templateUnavailable: string;
+}
+
+interface Props {
+  copy: HistoryCopy;
+  historyHref: string;
+  resultBaseHref: string;
+}
+
+const { copy, historyHref, resultBaseHref } = Astro.props;
+---
+
+<div class="reference-history-layer" data-reference-history-layer hidden>
+  <button
+    class="reference-history-backdrop"
+    type="button"
+    tabindex="-1"
+    aria-label={copy.close}
+    data-history-close></button>
+  <aside
+    id="reference-history-dialog"
+    class="reference-history-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="reference-history-title"
+  >
+    <header class="reference-history-head">
+      <div>
+        <h2 id="reference-history-title">{copy.title}</h2>
+        <p>{copy.subtitle}</p>
+      </div>
+      <button class="reference-history-close" type="button" data-history-close>
+        {copy.close}
+      </button>
+    </header>
+
+    <div class="reference-history-list-view" data-history-list-view>
+      <div
+        class="reference-history-content"
+        data-history-content
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <p class="reference-history-message">{copy.loading}</p>
+        <div class="reference-history-skeleton" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <a class="reference-history-view-all" href={historyHref}>{copy.viewAll}</a
+      >
+    </div>
+
+    <div class="reference-history-detail" data-history-detail hidden>
+      <button class="reference-history-back" type="button" data-history-back>
+        {copy.back}
+      </button>
+      <figure>
+        <img data-history-detail-image alt="" />
+        <figcaption>
+          <strong data-history-detail-title></strong>
+          <span data-history-detail-date></span>
+        </figcaption>
+      </figure>
+      <p
+        class="reference-history-detail-feedback"
+        data-history-detail-feedback
+        role="status"
+        hidden
+      >
+      </p>
+      <div class="reference-history-detail-actions">
+        <button type="button" data-history-reuse>{copy.reuse}</button>
+        <a href={resultBaseHref} data-history-open-result>{copy.openResult}</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script is:inline define:vars={{ copy, resultBaseHref }}>
+  (() => {
+    const page = document.querySelector("[data-reference-tryon]");
+    const layer = page?.querySelector("[data-reference-history-layer]");
+    const drawer = layer?.querySelector(".reference-history-drawer");
+    const trigger = page?.querySelector("[data-reference-history-trigger]");
+    if (!page || !layer || !drawer || !trigger) return;
+
+    const content = layer.querySelector("[data-history-content]");
+    const listView = layer.querySelector("[data-history-list-view]");
+    const detailView = layer.querySelector("[data-history-detail]");
+    const detailImage = layer.querySelector("[data-history-detail-image]");
+    const detailTitle = layer.querySelector("[data-history-detail-title]");
+    const detailDate = layer.querySelector("[data-history-detail-date]");
+    const detailFeedback = layer.querySelector(
+      "[data-history-detail-feedback]",
+    );
+    const reuseButton = layer.querySelector("[data-history-reuse]");
+    const resultLink = layer.querySelector("[data-history-open-result]");
+    const backButton = layer.querySelector("[data-history-back]");
+    const closeButtons = layer.querySelectorAll("[data-history-close]");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopMode = window.matchMedia("(min-width: 1181px)");
+    const locale = document.documentElement.lang || undefined;
+    let jobs = [];
+    let activeJob = null;
+    let loaded = false;
+    let previousOverflow = "";
+    let closeTimer = 0;
+    let enabled = false;
+
+    function formatDate(value) {
+      const date = value ? new Date(value) : null;
+      if (!date || Number.isNaN(date.getTime())) return "";
+      return new Intl.DateTimeFormat(locale, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }).format(date);
+    }
+
+    function showMessage(title, body, canRetry = false) {
+      content.replaceChildren();
+      const state = document.createElement("div");
+      state.className = "reference-history-empty";
+      const heading = document.createElement("strong");
+      heading.textContent = title;
+      state.append(heading);
+      if (body) {
+        const description = document.createElement("p");
+        description.textContent = body;
+        state.append(description);
+      }
+      if (canRetry) {
+        const retry = document.createElement("button");
+        retry.type = "button";
+        retry.textContent = copy.retry;
+        retry.addEventListener("click", loadHistory);
+        state.append(retry);
+      }
+      content.append(state);
+      content.setAttribute("aria-busy", "false");
+    }
+
+    function showLoading() {
+      content.replaceChildren();
+      const message = document.createElement("p");
+      message.className = "reference-history-message";
+      message.textContent = copy.loading;
+      const skeleton = document.createElement("div");
+      skeleton.className = "reference-history-skeleton";
+      skeleton.setAttribute("aria-hidden", "true");
+      for (let index = 0; index < 4; index += 1) {
+        skeleton.append(document.createElement("span"));
+      }
+      content.append(message, skeleton);
+      content.setAttribute("aria-busy", "true");
+    }
+
+    function renderJobs() {
+      content.replaceChildren();
+      if (!jobs.length) {
+        showMessage(copy.emptyTitle, copy.emptyBody);
+        return;
+      }
+
+      const grid = document.createElement("div");
+      grid.className = "reference-history-grid";
+      jobs.forEach((job) => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "reference-history-card";
+        card.setAttribute("aria-label", String(job.lookTitle || copy.title));
+
+        const image = document.createElement("img");
+        image.src =
+          job.resultThumbImage || job.resultDisplayImage || job.resultImage;
+        image.alt = String(job.lookTitle || copy.title);
+        image.loading = "lazy";
+        image.decoding = "async";
+
+        const info = document.createElement("span");
+        const title = document.createElement("strong");
+        title.textContent = String(job.lookTitle || copy.title);
+        const date = document.createElement("small");
+        date.textContent = formatDate(job.completedAt || job.createdAt);
+        info.append(title, date);
+        card.append(image, info);
+        card.addEventListener("click", () => showDetail(job));
+        grid.append(card);
+      });
+      content.append(grid);
+      content.setAttribute("aria-busy", "false");
+    }
+
+    async function loadHistory() {
+      showLoading();
+      try {
+        const response = await fetch(
+          "/api/tryon-jobs?limit=6&source=private-template&status=succeeded",
+        );
+        const body = await response.json().catch(() => null);
+        if (!response.ok || !body?.ok) throw new Error("HISTORY_LOAD_FAILED");
+        jobs = Array.isArray(body.data?.items) ? body.data.items : [];
+        loaded = true;
+        renderJobs();
+      } catch {
+        loaded = false;
+        showMessage(copy.loadFailed, "", true);
+      }
+    }
+
+    function showDetail(job) {
+      activeJob = job;
+      detailImage.src =
+        job.resultDisplayImage || job.resultImage || job.resultThumbImage;
+      detailImage.alt = String(job.lookTitle || copy.title);
+      detailTitle.textContent = String(job.lookTitle || copy.title);
+      detailDate.textContent = formatDate(job.completedAt || job.createdAt);
+      detailFeedback.hidden = true;
+      detailFeedback.textContent = "";
+      reuseButton.disabled = !job.privateTemplateId;
+      resultLink.href = `${String(resultBaseHref).replace(/\/+$/, "")}/${encodeURIComponent(job.id)}`;
+      listView.hidden = true;
+      detailView.hidden = false;
+      backButton.focus();
+    }
+
+    function showList() {
+      activeJob = null;
+      detailView.hidden = true;
+      listView.hidden = false;
+      const firstCard = content.querySelector(".reference-history-card");
+      (firstCard || layer.querySelector(".reference-history-close"))?.focus();
+    }
+
+    function openDrawer() {
+      window.clearTimeout(closeTimer);
+      if (!desktopMode.matches) {
+        previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+      }
+      layer.hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
+      drawer.setAttribute("aria-modal", String(!desktopMode.matches));
+      requestAnimationFrame(() => layer.setAttribute("data-open", "true"));
+      if (!desktopMode.matches) {
+        layer.querySelector(".reference-history-close")?.focus();
+      }
+      if (!loaded) loadHistory();
+    }
+
+    function closeDrawer() {
+      if (desktopMode.matches) {
+        showList();
+        return;
+      }
+      layer.removeAttribute("data-open");
+      trigger.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = previousOverflow;
+      const finish = () => {
+        layer.hidden = true;
+        showList();
+        trigger.focus();
+      };
+      if (reduceMotion.matches) finish();
+      else closeTimer = window.setTimeout(finish, 180);
+    }
+
+    function syncMode() {
+      window.clearTimeout(closeTimer);
+      if (!enabled) {
+        layer.hidden = true;
+        return;
+      }
+      if (desktopMode.matches) {
+        document.body.style.overflow = previousOverflow;
+        layer.hidden = false;
+        layer.setAttribute("data-open", "true");
+        trigger.setAttribute("aria-expanded", "true");
+        drawer.setAttribute("aria-modal", "false");
+        if (!loaded) loadHistory();
+        return;
+      }
+      layer.removeAttribute("data-open");
+      layer.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      drawer.setAttribute("aria-modal", "true");
+    }
+
+    trigger.addEventListener("click", openDrawer);
+    closeButtons.forEach((button) =>
+      button.addEventListener("click", closeDrawer),
+    );
+    backButton.addEventListener("click", showList);
+    reuseButton.addEventListener("click", () => {
+      if (!activeJob?.privateTemplateId) return;
+      const detail = {
+        templateId: activeJob.privateTemplateId,
+        handled: false,
+      };
+      page.dispatchEvent(
+        new CustomEvent("reference-history:reuse", { detail }),
+      );
+      if (detail.handled) {
+        closeDrawer();
+        return;
+      }
+      detailFeedback.textContent = copy.templateUnavailable;
+      detailFeedback.hidden = false;
+    });
+    page.addEventListener("reference-history:refresh", () => {
+      loaded = false;
+      if (!layer.hidden) loadHistory();
+    });
+    page.addEventListener("reference-history:enabled", () => {
+      enabled = true;
+      syncMode();
+    });
+    desktopMode.addEventListener?.("change", syncMode);
+
+    layer.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeDrawer();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(
+        drawer.querySelectorAll(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((node) => !node.closest("[hidden]"));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  })();
+</script>
+
+<style>
+  .reference-history-layer[hidden],
+  .reference-history-detail[hidden],
+  .reference-history-list-view[hidden],
+  .reference-history-detail-feedback[hidden] {
+    display: none;
+  }
+  .reference-history-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: grid;
+    justify-items: end;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+  .reference-history-layer[data-open="true"] {
+    opacity: 1;
+  }
+  .reference-history-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: rgba(7, 12, 24, 0.58);
+    cursor: default;
+  }
+  .reference-history-drawer {
+    position: relative;
+    width: min(460px, 100%);
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border-left: 1px solid var(--rt-border, var(--line));
+    background: var(--rt-surface, var(--bg-elevated));
+    box-shadow: -20px 0 60px rgba(7, 12, 24, 0.24);
+    overflow: hidden;
+    transform: translateX(28px);
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reference-history-layer[data-open="true"] .reference-history-drawer {
+    transform: translateX(0);
+  }
+  .reference-history-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rt-border, var(--line));
+  }
+  .reference-history-head h2 {
+    margin: 0;
+    color: var(--rt-text, var(--heading));
+    font-family: var(--font-display);
+    font-size: 1.65rem;
+  }
+  .reference-history-head p {
+    margin: 6px 0 0;
+    color: var(--rt-muted, var(--body-secondary));
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .reference-history-close,
+  .reference-history-back,
+  :global(.reference-history-empty button),
+  .reference-history-detail-actions button,
+  .reference-history-detail-actions a,
+  .reference-history-view-all {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--rt-border, var(--line));
+    border-radius: 10px;
+    background: var(--rt-surface-2, var(--bg));
+    color: var(--rt-text, var(--heading));
+    cursor: pointer;
+    font: inherit;
+    font-weight: 750;
+    text-decoration: none;
+    transition:
+      border-color 180ms ease,
+      background 180ms ease,
+      color 180ms ease;
+  }
+  .reference-history-close {
+    flex: 0 0 auto;
+    padding: 0 14px;
+  }
+  .reference-history-close:hover,
+  .reference-history-back:hover,
+  :global(.reference-history-empty button:hover) {
+    border-color: var(--rose);
+    color: var(--rose);
+  }
+  .reference-history-list-view,
+  .reference-history-detail {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-top: 18px;
+  }
+  .reference-history-content {
+    min-height: 280px;
+  }
+  :global(.reference-history-message) {
+    margin: 0 0 16px;
+    color: var(--body-secondary);
+  }
+  .reference-history-skeleton,
+  :global(.reference-history-grid) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .reference-history-skeleton span {
+    aspect-ratio: 4 / 5;
+    border-radius: 12px;
+    background: linear-gradient(
+      100deg,
+      var(--surface-warm) 20%,
+      var(--bg) 40%,
+      var(--surface-warm) 60%
+    );
+    background-size: 200% 100%;
+    animation: reference-history-loading 1.2s ease-in-out infinite;
+  }
+  :global(.reference-history-card) {
+    min-width: 0;
+    padding: 0;
+    border: 1px solid var(--rt-border, var(--line));
+    border-radius: 12px;
+    background: var(--rt-surface-2, var(--bg));
+    color: var(--rt-text, var(--heading));
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    transition:
+      border-color 180ms ease,
+      transform 180ms ease,
+      box-shadow 180ms ease;
+  }
+  :global(.reference-history-card:hover),
+  :global(.reference-history-card:focus-visible) {
+    border-color: var(--rose);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--heading) 12%, transparent);
+    transform: translateY(-2px);
+  }
+  :global(.reference-history-card img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    background: var(--surface-warm);
+  }
+  :global(.reference-history-card > span) {
+    display: grid;
+    gap: 4px;
+    padding: 10px;
+  }
+  :global(.reference-history-card strong) {
+    overflow: hidden;
+    font-size: 0.88rem;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(.reference-history-card small) {
+    color: var(--body-secondary);
+    font-size: 0.75rem;
+  }
+  :global(.reference-history-empty) {
+    min-height: 280px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    padding: 28px;
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+    text-align: center;
+  }
+  :global(.reference-history-empty strong) {
+    color: var(--heading);
+  }
+  :global(.reference-history-empty p) {
+    max-width: 34ch;
+    margin: 0;
+    color: var(--body-secondary);
+    line-height: 1.55;
+  }
+  :global(.reference-history-empty button) {
+    margin-top: 8px;
+    padding: 0 16px;
+  }
+  .reference-history-view-all {
+    width: 100%;
+    margin-top: 18px;
+    border-color: var(--gold-border);
+    background: var(--surface-gold);
+    color: var(--gold-text);
+  }
+  .reference-history-back {
+    padding: 0 14px;
+  }
+  .reference-history-detail figure {
+    margin: 16px 0 0;
+  }
+  .reference-history-detail figure img {
+    display: block;
+    width: 100%;
+    max-height: 58dvh;
+    border-radius: 14px;
+    object-fit: contain;
+    background: var(--surface-warm);
+  }
+  .reference-history-detail figcaption {
+    display: grid;
+    gap: 4px;
+    margin-top: 12px;
+  }
+  .reference-history-detail figcaption strong {
+    color: var(--heading);
+    font-size: 1.05rem;
+  }
+  .reference-history-detail figcaption span {
+    color: var(--body-secondary);
+    font-size: 0.82rem;
+  }
+  .reference-history-detail-feedback {
+    margin: 12px 0 0;
+    color: var(--danger-text);
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+  .reference-history-detail-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .reference-history-detail-actions button {
+    border-color: var(--rose);
+    background: var(--rose);
+    color: #fff;
+  }
+  .reference-history-detail-actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  @keyframes reference-history-loading {
+    to {
+      background-position: -200% 0;
+    }
+  }
+  @media (min-width: 1181px) {
+    .reference-history-layer {
+      position: relative;
+      inset: auto;
+      z-index: auto;
+      min-width: 0;
+      height: calc(100dvh - 154px);
+      display: block;
+      opacity: 1;
+      grid-column: 4;
+    }
+    .reference-history-backdrop,
+    .reference-history-close {
+      display: none;
+    }
+    .reference-history-drawer {
+      position: sticky;
+      top: 90px;
+      width: 100%;
+      height: calc(100dvh - 154px);
+      padding: 18px;
+      border: 1px solid var(--rt-border, var(--line));
+      border-radius: 16px;
+      box-shadow: var(--rt-shadow, 0 18px 52px rgba(7, 12, 24, 0.18));
+      transform: none;
+    }
+    .reference-history-head {
+      padding-bottom: 14px;
+    }
+    .reference-history-head h2 {
+      font-size: 1.2rem;
+    }
+    .reference-history-head p {
+      font-size: 0.78rem;
+    }
+    .reference-history-list-view,
+    .reference-history-detail {
+      padding-top: 12px;
+    }
+    :global(.reference-history-grid) {
+      grid-template-columns: 1fr;
+      gap: 9px;
+    }
+    :global(.reference-history-card) {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      align-items: center;
+      border-radius: 10px;
+    }
+    :global(.reference-history-card:first-child) {
+      display: block;
+      border-color: var(--rt-accent, var(--rose));
+    }
+    :global(.reference-history-card img) {
+      width: 72px;
+      height: 72px;
+      aspect-ratio: 1;
+    }
+    :global(.reference-history-card:first-child img) {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+    :global(.reference-history-card > span) {
+      padding: 9px 10px;
+    }
+    .reference-history-view-all {
+      margin-top: 12px;
+    }
+  }
+  @media (max-width: 760px) {
+    .reference-history-layer {
+      align-items: end;
+      justify-items: stretch;
+    }
+    .reference-history-drawer {
+      width: 100%;
+      height: min(86dvh, 720px);
+      padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--rt-border, var(--line));
+      border-left: 0;
+      border-radius: 20px 20px 0 0;
+      transform: translateY(28px);
+    }
+    .reference-history-layer[data-open="true"] .reference-history-drawer {
+      transform: translateY(0);
+    }
+    .reference-history-head h2 {
+      font-size: 1.35rem;
+    }
+    .reference-history-detail-actions {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reference-history-layer,
+    .reference-history-drawer,
+    :global(.reference-history-card) {
+      transition: none;
+    }
+    .reference-history-skeleton span {
+      animation: none;
+    }
+  }
+</style>

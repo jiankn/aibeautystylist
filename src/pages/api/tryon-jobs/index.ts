@@ -14,6 +14,7 @@ import { apiError, apiSuccess } from "../../../lib/http";
 import {
   getStoredJobByIdempotencyKey,
   getTryOnJobPurpose,
+  jobStatuses,
   matchesTryOnJobRequest,
   toLocalizedJobResponse,
   type StoredTryOnJob,
@@ -56,26 +57,57 @@ export const GET: APIRoute = async ({ cookies, locals, url }) => {
 
   const limit = normalizeHistoryLimit(url.searchParams.get("limit"));
   const before = normalizeHistoryCursor(url.searchParams.get("before"));
-  const query = before
-    ? `SELECT result_json FROM tryon_jobs
-       WHERE user_id = ? AND deleted_at IS NULL AND created_at < ?
-       ORDER BY created_at DESC
-       LIMIT ?`
-    : `SELECT result_json FROM tryon_jobs
-       WHERE user_id = ? AND deleted_at IS NULL
-       ORDER BY created_at DESC
-       LIMIT ?`;
+  const sourceParam = url.searchParams.get("source");
+  const statusParam = url.searchParams.get("status");
+  const source = normalizeHistorySource(sourceParam);
+  const status = normalizeHistoryStatus(statusParam);
+  if ((sourceParam && !source) || (statusParam && !status)) {
+    return apiError(
+      {
+        code: "INVALID_HISTORY_FILTER",
+        message: "历史记录筛选条件无效",
+        retryable: false,
+      },
+      422,
+    );
+  }
+
+  const filters = [
+    "user_id = ?",
+    "deleted_at IS NULL",
+    "COALESCE(json_extract(result_json, '$.purpose'), 'tryon') = 'tryon'",
+  ];
+  const queryBindings: Array<string | number> = [userId];
+  if (source) {
+    filters.push(
+      "COALESCE(json_extract(result_json, '$.lookSource'), 'catalog') = ?",
+    );
+    queryBindings.push(source);
+  }
+  if (status) {
+    filters.push("json_extract(result_json, '$.status') = ?");
+    queryBindings.push(status);
+  }
+  if (before) {
+    filters.push("created_at < ?");
+    queryBindings.push(before);
+  }
+  queryBindings.push(limit + 1);
+  const query = `SELECT result_json FROM tryon_jobs
+    WHERE ${filters.join(" AND ")}
+    ORDER BY created_at DESC
+    LIMIT ?`;
   const rows = await bindings.DB.prepare(query)
-    .bind(...(before ? [userId, before, limit + 1] : [userId, limit + 1]))
+    .bind(...queryBindings)
     .all<{ result_json: string | null }>();
 
   const rawJobs = (rows.results ?? [])
     .map((row) => (row.result_json ? JSON.parse(row.result_json) : null))
     .filter(Boolean);
   const pageJobs = rawJobs.slice(0, limit);
-  const items = pageJobs
-    .filter((job) => getTryOnJobPurpose(job) === "tryon")
-    .map((job) => toLocalizedJobResponse(job, locals.audienceContext));
+  const items = pageJobs.map((job) =>
+    toLocalizedJobResponse(job, locals.audienceContext),
+  );
   const lastJob = pageJobs.at(-1);
   const nextCursor =
     rawJobs.length > limit
@@ -315,6 +347,20 @@ function normalizeHistoryCursor(value: string | null): string | undefined {
   if (!value) return undefined;
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? undefined : value;
+}
+
+function normalizeHistorySource(
+  value: string | null,
+): "catalog" | "private-template" | undefined {
+  return value === "catalog" || value === "private-template"
+    ? value
+    : undefined;
+}
+
+function normalizeHistoryStatus(value: string | null) {
+  return jobStatuses.includes(value as (typeof jobStatuses)[number])
+    ? (value as (typeof jobStatuses)[number])
+    : undefined;
 }
 
 function normalizeJobPurpose(value: unknown): TryOnJobPurpose | undefined {

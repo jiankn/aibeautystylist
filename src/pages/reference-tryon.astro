@@ -1,6 +1,9 @@
 ---
 import MobileBottomNav from "../components/MobileBottomNav.astro";
+import ReferenceTryOnHistoryDrawer from "../components/ReferenceTryOnHistoryDrawer.astro";
+import ReferenceTryOnWorkspace from "../components/ReferenceTryOnWorkspace.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import { getReferenceTryOnCopy } from "../data/referenceTryOnCopy";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCurrentLocale } from "../lib/i18n";
@@ -19,7 +22,7 @@ const currentRoute =
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 const pageHref = localizeAppHref("/reference-tryon");
-const copy = isZh
+const legacyCopy = isZh
   ? {
       title: "参考图试妆 · Premium | AI Beauty Stylist",
       description:
@@ -104,6 +107,21 @@ const copy = isZh
       shareBtn: "分享结果",
       shareCopied: "分享链接已复制。",
       shareFailed: "暂时无法分享此结果。",
+      historyDrawerTrigger: "历史妆容",
+      historyDrawerTitle: "历史妆容",
+      historyDrawerSubtitle: "查看最近生成的私有参考图试妆，并快速再次使用。",
+      historyDrawerClose: "关闭",
+      historyDrawerLoading: "正在读取历史妆容…",
+      historyDrawerEmptyTitle: "还没有历史妆容",
+      historyDrawerEmptyBody: "完成第一次参考图试妆后，结果会显示在这里。",
+      historyDrawerLoadFailed: "历史妆容暂时无法读取。",
+      historyDrawerRetry: "重试",
+      historyDrawerViewAll: "查看全部历史",
+      historyDrawerBack: "返回列表",
+      historyDrawerReuse: "再次试妆",
+      historyDrawerOpenResult: "查看完整结果",
+      historyDrawerTemplateUnavailable: "原参考模板已删除，当前结果只能查看。",
+      historyDrawerReused: "已选择这个历史妆容，请继续确认自拍并生成。",
     }
   : {
       title: "Reference Makeup Try-On · Premium | AI Beauty Stylist",
@@ -209,7 +227,29 @@ const copy = isZh
       shareBtn: "Share result",
       shareCopied: "Share link copied.",
       shareFailed: "Unable to share this result.",
+      historyDrawerTrigger: "Makeup history",
+      historyDrawerTitle: "Makeup history",
+      historyDrawerSubtitle:
+        "Review recent private reference try-ons and quickly reuse one.",
+      historyDrawerClose: "Close",
+      historyDrawerLoading: "Loading makeup history…",
+      historyDrawerEmptyTitle: "No makeup history yet",
+      historyDrawerEmptyBody:
+        "Your first completed reference try-on will appear here.",
+      historyDrawerLoadFailed: "Makeup history is temporarily unavailable.",
+      historyDrawerRetry: "Retry",
+      historyDrawerViewAll: "View all history",
+      historyDrawerBack: "Back to history",
+      historyDrawerReuse: "Try this again",
+      historyDrawerOpenResult: "Open full result",
+      historyDrawerTemplateUnavailable:
+        "The original reference was deleted, so this result is view-only.",
+      historyDrawerReused:
+        "This reference is selected. Confirm your selfie and generate.",
     };
+
+const copy = getReferenceTryOnCopy(locale);
+void legacyCopy;
 
 const pricingHref = localizeAppHref("/pricing");
 const hrefs = {
@@ -218,6 +258,7 @@ const hrefs = {
   ),
   pricing: `${pricingHref}?return_to=${encodeURIComponent(pageHref)}#pricing-comparison`,
   history: localizeAppHref("/history"),
+  privateHistory: localizeAppHref("/history?source=private-template"),
   page: pageHref,
   resultBase: localizeAppHref("/result"),
   shareBase: localizeAppHref("/share"),
@@ -231,22 +272,45 @@ const hrefs = {
   bodyClass="reference-tryon-body"
   robots="noindex,follow"
 >
-  <SiteHeader active="tryOn" />
+  <SiteHeader minimal />
   <main
     class="reference-tryon-main"
     data-reference-tryon
     data-photo-consent-version={PHOTO_CONSENT_VERSION}
   >
-    <!-- 背景装饰光晕 -->
-    <div class="rt-glow rt-glow--rose" aria-hidden="true"></div>
-    <div class="rt-glow rt-glow--gold" aria-hidden="true"></div>
+    <ReferenceTryOnWorkspace copy={copy} hrefs={hrefs} />
+    <template data-reference-tryon-legacy>
+      <!-- 背景装饰光晕 -->
+      <div class="rt-glow rt-glow--rose" aria-hidden="true"></div>
+      <div class="rt-glow rt-glow--gold" aria-hidden="true"></div>
 
-    <section class="reference-hero">
-      <div>
-        <span class="rt-eyebrow">
+      <section class="reference-hero">
+        <div>
+          <span class="rt-eyebrow">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              ><polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+              ></polygon></svg
+            >
+            {copy.eyebrow}
+          </span>
+          <h1>{copy.heading}</h1>
+          <p>{copy.intro}</p>
+        </div>
+        <aside class="rt-privacy-card">
           <svg
-            width="14"
-            height="14"
+            class="rt-privacy-icon"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -254,170 +318,255 @@ const hrefs = {
             stroke-linecap="round"
             stroke-linejoin="round"
             aria-hidden="true"
-            ><polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-            ></polygon></svg
+            ><rect x="3" y="11" width="18" height="11" rx="2" ry="2"
+            ></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg
           >
-          {copy.eyebrow}
-        </span>
-        <h1>{copy.heading}</h1>
-        <p>{copy.intro}</p>
-      </div>
-      <aside class="rt-privacy-card">
+          <strong>{copy.privacyTitle}</strong>
+          <p>{copy.privacy}</p>
+          <button
+            class="rt-history-trigger"
+            type="button"
+            data-reference-history-trigger
+            aria-haspopup="dialog"
+            aria-controls="reference-history-dialog"
+            aria-expanded="false"
+            hidden
+          >
+            <span>{copy.historyDrawerTrigger}</span>
+            <span aria-hidden="true">›</span>
+          </button>
+        </aside>
+      </section>
+
+      <!-- 加载/检查账户状态 -->
+      <section
+        class="reference-state"
+        data-loading-state
+        role="status"
+        aria-live="polite"
+      >
+        <div class="rt-loader-ring" data-loading-spinner aria-hidden="true">
+          <svg viewBox="0 0 80 80" width="64" height="64">
+            <circle
+              cx="40"
+              cy="40"
+              r="34"
+              fill="none"
+              stroke="var(--line)"
+              stroke-width="4"
+              opacity="0.3"></circle>
+            <circle
+              class="rt-loader-arc"
+              cx="40"
+              cy="40"
+              r="34"
+              fill="none"
+              stroke="url(#rt-grad)"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-dasharray="160 54"></circle>
+            <defs
+              ><linearGradient id="rt-grad" x1="0%" y1="0%" x2="100%" y2="0%"
+                ><stop offset="0%" stop-color="var(--rose)"></stop><stop
+                  offset="100%"
+                  stop-color="var(--gold)"></stop></linearGradient
+              ></defs
+            >
+          </svg>
+        </div>
+        <p data-loading-message>{copy.loadingAccount}</p>
+        <button class="btn btn-outline" type="button" data-loading-retry hidden>
+          {copy.retry}
+        </button>
+      </section>
+
+      <!-- 登录门控 -->
+      <section class="reference-gate" data-login-gate hidden>
         <svg
-          class="rt-privacy-icon"
-          width="20"
-          height="20"
+          class="rt-gate-icon"
+          width="48"
+          height="48"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+          stroke="var(--rose)"
+          stroke-width="1.5"
           stroke-linecap="round"
           stroke-linejoin="round"
           aria-hidden="true"
-          ><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path
-            d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg
+          ><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle
+            cx="12"
+            cy="7"
+            r="4"></circle></svg
         >
-        <strong>{copy.privacyTitle}</strong>
-        <p>{copy.privacy}</p>
-      </aside>
-    </section>
+        <h2>{copy.loginTitle}</h2>
+        <p>{copy.loginBody}</p>
+        <a class="btn btn-primary" href={hrefs.login}>{copy.loginCta}</a>
+      </section>
 
-    <!-- 加载/检查账户状态 -->
-    <section
-      class="reference-state"
-      data-loading-state
-      role="status"
-      aria-live="polite"
-    >
-      <div class="rt-loader-ring" data-loading-spinner aria-hidden="true">
-        <svg viewBox="0 0 80 80" width="64" height="64">
-          <circle
-            cx="40"
-            cy="40"
-            r="34"
-            fill="none"
-            stroke="var(--line)"
-            stroke-width="4"
-            opacity="0.3"></circle>
-          <circle
-            class="rt-loader-arc"
-            cx="40"
-            cy="40"
-            r="34"
-            fill="none"
-            stroke="url(#rt-grad)"
-            stroke-width="4"
-            stroke-linecap="round"
-            stroke-dasharray="160 54"></circle>
-          <defs
-            ><linearGradient id="rt-grad" x1="0%" y1="0%" x2="100%" y2="0%"
-              ><stop offset="0%" stop-color="var(--rose)"></stop><stop
-                offset="100%"
-                stop-color="var(--gold)"></stop></linearGradient
-            ></defs
-          >
-        </svg>
-      </div>
-      <p data-loading-message>{copy.loadingAccount}</p>
-      <button class="btn btn-outline" type="button" data-loading-retry hidden>
-        {copy.retry}
-      </button>
-    </section>
-
-    <!-- 登录门控 -->
-    <section class="reference-gate" data-login-gate hidden>
-      <svg
-        class="rt-gate-icon"
-        width="48"
-        height="48"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="var(--rose)"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-        ><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle
-          cx="12"
-          cy="7"
-          r="4"></circle></svg
+      <!-- Premium 门控 -->
+      <section
+        class="reference-gate reference-premium"
+        data-premium-gate
+        hidden
       >
-      <h2>{copy.loginTitle}</h2>
-      <p>{copy.loginBody}</p>
-      <a class="btn btn-primary" href={hrefs.login}>{copy.loginCta}</a>
-    </section>
+        <span>Premium</span>
+        <h2>{copy.premiumTitle}</h2>
+        <p>{copy.premiumBody}</p>
+        <a class="btn btn-gold" href={hrefs.pricing}>{copy.premiumCta}</a>
+        <div class="premium-template-manager" data-template-manager hidden>
+          <h3>{copy.manageExisting}</h3>
+          <div class="saved-reference-list" data-template-list></div>
+          <p class="saved-reference-status" data-template-status role="status">
+          </p>
+        </div>
+      </section>
 
-    <!-- Premium 门控 -->
-    <section class="reference-gate reference-premium" data-premium-gate hidden>
-      <span>Premium</span>
-      <h2>{copy.premiumTitle}</h2>
-      <p>{copy.premiumBody}</p>
-      <a class="btn btn-gold" href={hrefs.pricing}>{copy.premiumCta}</a>
-      <div class="premium-template-manager" data-template-manager hidden>
-        <h3>{copy.manageExisting}</h3>
-        <div class="saved-reference-list" data-template-list></div>
-        <p class="saved-reference-status" data-template-status role="status">
-        </p>
-      </div>
-    </section>
-
-    <!-- 主工作流表单 -->
-    <form class="reference-workflow" data-reference-form hidden novalidate>
-      <!-- 步骤进度条 -->
-      <nav class="rt-stepper" aria-label="Progress">
-        <div class="rt-stepper-node rt-stepper-node--active" data-step-node="1">
-          <span class="rt-stepper-dot">1</span>
-          <span class="rt-stepper-label">{isZh ? "选择参考" : "Reference"}</span
+      <!-- 主工作流表单 -->
+      <form class="reference-workflow" data-reference-form hidden novalidate>
+        <!-- 步骤进度条 -->
+        <nav class="rt-stepper" aria-label="Progress">
+          <div
+            class="rt-stepper-node rt-stepper-node--active"
+            data-step-node="1"
           >
-        </div>
-        <div class="rt-stepper-line">
-          <span class="rt-stepper-line-fill"></span>
-        </div>
-        <div class="rt-stepper-node" data-step-node="2">
-          <span class="rt-stepper-dot">2</span>
-          <span class="rt-stepper-label">{isZh ? "上传自拍" : "Selfie"}</span>
-        </div>
-        <div class="rt-stepper-line">
-          <span class="rt-stepper-line-fill"></span>
-        </div>
-        <div class="rt-stepper-node" data-step-node="3">
-          <span class="rt-stepper-dot">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg
+            <span class="rt-stepper-dot">1</span>
+            <span class="rt-stepper-label"
+              >{isZh ? "选择参考" : "Reference"}</span
             >
-          </span>
-          <span class="rt-stepper-label">{isZh ? "生成妆效" : "Generate"}</span>
-        </div>
-      </nav>
-
-      <!-- 步骤 1：选择妆容参考 -->
-      <section class="reference-step rt-glass-card">
-        <div class="reference-step-heading">
-          <div>
-            <h2>{copy.referenceTitle}</h2>
-            <p>{copy.referenceHelp}</p>
           </div>
-          <span class="rt-step-number">01</span>
-        </div>
-        <div class="reference-upload-grid">
-          <label class="reference-dropzone">
+          <div class="rt-stepper-line">
+            <span class="rt-stepper-line-fill"></span>
+          </div>
+          <div class="rt-stepper-node" data-step-node="2">
+            <span class="rt-stepper-dot">2</span>
+            <span class="rt-stepper-label">{isZh ? "上传自拍" : "Selfie"}</span>
+          </div>
+          <div class="rt-stepper-line">
+            <span class="rt-stepper-line-fill"></span>
+          </div>
+          <div class="rt-stepper-node" data-step-node="3">
+            <span class="rt-stepper-dot">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg
+              >
+            </span>
+            <span class="rt-stepper-label"
+              >{isZh ? "生成妆效" : "Generate"}</span
+            >
+          </div>
+        </nav>
+
+        <!-- 步骤 1：选择妆容参考 -->
+        <section class="reference-step rt-glass-card">
+          <div class="reference-step-heading">
+            <div>
+              <h2>{copy.referenceTitle}</h2>
+              <p>{copy.referenceHelp}</p>
+            </div>
+            <span class="rt-step-number">01</span>
+          </div>
+          <div class="reference-upload-grid">
+            <label class="reference-dropzone">
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                aria-describedby="reference-file-help reference-file-error"
+                data-reference-input
+              />
+              <svg
+                class="rt-upload-icon"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                ><rect x="3" y="3" width="18" height="18" rx="2" ry="2"
+                ></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline
+                  points="21 15 16 10 5 21"></polyline></svg
+              >
+              <span>{copy.referenceLabel}</span>
+              <small id="reference-file-help">{copy.referenceFormat}</small>
+              <img data-reference-preview alt="" hidden />
+            </label>
+            <label class="reference-name">
+              <span>{copy.templateName}</span>
+              <input
+                type="text"
+                maxlength="60"
+                placeholder={copy.templatePlaceholder}
+                data-template-title
+              />
+            </label>
+          </div>
+          <p
+            class="reference-field-error"
+            id="reference-file-error"
+            data-error="reference"
+            role="alert"
+            hidden
+          >
+          </p>
+          <label class="reference-check">
+            <input
+              type="checkbox"
+              aria-describedby="reference-rights-error"
+              data-rights-check
+            />
+            <span>{copy.rights}</span>
+          </label>
+          <p
+            class="reference-field-error"
+            id="reference-rights-error"
+            data-error="rights"
+            role="alert"
+            hidden
+          >
+          </p>
+          <div class="saved-reference-block">
+            <h3>{copy.savedTitle}</h3>
+            <div class="saved-reference-list" data-template-list>
+              <p>{copy.noSaved}</p>
+            </div>
+            <p
+              class="saved-reference-status"
+              data-template-status
+              role="status"
+            >
+            </p>
+          </div>
+        </section>
+
+        <!-- 步骤 2：上传自拍 -->
+        <section class="reference-step rt-glass-card">
+          <div class="reference-step-heading">
+            <div>
+              <h2>{copy.selfieTitle}</h2>
+              <p>{copy.selfieHelp}</p>
+            </div>
+            <span class="rt-step-number">02</span>
+          </div>
+          <label class="reference-dropzone reference-selfie">
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp"
-              aria-describedby="reference-file-help reference-file-error"
-              data-reference-input
+              aria-describedby="selfie-file-help selfie-file-error"
+              data-selfie-input
+              required
             />
             <svg
-              class="rt-upload-icon"
+              class="rt-upload-icon rt-upload-icon--selfie"
               width="40"
               height="40"
               viewBox="0 0 24 24"
@@ -427,184 +576,148 @@ const hrefs = {
               stroke-linecap="round"
               stroke-linejoin="round"
               aria-hidden="true"
-              ><rect x="3" y="3" width="18" height="18" rx="2" ry="2"
-              ></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline
-                points="21 15 16 10 5 21"></polyline></svg
+              ><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+              ></path><circle cx="12" cy="7" r="4"></circle></svg
             >
-            <span>{copy.referenceLabel}</span>
-            <small id="reference-file-help">{copy.referenceFormat}</small>
-            <img data-reference-preview alt="" hidden />
+            <span>{copy.selfieLabel}</span>
+            <small id="selfie-file-help">{copy.selfieFormat}</small>
+            <img data-selfie-preview alt="" hidden />
           </label>
-          <label class="reference-name">
-            <span>{copy.templateName}</span>
-            <input
-              type="text"
-              maxlength="60"
-              placeholder={copy.templatePlaceholder}
-              data-template-title
-            />
-          </label>
-        </div>
-        <p
-          class="reference-field-error"
-          id="reference-file-error"
-          data-error="reference"
-          role="alert"
-          hidden
-        >
-        </p>
-        <label class="reference-check">
-          <input
-            type="checkbox"
-            aria-describedby="reference-rights-error"
-            data-rights-check
-          />
-          <span>{copy.rights}</span>
-        </label>
-        <p
-          class="reference-field-error"
-          id="reference-rights-error"
-          data-error="rights"
-          role="alert"
-          hidden
-        >
-        </p>
-        <div class="saved-reference-block">
-          <h3>{copy.savedTitle}</h3>
-          <div class="saved-reference-list" data-template-list>
-            <p>{copy.noSaved}</p>
-          </div>
-          <p class="saved-reference-status" data-template-status role="status">
+          <p
+            class="reference-field-error"
+            id="selfie-file-error"
+            data-error="selfie"
+            role="alert"
+            hidden
+          >
           </p>
-        </div>
-      </section>
+          <label class="reference-check">
+            <input
+              type="checkbox"
+              aria-describedby="selfie-consent-error"
+              data-consent-check
+              required
+            />
+            <span>{copy.consent}</span>
+          </label>
+          <p
+            class="reference-field-error"
+            id="selfie-consent-error"
+            data-error="consent"
+            role="alert"
+            hidden
+          >
+          </p>
+        </section>
 
-      <!-- 步骤 2：上传自拍 -->
-      <section class="reference-step rt-glass-card">
-        <div class="reference-step-heading">
-          <div>
-            <h2>{copy.selfieTitle}</h2>
-            <p>{copy.selfieHelp}</p>
+        <!-- 生成按钮区域 -->
+        <div class="reference-submit">
+          <p class="reference-cost-note" data-cost-note>{copy.costNote}</p>
+          <a
+            class="reference-credit-link"
+            href={hrefs.credits}
+            data-credit-link
+            hidden
+          >
+            {copy.buyCredits}
+          </a>
+          <button class="btn rt-generate-btn" type="submit" data-generate>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              ><path
+                d="M12 3v1m0 16v1m-8-9H3m18 0h-1M5.6 5.6l.7.7m12.1 12.1l.7.7M5.6 18.4l.7-.7M18.4 5.6l.7-.7"
+              ></path><circle cx="12" cy="12" r="4"></circle></svg
+            >
+            {copy.generate}
+          </button>
+          <p data-reference-status role="status"></p>
+          <a
+            class="reference-progress-link"
+            href={hrefs.history}
+            data-progress-link
+            hidden
+          >
+            {copy.viewProgress}
+          </a>
+        </div>
+      </form>
+
+      <!-- 结果展示 -->
+      <section class="reference-result" data-result hidden>
+        <div class="reference-result-info">
+          <span class="rt-result-badge">Premium · Private</span>
+          <h2>{copy.resultTitle}</h2>
+          <p>{copy.resultNote}</p>
+          <div class="reference-result-actions">
+            <a class="btn btn-primary" href={hrefs.history}>{copy.history}</a>
+            <button class="btn btn-outline" type="button" data-again>
+              {copy.again}
+            </button>
+            <button
+              class="btn btn-outline rt-share-btn"
+              type="button"
+              data-share-result
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                ><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"
+                ></path><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"
+                ></path></svg
+              >
+              {copy.shareBtn}
+            </button>
           </div>
-          <span class="rt-step-number">02</span>
-        </div>
-        <label class="reference-dropzone reference-selfie">
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            aria-describedby="selfie-file-help selfie-file-error"
-            data-selfie-input
-            required
-          />
-          <svg
-            class="rt-upload-icon rt-upload-icon--selfie"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-            ><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle
-              cx="12"
-              cy="7"
-              r="4"></circle></svg
+          <div
+            class="rt-share-feedback"
+            data-share-feedback
+            role="status"
+            aria-live="polite"
+            hidden
           >
-          <span>{copy.selfieLabel}</span>
-          <small id="selfie-file-help">{copy.selfieFormat}</small>
-          <img data-selfie-preview alt="" hidden />
-        </label>
-        <p
-          class="reference-field-error"
-          id="selfie-file-error"
-          data-error="selfie"
-          role="alert"
-          hidden
-        >
-        </p>
-        <label class="reference-check">
-          <input
-            type="checkbox"
-            aria-describedby="selfie-consent-error"
-            data-consent-check
-            required
-          />
-          <span>{copy.consent}</span>
-        </label>
-        <p
-          class="reference-field-error"
-          id="selfie-consent-error"
-          data-error="consent"
-          role="alert"
-          hidden
-        >
-        </p>
+          </div>
+        </div>
+        <figure class="reference-result-figure">
+          <img data-result-image alt={copy.resultTitle} />
+        </figure>
       </section>
 
-      <!-- 生成按钮区域 -->
-      <div class="reference-submit">
-        <p class="reference-cost-note" data-cost-note>{copy.costNote}</p>
-        <a
-          class="reference-credit-link"
-          href={hrefs.credits}
-          data-credit-link
-          hidden
-        >
-          {copy.buyCredits}
-        </a>
-        <button class="btn rt-generate-btn" type="submit" data-generate>
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-            ><path
-              d="M12 3v1m0 16v1m-8-9H3m18 0h-1M5.6 5.6l.7.7m12.1 12.1l.7.7M5.6 18.4l.7-.7M18.4 5.6l.7-.7"
-            ></path><circle cx="12" cy="12" r="4"></circle></svg
-          >
-          {copy.generate}
-        </button>
-        <p data-reference-status role="status"></p>
-        <a
-          class="reference-progress-link"
-          href={hrefs.history}
-          data-progress-link
-          hidden
-        >
-          {copy.viewProgress}
-        </a>
-      </div>
-    </form>
-
-    <!-- 结果展示 -->
-    <section class="reference-result" data-result hidden>
-      <div class="reference-result-info">
-        <span class="rt-result-badge">Premium · Private</span>
-        <h2>{copy.resultTitle}</h2>
-        <p>{copy.resultNote}</p>
-        <div class="reference-result-actions">
-          <a class="btn btn-primary" href={hrefs.history}>{copy.history}</a>
-          <button class="btn btn-outline" type="button" data-again>
-            {copy.again}
-          </button>
-          <button class="btn btn-outline rt-share-btn" type="button" data-share-result>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"></path><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path></svg>
-            {copy.shareBtn}
-          </button>
-        </div>
-        <div class="rt-share-feedback" data-share-feedback role="status" aria-live="polite" hidden></div>
-      </div>
-      <figure class="reference-result-figure">
-        <img data-result-image alt={copy.resultTitle} />
-      </figure>
-    </section>
+      <ReferenceTryOnHistoryDrawer
+        copy={{
+          trigger: copy.historyDrawerTrigger,
+          title: copy.historyDrawerTitle,
+          subtitle: copy.historyDrawerSubtitle,
+          close: copy.historyDrawerClose,
+          loading: copy.historyDrawerLoading,
+          emptyTitle: copy.historyDrawerEmptyTitle,
+          emptyBody: copy.historyDrawerEmptyBody,
+          loadFailed: copy.historyDrawerLoadFailed,
+          retry: copy.historyDrawerRetry,
+          viewAll: copy.historyDrawerViewAll,
+          back: copy.historyDrawerBack,
+          reuse: copy.historyDrawerReuse,
+          openResult: copy.historyDrawerOpenResult,
+          templateUnavailable: copy.historyDrawerTemplateUnavailable,
+        }}
+        historyHref={hrefs.privateHistory}
+        resultBaseHref={hrefs.resultBase}
+      />
+    </template>
   </main>
   <MobileBottomNav active="tryon" />
 
@@ -661,6 +774,17 @@ const hrefs = {
         root.querySelectorAll("[data-template-status]"),
       );
       const templateManager = root.querySelector("[data-template-manager]");
+      const historyTrigger = root.querySelector(
+        "[data-reference-history-trigger]",
+      );
+      const workspaceQuota = root.querySelector("[data-workspace-quota]");
+      const referenceReady = root.querySelector("[data-reference-ready]");
+      const selfieReady = root.querySelector("[data-selfie-ready]");
+      const canvasImage = root.querySelector("[data-canvas-image]");
+      const canvasEmpty = root.querySelector("[data-canvas-empty]");
+      const resultOriginal = root.querySelector("[data-result-original]");
+      const comparePanel = root.querySelector("[data-result-compare]");
+      const compareSlider = root.querySelector("[data-compare-slider]");
       let selectedTemplateId = "";
       let templates = [];
       let isPremium = false;
@@ -682,6 +806,9 @@ const hrefs = {
         const hasRef = !!(selectedTemplateId || referenceInput.files?.[0]);
         const hasSelfie = !!selfieInput.files?.[0];
         const currentStep = !hasRef ? 1 : !hasSelfie ? 2 : 3;
+
+        if (referenceReady) referenceReady.hidden = !hasRef;
+        if (selfieReady) selfieReady.hidden = !hasSelfie;
 
         stepperNodes.forEach((node, i) => {
           if (!node) return;
@@ -779,7 +906,12 @@ const hrefs = {
       function setGenerating(active) {
         generate.disabled = active || quotaExhausted;
         generate.setAttribute("aria-busy", String(active));
-        generate.textContent = active ? copy.generatingButton : copy.generate;
+        const label = generate.querySelector("span");
+        if (label) {
+          label.textContent = active ? copy.generatingButton : copy.generate;
+        } else {
+          generate.textContent = active ? copy.generatingButton : copy.generate;
+        }
       }
 
       function updateQuota(quota) {
@@ -792,6 +924,11 @@ const hrefs = {
           total >= 0;
         quotaExhausted =
           hasQuota && remaining < Number(privateReferenceCreditCost || 2);
+        if (workspaceQuota) {
+          workspaceQuota.textContent = hasQuota
+            ? `${remaining}/${total}`
+            : "--";
+        }
         if (costNote) {
           costNote.textContent = quotaExhausted
             ? copy.noCredits
@@ -830,12 +967,14 @@ const hrefs = {
             copy.loadFailed,
           );
           if (data?.user?.kind !== "account") {
+            if (historyTrigger) historyTrigger.hidden = true;
             showOnly(loginGate);
             return;
           }
           updateQuota(data.quota);
           isPremium = data.plan === "premium";
           if (data.plan !== "premium") {
+            if (historyTrigger) historyTrigger.hidden = true;
             showOnly(premiumGate);
             try {
               await loadTemplates();
@@ -847,8 +986,10 @@ const hrefs = {
             }
             return;
           }
+          if (historyTrigger) historyTrigger.hidden = false;
           showOnly(form);
           updateStepper();
+          root.dispatchEvent(new CustomEvent("reference-history:enabled"));
           try {
             await loadTemplates();
           } catch {
@@ -980,6 +1121,16 @@ const hrefs = {
         image.hidden = false;
       }
 
+      function syncCanvasPreview() {
+        const source = selfiePreview?.src;
+        const visible = Boolean(source && !selfiePreview.hidden);
+        if (canvasImage) {
+          canvasImage.hidden = !visible;
+          if (visible) canvasImage.src = source;
+        }
+        if (canvasEmpty) canvasEmpty.hidden = visible;
+      }
+
       referenceInput.addEventListener("change", () => {
         pendingIdempotencyKey = "";
         selectedTemplateId = "";
@@ -998,10 +1149,40 @@ const hrefs = {
         clearFieldError("selfie");
         clearFieldError("consent");
         previewFile(selfieInput, selfiePreview);
+        syncCanvasPreview();
         updateStepper();
       });
       rightsCheck.addEventListener("change", () => clearFieldError("rights"));
       consentCheck.addEventListener("change", () => clearFieldError("consent"));
+
+      root.addEventListener("reference-history:reuse", (event) => {
+        const templateId = event.detail?.templateId;
+        const template = templates.find((item) => item.id === templateId);
+        if (!template) return;
+
+        pendingIdempotencyKey = "";
+        selectedTemplateId = template.id;
+        pendingTemplateId = template.id;
+        referenceInput.value = "";
+        referencePreview.hidden = true;
+        rightsCheck.checked = false;
+        clearFieldError("reference");
+        clearFieldError("rights");
+        renderTemplates();
+        updateStepper();
+        setTemplateStatus(copy.historyDrawerReused);
+        event.detail.handled = true;
+
+        window.setTimeout(() => {
+          selfieInput.closest(".reference-step")?.scrollIntoView({
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+              .matches
+              ? "auto"
+              : "smooth",
+            block: "start",
+          });
+        }, 220);
+      });
 
       async function compressToWebp(file, maxSide, quality) {
         let bitmap;
@@ -1219,10 +1400,14 @@ const hrefs = {
           }
           assertPrivateJobMatches(completed, templateId, upload.id);
           root.querySelector("[data-result-image]").src = completed.resultImage;
+          if (resultOriginal && selfiePreview?.src) {
+            resultOriginal.src = selfiePreview.src;
+          }
           lastCompletedJobId = job.id;
           activeJobId = "";
           pendingUploadId = "";
           pendingIdempotencyKey = "";
+          root.dispatchEvent(new CustomEvent("reference-history:refresh"));
           showOnly(result);
         } catch (error) {
           if (error?.field) {
@@ -1311,6 +1496,13 @@ const hrefs = {
 
       shareBtn?.addEventListener("click", shareResult);
 
+      compareSlider?.addEventListener("input", () => {
+        comparePanel?.style.setProperty(
+          "--compare-position",
+          `${compareSlider.value}%`,
+        );
+      });
+
       let lastCompletedJobId = "";
 
       root.querySelector("[data-again]")?.addEventListener("click", () => {
@@ -1327,6 +1519,7 @@ const hrefs = {
         templateTitle.value = "";
         referencePreview.hidden = true;
         selfiePreview.hidden = true;
+        syncCanvasPreview();
         status.textContent = "";
         progressLink.hidden = true;
         clearFieldErrors();
@@ -1449,6 +1642,31 @@ const hrefs = {
   .rt-privacy-card p {
     margin: 0;
     font-size: 0.88rem;
+  }
+  .rt-history-trigger {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 0.65rem;
+    padding: 0.7rem 0 0;
+    border: 0;
+    border-top: 1px solid var(--warm-border);
+    background: transparent;
+    color: var(--rose);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 800;
+    text-align: left;
+    transition: color 180ms ease;
+  }
+  .rt-history-trigger:hover,
+  .rt-history-trigger:focus-visible {
+    color: var(--heading);
+  }
+  .rt-history-trigger[hidden] {
+    display: none;
   }
 
   /* ══════════════════════════════════════════
@@ -2080,8 +2298,14 @@ const hrefs = {
     display: none;
   }
   @keyframes rt-feedback-in {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* ══════════════════════════════════════════
