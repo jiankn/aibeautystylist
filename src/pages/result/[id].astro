@@ -505,10 +505,8 @@ const hrefs = {
           if (download)
             download.href = `/api/tryon-jobs/${encodeURIComponent(job.id)}/result`;
           if (shareBtn) {
-            shareBtn.hidden = isPrivateReference;
-            if (!isPrivateReference) {
-              shareBtn.href = `${hrefs.shareCard}?jobId=${encodeURIComponent(job.id)}`;
-            }
+            shareBtn.hidden = false;
+            shareBtn.href = `${hrefs.shareCard}?jobId=${encodeURIComponent(job.id)}`;
           }
           if (retry) {
             if (isPrivateReference) {

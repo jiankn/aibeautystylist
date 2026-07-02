@@ -10,6 +10,7 @@ interface Props {
     history: string;
     privateHistory: string;
     resultBase: string;
+    shareCard: string;
     credits: string;
   };
 }
@@ -256,9 +257,8 @@ const { copy, hrefs } = Astro.props;
       <p>{copy.resultNote}</p>
       <div class="reference-result-actions">
         <button type="button" data-again>{copy.again}</button>
-        <button type="button" data-share-result>{copy.shareBtn}</button>
+        <a href={hrefs.shareCard} data-share-result>{copy.shareBtn}</a>
       </div>
-      <div data-share-feedback role="status" aria-live="polite" hidden></div>
     </aside>
     <figure class="reference-result-figure" data-result-compare>
       <img
@@ -826,8 +826,12 @@ const { copy, hrefs } = Astro.props;
     gap: 8px;
     margin-top: 20px;
   }
-  .reference-result-actions button {
+  .reference-result-actions button,
+  .reference-result-actions a {
     min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid var(--rt-border-strong);
     border-radius: 9px;
     background: var(--rt-surface-2);
@@ -835,6 +839,7 @@ const { copy, hrefs } = Astro.props;
     cursor: pointer;
     font: inherit;
     font-weight: 750;
+    text-decoration: none;
   }
   .reference-result-actions button:first-child {
     border-color: var(--rt-accent);

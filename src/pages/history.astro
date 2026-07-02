@@ -24,6 +24,7 @@ const hrefs = {
     `/login?mode=login&next=${encodeURIComponent(historyHref)}`,
   ),
   resultBase: localizeAppHref("/result"),
+  shareCard: localizeAppHref("/share-card"),
   shareBase: localizeAppHref("/share"),
   tryonFree: localizeAppHref("/tryon"),
 };
@@ -2367,41 +2368,16 @@ const copy =
         return `${base}/${encodeURIComponent(job.id)}`;
       }
 
-      async function createPublicShareUrl(job) {
-        const response = await fetch("/api/shares", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ jobId: job.id }),
-        });
-        const body = await response.json().catch(() => null);
-        if (!response.ok || !body?.ok || !body.data?.sourceCode) {
-          throw new Error(body?.error?.message || "SHARE_FAILED");
-        }
-        const base = String(hrefs.shareBase || "/share").replace(/\/+$/, "");
-        return new URL(
-          `${base}/${encodeURIComponent(body.data.sourceCode)}`,
-          window.location.origin,
-        ).toString();
-      }
-
-      async function shareJob(job) {
+      function shareJob(job) {
         if (!job?.resultImage) {
           showFeedback(copy.shareFailed);
           return;
         }
-        try {
-          const url = await createPublicShareUrl(job);
-          if (navigator.share) {
-            await navigator.share({ title: job.title, url });
-          } else if (navigator.clipboard) {
-            await navigator.clipboard.writeText(url);
-            showFeedback(copy.shareCopied);
-          } else {
-            showFeedback(copy.shareFailed);
-          }
-        } catch {
-          showFeedback(copy.shareFailed);
-        }
+        const base = String(hrefs.shareCard || "/share-card").replace(
+          /\/+$/,
+          "",
+        );
+        window.location.href = `${base}?jobId=${encodeURIComponent(job.id)}`;
       }
 
       function createCard(job) {
@@ -2646,9 +2622,9 @@ const copy =
         showFeedback(copy.comparePending);
       }
 
-      async function shareSelected() {
+      function shareSelected() {
         const [job] = selectedJobs();
-        await shareJob(job);
+        shareJob(job);
       }
 
       let feedbackTimer;

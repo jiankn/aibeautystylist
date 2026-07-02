@@ -2,6 +2,7 @@
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCurrentLocale } from "../lib/i18n";
+import { PUBLIC_SHARE_CONSENT_VERSION } from "../lib/shareCards";
 
 const currentLocale = getCurrentLocale();
 const currentPathname = Astro.originPathname || Astro.url.pathname;
@@ -596,6 +597,124 @@ const shareCopyByLocale = {
 
 const copy = shareCopyByLocale[currentLocale] ?? shareCopyByLocale.en;
 
+const privateShareCopyByLocale = {
+  en: {
+    title: "Create a public share link?",
+    body: "Anyone with the link can view this private reference result. It will not appear in Discover, and deleting the result will disable the link.",
+    confirm: "Create public link",
+    preparing: "Creating your public link…",
+    ready: "Public link created. You can now share or copy it.",
+    failed: "The public link could not be created. Please retry.",
+    sharePreparing: "Preparing sharing…",
+    cancelled: "Sharing cancelled.",
+    copyFailed: "The link could not be copied. Please retry.",
+  },
+  "zh-CN": {
+    title: "创建公开分享链接？",
+    body: "获得链接的人可以查看这条私有参考妆容结果。它不会进入 Discover，删除结果后链接会同时失效。",
+    confirm: "创建公开链接",
+    preparing: "正在创建公开链接…",
+    ready: "公开链接已创建，现在可以分享或复制。",
+    failed: "公开链接创建失败，请重试。",
+    sharePreparing: "正在准备分享…",
+    cancelled: "已取消分享。",
+    copyFailed: "链接复制失败，请重试。",
+  },
+  "zh-TW": {
+    title: "建立公開分享連結？",
+    body: "取得連結的人可以查看這筆私密參考妝容結果。它不會出現在 Discover，刪除結果後連結也會失效。",
+    confirm: "建立公開連結",
+    preparing: "正在建立公開連結…",
+    ready: "公開連結已建立，現在可以分享或複製。",
+    failed: "無法建立公開連結，請再試一次。",
+    sharePreparing: "正在準備分享…",
+    cancelled: "已取消分享。",
+    copyFailed: "無法複製連結，請再試一次。",
+  },
+  "de-DE": {
+    title: "Öffentlichen Link erstellen?",
+    body: "Jeder mit dem Link kann dieses private Referenz-Ergebnis ansehen. Es erscheint nicht in Discover; beim Löschen des Ergebnisses wird der Link deaktiviert.",
+    confirm: "Öffentlichen Link erstellen",
+    preparing: "Öffentlicher Link wird erstellt…",
+    ready: "Link erstellt. Du kannst ihn jetzt teilen oder kopieren.",
+    failed: "Der Link konnte nicht erstellt werden. Erneut versuchen.",
+    sharePreparing: "Teilen wird vorbereitet…",
+    cancelled: "Teilen abgebrochen.",
+    copyFailed: "Der Link konnte nicht kopiert werden.",
+  },
+  "fr-FR": {
+    title: "Créer un lien public ?",
+    body: "Toute personne disposant du lien pourra voir ce résultat privé. Il n’apparaîtra pas dans Discover et sera désactivé si le résultat est supprimé.",
+    confirm: "Créer le lien public",
+    preparing: "Création du lien public…",
+    ready: "Lien créé. Vous pouvez maintenant le partager ou le copier.",
+    failed: "Impossible de créer le lien. Réessayez.",
+    sharePreparing: "Préparation du partage…",
+    cancelled: "Partage annulé.",
+    copyFailed: "Impossible de copier le lien.",
+  },
+  "ja-JP": {
+    title: "公開共有リンクを作成しますか？",
+    body: "リンクを知っている人は、この非公開の参考メイク結果を閲覧できます。Discoverには表示されず、結果を削除するとリンクも無効になります。",
+    confirm: "公開リンクを作成",
+    preparing: "公開リンクを作成中…",
+    ready: "公開リンクを作成しました。共有またはコピーできます。",
+    failed: "公開リンクを作成できませんでした。もう一度お試しください。",
+    sharePreparing: "共有を準備中…",
+    cancelled: "共有をキャンセルしました。",
+    copyFailed: "リンクをコピーできませんでした。",
+  },
+  "ko-KR": {
+    title: "공개 공유 링크를 만들까요?",
+    body: "링크를 가진 사람은 이 비공개 참고 메이크업 결과를 볼 수 있습니다. Discover에는 표시되지 않으며 결과를 삭제하면 링크도 비활성화됩니다.",
+    confirm: "공개 링크 만들기",
+    preparing: "공개 링크 만드는 중…",
+    ready: "공개 링크가 생성되었습니다. 이제 공유하거나 복사할 수 있습니다.",
+    failed: "공개 링크를 만들지 못했습니다. 다시 시도하세요.",
+    sharePreparing: "공유 준비 중…",
+    cancelled: "공유를 취소했습니다.",
+    copyFailed: "링크를 복사하지 못했습니다.",
+  },
+  "es-ES": {
+    title: "¿Crear un enlace público?",
+    body: "Cualquier persona con el enlace podrá ver este resultado privado. No aparecerá en Discover y el enlace se desactivará al eliminar el resultado.",
+    confirm: "Crear enlace público",
+    preparing: "Creando enlace público…",
+    ready: "Enlace creado. Ya puedes compartirlo o copiarlo.",
+    failed: "No se pudo crear el enlace. Inténtalo de nuevo.",
+    sharePreparing: "Preparando para compartir…",
+    cancelled: "Se canceló el uso compartido.",
+    copyFailed: "No se pudo copiar el enlace.",
+  },
+  "es-419": {
+    title: "¿Crear un enlace público?",
+    body: "Cualquier persona con el enlace podrá ver este resultado privado. No aparecerá en Discover y el enlace se desactivará al eliminar el resultado.",
+    confirm: "Crear enlace público",
+    preparing: "Creando enlace público…",
+    ready: "Enlace creado. Ya puedes compartirlo o copiarlo.",
+    failed: "No se pudo crear el enlace. Inténtalo de nuevo.",
+    sharePreparing: "Preparando para compartir…",
+    cancelled: "Se canceló el uso compartido.",
+    copyFailed: "No se pudo copiar el enlace.",
+  },
+  "pt-BR": {
+    title: "Criar um link público?",
+    body: "Qualquer pessoa com o link poderá ver este resultado privado. Ele não aparecerá no Discover e o link será desativado ao excluir o resultado.",
+    confirm: "Criar link público",
+    preparing: "Criando link público…",
+    ready: "Link criado. Agora você pode compartilhar ou copiar.",
+    failed: "Não foi possível criar o link. Tente novamente.",
+    sharePreparing: "Preparando compartilhamento…",
+    cancelled: "Compartilhamento cancelado.",
+    copyFailed: "Não foi possível copiar o link.",
+  },
+};
+
+const privateShareCopy =
+  privateShareCopyByLocale[
+    currentLocale as keyof typeof privateShareCopyByLocale
+  ] ?? privateShareCopyByLocale.en;
+
 const posterCopyByLocale = {
   en: {
     eyebrow: "AI makeup try-on",
@@ -761,12 +880,32 @@ const posterCopy =
 
       <!-- 操作按钮 -->
       <div class="share-action-area" id="share-actions">
+        <section
+          class="share-privacy-panel"
+          id="share-privacy-panel"
+          aria-labelledby="share-privacy-title"
+          hidden
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+          </svg>
+          <div>
+            <strong id="share-privacy-title">{privateShareCopy.title}</strong>
+            <p>{privateShareCopy.body}</p>
+          </div>
+          <button class="btn btn-primary" id="share-private-confirm">
+            {privateShareCopy.confirm}
+          </button>
+        </section>
         <div class="share-actions">
           <button class="btn btn-primary" id="share-download-btn">
             ↓&nbsp; {copy.download}</button
           >
-          <button class="btn" id="share-web-btn">↗&nbsp; {copy.share}</button>
-          <button class="btn" id="share-copy-btn"
+          <button class="btn" id="share-web-btn" hidden
+            >↗&nbsp; {copy.share}</button
+          >
+          <button class="btn" id="share-copy-btn" hidden
             >⌘&nbsp; {copy.copyLink}</button
           >
           <button class="btn btn-outline-rose" id="share-reward-btn" hidden>
@@ -804,6 +943,8 @@ const posterCopy =
   define:vars={{
     copy,
     posterCopy,
+    privateShareCopy,
+    publicShareConsentVersion: PUBLIC_SHARE_CONSENT_VERSION,
     shareBaseHref,
     shareCardHref,
     tryOnHref,
@@ -824,10 +965,13 @@ const posterCopy =
     const actionStatus = document.getElementById("share-action-status");
     const webShareBtn = document.getElementById("share-web-btn");
     const copyBtn = document.getElementById("share-copy-btn");
+    const privatePanel = document.getElementById("share-privacy-panel");
+    const privateConfirmBtn = document.getElementById("share-private-confirm");
     let currentPlan = null;
     let hasLoadedPlan = false;
     let currentJob = null;
     let publicShareUrl;
+    let publicSharePromise;
 
     if (!jobId) {
       cardEl.hidden = true;
@@ -868,6 +1012,7 @@ const posterCopy =
     }
 
     async function createShareClaim(method) {
+      if (currentJob?.lookSource === "private-template") return null;
       const res = await fetch("/api/shares/intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -884,26 +1029,49 @@ const posterCopy =
 
     async function createPublicShareUrl() {
       if (publicShareUrl) return publicShareUrl;
-      const res = await fetch("/api/shares", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobId }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.ok || !data.data?.sourceCode) {
-        throw new Error(data?.error?.message || "SHARE_FAILED");
+      if (publicSharePromise) return publicSharePromise;
+      publicSharePromise = (async () => {
+        const isPrivate = currentJob?.lookSource === "private-template";
+        const res = await fetch("/api/shares", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            jobId,
+            visibilityConsent: isPrivate || undefined,
+            consentVersion: isPrivate ? publicShareConsentVersion : undefined,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok || !data.data?.sourceCode) {
+          throw new Error(data?.error?.message || "SHARE_FAILED");
+        }
+        const base = String(shareBaseHref || "/share").replace(/\/+$/, "");
+        publicShareUrl = new URL(
+          `${base}/${encodeURIComponent(data.data.sourceCode)}`,
+          location.origin,
+        ).toString();
+        return publicShareUrl;
+      })();
+      try {
+        return await publicSharePromise;
+      } finally {
+        publicSharePromise = null;
       }
-      const base = String(shareBaseHref || "/share").replace(/\/+$/, "");
-      publicShareUrl = new URL(
-        `${base}/${encodeURIComponent(data.data.sourceCode)}`,
-        location.origin,
-      ).toString();
-      return publicShareUrl;
+    }
+
+    function revealShareActions() {
+      if (webShareBtn) webShareBtn.hidden = false;
+      if (copyBtn) copyBtn.hidden = false;
+      if (privatePanel) privatePanel.hidden = true;
     }
 
     function refreshRewardButtonState() {
       if (!rewardBtn) return;
-      if (!hasLoadedPlan || currentPlan !== "free") {
+      if (
+        !hasLoadedPlan ||
+        currentPlan !== "free" ||
+        currentJob?.lookSource === "private-template"
+      ) {
         rewardBtn.hidden = true;
         rewardBtn.disabled = true;
         return;
@@ -969,6 +1137,7 @@ const posterCopy =
         }
         const job = data.data;
         currentJob = job;
+        refreshRewardButtonState();
         if (lookNameEl)
           lookNameEl.textContent = job.lookTitle || copy.defaultLook;
         if (imageArea && job.resultImage) {
@@ -978,7 +1147,16 @@ const posterCopy =
             <img src="${escapeHtml(job.resultImage)}" alt="${escapeHtml(resultAlt)}" loading="eager" data-share-result-img />
           `;
         }
-        createPublicShareUrl().catch(() => {});
+        if (job.lookSource === "private-template") {
+          if (privatePanel) privatePanel.hidden = false;
+        } else {
+          createPublicShareUrl()
+            .then(revealShareActions)
+            .catch(() => {
+              revealShareActions();
+              showActionStatus(privateShareCopy.failed, true);
+            });
+        }
       })
       .catch(() => {
         cardEl.hidden = true;
@@ -1187,6 +1365,58 @@ const posterCopy =
       actionStatus.classList.toggle("is-error", isError);
     }
 
+    function setActionPending(button, pending, pendingLabel, defaultLabel) {
+      if (!button) return;
+      button.disabled = pending;
+      button.setAttribute("aria-busy", String(pending));
+      button.textContent = pending ? pendingLabel : defaultLabel;
+    }
+
+    async function copyText(value) {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+        return;
+      }
+      const input = document.createElement("textarea");
+      input.value = value;
+      input.readOnly = true;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.append(input);
+      input.select();
+      const legacyCopy = Reflect.get(document, "execCommand");
+      const copied =
+        typeof legacyCopy === "function" &&
+        legacyCopy.call(document, "copy") === true;
+      input.remove();
+      if (!copied) throw new Error("COPY_FAILED");
+    }
+
+    privateConfirmBtn?.addEventListener("click", async () => {
+      setActionPending(
+        privateConfirmBtn,
+        true,
+        privateShareCopy.preparing,
+        privateShareCopy.confirm,
+      );
+      showActionStatus(privateShareCopy.preparing);
+      try {
+        await createPublicShareUrl();
+        revealShareActions();
+        showActionStatus(privateShareCopy.ready);
+        webShareBtn?.focus();
+      } catch {
+        showActionStatus(privateShareCopy.failed, true);
+      } finally {
+        setActionPending(
+          privateConfirmBtn,
+          false,
+          privateShareCopy.preparing,
+          privateShareCopy.confirm,
+        );
+      }
+    });
+
     if (downloadBtn) {
       downloadBtn.addEventListener("click", async () => {
         setDownloadPending(true);
@@ -1205,51 +1435,97 @@ const posterCopy =
 
     if (webShareBtn) {
       webShareBtn.addEventListener("click", async () => {
+        if (!publicShareUrl) {
+          setActionPending(
+            webShareBtn,
+            true,
+            privateShareCopy.preparing,
+            "↗  " + copy.share,
+          );
+          try {
+            await createPublicShareUrl();
+            showActionStatus(privateShareCopy.ready);
+          } catch {
+            showActionStatus(privateShareCopy.failed, true);
+          } finally {
+            setActionPending(
+              webShareBtn,
+              false,
+              privateShareCopy.preparing,
+              "↗  " + copy.share,
+            );
+          }
+          return;
+        }
+        setActionPending(
+          webShareBtn,
+          true,
+          privateShareCopy.sharePreparing,
+          "↗  " + copy.share,
+        );
         try {
-          const shareUrl = await createPublicShareUrl();
+          const shareUrl = publicShareUrl;
           if (navigator.share) {
             const sharePayload = {
               title: copy.shareTitle,
               text: copy.shareText,
               url: shareUrl,
             };
-            const blob = await createShareCardBlob();
-            const file =
-              blob &&
-              new File([blob], "ai-beauty-stylist-share-card.png", {
-                type: "image/png",
-              });
-            if (file && navigator.canShare?.({ files: [file] })) {
-              try {
-                await navigator.share({ ...sharePayload, files: [file] });
-              } catch {
-                await navigator.share(sharePayload);
-              }
-            } else {
-              await navigator.share(sharePayload);
+            await navigator.share(sharePayload);
+            try {
+              await createShareClaim("web_share");
+            } catch {
+              /* sharing succeeded even if the optional reward intent failed */
             }
-            await createShareClaim("web_share");
-          } else if (navigator.clipboard?.writeText) {
-            await navigator.clipboard.writeText(shareUrl);
-            await createShareClaim("copy_link");
-            webShareBtn.textContent = copy.shareCopied;
-            setTimeout(() => {
-              webShareBtn.textContent = "↗  " + copy.share;
-            }, 2000);
+          } else {
+            await copyText(shareUrl);
+            try {
+              await createShareClaim("copy_link");
+            } catch {
+              /* copying succeeded even if the optional reward intent failed */
+            }
+            showActionStatus(copy.shareCopied);
           }
-        } catch {
-          /* user cancelled or sharing unavailable */
+        } catch (error) {
+          showActionStatus(
+            error?.name === "AbortError"
+              ? privateShareCopy.cancelled
+              : privateShareCopy.failed,
+            error?.name !== "AbortError",
+          );
+        } finally {
+          setActionPending(
+            webShareBtn,
+            false,
+            privateShareCopy.sharePreparing,
+            "↗  " + copy.share,
+          );
         }
       });
     }
 
     if (copyBtn) {
       copyBtn.addEventListener("click", async () => {
-        if (!navigator.clipboard?.writeText) return;
+        if (!publicShareUrl) {
+          showActionStatus(privateShareCopy.failed, true);
+          return;
+        }
+        setActionPending(
+          copyBtn,
+          true,
+          privateShareCopy.sharePreparing,
+          "⌘  " + copy.copyLink,
+        );
         try {
-          const shareUrl = await createPublicShareUrl();
-          await navigator.clipboard.writeText(shareUrl);
+          await copyText(publicShareUrl);
         } catch {
+          showActionStatus(privateShareCopy.copyFailed, true);
+          setActionPending(
+            copyBtn,
+            false,
+            privateShareCopy.sharePreparing,
+            "⌘  " + copy.copyLink,
+          );
           return;
         }
         try {
@@ -1261,6 +1537,8 @@ const posterCopy =
         setTimeout(() => {
           copyBtn.textContent = "⌘  " + copy.copyLink;
         }, 2000);
+        copyBtn.disabled = false;
+        copyBtn.setAttribute("aria-busy", "false");
       });
     }
 
@@ -1499,6 +1777,47 @@ const posterCopy =
     max-width: 680px;
     text-align: center;
   }
+  .share-privacy-panel {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg-elevated);
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--heading) 8%, transparent);
+    text-align: left;
+  }
+  .share-privacy-panel[hidden],
+  .share-actions button[hidden] {
+    display: none;
+  }
+  .share-privacy-panel svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: var(--rose);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .share-privacy-panel strong {
+    display: block;
+    color: var(--heading);
+    font-size: 0.95rem;
+  }
+  .share-privacy-panel p {
+    margin: 4px 0 0;
+    color: var(--body-secondary);
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+  .share-privacy-panel .btn {
+    min-height: 44px;
+    white-space: nowrap;
+  }
   .share-actions {
     display: flex;
     gap: 10px;
@@ -1644,6 +1963,13 @@ const posterCopy =
     }
     .share-empty-actions {
       display: grid;
+    }
+    .share-privacy-panel {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+    .share-privacy-panel .btn {
+      width: 100%;
+      grid-column: 1 / -1;
     }
   }
 </style>

@@ -1,5 +1,19 @@
 import type { D1DatabaseLike } from "./runtime";
 
+export const PUBLIC_SHARE_CONSENT_VERSION = "2026-07-02";
+
+export function hasRequiredPublicShareConsent(input: {
+  lookSource?: string;
+  visibilityConsent?: boolean;
+  consentVersion?: string;
+}): boolean {
+  return (
+    input.lookSource !== "private-template" ||
+    (input.visibilityConsent === true &&
+      input.consentVersion === PUBLIC_SHARE_CONSENT_VERSION)
+  );
+}
+
 export interface PublicShareCard {
   id: string;
   userId: string;

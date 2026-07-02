@@ -4,7 +4,10 @@ import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import { apiError, apiSuccess } from "../../../lib/http";
 import { getStoredJobById } from "../../../lib/jobs";
 import { getRuntimeBindings } from "../../../lib/runtime";
-import { createOrGetPublicShareCard } from "../../../lib/shareCards";
+import {
+  createOrGetPublicShareCard,
+  hasRequiredPublicShareConsent,
+} from "../../../lib/shareCards";
 
 export const POST: APIRoute = async ({ cookies, request }) => {
   const { DB } = getRuntimeBindings();
@@ -20,6 +23,8 @@ export const POST: APIRoute = async ({ cookies, request }) => {
 
   const body = (await request.json().catch(() => null)) as {
     jobId?: string;
+    visibilityConsent?: boolean;
+    consentVersion?: string;
   } | null;
   if (!body?.jobId) {
     return apiError(
@@ -51,6 +56,22 @@ export const POST: APIRoute = async ({ cookies, request }) => {
         retryable: false,
       },
       409,
+    );
+  }
+  if (
+    !hasRequiredPublicShareConsent({
+      lookSource: job.lookSource,
+      visibilityConsent: body.visibilityConsent,
+      consentVersion: body.consentVersion,
+    })
+  ) {
+    return apiError(
+      {
+        code: "PUBLIC_SHARE_CONSENT_REQUIRED",
+        message: "公开分享私有参考妆容前需要确认分享范围",
+        retryable: false,
+      },
+      422,
     );
   }
   const shareCard = await createOrGetPublicShareCard({
