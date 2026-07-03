@@ -20,8 +20,13 @@ const { copy, hrefs } = Astro.props;
 ---
 
 <section class="rt-workspace-head" aria-labelledby="reference-workspace-title">
-  <div>
-    <p>{copy.eyebrow}</p>
+  <div class="rt-workspace-title-group">
+    <span class="rt-premium-badge">
+      <svg viewBox="0 0 24 24" aria-hidden="true"
+        ><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg
+      >
+      Premium
+    </span>
     <h1 id="reference-workspace-title">{copy.heading}</h1>
   </div>
   <div class="rt-workspace-meta">
@@ -379,22 +384,70 @@ const { copy, hrefs } = Astro.props;
     border-bottom: 1px solid var(--rt-border);
     background: color-mix(in srgb, var(--rt-surface) 92%, transparent);
   }
-  .rt-workspace-head h1,
-  .rt-workspace-head p {
-    margin: 0;
+  .rt-workspace-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .rt-premium-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+    min-height: 26px;
+    padding: 0 10px;
+    border: 1px solid rgba(176, 116, 19, 0.42);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #fff4cc, #e7bd61);
+    color: #704504;
+    font-size: 0.72rem;
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.46),
+      0 3px 8px rgba(143, 88, 12, 0.12);
+  }
+  .rt-premium-badge svg {
+    width: 12px;
+    height: 12px;
+    fill: #b07413;
+    stroke: none;
+  }
+  :global([data-theme="dark"]) .rt-premium-badge {
+    border-color: rgba(240, 185, 84, 0.38);
+    background: linear-gradient(135deg, #2a2110 0%, #705018 48%, #f1c979 100%);
+    color: #ffe7ad;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 5px 12px rgba(0, 0, 0, 0.24);
+  }
+  :global([data-theme="dark"]) .rt-premium-badge svg {
+    fill: #f0b954;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .rt-premium-badge {
+      border-color: rgba(240, 185, 84, 0.38);
+      background: linear-gradient(135deg, #2a2110 0%, #705018 48%, #f1c979 100%);
+      color: #ffe7ad;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 5px 12px rgba(0, 0, 0, 0.24);
+    }
+    :global(:root:not([data-theme="light"])) .rt-premium-badge svg {
+      fill: #f0b954;
+    }
   }
   .rt-workspace-head h1 {
+    margin: 0;
     color: var(--rt-text);
     font-size: clamp(1.25rem, 1.8vw, 1.5rem);
     line-height: 1.2;
-  }
-  .rt-workspace-head p {
-    margin-bottom: 2px;
-    color: var(--rt-accent);
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .rt-workspace-meta {
     display: flex;
@@ -416,6 +469,9 @@ const { copy, hrefs } = Astro.props;
     font-size: 0.82rem;
     white-space: nowrap;
   }
+  .rt-quota-item {
+    border-color: color-mix(in srgb, #b07413 28%, var(--rt-border));
+  }
   .rt-history-trigger {
     color: var(--rt-text);
     cursor: pointer;
@@ -430,6 +486,9 @@ const { copy, hrefs } = Astro.props;
     stroke-width: 1.8;
     stroke-linecap: round;
     stroke-linejoin: round;
+  }
+  .rt-quota-item svg {
+    stroke: #b07413;
   }
   .reference-workspace-grid {
     min-height: calc(100dvh - 136px);
@@ -1217,8 +1276,15 @@ const { copy, hrefs } = Astro.props;
       width: min(calc(100% - 28px), var(--max));
     }
     .rt-workspace-head {
-      align-items: flex-start;
       padding: 12px 14px;
+    }
+    .rt-workspace-title-group {
+      gap: 8px;
+    }
+    .rt-premium-badge {
+      min-height: 22px;
+      padding: 0 8px;
+      font-size: 0.65rem;
     }
     .rt-workspace-meta .rt-meta-item:not(.rt-quota-item) {
       display: none;
