@@ -14,6 +14,14 @@ const eastAsiaEditorialPortraitIds = new Set([
   "wedding-guest",
 ]);
 
+const eastAsiaEditorialSquareIds = new Set([
+  "weekend-glow",
+  "five-minute-beginner",
+  "executive-rose",
+  "bronze-evening",
+  "beginner",
+]);
+
 /**
  * 将现有 44 个妆容图片映射为默认资产变体。
  * 每个妆容至少有一个 `global-diverse` 变体下的默认资产。
@@ -36,6 +44,8 @@ function buildDefaultAssets(): LookAssetVariant[] {
 
   const eastAsiaAssets = allRecipeIds.map((slug) => {
     const usesEditorialPortrait = eastAsiaEditorialPortraitIds.has(slug);
+    const usesEditorialAsset =
+      usesEditorialPortrait || eastAsiaEditorialSquareIds.has(slug);
     return {
       id: `${slug}--east-asia`,
       marketVariantId: `${slug}--east-asia`,
@@ -46,7 +56,7 @@ function buildDefaultAssets(): LookAssetVariant[] {
       aspectRatio: usesEditorialPortrait ? ("3:4" as const) : ("1:1" as const),
       focalPosition: "center" as const,
       qualityStatus: "approved" as const,
-      promptVersion: usesEditorialPortrait
+      promptVersion: usesEditorialAsset
         ? "east-asia-editorial-2026-07"
         : "east-asia-v3",
     };
