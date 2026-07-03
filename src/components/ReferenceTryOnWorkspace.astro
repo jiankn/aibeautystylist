@@ -134,7 +134,10 @@ const { copy, hrefs } = Astro.props;
         <p id="reference-file-error" data-error="reference" role="alert" hidden>
         </p>
         <details class="saved-reference-block" open>
-          <summary>{copy.savedTitle}</summary>
+          <summary>
+            <span>{copy.savedTitle}</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="saved-reference-chevron"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
           <div class="saved-reference-list" data-template-list>
             <p>{copy.noSaved}</p>
           </div>
@@ -606,10 +609,28 @@ const { copy, hrefs } = Astro.props;
     min-height: 36px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     color: var(--rt-text);
     cursor: pointer;
     font-size: 0.78rem;
     font-weight: 750;
+    list-style: none;
+  }
+  .saved-reference-block summary::-webkit-details-marker {
+    display: none;
+  }
+  .saved-reference-chevron {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--rt-muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+  .saved-reference-block[open] .saved-reference-chevron {
+    transform: rotate(180deg);
   }
   .saved-reference-list {
     min-width: 0;
