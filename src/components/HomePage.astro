@@ -671,7 +671,13 @@ const homepageJsonLd = JSON.stringify({
             {referencePromoCopy.secondary}
           </a>
         </div>
-        <small>{referencePromoCopy.privacy}</small>
+        <div class="reference-promo-privacy">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+          </svg>
+          <small>{referencePromoCopy.privacy}</small>
+        </div>
       </div>
       <div class="reference-promo-flow" aria-hidden="true">
         <figure>
@@ -681,6 +687,7 @@ const homepageJsonLd = JSON.stringify({
             width="640"
             height="800"
             loading="lazy"
+            decoding="async"
           />
           <figcaption>{referencePromoCopy.reference}</figcaption>
         </figure>
@@ -692,18 +699,32 @@ const homepageJsonLd = JSON.stringify({
             width={heroImageBeforeAttrs?.width ?? 1024}
             height={heroImageBeforeAttrs?.height ?? 1024}
             loading="lazy"
+            decoding="async"
           />
           <figcaption>{referencePromoCopy.selfie}</figcaption>
         </figure>
         <span>→</span>
-        <div class="reference-promo-result">
-          <svg viewBox="0 0 24 24">
-            <path d="M7 10V7a5 5 0 0 1 10 0v3"></path>
-            <rect x="5" y="10" width="14" height="10" rx="2"></rect>
-            <path d="m9.5 15 1.7 1.7 3.5-3.6"></path>
-          </svg>
-          <strong>{referencePromoCopy.result}</strong>
-        </div>
+        <figure class="reference-promo-result">
+          <div class="reference-promo-result-media">
+            <img
+              src={heroImageAfter}
+              srcset={heroImageAfterAttrs?.srcset}
+              sizes="(max-width: 700px) 38vw, (max-width: 980px) 28vw, 14vw"
+              alt=""
+              width={heroImageAfterAttrs?.width ?? 1024}
+              height={heroImageAfterAttrs?.height ?? 1024}
+              loading="lazy"
+              decoding="async"
+            />
+            <span>
+              <svg viewBox="0 0 24 24">
+                <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+              </svg>
+            </span>
+          </div>
+          <figcaption>{referencePromoCopy.result}</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -713,7 +734,7 @@ const homepageJsonLd = JSON.stringify({
           <img
             src={diagnosisPreviewImage}
             srcset={diagnosisPreviewSrcset}
-            sizes="(max-width: 700px) calc(100vw - 56px), (max-width: 980px) calc(100vw - 84px), 55vw"
+            sizes="(max-width: 700px) min(calc(100vw - 56px), 448px), (max-width: 980px) min(calc(100vw - 84px), 600px), min(40vw, 480px)"
             width="1024"
             height="1024"
             alt={t("homepage", "aiVisualAlt")}
@@ -1315,15 +1336,31 @@ const homepageJsonLd = JSON.stringify({
     font-size: 20px;
   }
   .reference-promo-section {
+    position: relative;
+    isolation: isolate;
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(430px, 1.1fr);
-    gap: clamp(2rem, 6vw, 5rem);
+    grid-template-columns: minmax(0, 0.9fr) minmax(460px, 1.1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
     align-items: center;
-    padding-block: clamp(3rem, 7vw, 5.5rem);
-    border-top: 1px solid var(--line);
+    padding: clamp(2.5rem, 5vw, 4.5rem);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background:
+      radial-gradient(
+        circle at 92% 8%,
+        color-mix(in srgb, var(--gold-deep) 10%, transparent),
+        transparent 38%
+      ),
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--bg-elevated) 96%, var(--surface-gold)),
+        var(--bg-elevated)
+      );
+    box-shadow: 0 24px 64px color-mix(in srgb, var(--heading) 9%, transparent);
   }
   .reference-promo-copy h2 {
-    max-width: 16ch;
+    max-width: 18ch;
     margin: 0.7rem 0 1rem;
     color: var(--heading);
     font-family: var(--font-display);
@@ -1331,13 +1368,30 @@ const homepageJsonLd = JSON.stringify({
     line-height: 1.12;
   }
   .reference-promo-copy > p {
+    max-width: 58ch;
     color: var(--body-secondary);
     line-height: 1.7;
   }
-  .reference-promo-copy > small {
-    display: block;
+  .reference-promo-privacy {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     margin-top: 1rem;
     color: var(--body-secondary);
+  }
+  .reference-promo-privacy svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--gold-deep);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .reference-promo-privacy small {
+    font-size: 0.82rem;
+    line-height: 1.5;
   }
   .reference-promo-actions {
     display: flex;
@@ -1349,13 +1403,20 @@ const homepageJsonLd = JSON.stringify({
     display: grid;
     grid-template-columns:
       minmax(0, 1fr) auto minmax(0, 1fr) auto
-      minmax(130px, 0.8fr);
-    gap: 0.65rem;
+      minmax(0, 1fr);
+    gap: 0.75rem;
     align-items: center;
   }
   .reference-promo-flow > span {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--bg-elevated);
     color: var(--gold-deep);
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     font-weight: 800;
   }
   .reference-promo-flow figure {
@@ -1363,11 +1424,13 @@ const homepageJsonLd = JSON.stringify({
     margin: 0;
     overflow: hidden;
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: 14px;
     background: var(--bg-elevated);
+    box-shadow: 0 12px 30px color-mix(in srgb, var(--heading) 8%, transparent);
   }
   .reference-promo-flow img {
     width: 100%;
+    height: auto;
     aspect-ratio: 4 / 5;
     display: block;
     object-fit: cover;
@@ -1379,26 +1442,41 @@ const homepageJsonLd = JSON.stringify({
     font-weight: 700;
     text-align: center;
   }
-  .reference-promo-result {
-    min-height: 170px;
+  .reference-promo-flow .reference-promo-result {
+    border-color: var(--gold-border);
+    background: var(--surface-gold);
+    box-shadow:
+      0 14px 34px color-mix(in srgb, var(--gold-deep) 16%, transparent),
+      0 0 0 3px color-mix(in srgb, var(--gold-border) 32%, transparent);
+  }
+  .reference-promo-result-media {
+    position: relative;
+  }
+  .reference-promo-result-media > span {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
     display: grid;
     place-items: center;
-    align-content: center;
-    gap: 0.8rem;
-    padding: 1rem;
-    border: 1px solid var(--gold-border);
-    border-radius: 12px;
-    background: var(--surface-gold);
-    color: var(--gold-deep);
-    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    border-radius: 50%;
+    background: rgba(9, 20, 35, 0.72);
+    color: #fff;
+    backdrop-filter: blur(8px);
   }
-  .reference-promo-result svg {
-    width: 42px;
+  .reference-promo-result-media svg {
+    width: 18px;
+    height: 18px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.6;
+    stroke-width: 1.8;
     stroke-linecap: round;
     stroke-linejoin: round;
+  }
+  .reference-promo-result figcaption {
+    color: var(--gold-deep);
   }
 
   .ai-section {
@@ -1413,7 +1491,7 @@ const homepageJsonLd = JSON.stringify({
   }
   .ai-story {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(330px, 0.8fr);
+    grid-template-columns: minmax(320px, 0.85fr) minmax(0, 1.15fr);
     gap: clamp(28px, 5vw, 64px);
     align-items: center;
     padding: clamp(18px, 3vw, 34px);
@@ -1424,11 +1502,14 @@ const homepageJsonLd = JSON.stringify({
   }
   .ai-visual {
     position: relative;
+    width: min(100%, 480px);
     min-width: 0;
     margin: 0;
+    justify-self: center;
   }
   .ai-visual img {
     width: 100%;
+    height: auto;
     aspect-ratio: 4 / 3;
     border-radius: calc(var(--radius) - 2px);
     object-fit: cover;
@@ -1437,7 +1518,7 @@ const homepageJsonLd = JSON.stringify({
   .ai-visual figcaption {
     margin-top: 10px;
     color: var(--muted);
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.5;
   }
   .ai-callout {
@@ -1941,12 +2022,19 @@ const homepageJsonLd = JSON.stringify({
     .reference-promo-copy h2 {
       max-width: 20ch;
     }
+    .reference-promo-flow {
+      width: min(100%, 720px);
+      justify-self: center;
+    }
     .scenario-showcase {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .product-tour,
     .ai-story {
       grid-template-columns: 1fr;
+    }
+    .ai-visual {
+      width: min(100%, 600px);
     }
     .product-tour-steps {
       grid-template-columns: repeat(3, 1fr);
@@ -1993,15 +2081,52 @@ const homepageJsonLd = JSON.stringify({
     }
   }
   @media (max-width: 700px) {
+    .reference-promo-section {
+      gap: 1.75rem;
+      padding: 1.5rem;
+      border-radius: 20px;
+    }
+    .reference-promo-copy h2 {
+      font-size: clamp(1.75rem, 8vw, 2.1rem);
+    }
     .reference-promo-actions .btn {
       width: 100%;
     }
     .reference-promo-flow {
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+      gap: 0.75rem 0.5rem;
     }
-    .reference-promo-flow > span:nth-of-type(2),
+    .reference-promo-flow > figure:nth-of-type(1) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .reference-promo-flow > span:nth-of-type(1) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .reference-promo-flow > figure:nth-of-type(2) {
+      grid-column: 3;
+      grid-row: 1;
+    }
+    .reference-promo-flow > span:nth-of-type(2) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      justify-self: center;
+      transform: rotate(90deg);
+    }
     .reference-promo-result {
-      display: none;
+      grid-column: 1 / -1;
+      grid-row: 3;
+      display: grid;
+      grid-template-columns: minmax(108px, 38%) minmax(0, 1fr);
+      align-items: center;
+    }
+    .reference-promo-result img {
+      aspect-ratio: 1;
+    }
+    .reference-promo-result figcaption {
+      padding: 1rem;
+      font-size: 0.88rem;
     }
     .home-section {
       margin-top: 46px;
@@ -2089,8 +2214,12 @@ const homepageJsonLd = JSON.stringify({
       padding: 14px;
     }
     .ai-visual {
+      width: min(100%, 448px);
       display: flex;
       flex-direction: column;
+    }
+    .ai-visual img {
+      aspect-ratio: 16 / 10;
     }
     .ai-callout {
       position: static;
