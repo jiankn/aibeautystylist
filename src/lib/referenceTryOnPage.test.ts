@@ -11,8 +11,19 @@ const interfaceSource = `${pageSource}\n${workspaceSource}`;
 
 describe("reference try-on launch contracts", () => {
   it("preserves user intent through upgrade checkout", () => {
-    expect(pageSource).toContain("return_to=${encodeURIComponent(pageHref)}");
+    expect(pageSource).toContain('Astro.url.searchParams.get("templateId")');
+    expect(pageSource).toContain("return_to=${encodeURIComponent(intentHref)}");
+    expect(pageSource).toContain("next=${encodeURIComponent(intentHref)}");
     expect(pageSource).toContain("<SiteHeader minimal />");
+  });
+
+  it("preselects a saved reference opened from a share card", () => {
+    expect(pageSource).toContain("requestedTemplateId");
+    expect(pageSource).toContain("template.id === requestedTemplateId");
+    expect(pageSource).toContain("selectedTemplateId = requestedTemplate.id");
+    expect(pageSource).toContain(
+      "setTemplateStatus(copy.historyDrawerTemplateUnavailable)",
+    );
   });
 
   it("registers long-running generation as a background task", () => {

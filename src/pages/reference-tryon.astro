@@ -19,6 +19,9 @@ const entrySource =
   (Astro.url.searchParams.get("source") || "direct")
     .replace(/[^a-zA-Z0-9_-]/g, "")
     .slice(0, 64) || "direct";
+const requestedTemplateId = (Astro.url.searchParams.get("templateId") || "")
+  .replace(/[^a-zA-Z0-9_-]/g, "")
+  .slice(0, 128);
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
@@ -261,11 +264,17 @@ const copy = getReferenceTryOnCopy(locale);
 void legacyCopy;
 
 const pricingHref = localizeAppHref("/pricing");
+const intentParams = new URLSearchParams();
+if (requestedTemplateId) intentParams.set("templateId", requestedTemplateId);
+if (entrySource !== "direct") intentParams.set("source", entrySource);
+const intentHref = intentParams.size
+  ? `${pageHref}?${intentParams.toString()}`
+  : pageHref;
 const hrefs = {
   login: localizeAppHref(
-    `/login?mode=login&next=${encodeURIComponent(pageHref)}`,
+    `/login?mode=login&next=${encodeURIComponent(intentHref)}`,
   ),
-  pricing: `${pricingHref}?return_to=${encodeURIComponent(pageHref)}#pricing-comparison`,
+  pricing: `${pricingHref}?return_to=${encodeURIComponent(intentHref)}#pricing-comparison`,
   history: localizeAppHref("/history"),
   privateHistory: localizeAppHref("/history?source=private-template"),
   page: pageHref,
@@ -744,6 +753,7 @@ const hrefs = {
       pollIntervalMs: REFERENCE_TRYON_POLL_INTERVAL_MS,
       pollMaxAttempts: REFERENCE_TRYON_POLL_MAX_ATTEMPTS,
       privateReferenceCreditCost: PRIVATE_REFERENCE_TRYON_CREDIT_COST,
+      requestedTemplateId,
     }}
   >
     (() => {
@@ -813,6 +823,7 @@ const hrefs = {
       let pendingTemplateId = "";
       let pendingUploadId = "";
       let pendingIdempotencyKey = "";
+      let requestedTemplateResolved = false;
 
       function updateSourceReadiness() {
         const hasRef = !!(selectedTemplateId || referenceInput.files?.[0]);
@@ -1028,6 +1039,23 @@ const hrefs = {
           copy.templateLoadFailed,
         );
         templates = data.items || [];
+        if (requestedTemplateId && !requestedTemplateResolved) {
+          requestedTemplateResolved = true;
+          const requestedTemplate = templates.find(
+            (template) => template.id === requestedTemplateId,
+          );
+          if (requestedTemplate) {
+            selectedTemplateId = requestedTemplate.id;
+            pendingTemplateId = requestedTemplate.id;
+            referenceInput.value = "";
+            referencePreview.hidden = true;
+            clearFieldError("reference");
+            resetAuthorization();
+            setTemplateStatus(copy.historyDrawerReused);
+          } else {
+            setTemplateStatus(copy.historyDrawerTemplateUnavailable);
+          }
+        }
         renderTemplates();
       }
 

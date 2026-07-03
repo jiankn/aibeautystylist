@@ -47,6 +47,20 @@ describe("result sharing flow", () => {
     expect(shareApiSource).toContain("hasRequiredPublicShareConsent");
   });
 
+  it("reuses a private reference from the owner share card", () => {
+    expect(shareCardSource).toContain(
+      'const referenceTryOnHref = localizeAppHref("/reference-tryon")',
+    );
+    expect(shareCardSource).toContain('data-private-retry-cta="full"');
+    expect(shareCardSource).toMatch(
+      /retryUrl\.searchParams\.set\(\s*"templateId"/,
+    );
+    expect(shareCardSource).toContain(
+      'retryUrl.searchParams.set("source", "share_card")',
+    );
+    expect(shareCardSource).toContain('navRetryPrivateCta: "换张自拍试这个妆"');
+  });
+
   it("localizes the private-share disclosure for all public locales", () => {
     expect(shareCardSource).toContain("const privateShareCopyByLocale");
     for (const locale of [

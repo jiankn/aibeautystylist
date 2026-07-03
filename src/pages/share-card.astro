@@ -15,6 +15,7 @@ const discoverHref = localizeAppHref("/discover");
 const tryOnHref = localizeAppHref("/tryon");
 const tryOnProHref = localizeAppHref("/tryon");
 const tryOnPremiumHref = localizeAppHref("/tryon");
+const referenceTryOnHref = localizeAppHref("/reference-tryon");
 const shareCardHref = localizeAppHref("/share-card");
 const shareBaseHref = localizeAppHref("/share");
 
@@ -29,6 +30,8 @@ type ShareCardCopy = {
   navTryOnPaid: string;
   navTryCta: string;
   navTryShort: string;
+  navRetryPrivateCta: string;
+  navRetryPrivateShort: string;
   cardAria: string;
   heading: string;
   loading: string;
@@ -81,6 +84,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "Try-on",
     navTryCta: "Try this look",
     navTryShort: "Try this",
+    navRetryPrivateCta: "Try this look on a new selfie",
+    navRetryPrivateShort: "New selfie",
     cardAria: "Makeup try-on share card",
     heading: "My try-on result",
     loading: "Loading...",
@@ -132,6 +137,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "试妆",
     navTryCta: "试试这个妆",
     navTryShort: "试妆",
+    navRetryPrivateCta: "换张自拍试这个妆",
+    navRetryPrivateShort: "换自拍试妆",
     cardAria: "试妆分享卡",
     heading: "我的试妆效果",
     loading: "加载中…",
@@ -181,6 +188,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "試妝",
     navTryCta: "試試這個妝",
     navTryShort: "試妝",
+    navRetryPrivateCta: "換張自拍試這個妝",
+    navRetryPrivateShort: "換自拍試妝",
     cardAria: "試妝分享卡",
     heading: "我的試妝效果",
     loading: "載入中…",
@@ -231,6 +240,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "Testen",
     navTryCta: "Diesen Look testen",
     navTryShort: "Testen",
+    navRetryPrivateCta: "Mit neuem Selfie testen",
+    navRetryPrivateShort: "Neues Selfie",
     cardAria: "Make-up-Try-on-Teilen-Karte",
     heading: "Mein Try-on-Ergebnis",
     loading: "Lädt...",
@@ -286,6 +297,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "Essai",
     navTryCta: "Essayer ce look",
     navTryShort: "Essayer",
+    navRetryPrivateCta: "Tester avec un autre selfie",
+    navRetryPrivateShort: "Autre selfie",
     cardAria: "Carte de partage d'essai maquillage",
     heading: "Mon résultat d'essai",
     loading: "Chargement…",
@@ -340,6 +353,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "試着",
     navTryCta: "このルックを試す",
     navTryShort: "試す",
+    navRetryPrivateCta: "別の自撮りでこのメイクを試す",
+    navRetryPrivateShort: "別の自撮りで試す",
     cardAria: "メイク試着共有カード",
     heading: "私のメイク試着結果",
     loading: "読み込み中…",
@@ -392,6 +407,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "체험",
     navTryCta: "이 룩 체험하기",
     navTryShort: "체험",
+    navRetryPrivateCta: "다른 셀피로 이 룩 체험하기",
+    navRetryPrivateShort: "다른 셀피로 체험",
     cardAria: "메이크업 체험 공유 카드",
     heading: "내 메이크업 체험 결과",
     loading: "불러오는 중…",
@@ -443,6 +460,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "Probar",
     navTryCta: "Probar este look",
     navTryShort: "Probar",
+    navRetryPrivateCta: "Probar con otro selfie",
+    navRetryPrivateShort: "Otro selfie",
     cardAria: "Tarjeta compartida de prueba de maquillaje",
     heading: "Mi resultado de prueba",
     loading: "Cargando...",
@@ -497,6 +516,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "Probar",
     navTryCta: "Probar este look",
     navTryShort: "Probar",
+    navRetryPrivateCta: "Probar con otra selfie",
+    navRetryPrivateShort: "Otra selfie",
     cardAria: "Tarjeta compartida de prueba de maquillaje",
     heading: "Mi resultado de prueba",
     loading: "Cargando...",
@@ -551,6 +572,8 @@ const shareCopyByLocale = {
     navTryOnPaid: "Testar",
     navTryCta: "Testar este look",
     navTryShort: "Testar",
+    navRetryPrivateCta: "Testar com outra selfie",
+    navRetryPrivateShort: "Outra selfie",
     cardAria: "Cartão de compartilhamento do teste de maquiagem",
     heading: "Meu resultado de teste",
     loading: "Carregando...",
@@ -826,7 +849,12 @@ const posterCopy =
           >{copy.navTryOn}</a
         >
       </div>
-      <a class="btn btn-primary share-nav-cta" href={tryOnHref} data-tryon-link>
+      <a
+        class="btn btn-primary share-nav-cta"
+        href={tryOnHref}
+        data-tryon-link
+        data-private-retry-cta="full"
+      >
         {copy.navTryCta}
       </a>
     </nav>
@@ -840,8 +868,11 @@ const posterCopy =
         </svg>
       </a>
       <strong>{copy.navTitle}</strong>
-      <a class="share-mobile-tryon" href={tryOnHref} data-tryon-link
-        >{copy.navTryShort}</a
+      <a
+        class="share-mobile-tryon"
+        href={tryOnHref}
+        data-tryon-link
+        data-private-retry-cta="short">{copy.navTryShort}</a
       >
     </header>
 
@@ -947,6 +978,7 @@ const posterCopy =
     publicShareConsentVersion: PUBLIC_SHARE_CONSENT_VERSION,
     shareBaseHref,
     shareCardHref,
+    referenceTryOnHref,
     tryOnHref,
     tryOnProHref,
     tryOnPremiumHref,
@@ -1120,6 +1152,26 @@ const posterCopy =
       document.querySelectorAll("[data-tryon-link]").forEach(function (el) {
         el.href = targetHref;
       });
+      if (
+        currentJob?.lookSource === "private-template" &&
+        currentJob.privateTemplateId
+      ) {
+        const retryUrl = new URL(referenceTryOnHref, location.origin);
+        retryUrl.searchParams.set(
+          "templateId",
+          String(currentJob.privateTemplateId),
+        );
+        retryUrl.searchParams.set("source", "share_card");
+        document
+          .querySelectorAll("[data-private-retry-cta]")
+          .forEach(function (el) {
+            el.href = `${retryUrl.pathname}${retryUrl.search}`;
+            el.textContent =
+              el.dataset.privateRetryCta === "short"
+                ? copy.navRetryPrivateShort
+                : copy.navRetryPrivateCta;
+          });
+      }
       if (isPaidPlan()) {
         var navLabel = document.querySelector("[data-tryon-nav-label]");
         if (navLabel) navLabel.textContent = copy.navTryOnPaid;
@@ -1137,6 +1189,7 @@ const posterCopy =
         }
         const job = data.data;
         currentJob = job;
+        updateTryOnLinks();
         refreshRewardButtonState();
         if (lookNameEl)
           lookNameEl.textContent = job.lookTitle || copy.defaultLook;
