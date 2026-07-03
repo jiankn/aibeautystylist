@@ -80,13 +80,14 @@ export function resolvePageAssets(
         // This campaign set is intentionally shared across locales so the
         // homepage card and its try-on reference stay visually identical.
         scenarioImages: {
-          commute: "/images/home-scenario-commute-east-asia.webp",
-          "interview-ready": "/images/home-scenario-interview-east-asia.webp",
-          "rose-milk-date": "/images/home-scenario-date-east-asia.webp",
-          "flash-proof-satin": "/images/home-scenario-flash-east-asia.webp",
+          commute: "/images/home-scenario-commute-editorial-v2.webp",
+          "interview-ready":
+            "/images/home-scenario-interview-editorial-v2.webp",
+          "rose-milk-date": "/images/home-scenario-date-editorial-v2.webp",
+          "flash-proof-satin": "/images/home-scenario-flash-editorial-v2.webp",
           "mature-skin-radiance":
-            "/images/home-scenario-radiance-east-asia.webp",
-          "wedding-guest": "/images/home-scenario-wedding-east-asia.webp",
+            "/images/home-scenario-radiance-editorial-v2.webp",
+          "wedding-guest": "/images/home-scenario-wedding-editorial-v2.webp",
         },
       };
 

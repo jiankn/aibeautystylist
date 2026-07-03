@@ -38,16 +38,18 @@ const diagnosisPreviewSrcset = responsiveWebpSrcset(
   [480, 640],
   1024,
 );
+const isPortraitScenarioImage = (image: string) =>
+  image.includes("-east-asia.") || image.includes("-editorial-v2.");
 const scenarioImageSrcset = (image: string) =>
   image.startsWith("/images/home-scenario-")
     ? responsiveWebpSrcset(
         image,
         [480, 640],
-        image.includes("-east-asia.") ? 768 : 960,
+        isPortraitScenarioImage(image) ? 768 : 960,
       )
     : undefined;
 const scenarioImageDimensions = (image: string) =>
-  image.includes("-east-asia.")
+  isPortraitScenarioImage(image)
     ? { width: 768, height: 1024 }
     : { width: 960, height: 960 };
 const getLookThumbnail = (image: string) =>
