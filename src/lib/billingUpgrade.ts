@@ -141,6 +141,7 @@ export async function upgradeActiveSubscriptionPlan(input: {
       stripeSubscriptionId,
       planCode: input.toPlanCode,
       status: updated.status || current.status,
+      billingInterval: input.interval,
       currentPeriodStart: currentPeriodStart
         ? new Date(currentPeriodStart * 1000).toISOString()
         : current.currentPeriodStart,
@@ -186,6 +187,7 @@ export async function upgradeActiveSubscriptionPlan(input: {
     subscription: {
       id: stripeSubscriptionId,
       status,
+      billingInterval: input.interval,
       currentPeriodStart: currentPeriodStart
         ? new Date(currentPeriodStart * 1000).toISOString()
         : current.currentPeriodStart,

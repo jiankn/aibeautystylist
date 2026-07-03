@@ -2,7 +2,7 @@ import { getEntitlementContext } from "./entitlements";
 import { resetQuotaForPlanUpgrade } from "./quota";
 import type { RuntimeBindings } from "./runtime";
 import type { StripeCheckoutSession, StripeSubscription } from "./stripe";
-import { priceToPlan } from "./stripeEvents";
+import { priceToBillingInterval, priceToPlan } from "./stripeEvents";
 import {
   getEffectivePlan,
   saveStripeCustomer,
@@ -97,6 +97,9 @@ export async function syncCheckoutSessionForUser(input: {
   const priceId =
     subscription.items?.data?.[0]?.price?.id || session.metadata?.priceId;
   const planCode = priceId ? priceToPlan(priceId, input.bindings) : undefined;
+  const billingInterval = priceId
+    ? priceToBillingInterval(priceId, input.bindings)
+    : undefined;
   if (!planCode || planCode === "free") {
     throw new CheckoutSyncError(
       "CHECKOUT_PLAN_UNKNOWN",
@@ -132,6 +135,7 @@ export async function syncCheckoutSessionForUser(input: {
       stripeSubscriptionId: subscription.id,
       planCode,
       status: subscription.status || "active",
+      billingInterval,
       currentPeriodStart,
       currentPeriodEnd,
     },
@@ -163,6 +167,7 @@ export async function syncCheckoutSessionForUser(input: {
       plan.source === "subscription"
         ? {
             status: plan.status,
+            billingInterval: plan.billingInterval,
             currentPeriodStart: plan.currentPeriodStart,
             currentPeriodEnd: plan.currentPeriodEnd,
           }

@@ -5,9 +5,10 @@ import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 
 interface Props {
   returnTo: string;
+  hideWhenUnavailable?: boolean;
 }
 
-const { returnTo } = Astro.props;
+const { returnTo, hideWhenUnavailable = false } = Astro.props;
 const locale = getCurrentLocale();
 const packs = Object.values(CREDIT_PACKS);
 const currentPathname = Astro.originPathname || Astro.url.pathname;
@@ -23,7 +24,9 @@ const pricingHref = getLocalizedAppHref(
   class="credit-pack-panel panel"
   id="credit-packs"
   data-credit-pack-panel
+  data-hide-unavailable={hideWhenUnavailable ? "true" : "false"}
   tabindex="-1"
+  hidden={hideWhenUnavailable}
 >
   <div class="credit-pack-head">
     <div>
@@ -82,7 +85,13 @@ const pricingHref = getLocalizedAppHref(
     }
   </div>
   <p class="credit-pack-note">{t("creditPacks", "membersOnly")}</p>
-  <p class="credit-pack-status" data-credit-pack-status role="status"></p>
+  <p
+    class="credit-pack-status"
+    data-credit-pack-status
+    role="status"
+    aria-live="polite"
+  >
+  </p>
 </section>
 
 <script
@@ -90,6 +99,7 @@ const pricingHref = getLocalizedAppHref(
   define:vars={{
     locale,
     returnTo,
+    hideWhenUnavailable,
     messages: {
       processing: t("creditPacks", "processing"),
       success: t("creditPacks", "success"),
@@ -123,6 +133,7 @@ const pricingHref = getLocalizedAppHref(
         const plan = body?.data?.plan;
         const canBuy = plan === "pro" || plan === "premium";
         panel.dataset.plan = canBuy ? plan : "free";
+        if (hideWhenUnavailable) panel.hidden = !canBuy;
         buttons.forEach((button) => {
           button.hidden = !canBuy;
         });
@@ -131,6 +142,10 @@ const pricingHref = getLocalizedAppHref(
         });
       })
       .catch(() => {
+        if (hideWhenUnavailable) {
+          panel.hidden = true;
+          return;
+        }
         upgradeLinks.forEach((link) => {
           link.hidden = false;
         });
@@ -207,8 +222,8 @@ const pricingHref = getLocalizedAppHref(
 
 <style>
   .credit-pack-panel {
-    margin-top: 20px;
-    padding: 24px;
+    margin-top: 0;
+    padding: 20px;
   }
   .credit-pack-panel:focus-visible {
     outline: 3px solid color-mix(in srgb, var(--rose) 55%, transparent);
@@ -218,10 +233,10 @@ const pricingHref = getLocalizedAppHref(
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 20px;
+    gap: 16px;
   }
   .credit-pack-head h2 {
-    margin: 4px 0 8px;
+    margin: 3px 0 6px;
   }
   .credit-pack-head p {
     margin: 0;
@@ -240,8 +255,8 @@ const pricingHref = getLocalizedAppHref(
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: stretch;
-    gap: 16px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 16px;
   }
   .credit-pack-card {
     position: relative;
@@ -249,7 +264,7 @@ const pricingHref = getLocalizedAppHref(
     flex-direction: column;
     height: 100%;
     box-sizing: border-box;
-    padding: 24px;
+    padding: 18px;
     border: 1px solid var(--line);
     border-radius: var(--radius);
   }
@@ -261,8 +276,8 @@ const pricingHref = getLocalizedAppHref(
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
+    gap: 6px;
+    margin-bottom: 12px;
   }
   .credit-pack-card strong {
     font-size: 18px;
@@ -290,7 +305,7 @@ const pricingHref = getLocalizedAppHref(
     display: flex;
     align-items: baseline;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: 8px;
   }
   .credit-pack-price b {
     font-size: 28px;
@@ -322,14 +337,23 @@ const pricingHref = getLocalizedAppHref(
     color: var(--text);
   }
   @media (max-width: 720px) {
+    .credit-pack-panel {
+      padding: 16px;
+    }
     .credit-pack-head {
       display: grid;
+      gap: 10px;
     }
     .credit-pack-head > span {
       width: fit-content;
     }
     .credit-pack-grid {
       grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .credit-pack-card {
+      padding: 16px;
     }
   }
 </style>

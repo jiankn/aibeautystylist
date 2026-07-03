@@ -65,6 +65,9 @@ export async function handleStripeEvent(
 
   const priceId = extractPriceId(object);
   const planCode = priceId ? priceToPlan(priceId, bindings) : undefined;
+  const billingInterval = priceId
+    ? priceToBillingInterval(priceId, bindings)
+    : undefined;
   const status = normalizeStatus(event.type, object);
   if (!planCode) {
     await recordStripeEvent(event.id, event.type, bindings.DB);
@@ -85,6 +88,7 @@ export async function handleStripeEvent(
       stripeSubscriptionId,
       planCode,
       status,
+      billingInterval,
       currentPeriodStart,
       currentPeriodEnd,
     },
@@ -117,6 +121,22 @@ export function priceToPlan(
       const envKey = def.priceEnvKeys[interval];
       if (envKey && bindings[envKey as keyof RuntimeBindings] === priceId) {
         return code;
+      }
+    }
+  }
+  return undefined;
+}
+
+export function priceToBillingInterval(
+  priceId: string,
+  bindings: RuntimeBindings,
+): BillingInterval | undefined {
+  for (const code of PLAN_CODES) {
+    const def = PLAN_DEFINITIONS[code];
+    for (const interval of ["monthly", "yearly"] as BillingInterval[]) {
+      const envKey = def.priceEnvKeys[interval];
+      if (envKey && bindings[envKey as keyof RuntimeBindings] === priceId) {
+        return interval;
       }
     }
   }

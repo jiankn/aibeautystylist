@@ -33,6 +33,7 @@ import { createProxyFetcher } from "./proxyFetch";
 import { saveRejectedTryOnCandidate } from "./rejectedTryOnCandidates";
 import { localizedTryOnDisclaimer } from "./tryonDisclaimers";
 import {
+  DIAGNOSIS_CREDIT_COST,
   PRIVATE_REFERENCE_TRYON_CREDIT_COST,
   STANDARD_TRYON_CREDIT_COST,
 } from "./tryonCosts";
@@ -225,9 +226,7 @@ async function createMockReferenceJob(options: {
     new Date(),
     options.monthlyQuota,
     options.quotaPeriod,
-    options.privateTemplate
-      ? PRIVATE_REFERENCE_TRYON_CREDIT_COST
-      : STANDARD_TRYON_CREDIT_COST,
+    creditCostForJob(options.purpose, Boolean(options.privateTemplate)),
   );
   if (!reservation.reserved) {
     throw quotaError(reservation.duplicate);
@@ -316,9 +315,7 @@ async function createGeminiQueuedJob(options: {
     new Date(),
     options.monthlyQuota,
     options.quotaPeriod,
-    options.privateTemplate
-      ? PRIVATE_REFERENCE_TRYON_CREDIT_COST
-      : STANDARD_TRYON_CREDIT_COST,
+    creditCostForJob(options.purpose, Boolean(options.privateTemplate)),
   );
   if (!reservation.reserved) {
     throw quotaError(reservation.duplicate);
@@ -1580,10 +1577,20 @@ function completeWithReferenceFallback(
 function quotaError(duplicate: boolean): TryOnJobServiceError {
   return new TryOnJobServiceError(
     duplicate ? "JOB_ALREADY_EXISTS" : "QUOTA_EXHAUSTED",
-    duplicate ? "已有相同任务正在处理" : "本月生成额度已用完，可分享或升级",
+    duplicate ? "已有相同任务正在处理" : "当前生成额度不足，可分享或升级后重试",
     false,
     409,
   );
+}
+
+function creditCostForJob(
+  purpose: TryOnJobPurpose,
+  hasPrivateTemplate: boolean,
+): number {
+  if (purpose === "diagnosis") return DIAGNOSIS_CREDIT_COST;
+  return hasPrivateTemplate
+    ? PRIVATE_REFERENCE_TRYON_CREDIT_COST
+    : STANDARD_TRYON_CREDIT_COST;
 }
 
 function providerErrorCode(error: unknown): string {

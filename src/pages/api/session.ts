@@ -31,6 +31,7 @@ export const GET: APIRoute = async ({ cookies }) => {
       plan.source === "subscription"
         ? {
             status: plan.status,
+            billingInterval: plan.billingInterval,
             currentPeriodStart: plan.currentPeriodStart,
             currentPeriodEnd: plan.currentPeriodEnd,
           }

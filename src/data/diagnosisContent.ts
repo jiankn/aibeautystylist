@@ -45,8 +45,8 @@ const localized: Partial<Record<SupportedLocale, DiagnosisCore>> = {
       "Lade nach deiner Einwilligung ein klares Selfie hoch. Der Bericht übersetzt sichtbare Merkmale, Unterton und Anlass in konkrete Make-up-Richtungen.",
     trust: [
       [
-        "Ein Credit",
-        "Diagnose und Try-on nutzen dieselben monatlichen Credits.",
+        "2 Credits",
+        "Jede KI-Diagnose verbraucht 2 Try-on-Credits aus demselben monatlichen Guthaben.",
       ],
       [
         "Privater Ablauf",
@@ -120,8 +120,8 @@ const localized: Partial<Record<SupportedLocale, DiagnosisCore>> = {
       "Après votre accord, importez un selfie net. Le rapport transforme traits visibles, sous-ton et occasion en directions maquillage concrètes.",
     trust: [
       [
-        "Un crédit",
-        "Diagnostic et essai utilisent les mêmes crédits mensuels.",
+        "2 crédits",
+        "Chaque diagnostic IA utilise 2 crédits d’essai du même solde mensuel.",
       ],
       [
         "Parcours privé",
@@ -198,7 +198,10 @@ const localized: Partial<Record<SupportedLocale, DiagnosisCore>> = {
     subtitle:
       "同意後に明るく鮮明なセルフィーをアップロード。見える特徴、アンダートーン、シーンを具体的なメイク方向に整理します。",
     trust: [
-      ["1クレジット", "診断と試着は同じ月間クレジットを使います。"],
+      [
+        "2クレジット",
+        "AI診断1回につき、同じ月間残高から試着クレジットを2つ使用します。",
+      ],
       ["プライベートな処理", "セルフィーは明確な同意後にのみ処理されます。"],
       ["すぐに試せる", "各レポートからおすすめメイクを試せます。"],
     ],
@@ -256,7 +259,10 @@ const localized: Partial<Record<SupportedLocale, DiagnosisCore>> = {
     subtitle:
       "동의 후 선명한 셀피를 업로드하세요. 보고서가 보이는 특징, 언더톤 및 상황을 구체적인 메이크업 방향으로 정리합니다.",
     trust: [
-      ["1 크레딧", "진단과 가상 체험은 같은 월간 크레딧을 사용합니다."],
+      [
+        "2 크레딧",
+        "AI 진단 1회마다 같은 월간 잔액에서 가상 체험 크레딧 2개를 사용합니다.",
+      ],
       ["비공개 처리", "셀피는 명확한 동의 후에만 처리됩니다."],
       ["바로 실행", "각 보고서에서 추천 룩을 바로 체험할 수 있습니다."],
     ],
@@ -316,7 +322,7 @@ const localized: Partial<Record<SupportedLocale, DiagnosisCore>> = {
     subtitle:
       "同意後上傳一張清晰自拍，報告會把可見特徵、膚色方向與場合需求整理成具體妝容建議。",
     trust: [
-      ["1 點數", "診斷與試妝使用同一套每月點數。"],
+      ["2 點數", "每次 AI 診斷會從同一套每月額度中扣除 2 次試妝點數。"],
       ["私密流程", "自拍只在你明確同意後進入處理。"],
       ["可以立即行動", "每份報告都會連結到可直接試妝的風格。"],
     ],
@@ -374,8 +380,8 @@ const localized: Partial<Record<SupportedLocale, DiagnosisCore>> = {
       "Tras dar tu consentimiento, sube una selfie nítida. El informe convierte rasgos visibles, subtono y ocasión en direcciones concretas.",
     trust: [
       [
-        "Un crédito",
-        "Diagnóstico y prueba usan los mismos créditos mensuales.",
+        "2 créditos",
+        "Cada diagnóstico con IA usa 2 créditos de prueba del mismo saldo mensual.",
       ],
       [
         "Flujo privado",
@@ -446,7 +452,10 @@ const localized: Partial<Record<SupportedLocale, DiagnosisCore>> = {
     subtitle:
       "Após o consentimento, envie uma selfie nítida. O relatório transforma traços visíveis, subtom e ocasião em direções concretas.",
     trust: [
-      ["Um crédito", "Diagnóstico e teste usam os mesmos créditos mensais."],
+      [
+        "2 créditos",
+        "Cada diagnóstico por IA usa 2 créditos de teste do mesmo saldo mensal.",
+      ],
       [
         "Fluxo privado",
         "Selfies são processadas apenas com consentimento explícito.",
@@ -1385,40 +1394,40 @@ const quotaExhaustedCopyByLocale: Partial<
   Record<SupportedLocale, { label: string; note: string }>
 > = {
   en: {
-    label: "Monthly credits used up",
-    note: "Monthly generation credits are used up. Share or upgrade to get more credits.",
+    label: "2 credits required",
+    note: "AI diagnosis needs 2 generation credits. Remaining credits can still be used for standard try-on; share or upgrade to get more.",
   },
   "zh-CN": {
-    label: "本月额度已用完",
-    note: "本月生成额度已用完，可分享或升级获取更多额度。",
+    label: "诊断需要 2 次额度",
+    note: "AI 诊断每次需要 2 次生成额度。剩余额度仍可用于普通试妆，可分享或升级获取更多额度。",
   },
   "zh-TW": {
-    label: "本月額度已用完",
-    note: "本月生成額度已用完，可分享或升級取得更多額度。",
+    label: "診斷需要 2 次額度",
+    note: "AI 診斷每次需要 2 次生成額度。剩餘額度仍可用於一般試妝，可分享或升級取得更多額度。",
   },
   "de-DE": {
-    label: "Monatliche Credits aufgebraucht",
-    note: "Die monatlichen Generierungscredits sind aufgebraucht. Teile ein Ergebnis oder wechsle auf einen höheren Plan.",
+    label: "2 Credits erforderlich",
+    note: "Die KI-Diagnose benötigt 2 Generierungscredits. Verbleibende Credits können weiterhin für Standard-Try-ons genutzt werden.",
   },
   "fr-FR": {
-    label: "Crédits mensuels épuisés",
-    note: "Les crédits mensuels sont épuisés. Partagez un résultat ou passez à une offre supérieure.",
+    label: "2 crédits requis",
+    note: "Le diagnostic IA nécessite 2 crédits. Les crédits restants peuvent toujours servir à un essai standard.",
   },
   "ja-JP": {
-    label: "今月のクレジットを使い切りました",
-    note: "今月の生成クレジットを使い切りました。共有またはアップグレードで追加できます。",
+    label: "診断には2クレジット必要です",
+    note: "AI診断には生成クレジットが2つ必要です。残りは通常の試着に使用できます。",
   },
   "ko-KR": {
-    label: "이번 달 크레딧을 모두 사용했습니다",
-    note: "월간 생성 크레딧을 모두 사용했습니다. 공유하거나 업그레이드해 더 받을 수 있습니다.",
+    label: "진단에는 크레딧 2개가 필요합니다",
+    note: "AI 진단에는 생성 크레딧 2개가 필요합니다. 남은 크레딧은 일반 가상 체험에 사용할 수 있습니다.",
   },
   "es-ES": {
-    label: "Créditos mensuales agotados",
-    note: "Se agotaron los créditos de generación del mes. Comparte o actualiza para obtener más.",
+    label: "Se necesitan 2 créditos",
+    note: "El diagnóstico con IA necesita 2 créditos. Los créditos restantes aún sirven para una prueba estándar.",
   },
   "pt-BR": {
-    label: "Créditos mensais usados",
-    note: "Os créditos mensais de geração acabaram. Compartilhe ou faça upgrade para obter mais.",
+    label: "São necessários 2 créditos",
+    note: "O diagnóstico por IA precisa de 2 créditos. Os créditos restantes ainda podem ser usados em um teste padrão.",
   },
 };
 

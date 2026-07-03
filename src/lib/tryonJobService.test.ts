@@ -126,6 +126,38 @@ describe("createTryOnJob", () => {
     expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
   });
 
+  it("charges two shared credits for diagnosis and rejects a one-credit balance", async () => {
+    await saveUploadRecord(uploadRecord({ status: "validated" }));
+
+    const diagnosis = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look,
+      idempotencyKey: "diagnosis_cost_1",
+      bindings: { TRYON_PROVIDER: "mock" },
+      purpose: "diagnosis",
+    });
+
+    expect(diagnosis.quota).toMatchObject({ remaining: 1 });
+
+    await expect(
+      createTryOnJob({
+        userId: "visitor_1",
+        uploadId: "upload_1",
+        look,
+        idempotencyKey: "diagnosis_cost_2",
+        bindings: { TRYON_PROVIDER: "mock" },
+        purpose: "diagnosis",
+      }),
+    ).rejects.toMatchObject({
+      code: "QUOTA_EXHAUSTED",
+      status: 409,
+    });
+    await expect(getQuotaSnapshot("visitor_1")).resolves.toMatchObject({
+      remaining: 1,
+    });
+  });
+
   it("runs direct image generation for try-on jobs without storing diagnosis", async () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
@@ -596,6 +628,7 @@ describe("createTryOnJob", () => {
       locale: "ja-JP",
       purpose: "diagnosis",
     });
+    expect(created.quota).toMatchObject({ remaining: 1 });
 
     const result = await processTryOnJob({
       userId: "visitor_1",
@@ -609,6 +642,7 @@ describe("createTryOnJob", () => {
       status: "succeeded",
       purpose: "diagnosis",
     });
+    expect(result?.quota).toMatchObject({ remaining: 1 });
     expect(result?.job.resultImage).toBeUndefined();
     await expect(
       getDiagnosisRecordByJobId(result!.job.id),
@@ -860,7 +894,7 @@ describe("createTryOnJob", () => {
     });
 
     expect(created.job.status).toBe("created");
-    expect(created.quota).toMatchObject({ remaining: 2 });
+    expect(created.quota).toMatchObject({ remaining: 1 });
 
     const result = await processTryOnJob({
       userId: "visitor_1",

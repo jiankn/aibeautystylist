@@ -87,13 +87,18 @@ describe("billing checkout sync", () => {
         nextRefreshAt: "2026-07-18T00:00:00.000Z",
       },
       subscription: {
+        billingInterval: "monthly",
         currentPeriodStart: "2026-06-18T00:00:00.000Z",
         currentPeriodEnd: "2026-07-18T00:00:00.000Z",
       },
     });
     await expect(
       getEffectivePlan("user_123", undefined, now),
-    ).resolves.toMatchObject({ planCode: "pro", status: "active" });
+    ).resolves.toMatchObject({
+      planCode: "pro",
+      status: "active",
+      billingInterval: "monthly",
+    });
   });
 
   it("restores full Pro quota after a Free user has used all free credits", async () => {

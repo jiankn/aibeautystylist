@@ -6,6 +6,7 @@ import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { DIAGNOSIS_CREDIT_COST } from "../lib/tryonCosts";
 import { getCurrentLocale } from "../lib/i18n";
 import {
   getDiagnosisResultLabels,
@@ -56,8 +57,8 @@ const fallbackDiagnosisCopy = isEnglish
       plansCta: "View plans",
       trust: [
         [
-          "One credit",
-          "Diagnosis and try-on use the same monthly generation credits.",
+          "2 credits",
+          "Each AI diagnosis uses 2 try-on credits from the same monthly credit balance.",
         ],
         ["Private flow", "Selfies are processed only after explicit consent."],
         ["Actionable", "Every report leads to looks you can try immediately."],
@@ -139,10 +140,10 @@ const fallbackDiagnosisCopy = isEnglish
         quotaGuestNote: "Sign in to use monthly generation credits",
         quotaRemainingPrefix: "Remaining this month: ",
         quotaRemainingSuffix: " credits",
-        quotaExhausted: "Monthly credits used up",
+        quotaExhausted: "2 credits required",
         quotaExhaustedNote:
-          "Monthly generation credits are used up. Share or upgrade to get more credits.",
-        quotaExhaustedCta: "Monthly credits used up",
+          "AI diagnosis needs 2 generation credits. Remaining credits can still be used for standard try-on.",
+        quotaExhaustedCta: "2 credits required",
         loginCta: "Sign in to start diagnosis",
         uploadCta: "Upload selfie and diagnose",
         tryLook: "Try this look",
@@ -176,7 +177,7 @@ const fallbackDiagnosisCopy = isEnglish
       startCta: "开始诊断",
       plansCta: "查看会员",
       trust: [
-        ["统一额度", "诊断和试妆都消耗同一套月度生成额度。"],
+        ["2 次额度", "每次 AI 诊断消耗 2 次试妆额度，共用同一套生成额度。"],
         ["私密流程", "自拍只会在你明确同意后进入处理流程。"],
         ["可执行", "每份报告都会连接到可立即试妆的风格。"],
       ],
@@ -241,9 +242,10 @@ const fallbackDiagnosisCopy = isEnglish
         quotaGuestNote: "登录后可使用月度生成额度",
         quotaRemainingPrefix: "本月还可生成 ",
         quotaRemainingSuffix: " 次",
-        quotaExhausted: "本月额度已用完",
-        quotaExhaustedNote: "本月生成额度已用完，可分享或升级获取更多额度。",
-        quotaExhaustedCta: "本月额度已用完",
+        quotaExhausted: "诊断需要 2 次额度",
+        quotaExhaustedNote:
+          "AI 诊断每次需要 2 次生成额度。剩余额度仍可用于普通试妆。",
+        quotaExhaustedCta: "诊断需要 2 次额度",
         loginCta: "登录后开始诊断",
         uploadCta: "上传自拍开始诊断",
         tryLook: "试这个妆",
@@ -859,6 +861,9 @@ const detailPanelCopy =
           <button class="btn btn-primary" id="diag-upload-btn" disabled>
             {diagnosisCopy.uploadCta}
           </button>
+          <small class="diagnosis-cost-note">
+            {diagnosisCopy.trust[0][1]}
+          </small>
           <div class="upload-task-status" id="diag-task-status" hidden>
             <div class="upload-task-head">
               <span id="diag-status-text">{diagnosisCopy.quotaLoading}</span>
@@ -1128,6 +1133,7 @@ const detailPanelCopy =
       discoverHref,
       loginHref,
       tryOnFreeHref,
+      diagnosisCreditCost: DIAGNOSIS_CREDIT_COST,
     }}
   >
     (function () {
@@ -1135,6 +1141,7 @@ const detailPanelCopy =
       // === 配置 ===
       const POLL_INTERVAL = 2000;
       const POLL_MAX = 60;
+      const DIAGNOSIS_COST = Math.max(1, Number(diagnosisCreditCost) || 1);
 
       // === DOM 引用 ===
       const consentBox = document.querySelector("[data-diag-consent]");
@@ -1335,7 +1342,9 @@ const detailPanelCopy =
 
       function isQuotaExhausted() {
         const remaining = quotaRemainingValue();
-        return isAccountUser && remaining !== null && remaining <= 0;
+        return (
+          isAccountUser && remaining !== null && remaining < DIAGNOSIS_COST
+        );
       }
 
       function renderQuota(q) {
@@ -1346,7 +1355,7 @@ const detailPanelCopy =
           : 0;
         const safeTotal = Number.isFinite(total) ? Math.max(0, total) : 0;
         const quotaLabel = safeRemaining + "/" + safeTotal;
-        const exhausted = safeRemaining <= 0;
+        const exhausted = safeRemaining < DIAGNOSIS_COST;
         if (quotaText) quotaText.textContent = quotaLabel;
         if (quotaNote) {
           quotaNote.textContent = exhausted
@@ -1379,10 +1388,7 @@ const detailPanelCopy =
 
       function showQuotaExhaustedState() {
         if (taskStatus) taskStatus.hidden = true;
-        quotaSnapshot = {
-          ...(quotaSnapshot || { total: 0 }),
-          remaining: 0,
-        };
+        quotaSnapshot ||= { total: 0, remaining: 0 };
         renderQuota(quotaSnapshot);
         syncUploadAvailability();
       }
@@ -1399,7 +1405,7 @@ const detailPanelCopy =
             .filter(Boolean)
             .join(" "),
         );
-        return /QUOTA_EXHAUSTED|额度已用完|額度已用完|credits? (exhausted|used up)/i.test(
+        return /QUOTA_EXHAUSTED|额度(?:已用完|不足)|額度(?:已用完|不足)|credits? (?:exhausted|used up|required|insufficient)/i.test(
           value,
         );
       }
@@ -1450,6 +1456,10 @@ const detailPanelCopy =
                   "-" +
                   Math.random().toString(36).slice(2),
               });
+              if (result.job?.quota) {
+                quotaSnapshot = result.job.quota;
+                renderQuota(quotaSnapshot);
+              }
               updateProgress(copy.creating, 38, "intake", "2/4");
               currentJobId = result.job.id;
               syncDiagnosisBackgroundTask(result.job, {
@@ -1508,6 +1518,10 @@ const detailPanelCopy =
             const data = await res.json();
             if (!data.ok) return;
             const job = data.data;
+            if (job.quota) {
+              quotaSnapshot = job.quota;
+              renderQuota(quotaSnapshot);
+            }
             if (job.status === "diagnosis_running") {
               const progress = Math.min(76, 52 + attempt);
               updateProgress(copy.running, progress, "features", "3/4");
@@ -3337,6 +3351,13 @@ const detailPanelCopy =
       cursor: not-allowed;
       opacity: 1;
       box-shadow: none;
+    }
+    .diagnosis-cost-note {
+      margin-top: -6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
     }
     .privacy-promise {
       display: grid;

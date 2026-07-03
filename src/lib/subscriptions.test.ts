@@ -27,6 +27,7 @@ describe("subscriptions", () => {
         stripeSubscriptionId: "sub_1",
         planCode: "pro",
         status: "active",
+        billingInterval: "yearly",
         currentPeriodStart: "2026-06-07T00:00:00.000Z",
         currentPeriodEnd: "2026-07-07T00:00:00.000Z",
       },
@@ -40,6 +41,7 @@ describe("subscriptions", () => {
       planCode: "pro",
       source: "subscription",
       status: "active",
+      billingInterval: "yearly",
       currentPeriodStart: "2026-06-07T00:00:00.000Z",
     });
   });
@@ -142,6 +144,7 @@ describe("subscriptions", () => {
         stripeSubscriptionId: "sub_1",
         planCode: "pro",
         status: "active",
+        billingInterval: "yearly",
         currentPeriodStart: "2026-06-07T00:00:00.000Z",
         currentPeriodEnd: "2026-07-07T00:00:00.000Z",
       },
@@ -163,6 +166,7 @@ describe("subscriptions", () => {
     expect(subscriptions[0]).toMatchObject({
       currentPeriodStart: "2026-06-07T00:00:00.000Z",
       currentPeriodEnd: "2026-07-07T00:00:00.000Z",
+      billingInterval: "yearly",
     });
   });
 });

@@ -79,6 +79,10 @@ type SubscriptionCopy = {
   savedLimit: string;
   price: string;
   priceUnit: string;
+  yearlyPrice: string;
+  yearlyUnit: string;
+  freePrice: string;
+  priceUnavailable: string;
   actionsTitle: string;
   manage: string;
   upgrade: string;
@@ -133,6 +137,10 @@ const enCopy: SubscriptionCopy = {
   savedLimit: "Saved looks",
   price: "Monthly price",
   priceUnit: "/ month",
+  yearlyPrice: "Annual price",
+  yearlyUnit: "/ year",
+  freePrice: "Free",
+  priceUnavailable: "See billing details",
   actionsTitle: "Subscription actions",
   manage: "Manage subscription",
   upgrade: "Upgrade plan",
@@ -192,6 +200,10 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     savedLimit: "收藏上限",
     price: "月付价格",
     priceUnit: "/ 月",
+    yearlyPrice: "年付价格",
+    yearlyUnit: "/ 年",
+    freePrice: "免费",
+    priceUnavailable: "请在账单中查看",
     actionsTitle: "订阅操作",
     manage: "管理订阅",
     upgrade: "升级套餐",
@@ -239,6 +251,10 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     savedLimit: "收藏上限",
     price: "月付價格",
     priceUnit: "/ 月",
+    yearlyPrice: "年付價格",
+    yearlyUnit: "/ 年",
+    freePrice: "免費",
+    priceUnavailable: "請在帳單中查看",
     actionsTitle: "訂閱操作",
     manage: "管理訂閱",
     upgrade: "升級方案",
@@ -284,6 +300,11 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     activeUntil: "有効期限：{date}",
     savedLimit: "保存上限",
     price: "月額",
+    priceUnit: "/ 月",
+    yearlyPrice: "年額",
+    yearlyUnit: "/ 年",
+    freePrice: "無料",
+    priceUnavailable: "請求明細で確認",
     actionsTitle: "契約操作",
     manage: "契約を管理",
     upgrade: "プランをアップグレード",
@@ -319,6 +340,11 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     activeUntil: "이용 가능 기간: {date}",
     savedLimit: "저장 한도",
     price: "월 요금",
+    priceUnit: "/ 월",
+    yearlyPrice: "연간 요금",
+    yearlyUnit: "/ 년",
+    freePrice: "무료",
+    priceUnavailable: "결제 내역에서 확인",
     actionsTitle: "구독 작업",
     manage: "구독 관리",
     upgrade: "플랜 업그레이드",
@@ -356,6 +382,11 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     activeUntil: "Actif jusqu'au {date}",
     savedLimit: "Looks sauvegardés",
     price: "Prix mensuel",
+    priceUnit: "/ mois",
+    yearlyPrice: "Prix annuel",
+    yearlyUnit: "/ an",
+    freePrice: "Gratuit",
+    priceUnavailable: "Voir les détails de facturation",
     actionsTitle: "Actions d'abonnement",
     manage: "Gérer l'abonnement",
     upgrade: "Mettre à niveau",
@@ -392,6 +423,11 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     activeUntil: "Aktiv bis {date}",
     savedLimit: "Gespeicherte Looks",
     price: "Monatspreis",
+    priceUnit: "/ Monat",
+    yearlyPrice: "Jahrespreis",
+    yearlyUnit: "/ Jahr",
+    freePrice: "Kostenlos",
+    priceUnavailable: "In den Rechnungsdetails ansehen",
     actionsTitle: "Abo-Aktionen",
     manage: "Abo verwalten",
     upgrade: "Tarif upgraden",
@@ -429,6 +465,11 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     activeUntil: "Activo hasta {date}",
     savedLimit: "Looks guardados",
     price: "Precio mensual",
+    priceUnit: "/ mes",
+    yearlyPrice: "Precio anual",
+    yearlyUnit: "/ año",
+    freePrice: "Gratis",
+    priceUnavailable: "Ver detalles de facturación",
     actionsTitle: "Acciones de suscripción",
     manage: "Gestionar suscripción",
     upgrade: "Mejorar plan",
@@ -465,6 +506,11 @@ const copyByLocale: Partial<Record<string, SubscriptionCopy>> = {
     activeUntil: "Ativo até {date}",
     savedLimit: "Looks salvos",
     price: "Preço mensal",
+    priceUnit: "/ mês",
+    yearlyPrice: "Preço anual",
+    yearlyUnit: "/ ano",
+    freePrice: "Grátis",
+    priceUnavailable: "Ver detalhes de cobrança",
     actionsTitle: "Ações da assinatura",
     manage: "Gerenciar assinatura",
     upgrade: "Fazer upgrade",
@@ -491,6 +537,7 @@ const planMeta = Object.fromEntries(
       monthlyQuota: plan.monthlyQuota,
       savedLookLimit: plan.savedLookLimit,
       monthlyPriceUsd: plan.monthlyPriceUsd,
+      yearlyPriceUsd: plan.monthlyPriceUsd * 10,
       features: plan.features,
     },
   ]),
@@ -523,7 +570,12 @@ const planMeta = Object.fromEntries(
         >
       </section>
 
-      <section class="subscription-loading panel" data-subscription-loading>
+      <section
+        class="subscription-loading panel"
+        data-subscription-loading
+        role="status"
+        aria-live="polite"
+      >
         {copy.loading}
       </section>
 
@@ -551,17 +603,32 @@ const planMeta = Object.fromEntries(
               <span class="subscription-plan-chip" data-plan-chip>--</span>
             </div>
             <p class="subscription-plan-note" data-plan-note></p>
-            <div class="subscription-price">
-              <span>$</span><b data-plan-price>--</b><small
-                >{copy.priceUnit}</small
-              >
+            <div class="subscription-price-block">
+              <span data-plan-price-label>{copy.price}</span>
+              <div class="subscription-price">
+                <b data-plan-price>--</b>
+                <small data-plan-price-unit>{copy.priceUnit}</small>
+              </div>
             </div>
             <div class="subscription-meter-block">
               <div>
                 <span>{copy.quotaTitle}</span>
                 <b data-quota-value>--</b>
               </div>
-              <div class="meter"><i data-quota-meter style="width:0%"></i></div>
+              <div
+                class="meter"
+                role="progressbar"
+                aria-label={copy.quotaTitle}
+                aria-valuemin="0"
+                aria-valuemax="0"
+                aria-valuenow="0"
+                aria-valuetext={copy.remaining
+                  .replace("{remaining}", "0")
+                  .replace("{total}", "0")}
+                data-quota-progress
+              >
+                <i data-quota-meter style="width:0%"></i>
+              </div>
               <small data-quota-refresh>--</small>
             </div>
           </article>
@@ -583,7 +650,12 @@ const planMeta = Object.fromEntries(
               <a class="btn btn-outline" href={hrefs.pricing}
                 >{copy.comparePlans}</a
               >
-              <a class="btn btn-outline" href="#credit-packs">
+              <a
+                class="btn btn-outline"
+                href="#credit-packs"
+                data-credit-pack-action
+                hidden
+              >
                 {t("creditPacks", "buy")}
               </a>
               <a class="btn btn-outline-rose" href={hrefs.support}
@@ -604,6 +676,7 @@ const planMeta = Object.fromEntries(
               class="subscription-message"
               data-subscription-message
               role="status"
+              aria-live="polite"
             >
             </p>
           </article>
@@ -617,42 +690,59 @@ const planMeta = Object.fromEntries(
           <div class="subscription-feature-grid">
             <article>
               <AppIconBadge icon="tryon" tone="teal" />
-              <span>{copy.featureQuota}</span>
-              <b data-feature-quota>--</b>
+              <div>
+                <span>{copy.featureQuota}</span>
+                <b data-feature-quota>--</b>
+              </div>
             </article>
             <article>
               <AppIconBadge icon="saved" tone="rose" />
-              <span>{copy.featureSaved}</span>
-              <b data-feature-saved>--</b>
+              <div>
+                <span>{copy.featureSaved}</span>
+                <b data-feature-saved>--</b>
+              </div>
             </article>
             <article>
               <AppIconBadge icon="billing" tone="gold" />
-              <span>{copy.featureHd}</span>
-              <b data-feature-hd>--</b>
+              <div>
+                <span>{copy.featureHd}</span>
+                <b data-feature-hd>--</b>
+              </div>
             </article>
             <article>
               <AppIconBadge icon="membership" tone="gold" />
-              <span>{copy.featurePriority}</span>
-              <b data-feature-priority>--</b>
+              <div>
+                <span>{copy.featurePriority}</span>
+                <b data-feature-priority>--</b>
+              </div>
             </article>
             <article>
               <AppIconBadge icon="history" tone="navy" />
-              <span>{copy.featureHistory}</span>
-              <b data-feature-history>--</b>
+              <div>
+                <span>{copy.featureHistory}</span>
+                <b data-feature-history>--</b>
+              </div>
             </article>
             <article>
               <AppIconBadge icon="discover" tone="teal" />
-              <span>{copy.featureLibrary}</span>
-              <b data-feature-library>--</b>
+              <div>
+                <span>{copy.featureLibrary}</span>
+                <b data-feature-library>--</b>
+              </div>
             </article>
             <article>
               <AppIconBadge icon="tryon" tone="gold" />
-              <span>{copy.featureReference}</span>
-              <b data-feature-reference>--</b>
+              <div>
+                <span>{copy.featureReference}</span>
+                <b data-feature-reference>--</b>
+              </div>
             </article>
           </div>
         </section>
-        <CreditPackPanel returnTo={`${hrefs.dashboard}#billing-panel`} />
+        <CreditPackPanel
+          returnTo={`${hrefs.dashboard}#billing-panel`}
+          hideWhenUnavailable
+        />
       </div>
     </div>
   </main>
@@ -684,6 +774,14 @@ const planMeta = Object.fromEntries(
           template,
         );
       const yesNo = (enabled) => (enabled ? copy.includedYes : copy.includedNo);
+      const formatUsd = (value) =>
+        new Intl.NumberFormat(document.documentElement.lang || undefined, {
+          style: "currency",
+          currency: "USD",
+          currencyDisplay: "code",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(value);
 
       function showState(kind) {
         query("[data-subscription-loading]")?.toggleAttribute(
@@ -702,6 +800,7 @@ const planMeta = Object.fromEntries(
         const meta = planMeta[plan] || planMeta.free;
         const quota = data?.quota || {};
         const subscription = data?.subscription;
+        const billingInterval = subscription?.billingInterval;
         const remaining = Number(quota.remaining ?? 0);
         const total = Number(quota.total ?? meta.monthlyQuota ?? 0);
         const remainingPercent = total
@@ -715,13 +814,51 @@ const planMeta = Object.fromEntries(
         setText("[data-plan-title]", meta.title);
         setText("[data-plan-chip]", meta.title);
         setText("[data-plan-note]", copy.planNotes?.[plan] || "");
-        setText("[data-plan-price]", String(meta.monthlyPriceUsd));
+        const priceBlock = query(".subscription-price-block");
+        if (plan === "free") {
+          if (priceBlock) priceBlock.dataset.priceState = "free";
+          setText("[data-plan-price-label]", "");
+          setText("[data-plan-price]", copy.freePrice);
+          setText("[data-plan-price-unit]", "");
+        } else if (
+          billingInterval === "monthly" ||
+          billingInterval === "yearly"
+        ) {
+          const yearly = billingInterval === "yearly";
+          if (priceBlock) priceBlock.dataset.priceState = billingInterval;
+          setText(
+            "[data-plan-price-label]",
+            yearly ? copy.yearlyPrice : copy.price,
+          );
+          setText(
+            "[data-plan-price]",
+            formatUsd(yearly ? meta.yearlyPriceUsd : meta.monthlyPriceUsd),
+          );
+          setText(
+            "[data-plan-price-unit]",
+            yearly ? copy.yearlyUnit : copy.priceUnit,
+          );
+        } else {
+          if (priceBlock) priceBlock.dataset.priceState = "unknown";
+          setText("[data-plan-price-label]", copy.price);
+          setText("[data-plan-price]", copy.priceUnavailable);
+          setText("[data-plan-price-unit]", "");
+        }
         setText(
           "[data-quota-value]",
           formatTemplate(copy.remaining, { remaining, total }),
         );
         const meter = query("[data-quota-meter]");
         if (meter) meter.style.width = `${remainingPercent}%`;
+        const progress = query("[data-quota-progress]");
+        if (progress) {
+          progress.setAttribute("aria-valuemax", String(total));
+          progress.setAttribute("aria-valuenow", String(remaining));
+          progress.setAttribute(
+            "aria-valuetext",
+            formatTemplate(copy.remaining, { remaining, total }),
+          );
+        }
         const dateText = subscription?.currentPeriodEnd
           ? formatTemplate(
               statusKey === "canceled" ? copy.activeUntil : copy.renewsOn,
@@ -753,7 +890,12 @@ const planMeta = Object.fromEntries(
 
         const manage = query("[data-manage-billing]");
         const upgrade = query("[data-upgrade-plan]");
+        const creditPackAction = query("[data-credit-pack-action]");
         manage?.toggleAttribute("hidden", plan === "free");
+        creditPackAction?.toggleAttribute(
+          "hidden",
+          plan !== "pro" && plan !== "premium",
+        );
         if (upgrade) {
           upgrade.toggleAttribute("hidden", plan === "premium");
           upgrade.textContent =
@@ -822,7 +964,7 @@ const planMeta = Object.fromEntries(
   <style>
     .subscription-main {
       min-height: calc(100vh - 64px);
-      padding: 32px 16px 64px;
+      padding: 24px 16px 48px;
       background:
         linear-gradient(
           180deg,
@@ -833,7 +975,7 @@ const planMeta = Object.fromEntries(
     }
     .subscription-shell {
       display: grid;
-      gap: 18px;
+      gap: 14px;
       width: min(1120px, 100%);
       margin: 0 auto;
     }
@@ -841,33 +983,37 @@ const planMeta = Object.fromEntries(
       display: flex;
       align-items: end;
       justify-content: space-between;
-      gap: 18px;
-      padding: 28px;
+      gap: 16px;
+      padding: 20px 22px;
     }
     .subscription-hero h1 {
       margin: 0;
       color: var(--heading);
       font-family: var(--font-display);
-      font-size: clamp(32px, 4vw, 52px);
-      line-height: 1.06;
+      font-size: clamp(30px, 3.2vw, 44px);
+      line-height: 1.08;
       letter-spacing: 0;
     }
     .subscription-hero p:not(.section-kicker) {
       max-width: 720px;
-      margin: 12px 0 0;
+      margin: 8px 0 0;
       color: var(--text);
-      font-size: 16px;
-      line-height: 1.7;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .subscription-hero .btn,
+    .subscription-gate .btn {
+      min-height: 44px;
     }
     .subscription-loading,
     .subscription-gate {
-      padding: 22px;
+      padding: 18px;
       color: var(--muted);
     }
     .subscription-gate {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr) auto;
-      gap: 16px;
+      gap: 14px;
       align-items: center;
     }
     .subscription-gate h2 {
@@ -881,21 +1027,21 @@ const planMeta = Object.fromEntries(
     }
     .subscription-content {
       display: grid;
-      gap: 18px;
+      gap: 14px;
     }
     .subscription-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
-      gap: 18px;
+      grid-template-columns: minmax(0, 1.45fr) minmax(292px, 0.75fr);
+      gap: 14px;
     }
     .subscription-plan,
     .subscription-actions,
     .subscription-benefits {
-      padding: 22px;
+      padding: 18px;
     }
     .subscription-plan {
       display: grid;
-      gap: 18px;
+      gap: 14px;
       overflow: hidden;
       border-color: color-mix(in srgb, var(--teal) 24%, var(--line));
       background:
@@ -935,12 +1081,12 @@ const planMeta = Object.fromEntries(
     .subscription-plan h2 {
       margin: 0;
       color: var(--heading);
-      font-size: 34px;
+      font-size: 30px;
       line-height: 1;
     }
     .subscription-plan-chip {
       display: inline-flex;
-      min-height: 32px;
+      min-height: 30px;
       align-items: center;
       padding: 0 12px;
       border: 1px solid color-mix(in srgb, var(--teal) 28%, var(--line));
@@ -963,29 +1109,43 @@ const planMeta = Object.fromEntries(
     .subscription-plan-note {
       margin: 0;
       color: var(--muted);
-      line-height: 1.65;
+      line-height: 1.55;
+    }
+    .subscription-price-block {
+      display: grid;
+      gap: 4px;
+    }
+    .subscription-price-block > span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
     }
     .subscription-price {
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 6px;
       color: var(--heading);
     }
-    .subscription-price span {
-      font-size: 18px;
-    }
     .subscription-price b {
-      font-size: 54px;
-      line-height: 0.95;
+      font-size: 40px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
     }
     .subscription-price small {
       color: var(--muted);
       font-weight: 800;
     }
+    .subscription-price-block[data-price-state="free"] b {
+      font-size: 34px;
+    }
+    .subscription-price-block[data-price-state="unknown"] b {
+      font-size: 18px;
+      line-height: 1.4;
+    }
     .subscription-meter-block {
       display: grid;
-      gap: 10px;
-      padding-top: 16px;
+      gap: 8px;
+      padding-top: 12px;
       border-top: 1px solid var(--line);
     }
     .subscription-meter-block > div:first-child {
@@ -1018,24 +1178,24 @@ const planMeta = Object.fromEntries(
     .subscription-actions {
       display: grid;
       align-content: start;
-      gap: 16px;
+      gap: 12px;
     }
     .subscription-action-list {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
     .subscription-action-list .btn {
       justify-content: center;
-      min-height: 42px;
+      min-height: 44px;
     }
     .subscription-status {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      gap: 8px;
       margin: 0;
     }
     .subscription-status div {
-      padding: 12px;
+      padding: 10px;
       border: 1px solid var(--line);
       border-radius: 10px;
       background: var(--bg);
@@ -1052,50 +1212,64 @@ const planMeta = Object.fromEntries(
       font-weight: 900;
     }
     .subscription-message {
-      min-height: 20px;
       margin: 0;
       color: var(--danger-text);
       font-size: 13px;
       line-height: 1.55;
     }
+    .subscription-message:empty {
+      display: none;
+    }
     .subscription-section-head {
       display: grid;
       gap: 4px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .subscription-section-head h2 {
       margin: 0;
       color: var(--heading);
-      font-size: 24px;
+      font-size: 22px;
     }
     .subscription-feature-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
     }
     .subscription-feature-grid article {
       display: grid;
-      gap: 9px;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
       min-width: 0;
-      padding: 14px;
+      min-height: 72px;
+      padding: 11px 12px;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: var(--bg);
     }
-    .subscription-feature-grid span {
+    .subscription-feature-grid article:last-child {
+      grid-column: span 2;
+    }
+    .subscription-feature-grid article > div {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+    .subscription-feature-grid article > div span {
       color: var(--muted);
       font-size: 12px;
       font-weight: 800;
       line-height: 1.4;
+      overflow-wrap: anywhere;
     }
-    .subscription-feature-grid b {
+    .subscription-feature-grid article > div b {
       color: var(--heading);
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.3;
     }
     @media (max-width: 860px) {
       .subscription-main {
-        padding: 18px 12px 76px;
+        padding: 14px 12px 76px;
       }
       .subscription-hero,
       .subscription-gate,
@@ -1104,20 +1278,44 @@ const planMeta = Object.fromEntries(
       }
       .subscription-hero {
         display: grid;
-        padding: 22px;
+        padding: 18px;
       }
       .subscription-hero .btn {
         width: 100%;
       }
-      .subscription-grid,
-      .subscription-feature-grid {
+      .subscription-grid {
         grid-template-columns: 1fr;
       }
       .subscription-status {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .subscription-feature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .subscription-feature-grid article {
+        min-height: 82px;
       }
       .subscription-price b {
-        font-size: 44px;
+        font-size: 38px;
+      }
+    }
+    @media (max-width: 420px) {
+      .subscription-hero h1 {
+        font-size: 30px;
+      }
+      .subscription-plan,
+      .subscription-actions,
+      .subscription-benefits {
+        padding: 16px;
+      }
+    }
+    @media (max-width: 340px) {
+      .subscription-feature-grid,
+      .subscription-status {
+        grid-template-columns: 1fr;
+      }
+      .subscription-feature-grid article:last-child {
+        grid-column: span 1;
       }
     }
   </style>

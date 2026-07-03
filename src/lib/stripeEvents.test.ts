@@ -5,6 +5,7 @@ import { getQuotaSnapshot, reserveQuota, resetMockQuota } from "./quota";
 import { getEffectivePlan, resetMockSubscriptions } from "./subscriptions";
 import {
   handleStripeEvent,
+  priceToBillingInterval,
   priceToPlan,
   resetMockStripeEvents,
 } from "./stripeEvents";
@@ -53,6 +54,16 @@ describe("priceToPlan", () => {
     expect(priceToPlan("price_premium_yearly", bindings)).toBe("premium");
     expect(priceToPlan("price_unknown", bindings)).toBeUndefined();
   });
+
+  it("maps configured price ids to billing intervals", () => {
+    expect(priceToBillingInterval("price_pro_monthly", bindings)).toBe(
+      "monthly",
+    );
+    expect(priceToBillingInterval("price_premium_yearly", bindings)).toBe(
+      "yearly",
+    );
+    expect(priceToBillingInterval("price_unknown", bindings)).toBeUndefined();
+  });
 });
 
 describe("handleStripeEvent", () => {
@@ -76,7 +87,10 @@ describe("handleStripeEvent", () => {
     });
     await expect(
       getEffectivePlan("visitor_1", undefined, now),
-    ).resolves.toMatchObject({ planCode: "pro" });
+    ).resolves.toMatchObject({
+      planCode: "pro",
+      billingInterval: "monthly",
+    });
   });
 
   it("restores full quota from a webhook upgrade after free credits were used", async () => {

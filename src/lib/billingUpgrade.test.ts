@@ -112,7 +112,10 @@ describe("subscription upgrades", () => {
       upgraded: true,
       fromPlanCode: "pro",
       toPlanCode: "premium",
-      subscription: { currentPeriodStart: "2026-06-18T00:00:00.000Z" },
+      subscription: {
+        billingInterval: "monthly",
+        currentPeriodStart: "2026-06-18T00:00:00.000Z",
+      },
       quota: {
         total: 150,
         remaining: 150,
@@ -122,7 +125,11 @@ describe("subscription upgrades", () => {
     });
     await expect(
       getEffectivePlan("user_123", undefined, now),
-    ).resolves.toMatchObject({ planCode: "premium", status: "active" });
+    ).resolves.toMatchObject({
+      planCode: "premium",
+      status: "active",
+      billingInterval: "monthly",
+    });
   });
 
   it("previews only the immediate prorated upgrade charge", async () => {
