@@ -49,6 +49,7 @@ const legacyCopy = isZh
       noSaved: "还没有保存的参考妆容。",
       viewAllTemplates: "查看全部 ({count})",
       collapseTemplates: "收起",
+      selectTemplatePlaceholder: "选择已保存的参考妆容",
       templateLoadFailed: "已保存的参考妆容暂时无法加载，你仍可上传新图片。",
       selfieTitle: "2. 上传自己的自拍",
       selfieHelp: "请使用自然光、正脸、面部无遮挡的清晰自拍。",
@@ -155,6 +156,7 @@ const legacyCopy = isZh
       noSaved: "You have no saved private references yet.",
       viewAllTemplates: "View all ({count})",
       collapseTemplates: "Show less",
+      selectTemplatePlaceholder: "Choose a saved reference",
       templateLoadFailed:
         "Saved references are temporarily unavailable. You can still upload a new image.",
       selfieTitle: "2. Upload your selfie",
@@ -1029,11 +1031,6 @@ const hrefs = {
         renderTemplates();
       }
 
-      /** 默认折叠时最多展示的卡片数量 */
-      const COLLAPSED_COUNT = 2;
-      /** 跟踪哪些列表处于展开状态 */
-      const expandedTemplateLists = new WeakSet();
-
       function renderTemplates() {
         templateLists.forEach((templateList) => {
           templateList.replaceChildren();
@@ -1044,39 +1041,95 @@ const hrefs = {
             return;
           }
 
-          const isExpanded = expandedTemplateLists.has(templateList);
-          const visibleTemplates = isExpanded
-            ? templates
-            : templates.slice(0, COLLAPSED_COUNT);
+          const selectedTemplate = templates.find(
+            (t) => t.id === selectedTemplateId,
+          );
 
-          /* ---------- 渲染可见卡片（包裹在滚动容器中） ---------- */
-          const scrollWrap = document.createElement("div");
-          scrollWrap.className = "saved-reference-scroll";
-          if (isExpanded) scrollWrap.dataset.expanded = "";
+          /* ====== 自定义下拉选择器容器 ====== */
+          const selectContainer = document.createElement("div");
+          selectContainer.className = "saved-reference-select";
 
-          visibleTemplates.forEach((template) => {
-            const card = document.createElement("article");
-            card.className = "saved-reference-card";
-            card.dataset.selected = String(template.id === selectedTemplateId);
+          /* --- 触发按钮 --- */
+          const trigger = document.createElement("button");
+          trigger.type = "button";
+          trigger.className = "saved-reference-select-trigger";
 
-            const choose = document.createElement("button");
-            choose.type = "button";
-            choose.className = "saved-reference-choose";
-            choose.disabled = !isPremium;
-            choose.setAttribute(
-              "aria-pressed",
-              String(template.id === selectedTemplateId),
-            );
-            const image = document.createElement("img");
-            image.src = template.image;
-            image.alt = template.title;
-            const title = document.createElement("strong");
-            title.textContent = template.title;
-            const state = document.createElement("small");
-            state.textContent =
-              template.id === selectedTemplateId ? copy.selected : "";
-            choose.append(image, title, state);
-            choose.addEventListener("click", () => {
+          if (selectedTemplate) {
+            const thumb = document.createElement("img");
+            thumb.className = "saved-reference-select-thumb";
+            thumb.src = selectedTemplate.image;
+            thumb.alt = "";
+            const label = document.createElement("span");
+            label.className = "saved-reference-select-label";
+            label.textContent = selectedTemplate.title;
+            trigger.append(thumb, label);
+          } else {
+            const label = document.createElement("span");
+            label.className =
+              "saved-reference-select-label saved-reference-select-placeholder";
+            label.textContent = copy.selectTemplatePlaceholder;
+            trigger.append(label);
+          }
+
+          // Chevron 图标
+          const chevron = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg",
+          );
+          chevron.setAttribute("viewBox", "0 0 24 24");
+          chevron.setAttribute("aria-hidden", "true");
+          chevron.classList.add("saved-reference-select-chevron");
+          const chevronPath = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path",
+          );
+          chevronPath.setAttribute("d", "m6 9 6 6 6-6");
+          chevron.append(chevronPath);
+          trigger.append(chevron);
+
+          /* --- 下拉浮层列表 --- */
+          const dropdown = document.createElement("div");
+          dropdown.className = "saved-reference-select-dropdown";
+          dropdown.hidden = true;
+
+          templates.forEach((template) => {
+            const item = document.createElement("div");
+            item.className = "saved-reference-select-item";
+            if (template.id === selectedTemplateId)
+              item.dataset.selected = "true";
+
+            // 选择按钮（左侧主区域）
+            const chooseBtn = document.createElement("button");
+            chooseBtn.type = "button";
+            chooseBtn.className = "saved-reference-select-item-choose";
+            chooseBtn.disabled = !isPremium;
+
+            const itemThumb = document.createElement("img");
+            itemThumb.src = template.image;
+            itemThumb.alt = template.title;
+            const itemLabel = document.createElement("span");
+            itemLabel.textContent = template.title;
+            chooseBtn.append(itemThumb, itemLabel);
+
+            // 选中勾选图标
+            if (template.id === selectedTemplateId) {
+              const checkSvg = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "svg",
+              );
+              checkSvg.setAttribute("viewBox", "0 0 24 24");
+              checkSvg.setAttribute("aria-hidden", "true");
+              checkSvg.classList.add("saved-reference-select-check");
+              const checkPath = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "path",
+              );
+              checkPath.setAttribute("d", "M20 6 9 17l-5-5");
+              checkSvg.append(checkPath);
+              chooseBtn.append(checkSvg);
+            }
+
+            chooseBtn.addEventListener("click", () => {
               if (!isPremium) return;
               if (selectedTemplateId !== template.id) {
                 pendingIdempotencyKey = "";
@@ -1091,15 +1144,35 @@ const hrefs = {
               updateSourceReadiness();
             });
 
-            const remove = document.createElement("button");
-            remove.type = "button";
-            remove.className = "saved-reference-delete";
-            remove.textContent = copy.delete;
-            remove.setAttribute(
+            // 删除按钮（右侧小图标）
+            const deleteBtn = document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.className = "saved-reference-select-item-delete";
+            deleteBtn.setAttribute(
               "aria-label",
               `${copy.delete}: ${template.title}`,
             );
-            remove.addEventListener("click", async () => {
+            const delSvg = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "svg",
+            );
+            delSvg.setAttribute("viewBox", "0 0 24 24");
+            delSvg.setAttribute("aria-hidden", "true");
+            const delP1 = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "path",
+            );
+            delP1.setAttribute("d", "M18 6 6 18");
+            const delP2 = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "path",
+            );
+            delP2.setAttribute("d", "m6 6 12 12");
+            delSvg.append(delP1, delP2);
+            deleteBtn.append(delSvg);
+
+            deleteBtn.addEventListener("click", async (e) => {
+              e.stopPropagation();
               const confirmed =
                 typeof window.absConfirm === "function"
                   ? await window.absConfirm(copy.deleteConfirm, {
@@ -1108,8 +1181,7 @@ const hrefs = {
                   : window.confirm(copy.deleteConfirm);
               if (!confirmed) return;
               setTemplateStatus("");
-              remove.disabled = true;
-              remove.textContent = copy.deleting;
+              deleteBtn.disabled = true;
               try {
                 await readJson(
                   await fetch(
@@ -1131,41 +1203,50 @@ const hrefs = {
                 setTemplateStatus(copy.deleted);
               } catch (error) {
                 setTemplateStatus(error?.message || copy.deleteFailed);
-                remove.disabled = false;
-                remove.textContent = copy.delete;
+                deleteBtn.disabled = false;
               }
             });
-            card.append(choose, remove);
-            scrollWrap.append(card);
+
+            item.append(chooseBtn, deleteBtn);
+            dropdown.append(item);
           });
 
-          templateList.append(scrollWrap);
-
-          /* ---------- 「查看全部」/「收起」切换按钮 ---------- */
-          if (templates.length > COLLAPSED_COUNT) {
-            const toggle = document.createElement("button");
-            toggle.type = "button";
-            toggle.className = "saved-reference-toggle";
-            if (isExpanded) {
-              toggle.textContent = copy.collapseTemplates;
-            } else {
-              toggle.textContent = copy.viewAllTemplates.replace(
-                "{count}",
-                String(templates.length),
-              );
+          /* --- 切换打开/关闭 --- */
+          trigger.addEventListener("click", () => {
+            const isOpen = !dropdown.hidden;
+            // 先关闭页面上所有其他下拉
+            document
+              .querySelectorAll(".saved-reference-select-dropdown")
+              .forEach((d) => {
+                d.hidden = true;
+                d.closest(".saved-reference-select")?.removeAttribute(
+                  "data-open",
+                );
+              });
+            if (!isOpen) {
+              dropdown.hidden = false;
+              selectContainer.dataset.open = "";
             }
-            toggle.addEventListener("click", () => {
-              if (isExpanded) {
-                expandedTemplateLists.delete(templateList);
-              } else {
-                expandedTemplateLists.add(templateList);
-              }
-              renderTemplates();
-            });
-            templateList.append(toggle);
-          }
+          });
+
+          selectContainer.append(trigger, dropdown);
+          templateList.append(selectContainer);
         });
       }
+
+      /* 点击外部关闭下拉 */
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".saved-reference-select")) {
+          document
+            .querySelectorAll(".saved-reference-select-dropdown")
+            .forEach((d) => {
+              d.hidden = true;
+              d.closest(".saved-reference-select")?.removeAttribute(
+                "data-open",
+              );
+            });
+        }
+      });
 
       function previewFile(input, image) {
         const file = input.files?.[0];
@@ -2055,43 +2136,174 @@ const hrefs = {
   .saved-reference-list > p {
     color: var(--body-secondary);
   }
-  /* 滚动容器：承载卡片 grid */
-  :global(.saved-reference-scroll) {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.75rem;
+  /* 自定义下拉选择器 */
+  :global(.saved-reference-select) {
+    position: relative;
+    min-width: 0;
   }
-  /* 展开态：固定高度 + 纵向滚动 */
-  :global(.saved-reference-scroll[data-expanded]) {
-    max-height: 340px;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--heading) 18%, transparent) transparent;
-    padding-right: 4px;
-  }
-  /* 「查看全部 / 收起」切换按钮 */
-  :global(.saved-reference-toggle) {
+  :global(.saved-reference-select-trigger) {
     width: 100%;
-    min-height: 38px;
+    min-height: 44px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 0;
-    border: 1px dashed var(--line);
+    gap: 0.55rem;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
     border-radius: 10px;
-    background: transparent;
+    background: var(--bg);
+    color: var(--heading);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.88rem;
+    text-align: left;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  :global(.saved-reference-select-trigger:hover) {
+    border-color: var(--gold);
+  }
+  :global(.saved-reference-select[data-open] .saved-reference-select-trigger) {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 12%, transparent);
+  }
+  :global(.saved-reference-select-thumb) {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 auto;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  :global(.saved-reference-select-label) {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(.saved-reference-select-placeholder) {
     color: var(--body-secondary);
+  }
+  :global(.saved-reference-select-chevron) {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--body-secondary);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+  :global(.saved-reference-select[data-open] .saved-reference-select-chevron) {
+    transform: rotate(180deg);
+  }
+  :global(.saved-reference-select-dropdown) {
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    box-shadow: 0 8px 24px color-mix(in srgb, #101828 12%, transparent);
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--heading) 14%, transparent)
+      transparent;
+  }
+  :global(.saved-reference-select-dropdown[hidden]) {
+    display: none;
+  }
+  :global(.saved-reference-select-item) {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--line) 60%, transparent);
+  }
+  :global(.saved-reference-select-item:last-child) {
+    border-bottom: 0;
+  }
+  :global(.saved-reference-select-item[data-selected="true"]) {
+    background: color-mix(in srgb, var(--gold) 6%, transparent);
+  }
+  :global(.saved-reference-select-item-choose) {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 8px 10px;
+    border: 0;
+    background: transparent;
+    color: var(--heading);
     cursor: pointer;
     font: inherit;
     font-size: 0.85rem;
-    font-weight: 600;
-    transition: color 0.2s ease, border-color 0.2s ease;
+    text-align: left;
+    transition: background 0.15s ease;
   }
-  :global(.saved-reference-toggle:hover) {
-    color: var(--gold);
-    border-color: var(--gold);
+  :global(.saved-reference-select-item-choose:hover) {
+    background: color-mix(in srgb, var(--heading) 4%, transparent);
+  }
+  :global(.saved-reference-select-item-choose:disabled) {
+    cursor: default;
+  }
+  :global(.saved-reference-select-item-choose img) {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 auto;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  :global(.saved-reference-select-item-choose span) {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(.saved-reference-select-check) {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  :global(.saved-reference-select-item-delete) {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-right: 6px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--body-secondary);
+    cursor: pointer;
+    transition:
+      color 0.15s ease,
+      background 0.15s ease;
+  }
+  :global(.saved-reference-select-item-delete:hover) {
+    color: var(--danger-text);
+    background: color-mix(in srgb, var(--danger-text) 8%, transparent);
+  }
+  :global(.saved-reference-select-item-delete svg) {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
   }
 
   /* 错误信息和模板状态 */
@@ -2107,74 +2319,6 @@ const hrefs = {
   }
   .saved-reference-status:empty {
     display: none;
-  }
-
-  /* 已保存参考卡片（动态生成，用 :global） */
-  :global(.saved-reference-card) {
-    position: relative;
-    min-width: 0;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    background: var(--bg);
-    overflow: hidden;
-    transition:
-      border-color 0.3s ease,
-      box-shadow 0.3s ease,
-      transform 0.2s ease;
-  }
-  :global(.saved-reference-card:hover) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--heading) 6%, transparent);
-  }
-  :global(.saved-reference-card[data-selected="true"]) {
-    border-color: var(--gold);
-    box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--gold) 24%, transparent),
-      0 4px 16px color-mix(in srgb, var(--gold) 10%, transparent);
-  }
-  :global(.saved-reference-choose) {
-    width: 100%;
-    min-height: 44px;
-    display: grid;
-    gap: 0.35rem;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--heading);
-    cursor: pointer;
-    text-align: left;
-  }
-  :global(.saved-reference-choose:disabled) {
-    cursor: default;
-  }
-  :global(.saved-reference-choose img) {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-  }
-  :global(.saved-reference-choose strong),
-  :global(.saved-reference-choose small) {
-    padding-inline: 0.7rem;
-  }
-  :global(.saved-reference-choose small) {
-    min-height: 1.2em;
-    padding-bottom: 0.55rem;
-    color: var(--gold);
-    font-weight: 600;
-  }
-  :global(.saved-reference-delete) {
-    min-height: 44px;
-    margin: 0 0.7rem 0.7rem;
-    border: 0;
-    background: transparent;
-    color: var(--danger-text);
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.82rem;
-    transition: opacity 0.2s ease;
-  }
-  :global(.saved-reference-delete:hover) {
-    opacity: 0.7;
   }
 
   /* ══════════════════════════════════════════
@@ -2413,9 +2557,7 @@ const hrefs = {
       padding: 1.25rem;
       border-radius: 14px;
     }
-    :global(.saved-reference-scroll) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+
     .reference-result-actions .btn {
       width: 100%;
     }
@@ -2436,8 +2578,7 @@ const hrefs = {
       animation: none;
     }
     .reference-dropzone,
-    .rt-generate-btn,
-    :global(.saved-reference-card) {
+    .rt-generate-btn {
       transition: none;
     }
     .rt-stepper-line-fill {

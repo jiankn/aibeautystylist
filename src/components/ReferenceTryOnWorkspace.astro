@@ -622,43 +622,165 @@ const { copy, hrefs } = Astro.props;
     color: var(--rt-muted);
     font-size: 0.78rem;
   }
-  /* 滚动容器：承载卡片 grid */
-  :global(.saved-reference-scroll) {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+  /* 自定义下拉选择器 */
+  :global(.saved-reference-select) {
+    position: relative;
+    min-width: 0;
   }
-  /* 展开态：固定高度 + 纵向滚动 */
-  :global(.saved-reference-scroll[data-expanded]) {
-    max-height: 280px;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--rt-text) 18%, transparent) transparent;
-    padding-right: 2px;
-  }
-  /* 「查看全部 / 收起」切换按钮 */
-  :global(.saved-reference-toggle) {
+  :global(.saved-reference-select-trigger) {
     width: 100%;
-    min-height: 32px;
+    min-height: 38px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 0;
-    border: 1px dashed var(--rt-border);
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid var(--rt-border);
     border-radius: 8px;
-    background: transparent;
+    background: var(--rt-panel);
+    color: var(--rt-text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78rem;
+    text-align: left;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  :global(.saved-reference-select-trigger:hover) {
+    border-color: var(--rt-accent);
+  }
+  :global(.saved-reference-select[data-open] .saved-reference-select-trigger) {
+    border-color: var(--rt-accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--rt-accent) 14%, transparent);
+  }
+  :global(.saved-reference-select-thumb) {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  :global(.saved-reference-select-label) {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(.saved-reference-select-placeholder) {
     color: var(--rt-muted);
+  }
+  :global(.saved-reference-select-chevron) {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--rt-muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+  :global(.saved-reference-select[data-open] .saved-reference-select-chevron) {
+    transform: rotate(180deg);
+  }
+  :global(.saved-reference-select-dropdown) {
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 3px);
+    left: 0;
+    right: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    border: 1px solid var(--rt-border);
+    border-radius: 8px;
+    background: var(--rt-surface);
+    box-shadow: 0 6px 20px color-mix(in srgb, #101828 10%, transparent);
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--rt-text) 14%, transparent) transparent;
+  }
+  :global(.saved-reference-select-dropdown[hidden]) {
+    display: none;
+  }
+  :global(.saved-reference-select-item) {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid color-mix(in srgb, var(--rt-border) 60%, transparent);
+  }
+  :global(.saved-reference-select-item:last-child) {
+    border-bottom: 0;
+  }
+  :global(.saved-reference-select-item[data-selected="true"]) {
+    background: color-mix(in srgb, var(--rt-accent) 8%, transparent);
+  }
+  :global(.saved-reference-select-item-choose) {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border: 0;
+    background: transparent;
+    color: var(--rt-text);
     cursor: pointer;
     font: inherit;
     font-size: 0.75rem;
-    font-weight: 700;
-    transition: color 0.2s ease, border-color 0.2s ease;
+    text-align: left;
+    transition: background 0.15s ease;
   }
-  :global(.saved-reference-toggle:hover) {
-    color: var(--rt-accent);
-    border-color: var(--rt-accent);
+  :global(.saved-reference-select-item-choose:hover) {
+    background: color-mix(in srgb, var(--rt-text) 4%, transparent);
+  }
+  :global(.saved-reference-select-item-choose img) {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  :global(.saved-reference-select-item-choose span) {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(.saved-reference-select-check) {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--rt-accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  :global(.saved-reference-select-item-delete) {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-right: 4px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--rt-muted);
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  :global(.saved-reference-select-item-delete:hover) {
+    color: #d92d20;
+    background: color-mix(in srgb, #d92d20 8%, transparent);
+  }
+  :global(.saved-reference-select-item-delete svg) {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
   }
   .rt-preview-panel {
     grid-column: 2;
@@ -1032,52 +1154,7 @@ const { copy, hrefs } = Astro.props;
     border-radius: 50%;
     animation: rt-workspace-spin 800ms linear infinite;
   }
-  :global(.saved-reference-card) {
-    min-width: 0;
-    overflow: hidden;
-    border: 1px solid var(--rt-border);
-    border-radius: 8px;
-    background: var(--rt-panel);
-  }
-  :global(.saved-reference-card[data-selected="true"]) {
-    border-color: var(--rt-accent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--rt-accent) 18%, transparent);
-  }
-  :global(.saved-reference-choose) {
-    width: 100%;
-    display: grid;
-    gap: 3px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--rt-text);
-    cursor: pointer;
-    text-align: left;
-  }
-  :global(.saved-reference-choose img) {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-  }
-  :global(.saved-reference-choose strong),
-  :global(.saved-reference-choose small) {
-    padding-inline: 7px;
-    font-size: 0.75rem;
-  }
-  :global(.saved-reference-choose small) {
-    padding-bottom: 7px;
-    color: var(--rt-accent);
-  }
-  :global(.saved-reference-delete) {
-    min-height: 36px;
-    margin: 0 7px 7px;
-    border: 0;
-    background: transparent;
-    color: #d92d20;
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.75rem;
-  }
+
   [hidden] {
     display: none !important;
   }
