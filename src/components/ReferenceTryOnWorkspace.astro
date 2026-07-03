@@ -25,12 +25,17 @@ const { copy, hrefs } = Astro.props;
     <h1 id="reference-workspace-title">{copy.heading}</h1>
   </div>
   <div class="rt-workspace-meta">
-    <span class="rt-meta-item rt-quota-item">
+    <span
+      class="rt-meta-item rt-quota-item"
+      data-workspace-quota-item
+      data-quota-aria={copy.quotaAria}
+    >
       <svg viewBox="0 0 24 24" aria-hidden="true"
         ><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path
           d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"></path><path
           d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path></svg
       >
+      <span>{copy.quotaLabel}</span>
       <b data-workspace-quota>--</b>
     </span>
     <span class="rt-meta-item">
@@ -128,7 +133,7 @@ const { copy, hrefs } = Astro.props;
         </label>
         <p id="reference-file-error" data-error="reference" role="alert" hidden>
         </p>
-        <details class="saved-reference-block">
+        <details class="saved-reference-block" open>
           <summary>{copy.savedTitle}</summary>
           <div class="saved-reference-list" data-template-list>
             <p>{copy.noSaved}</p>
@@ -174,7 +179,6 @@ const { copy, hrefs } = Astro.props;
           <h2 id="preview-title">{copy.previewTitle}</h2>
           <p>{copy.intro}</p>
         </div>
-        <span>{copy.privacyTitle}</span>
       </header>
       <div class="rt-preview-stage">
         <div class="rt-preview-empty" data-canvas-empty>
@@ -326,7 +330,7 @@ const { copy, hrefs } = Astro.props;
     --rt-border-strong: #b9c2cf;
     --rt-text: #18202c;
     --rt-muted: #667085;
-    --rt-accent: #d84e64;
+    --rt-accent: #c83e68;
     --rt-accent-strong: #bd354e;
     --rt-accent-soft: #fff0f3;
     --rt-success: #16866f;
@@ -378,13 +382,13 @@ const { copy, hrefs } = Astro.props;
   }
   .rt-workspace-head h1 {
     color: var(--rt-text);
-    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+    font-size: clamp(1.25rem, 1.8vw, 1.5rem);
     line-height: 1.2;
   }
   .rt-workspace-head p {
     margin-bottom: 2px;
     color: var(--rt-accent);
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -487,12 +491,12 @@ const { copy, hrefs } = Astro.props;
   .rt-source-heading p {
     margin-top: 3px;
     color: var(--rt-muted);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     line-height: 1.4;
   }
   .rt-source-heading > span {
     color: var(--rt-success);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 800;
   }
   .reference-dropzone {
@@ -562,7 +566,7 @@ const { copy, hrefs } = Astro.props;
   }
   .rt-upload-placeholder small {
     max-width: 100%;
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     line-height: 1.35;
     overflow-wrap: anywhere;
   }
@@ -572,7 +576,7 @@ const { copy, hrefs } = Astro.props;
     display: grid;
     gap: 5px;
     color: var(--rt-muted);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
   }
   .reference-name input {
     width: 100%;
@@ -590,7 +594,7 @@ const { copy, hrefs } = Astro.props;
   [data-error] {
     margin: 0;
     color: #d92d20;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
   }
   .saved-reference-block {
     min-width: 0;
@@ -618,7 +622,7 @@ const { copy, hrefs } = Astro.props;
     grid-column: 1 / -1;
     margin: 0;
     color: var(--rt-muted);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
   }
   .rt-preview-panel {
     grid-column: 2;
@@ -647,14 +651,8 @@ const { copy, hrefs } = Astro.props;
     max-width: 58ch;
     margin-top: 3px;
     color: var(--rt-muted);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     line-height: 1.4;
-  }
-  .rt-preview-panel header > span {
-    color: var(--rt-success);
-    font-size: 0.72rem;
-    font-weight: 800;
-    white-space: nowrap;
   }
   .rt-preview-stage {
     position: relative;
@@ -708,11 +706,11 @@ const { copy, hrefs } = Astro.props;
   .reference-submit p {
     margin: 0;
     color: var(--rt-muted);
-    font-size: 0.74rem;
+    font-size: 0.78rem;
   }
   .reference-submit a {
     color: var(--rt-accent);
-    font-size: 0.74rem;
+    font-size: 0.78rem;
     font-weight: 750;
   }
   .reference-submit-info {
@@ -740,7 +738,7 @@ const { copy, hrefs } = Astro.props;
     padding: 5px 0;
     color: var(--rt-text);
     cursor: pointer;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     line-height: 1.45;
   }
   .reference-authorization input {
@@ -778,7 +776,7 @@ const { copy, hrefs } = Astro.props;
   }
   .reference-authorization-meta > small {
     color: var(--rt-muted);
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     line-height: 1.4;
   }
   .reference-authorization > p {
@@ -837,7 +835,7 @@ const { copy, hrefs } = Astro.props;
   }
   .reference-result-info > span {
     color: var(--rt-accent);
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 800;
     text-transform: uppercase;
   }
@@ -937,7 +935,7 @@ const { copy, hrefs } = Astro.props;
     border-radius: 7px;
     background: rgba(15, 23, 42, 0.72);
     color: #fff;
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 750;
     pointer-events: none;
   }
@@ -1028,7 +1026,7 @@ const { copy, hrefs } = Astro.props;
   :global(.saved-reference-choose strong),
   :global(.saved-reference-choose small) {
     padding-inline: 7px;
-    font-size: 0.68rem;
+    font-size: 0.75rem;
   }
   :global(.saved-reference-choose small) {
     padding-bottom: 7px;
@@ -1042,7 +1040,7 @@ const { copy, hrefs } = Astro.props;
     color: #d92d20;
     cursor: pointer;
     font: inherit;
-    font-size: 0.68rem;
+    font-size: 0.75rem;
   }
   [hidden] {
     display: none !important;
@@ -1058,6 +1056,11 @@ const { copy, hrefs } = Astro.props;
     }
     .reference-result {
       grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 1181px) {
+    .rt-history-trigger {
+      display: none;
     }
   }
   @media (max-width: 980px) {
@@ -1138,5 +1141,20 @@ const { copy, hrefs } = Astro.props;
     .reference-submit button {
       transition: none;
     }
+  }
+  :global(body.reference-tryon-body .site-header-minimal .nav-actions) {
+    gap: 8px;
+  }
+  :global(body.reference-tryon-body .site-header-minimal .nav-control) {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+  :global(body.reference-tryon-body .site-header-minimal .nav-control::after),
+  :global(
+    body.reference-tryon-body .site-header-minimal .account-menu-trigger::after
+  ) {
+    inset: 0;
   }
 </style>

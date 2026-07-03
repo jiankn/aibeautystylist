@@ -35,8 +35,6 @@ const { copy, historyHref, resultBaseHref } = Astro.props;
   <aside
     id="reference-history-dialog"
     class="reference-history-drawer"
-    role="dialog"
-    aria-modal="true"
     aria-labelledby="reference-history-title"
   >
     <header class="reference-history-head">
@@ -255,7 +253,10 @@ const { copy, historyHref, resultBaseHref } = Astro.props;
       }
       layer.hidden = false;
       trigger.setAttribute("aria-expanded", "true");
-      drawer.setAttribute("aria-modal", String(!desktopMode.matches));
+      if (!desktopMode.matches) {
+        drawer.setAttribute("role", "dialog");
+        drawer.setAttribute("aria-modal", "true");
+      }
       requestAnimationFrame(() => layer.setAttribute("data-open", "true"));
       if (!desktopMode.matches) {
         layer.querySelector(".reference-history-close")?.focus();
@@ -291,13 +292,15 @@ const { copy, historyHref, resultBaseHref } = Astro.props;
         layer.hidden = false;
         layer.setAttribute("data-open", "true");
         trigger.setAttribute("aria-expanded", "true");
-        drawer.setAttribute("aria-modal", "false");
+        drawer.removeAttribute("role");
+        drawer.removeAttribute("aria-modal");
         if (!loaded) loadHistory();
         return;
       }
       layer.removeAttribute("data-open");
       layer.hidden = true;
       trigger.setAttribute("aria-expanded", "false");
+      drawer.setAttribute("role", "dialog");
       drawer.setAttribute("aria-modal", "true");
     }
 

@@ -47,6 +47,8 @@ describe("reference try-on launch contracts", () => {
     expect(workspaceSource).toContain("animation: none");
     expect(workspaceSource).toContain('[data-theme="dark"]');
     expect(workspaceSource).toContain("data-compare-slider");
+    expect(workspaceSource).toContain("--rt-accent: #c83e68");
+    expect(workspaceSource).not.toMatch(/font-size: 0\.(68|70|72|74)rem/);
   });
 
   it("contains source controls within the reference card", () => {
@@ -125,15 +127,54 @@ describe("reference try-on launch contracts", () => {
     expect(copySource.match(/authorizationRequired:/g)).toHaveLength(9);
     expect(copySource.match(/photoNoticeLink:/g)).toHaveLength(9);
     expect(copySource.match(/privacyHint:/g)).toHaveLength(9);
+    expect(copySource.match(/quotaLabel:/g)).toHaveLength(9);
+    expect(copySource.match(/quotaAria:/g)).toHaveLength(9);
   });
 
-  it("opens an accessible private-reference history drawer", () => {
-    expect(pageSource).toContain("ReferenceTryOnHistoryDrawer");
+  it("uses a persistent desktop history region and a mobile dialog", () => {
+    expect(workspaceSource).toContain("ReferenceTryOnHistoryDrawer");
     expect(interfaceSource).toContain("data-reference-history-trigger");
-    expect(historyDrawerSource).toContain('role="dialog"');
-    expect(historyDrawerSource).toContain('aria-modal="true"');
+    const drawerMarkup = historyDrawerSource.slice(
+      0,
+      historyDrawerSource.indexOf("<script"),
+    );
+    expect(drawerMarkup).not.toContain('role="dialog"');
+    expect(drawerMarkup).not.toContain('aria-modal="true"');
+    expect(historyDrawerSource).toContain(
+      'drawer.setAttribute("role", "dialog")',
+    );
+    expect(historyDrawerSource).toContain(
+      'drawer.setAttribute("aria-modal", "true")',
+    );
+    expect(historyDrawerSource).toContain('drawer.removeAttribute("role")');
+    expect(historyDrawerSource).toContain(
+      'drawer.removeAttribute("aria-modal")',
+    );
+    expect(workspaceSource).toMatch(
+      /@media \(min-width: 1181px\)[\s\S]*?\.rt-history-trigger[\s\S]*?display: none/,
+    );
     expect(historyDrawerSource).toContain('event.key === "Escape"');
     expect(historyDrawerSource).toContain("env(safe-area-inset-bottom)");
+  });
+
+  it("keeps quota, templates, and privacy messaging unambiguous", () => {
+    expect(workspaceSource).toContain("data-workspace-quota-item");
+    expect(workspaceSource).toContain("data-quota-aria={copy.quotaAria}");
+    expect(workspaceSource).toContain("<span>{copy.quotaLabel}</span>");
+    expect(workspaceSource).toContain(
+      '<details class="saved-reference-block" open>',
+    );
+    expect(workspaceSource.match(/\{copy\.privacyTitle\}/g)).toHaveLength(1);
+    expect(copySource).toContain('savedTitle: "Reference templates"');
+    expect(copySource).toContain('savedTitle: "参考模板"');
+  });
+
+  it("tracks sanitized entry attribution without shipping legacy markup", () => {
+    expect(pageSource).toContain('Astro.url.searchParams.get("source")');
+    expect(pageSource).toContain("data-entry-source={entrySource}");
+    expect(pageSource).toContain('trackEvent("reference_tryon_viewed"');
+    expect(pageSource).not.toContain("data-reference-tryon-legacy");
+    expect(pageSource).toContain("workspaceQuotaItem.dataset.quotaAria");
   });
 
   it("ships localized workspace copy for all nine public locales", () => {

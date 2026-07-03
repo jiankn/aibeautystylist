@@ -1,6 +1,5 @@
 ---
 import MobileBottomNav from "../components/MobileBottomNav.astro";
-import ReferenceTryOnHistoryDrawer from "../components/ReferenceTryOnHistoryDrawer.astro";
 import ReferenceTryOnWorkspace from "../components/ReferenceTryOnWorkspace.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { getReferenceTryOnCopy } from "../data/referenceTryOnCopy";
@@ -16,6 +15,10 @@ import { PHOTO_CONSENT_VERSION } from "../lib/uploads";
 
 const locale = getCurrentLocale();
 const isZh = locale.startsWith("zh");
+const entrySource =
+  (Astro.url.searchParams.get("source") || "direct")
+    .replace(/[^a-zA-Z0-9_-]/g, "")
+    .slice(0, 64) || "direct";
 const currentPathname = Astro.originPathname || Astro.url.pathname;
 const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
@@ -278,10 +281,12 @@ const hrefs = {
   <main
     class="reference-tryon-main"
     data-reference-tryon
+    data-entry-source={entrySource}
     data-photo-consent-version={PHOTO_CONSENT_VERSION}
   >
     <ReferenceTryOnWorkspace copy={copy} hrefs={hrefs} />
-    <template data-reference-tryon-legacy>
+    {
+      /*
       <!-- 背景装饰光晕 -->
       <div class="rt-glow rt-glow--rose" aria-hidden="true"></div>
       <div class="rt-glow rt-glow--gold" aria-hidden="true"></div>
@@ -719,7 +724,8 @@ const hrefs = {
         historyHref={hrefs.privateHistory}
         resultBaseHref={hrefs.resultBase}
       />
-    </template>
+    */
+    }
   </main>
   <MobileBottomNav active="tryon" />
 
@@ -783,6 +789,9 @@ const hrefs = {
         "[data-reference-history-trigger]",
       );
       const workspaceQuota = root.querySelector("[data-workspace-quota]");
+      const workspaceQuotaItem = root.querySelector(
+        "[data-workspace-quota-item]",
+      );
       const referenceReady = root.querySelector("[data-reference-ready]");
       const selfieReady = root.querySelector("[data-selfie-ready]");
       const canvasImage = root.querySelector("[data-canvas-image]");
@@ -919,6 +928,20 @@ const hrefs = {
           workspaceQuota.textContent = hasQuota
             ? `${remaining}/${total}`
             : "--";
+        }
+        if (workspaceQuotaItem) {
+          if (hasQuota) {
+            const ariaTemplate =
+              workspaceQuotaItem.dataset.quotaAria || "{remaining}/{total}";
+            workspaceQuotaItem.setAttribute(
+              "aria-label",
+              ariaTemplate
+                .replace("{remaining}", String(remaining))
+                .replace("{total}", String(total)),
+            );
+          } else {
+            workspaceQuotaItem.removeAttribute("aria-label");
+          }
         }
         if (costNote) {
           costNote.textContent = quotaExhausted
@@ -1474,6 +1497,16 @@ const hrefs = {
       loadingRetry?.addEventListener("click", loadSession);
       loadSession();
     })();
+  </script>
+  <script>
+    import { trackEvent } from "../lib/analytics";
+
+    const workspace = document.querySelector("[data-reference-tryon]");
+    if (workspace instanceof HTMLElement) {
+      trackEvent("reference_tryon_viewed", {
+        source: workspace.dataset.entrySource || "direct",
+      });
+    }
   </script>
 </BaseLayout>
 

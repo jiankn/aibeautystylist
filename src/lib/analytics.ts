@@ -4,6 +4,7 @@
 
 export type AnalyticsEvent =
   | "home_start_tryon_click"
+  | "reference_tryon_viewed"
   | "discover_filter_apply"
   | "look_selected"
   | "favorite_look_toggled"
