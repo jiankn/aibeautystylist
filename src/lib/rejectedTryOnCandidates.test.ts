@@ -26,6 +26,8 @@ describe("rejected try-on candidates", () => {
         overallScore: 20,
         makeupSimilarityScore: 0,
         identityPreservationScore: 100,
+        baseCoverageContinuityScore: 10,
+        baseCoverageMissing: ["forehead"],
         criticalMissing: ["reflective lid"],
         conflicts: [],
         correctionInstructions: [],

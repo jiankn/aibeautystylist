@@ -446,6 +446,87 @@ describe("createTryOnJob", () => {
     expect(evaluateMakeupTransfer).toHaveBeenCalledTimes(2);
   });
 
+  it("retries when full-face base makeup leaves the forehead untreated", async () => {
+    const privateTemplate = {
+      id: "template_forehead_gap",
+      userId: "visitor_1",
+      title: "Continuous luminous base",
+      r2Key: "private-templates/visitor_1/template_forehead_gap/reference.webp",
+      contentType: "image/webp",
+      sizeBytes: 2,
+      width: 900,
+      height: 1200,
+      status: "active" as const,
+      referenceSha256: "reference-hash",
+      makeupSpecStatus: "ready" as const,
+      makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
+      makeupSpec: reflectiveMakeupSpec(),
+      createdAt: "2026-06-30T00:00:00.000Z",
+      updatedAt: "2026-06-30T00:00:00.000Z",
+    };
+    await upsertSubscription({
+      userId: "visitor_1",
+      stripeSubscriptionId: "sub_premium_forehead_gap",
+      planCode: "premium",
+      status: "active",
+      currentPeriodEnd: "2026-07-30T00:00:00.000Z",
+    });
+    await savePrivateLookTemplate(privateTemplate);
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(generateGeminiMakeupImage)
+      .mockResolvedValueOnce(generatedImage([7]))
+      .mockResolvedValueOnce(generatedImage([8]));
+    vi.mocked(evaluateMakeupTransfer)
+      .mockResolvedValueOnce({
+        result: foreheadGapQuality(),
+        model: "gemini-analysis-test",
+        durationMs: 300,
+        usage: {},
+      })
+      .mockResolvedValueOnce({
+        result: passingMakeupQuality(),
+        model: "gemini-analysis-test",
+        durationMs: 300,
+        usage: {},
+      });
+    const bucket = bucketWithBytes([1, 2]);
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      GEMINI_IMAGE_MODEL: "gemini-image-test",
+      USER_UPLOADS: bucket,
+    };
+    const privateLook = privateTemplateToLook(privateTemplate);
+    const created = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look: privateLook,
+      idempotencyKey: "private_forehead_gap_request",
+      bindings,
+      privateTemplate,
+    });
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look: privateLook,
+      bindings,
+    });
+
+    expect(result?.job).toMatchObject({
+      status: "succeeded",
+      makeupGenerationAttempts: 2,
+    });
+    const retryPrompt =
+      vi.mocked(generateGeminiMakeupImage).mock.calls[1]?.[0].prompt ?? "";
+    expect(retryPrompt).toContain("restore missing base coverage on forehead");
+    expect(retryPrompt).toContain(
+      "Do not leave the forehead untreated while the center face is covered",
+    );
+  });
+
   it("returns the best safe candidate when the retry regresses to the selfie", async () => {
     const privateTemplate = {
       id: "template_best_candidate",
@@ -519,7 +600,7 @@ describe("createTryOnJob", () => {
     expect(result?.job).toMatchObject({
       status: "succeeded",
       makeupGenerationAttempts: 2,
-      makeupQualityScore: 45,
+      makeupQualityScore: 60,
     });
     expect(result?.quota).toMatchObject({ remaining: 148 });
     expect(bucket.put).toHaveBeenCalledOnce();
@@ -989,6 +1070,14 @@ function reflectiveMakeupSpec(): MakeupReferenceSpec {
     summary: "Silver-gold reflective wet-look eyelids with nude glossy lips",
     focalAreas: ["mobile eyelids", "inner corners"],
     base: { ...subtleArea, finish: ["luminous", "dewy"] },
+    baseCoverage: {
+      forehead: "medium",
+      temples: "medium",
+      nose: "medium",
+      cheeks: "medium",
+      chinJaw: "medium",
+      expectedContinuity: "full-face",
+    },
     eyes: {
       colors: ["silver white", "pale gold"],
       placement: ["mobile lid", "inner corner", "lower inner lash line"],
@@ -1031,6 +1120,8 @@ function passingMakeupQuality(): MakeupTransferQuality {
     overallScore: 92,
     makeupSimilarityScore: 94,
     identityPreservationScore: 96,
+    baseCoverageContinuityScore: 94,
+    baseCoverageMissing: [],
     criticalMissing: [],
     conflicts: [],
     correctionInstructions: [],
@@ -1043,6 +1134,8 @@ function failingMakeupQuality(): MakeupTransferQuality {
     overallScore: 52,
     makeupSimilarityScore: 40,
     identityPreservationScore: 95,
+    baseCoverageContinuityScore: 90,
+    baseCoverageMissing: [],
     criticalMissing: ["wet-look silver lid shimmer"],
     conflicts: ["large-area peach blush"],
     correctionInstructions: [
@@ -1052,12 +1145,30 @@ function failingMakeupQuality(): MakeupTransferQuality {
   };
 }
 
+function foreheadGapQuality(): MakeupTransferQuality {
+  return {
+    schemaVersion: MAKEUP_TRANSFER_QUALITY_VERSION,
+    overallScore: 88,
+    makeupSimilarityScore: 91,
+    identityPreservationScore: 96,
+    baseCoverageContinuityScore: 58,
+    baseCoverageMissing: ["forehead"],
+    criticalMissing: [],
+    conflicts: ["forehead finish remains untreated"],
+    correctionInstructions: [
+      "continue the luminous foundation finish across the forehead",
+    ],
+  };
+}
+
 function partialMakeupQuality(): MakeupTransferQuality {
   return {
     schemaVersion: MAKEUP_TRANSFER_QUALITY_VERSION,
-    overallScore: 45,
-    makeupSimilarityScore: 40,
+    overallScore: 60,
+    makeupSimilarityScore: 55,
     identityPreservationScore: 95,
+    baseCoverageContinuityScore: 82,
+    baseCoverageMissing: [],
     criticalMissing: [],
     conflicts: ["lip gloss is too subtle"],
     correctionInstructions: ["increase lip gloss"],
@@ -1070,6 +1181,8 @@ function noOpMakeupQuality(): MakeupTransferQuality {
     overallScore: 0,
     makeupSimilarityScore: 0,
     identityPreservationScore: 100,
+    baseCoverageContinuityScore: 15,
+    baseCoverageMissing: ["forehead", "temples", "nose", "cheeks", "chinJaw"],
     criticalMissing: ["silver shimmer eyeshadow", "high gloss lips"],
     conflicts: [],
     correctionInstructions: ["restore the focal makeup"],

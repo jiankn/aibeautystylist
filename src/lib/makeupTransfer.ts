@@ -1,5 +1,5 @@
-export const MAKEUP_REFERENCE_SPEC_VERSION = "1.1.0";
-export const MAKEUP_TRANSFER_QUALITY_VERSION = "1.0.0";
+export const MAKEUP_REFERENCE_SPEC_VERSION = "1.2.0";
+export const MAKEUP_TRANSFER_QUALITY_VERSION = "1.1.0";
 
 export interface MakeupAreaSpec {
   colors: string[];
@@ -8,11 +8,23 @@ export interface MakeupAreaSpec {
   intensity: "none" | "subtle" | "medium" | "strong";
 }
 
+export type BaseCoverageLevel = "none" | "sheer" | "medium" | "full";
+
+export interface MakeupBaseCoverageSpec {
+  forehead: BaseCoverageLevel;
+  temples: BaseCoverageLevel;
+  nose: BaseCoverageLevel;
+  cheeks: BaseCoverageLevel;
+  chinJaw: BaseCoverageLevel;
+  expectedContinuity: "none" | "localized" | "full-face";
+}
+
 export interface MakeupReferenceSpec {
   schemaVersion: typeof MAKEUP_REFERENCE_SPEC_VERSION;
   summary: string;
   focalAreas: string[];
   base: MakeupAreaSpec;
+  baseCoverage: MakeupBaseCoverageSpec;
   eyes: MakeupAreaSpec;
   brows: MakeupAreaSpec;
   cheeks: MakeupAreaSpec;
@@ -27,6 +39,8 @@ export interface MakeupTransferQuality {
   overallScore: number;
   makeupSimilarityScore: number;
   identityPreservationScore: number;
+  baseCoverageContinuityScore: number;
+  baseCoverageMissing: string[];
   criticalMissing: string[];
   conflicts: string[];
   correctionInstructions: string[];
@@ -40,6 +54,7 @@ export const makeupReferenceSpecJsonSchema = {
     "summary",
     "focalAreas",
     "base",
+    "baseCoverage",
     "eyes",
     "brows",
     "cheeks",
@@ -61,6 +76,7 @@ export const makeupReferenceSpecJsonSchema = {
       maxItems: 3,
     },
     base: makeupAreaJsonSchema(),
+    baseCoverage: makeupBaseCoverageJsonSchema(),
     eyes: makeupAreaJsonSchema(),
     brows: makeupAreaJsonSchema(),
     cheeks: makeupAreaJsonSchema(),
@@ -88,6 +104,8 @@ export const makeupTransferQualityJsonSchema = {
     "overallScore",
     "makeupSimilarityScore",
     "identityPreservationScore",
+    "baseCoverageContinuityScore",
+    "baseCoverageMissing",
     "criticalMissing",
     "conflicts",
     "correctionInstructions",
@@ -100,6 +118,18 @@ export const makeupTransferQualityJsonSchema = {
     overallScore: { type: "number", minimum: 0, maximum: 100 },
     makeupSimilarityScore: { type: "number", minimum: 0, maximum: 100 },
     identityPreservationScore: { type: "number", minimum: 0, maximum: 100 },
+    baseCoverageContinuityScore: {
+      type: "number",
+      minimum: 0,
+      maximum: 100,
+    },
+    baseCoverageMissing: {
+      type: "array",
+      items: {
+        type: "string",
+        enum: ["forehead", "temples", "nose", "cheeks", "chinJaw"],
+      },
+    },
     criticalMissing: { type: "array", items: { type: "string" } },
     conflicts: { type: "array", items: { type: "string" } },
     correctionInstructions: { type: "array", items: { type: "string" } },
@@ -125,6 +155,7 @@ export function parseMakeupReferenceSpec(value: unknown): MakeupReferenceSpec {
     summary: requiredText(record.summary, "summary"),
     focalAreas,
     base: parseArea(record.base, "base"),
+    baseCoverage: parseBaseCoverage(record.baseCoverage),
     eyes: parseArea(record.eyes, "eyes"),
     brows: parseArea(record.brows, "brows"),
     cheeks: parseArea(record.cheeks, "cheeks"),
@@ -154,6 +185,11 @@ export function parseMakeupTransferQuality(
       record.identityPreservationScore,
       "identityPreservationScore",
     ),
+    baseCoverageContinuityScore: score(
+      record.baseCoverageContinuityScore,
+      "baseCoverageContinuityScore",
+    ),
+    baseCoverageMissing: baseCoverageMissing(record.baseCoverageMissing),
     criticalMissing: textArray(record.criticalMissing, "criticalMissing"),
     conflicts: textArray(record.conflicts, "conflicts"),
     correctionInstructions: textArray(
@@ -167,8 +203,11 @@ export function passesMakeupTransferQuality(
   quality: MakeupTransferQuality,
 ): boolean {
   return (
+    quality.overallScore >= 65 &&
     quality.makeupSimilarityScore >= 65 &&
     quality.identityPreservationScore >= 80 &&
+    quality.baseCoverageContinuityScore >= 75 &&
+    quality.baseCoverageMissing.length === 0 &&
     quality.criticalMissing.length === 0
   );
 }
@@ -177,9 +216,11 @@ export function isAcceptableMakeupTransferFallback(
   quality: MakeupTransferQuality,
 ): boolean {
   return (
-    quality.overallScore >= 40 &&
-    quality.makeupSimilarityScore >= 40 &&
+    quality.overallScore >= 55 &&
+    quality.makeupSimilarityScore >= 50 &&
     quality.identityPreservationScore >= 85 &&
+    quality.baseCoverageContinuityScore >= 75 &&
+    quality.baseCoverageMissing.length === 0 &&
     quality.criticalMissing.length === 0
   );
 }
@@ -189,10 +230,12 @@ export function makeupTransferCandidateScore(
 ): number {
   if (quality.identityPreservationScore < 80) return Number.NEGATIVE_INFINITY;
   return (
-    quality.makeupSimilarityScore * 0.65 +
-    quality.overallScore * 0.25 +
+    quality.makeupSimilarityScore * 0.55 +
+    quality.overallScore * 0.2 +
+    quality.baseCoverageContinuityScore * 0.15 +
     quality.identityPreservationScore * 0.1 -
-    quality.criticalMissing.length * 25
+    quality.criticalMissing.length * 25 -
+    quality.baseCoverageMissing.length * 20
   );
 }
 
@@ -214,12 +257,20 @@ export function makeupReferenceSpecPrompt(spec: MakeupReferenceSpec): string {
       ? area("contour/highlight", spec.contourHighlight)
       : "",
   ].filter(Boolean);
+  const baseCoverage = [
+    `forehead=${spec.baseCoverage.forehead}`,
+    `temples=${spec.baseCoverage.temples}`,
+    `nose=${spec.baseCoverage.nose}`,
+    `cheeks=${spec.baseCoverage.cheeks}`,
+    `chin/jaw=${spec.baseCoverage.chinJaw}`,
+  ].join(", ");
 
   return [
     `Makeup target: ${spec.summary}.`,
     `Highest-priority visible features: ${spec.mustMatch.join("; ")}.`,
     `Focal zones: ${spec.focalAreas.join(", ")}.`,
     `Zone details: ${zoneDetails.join(" | ")}.`,
+    `Base coverage map: ${baseCoverage}; expected continuity=${spec.baseCoverage.expectedContinuity}.`,
     spec.mustAvoid.length ? `Avoid: ${spec.mustAvoid.join("; ")}.` : "",
   ]
     .filter(Boolean)
@@ -230,13 +281,16 @@ export function makeupTransferCorrectionPrompt(
   quality: MakeupTransferQuality,
 ): string {
   const corrections = [
+    ...quality.baseCoverageMissing
+      .slice(0, 3)
+      .map((zone) => `restore missing base coverage on ${zone}`),
     ...quality.criticalMissing.slice(0, 3),
     ...quality.conflicts.slice(0, 2),
     ...quality.correctionInstructions.slice(0, 2),
   ].slice(0, 5);
   return [
     corrections.length ? `Retry corrections: ${corrections.join("; ")}.` : "",
-    "Prioritize the highest-priority visible features over supporting base, brow, cheek, contour, or highlight details.",
+    "Treat missing required base coverage as a blocking defect, then prioritize the highest-priority visible features.",
     "Make these makeup changes clearly visible while preserving the selfie identity.",
   ]
     .filter(Boolean)
@@ -260,6 +314,36 @@ function makeupAreaJsonSchema() {
   } as const;
 }
 
+function makeupBaseCoverageJsonSchema() {
+  const coverageLevel = {
+    type: "string",
+    enum: ["none", "sheer", "medium", "full"],
+  } as const;
+  return {
+    type: "object",
+    additionalProperties: false,
+    required: [
+      "forehead",
+      "temples",
+      "nose",
+      "cheeks",
+      "chinJaw",
+      "expectedContinuity",
+    ],
+    properties: {
+      forehead: coverageLevel,
+      temples: coverageLevel,
+      nose: coverageLevel,
+      cheeks: coverageLevel,
+      chinJaw: coverageLevel,
+      expectedContinuity: {
+        type: "string",
+        enum: ["none", "localized", "full-face"],
+      },
+    },
+  } as const;
+}
+
 function parseArea(value: unknown, field: string): MakeupAreaSpec {
   const record = objectRecord(value, field);
   const intensity = record.intensity;
@@ -277,6 +361,47 @@ function parseArea(value: unknown, field: string): MakeupAreaSpec {
     finish: textArray(record.finish, `${field}.finish`),
     intensity,
   };
+}
+
+function parseBaseCoverage(value: unknown): MakeupBaseCoverageSpec {
+  const record = objectRecord(value, "baseCoverage");
+  const expectedContinuity = record.expectedContinuity;
+  if (
+    expectedContinuity !== "none" &&
+    expectedContinuity !== "localized" &&
+    expectedContinuity !== "full-face"
+  ) {
+    throw new Error("baseCoverage.expectedContinuity is invalid");
+  }
+  return {
+    forehead: coverageLevel(record.forehead, "baseCoverage.forehead"),
+    temples: coverageLevel(record.temples, "baseCoverage.temples"),
+    nose: coverageLevel(record.nose, "baseCoverage.nose"),
+    cheeks: coverageLevel(record.cheeks, "baseCoverage.cheeks"),
+    chinJaw: coverageLevel(record.chinJaw, "baseCoverage.chinJaw"),
+    expectedContinuity,
+  };
+}
+
+function coverageLevel(value: unknown, field: string): BaseCoverageLevel {
+  if (
+    value !== "none" &&
+    value !== "sheer" &&
+    value !== "medium" &&
+    value !== "full"
+  ) {
+    throw new Error(`${field} is invalid`);
+  }
+  return value;
+}
+
+function baseCoverageMissing(value: unknown): string[] {
+  const allowed = new Set(["forehead", "temples", "nose", "cheeks", "chinJaw"]);
+  const zones = textArray(value, "baseCoverageMissing", 5);
+  if (zones.some((zone) => !allowed.has(zone))) {
+    throw new Error("baseCoverageMissing contains an invalid zone");
+  }
+  return [...new Set(zones)];
 }
 
 function objectRecord(value: unknown, field: string): Record<string, unknown> {

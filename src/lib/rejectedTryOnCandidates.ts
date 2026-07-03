@@ -13,6 +13,8 @@ export interface RejectedTryOnCandidate {
   overallScore: number;
   makeupSimilarityScore: number;
   identityPreservationScore: number;
+  baseCoverageContinuityScore: number;
+  baseCoverageMissing: string[];
   criticalMissing: string[];
   conflicts: string[];
   deleteAfter: string;
@@ -59,6 +61,8 @@ export async function saveRejectedTryOnCandidate(options: {
     overallScore: options.quality.overallScore,
     makeupSimilarityScore: options.quality.makeupSimilarityScore,
     identityPreservationScore: options.quality.identityPreservationScore,
+    baseCoverageContinuityScore: options.quality.baseCoverageContinuityScore,
+    baseCoverageMissing: options.quality.baseCoverageMissing,
     criticalMissing: options.quality.criticalMissing,
     conflicts: options.quality.conflicts,
     deleteAfter,
@@ -73,6 +77,10 @@ export async function saveRejectedTryOnCandidate(options: {
       attempt: String(options.attempt),
       retention: "24h",
       purpose: "makeup-fidelity-debugging",
+      baseCoverageContinuityScore: String(
+        candidate.baseCoverageContinuityScore,
+      ),
+      baseCoverageMissing: candidate.baseCoverageMissing.join(","),
     },
   });
 

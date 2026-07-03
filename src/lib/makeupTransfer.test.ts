@@ -23,6 +23,7 @@ describe("makeup transfer contracts", () => {
       summary: "Reflective silver lid",
       focalAreas: ["eyes"],
       base: area,
+      baseCoverage: fullFaceBaseCoverage(),
       eyes: area,
       brows: area,
       cheeks: area,
@@ -33,6 +34,7 @@ describe("makeup transfer contracts", () => {
     });
 
     expect(spec.eyes.finish).toEqual(["wet-look"]);
+    expect(spec.baseCoverage.forehead).toBe("medium");
     expect(spec.mustAvoid).toEqual(["matte brown shadow"]);
   });
 
@@ -48,6 +50,7 @@ describe("makeup transfer contracts", () => {
       summary: "Reflective silver lid",
       focalAreas: ["eyes", "inner corners", "lips", "cheeks"],
       base: area,
+      baseCoverage: fullFaceBaseCoverage(),
       eyes: area,
       brows: area,
       cheeks: area,
@@ -68,6 +71,8 @@ describe("makeup transfer contracts", () => {
       overallScore: 90,
       makeupSimilarityScore: 92,
       identityPreservationScore: 95,
+      baseCoverageContinuityScore: 94,
+      baseCoverageMissing: [],
       criticalMissing: [],
       conflicts: [],
       correctionInstructions: [],
@@ -87,7 +92,7 @@ describe("makeup transfer contracts", () => {
         makeupSimilarityScore: 65,
         identityPreservationScore: 80,
       }),
-    ).toBe(true);
+    ).toBe(false);
     expect(
       passesMakeupTransferQuality({
         ...quality,
@@ -102,6 +107,8 @@ describe("makeup transfer contracts", () => {
       overallScore: 45,
       makeupSimilarityScore: 40,
       identityPreservationScore: 95,
+      baseCoverageContinuityScore: 82,
+      baseCoverageMissing: [],
       criticalMissing: [],
       conflicts: ["lip gloss is too subtle"],
       correctionInstructions: ["increase lip gloss"],
@@ -114,10 +121,40 @@ describe("makeup transfer contracts", () => {
       criticalMissing: ["silver shimmer eyeshadow", "high gloss lips"],
     };
 
-    expect(isAcceptableMakeupTransferFallback(partial)).toBe(true);
+    expect(isAcceptableMakeupTransferFallback(partial)).toBe(false);
     expect(isAcceptableMakeupTransferFallback(noOp)).toBe(false);
     expect(makeupTransferCandidateScore(partial)).toBeGreaterThan(
       makeupTransferCandidateScore(noOp),
     );
   });
+
+  it("rejects an otherwise strong result when forehead base coverage is missing", () => {
+    const quality: MakeupTransferQuality = {
+      schemaVersion: MAKEUP_TRANSFER_QUALITY_VERSION,
+      overallScore: 88,
+      makeupSimilarityScore: 91,
+      identityPreservationScore: 96,
+      baseCoverageContinuityScore: 58,
+      baseCoverageMissing: ["forehead"],
+      criticalMissing: [],
+      conflicts: [],
+      correctionInstructions: [
+        "continue the reference foundation finish across the forehead",
+      ],
+    };
+
+    expect(passesMakeupTransferQuality(quality)).toBe(false);
+    expect(isAcceptableMakeupTransferFallback(quality)).toBe(false);
+  });
 });
+
+function fullFaceBaseCoverage() {
+  return {
+    forehead: "medium",
+    temples: "medium",
+    nose: "medium",
+    cheeks: "medium",
+    chinJaw: "medium",
+    expectedContinuity: "full-face",
+  } as const;
+}

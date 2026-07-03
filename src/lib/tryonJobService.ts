@@ -1161,6 +1161,8 @@ async function completePrivateImageStageWithGemini(options: {
         overallScore: quality.overallScore,
         makeupSimilarityScore: quality.makeupSimilarityScore,
         identityPreservationScore: quality.identityPreservationScore,
+        baseCoverageContinuityScore: quality.baseCoverageContinuityScore,
+        baseCoverageMissing: quality.baseCoverageMissing,
         candidateR2Key: rejectedCandidate?.r2Key,
       }),
     );
@@ -1193,6 +1195,9 @@ async function completePrivateImageStageWithGemini(options: {
         makeupSimilarityScore: bestCandidate.quality.makeupSimilarityScore,
         identityPreservationScore:
           bestCandidate.quality.identityPreservationScore,
+        baseCoverageContinuityScore:
+          bestCandidate.quality.baseCoverageContinuityScore,
+        baseCoverageMissing: bestCandidate.quality.baseCoverageMissing,
       }),
     );
     return storePrivateMakeupResult({
@@ -1372,6 +1377,9 @@ async function reviewPrivateMakeupTransfer(options: {
           overallScore: reviewed.result.overallScore,
           makeupSimilarityScore: reviewed.result.makeupSimilarityScore,
           identityPreservationScore: reviewed.result.identityPreservationScore,
+          baseCoverageContinuityScore:
+            reviewed.result.baseCoverageContinuityScore,
+          baseCoverageMissing: reviewed.result.baseCoverageMissing,
           criticalMissing: reviewed.result.criticalMissing,
           conflicts: reviewed.result.conflicts,
         },
@@ -1437,6 +1445,10 @@ async function storePrivateMakeupResult(options: {
         privateTemplateId: options.templateId,
         makeupSpecVersion: options.spec.schemaVersion,
         makeupQualityScore: String(options.quality.overallScore),
+        baseCoverageContinuityScore: String(
+          options.quality.baseCoverageContinuityScore,
+        ),
+        baseCoverageMissing: options.quality.baseCoverageMissing.join(","),
         selectedGenerationAttempt: String(options.selectedAttempt),
         generationAttempts: String(options.generationAttempts),
       },
@@ -1715,6 +1727,12 @@ function privateMakeupImagePrompt(
     makeupReferenceSpecPrompt(spec),
     correction ? makeupTransferCorrectionPrompt(correction) : "",
     "Match the focal makeup's color, placement, finish, reflectivity, texture, and intensity, adapted naturally to the selfie's proportions.",
+    spec.baseCoverage.expectedContinuity === "full-face"
+      ? "Apply the reference base continuously from the hairline across the forehead and temples, then through the nose, both cheeks, chin, and visible jaw. Do not leave the forehead untreated while the center face is covered."
+      : spec.baseCoverage.expectedContinuity === "localized"
+        ? "Keep base coverage localized exactly as mapped in the reference; do not invent a full-face foundation mask."
+        : "Do not invent foundation where the reference has no visible base coverage.",
+    "Foundation coverage means matching the reference tone, opacity, and finish across each required zone while retaining real pores, moles, freckles, fine lines, and skin grain. Texture preservation is not permission to leave a required zone bare.",
     "Keep the USER SELFIE as the only source of identity, facial structure, hair, clothing, pose, framing, lighting, and background.",
     "Preserve natural skin texture and keep the edit photorealistic. Do not reshape, smooth, retouch, add text, or add people.",
     `Reference name: ${title}. Output only the edited selfie image.`,
