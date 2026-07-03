@@ -39,7 +39,7 @@ const diagnosisPreviewSrcset = responsiveWebpSrcset(
   1024,
 );
 const isPortraitScenarioImage = (image: string) =>
-  image.includes("-east-asia.") || image.includes("-editorial-v2.");
+  image.includes("-east-asia.") || /-editorial-v\d+\./.test(image);
 const scenarioImageSrcset = (image: string) =>
   image.startsWith("/images/home-scenario-")
     ? responsiveWebpSrcset(

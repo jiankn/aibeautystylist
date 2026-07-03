@@ -83,11 +83,11 @@ export function resolvePageAssets(
           commute: "/images/home-scenario-commute-editorial-v2.webp",
           "interview-ready":
             "/images/home-scenario-interview-editorial-v2.webp",
-          "rose-milk-date": "/images/home-scenario-date-editorial-v2.webp",
+          "rose-milk-date": "/images/home-scenario-date-editorial-v3.webp",
           "flash-proof-satin": "/images/home-scenario-flash-editorial-v2.webp",
           "mature-skin-radiance":
             "/images/home-scenario-radiance-editorial-v2.webp",
-          "wedding-guest": "/images/home-scenario-wedding-editorial-v2.webp",
+          "wedding-guest": "/images/home-scenario-wedding-editorial-v3.webp",
         },
       };
 

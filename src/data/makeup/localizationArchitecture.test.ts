@@ -159,6 +159,12 @@ describe("global makeup localization architecture", () => {
     expect(home.scenarioImages?.commute).toBe(
       "/images/home-scenario-commute-editorial-v2.webp",
     );
+    expect(home.scenarioImages?.["rose-milk-date"]).toBe(
+      "/images/home-scenario-date-editorial-v3.webp",
+    );
+    expect(home.scenarioImages?.["wedding-guest"]).toBe(
+      "/images/home-scenario-wedding-editorial-v3.webp",
+    );
     expect(login.heroImages?.light).toBe(
       "/images/login-hero-global-light.webp",
     );
@@ -279,7 +285,7 @@ describe("global makeup localization architecture", () => {
     );
     expect(
       Object.values(eastHome.scenarioImages ?? {}).every((path) =>
-        path.includes("-editorial-v2."),
+        /-editorial-v\d+\./.test(path),
       ),
     ).toBe(true);
     expect(globalHome.heroImages?.light).toBe(
