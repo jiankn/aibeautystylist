@@ -799,36 +799,12 @@ const hrefs = {
       let pendingUploadId = "";
       let pendingIdempotencyKey = "";
 
-      /* ── 步骤进度条管理 ── */
-      const stepperNodes = [
-        root.querySelector('[data-step-node="1"]'),
-        root.querySelector('[data-step-node="2"]'),
-        root.querySelector('[data-step-node="3"]'),
-      ];
-      const stepperLines = root.querySelectorAll(".rt-stepper-line");
-
-      function updateStepper() {
+      function updateSourceReadiness() {
         const hasRef = !!(selectedTemplateId || referenceInput.files?.[0]);
         const hasSelfie = !!selfieInput.files?.[0];
-        const currentStep = !hasRef ? 1 : !hasSelfie ? 2 : 3;
 
         if (referenceReady) referenceReady.hidden = !hasRef;
         if (selfieReady) selfieReady.hidden = !hasSelfie;
-
-        stepperNodes.forEach((node, i) => {
-          if (!node) return;
-          const step = i + 1;
-          node.classList.toggle(
-            "rt-stepper-node--active",
-            step === currentStep,
-          );
-          node.classList.toggle("rt-stepper-node--done", step < currentStep);
-        });
-        stepperLines.forEach((line, i) => {
-          if (!line) return;
-          const filled = i < currentStep - 1;
-          line.classList.toggle("rt-stepper-line--active", filled);
-        });
       }
 
       function updateAuthorizationCopy() {
@@ -1003,7 +979,7 @@ const hrefs = {
           }
           if (historyTrigger) historyTrigger.hidden = false;
           showOnly(form);
-          updateStepper();
+          updateSourceReadiness();
           root.dispatchEvent(new CustomEvent("reference-history:enabled"));
           try {
             await loadTemplates();
@@ -1069,7 +1045,7 @@ const hrefs = {
               clearFieldError("reference");
               resetAuthorization();
               renderTemplates();
-              updateStepper();
+              updateSourceReadiness();
             });
 
             const remove = document.createElement("button");
@@ -1156,7 +1132,7 @@ const hrefs = {
         resetAuthorization();
         renderTemplates();
         previewFile(referenceInput, referencePreview);
-        updateStepper();
+        updateSourceReadiness();
       });
       selfieInput.addEventListener("change", () => {
         pendingIdempotencyKey = "";
@@ -1164,7 +1140,7 @@ const hrefs = {
         clearFieldError("selfie");
         previewFile(selfieInput, selfiePreview);
         syncCanvasPreview();
-        updateStepper();
+        updateSourceReadiness();
       });
       authorizationCheck.addEventListener("change", () =>
         clearFieldError("authorization"),
@@ -1183,7 +1159,7 @@ const hrefs = {
         clearFieldError("reference");
         resetAuthorization();
         renderTemplates();
-        updateStepper();
+        updateSourceReadiness();
         setTemplateStatus(copy.historyDrawerReused);
         event.detail.handled = true;
 
@@ -1485,7 +1461,7 @@ const hrefs = {
         clearFieldErrors();
         renderTemplates();
         showOnly(form);
-        updateStepper();
+        updateSourceReadiness();
         window.scrollTo({
           top: 0,
           behavior: window.matchMedia("(prefers-reduced-motion: reduce)")

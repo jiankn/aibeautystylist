@@ -85,6 +85,40 @@ describe("reference try-on launch contracts", () => {
     expect(selfieChange).not.toContain("resetAuthorization()");
   });
 
+  it("keeps authorization and quota in the left submit column", () => {
+    const submitMarkup = workspaceSource.slice(
+      workspaceSource.indexOf('<div class="reference-submit">'),
+      workspaceSource.indexOf("</form>"),
+    );
+    expect(submitMarkup).toContain('class="reference-submit-info"');
+    expect(submitMarkup).toContain('class="reference-submit-meta"');
+    expect(submitMarkup).not.toContain('class="reference-submit-action"');
+    expect(submitMarkup.indexOf("data-authorization-check")).toBeLessThan(
+      submitMarkup.indexOf("data-cost-note"),
+    );
+    expect(submitMarkup.indexOf("data-cost-note")).toBeLessThan(
+      submitMarkup.indexOf("data-generate"),
+    );
+    expect(workspaceSource).toContain("@media (max-width: 980px)");
+  });
+
+  it("uses the shared 1280px shell without a redundant stepper", () => {
+    expect(workspaceSource).not.toContain('class="rt-stepper"');
+    expect(workspaceSource).not.toContain(".rt-stepper {");
+    expect(workspaceSource).toContain(
+      "body.reference-tryon-body .site-header-minimal .site-nav",
+    );
+    expect(workspaceSource).toContain(
+      "width: min(calc(100% - 40px), var(--max));",
+    );
+    expect(workspaceSource).toContain(
+      "minmax(250px, 300px) minmax(480px, 1fr)",
+    );
+    expect(historyDrawerSource).toContain("grid-column: 3");
+    expect(pageSource).toContain("function updateSourceReadiness()");
+    expect(pageSource).not.toContain("const stepperNodes =");
+  });
+
   it("localizes the combined authorization experience for all locales", () => {
     expect(copySource.match(/authorization:/g)).toHaveLength(9);
     expect(copySource.match(/authorizationSaved:/g)).toHaveLength(9);

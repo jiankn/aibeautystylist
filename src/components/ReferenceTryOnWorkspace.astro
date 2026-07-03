@@ -91,23 +91,6 @@ const { copy, hrefs } = Astro.props;
 
 <div class="reference-workspace-grid">
   <form class="reference-workflow" data-reference-form hidden novalidate>
-    <nav class="rt-stepper" aria-label={copy.heading}>
-      <div class="rt-stepper-node rt-stepper-node--active" data-step-node="1">
-        <span class="rt-stepper-dot">1</span>
-        <span class="rt-stepper-label">{copy.stepReference}</span>
-      </div>
-      <span class="rt-stepper-line"><i class="rt-stepper-line-fill"></i></span>
-      <div class="rt-stepper-node" data-step-node="2">
-        <span class="rt-stepper-dot">2</span>
-        <span class="rt-stepper-label">{copy.stepSelfie}</span>
-      </div>
-      <span class="rt-stepper-line"><i class="rt-stepper-line-fill"></i></span>
-      <div class="rt-stepper-node" data-step-node="3">
-        <span class="rt-stepper-dot">3</span>
-        <span class="rt-stepper-label">{copy.stepGenerate}</span>
-      </div>
-    </nav>
-
     <aside class="rt-source-panel">
       <section class="rt-source-block reference-step">
         <div class="rt-source-heading">
@@ -207,15 +190,7 @@ const { copy, hrefs } = Astro.props;
         <img data-canvas-image alt={copy.selfieTitle} hidden />
       </div>
       <div class="reference-submit">
-        <div>
-          <p class="reference-cost-note" data-cost-note>{copy.costNote}</p>
-          <a href={hrefs.credits} data-credit-link hidden>{copy.buyCredits}</a>
-          <p data-reference-status role="status"></p>
-          <a href={hrefs.history} data-progress-link hidden
-            >{copy.viewProgress}</a
-          >
-        </div>
-        <div class="reference-submit-action">
+        <div class="reference-submit-info">
           <div class="reference-authorization">
             <label>
               <input
@@ -231,9 +206,13 @@ const { copy, hrefs } = Astro.props;
                 >{copy.authorization}</span
               >
             </label>
-            <a href={hrefs.privacy} target="_blank" rel="noopener noreferrer"
-              >{copy.photoNoticeLink}</a
-            >
+            <div class="reference-authorization-meta">
+              <a href={hrefs.privacy} target="_blank" rel="noopener noreferrer"
+                >{copy.photoNoticeLink}</a
+              >
+              <span aria-hidden="true">·</span>
+              <small id="authorization-help">{copy.privacyHint}</small>
+            </div>
             <p
               id="authorization-error"
               data-error="authorization"
@@ -241,20 +220,28 @@ const { copy, hrefs } = Astro.props;
               hidden
             >
             </p>
-            <small id="authorization-help">{copy.privacyHint}</small>
           </div>
-          <button type="submit" data-generate>
-            <svg viewBox="0 0 24 24" aria-hidden="true"
-              ><path d="M12 3v3"></path><path d="M12 18v3"></path><path
-                d="M3 12h3"></path><path d="M18 12h3"></path><path
-                d="m5.6 5.6 2.1 2.1"></path><path d="m16.3 16.3 2.1 2.1"
-              ></path><path d="m5.6 18.4 2.1-2.1"></path><path
-                d="m16.3 7.7 2.1-2.1"></path><circle cx="12" cy="12" r="3"
-              ></circle></svg
+          <div class="reference-submit-meta">
+            <p class="reference-cost-note" data-cost-note>{copy.costNote}</p>
+            <a href={hrefs.credits} data-credit-link hidden>{copy.buyCredits}</a
             >
-            <span>{copy.generate}</span>
-          </button>
+            <p data-reference-status role="status"></p>
+            <a href={hrefs.history} data-progress-link hidden
+              >{copy.viewProgress}</a
+            >
+          </div>
         </div>
+        <button type="submit" data-generate>
+          <svg viewBox="0 0 24 24" aria-hidden="true"
+            ><path d="M12 3v3"></path><path d="M12 18v3"></path><path
+              d="M3 12h3"></path><path d="M18 12h3"></path><path
+              d="m5.6 5.6 2.1 2.1"></path><path d="m16.3 16.3 2.1 2.1"
+            ></path><path d="m5.6 18.4 2.1-2.1"></path><path
+              d="m16.3 7.7 2.1-2.1"></path><circle cx="12" cy="12" r="3"
+            ></circle></svg
+          >
+          <span>{copy.generate}</span>
+        </button>
       </div>
     </section>
   </form>
@@ -320,12 +307,15 @@ const { copy, hrefs } = Astro.props;
 
 <style>
   :global(body.reference-tryon-body .reference-tryon-main) {
-    width: 100%;
-    max-width: none;
+    width: min(calc(100% - 40px), var(--max));
+    max-width: var(--max);
     min-height: calc(100dvh - 64px);
-    margin: 0;
+    margin: 0 auto;
     padding: 52px 0 0;
     overflow: visible;
+  }
+  :global(body.reference-tryon-body .site-header-minimal .site-nav) {
+    width: min(calc(100% - 40px), var(--max));
   }
   :global(.reference-tryon-body) {
     --rt-bg: #f3f5f8;
@@ -437,10 +427,9 @@ const { copy, hrefs } = Astro.props;
   .reference-workspace-grid {
     min-height: calc(100dvh - 136px);
     display: grid;
-    grid-template-columns: 76px minmax(250px, 310px) minmax(480px, 1fr) minmax(
-        300px,
-        360px
-      );
+    grid-template-columns:
+      minmax(250px, 300px) minmax(480px, 1fr)
+      minmax(300px, 320px);
     gap: 16px;
     padding: 16px;
   }
@@ -453,66 +442,8 @@ const { copy, hrefs } = Astro.props;
   .reference-workflow {
     display: contents;
   }
-  .rt-stepper {
-    grid-column: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 78px 0 24px;
-  }
-  .rt-stepper-node {
-    display: grid;
-    justify-items: center;
-    gap: 8px;
-    color: var(--rt-muted);
-    text-align: center;
-  }
-  .rt-stepper-dot {
-    width: 40px;
-    height: 40px;
-    display: grid;
-    place-items: center;
-    border: 2px solid var(--rt-border-strong);
-    border-radius: 50%;
-    background: var(--rt-bg);
-    color: var(--rt-muted);
-    font-weight: 800;
-  }
-  .rt-stepper-label {
-    max-width: 70px;
-    font-size: 0.78rem;
-    line-height: 1.3;
-  }
-  .rt-stepper-node--active .rt-stepper-dot,
-  .rt-stepper-node--done .rt-stepper-dot {
-    border-color: var(--rt-accent);
-    background: var(--rt-accent);
-    color: #fff;
-  }
-  .rt-stepper-node--active .rt-stepper-label {
-    color: var(--rt-accent);
-    font-weight: 800;
-  }
-  .rt-stepper-line {
-    width: 2px;
-    height: 112px;
-    display: block;
-    margin: 8px 0;
-    background: var(--rt-border);
-    overflow: hidden;
-  }
-  .rt-stepper-line-fill {
-    width: 100%;
-    height: 0;
-    display: block;
-    background: var(--rt-accent);
-    transition: height 200ms ease;
-  }
-  .rt-stepper-line--active .rt-stepper-line-fill {
-    height: 100%;
-  }
   .rt-source-panel {
-    grid-column: 2;
+    grid-column: 1;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -690,7 +621,7 @@ const { copy, hrefs } = Astro.props;
     font-size: 0.72rem;
   }
   .rt-preview-panel {
-    grid-column: 3;
+    grid-column: 2;
     min-width: 0;
     display: grid;
     grid-template-rows: auto minmax(360px, 1fr) auto;
@@ -768,7 +699,7 @@ const { copy, hrefs } = Astro.props;
   }
   .reference-submit {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 46%);
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 42%);
     align-items: end;
     gap: 14px;
     padding: 14px 16px;
@@ -784,10 +715,17 @@ const { copy, hrefs } = Astro.props;
     font-size: 0.74rem;
     font-weight: 750;
   }
-  .reference-submit-action {
+  .reference-submit-info {
     min-width: 0;
     display: grid;
-    gap: 10px;
+    gap: 8px;
+  }
+  .reference-submit-meta {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 12px;
   }
   .reference-authorization {
     min-width: 0;
@@ -820,16 +758,32 @@ const { copy, hrefs } = Astro.props;
     min-width: 0;
     overflow-wrap: anywhere;
   }
-  .reference-authorization > a {
+  .reference-authorization-meta {
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 3px 6px;
+    padding-left: 26px;
+    color: var(--rt-muted);
+  }
+  .reference-authorization-meta > a {
     width: fit-content;
+    color: var(--rt-muted);
+    text-decoration-color: color-mix(in srgb, var(--rt-muted) 55%, transparent);
+    text-underline-offset: 3px;
   }
-  .reference-authorization > p {
-    color: #d92d20;
+  .reference-authorization-meta > a:hover {
+    color: var(--rt-text);
   }
-  .reference-authorization > small {
+  .reference-authorization-meta > small {
     color: var(--rt-muted);
     font-size: 0.68rem;
     line-height: 1.4;
+  }
+  .reference-authorization > p {
+    padding-left: 26px;
+    color: #d92d20;
   }
   .reference-submit button {
     min-height: 52px;
@@ -869,7 +823,7 @@ const { copy, hrefs } = Astro.props;
     stroke-linecap: round;
   }
   .reference-result {
-    grid-column: 1 / 4;
+    grid-column: 1 / 3;
     display: grid;
     grid-template-columns: minmax(210px, 0.34fr) minmax(420px, 1fr);
     gap: 16px;
@@ -1100,13 +1054,28 @@ const { copy, hrefs } = Astro.props;
   }
   @media (max-width: 1180px) {
     .reference-workspace-grid {
-      grid-template-columns: 68px minmax(250px, 300px) minmax(0, 1fr);
+      grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
     }
     .reference-result {
       grid-column: 1 / -1;
     }
   }
+  @media (max-width: 980px) {
+    .reference-submit {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .reference-submit button {
+      width: 100%;
+    }
+  }
   @media (max-width: 760px) {
+    :global(body.reference-tryon-body .reference-tryon-main) {
+      width: 100%;
+      max-width: none;
+    }
+    :global(body.reference-tryon-body .site-header-minimal .site-nav) {
+      width: min(calc(100% - 28px), var(--max));
+    }
     .rt-workspace-head {
       align-items: flex-start;
       padding: 12px 14px;
@@ -1124,35 +1093,6 @@ const { copy, hrefs } = Astro.props;
     }
     .reference-workflow {
       display: block;
-    }
-    .rt-stepper {
-      display: grid;
-      grid-template-columns: auto 1fr auto 1fr auto;
-      padding: 8px 4px 16px;
-    }
-    .rt-stepper-node {
-      gap: 4px;
-    }
-    .rt-stepper-dot {
-      width: 34px;
-      height: 34px;
-    }
-    .rt-stepper-label {
-      font-size: 0.68rem;
-    }
-    .rt-stepper-line {
-      width: 100%;
-      height: 2px;
-      margin: 17px 0 0;
-    }
-    .rt-stepper-line-fill {
-      width: 0;
-      height: 100%;
-      transition: width 200ms ease;
-    }
-    .rt-stepper-line--active .rt-stepper-line-fill {
-      width: 100%;
-      height: 100%;
     }
     .rt-source-panel {
       display: grid;
@@ -1176,12 +1116,6 @@ const { copy, hrefs } = Astro.props;
     .rt-preview-stage > img {
       max-height: 58dvh;
     }
-    .reference-submit {
-      grid-template-columns: 1fr;
-    }
-    .reference-submit button {
-      width: 100%;
-    }
     .reference-result {
       display: flex;
       flex-direction: column-reverse;
@@ -1201,8 +1135,7 @@ const { copy, hrefs } = Astro.props;
     .rt-loader {
       animation: none;
     }
-    .reference-submit button,
-    .rt-stepper-line-fill {
+    .reference-submit button {
       transition: none;
     }
   }
