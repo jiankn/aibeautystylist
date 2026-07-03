@@ -5,6 +5,15 @@
 import type { LookAssetVariant, RepresentationGroup } from "./audienceTypes";
 import { allRecipeIds, pilotRecipeIds } from "./marketVariants";
 
+const eastAsiaEditorialPortraitIds = new Set([
+  "commute",
+  "interview-ready",
+  "rose-milk-date",
+  "flash-proof-satin",
+  "mature-skin-radiance",
+  "wedding-guest",
+]);
+
 /**
  * 将现有 44 个妆容图片映射为默认资产变体。
  * 每个妆容至少有一个 `global-diverse` 变体下的默认资产。
@@ -25,18 +34,23 @@ function buildDefaultAssets(): LookAssetVariant[] {
     promptVersion: "legacy-1.0",
   }));
 
-  const eastAsiaAssets = allRecipeIds.map((slug) => ({
-    id: `${slug}--east-asia`,
-    marketVariantId: `${slug}--east-asia`,
-    image: `/images/looks/${slug}--east-asia.webp`,
-    representationGroup: "east-asian" as const,
-    skinToneBand: "unspecified",
-    theme: "neutral" as const,
-    aspectRatio: "1:1" as const,
-    focalPosition: "center" as const,
-    qualityStatus: "approved" as const,
-    promptVersion: "east-asia-v3",
-  }));
+  const eastAsiaAssets = allRecipeIds.map((slug) => {
+    const usesEditorialPortrait = eastAsiaEditorialPortraitIds.has(slug);
+    return {
+      id: `${slug}--east-asia`,
+      marketVariantId: `${slug}--east-asia`,
+      image: `/images/looks/${slug}--east-asia.webp`,
+      representationGroup: "east-asian" as const,
+      skinToneBand: "unspecified",
+      theme: "neutral" as const,
+      aspectRatio: usesEditorialPortrait ? ("3:4" as const) : ("1:1" as const),
+      focalPosition: "center" as const,
+      qualityStatus: "approved" as const,
+      promptVersion: usesEditorialPortrait
+        ? "east-asia-editorial-2026-07"
+        : "east-asia-v3",
+    };
+  });
 
   const globalEnglishAssetProfiles: Array<{
     fileSuffix: string;

@@ -224,6 +224,14 @@ describe("global makeup localization architecture", () => {
   });
 
   it("keeps approved asset metadata and files aligned", () => {
+    const editorialPortraitAssets = new Set([
+      "commute--east-asia",
+      "interview-ready--east-asia",
+      "rose-milk-date--east-asia",
+      "flash-proof-satin--east-asia",
+      "mature-skin-radiance--east-asia",
+      "wedding-guest--east-asia",
+    ]);
     for (const asset of assets.filter(
       (candidate) => candidate.qualityStatus === "approved",
     )) {
@@ -234,7 +242,9 @@ describe("global makeup localization architecture", () => {
         );
       }
       if (asset.image.includes("/images/looks/")) {
-        expect(asset.aspectRatio).toBe("1:1");
+        expect(asset.aspectRatio).toBe(
+          editorialPortraitAssets.has(asset.id) ? "3:4" : "1:1",
+        );
       }
     }
   });
