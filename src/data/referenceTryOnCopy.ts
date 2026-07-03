@@ -24,6 +24,8 @@ const en = {
   savedTitle: "Reference templates",
   noSaved:
     "No reference templates yet. Your first uploaded reference is saved after generation.",
+  viewAllTemplates: "View all ({count})",
+  collapseTemplates: "Show less",
   templateLoadFailed: "Saved references are temporarily unavailable.",
   selfieTitle: "My selfie",
   selfieHelp: "Use natural light, a front-facing angle, and no obstruction.",
@@ -142,6 +144,8 @@ const zhCN = makeCopy({
   templatePlaceholder: "暖棕烟熏妆",
   savedTitle: "参考模板",
   noSaved: "暂无参考模板。使用新参考图完成首次生成后会自动保存。",
+  viewAllTemplates: "查看全部 ({count})",
+  collapseTemplates: "收起",
   templateLoadFailed: "已保存参考暂时无法加载。",
   selfieTitle: "我的自拍",
   selfieHelp: "请使用自然光、正脸、无遮挡的清晰自拍。",
@@ -243,6 +247,8 @@ const zhTW = makeCopy({
   referenceLabel: "上傳參考圖",
   savedTitle: "參考模板",
   noSaved: "暫無參考模板。使用新參考圖完成首次生成後會自動儲存。",
+  viewAllTemplates: "查看全部 ({count})",
+  collapseTemplates: "收起",
   selfieTitle: "我的自拍",
   selfieLabel: "上傳自拍",
   rights: "我確認有權將參考圖用於個人私密試妝。",
@@ -297,6 +303,8 @@ const de = makeCopy({
   savedTitle: "Referenzvorlagen",
   noSaved:
     "Noch keine Referenzvorlagen. Die erste hochgeladene Referenz wird nach der Erstellung gespeichert.",
+  viewAllTemplates: "Alle anzeigen ({count})",
+  collapseTemplates: "Weniger anzeigen",
   selfieTitle: "Mein Selfie",
   selfieHelp: "Nutze natürliches Licht und eine freie Frontalansicht.",
   selfieLabel: "Selfie hochladen",
@@ -386,6 +394,8 @@ const fr = makeCopy({
   savedTitle: "Modèles de référence",
   noSaved:
     "Aucun modèle de référence. Votre première référence sera enregistrée après la génération.",
+  viewAllTemplates: "Tout afficher ({count})",
+  collapseTemplates: "Réduire",
   selfieTitle: "Mon selfie",
   selfieHelp: "Utilisez une lumière naturelle et une vue de face dégagée.",
   selfieLabel: "Importer le selfie",
@@ -475,6 +485,8 @@ const ja = makeCopy({
   savedTitle: "参考テンプレート",
   noSaved:
     "参考テンプレートはまだありません。最初の参考画像は生成後に保存されます。",
+  viewAllTemplates: "すべて表示 ({count})",
+  collapseTemplates: "閉じる",
   selfieTitle: "自分の自撮り",
   selfieHelp: "自然光で正面から顔を隠さず撮影してください。",
   selfieLabel: "自撮りをアップロード",
@@ -560,6 +572,8 @@ const ko = makeCopy({
   savedTitle: "참고 템플릿",
   noSaved:
     "참고 템플릿이 없습니다. 처음 업로드한 참고 이미지는 생성 후 저장됩니다.",
+  viewAllTemplates: "전체 보기 ({count})",
+  collapseTemplates: "접기",
   selfieTitle: "내 셀카",
   selfieHelp: "자연광에서 얼굴을 가리지 않고 정면으로 촬영하세요.",
   selfieLabel: "셀카 업로드",
@@ -646,6 +660,8 @@ const es = makeCopy({
   savedTitle: "Plantillas de referencia",
   noSaved:
     "Aún no hay plantillas. La primera referencia se guardará después de generar.",
+  viewAllTemplates: "Ver todo ({count})",
+  collapseTemplates: "Mostrar menos",
   selfieTitle: "Mi selfie",
   selfieHelp: "Usa luz natural, vista frontal y el rostro despejado.",
   selfieLabel: "Subir selfie",
@@ -734,6 +750,8 @@ const ptBR = makeCopy({
   savedTitle: "Modelos de referência",
   noSaved:
     "Ainda não há modelos. A primeira referência será salva após a geração.",
+  viewAllTemplates: "Ver todos ({count})",
+  collapseTemplates: "Mostrar menos",
   selfieTitle: "Minha selfie",
   selfieHelp: "Use luz natural, posição frontal e rosto desobstruído.",
   selfieLabel: "Enviar selfie",

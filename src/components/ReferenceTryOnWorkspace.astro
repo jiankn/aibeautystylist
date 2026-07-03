@@ -614,15 +614,51 @@ const { copy, hrefs } = Astro.props;
   .saved-reference-list {
     min-width: 0;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
   .saved-reference-list > p,
   .saved-reference-status {
-    grid-column: 1 / -1;
     margin: 0;
     color: var(--rt-muted);
     font-size: 0.78rem;
+  }
+  /* 滚动容器：承载卡片 grid */
+  :global(.saved-reference-scroll) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  /* 展开态：固定高度 + 纵向滚动 */
+  :global(.saved-reference-scroll[data-expanded]) {
+    max-height: 280px;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--rt-text) 18%, transparent) transparent;
+    padding-right: 2px;
+  }
+  /* 「查看全部 / 收起」切换按钮 */
+  :global(.saved-reference-toggle) {
+    width: 100%;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0;
+    border: 1px dashed var(--rt-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--rt-muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  :global(.saved-reference-toggle:hover) {
+    color: var(--rt-accent);
+    border-color: var(--rt-accent);
   }
   .rt-preview-panel {
     grid-column: 2;

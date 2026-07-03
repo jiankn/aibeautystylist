@@ -47,6 +47,8 @@ const legacyCopy = isZh
       templatePlaceholder: "例如：暖棕烟熏妆",
       savedTitle: "或者使用已保存的参考妆容",
       noSaved: "还没有保存的参考妆容。",
+      viewAllTemplates: "查看全部 ({count})",
+      collapseTemplates: "收起",
       templateLoadFailed: "已保存的参考妆容暂时无法加载，你仍可上传新图片。",
       selfieTitle: "2. 上传自己的自拍",
       selfieHelp: "请使用自然光、正脸、面部无遮挡的清晰自拍。",
@@ -151,6 +153,8 @@ const legacyCopy = isZh
       templatePlaceholder: "Example: warm brown smoky eye",
       savedTitle: "Or reuse a saved private reference",
       noSaved: "You have no saved private references yet.",
+      viewAllTemplates: "View all ({count})",
+      collapseTemplates: "Show less",
       templateLoadFailed:
         "Saved references are temporarily unavailable. You can still upload a new image.",
       selfieTitle: "2. Upload your selfie",
@@ -1025,6 +1029,11 @@ const hrefs = {
         renderTemplates();
       }
 
+      /** 默认折叠时最多展示的卡片数量 */
+      const COLLAPSED_COUNT = 2;
+      /** 跟踪哪些列表处于展开状态 */
+      const expandedTemplateLists = new WeakSet();
+
       function renderTemplates() {
         templateLists.forEach((templateList) => {
           templateList.replaceChildren();
@@ -1034,7 +1043,18 @@ const hrefs = {
             templateList.append(empty);
             return;
           }
-          templates.forEach((template) => {
+
+          const isExpanded = expandedTemplateLists.has(templateList);
+          const visibleTemplates = isExpanded
+            ? templates
+            : templates.slice(0, COLLAPSED_COUNT);
+
+          /* ---------- 渲染可见卡片（包裹在滚动容器中） ---------- */
+          const scrollWrap = document.createElement("div");
+          scrollWrap.className = "saved-reference-scroll";
+          if (isExpanded) scrollWrap.dataset.expanded = "";
+
+          visibleTemplates.forEach((template) => {
             const card = document.createElement("article");
             card.className = "saved-reference-card";
             card.dataset.selected = String(template.id === selectedTemplateId);
@@ -1116,8 +1136,34 @@ const hrefs = {
               }
             });
             card.append(choose, remove);
-            templateList.append(card);
+            scrollWrap.append(card);
           });
+
+          templateList.append(scrollWrap);
+
+          /* ---------- 「查看全部」/「收起」切换按钮 ---------- */
+          if (templates.length > COLLAPSED_COUNT) {
+            const toggle = document.createElement("button");
+            toggle.type = "button";
+            toggle.className = "saved-reference-toggle";
+            if (isExpanded) {
+              toggle.textContent = copy.collapseTemplates;
+            } else {
+              toggle.textContent = copy.viewAllTemplates.replace(
+                "{count}",
+                String(templates.length),
+              );
+            }
+            toggle.addEventListener("click", () => {
+              if (isExpanded) {
+                expandedTemplateLists.delete(templateList);
+              } else {
+                expandedTemplateLists.add(templateList);
+              }
+              renderTemplates();
+            });
+            templateList.append(toggle);
+          }
         });
       }
 
@@ -2004,12 +2050,48 @@ const hrefs = {
   }
   .saved-reference-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 0.75rem;
   }
   .saved-reference-list > p {
-    grid-column: 1 / -1;
     color: var(--body-secondary);
+  }
+  /* 滚动容器：承载卡片 grid */
+  :global(.saved-reference-scroll) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+  /* 展开态：固定高度 + 纵向滚动 */
+  :global(.saved-reference-scroll[data-expanded]) {
+    max-height: 340px;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--heading) 18%, transparent) transparent;
+    padding-right: 4px;
+  }
+  /* 「查看全部 / 收起」切换按钮 */
+  :global(.saved-reference-toggle) {
+    width: 100%;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--body-secondary);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  :global(.saved-reference-toggle:hover) {
+    color: var(--gold);
+    border-color: var(--gold);
   }
 
   /* 错误信息和模板状态 */
@@ -2331,7 +2413,7 @@ const hrefs = {
       padding: 1.25rem;
       border-radius: 14px;
     }
-    .saved-reference-list {
+    :global(.saved-reference-scroll) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .reference-result-actions .btn {
