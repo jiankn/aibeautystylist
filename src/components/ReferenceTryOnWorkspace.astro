@@ -342,6 +342,9 @@ const { copy, hrefs } = Astro.props;
     --rt-accent-strong: #bd354e;
     --rt-accent-soft: #fff0f3;
     --rt-success: #16866f;
+    --rt-glow-1: rgba(200, 62, 104, 0.09);
+    --rt-glow-2: rgba(22, 134, 111, 0.07);
+    --rt-glow-3: rgba(124, 58, 237, 0.08);
     background: var(--rt-bg);
   }
   :global([data-theme="dark"] .reference-tryon-body) {
@@ -357,6 +360,9 @@ const { copy, hrefs } = Astro.props;
     --rt-accent-strong: #ff7f8b;
     --rt-accent-soft: #321d26;
     --rt-success: #62d0b6;
+    --rt-glow-1: rgba(255, 107, 120, 0.16);
+    --rt-glow-2: rgba(98, 208, 182, 0.12);
+    --rt-glow-3: rgba(167, 139, 250, 0.14);
   }
   @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme="light"]) .reference-tryon-body) {
@@ -372,6 +378,9 @@ const { copy, hrefs } = Astro.props;
       --rt-accent-strong: #ff7f8b;
       --rt-accent-soft: #321d26;
       --rt-success: #62d0b6;
+      --rt-glow-1: rgba(255, 107, 120, 0.16);
+      --rt-glow-2: rgba(98, 208, 182, 0.12);
+      --rt-glow-3: rgba(167, 139, 250, 0.14);
     }
   }
   .rt-workspace-head {
@@ -902,10 +911,24 @@ const { copy, hrefs } = Astro.props;
     place-items: center;
     overflow: hidden;
     background:
-      linear-gradient(var(--rt-border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--rt-border) 1px, transparent 1px),
+      radial-gradient(circle at 15% 25%, var(--rt-glow-1) 0%, transparent 40%),
+      radial-gradient(circle at 85% 75%, var(--rt-glow-2) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, var(--rt-glow-3) 0%, transparent 50%),
       var(--rt-panel);
-    background-size: 48px 48px;
+    background-size: 200% 200%;
+    animation: rt-aurora-glow 14s ease infinite alternate;
+    transition: background 0.3s ease;
+  }
+  @keyframes rt-aurora-glow {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    100% {
+      background-position: 0% 100%;
+    }
   }
   .rt-preview-stage > img {
     width: 100%;
@@ -924,11 +947,17 @@ const { copy, hrefs } = Astro.props;
     text-align: center;
   }
   .rt-preview-empty svg {
-    width: 46px;
-    height: 46px;
+    width: 48px;
+    height: 48px;
     fill: none;
-    stroke: var(--rt-border-strong);
-    stroke-width: 1.4;
+    stroke: var(--rt-accent);
+    stroke-width: 1.35;
+    filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--rt-accent) 22%, transparent));
+    transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), filter 0.35s ease;
+  }
+  .rt-preview-stage:hover .rt-preview-empty svg {
+    transform: translateY(-4px) scale(1.06);
+    filter: drop-shadow(0 6px 16px color-mix(in srgb, var(--rt-accent) 35%, transparent));
   }
   .rt-preview-empty strong {
     color: var(--rt-text);
