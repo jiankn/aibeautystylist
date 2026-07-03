@@ -2141,6 +2141,9 @@ const hrefs = {
     position: relative;
     min-width: 0;
   }
+  :global(.saved-reference-select[data-open]) {
+    z-index: 30;
+  }
   :global(.saved-reference-select-trigger) {
     width: 100%;
     min-height: 44px;

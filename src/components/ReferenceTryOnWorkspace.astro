@@ -469,7 +469,7 @@ const { copy, hrefs } = Astro.props;
     display: grid;
     gap: 10px;
     padding: 14px;
-    overflow: hidden;
+    overflow: visible;
   }
   .rt-source-heading {
     display: flex;
@@ -626,6 +626,9 @@ const { copy, hrefs } = Astro.props;
   :global(.saved-reference-select) {
     position: relative;
     min-width: 0;
+  }
+  :global(.saved-reference-select[data-open]) {
+    z-index: 30;
   }
   :global(.saved-reference-select-trigger) {
     width: 100%;
