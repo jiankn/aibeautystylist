@@ -9,6 +9,7 @@ import TutorialSteps from "../components/TutorialSteps.astro";
 import TryOnHistoryPreview from "../components/TryOnHistoryPreview.astro";
 import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
+import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
 import { getTutorialByLookSlug, getTutorialUiCopy } from "../data/tutorials";
 import { getLocalizedAppHref, resolveLocaleRoute } from "../i18n/routing";
 import { getEntitlementContext } from "../lib/entitlements";
@@ -75,12 +76,29 @@ const subscriptionHref = localizeAppHref("/subscription");
 const creditPacksHref = `${subscriptionHref}#credit-packs`;
 const tryonHref = localizeAppHref("/tryon");
 const resolvedLooks = resolveLookCatalog(audienceContext);
+const homeScenarioImages = resolvePageAssets(
+  "home",
+  audienceContext,
+).scenarioImages;
 const featuredSlugs = ["commute", "no-makeup", "rose-milk-date", "photogenic"];
 const defaultFeaturedLooks = featuredSlugs
   .map((slug) => resolvedLooks.find((look) => look.slug === slug))
   .filter(Boolean) as typeof resolvedLooks;
 const requestedSlug = Astro.url.searchParams.get("look");
-const requestedLook = resolvedLooks.find((look) => look.slug === requestedSlug);
+const source = Astro.url.searchParams.get("source");
+const requestedLookBase = resolvedLooks.find(
+  (look) => look.slug === requestedSlug,
+);
+const requestedLook = requestedLookBase
+  ? {
+      ...requestedLookBase,
+      image:
+        source === "home_scenario"
+          ? (homeScenarioImages?.[requestedLookBase.slug] ??
+            requestedLookBase.image)
+          : requestedLookBase.image,
+    }
+  : undefined;
 const featuredLooks = requestedLook
   ? [
       requestedLook,

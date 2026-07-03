@@ -77,16 +77,16 @@ export function resolvePageAssets(
           "/homepage-look-five-minute-beginner.webp",
           "/homepage-look-flash-proof-satin.webp",
         ],
+        // This campaign set is intentionally shared across locales so the
+        // homepage card and its try-on reference stay visually identical.
         scenarioImages: {
-          commute: isEastAsia
-            ? "/images/home-scenario-commute-east-asia.webp"
-            : "/images/home-scenario-commute-global.webp",
-          "interview-ready": isEastAsia
-            ? "/images/home-scenario-interview-east-asia.webp"
-            : "/images/home-scenario-interview-global.webp",
-          "rose-milk-date": isEastAsia
-            ? "/images/home-scenario-date-east-asia.webp"
-            : "/images/home-scenario-date-global.webp",
+          commute: "/images/home-scenario-commute-east-asia.webp",
+          "interview-ready": "/images/home-scenario-interview-east-asia.webp",
+          "rose-milk-date": "/images/home-scenario-date-east-asia.webp",
+          "flash-proof-satin": "/images/home-scenario-flash-east-asia.webp",
+          "mature-skin-radiance":
+            "/images/home-scenario-radiance-east-asia.webp",
+          "wedding-guest": "/images/home-scenario-wedding-east-asia.webp",
         },
       };
 

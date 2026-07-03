@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import homePageSource from "../components/HomePage.astro?raw";
+import tryOnPageSource from "../pages/tryon.astro?raw";
 
 describe("homepage reference try-on promotion", () => {
   it("renders the complete reference plus selfie to result story", () => {
@@ -57,6 +58,16 @@ describe("homepage reference try-on promotion", () => {
     );
     expect(mobileStyles).toMatch(
       /\.ai-visual img\s*\{[\s\S]*?aspect-ratio: 16 \/ 10;/,
+    );
+  });
+});
+
+describe("homepage scenario continuity", () => {
+  it("reuses the clicked scenario image in the try-on selector", () => {
+    expect(homePageSource).toContain("source=home_scenario");
+    expect(tryOnPageSource).toContain('source === "home_scenario"');
+    expect(tryOnPageSource).toContain(
+      "homeScenarioImages?.[requestedLookBase.slug]",
     );
   });
 });
