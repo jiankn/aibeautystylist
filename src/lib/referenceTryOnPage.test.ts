@@ -49,6 +49,17 @@ describe("reference try-on launch contracts", () => {
     expect(workspaceSource).toContain("data-compare-slider");
   });
 
+  it("contains source controls within the reference card", () => {
+    expect(workspaceSource).toContain(".reference-workspace-grid *");
+    expect(workspaceSource).toContain("box-sizing: border-box");
+    expect(workspaceSource).toMatch(
+      /\.reference-dropzone input\[type="file"\][\s\S]*?width: 100%;[\s\S]*?min-width: 0;/,
+    );
+    expect(workspaceSource).toMatch(
+      /\.reference-name input[\s\S]*?width: 100%;[\s\S]*?max-width: 100%;[\s\S]*?min-width: 0;/,
+    );
+  });
+
   it("opens an accessible private-reference history drawer", () => {
     expect(pageSource).toContain("ReferenceTryOnHistoryDrawer");
     expect(interfaceSource).toContain("data-reference-history-trigger");

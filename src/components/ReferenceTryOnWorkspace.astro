@@ -435,6 +435,12 @@ const { copy, hrefs } = Astro.props;
     gap: 16px;
     padding: 16px;
   }
+  .reference-workspace-grid,
+  .reference-workspace-grid *,
+  .reference-workspace-grid *::before,
+  .reference-workspace-grid *::after {
+    box-sizing: border-box;
+  }
   .reference-workflow {
     display: contents;
   }
@@ -514,15 +520,21 @@ const { copy, hrefs } = Astro.props;
     box-shadow: 0 14px 34px color-mix(in srgb, #101828 7%, transparent);
   }
   .rt-source-block {
+    width: 100%;
+    min-width: 0;
     display: grid;
     gap: 10px;
     padding: 14px;
+    overflow: hidden;
   }
   .rt-source-heading {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 10px;
+  }
+  .rt-source-heading > div {
+    min-width: 0;
   }
   .rt-source-heading h2,
   .rt-source-heading p {
@@ -545,6 +557,9 @@ const { copy, hrefs } = Astro.props;
   }
   .reference-dropzone {
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     min-height: 136px;
     display: grid;
     place-items: center;
@@ -561,6 +576,12 @@ const { copy, hrefs } = Astro.props;
   .reference-dropzone input[type="file"] {
     position: absolute;
     inset: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0;
     opacity: 0;
     cursor: pointer;
   }
@@ -576,6 +597,9 @@ const { copy, hrefs } = Astro.props;
     display: none;
   }
   .rt-upload-placeholder {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     display: grid;
     justify-items: center;
     gap: 5px;
@@ -597,16 +621,23 @@ const { copy, hrefs } = Astro.props;
     font-size: 0.86rem;
   }
   .rt-upload-placeholder small {
+    max-width: 100%;
     font-size: 0.68rem;
     line-height: 1.35;
+    overflow-wrap: anywhere;
   }
   .reference-name {
+    width: 100%;
+    min-width: 0;
     display: grid;
     gap: 5px;
     color: var(--rt-muted);
     font-size: 0.72rem;
   }
   .reference-name input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     min-height: 42px;
     padding: 0 10px;
     border: 1px solid var(--rt-border);
@@ -617,12 +648,17 @@ const { copy, hrefs } = Astro.props;
     font-size: 0.82rem;
   }
   .reference-check {
+    min-width: 0;
     display: flex;
     align-items: flex-start;
     gap: 8px;
     color: var(--rt-muted);
     font-size: 0.7rem;
     line-height: 1.4;
+  }
+  .reference-check span {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .reference-check input {
     width: 18px;
@@ -636,6 +672,8 @@ const { copy, hrefs } = Astro.props;
     font-size: 0.72rem;
   }
   .saved-reference-block {
+    min-width: 0;
+    max-width: 100%;
     border-top: 1px solid var(--rt-border);
     padding-top: 8px;
   }
@@ -649,6 +687,7 @@ const { copy, hrefs } = Astro.props;
     font-weight: 750;
   }
   .saved-reference-list {
+    min-width: 0;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
