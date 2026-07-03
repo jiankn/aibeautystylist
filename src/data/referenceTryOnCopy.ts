@@ -36,6 +36,14 @@ const en = {
   rightsRequired: "Confirm your right to use this reference.",
   consent: "I agree to the photo processing notice.",
   consentRequired: "Agree to the photo processing notice first.",
+  authorization:
+    "I confirm I may use the uploaded photos and agree to the photo processing notice for this private try-on.",
+  authorizationSaved:
+    "I agree to the photo processing notice for my selfie in this private try-on.",
+  authorizationRequired:
+    "Confirm photo usage rights and agree to photo processing first.",
+  photoNoticeLink: "View photo processing notice",
+  privacyHint: "Private by default · Photos are not shown publicly",
   generate: "Generate try-on",
   generating: "Preparing photos and creating your private try-on…",
   generatingButton: "Creating task…",
@@ -143,6 +151,12 @@ const zhCN = makeCopy({
   rightsRequired: "请确认你有权使用这张参考图。",
   consent: "我同意照片处理说明。",
   consentRequired: "请先同意照片处理说明。",
+  authorization:
+    "我确认有权使用所上传的照片，并同意按照照片处理说明用于本次私有试妆。",
+  authorizationSaved: "我同意按照照片处理说明处理本次自拍。",
+  authorizationRequired: "请确认照片使用权并同意照片处理说明。",
+  photoNoticeLink: "查看照片处理说明",
+  privacyHint: "默认私有 · 照片不会公开展示",
   generate: "生成妆效",
   generating: "正在准备照片并创建私有试妆…",
   generatingButton: "正在创建任务…",
@@ -226,6 +240,12 @@ const zhTW = makeCopy({
   selfieLabel: "上傳自拍",
   rights: "我確認有權將參考圖用於個人私密試妝。",
   consent: "我同意照片處理說明。",
+  authorization:
+    "我確認有權使用所上傳的照片，並同意按照照片處理說明用於本次私密試妝。",
+  authorizationSaved: "我同意按照照片處理說明處理本次自拍。",
+  authorizationRequired: "請確認照片使用權並同意照片處理說明。",
+  photoNoticeLink: "查看照片處理說明",
+  privacyHint: "預設私密 · 照片不會公開展示",
   generate: "生成妝效",
   privacyTitle: "預設私密",
   privacy: "參考圖和結果只保存在你的私密帳戶空間。",
@@ -275,6 +295,14 @@ const de = makeCopy({
   rightsRequired: "Bestätige das Nutzungsrecht für die Referenz.",
   consent: "Ich stimme der Fotoverarbeitung zu.",
   consentRequired: "Stimme zuerst der Fotoverarbeitung zu.",
+  authorization:
+    "Ich darf die hochgeladenen Fotos verwenden und stimme ihrer Verarbeitung für diesen privaten Test zu.",
+  authorizationSaved:
+    "Ich stimme der Verarbeitung meines Selfies für diesen privaten Test zu.",
+  authorizationRequired:
+    "Bestätige die Nutzungsrechte und stimme der Fotoverarbeitung zu.",
+  photoNoticeLink: "Hinweis zur Fotoverarbeitung ansehen",
+  privacyHint: "Standardmäßig privat · Fotos werden nicht öffentlich gezeigt",
   generate: "Make-up erstellen",
   generating: "Fotos werden vorbereitet…",
   generatingButton: "Auftrag wird erstellt…",
@@ -353,6 +381,15 @@ const fr = makeCopy({
   rightsRequired: "Confirmez votre droit d'utiliser cette référence.",
   consent: "J'accepte le traitement de la photo.",
   consentRequired: "Acceptez d'abord le traitement de la photo.",
+  authorization:
+    "Je confirme pouvoir utiliser les photos importées et accepte leur traitement pour cet essai privé.",
+  authorizationSaved:
+    "J'accepte le traitement de mon selfie pour cet essai privé.",
+  authorizationRequired:
+    "Confirmez les droits d'utilisation et acceptez le traitement des photos.",
+  photoNoticeLink: "Voir l'avis de traitement des photos",
+  privacyHint:
+    "Privé par défaut · Les photos ne sont pas affichées publiquement",
   generate: "Générer le maquillage",
   generating: "Préparation des photos…",
   generatingButton: "Création de la tâche…",
@@ -430,6 +467,12 @@ const ja = makeCopy({
   rightsRequired: "参考画像の使用権を確認してください。",
   consent: "写真処理に同意します。",
   consentRequired: "写真処理に同意してください。",
+  authorization:
+    "アップロードした写真を使用する権利があることを確認し、この非公開試着での処理に同意します。",
+  authorizationSaved: "この非公開試着で自撮り写真を処理することに同意します。",
+  authorizationRequired: "写真の使用権を確認し、写真処理に同意してください。",
+  photoNoticeLink: "写真処理に関する案内を見る",
+  privacyHint: "デフォルトで非公開 · 写真は公開表示されません",
   generate: "メイクを生成",
   generating: "写真を準備しています…",
   generatingButton: "タスクを作成中…",
@@ -506,6 +549,13 @@ const ko = makeCopy({
   rightsRequired: "참고 이미지 사용 권한을 확인하세요.",
   consent: "사진 처리 안내에 동의합니다.",
   consentRequired: "사진 처리 안내에 먼저 동의하세요.",
+  authorization:
+    "업로드한 사진을 사용할 권리가 있음을 확인하고 이번 비공개 체험을 위한 처리에 동의합니다.",
+  authorizationSaved: "이번 비공개 체험을 위한 셀카 처리에 동의합니다.",
+  authorizationRequired:
+    "사진 사용 권한을 확인하고 사진 처리 안내에 동의하세요.",
+  photoNoticeLink: "사진 처리 안내 보기",
+  privacyHint: "기본 비공개 · 사진은 공개되지 않습니다",
   generate: "메이크업 생성",
   generating: "사진을 준비하고 있습니다…",
   generatingButton: "작업 생성 중…",
@@ -582,6 +632,14 @@ const es = makeCopy({
   rightsRequired: "Confirma tu derecho a usar la referencia.",
   consent: "Acepto el aviso de tratamiento de fotos.",
   consentRequired: "Acepta primero el tratamiento de fotos.",
+  authorization:
+    "Confirmo que puedo usar las fotos subidas y acepto su tratamiento para esta prueba privada.",
+  authorizationSaved:
+    "Acepto el tratamiento de mi selfie para esta prueba privada.",
+  authorizationRequired:
+    "Confirma los derechos de uso y acepta el tratamiento de las fotos.",
+  photoNoticeLink: "Ver el aviso de tratamiento de fotos",
+  privacyHint: "Privado por defecto · Las fotos no se muestran públicamente",
   generate: "Generar maquillaje",
   generating: "Preparando las fotos…",
   generatingButton: "Creando tarea…",
@@ -659,6 +717,14 @@ const ptBR = makeCopy({
   rightsRequired: "Confirme o direito de usar a referência.",
   consent: "Concordo com o tratamento da foto.",
   consentRequired: "Concorde primeiro com o tratamento da foto.",
+  authorization:
+    "Confirmo que posso usar as fotos enviadas e aceito o tratamento para este teste privado.",
+  authorizationSaved:
+    "Aceito o tratamento da minha selfie para este teste privado.",
+  authorizationRequired:
+    "Confirme os direitos de uso e aceite o tratamento das fotos.",
+  photoNoticeLink: "Ver aviso de tratamento de fotos",
+  privacyHint: "Privado por padrão · As fotos não são exibidas publicamente",
   generate: "Gerar maquiagem",
   generating: "Preparando as fotos…",
   generatingButton: "Criando tarefa…",

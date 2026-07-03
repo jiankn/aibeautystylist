@@ -60,6 +60,39 @@ describe("reference try-on launch contracts", () => {
     );
   });
 
+  it("uses one contextual authorization control for both uploads", () => {
+    expect(workspaceSource.match(/data-authorization-check/g)).toHaveLength(1);
+    expect(workspaceSource).not.toContain("data-rights-check");
+    expect(workspaceSource).not.toContain("data-consent-check");
+    expect(workspaceSource).toContain("data-upload-copy={copy.authorization}");
+    expect(workspaceSource).toContain(
+      "data-saved-copy={copy.authorizationSaved}",
+    );
+    expect(workspaceSource).toContain('data-error="authorization"');
+    expect(pageSource).toContain(
+      'failures.push(["authorization", copy.authorizationRequired])',
+    );
+    expect(pageSource).toContain("function resetAuthorization()");
+    const referenceChange = pageSource.slice(
+      pageSource.indexOf('referenceInput.addEventListener("change"'),
+      pageSource.indexOf('selfieInput.addEventListener("change"'),
+    );
+    const selfieChange = pageSource.slice(
+      pageSource.indexOf('selfieInput.addEventListener("change"'),
+      pageSource.indexOf('authorizationCheck.addEventListener("change"'),
+    );
+    expect(referenceChange).toContain("resetAuthorization()");
+    expect(selfieChange).not.toContain("resetAuthorization()");
+  });
+
+  it("localizes the combined authorization experience for all locales", () => {
+    expect(copySource.match(/authorization:/g)).toHaveLength(9);
+    expect(copySource.match(/authorizationSaved:/g)).toHaveLength(9);
+    expect(copySource.match(/authorizationRequired:/g)).toHaveLength(9);
+    expect(copySource.match(/photoNoticeLink:/g)).toHaveLength(9);
+    expect(copySource.match(/privacyHint:/g)).toHaveLength(9);
+  });
+
   it("opens an accessible private-reference history drawer", () => {
     expect(pageSource).toContain("ReferenceTryOnHistoryDrawer");
     expect(interfaceSource).toContain("data-reference-history-trigger");

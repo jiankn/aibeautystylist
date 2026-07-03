@@ -264,6 +264,7 @@ const hrefs = {
   shareCard: localizeAppHref("/share-card"),
   shareBase: localizeAppHref("/share"),
   credits: `${localizeAppHref("/subscription")}#credit-packs`,
+  privacy: localizeAppHref("/privacy"),
 };
 ---
 
@@ -751,8 +752,12 @@ const hrefs = {
       const selfieInput = root.querySelector("[data-selfie-input]");
       const referencePreview = root.querySelector("[data-reference-preview]");
       const selfiePreview = root.querySelector("[data-selfie-preview]");
-      const rightsCheck = root.querySelector("[data-rights-check]");
-      const consentCheck = root.querySelector("[data-consent-check]");
+      const authorizationCheck = root.querySelector(
+        "[data-authorization-check]",
+      );
+      const authorizationLabel = root.querySelector(
+        "[data-authorization-label]",
+      );
       const templateTitle = root.querySelector("[data-template-title]");
       const costNote = root.querySelector("[data-cost-note]");
       const creditLink = root.querySelector("[data-credit-link]");
@@ -764,9 +769,8 @@ const hrefs = {
       );
       const errorControls = {
         reference: referenceInput,
-        rights: rightsCheck,
         selfie: selfieInput,
-        consent: consentCheck,
+        authorization: authorizationCheck,
       };
       const templateLists = Array.from(
         root.querySelectorAll("[data-template-list]"),
@@ -825,6 +829,19 @@ const hrefs = {
           const filled = i < currentStep - 1;
           line.classList.toggle("rt-stepper-line--active", filled);
         });
+      }
+
+      function updateAuthorizationCopy() {
+        if (!authorizationLabel) return;
+        authorizationLabel.textContent = selectedTemplateId
+          ? authorizationLabel.dataset.savedCopy
+          : authorizationLabel.dataset.uploadCopy;
+      }
+
+      function resetAuthorization() {
+        authorizationCheck.checked = false;
+        clearFieldError("authorization");
+        updateAuthorizationCopy();
       }
 
       const showOnly = (target) => {
@@ -886,14 +903,11 @@ const hrefs = {
         if (!selectedTemplateId && !referenceInput.files?.[0]) {
           failures.push(["reference", copy.referenceRequired]);
         }
-        if (!selectedTemplateId && !rightsCheck.checked) {
-          failures.push(["rights", copy.rightsRequired]);
-        }
         if (!selfieInput.files?.[0]) {
           failures.push(["selfie", copy.selfieRequired]);
         }
-        if (!consentCheck.checked) {
-          failures.push(["consent", copy.consentRequired]);
+        if (!authorizationCheck.checked) {
+          failures.push(["authorization", copy.authorizationRequired]);
         }
         failures.forEach(([field, message]) => markFieldError(field, message));
         if (failures.length) {
@@ -1052,9 +1066,8 @@ const hrefs = {
               pendingTemplateId = template.id;
               referenceInput.value = "";
               referencePreview.hidden = true;
-              rightsCheck.checked = false;
               clearFieldError("reference");
-              clearFieldError("rights");
+              resetAuthorization();
               renderTemplates();
               updateStepper();
             });
@@ -1087,7 +1100,10 @@ const hrefs = {
                   copy.deleteFailed,
                 );
                 templates = templates.filter((item) => item.id !== template.id);
-                if (selectedTemplateId === template.id) selectedTemplateId = "";
+                if (selectedTemplateId === template.id) {
+                  selectedTemplateId = "";
+                  resetAuthorization();
+                }
                 if (pendingTemplateId === template.id) pendingTemplateId = "";
                 if (templateManager) {
                   templateManager.hidden = templates.length === 0;
@@ -1136,9 +1152,8 @@ const hrefs = {
         pendingIdempotencyKey = "";
         selectedTemplateId = "";
         pendingTemplateId = "";
-        rightsCheck.checked = false;
         clearFieldError("reference");
-        clearFieldError("rights");
+        resetAuthorization();
         renderTemplates();
         previewFile(referenceInput, referencePreview);
         updateStepper();
@@ -1146,15 +1161,14 @@ const hrefs = {
       selfieInput.addEventListener("change", () => {
         pendingIdempotencyKey = "";
         pendingUploadId = "";
-        consentCheck.checked = false;
         clearFieldError("selfie");
-        clearFieldError("consent");
         previewFile(selfieInput, selfiePreview);
         syncCanvasPreview();
         updateStepper();
       });
-      rightsCheck.addEventListener("change", () => clearFieldError("rights"));
-      consentCheck.addEventListener("change", () => clearFieldError("consent"));
+      authorizationCheck.addEventListener("change", () =>
+        clearFieldError("authorization"),
+      );
 
       root.addEventListener("reference-history:reuse", (event) => {
         const templateId = event.detail?.templateId;
@@ -1166,9 +1180,8 @@ const hrefs = {
         pendingTemplateId = template.id;
         referenceInput.value = "";
         referencePreview.hidden = true;
-        rightsCheck.checked = false;
         clearFieldError("reference");
-        clearFieldError("rights");
+        resetAuthorization();
         renderTemplates();
         updateStepper();
         setTemplateStatus(copy.historyDrawerReused);
@@ -1222,8 +1235,8 @@ const hrefs = {
         if (selectedTemplateId) return selectedTemplateId;
         const file = referenceInput.files?.[0];
         if (!file) throw fieldError("reference", copy.referenceRequired);
-        if (!rightsCheck.checked)
-          throw fieldError("rights", copy.rightsRequired);
+        if (!authorizationCheck.checked)
+          throw fieldError("authorization", copy.authorizationRequired);
         let webp;
         try {
           webp = await compressToWebp(file, 1600, 0.84);
@@ -1247,6 +1260,7 @@ const hrefs = {
         selectedTemplateId = template.id;
         pendingTemplateId = template.id;
         templates.unshift(template);
+        updateAuthorizationCopy();
         renderTemplates();
         return template.id;
       }
@@ -1255,8 +1269,8 @@ const hrefs = {
         if (pendingUploadId) return { id: pendingUploadId };
         const file = selfieInput.files?.[0];
         if (!file) throw fieldError("selfie", copy.selfieRequired);
-        if (!consentCheck.checked)
-          throw fieldError("consent", copy.consentRequired);
+        if (!authorizationCheck.checked)
+          throw fieldError("authorization", copy.authorizationRequired);
         let webp;
         try {
           webp = await compressToWebp(file, 1800, 0.86);
@@ -1461,8 +1475,7 @@ const hrefs = {
         activeJobId = "";
         referenceInput.value = "";
         selfieInput.value = "";
-        rightsCheck.checked = false;
-        consentCheck.checked = false;
+        resetAuthorization();
         templateTitle.value = "";
         referencePreview.hidden = true;
         selfiePreview.hidden = true;

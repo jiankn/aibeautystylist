@@ -12,6 +12,7 @@ interface Props {
     resultBase: string;
     shareCard: string;
     credits: string;
+    privacy: string;
   };
 }
 
@@ -144,16 +145,6 @@ const { copy, hrefs } = Astro.props;
         </label>
         <p id="reference-file-error" data-error="reference" role="alert" hidden>
         </p>
-        <label class="reference-check compact-check">
-          <input
-            type="checkbox"
-            aria-describedby="reference-rights-error"
-            data-rights-check
-          />
-          <span>{copy.rights}</span>
-        </label>
-        <p id="reference-rights-error" data-error="rights" role="alert" hidden>
-        </p>
         <details class="saved-reference-block">
           <summary>{copy.savedTitle}</summary>
           <div class="saved-reference-list" data-template-list>
@@ -191,17 +182,6 @@ const { copy, hrefs } = Astro.props;
           </span>
         </label>
         <p id="selfie-file-error" data-error="selfie" role="alert" hidden></p>
-        <label class="reference-check compact-check">
-          <input
-            type="checkbox"
-            aria-describedby="selfie-consent-error"
-            data-consent-check
-            required
-          />
-          <span>{copy.consent}</span>
-        </label>
-        <p id="selfie-consent-error" data-error="consent" role="alert" hidden>
-        </p>
       </section>
     </aside>
 
@@ -235,17 +215,46 @@ const { copy, hrefs } = Astro.props;
             >{copy.viewProgress}</a
           >
         </div>
-        <button type="submit" data-generate>
-          <svg viewBox="0 0 24 24" aria-hidden="true"
-            ><path d="M12 3v3"></path><path d="M12 18v3"></path><path
-              d="M3 12h3"></path><path d="M18 12h3"></path><path
-              d="m5.6 5.6 2.1 2.1"></path><path d="m16.3 16.3 2.1 2.1"
-            ></path><path d="m5.6 18.4 2.1-2.1"></path><path
-              d="m16.3 7.7 2.1-2.1"></path><circle cx="12" cy="12" r="3"
-            ></circle></svg
-          >
-          <span>{copy.generate}</span>
-        </button>
+        <div class="reference-submit-action">
+          <div class="reference-authorization">
+            <label>
+              <input
+                type="checkbox"
+                aria-describedby="authorization-help authorization-error"
+                data-authorization-check
+                required
+              />
+              <span
+                data-authorization-label
+                data-upload-copy={copy.authorization}
+                data-saved-copy={copy.authorizationSaved}
+                >{copy.authorization}</span
+              >
+            </label>
+            <a href={hrefs.privacy} target="_blank" rel="noopener noreferrer"
+              >{copy.photoNoticeLink}</a
+            >
+            <p
+              id="authorization-error"
+              data-error="authorization"
+              role="alert"
+              hidden
+            >
+            </p>
+            <small id="authorization-help">{copy.privacyHint}</small>
+          </div>
+          <button type="submit" data-generate>
+            <svg viewBox="0 0 24 24" aria-hidden="true"
+              ><path d="M12 3v3"></path><path d="M12 18v3"></path><path
+                d="M3 12h3"></path><path d="M18 12h3"></path><path
+                d="m5.6 5.6 2.1 2.1"></path><path d="m16.3 16.3 2.1 2.1"
+              ></path><path d="m5.6 18.4 2.1-2.1"></path><path
+                d="m16.3 7.7 2.1-2.1"></path><circle cx="12" cy="12" r="3"
+              ></circle></svg
+            >
+            <span>{copy.generate}</span>
+          </button>
+        </div>
       </div>
     </section>
   </form>
@@ -647,25 +656,6 @@ const { copy, hrefs } = Astro.props;
     font: inherit;
     font-size: 0.82rem;
   }
-  .reference-check {
-    min-width: 0;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    color: var(--rt-muted);
-    font-size: 0.7rem;
-    line-height: 1.4;
-  }
-  .reference-check span {
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-  .reference-check input {
-    width: 18px;
-    height: 18px;
-    flex: 0 0 auto;
-    accent-color: var(--rt-accent);
-  }
   [data-error] {
     margin: 0;
     color: #d92d20;
@@ -778,8 +768,8 @@ const { copy, hrefs } = Astro.props;
   }
   .reference-submit {
     display: grid;
-    grid-template-columns: 1fr minmax(180px, 34%);
-    align-items: center;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 46%);
+    align-items: end;
     gap: 14px;
     padding: 14px 16px;
     border-top: 1px solid var(--rt-border);
@@ -793,6 +783,53 @@ const { copy, hrefs } = Astro.props;
     color: var(--rt-accent);
     font-size: 0.74rem;
     font-weight: 750;
+  }
+  .reference-submit-action {
+    min-width: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .reference-authorization {
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+  }
+  .reference-authorization label {
+    min-height: 44px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 5px 0;
+    color: var(--rt-text);
+    cursor: pointer;
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+  .reference-authorization input {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    margin: 1px 0 0;
+    accent-color: var(--rt-accent);
+  }
+  .reference-authorization input:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--rt-accent) 28%, transparent);
+    outline-offset: 2px;
+  }
+  .reference-authorization span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .reference-authorization > a {
+    width: fit-content;
+  }
+  .reference-authorization > p {
+    color: #d92d20;
+  }
+  .reference-authorization > small {
+    color: var(--rt-muted);
+    font-size: 0.68rem;
+    line-height: 1.4;
   }
   .reference-submit button {
     min-height: 52px;
