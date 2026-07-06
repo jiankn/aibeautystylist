@@ -425,11 +425,11 @@
   },
   "cookie": {
     "title": "Cookie 与本地存储设置",
-    "description": "我们使用必要 Cookie 维持访客会话和额度。当前尚未启用非必要分析或广告追踪；未来启用前会再次征求同意。",
+    "description": "我们使用必要存储维持会话和额度。选择同意全部后，第一方分析会匿名记录访问、推广来源和功能事件；我们不使用广告追踪器。",
     "privacyLink": "查看隐私政策",
     "necessary": "仅使用必要 Cookie",
     "acceptAll": "同意全部",
-    "allSaved": "Cookie 偏好已保存；当前没有额外分析追踪",
+    "allSaved": "Cookie 偏好已保存；第一方匿名分析已启用",
     "necessarySaved": "仅使用必要 Cookie"
   },
   "tryon": {

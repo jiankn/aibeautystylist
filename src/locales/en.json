@@ -425,11 +425,11 @@
   },
   "cookie": {
     "title": "Cookie & Local Storage Settings",
-    "description": "We use essential cookies to maintain visitor sessions and quota state. Non-essential analytics or ad tracking is not enabled yet; we will ask again before enabling it.",
+    "description": "We use essential storage for sessions and quota state. If you accept all, optional first-party analytics records anonymous visits, campaign attribution, and feature events. We do not use advertising trackers.",
     "privacyLink": "View Privacy Policy",
     "necessary": "Use Necessary Cookies Only",
     "acceptAll": "Accept All",
-    "allSaved": "Cookie preferences saved; no extra analytics tracking is currently enabled",
+    "allSaved": "Cookie preferences saved; optional first-party analytics is enabled",
     "necessarySaved": "Necessary cookies only"
   },
   "tryon": {

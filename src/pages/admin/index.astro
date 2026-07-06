@@ -36,6 +36,24 @@ const overviewCopy = {
     generated: "最后更新",
     scope:
       "数据口径：MRR 为当前有效 Pro/Premium 订阅估算；AI 成本为 estimated_cost_micros 汇总。",
+    pinterest: {
+      title: "Pinterest 增长漏斗",
+      subtitle: "目标：连续 30 天达到每日 1,000 位独立访客",
+      consentNote: "仅统计同意第一方分析的浏览器，不含照片、邮箱或原始 IP。",
+      todayVisitors: "近 24 小时访客",
+      weekVisitors: "近 7 天访客",
+      monthVisitors: "近 30 天访客",
+      tryonRate: "访客→生成试妆",
+      registrations: "注册",
+      subscriptions: "会员",
+      goal: "今日目标",
+      topPins: "近 30 天高效 Pin",
+      pinId: "UTM 内容标识",
+      visitors: "访客",
+      tryons: "试妆访客",
+      noPins: "首批 Pin 发布并产生点击后，数据会显示在这里。",
+      perDay: "日均",
+    },
     kpis: {
       activeUsers: "活跃用户",
       activeUsersHint: "较昨日",
@@ -145,6 +163,25 @@ const overviewCopy = {
     generated: "Last updated",
     scope:
       "Scope: MRR is estimated from active Pro/Premium subscriptions. AI cost uses estimated_cost_micros.",
+    pinterest: {
+      title: "Pinterest growth funnel",
+      subtitle: "Goal: 1,000 unique visitors per day for 30 consecutive days",
+      consentNote:
+        "Consented first-party analytics only; no photos, email addresses, or raw IPs.",
+      todayVisitors: "Visitors, last 24h",
+      weekVisitors: "Visitors, last 7d",
+      monthVisitors: "Visitors, last 30d",
+      tryonRate: "Visitor → try-on",
+      registrations: "Registrations",
+      subscriptions: "Members",
+      goal: "Daily goal",
+      topPins: "Top Pins, last 30d",
+      pinId: "UTM content ID",
+      visitors: "Visitors",
+      tryons: "Try-on visitors",
+      noPins: "Data will appear after the first Pins begin receiving clicks.",
+      perDay: "daily avg",
+    },
     kpis: {
       activeUsers: "Active users",
       activeUsersHint: "vs yesterday",
@@ -375,6 +412,60 @@ const adminHref = (href: string) => {
       </article>
     </section>
 
+    <section class="admin-card ops-panel pinterest-growth-panel">
+      <div class="ops-panel-head pinterest-growth-head">
+        <div>
+          <h3>{copy.pinterest.title}</h3>
+          <p>{copy.pinterest.subtitle}</p>
+        </div>
+        <small>{copy.pinterest.consentNote}</small>
+      </div>
+      <div class="pinterest-growth-metrics">
+        <article>
+          <span>{copy.pinterest.todayVisitors}</span>
+          <strong id="pinterestTodayVisitors">-</strong>
+          <div class="pinterest-goal-track" aria-hidden="true">
+            <i id="pinterestGoalProgress"></i>
+          </div>
+          <small id="pinterestGoalLabel">-</small>
+        </article>
+        <article>
+          <span>{copy.pinterest.weekVisitors}</span>
+          <strong id="pinterestWeekVisitors">-</strong>
+          <small id="pinterestWeekAverage">-</small>
+        </article>
+        <article>
+          <span>{copy.pinterest.monthVisitors}</span>
+          <strong id="pinterestMonthVisitors">-</strong>
+          <small id="pinterestMonthAverage">-</small>
+        </article>
+        <article>
+          <span>{copy.pinterest.tryonRate}</span>
+          <strong id="pinterestTryonRate">-</strong>
+          <small id="pinterestConversions">-</small>
+        </article>
+      </div>
+      <div class="pinterest-pin-table">
+        <h4>{copy.pinterest.topPins}</h4>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>{copy.pinterest.pinId}</th>
+                <th>{copy.pinterest.visitors}</th>
+                <th>{copy.pinterest.tryons}</th>
+              </tr>
+            </thead>
+            <tbody id="pinterestTopPinsBody">
+              <tr>
+                <td colspan="3" class="admin-loading">{copy.loading}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <section class="ops-dashboard-grid">
       <article class="admin-card ops-panel ops-queue-panel">
         <div class="ops-panel-head">
@@ -495,6 +586,95 @@ const adminHref = (href: string) => {
     .admin-overview {
       display: grid;
       gap: 18px;
+    }
+
+    .pinterest-growth-panel {
+      border-top: 3px solid #e60023;
+    }
+
+    .pinterest-growth-head {
+      align-items: start;
+    }
+
+    .pinterest-growth-head p,
+    .pinterest-growth-head small {
+      margin: 5px 0 0;
+      color: var(--admin-text-muted);
+    }
+
+    .pinterest-growth-head small {
+      max-width: 420px;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    .pinterest-growth-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .pinterest-growth-metrics article {
+      min-width: 0;
+      padding: 16px;
+      border: 1px solid var(--admin-border);
+      border-radius: 12px;
+      background: var(--admin-surface-soft);
+    }
+
+    .pinterest-growth-metrics span,
+    .pinterest-growth-metrics small {
+      display: block;
+      color: var(--admin-text-muted);
+    }
+
+    .pinterest-growth-metrics strong {
+      display: block;
+      margin: 8px 0 6px;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .pinterest-goal-track {
+      height: 6px;
+      margin: 10px 0 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: color-mix(in srgb, #e60023 12%, transparent);
+    }
+
+    .pinterest-goal-track i {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: #e60023;
+      transition: width 260ms ease;
+    }
+
+    .pinterest-pin-table {
+      margin-top: 18px;
+    }
+
+    .pinterest-pin-table h4 {
+      margin: 0 0 10px;
+    }
+
+    @media (max-width: 900px) {
+      .pinterest-growth-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .pinterest-growth-head small {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .pinterest-growth-metrics {
+        grid-template-columns: 1fr;
+      }
     }
 
     .ops-header {
@@ -859,6 +1039,7 @@ const adminHref = (href: string) => {
             var data = payload.body.data;
             window.__adminOverviewData = data;
             updateKpis(data);
+            renderPinterestGrowth(data.pinterestAnalytics);
             renderActionQueue(data);
             renderRecentUsers(data.recentUsers || []);
             renderTickets(data.recentTickets || []);
@@ -875,6 +1056,7 @@ const adminHref = (href: string) => {
             );
             if (!hasLoaded) {
               renderActionQueue(null);
+              renderPinterestGrowth(null);
               renderRecentUsers([]);
               renderTickets([]);
               clearCanvas("economicsChart", overviewCopy.empty.chart);
@@ -989,6 +1171,86 @@ const adminHref = (href: string) => {
             ? "kpi-change down"
             : "kpi-change neutral",
         );
+      }
+
+      function renderPinterestGrowth(analytics) {
+        var today = (analytics && analytics.today) || {};
+        var week = (analytics && analytics.week) || {};
+        var month = (analytics && analytics.month) || {};
+        var goal = Number((analytics && analytics.goalDailyVisitors) || 1000);
+        var todayVisitors = Number(today.visitors || 0);
+        var monthVisitors = Number(month.visitors || 0);
+        var monthTryons = Number(month.tryonVisitors || 0);
+        var progress = Math.min(100, (todayVisitors / Math.max(1, goal)) * 100);
+        var tryonRate = monthVisitors
+          ? (monthTryons / monthVisitors) * 100
+          : 0;
+
+        setText("pinterestTodayVisitors", formatNumber(todayVisitors));
+        setText("pinterestWeekVisitors", formatNumber(week.visitors || 0));
+        setText("pinterestMonthVisitors", formatNumber(monthVisitors));
+        setText(
+          "pinterestTryonRate",
+          tryonRate.toFixed(1).replace(".0", "") + "%",
+        );
+        setText(
+          "pinterestGoalLabel",
+          overviewCopy.pinterest.goal +
+            ": " +
+            formatNumber(todayVisitors) +
+            " / " +
+            formatNumber(goal),
+        );
+        setText(
+          "pinterestWeekAverage",
+          overviewCopy.pinterest.perDay +
+            " " +
+            formatNumber(Math.round(Number(week.visitors || 0) / 7)),
+        );
+        setText(
+          "pinterestMonthAverage",
+          overviewCopy.pinterest.perDay +
+            " " +
+            formatNumber(Math.round(monthVisitors / 30)),
+        );
+        setText(
+          "pinterestConversions",
+          overviewCopy.pinterest.registrations +
+            " " +
+            formatNumber(month.registrations || 0) +
+            " · " +
+            overviewCopy.pinterest.subscriptions +
+            " " +
+            formatNumber(month.subscriptions || 0),
+        );
+
+        var progressBar = document.getElementById("pinterestGoalProgress");
+        if (progressBar) progressBar.style.width = progress + "%";
+
+        var tbody = document.getElementById("pinterestTopPinsBody");
+        if (!tbody) return;
+        var rows = (analytics && analytics.topPins) || [];
+        if (!rows.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="3" class="admin-empty">' +
+            escapeHtml(overviewCopy.pinterest.noPins) +
+            "</td></tr>";
+          return;
+        }
+        tbody.innerHTML = rows
+          .slice(0, 8)
+          .map(function (row) {
+            return (
+              "<tr><td><code>" +
+              escapeHtml(row.content || "-") +
+              "</code></td><td>" +
+              formatNumber(row.visitors || 0) +
+              "</td><td>" +
+              formatNumber(row.tryonVisitors || 0) +
+              "</td></tr>"
+            );
+          })
+          .join("");
       }
 
       function redrawCharts() {

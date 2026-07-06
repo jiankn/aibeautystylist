@@ -48,7 +48,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "5. Cookies, rights, and contact",
-          body: "Necessary cookies and local storage keep sessions, ownership, credits, and consent preferences working. You may request access, correction, deletion, or withdrawal of consent where applicable by contacting support@aibeautystylist.com.",
+          body: "Necessary cookies and local storage keep sessions, ownership, credits, and consent preferences working. With your optional consent, first-party analytics stores a random browser identifier, page path, campaign attribution, and product events; it does not store uploaded photos, email addresses, or raw IP addresses. You may withdraw consent in Cookie Settings or request access, correction, or deletion at support@aibeautystylist.com.",
         },
       ],
     },
@@ -134,7 +134,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "5. Cookie、用户权利与联系",
-          body: "必要 Cookie 和本地存储用于维持会话、资源归属、额度和同意偏好。你可通过 support@aibeautystylist.com 提出访问、更正、删除或撤回同意等适用请求。",
+          body: "必要 Cookie 和本地存储用于维持会话、资源归属、额度和同意偏好。经你选择同意后，第一方分析会保存随机浏览器标识、页面路径、推广来源和产品事件；不会保存上传照片、邮箱或原始 IP。你可随时在 Cookie 偏好设置中撤回同意，或通过 support@aibeautystylist.com 提出访问、更正或删除请求。",
         },
       ],
     },
@@ -219,7 +219,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "5. Cookie、權利與聯絡",
-          body: "必要 Cookie 與本機儲存用於維持工作階段、資源歸屬、點數與同意偏好。你可透過 support@aibeautystylist.com 提出適用的存取、更正、刪除或撤回同意請求。",
+          body: "必要 Cookie 與本機儲存用於維持工作階段、資源歸屬、點數與同意偏好。經你選擇同意後，第一方分析會儲存隨機瀏覽器識別碼、頁面路徑、推廣來源與產品事件；不會儲存上傳照片、電子郵件或原始 IP。你可在 Cookie 設定中撤回同意，或透過 support@aibeautystylist.com 提出存取、更正或刪除請求。",
         },
       ],
     },
@@ -304,7 +304,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "5. Cookies, Rechte und Kontakt",
-          body: "Notwendige Cookies und lokaler Speicher sichern Sitzungen, Eigentum, Credits und Einwilligungen. Anfragen zu Auskunft, Berichtigung, Löschung oder Widerruf sendest du an support@aibeautystylist.com.",
+          body: "Notwendige Cookies und lokaler Speicher sichern Sitzungen, Eigentum, Credits und Einwilligungen. Mit deiner optionalen Zustimmung speichert die Erstanbieter-Analyse eine zufällige Browserkennung, Seitenpfade, Kampagnenzuordnung und Produkt-Ereignisse, jedoch keine hochgeladenen Fotos, E-Mail-Adressen oder rohen IP-Adressen. Widerruf ist jederzeit in den Cookie-Einstellungen möglich; Anfragen sendest du an support@aibeautystylist.com.",
         },
       ],
     },
@@ -390,7 +390,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "5. Cookies, droits et contact",
-          body: "Les cookies nécessaires et le stockage local maintiennent les sessions, droits d'accès, crédits et préférences. Pour exercer vos droits applicables, contactez support@aibeautystylist.com.",
+          body: "Les cookies nécessaires et le stockage local maintiennent les sessions, droits d’accès, crédits et préférences. Avec votre accord facultatif, l’analyse propriétaire conserve un identifiant de navigateur aléatoire, le chemin des pages, l’attribution des campagnes et les événements produit, mais ni photos importées, ni e-mail, ni adresse IP brute. Vous pouvez retirer votre accord dans les préférences cookies ou écrire à support@aibeautystylist.com.",
         },
       ],
     },
@@ -476,7 +476,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "5. Cookie、権利、連絡先",
-          body: "必要な Cookie とローカルストレージは、セッション、所有権、クレジット、同意設定の維持に使います。適用される権利の請求は support@aibeautystylist.com へお送りください。",
+          body: "必要な Cookie とローカルストレージは、セッション、所有権、クレジット、同意設定の維持に使います。任意の同意後、ファーストパーティ分析はランダムなブラウザ識別子、ページパス、キャンペーン流入、製品イベントを保存しますが、アップロード写真、メールアドレス、生の IP アドレスは保存しません。Cookie 設定から同意を撤回でき、権利請求は support@aibeautystylist.com へ送れます。",
         },
       ],
     },
@@ -561,7 +561,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "5. 쿠키, 권리 및 연락처",
-          body: "필수 쿠키와 로컬 저장소는 세션, 소유권, 크레딧 및 동의 설정 유지에 사용됩니다. 적용되는 권리 요청은 support@aibeautystylist.com으로 보내 주세요.",
+          body: "필수 쿠키와 로컬 저장소는 세션, 소유권, 크레딧 및 동의 설정 유지에 사용됩니다. 선택 동의 시 자사 분석은 무작위 브라우저 식별자, 페이지 경로, 캠페인 유입, 제품 이벤트를 저장하지만 업로드 사진, 이메일 주소, 원본 IP 주소는 저장하지 않습니다. 쿠키 설정에서 동의를 철회하거나 support@aibeautystylist.com으로 권리 요청을 보낼 수 있습니다.",
         },
       ],
     },
@@ -647,7 +647,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "5. Cookies, derechos y contacto",
-          body: "Las cookies necesarias y el almacenamiento local mantienen sesiones, propiedad, créditos y preferencias. Para ejercer derechos aplicables, escribe a support@aibeautystylist.com.",
+          body: "Las cookies necesarias y el almacenamiento local mantienen sesiones, propiedad, créditos y preferencias. Con tu consentimiento opcional, el análisis propio guarda un identificador aleatorio del navegador, rutas de página, atribución de campañas y eventos del producto; no guarda fotos subidas, correos ni direcciones IP sin procesar. Puedes retirar el consentimiento en Configuración de cookies o escribir a support@aibeautystylist.com.",
         },
       ],
     },
@@ -734,7 +734,7 @@ const content: Record<SupportedLocale, LegalLocaleContent> = {
         },
         {
           title: "5. Cookies, direitos e contato",
-          body: "Cookies necessários e armazenamento local mantêm sessões, propriedade, créditos e preferências. Para exercer direitos aplicáveis, escreva para support@aibeautystylist.com.",
+          body: "Cookies necessários e armazenamento local mantêm sessões, propriedade, créditos e preferências. Com seu consentimento opcional, a análise própria salva um identificador aleatório do navegador, caminhos de página, atribuição de campanhas e eventos do produto; não salva fotos enviadas, e-mails nem endereços IP brutos. Você pode retirar o consentimento nas configurações de cookies ou escrever para support@aibeautystylist.com.",
         },
       ],
     },

@@ -38,7 +38,7 @@ const privacyHref = getLocalizedAppHref(
   const cookieConsent = document.querySelector<HTMLElement>(
     "[data-cookie-consent]",
   );
-  const cookiePreferenceKey = "abs_cookie_consent_v1";
+  const cookiePreferenceKey = "abs_cookie_consent_v2";
 
   function setCookieConsentOpen(isOpen: boolean) {
     document.body.classList.toggle("cookie-consent-open", isOpen);
@@ -59,6 +59,9 @@ const privacyHref = getLocalizedAppHref(
         JSON.stringify({ choice, updatedAt: new Date().toISOString() }),
       );
     } catch {}
+    window.dispatchEvent(
+      new CustomEvent("abs:cookie-consent", { detail: { choice } }),
+    );
     if (cookieConsent) {
       cookieConsent.hidden = true;
       setCookieConsentOpen(false);

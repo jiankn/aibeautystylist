@@ -555,11 +555,11 @@
   },
   "cookie": {
     "title": "Cookies y almacenamiento local",
-    "description": "Usamos cookies necesarias para sesión, idioma y estado de cuenta. Las funciones de análisis opcionales solo se activarán tras pedir nuevo consentimiento.",
+    "description": "Usamos almacenamiento necesario para sesiones y cuotas. Si aceptas todo, el análisis opcional propio registra visitas anónimas, atribución de campañas y eventos de funciones. No usamos rastreadores publicitarios.",
     "privacyLink": "Ver política de privacidad",
     "necessary": "Solo cookies necesarias",
     "acceptAll": "Aceptar todo",
-    "allSaved": "Preferencias de cookies guardadas; no hay seguimiento analítico adicional activado actualmente",
+    "allSaved": "Preferencias guardadas; el análisis opcional propio está activado",
     "necessarySaved": "Solo cookies necesarias"
   }
 }

@@ -12,6 +12,13 @@ interface CountRow {
 interface SumRow {
   total: number | string | null;
 }
+interface PinterestSummaryRow {
+  visitors: number | string | null;
+  pageviews: number | string | null;
+  tryon_visitors: number | string | null;
+  registrations: number | string | null;
+  subscriptions: number | string | null;
+}
 
 export const GET: APIRoute = async ({ cookies }) => {
   const { DB } = getRuntimeBindings();
@@ -40,6 +47,9 @@ export const GET: APIRoute = async ({ cookies }) => {
   const chartSince = new Date(
     now.getTime() - 14 * 24 * 60 * 60 * 1000,
   ).toISOString();
+  const pinterestSince = new Date(
+    now.getTime() - 30 * 24 * 60 * 60 * 1000,
+  ).toISOString();
 
   // 并行查询所有统计数据
   const [
@@ -58,6 +68,11 @@ export const GET: APIRoute = async ({ cookies }) => {
     dailyNewUsers,
     dailySubscriptionRevenue,
     dailyAiCost,
+    pinterestToday,
+    pinterestWeek,
+    pinterestMonth,
+    pinterestDaily,
+    pinterestTopPins,
   ] = await Promise.all([
     // 总用户数
     DB.prepare(
@@ -226,6 +241,88 @@ export const GET: APIRoute = async ({ cookies }) => {
     )
       .bind(chartSince)
       .all<{ day: string; cost_micros: number }>(),
+    DB.prepare(
+      `SELECT
+        COUNT(DISTINCT visitor_key) as visitors,
+        COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
+        COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors,
+        COALESCE(SUM(CASE WHEN event_name = 'registration_completed' THEN 1 ELSE 0 END), 0) as registrations,
+        COALESCE(SUM(CASE WHEN event_name = 'subscription_checkout_success' THEN 1 ELSE 0 END), 0) as subscriptions
+      FROM analytics_events
+      WHERE occurred_at >= ?
+        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+          OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
+    )
+      .bind(dayAgo)
+      .first<PinterestSummaryRow>(),
+    DB.prepare(
+      `SELECT
+        COUNT(DISTINCT visitor_key) as visitors,
+        COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
+        COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors,
+        COALESCE(SUM(CASE WHEN event_name = 'registration_completed' THEN 1 ELSE 0 END), 0) as registrations,
+        COALESCE(SUM(CASE WHEN event_name = 'subscription_checkout_success' THEN 1 ELSE 0 END), 0) as subscriptions
+      FROM analytics_events
+      WHERE occurred_at >= ?
+        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+          OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
+    )
+      .bind(weekAgo)
+      .first<PinterestSummaryRow>(),
+    DB.prepare(
+      `SELECT
+        COUNT(DISTINCT visitor_key) as visitors,
+        COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
+        COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors,
+        COALESCE(SUM(CASE WHEN event_name = 'registration_completed' THEN 1 ELSE 0 END), 0) as registrations,
+        COALESCE(SUM(CASE WHEN event_name = 'subscription_checkout_success' THEN 1 ELSE 0 END), 0) as subscriptions
+      FROM analytics_events
+      WHERE occurred_at >= ?
+        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+          OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
+    )
+      .bind(pinterestSince)
+      .first<PinterestSummaryRow>(),
+    DB.prepare(
+      `SELECT day,
+        COUNT(DISTINCT visitor_key) as visitors,
+        COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
+        COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors
+      FROM analytics_events
+      WHERE occurred_at >= ?
+        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+          OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')
+      GROUP BY day
+      ORDER BY day`,
+    )
+      .bind(pinterestSince)
+      .all<{
+        day: string;
+        visitors: number | string;
+        pageviews: number | string;
+        tryon_visitors: number | string;
+      }>(),
+    DB.prepare(
+      `SELECT content,
+        COUNT(DISTINCT visitor_key) as visitors,
+        COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
+        COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors
+      FROM analytics_events
+      WHERE occurred_at >= ?
+        AND content IS NOT NULL
+        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+          OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')
+      GROUP BY content
+      ORDER BY visitors DESC, pageviews DESC
+      LIMIT 20`,
+    )
+      .bind(pinterestSince)
+      .all<{
+        content: string;
+        visitors: number | string;
+        pageviews: number | string;
+        tryon_visitors: number | string;
+      }>(),
   ]);
 
   const aiCostMicros = Number(monthlyAiCost?.total ?? 0);
@@ -235,6 +332,14 @@ export const GET: APIRoute = async ({ cookies }) => {
   const estimatedMrrUsd =
     proSubscriptions * PLAN_DEFINITIONS.pro.monthlyPriceUsd +
     premiumSubscriptions * PLAN_DEFINITIONS.premium.monthlyPriceUsd;
+
+  const normalizePinterestSummary = (row: PinterestSummaryRow | null) => ({
+    visitors: Number(row?.visitors ?? 0),
+    pageviews: Number(row?.pageviews ?? 0),
+    tryonVisitors: Number(row?.tryon_visitors ?? 0),
+    registrations: Number(row?.registrations ?? 0),
+    subscriptions: Number(row?.subscriptions ?? 0),
+  });
 
   return apiSuccess({
     generatedAt: now.toISOString(),
@@ -267,5 +372,24 @@ export const GET: APIRoute = async ({ cookies }) => {
       day: row.day,
       cost_units: Number((Number(row.cost_micros ?? 0) / 1_000_000).toFixed(2)),
     })),
+    pinterestAnalytics: {
+      consentedFirstPartyOnly: true,
+      goalDailyVisitors: 1000,
+      today: normalizePinterestSummary(pinterestToday),
+      week: normalizePinterestSummary(pinterestWeek),
+      month: normalizePinterestSummary(pinterestMonth),
+      daily: (pinterestDaily?.results ?? []).map((row) => ({
+        day: row.day,
+        visitors: Number(row.visitors ?? 0),
+        pageviews: Number(row.pageviews ?? 0),
+        tryonVisitors: Number(row.tryon_visitors ?? 0),
+      })),
+      topPins: (pinterestTopPins?.results ?? []).map((row) => ({
+        content: row.content,
+        visitors: Number(row.visitors ?? 0),
+        pageviews: Number(row.pageviews ?? 0),
+        tryonVisitors: Number(row.tryon_visitors ?? 0),
+      })),
+    },
   });
 };

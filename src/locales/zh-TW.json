@@ -551,11 +551,11 @@
   },
   "cookie": {
     "title": "Cookie 與本機儲存設定",
-    "description": "我們使用必要 Cookie 維持工作階段、語言與帳戶狀態。啟用選用分析功能前會再次徵求同意。",
+    "description": "我們使用必要儲存維持工作階段與額度。選擇同意全部後，第一方分析會匿名記錄瀏覽、推廣來源與功能事件；我們不使用廣告追蹤器。",
     "privacyLink": "查看隱私權政策",
     "necessary": "僅使用必要 Cookie",
     "acceptAll": "同意全部",
-    "allSaved": "Cookie 偏好已儲存；目前未啟用額外分析追蹤",
+    "allSaved": "Cookie 偏好已儲存；第一方匿名分析已啟用",
     "necessarySaved": "僅使用必要 Cookie"
   }
 }

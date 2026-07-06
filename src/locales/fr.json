@@ -555,11 +555,11 @@
   },
   "cookie": {
     "title": "Cookies et stockage local",
-    "description": "Nous utilisons les cookies nécessaires pour la session, la langue et l’état du compte. Toute analyse optionnelle demandera un nouvel accord.",
+    "description": "Nous utilisons le stockage nécessaire pour les sessions et quotas. Si vous acceptez tout, l’analyse propriétaire optionnelle enregistre les visites anonymes, l’attribution des campagnes et les événements de fonctions. Aucun traceur publicitaire n’est utilisé.",
     "privacyLink": "Voir la politique de confidentialité",
     "necessary": "Cookies nécessaires uniquement",
     "acceptAll": "Tout accepter",
-    "allSaved": "Préférences cookies enregistrées ; aucun suivi analytique supplémentaire n'est actuellement activé",
+    "allSaved": "Préférences enregistrées ; l’analyse propriétaire optionnelle est activée",
     "necessarySaved": "Cookies nécessaires uniquement"
   }
 }

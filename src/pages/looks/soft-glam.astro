@@ -1,4 +1,5 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
 
 const page = {
@@ -33,17 +34,58 @@ const page = {
     { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
   ],
 };
+
+const softGlamTryonHref =
+  "/tryon?look=rose-milk-date&source=pinterest_soft_glam&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_soft_glam_01";
 ---
 
-<SeoLandingLayout {...page}>
+<SeoLandingLayout
+  {...page}
+  heroCtaHref={softGlamTryonHref}
+  heroCtaLabel="Preview this look"
+>
   <Fragment slot="hero">
-    <h1>Soft Glam Makeup: Your Everyday Elegant Beauty Guide</h1>
+    <h1>Soft Glam Makeup You Can Preview First</h1>
     <p>
-      Soft glam is the makeup sweet spot — polished enough to look intentional,
-      subtle enough to wear every single day. See how it looks on your face
-      before you pick up a single brush.
+      Saw a soft glam look on Pinterest? Learn the direction, then preview a
+      rosy soft glam version on your own selfie before choosing it.
     </p>
   </Fragment>
+
+  <PinterestConversionPanel
+    kicker="Pinterest soft glam path"
+    title="Make soft glam feel like you"
+    body="Soft glam can look elegant or too heavy depending on your features. Preview the rosy, diffused version first so you can judge color, eye definition, and lip balance on your own face."
+    image="/images/style-soft-glam.webp"
+    imageAlt="Soft glam makeup with warm neutral eyes, glowing skin, and rose lips"
+    selectedLook="Rose Milk Date"
+    selectedLookMeta="Soft glam, rosy neutral, date-ready"
+    primaryHref={softGlamTryonHref}
+    primaryLabel="Preview this look"
+    secondaryHref="/pricing?source=pinterest_soft_glam"
+    secondaryLabel="See member benefits"
+    membershipHref="/pricing?source=pinterest_soft_glam"
+    proofPoints={[
+      "Soft glam direction",
+      "Rosy neutral palette",
+      "Selfie-based preview",
+      "Upgrade for comparisons",
+    ]}
+    steps={[
+      {
+        title: "Match the Pin promise",
+        body: "You clicked for soft glam, so this page focuses on balanced eyes, glowing skin, and a polished rose lip.",
+      },
+      {
+        title: "Try a softer version first",
+        body: "The CTA opens Rose Milk Date already selected, giving you a wearable soft glam starting point.",
+      },
+      {
+        title: "Subscribe for comparison",
+        body: "Membership helps when you want to compare warmer, cooler, lighter, and stronger glam directions.",
+      },
+    ]}
+  />
 
   <div class="seo-content">
     <h2>What "Soft Glam" Actually Means</h2>
@@ -223,7 +265,7 @@ const page = {
     <div class="seo-cta-inner">
       <h2>See Soft Glam on Your Face</h2>
       <p>Upload a selfie and get a personalized soft glam try-on in seconds.</p>
-      <a href="/tryon" class="cta-btn">Try This Style on Your Face — Free</a>
+      <a href={softGlamTryonHref} class="cta-btn">Preview this look</a>
     </div>
   </div>
 

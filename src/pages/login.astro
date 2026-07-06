@@ -1263,6 +1263,7 @@ const posterStyle = [
         });
         setPending(forms.register, false);
         if (body?.ok) {
+          window.__track?.("registration_completed");
           setMessage(
             body.data?.emailSent === false
               ? authResponseMessages.registerSuccessEmailPending

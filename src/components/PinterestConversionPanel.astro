@@ -1,0 +1,402 @@
+---
+interface ConversionStep {
+  title: string;
+  body: string;
+}
+
+interface Props {
+  tone?: "article" | "workspace";
+  kicker: string;
+  title: string;
+  body: string;
+  image: string;
+  imageAlt: string;
+  selectedLook: string;
+  selectedLookMeta: string;
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+  proofPoints: readonly string[];
+  steps: readonly ConversionStep[];
+  membershipHref?: string;
+  membershipTitle?: string;
+  membershipBody?: string;
+}
+
+const {
+  tone = "article",
+  kicker,
+  title,
+  body,
+  image,
+  imageAlt,
+  selectedLook,
+  selectedLookMeta,
+  primaryHref,
+  primaryLabel,
+  secondaryHref,
+  secondaryLabel,
+  proofPoints,
+  steps,
+  membershipHref = "/pricing",
+  membershipTitle = "Why membership fits Pinterest visitors",
+  membershipBody = "Free previews help you choose a direction. Membership is for comparing more looks, saving results, and downloading polished versions when you are ready to repeat the style.",
+} = Astro.props;
+---
+
+<section class:list={["pin-conversion", `pin-conversion-${tone}`]}>
+  <div class="pin-conversion-shell">
+    <div class="pin-conversion-copy">
+      <p class="pin-conversion-kicker">{kicker}</p>
+      <h2>{title}</h2>
+      <p>{body}</p>
+      <div class="pin-conversion-actions">
+        <a class="pin-conversion-primary" href={primaryHref}>{primaryLabel}</a>
+        {
+          secondaryHref && secondaryLabel && (
+            <a class="pin-conversion-secondary" href={secondaryHref}>
+              {secondaryLabel}
+            </a>
+          )
+        }
+      </div>
+      <ul class="pin-conversion-proof" aria-label="Conversion proof points">
+        {proofPoints.map((point) => <li>{point}</li>)}
+      </ul>
+    </div>
+    <figure class="pin-conversion-visual">
+      <img src={image} alt={imageAlt} loading="eager" decoding="async" />
+      <figcaption>
+        <span>Selected look</span>
+        <strong>{selectedLook}</strong>
+        <small>{selectedLookMeta}</small>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="pin-conversion-path" aria-label="Pinterest visitor path">
+    {
+      steps.map((step, index) => (
+        <article>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <h3>{step.title}</h3>
+          <p>{step.body}</p>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="pin-membership-strip">
+    <div>
+      <h3>{membershipTitle}</h3>
+      <p>{membershipBody}</p>
+    </div>
+    <a href={membershipHref}>Compare plans</a>
+  </div>
+</section>
+
+<style>
+  .pin-conversion {
+    --pin-accent: var(--rose);
+    --pin-accent-strong: var(--rose-dark);
+    --pin-surface: var(--bg-elevated);
+    --pin-soft: var(--surface-rose);
+    --pin-border: var(--warm-border);
+    width: min(calc(100% - 3rem), 1120px);
+    margin: 2.5rem auto;
+  }
+
+  .pin-conversion-workspace {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+  }
+
+  .pin-conversion-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: stretch;
+  }
+
+  .pin-conversion-copy,
+  .pin-conversion-visual,
+  .pin-conversion-path article,
+  .pin-membership-strip {
+    border: 1px solid var(--pin-border);
+    border-radius: 8px;
+    background: var(--pin-surface);
+    box-shadow: 0 18px 42px rgba(53, 43, 38, 0.08);
+  }
+
+  .pin-conversion-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.35rem, 3vw, 2.35rem);
+  }
+
+  .pin-conversion-kicker {
+    margin: 0 0 0.75rem;
+    color: var(--pin-accent-strong);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .pin-conversion h2,
+  .pin-membership-strip h3,
+  .pin-conversion-path h3 {
+    color: var(--heading);
+    font-family: var(--font-display);
+  }
+
+  .pin-conversion h2 {
+    max-width: 12ch;
+    margin: 0 0 0.9rem;
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    line-height: 1.08;
+  }
+
+  .pin-conversion-copy > p {
+    max-width: 58ch;
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .pin-conversion-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.35rem;
+  }
+
+  .pin-conversion-primary,
+  .pin-conversion-secondary,
+  .pin-membership-strip a {
+    display: inline-flex;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+      transform 0.16s ease,
+      box-shadow 0.16s ease,
+      background 0.16s ease;
+  }
+
+  .pin-conversion-primary {
+    border: 1px solid var(--pin-accent-strong);
+    background: linear-gradient(135deg, #c83e68, #9f294f);
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    box-shadow: var(--btn-primary-shadow);
+  }
+
+  .pin-conversion-secondary {
+    border: 1px solid var(--pin-border);
+    color: var(--heading);
+    padding: 0.75rem 1.05rem;
+    background: var(--bg-elevated);
+  }
+
+  .pin-conversion-primary:hover,
+  .pin-conversion-secondary:hover,
+  .pin-membership-strip a:hover {
+    transform: translateY(-1px);
+  }
+
+  .pin-conversion-primary:active,
+  .pin-conversion-secondary:active,
+  .pin-membership-strip a:active {
+    transform: translateY(1px);
+  }
+
+  .pin-conversion-proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    padding: 0;
+    margin: 1.1rem 0 0;
+    list-style: none;
+  }
+
+  .pin-conversion-proof li {
+    border: 1px solid rgba(200, 62, 104, 0.22);
+    border-radius: 999px;
+    padding: 0.42rem 0.7rem;
+    background: rgba(255, 245, 247, 0.88);
+    color: var(--heading);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .pin-conversion-visual {
+    position: relative;
+    min-height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .pin-conversion-visual img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 380px;
+    object-fit: cover;
+  }
+
+  .pin-conversion-visual figcaption {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    display: grid;
+    gap: 0.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--heading);
+    box-shadow: 0 16px 30px rgba(53, 43, 38, 0.16);
+  }
+
+  .pin-conversion-visual span,
+  .pin-conversion-visual small {
+    color: var(--body-secondary);
+    font-size: 0.78rem;
+  }
+
+  .pin-conversion-visual strong {
+    font-size: 1.1rem;
+  }
+
+  .pin-conversion-path {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .pin-conversion-path article {
+    min-width: 0;
+    padding: 1.1rem;
+  }
+
+  .pin-conversion-path span {
+    display: block;
+    margin-bottom: 0.7rem;
+    color: var(--pin-accent-strong);
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .pin-conversion-path h3 {
+    margin: 0 0 0.45rem;
+    font-size: 1rem;
+  }
+
+  .pin-conversion-path p,
+  .pin-membership-strip p {
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .pin-membership-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1.1rem 1.25rem;
+    background: linear-gradient(135deg, var(--surface-rose), var(--soft));
+  }
+
+  .pin-membership-strip h3 {
+    margin: 0 0 0.3rem;
+    font-size: 1.05rem;
+  }
+
+  .pin-membership-strip a {
+    flex: 0 0 auto;
+    border: 1px solid rgba(159, 41, 79, 0.28);
+    background: #fff;
+    color: var(--pin-accent-strong);
+    padding: 0.7rem 1rem;
+  }
+
+  @media (max-width: 860px) {
+    .pin-conversion {
+      width: min(calc(100% - 2rem), 640px);
+    }
+
+    .pin-conversion-shell,
+    .pin-conversion-path {
+      grid-template-columns: 1fr;
+    }
+
+    .pin-conversion h2 {
+      max-width: none;
+    }
+
+    .pin-conversion-visual img {
+      min-height: 320px;
+      aspect-ratio: 4 / 5;
+    }
+
+    .pin-membership-strip {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .pin-conversion {
+      width: min(calc(100% - 1.5rem), 420px);
+      margin-block: 1.5rem;
+    }
+
+    .pin-conversion-copy,
+    .pin-conversion-path article,
+    .pin-membership-strip {
+      padding: 1rem;
+    }
+
+    .pin-conversion-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .pin-conversion-primary,
+    .pin-conversion-secondary,
+    .pin-membership-strip a {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .pin-conversion {
+      --pin-surface: var(--bg-elevated);
+      --pin-soft: rgba(55, 38, 48, 0.72);
+    }
+
+    .pin-conversion-proof li {
+      background: rgba(200, 62, 104, 0.16);
+      color: var(--heading);
+    }
+
+    .pin-conversion-visual figcaption,
+    .pin-membership-strip a {
+      background: rgba(24, 28, 34, 0.92);
+    }
+  }
+</style>

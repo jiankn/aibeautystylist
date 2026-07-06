@@ -8,6 +8,10 @@ declare module "node:async_hooks" {
 }
 
 interface Window {
+  __track?: (
+    event: string,
+    properties?: Record<string, string | number | boolean>,
+  ) => boolean;
   showToast?: (message?: string) => void;
   absAlert?: (
     message?: unknown,

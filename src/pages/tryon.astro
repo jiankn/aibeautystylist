@@ -2,6 +2,7 @@
 import LookSelector from "../components/LookSelector.astro";
 import MobileAppTopBar from "../components/MobileAppTopBar.astro";
 import MobileBottomNav from "../components/MobileBottomNav.astro";
+import PinterestConversionPanel from "../components/PinterestConversionPanel.astro";
 import ResultState from "../components/ResultState.astro";
 import SelfiePhotoGuide from "../components/SelfiePhotoGuide.astro";
 import SiteHeader from "../components/SiteHeader.astro";
@@ -86,6 +87,9 @@ const defaultFeaturedLooks = featuredSlugs
   .filter(Boolean) as typeof resolvedLooks;
 const requestedSlug = Astro.url.searchParams.get("look");
 const source = Astro.url.searchParams.get("source");
+const isPinterestTraffic =
+  Astro.url.searchParams.get("utm_source") === "pinterest" ||
+  (source?.startsWith("pinterest") ?? false);
 const requestedLookBase = resolvedLooks.find(
   (look) => look.slug === requestedSlug,
 );
@@ -108,6 +112,11 @@ const featuredLooks = requestedLook
     ].slice(0, 4)
   : defaultFeaturedLooks;
 const selected = requestedLook ?? featuredLooks[0];
+const selectedLookTitle = selected?.title ?? "AI Makeup Try-On";
+const selectedLookImage =
+  selected?.image ?? "/images/home-hero-global-commute-after.webp";
+const selectedLookAlt =
+  selected?.imageAlt ?? "AI makeup try-on preview on a model";
 const tutorial = getTutorialByLookSlug(
   selected.slug,
   currentRoute.language.locale,
@@ -353,6 +362,45 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
           </section>
         )
       }
+      {
+        isPinterestTraffic && (
+          <PinterestConversionPanel
+            tone="workspace"
+            kicker="Pinterest try-on path"
+            title="Try the look you came for"
+            body="You clicked from a makeup idea. Start with a guided AI preview, then compare whether the color, finish, and intensity fit your face."
+            image={selectedLookImage}
+            imageAlt={selectedLookAlt}
+            selectedLook={selectedLookTitle}
+            selectedLookMeta="Selfie preview, then save or upgrade"
+            primaryHref="#tryon-upload"
+            primaryLabel="Start free preview"
+            secondaryHref={pricingHref}
+            secondaryLabel="Compare plans"
+            membershipHref={pricingHref}
+            proofPoints={[
+              "Pinterest-ready idea",
+              "Your selfie first",
+              "Private by default",
+              "Members compare more",
+            ]}
+            steps={[
+              {
+                title: "Pick the look",
+                body: "The page starts with a relevant makeup direction so you do not need to search the catalog again.",
+              },
+              {
+                title: "Upload one selfie",
+                body: "Use a clear front-facing photo, confirm consent, and generate a realistic style preview.",
+              },
+              {
+                title: "Upgrade for decisions",
+                body: "Subscribe when you want more generations, saved looks, HD downloads, and repeatable beauty planning.",
+              },
+            ]}
+          />
+        )
+      }
       <div
         class:list={[
           "workspace-grid",
@@ -380,7 +428,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
             href={localizeAppHref("/discover")}>{t("tryon", "allLooksBtn")}</a
           >
         </aside>
-        <section class="result-panel panel">
+        <section class="result-panel panel" id="tryon-upload">
           <div class="result-head">
             <div>
               <h2>

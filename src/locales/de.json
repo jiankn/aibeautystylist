@@ -555,11 +555,11 @@
   },
   "cookie": {
     "title": "Cookies und lokaler Speicher",
-    "description": "Wir verwenden notwendige Cookies für Sitzung, Sprache und Kontostatus. Optionale Analysefunktionen werden erst nach erneuter Zustimmung aktiviert.",
+    "description": "Wir verwenden notwendigen Speicher für Sitzungen und Kontingente. Bei Zustimmung erfasst optionale Erstanbieter-Analyse anonyme Besuche, Kampagnenzuordnung und Funktionsereignisse. Wir verwenden keine Werbetracker.",
     "privacyLink": "Datenschutzerklärung ansehen",
     "necessary": "Nur notwendige Cookies",
     "acceptAll": "Alle akzeptieren",
-    "allSaved": "Cookie-Einstellungen gespeichert; zusätzliche Analyseverfolgung ist derzeit nicht aktiviert",
+    "allSaved": "Cookie-Einstellungen gespeichert; optionale Erstanbieter-Analyse ist aktiviert",
     "necessarySaved": "Nur notwendige Cookies"
   }
 }

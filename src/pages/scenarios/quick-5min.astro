@@ -1,4 +1,5 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
 
 const page = {
@@ -33,21 +34,62 @@ const relatedLinks = [
   { label: "Natural Makeup", url: "/looks/natural-makeup" },
   { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
 ];
+
+const quickTryonHref =
+  "/tryon?look=five-minute-beginner&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_5min_01";
 ---
 
 <SeoLandingLayout
   title={page.title}
   description={page.description}
+  ogImage="/images/article-five-minute-commute.webp"
+  heroImage="/images/article-five-minute-commute.webp"
+  heroCtaHref={quickTryonHref}
+  heroCtaLabel="Preview this look"
   faq={page.faq}
 >
   <Fragment slot="hero">
-    <h1>{page.title}</h1>
+    <h1>5-Minute Makeup You Can Preview First</h1>
     <p>
-      You do not need thirty minutes to look put-together. You need the right
-      products, applied in the right order, with zero wasted steps. Learn the
-      science of maximum-impact makeup in minimum time.
+      Saw this on Pinterest? Get the quick routine, then test the same natural
+      look on your selfie before you spend time applying it.
     </p>
   </Fragment>
+
+  <PinterestConversionPanel
+    kicker="Pinterest quick-look path"
+    title="From saved idea to your face"
+    body="Pinterest gives you the idea. AI Beauty Stylist helps you decide if the five-minute version flatters your face, lighting, and daily routine before you commit."
+    image="/images/look-card/looks/five-minute-beginner--south-asia-640.webp"
+    imageAlt="Five-minute natural makeup look preview on a woman"
+    selectedLook="Five-Minute Face"
+    selectedLookMeta="Natural, quick, work-ready"
+    primaryHref={quickTryonHref}
+    primaryLabel="Preview this look"
+    secondaryHref="/pricing?source=pinterest_quick5"
+    secondaryLabel="See member benefits"
+    membershipHref="/pricing?source=pinterest_quick5"
+    proofPoints={[
+      "Preselected look",
+      "Selfie-based preview",
+      "Free start",
+      "Upgrade for more comparisons",
+    ]}
+    steps={[
+      {
+        title: "Start with the Pin promise",
+        body: "You clicked for a fast polished look, so this page keeps the routine focused on skin, brows, lashes, blush, and lip.",
+      },
+      {
+        title: "Preview before applying",
+        body: "Open the try-on with Five-Minute Face already selected, upload one selfie, and compare the direction on your own features.",
+      },
+      {
+        title: "Subscribe when it saves time",
+        body: "Membership makes sense when you want more generations, saved looks, HD downloads, and repeatable routines.",
+      },
+    ]}
+  />
 
   <section class="seo-content">
     <h2>The Science of What Matters Most in Five Minutes</h2>
@@ -82,6 +124,20 @@ const relatedLinks = [
       produce roughly eighty percent of the visible improvement that a full
       routine delivers. Here is why each one matters.
     </p>
+    <figure class="article-figure">
+      <img
+        src="/images/articles/quick-5min/three-product-rule.webp"
+        alt="Skin tint, tinted brow gel, and rosy tinted lip balm arranged as a three-product makeup kit"
+        width="1280"
+        height="720"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>
+        Build your rush kit around three jobs, not three brands: even the skin,
+        frame the face, and bring back color.
+      </figcaption>
+    </figure>
     <h3>Tinted Moisturizer or Skin Tint</h3>
     <p>
       Uneven skin tone is the single most visible factor in facial appearance.
@@ -222,6 +278,20 @@ const relatedLinks = [
     </ul>
 
     <h2>Your Timed 5-Minute Routine</h2>
+    <figure class="article-figure article-figure--steps">
+      <img
+        src="/images/articles/quick-5min/five-minute-routine.webp"
+        alt="Five-step sequence showing skin tint, spot concealer, brow gel, mascara, and cream blush with lip tint"
+        width="1280"
+        height="720"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>
+        Move left to right and stop when the minute changes. The goal is a
+        finished overall impression, not perfect detail in any one step.
+      </figcaption>
+    </figure>
     <div class="step-list">
       <div class="step-card">
         <div class="step-num">1</div>
@@ -294,9 +364,7 @@ const relatedLinks = [
           See which minimal makeup style looks best on your face without wasting
           time experimenting.
         </p>
-        <a href="/tryon" class="cta-btn"
-          >Try 5-Minute Makeup on Your Face — Free</a
-        >
+        <a href={quickTryonHref} class="cta-btn">Preview this look</a>
       </div>
     </div>
   </Fragment>
@@ -312,3 +380,41 @@ const relatedLinks = [
     </section>
   </Fragment>
 </SeoLandingLayout>
+
+<style>
+  .article-figure {
+    margin: 1.5rem 0 2rem;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg-elevated);
+    box-shadow: 0 16px 36px rgba(53, 43, 38, 0.08);
+  }
+
+  .article-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  .article-figure figcaption {
+    padding: 0.875rem 1rem 1rem;
+    color: var(--body-secondary);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 640px) {
+    .article-figure {
+      margin-inline: -0.25rem;
+      border-radius: 8px;
+    }
+
+    .article-figure--steps img {
+      aspect-ratio: 5 / 3;
+      object-fit: cover;
+    }
+  }
+</style>
