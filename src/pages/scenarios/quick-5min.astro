@@ -1,6 +1,8 @@
 ---
 import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getPinterestConversionCopy } from "../../data/pinterestConversionCopy";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title:
@@ -35,8 +37,16 @@ const relatedLinks = [
   { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
 ];
 
-const quickTryonHref =
-  "/tryon?look=five-minute-beginner&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_5min_01";
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const quickTryonHref = localizeAppHref(
+  "/tryon?look=five-minute-beginner&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_5min_01",
+);
+const quickPricingHref = localizeAppHref("/pricing?source=pinterest_quick5");
+const pinterestQuickCopy = getPinterestConversionCopy("quick5");
 ---
 
 <SeoLandingLayout
@@ -45,7 +55,7 @@ const quickTryonHref =
   ogImage="/images/article-five-minute-commute.webp"
   heroImage="/images/article-five-minute-commute.webp"
   heroCtaHref={quickTryonHref}
-  heroCtaLabel="Preview this look"
+  heroCtaLabel={pinterestQuickCopy.primaryLabel}
   faq={page.faq}
 >
   <Fragment slot="hero">
@@ -57,38 +67,11 @@ const quickTryonHref =
   </Fragment>
 
   <PinterestConversionPanel
-    kicker="Pinterest quick-look path"
-    title="From saved idea to your face"
-    body="Pinterest gives you the idea. AI Beauty Stylist helps you decide if the five-minute version flatters your face, lighting, and daily routine before you commit."
+    {...pinterestQuickCopy}
     image="/images/look-card/looks/five-minute-beginner--south-asia-640.webp"
-    imageAlt="Five-minute natural makeup look preview on a woman"
-    selectedLook="Five-Minute Face"
-    selectedLookMeta="Natural, quick, work-ready"
     primaryHref={quickTryonHref}
-    primaryLabel="Preview this look"
-    secondaryHref="/pricing?source=pinterest_quick5"
-    secondaryLabel="See member benefits"
-    membershipHref="/pricing?source=pinterest_quick5"
-    proofPoints={[
-      "Preselected look",
-      "Selfie-based preview",
-      "Free start",
-      "Upgrade for more comparisons",
-    ]}
-    steps={[
-      {
-        title: "Start with the Pin promise",
-        body: "You clicked for a fast polished look, so this page keeps the routine focused on skin, brows, lashes, blush, and lip.",
-      },
-      {
-        title: "Preview before applying",
-        body: "Open the try-on with Five-Minute Face already selected, upload one selfie, and compare the direction on your own features.",
-      },
-      {
-        title: "Subscribe when it saves time",
-        body: "Membership makes sense when you want more generations, saved looks, HD downloads, and repeatable routines.",
-      },
-    ]}
+    secondaryHref={quickPricingHref}
+    membershipHref={quickPricingHref}
   />
 
   <section class="seo-content">
@@ -364,7 +347,9 @@ const quickTryonHref =
           See which minimal makeup style looks best on your face without wasting
           time experimenting.
         </p>
-        <a href={quickTryonHref} class="cta-btn">Preview this look</a>
+        <a href={quickTryonHref} class="cta-btn">
+          {pinterestQuickCopy.primaryLabel}
+        </a>
       </div>
     </div>
   </Fragment>

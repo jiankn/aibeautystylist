@@ -1,4 +1,6 @@
 ---
+import { getPinterestConversionCopy } from "../data/pinterestConversionCopy";
+
 interface ConversionStep {
   title: string;
   body: string;
@@ -10,8 +12,8 @@ interface Props {
   title: string;
   body: string;
   image: string;
-  imageAlt: string;
-  selectedLook: string;
+  imageAlt?: string;
+  selectedLook?: string;
   selectedLookMeta: string;
   primaryHref: string;
   primaryLabel: string;
@@ -22,16 +24,21 @@ interface Props {
   membershipHref?: string;
   membershipTitle?: string;
   membershipBody?: string;
+  membershipLabel?: string;
+  selectedLookLabel?: string;
+  proofAriaLabel?: string;
+  pathAriaLabel?: string;
 }
 
+const defaultCopy = getPinterestConversionCopy("workspace");
 const {
   tone = "article",
   kicker,
   title,
   body,
   image,
-  imageAlt,
-  selectedLook,
+  imageAlt: imageAltProp,
+  selectedLook: selectedLookProp,
   selectedLookMeta,
   primaryHref,
   primaryLabel,
@@ -40,9 +47,16 @@ const {
   proofPoints,
   steps,
   membershipHref = "/pricing",
-  membershipTitle = "Why membership fits Pinterest visitors",
-  membershipBody = "Free previews help you choose a direction. Membership is for comparing more looks, saving results, and downloading polished versions when you are ready to repeat the style.",
+  membershipTitle = defaultCopy.membershipTitle,
+  membershipBody = defaultCopy.membershipBody,
+  membershipLabel = defaultCopy.membershipLabel,
+  selectedLookLabel = defaultCopy.selectedLookLabel,
+  proofAriaLabel = defaultCopy.proofAriaLabel,
+  pathAriaLabel = defaultCopy.pathAriaLabel,
 } = Astro.props;
+
+const selectedLook = selectedLookProp ?? title;
+const imageAlt = imageAltProp ?? selectedLook;
 ---
 
 <section class:list={["pin-conversion", `pin-conversion-${tone}`]}>
@@ -61,21 +75,21 @@ const {
           )
         }
       </div>
-      <ul class="pin-conversion-proof" aria-label="Conversion proof points">
+      <ul class="pin-conversion-proof" aria-label={proofAriaLabel}>
         {proofPoints.map((point) => <li>{point}</li>)}
       </ul>
     </div>
     <figure class="pin-conversion-visual">
       <img src={image} alt={imageAlt} loading="eager" decoding="async" />
       <figcaption>
-        <span>Selected look</span>
+        <span>{selectedLookLabel}</span>
         <strong>{selectedLook}</strong>
         <small>{selectedLookMeta}</small>
       </figcaption>
     </figure>
   </div>
 
-  <div class="pin-conversion-path" aria-label="Pinterest visitor path">
+  <div class="pin-conversion-path" aria-label={pathAriaLabel}>
     {
       steps.map((step, index) => (
         <article>
@@ -92,7 +106,7 @@ const {
       <h3>{membershipTitle}</h3>
       <p>{membershipBody}</p>
     </div>
-    <a href={membershipHref}>Compare plans</a>
+    <a href={membershipHref}>{membershipLabel}</a>
   </div>
 </section>
 
@@ -142,7 +156,7 @@ const {
     color: var(--pin-accent-strong);
     font-size: 0.78rem;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
     text-transform: uppercase;
   }
 
@@ -156,8 +170,9 @@ const {
   .pin-conversion h2 {
     max-width: 12ch;
     margin: 0 0 0.9rem;
-    font-size: clamp(2rem, 4vw, 3.1rem);
+    font-size: 2.75rem;
     line-height: 1.08;
+    overflow-wrap: anywhere;
   }
 
   .pin-conversion-copy > p {
@@ -184,6 +199,8 @@ const {
     justify-content: center;
     border-radius: 8px;
     font-weight: 800;
+    text-align: center;
+    overflow-wrap: anywhere;
     text-decoration: none;
     transition:
       transform 0.16s ease,
@@ -295,7 +312,7 @@ const {
     color: var(--pin-accent-strong);
     font-size: 0.78rem;
     font-weight: 900;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
   }
 
   .pin-conversion-path h3 {
@@ -346,6 +363,7 @@ const {
 
     .pin-conversion h2 {
       max-width: none;
+      font-size: 2.35rem;
     }
 
     .pin-conversion-visual img {
@@ -380,6 +398,10 @@ const {
     .pin-conversion-secondary,
     .pin-membership-strip a {
       width: 100%;
+    }
+
+    .pin-conversion h2 {
+      font-size: 2rem;
     }
   }
 

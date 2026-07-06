@@ -1,6 +1,8 @@
 ---
 import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getPinterestConversionCopy } from "../../data/pinterestConversionCopy";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "Soft Glam Makeup: Your Everyday Elegant Beauty Guide",
@@ -35,14 +37,24 @@ const page = {
   ],
 };
 
-const softGlamTryonHref =
-  "/tryon?look=rose-milk-date&source=pinterest_soft_glam&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_soft_glam_01";
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const softGlamTryonHref = localizeAppHref(
+  "/tryon?look=rose-milk-date&source=pinterest_soft_glam&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_soft_glam_01",
+);
+const softGlamPricingHref = localizeAppHref(
+  "/pricing?source=pinterest_soft_glam",
+);
+const pinterestSoftGlamCopy = getPinterestConversionCopy("softGlam");
 ---
 
 <SeoLandingLayout
   {...page}
   heroCtaHref={softGlamTryonHref}
-  heroCtaLabel="Preview this look"
+  heroCtaLabel={pinterestSoftGlamCopy.primaryLabel}
 >
   <Fragment slot="hero">
     <h1>Soft Glam Makeup You Can Preview First</h1>
@@ -53,38 +65,11 @@ const softGlamTryonHref =
   </Fragment>
 
   <PinterestConversionPanel
-    kicker="Pinterest soft glam path"
-    title="Make soft glam feel like you"
-    body="Soft glam can look elegant or too heavy depending on your features. Preview the rosy, diffused version first so you can judge color, eye definition, and lip balance on your own face."
+    {...pinterestSoftGlamCopy}
     image="/images/style-soft-glam.webp"
-    imageAlt="Soft glam makeup with warm neutral eyes, glowing skin, and rose lips"
-    selectedLook="Rose Milk Date"
-    selectedLookMeta="Soft glam, rosy neutral, date-ready"
     primaryHref={softGlamTryonHref}
-    primaryLabel="Preview this look"
-    secondaryHref="/pricing?source=pinterest_soft_glam"
-    secondaryLabel="See member benefits"
-    membershipHref="/pricing?source=pinterest_soft_glam"
-    proofPoints={[
-      "Soft glam direction",
-      "Rosy neutral palette",
-      "Selfie-based preview",
-      "Upgrade for comparisons",
-    ]}
-    steps={[
-      {
-        title: "Match the Pin promise",
-        body: "You clicked for soft glam, so this page focuses on balanced eyes, glowing skin, and a polished rose lip.",
-      },
-      {
-        title: "Try a softer version first",
-        body: "The CTA opens Rose Milk Date already selected, giving you a wearable soft glam starting point.",
-      },
-      {
-        title: "Subscribe for comparison",
-        body: "Membership helps when you want to compare warmer, cooler, lighter, and stronger glam directions.",
-      },
-    ]}
+    secondaryHref={softGlamPricingHref}
+    membershipHref={softGlamPricingHref}
   />
 
   <div class="seo-content">
@@ -265,7 +250,9 @@ const softGlamTryonHref =
     <div class="seo-cta-inner">
       <h2>See Soft Glam on Your Face</h2>
       <p>Upload a selfie and get a personalized soft glam try-on in seconds.</p>
-      <a href={softGlamTryonHref} class="cta-btn">Preview this look</a>
+      <a href={softGlamTryonHref} class="cta-btn">
+        {pinterestSoftGlamCopy.primaryLabel}
+      </a>
     </div>
   </div>
 
