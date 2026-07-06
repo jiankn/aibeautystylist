@@ -2,15 +2,23 @@
 import SeoLandingLayout from "../components/SeoLandingLayout.astro";
 
 const page = {
-  title: "Virtual Makeup App — Try 40+ Styles on Your Real Face",
+  title: "Virtual Makeup App: Try Makeup Online on Your Face",
   description:
-    "The virtual makeup app that adapts to your skin tone and face shape. Try 40+ AI-generated makeup styles with personalized tutorials and real product recommendations.",
+    "Use a virtual makeup app to try makeup online on your own face. Preview 40+ AI-generated styles, compare virtual makeovers, and get tutorials.",
   heroImage: "/images/article-ai-tryon-comparison.webp",
   ogImage: "/images/article-ai-tryon-comparison.webp",
   faq: [
     {
       q: "What makes this different from other virtual makeup apps?",
       a: "Unlike AR overlay apps that paint the same makeup onto every face, our AI generates a unique try-on image that adapts the style to your actual bone structure, skin undertone, and facial proportions. It also provides a step-by-step tutorial so you can recreate the look in real life.",
+    },
+    {
+      q: "Can I apply makeup online without downloading an app?",
+      a: "Yes. AI Beauty Stylist runs in your browser, so you can apply makeup online to a selfie, compare the result, and review the tutorial without installing a mobile app.",
+    },
+    {
+      q: "Is this a virtual makeover app?",
+      a: "Yes, for makeup. It focuses on realistic virtual makeup makeovers for base, eyes, cheeks, lips, and contour rather than hair, clothing, or full-body styling.",
     },
     {
       q: "Do I need to download anything?",
@@ -37,11 +45,11 @@ const page = {
 
 <SeoLandingLayout {...page}>
   <Fragment slot="hero">
-    <h1>Virtual Makeup App: 40+ Styles, Adapted to Your Face</h1>
+    <h1>Virtual Makeup App to Try Makeup Online</h1>
     <p>
-      No downloads. No filters. A browser-based virtual makeup app that
-      generates realistic try-on images — personalized to your skin tone, face
-      shape, and features.
+      No downloads. No filters. A browser-based virtual makeup app that lets you
+      apply makeup online, compare virtual makeovers, and see realistic try-on
+      images adapted to your skin tone, face shape, and features.
     </p>
   </Fragment>
 
@@ -100,6 +108,47 @@ const page = {
       </div>
     </div>
 
+    <h2>Virtual Makeup App, Tester, and Makeover in One Flow</h2>
+    <p>
+      Searchers use different words for the same job: they want to test makeup
+      on a real face before buying products or following a tutorial. This page
+      is the main hub for that job.
+    </p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>What people search</th>
+          <th>What it means here</th>
+          <th>Where to start</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Virtual makeup app</td>
+          <td>Browse styles, upload a selfie, and compare AI try-on results.</td
+          >
+          <td>Open the app and choose a look category.</td>
+        </tr>
+        <tr>
+          <td>Virtual makeup tester</td>
+          <td
+            >Test complete styles, not just one lipstick or eyeshadow shade.</td
+          >
+          <td>Pick a natural, soft glam, office, or date-night direction.</td>
+        </tr>
+        <tr>
+          <td>Virtual makeover</td>
+          <td>Preview a makeup makeover while keeping your identity intact.</td>
+          <td>Compare before-and-after images on your own face.</td>
+        </tr>
+        <tr>
+          <td>Apply makeup online</td>
+          <td>Use the browser version without downloading a mobile app.</td>
+          <td>Upload a clear selfie and generate the preview.</td>
+        </tr>
+      </tbody>
+    </table>
+
     <h2>How the App Adapts to Your Face</h2>
     <p>
       The app's AI analyzes five dimensions of your face before generating the
@@ -146,6 +195,28 @@ const page = {
       You also get a "skip this" section — products you don't need for this
       look, which saves you money and clutter.
     </p>
+
+    <h2>What the Virtual Makeup Tester Checks</h2>
+    <p>
+      A single lipstick overlay is not enough to decide whether a look works.
+      The tester evaluates the full makeup direction: base finish, eye shape,
+      cheek placement, lip color, contour, and highlight. That complete view is
+      what makes the result useful for shopping, salon visits, and practice at
+      home.
+    </p>
+    <ul>
+      <li>
+        <strong>Base and complexion</strong> - matte, dewy, satin, or natural finish.
+      </li>
+      <li>
+        <strong>Eyes</strong> - eyeshadow shape, liner style, and lash emphasis.
+      </li>
+      <li><strong>Cheeks</strong> - blush shade, placement, and intensity.</li>
+      <li><strong>Lips</strong> - color family, finish, and contrast level.</li>
+      <li>
+        <strong>Contour and highlight</strong> - structure without changing your face.
+      </li>
+    </ul>
 
     <h2>Free to Start</h2>
     <p>

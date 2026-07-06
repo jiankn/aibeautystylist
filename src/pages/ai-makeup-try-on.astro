@@ -2,9 +2,9 @@
 import SeoLandingLayout from "../components/SeoLandingLayout.astro";
 
 const page = {
-  title: "What Makeup Looks Good on Me? AI Makeup Try-On",
+  title: "AI Makeup Try-On: What Makeup Looks Good on Me?",
   description:
-    "Upload a selfie to preview makeup directions for your face. Use AI makeup try-on to compare colors, styles, and before-and-after references before buying products.",
+    "Use AI makeup try-on to answer what makeup looks good on me. Upload a selfie, compare styles on your face, and choose colors before buying products.",
   heroImage: "/images/article-ai-tryon-comparison.webp",
   ogImage: "/images/article-ai-tryon-comparison.webp",
   faq: [
@@ -15,6 +15,10 @@ const page = {
     {
       q: "What makeup looks good on me?",
       a: "Start by comparing your skin tone, undertone, eye shape, face shape, and the situation you are dressing for. The try-on preview helps you narrow the direction before you follow a tutorial or buy a product.",
+    },
+    {
+      q: "Can AI tell me which makeup suits my face?",
+      a: "AI can help you compare likely directions by showing makeup on your own selfie. Treat it as a decision aid: it can narrow color, contrast, placement, and finish, while real product texture and lighting still need human judgment.",
     },
     {
       q: "Is my photo stored or shared?",
@@ -43,11 +47,11 @@ const page = {
 
 <SeoLandingLayout {...page}>
   <Fragment slot="hero">
-    <h1>What Makeup Looks Good on Me? Try It on Your Face First</h1>
+    <h1>AI Makeup Try-On: See What Looks Good on You</h1>
     <p>
       Upload a selfie and compare makeup directions on your own face before you
-      buy products or copy a tutorial. Use the preview to decide color,
-      intensity, and placement with less guessing.
+      buy products or copy a tutorial. Use AI try-on to answer what makeup looks
+      good on you with less guessing.
     </p>
   </Fragment>
 
@@ -66,6 +70,51 @@ const page = {
       on <strong>your</strong> face. It is a preview for decision-making, not a promise
       that every product will apply the same way in real life.
     </p>
+
+    <h2>What Makeup Looks Good on Me?</h2>
+    <p>
+      The useful answer is rarely one universal style. Makeup looks good when
+      color, contrast, placement, and occasion agree with your actual face. AI
+      try-on helps you test those variables in a controlled way instead of
+      judging from someone else's tutorial.
+    </p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Decision</th>
+          <th>What to compare</th>
+          <th>Try-on signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Color family</td>
+          <td>Warm peach, cool rose, berry, nude, or bronze.</td>
+          <td>
+            Your skin looks clearer without the lip or cheek color turning gray.
+          </td>
+        </tr>
+        <tr>
+          <td>Eye emphasis</td>
+          <td>Lifted liner, soft shadow, mascara focus, or shimmer.</td>
+          <td
+            >Your eyes look more defined without shrinking or looking heavy.</td
+          >
+        </tr>
+        <tr>
+          <td>Base finish</td>
+          <td>Natural, matte, dewy, satin, or photo-ready.</td>
+          <td
+            >Your face still looks like skin in close-up and normal distance.</td
+          >
+        </tr>
+        <tr>
+          <td>Occasion</td>
+          <td>Office, date, photo, interview, wedding guest, or casual day.</td>
+          <td>The look feels appropriate before it feels trendy.</td>
+        </tr>
+      </tbody>
+    </table>
 
     <h2>How It Works</h2>
     <div class="step-list">
