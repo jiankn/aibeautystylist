@@ -8,11 +8,11 @@ const avoidItems = [
 ];
 ---
 
-<section class="selfie-photo-guide" aria-labelledby="selfie-photo-guide-title">
-  <div class="selfie-photo-guide-copy">
-    <b id="selfie-photo-guide-title">{t("tryon", "photoGuideTitle")}</b>
-    <span>{t("tryon", "photoGuideDesc")}</span>
-  </div>
+<details class="selfie-photo-guide">
+  <summary>
+    <span>{t("tryon", "photoTipsSummary")}</span>
+    <small>{t("tryon", "uploadFormatDesc")}</small>
+  </summary>
   <div class="selfie-photo-guide-text">
     <p>
       <strong>{t("tryon", "photoGuideGoodLabel")}</strong>
@@ -25,4 +25,4 @@ const avoidItems = [
       </ul>
     </div>
   </div>
-</section>
+</details>

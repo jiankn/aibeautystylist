@@ -135,6 +135,17 @@ const selectedLookImage =
   selected?.image ?? "/images/home-hero-global-commute-after.webp";
 const selectedLookAlt =
   selected?.imageAlt ?? "AI makeup try-on preview on a model";
+const isPinterestUploadContext = isPinterestTraffic && Boolean(requestedLook);
+const uploadTitle = isPinterestUploadContext
+  ? t("tryon", "pinterestUploadTitle")
+  : t("tryon", "uploadSelfie");
+const uploadHelper = isPinterestUploadContext
+  ? t("tryon", "pinterestUploadDesc")
+  : !isLoggedIn
+    ? t("tryon", "uploadHelperGuestDesc")
+    : planCode === "free"
+      ? t("tryon", "uploadHelperFreeDesc")
+      : t("tryon", "uploadHelperMemberDesc");
 const pinterestWorkspaceCopy = getPinterestConversionCopy("workspace");
 const tutorial = getTutorialByLookSlug(
   selected.slug,
@@ -479,85 +490,30 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
               ]}
             >
               <span class="upload-camera">▣</span>
-              <h3>
-                {
-                  isPinterestGuestTryon
-                    ? `Upload a selfie to try ${selected.title}`
-                    : t("tryon", "uploadSelfie")
-                }
-              </h3>
-              <p>
-                {
-                  isPinterestGuestTryon
-                    ? "No account needed. One clear selfie unlocks your free preview."
-                    : t("tryon", "uploadFormatDesc")
-                }
-              </p>
-              {
-                isPinterestGuestTryon ? (
-                  <div class="guest-selfie-fast-guide">
-                    <span>
-                      <b>Best photo</b>
-                      Front-facing, even light, no filter.
-                    </span>
-                    <span>
-                      <b>Avoid</b>
-                      Sunglasses, masks, strong shadows, or hair over the face.
-                    </span>
-                  </div>
-                ) : (
-                  <SelfiePhotoGuide />
-                )
-              }
-              {
-                isPinterestGuestTryon && (
-                  <div class="guest-tryon-pass-copy" data-guest-pass-copy>
-                    <b>Free Pinterest preview</b>
-                    <span>
-                      This unlocks one AI preview for the makeup look you just
-                      opened.
-                    </span>
-                  </div>
-                )
-              }
-              {
-                isPinterestGuestTryon && (
-                  <details class="guest-photo-details">
-                    <summary>Photo privacy and quality tips</summary>
-                    <div class="privacy-promise guest-privacy-promise">
-                      <span>Photo is only used for your try-on result</span>
-                      <span>You can delete your selfie and result any time</span>
-                      <span>Not used for model training without consent</span>
-                    </div>
-                  </details>
-                )
-              }
-              <div class="privacy-promise">
-                <span>✓ {t("privacy", "photoPurpose")}</span>
-                <span>✓ {t("privacy", "deletion")}</span>
-                <span>✓ {t("privacy", "noTraining")}</span>
-              </div>
-              <div class="upload-auth-lock" data-upload-auth-lock hidden>
-                <b>{t("tryon", "loginToUseQuota")}</b>
-                <span>{t("tryon", "loginToUseDesc")}</span>
-              </div>
+              <h3>{uploadTitle}</h3>
+              <p>{uploadHelper}</p>
               <label class="privacy-consent">
                 <input type="checkbox" data-photo-consent />
                 <span>{t("tryon", "consentCheckbox")}</span>
               </label>
               <button
                 class="btn btn-primary"
+                type="button"
                 data-upload
                 data-login-label={t("tryon", "loginToUpload")}
-                data-guest-label="Upload selfie - free preview"
-                data-guest-pending-label="Preparing free Pinterest preview..."
+                data-guest-label={t("tryon", "guestUploadButton")}
+                data-guest-pending-label={t("tryon", "guestPreviewPreparing")}
                 disabled
                 >{
                   isPinterestGuestTryon
-                    ? "Preparing free Pinterest preview..."
+                    ? t("tryon", "guestPreviewPreparing")
                     : t("tryon", "uploadBtn")
                 }</button
               >
+              <div class="privacy-promise privacy-promise-compact">
+                <span>{t("tryon", "privacyShort")}</span>
+              </div>
+              <SelfiePhotoGuide />
               <div class="upload-task-status" data-upload-task hidden>
                 <div class="upload-task-head">
                   <span data-upload-status>{t("tryon", "waitingUpload")}</span>
@@ -608,21 +564,22 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
             class="guest-result-cta"
             data-guest-result-cta
             hidden
-            aria-label="Pinterest preview next step"
+            aria-label={t("tryon", "guestResultTitle")}
           >
             <div>
-              <span class="section-eyebrow">Pinterest preview complete</span>
-              <h3 data-guest-result-title>Like the result?</h3>
+              <span class="section-eyebrow">{t("tryon", "complete")}</span>
+              <h3 data-guest-result-title>{t("tryon", "guestResultTitle")}</h3>
               <p data-guest-result-desc>
-                Create an account to save looks, generate more previews, and
-                unlock member benefits.
+                {t("tryon", "guestResultDesc")}
               </p>
             </div>
             <div class="guest-result-cta-actions">
               <a class="btn btn-primary" href={guestRegisterHref}>
-                Create free account
+                {t("navigation", "login")}
               </a>
-              <a class="btn" href={pricingHref}>See member benefits</a>
+              <a class="btn" href={pricingHref}
+                >{t("tryon", "viewPlansShort")}</a
+              >
             </div>
           </section>
           {
@@ -646,7 +603,9 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
                       {selected.title}
                     </strong>
                   </span>
-                  <span class="result-coach-toggle" aria-hidden="true">+</span>
+                  <span class="result-coach-toggle" aria-hidden="true">
+                    +
+                  </span>
                 </summary>
                 <div class="result-coach-body">
                   <section class="advisor-section result-coach-primary">
