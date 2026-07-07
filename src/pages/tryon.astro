@@ -76,6 +76,7 @@ const loginHref = localizeAppHref(
 const guestRegisterHref = localizeAppHref(
   `/login?mode=register&next=${encodeURIComponent(currentReturnPath)}`,
 );
+const saveResultAuthHref = localizeAppHref("/login?mode=register");
 const shareCardHref = localizeAppHref("/share-card");
 const shareBaseHref = localizeAppHref("/share");
 const subscriptionHref = localizeAppHref("/subscription");
@@ -834,6 +835,8 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     workspaceStatusCopy,
     workspaceStatusHrefs,
     reloadGuidanceOnLookChange: experience.showMemberGuidance,
+    initialIsAccountUser: isLoggedIn,
+    saveResultAuthHref,
   }}
 >
   (function () {
@@ -845,6 +848,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     let lastSucceededLookSlug = selectedLookSlug || null;
     let currentPlan = initialPlan;
     let hasLoadedPlan = false;
+    let isAccountUser = Boolean(initialIsAccountUser);
     let savedJobIds = new Set();
     const publicShareUrlByJobId = new Map();
     const checkoutSucceeded =
@@ -912,11 +916,13 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
         const res = await fetch("/api/session");
         const data = await res.json();
         const session = data.ok ? data.data : null;
+        isAccountUser = session?.user?.kind === "account";
         currentPlan = session ? normalizePlan(session.plan) : initialPlan;
         hasLoadedPlan = true;
         refreshRewardButtonState();
         return session;
       } catch {
+        isAccountUser = false;
         currentPlan = initialPlan;
         hasLoadedPlan = true;
         refreshRewardButtonState();
@@ -1271,6 +1277,10 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     window.updateQuotaDisplay = renderWorkspaceQuota;
 
     async function loadSavedLooks() {
+      if (!isAccountUser) {
+        savedJobIds = new Set();
+        return;
+      }
       try {
         const res = await fetch("/api/saved-looks");
         const data = await res.json();
@@ -1280,6 +1290,16 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
       } catch (error) {
         console.error(freeClientMessages.loadSavedFailed, error);
       }
+    }
+
+    function buildSaveResultAuthHref() {
+      const authUrl = new URL(saveResultAuthHref || "/login", location.origin);
+      authUrl.searchParams.set("mode", "register");
+      authUrl.searchParams.set(
+        "next",
+        location.pathname + location.search + location.hash,
+      );
+      return authUrl.pathname + authUrl.search + authUrl.hash;
     }
 
     function renderSaveButton() {
@@ -1482,6 +1502,11 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     if (saveResultBtn) {
       saveResultBtn.addEventListener("click", async () => {
         if (!lastSucceededJobId) return;
+        const session = await loadSession();
+        if (session?.user?.kind !== "account") {
+          window.location.href = buildSaveResultAuthHref();
+          return;
+        }
         saveResultBtn.disabled = true;
         try {
           if (savedJobIds.has(lastSucceededJobId)) {
