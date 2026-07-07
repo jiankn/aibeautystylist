@@ -1,6 +1,6 @@
 # Pinterest 每日 1K 独立访客增长系统
 
-更新日期：2026-07-05
+更新日期：2026-07-07
 
 ## 1. 唯一目标与验收口径
 
@@ -32,6 +32,29 @@
 
 这是经营目标，不是平台承诺。完成只能由真实的 30 天归因数据证明。
 
+## 固定执行规则：Pinterest 每日小转化闭环
+
+以后执行 Pinterest 每日计划时，不把运营理解成“单独发图”，而是每天完成一个小转化闭环：
+
+`Pin 图 + Board + 文案 + UTM 链接 + 专属落地页 + 预选试妆 + 订阅承接`
+
+核心判断句：
+
+> 这张 Pin 点进去以后，用户能不能立刻看到她刚才被吸引的妆容，并马上免费试在自己脸上？
+
+如果答案是否，就不要直接发，先改承接页。
+
+固定规则：
+
+- **套餐不要变**：不要建议修改现有订阅套餐或价格结构。转化优化方向是降低心理摩擦、提高试妆后订阅意愿，不是新增低价包或改套餐。
+- **每一张新增 Pin 都必须先匹配承接页**：不能把 Pinterest 流量直接丢到首页、泛 `/tryon`、普通 SEO 长文、没有首屏视觉承接的文章页。妆容主题 Pin 必须有对应页面或 Pinterest 承接模块。
+- **落地页必须承接 Pin 的心理预期**：首屏要复述 Pin 承诺，出现相关妆容视觉图，说明适用场景，并给出免费试一次 AI 试妆或直接进入预选妆容的动作。
+- **CTA 必须预选对应妆容**：不要让用户进 `/tryon` 后自己再找。链接尽量使用 `/tryon?look=rose-milk-date&utm_source=pinterest...` 这类预选路径。
+- **UTM 必须逐张区分**：固定格式为 `utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_xxx_01`，例如 `pin_soft_glam_01`、`pin_5min_01`、`pin_wedding_guest_01`。
+- **发 Pin 前必须做链接检查**：检查目标 URL 是否存在、页面是否接入 Pinterest 承接模块、是否已部署到线上、点击后是否能直达对应试妆意图。如果还没部署，要先部署再发，或明确提醒现在发会进入旧页面。
+- **每日 Pin 输出必须完整**：用户问“今天发什么 / 下一步干什么 / 做第几张 Pin”时，必须给出 Pin 主题、图片文件路径、Board、Title、Description、Link with UTM、Alt text、AI 设置、是否需要先改落地页、是否需要先部署、发布后只测试一次链接。
+- **发布后只测试一次链接**：确认链接正常即可，不反复点自己的 Pin。
+
 ## 全局记忆：Pinterest 链接必须先做承接页改造
 
 以后每一张 Pinterest Pin 放链接前，必须先确认落地页能承接这张 Pin 的具体承诺，不能直接把用户丢到普通文章、首页或泛工具页。
@@ -49,6 +72,7 @@
 
 - `pin_5min_01`：`/scenarios/quick-5min` 已增加 Pinterest 承接模块，并链接到预选 `five-minute-beginner` 的试妆页。
 - `ai_makeup_tryon_01`：`/tryon` 在 Pinterest 来源下显示承接模块，帮助冷用户理解下一步并跳到上传区。
+- `pin_soft_glam_01`：`/looks/soft-glam` 已增加 Pinterest 承接模块，并链接到预选 `rose-milk-date` 的试妆页。
 
 后续工作方式：先定 Pin 主题，再定目标妆容 slug，再改落地页或新增承接模块，最后才发布 Pin。
 
@@ -87,15 +111,18 @@ Pinterest 没有公开“新号每天只能发几张”的固定阈值。本计�
 - 品牌资料已填写
 - `aibeautystylist.com` 已认领
 - Pinterest 验证标签已在生产站点生效
-- 首个公开 Board `AI Makeup Try-On Ideas` 已建立并填写简介
-- 首张 1000×1500 Pin 视觉已生成
+- 公开 Board 已包含 `AI Makeup Try-On Ideas`、`Everyday & 5-Minute Makeup`、`Soft Glam & Date Night Makeup` 等首批主题
+- 第 1 张 `AI Makeup Try-On` 已发布
+- 第 2 张 `5-Minute Makeup` 已发布
+- 第 3 张 `Soft Glam` 已发布
+- Pinterest 资料封面图已生成新版：`artifacts/pinterest/profile-cover-ai-beauty-stylist-v2.png`
 - 站点拥有 44 套妆容、10 篇博客以及场景、特征、风格、教程页面
 
 ### P0 缺口
 
 - `/api/events` 只输出日志，没有持久化 Pinterest 来源和会员转化
 - 当前无法可靠回答“哪张 Pin 带来注册或付费”
-- 第一张 Pin 尚未正式发布，因此还没有真实分发数据
+- 后续新增 Pin 必须先确认或改造对应落地页，再发布
 
 ### P1 缺口
 
@@ -140,6 +167,8 @@ Pinterest 没有公开“新号每天只能发几张”的固定阈值。本计�
 
 ## 7. 妆容内容质量规则
 
+- **Pinterest 生图硬规则**：所有 Pinterest 用图默认按最高质量生成与后期处理，目标是“真实商业美妆摄影感”，不能有明显 AI 塑料皮肤、畸形手指、假背景、过度磨皮、发丝糊边、五官不对称、首饰变形、文字乱码或拼贴感。AI 内容披露照做，不删除元数据、不规避平台 AI 检测；视觉上追求真实可信，合规上如实标记 `AI-Modified`。
+- Pinterest 生图必须先像一张能被真人美妆品牌使用的照片，再考虑文字、CTA 和排版。人脸、眼妆、唇妆、肤质和光线是第一优先级；装饰元素、贴纸、复杂背景和过多文字都必须让位。
 - 肿眼泡和单眼皮：强调睁眼后仍可见的位置，不承诺“改变眼型”
 - 橄榄皮：比较低饱和玫瑰、蜜桃与偏蓝粉色，不宣传万能色号
 - 熟龄肌：强调薄层底妆、局部定妆和战略性光泽，不使用“逆龄”承诺
@@ -230,13 +259,20 @@ Pinterest 没有公开“新号每天只能发几张”的固定阈值。本计�
 
 ## 12. 当前一步与完成标准
 
-当前只执行第一张 Pin：
+当前发布进度：
 
-- Board：`AI Makeup Try-On Ideas`
-- 素材：`artifacts/pinterest/01-ai-makeup-tryon.png`
-- 链接：`/tryon` 加唯一 UTM
-- 发布前检查标题、描述、Alt text、Board 和 URL
-- 发布后记录 Pin URL、发布时间和 `utm_content`
+- 第 1 张 `AI Makeup Try-On` 已发布。
+- 第 2 张 `5-Minute Makeup` 已发布。
+- 第 3 张 `Soft Glam` 已发布。
+
+下一张新增 Pin 必须先执行：
+
+1. 确认 Pin 主题、Board、目标妆容 slug 和唯一 `utm_content`。
+2. 检查目标 URL 是否存在。
+3. 检查页面是否已经有 Pinterest 承接模块，首屏是否承接 Pin 承诺。
+4. 检查 CTA 是否直达对应预选试妆。
+5. 检查页面是否已经部署到线上。
+6. 生成高质量真实摄影感 Pin 图，再给用户逐项填写 Pinterest 发布信息。
 
 第一阶段完成条件不是“Pin 已发布”，而是：
 

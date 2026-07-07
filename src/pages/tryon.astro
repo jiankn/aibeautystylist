@@ -10,6 +10,7 @@ import TutorialSteps from "../components/TutorialSteps.astro";
 import TryOnHistoryPreview from "../components/TryOnHistoryPreview.astro";
 import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
 import { getPinterestConversionCopy } from "../data/pinterestConversionCopy";
+import { isValidMarketProfile } from "../data/makeup/audienceTypes";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
 import { getTutorialByLookSlug, getTutorialUiCopy } from "../data/tutorials";
@@ -77,10 +78,18 @@ const shareBaseHref = localizeAppHref("/share");
 const subscriptionHref = localizeAppHref("/subscription");
 const creditPacksHref = `${subscriptionHref}#credit-packs`;
 const tryonHref = localizeAppHref("/tryon");
-const resolvedLooks = resolveLookCatalog(audienceContext);
+const requestedMarketProfile = Astro.url.searchParams.get("marketProfile");
+const validatedMarketProfile =
+  requestedMarketProfile && isValidMarketProfile(requestedMarketProfile)
+    ? requestedMarketProfile
+    : undefined;
+const tryonAudienceContext = validatedMarketProfile
+  ? { ...audienceContext, marketProfile: validatedMarketProfile }
+  : audienceContext;
+const resolvedLooks = resolveLookCatalog(tryonAudienceContext);
 const homeScenarioImages = resolvePageAssets(
   "home",
-  audienceContext,
+  tryonAudienceContext,
 ).scenarioImages;
 const featuredSlugs = ["commute", "no-makeup", "rose-milk-date", "photogenic"];
 const defaultFeaturedLooks = featuredSlugs
@@ -324,6 +333,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     class="workspace-main"
     data-tryon-audience={experience.audience}
     data-tryon-plan={experience.planCode}
+    data-tryon-market-profile={tryonAudienceContext.marketProfile}
   >
     <div class="shell">
       {

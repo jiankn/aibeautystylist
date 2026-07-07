@@ -4,6 +4,7 @@ import {
   resolveBySlug,
   resolveBySnapshot,
 } from "../../../data/makeup/resolveCatalog";
+import { isValidMarketProfile } from "../../../data/makeup/audienceTypes";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import {
   getEntitlementContext,
@@ -37,6 +38,7 @@ import {
 interface CreateJobBody {
   uploadId?: string;
   lookSlug?: string;
+  marketProfile?: string;
   privateTemplateId?: string;
   idempotencyKey?: string;
   requiredPlan?: string;
@@ -140,7 +142,25 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
   const auth = await requireAuthenticatedUser(cookies, bindings.DB);
   if (!auth.ok) return auth.response;
   const userId = auth.user.id;
-  const audienceContext = locals.audienceContext;
+  const requestedMarketProfile =
+    typeof body.marketProfile === "string" ? body.marketProfile : undefined;
+  if (requestedMarketProfile && !isValidMarketProfile(requestedMarketProfile)) {
+    return apiError(
+      {
+        code: "INVALID_MARKET_PROFILE",
+        message: "市场画像参数无效",
+        retryable: false,
+      },
+      422,
+    );
+  }
+  const validatedMarketProfile =
+    requestedMarketProfile && isValidMarketProfile(requestedMarketProfile)
+      ? requestedMarketProfile
+      : undefined;
+  const audienceContext = validatedMarketProfile
+    ? { ...locals.audienceContext, marketProfile: validatedMarketProfile }
+    : locals.audienceContext;
   const privateTemplate = body.privateTemplateId
     ? await getOwnedPrivateLookTemplate(
         userId,

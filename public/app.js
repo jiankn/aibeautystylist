@@ -547,6 +547,8 @@ async function readApiPayload(response, fallbackMessage) {
 window.__absCreateTryOnJob = async function createTryOnJobFlow({
   file,
   lookSlug,
+  marketProfile = document.querySelector("[data-tryon-market-profile]")?.dataset
+    .tryonMarketProfile,
   requiredPlan = "free",
   purpose = "tryon",
   idempotencyKey,
@@ -604,6 +606,7 @@ window.__absCreateTryOnJob = async function createTryOnJobFlow({
       body: JSON.stringify({
         uploadId: upload.id,
         lookSlug,
+        marketProfile,
         idempotencyKey: idempotencyKey || crypto.randomUUID(),
         requiredPlan,
         purpose,
@@ -1638,6 +1641,9 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
   };
   const getActiveLook = () => document.querySelector("[data-look-slug].active");
+  const getActiveMarketProfile = () =>
+    document.querySelector("[data-tryon-market-profile]")?.dataset
+      .tryonMarketProfile;
   const setTaskNavSuppressed = (suppressed) => {
     window.absSetMobileBottomNavSuppressed?.("tryon-task", suppressed);
   };
@@ -1957,6 +1963,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
           body: JSON.stringify({
             uploadId: result.data.id,
             lookSlug: activeLook?.dataset.lookSlug,
+            marketProfile: getActiveMarketProfile(),
             idempotencyKey,
           }),
         }),
