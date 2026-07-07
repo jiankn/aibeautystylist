@@ -6,6 +6,11 @@ interface ConversionStep {
   body: string;
 }
 
+interface VisualHighlight {
+  title: string;
+  body: string;
+}
+
 interface Props {
   tone?: "article" | "workspace";
   kicker: string;
@@ -13,6 +18,10 @@ interface Props {
   body: string;
   image: string;
   imageAlt?: string;
+  visualVariant?: "photo" | "decision";
+  visualHighlights?: readonly VisualHighlight[];
+  visualFooterLabel?: string;
+  visualFooterBody?: string;
   selectedLook?: string;
   selectedLookMeta: string;
   primaryHref: string;
@@ -38,6 +47,10 @@ const {
   body,
   image,
   imageAlt: imageAltProp,
+  visualVariant = "photo",
+  visualHighlights = [],
+  visualFooterLabel = "Free first preview",
+  visualFooterBody = "Upgrade when you want saved looks, more generations, and HD downloads.",
   selectedLook: selectedLookProp,
   selectedLookMeta,
   primaryHref,
@@ -79,14 +92,49 @@ const imageAlt = imageAltProp ?? selectedLook;
         {proofPoints.map((point) => <li>{point}</li>)}
       </ul>
     </div>
-    <figure class="pin-conversion-visual">
-      <img src={image} alt={imageAlt} loading="eager" decoding="async" />
-      <figcaption>
-        <span>{selectedLookLabel}</span>
-        <strong>{selectedLook}</strong>
-        <small>{selectedLookMeta}</small>
-      </figcaption>
-    </figure>
+    {
+      visualVariant === "decision" ? (
+        <div class="pin-conversion-visual pin-conversion-decision">
+          <div class="pin-decision-look">
+            <img
+              src={image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              aria-hidden="true"
+            />
+            <div>
+              <span>{selectedLookLabel}</span>
+              <strong>{selectedLook}</strong>
+              <small>{selectedLookMeta}</small>
+            </div>
+          </div>
+          {visualHighlights.length > 0 && (
+            <div class="pin-decision-highlights" aria-label={imageAlt}>
+              {visualHighlights.map((highlight) => (
+                <article>
+                  <h3>{highlight.title}</h3>
+                  <p>{highlight.body}</p>
+                </article>
+              ))}
+            </div>
+          )}
+          <div class="pin-decision-footer">
+            <span>{visualFooterLabel}</span>
+            <strong>{visualFooterBody}</strong>
+          </div>
+        </div>
+      ) : (
+        <figure class="pin-conversion-visual pin-conversion-photo">
+          <img src={image} alt={imageAlt} loading="eager" decoding="async" />
+          <figcaption>
+            <span>{selectedLookLabel}</span>
+            <strong>{selectedLook}</strong>
+            <small>{selectedLookMeta}</small>
+          </figcaption>
+        </figure>
+      )
+    }
   </div>
 
   <div class="pin-conversion-path" aria-label={pathAriaLabel}>
@@ -261,7 +309,7 @@ const imageAlt = imageAltProp ?? selectedLook;
     overflow: hidden;
   }
 
-  .pin-conversion-visual img {
+  .pin-conversion-photo > img {
     display: block;
     width: 100%;
     height: 100%;
@@ -292,6 +340,94 @@ const imageAlt = imageAltProp ?? selectedLook;
 
   .pin-conversion-visual strong {
     font-size: 1.1rem;
+  }
+
+  .pin-conversion-decision {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    gap: 1rem;
+    padding: clamp(1rem, 2.5vw, 1.35rem);
+    background:
+      linear-gradient(135deg, rgba(255, 245, 247, 0.88), transparent 55%),
+      var(--pin-surface);
+  }
+
+  .pin-decision-look {
+    display: grid;
+    grid-template-columns: 116px minmax(0, 1fr);
+    gap: 1rem;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--pin-border);
+  }
+
+  .pin-decision-look img {
+    display: block;
+    width: 116px;
+    aspect-ratio: 4 / 5;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .pin-decision-look div {
+    display: grid;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+
+  .pin-decision-look span,
+  .pin-decision-look small,
+  .pin-decision-footer span {
+    color: var(--body-secondary);
+    font-size: 0.82rem;
+  }
+
+  .pin-decision-look strong {
+    color: var(--heading);
+    font-size: 1.25rem;
+    line-height: 1.15;
+  }
+
+  .pin-decision-highlights {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem 1rem;
+  }
+
+  .pin-decision-highlights article {
+    min-width: 0;
+    padding-left: 0.75rem;
+    border-left: 3px solid rgba(200, 62, 104, 0.32);
+  }
+
+  .pin-decision-highlights h3 {
+    margin: 0 0 0.25rem;
+    color: var(--heading);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .pin-decision-highlights p {
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .pin-decision-footer {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--pin-border);
+  }
+
+  .pin-decision-footer strong {
+    color: var(--heading);
+    font-size: 1rem;
+    line-height: 1.35;
   }
 
   .pin-conversion-path {
@@ -366,9 +502,13 @@ const imageAlt = imageAltProp ?? selectedLook;
       font-size: 2.35rem;
     }
 
-    .pin-conversion-visual img {
+    .pin-conversion-photo > img {
       min-height: 320px;
       aspect-ratio: 4 / 5;
+    }
+
+    .pin-decision-highlights {
+      grid-template-columns: 1fr;
     }
 
     .pin-membership-strip {
@@ -402,6 +542,15 @@ const imageAlt = imageAltProp ?? selectedLook;
 
     .pin-conversion h2 {
       font-size: 2rem;
+    }
+
+    .pin-decision-look {
+      grid-template-columns: 88px minmax(0, 1fr);
+      gap: 0.85rem;
+    }
+
+    .pin-decision-look img {
+      width: 88px;
     }
   }
 
