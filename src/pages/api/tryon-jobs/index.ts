@@ -23,6 +23,13 @@ import {
 } from "../../../lib/jobs";
 import { isPlanCode, type PlanCode } from "../../../lib/plans";
 import {
+  attachPinterestGuestJob,
+  pinterestGuestPassState,
+  releasePinterestGuestGeneration,
+  reservePinterestGuestGeneration,
+  resolvePinterestGuestPass,
+} from "../../../lib/pinterestGuestPass";
+import {
   getOwnedPrivateLookTemplate,
   privateTemplateToLook,
 } from "../../../lib/privateLookTemplates";
@@ -140,8 +147,31 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
 
   const bindings = getRuntimeBindings();
   const auth = await requireAuthenticatedUser(cookies, bindings.DB);
-  if (!auth.ok) return auth.response;
-  const userId = auth.user.id;
+  const guestPass = auth.ok
+    ? undefined
+    : await resolvePinterestGuestPass(cookies, bindings.DB);
+  if (!auth.ok && !guestPass) return auth.response;
+  if (guestPass && hasPrivateTemplate) {
+    return apiError(
+      {
+        code: "AUTH_REQUIRED",
+        message: "Create an account to use private reference try-on.",
+        retryable: false,
+      },
+      401,
+    );
+  }
+  const userId = auth.ok ? auth.user.id : guestPass?.guestUserId;
+  if (!userId) {
+    return apiError(
+      {
+        code: "AUTH_REQUIRED",
+        message: "Please sign in before continuing.",
+        retryable: false,
+      },
+      401,
+    );
+  }
   const requestedMarketProfile =
     typeof body.marketProfile === "string" ? body.marketProfile : undefined;
   if (requestedMarketProfile && !isValidMarketProfile(requestedMarketProfile)) {
@@ -241,6 +271,51 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     );
   }
 
+  if (guestPass && requiredPlan !== "free") {
+    return apiError(
+      {
+        code: "AUTH_REQUIRED",
+        message: "Create an account to use member-only try-on features.",
+        retryable: false,
+      },
+      401,
+    );
+  }
+
+  if (guestPass && purpose !== "tryon") {
+    return apiError(
+      {
+        code: "INVALID_JOB_PURPOSE",
+        message: "The free Pinterest preview can only be used for makeup try-on.",
+        retryable: false,
+      },
+      422,
+    );
+  }
+
+  if (guestPass) {
+    if (guestPass.jobId || guestPass.usedAt) {
+      return apiError(
+        {
+          code: "GUEST_TRY_USED",
+          message: "Your free Pinterest preview has already been used. Create an account to keep trying looks.",
+          retryable: false,
+        },
+        403,
+      );
+    }
+    if (guestPass.uploadId !== body.uploadId) {
+      return apiError(
+        {
+          code: "GUEST_UPLOAD_REQUIRED",
+          message: "Upload one selfie from this Pinterest preview before generating.",
+          retryable: false,
+        },
+        409,
+      );
+    }
+  }
+
   if (requiredPlan !== "free") {
     const entitlement = await requirePlan(userId, requiredPlan, bindings.DB);
     if (!entitlement.allowed) {
@@ -305,6 +380,25 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     });
   }
 
+  let guestReservation = false;
+  if (guestPass) {
+    guestReservation = await reservePinterestGuestGeneration(
+      guestPass,
+      body.uploadId,
+      bindings.DB,
+    );
+    if (!guestReservation) {
+      return apiError(
+        {
+          code: "GUEST_TRY_USED",
+          message: "Your free Pinterest preview has already been used. Create an account to keep trying looks.",
+          retryable: false,
+        },
+        403,
+      );
+    }
+  }
+
   try {
     const result = await createTryOnJob({
       userId,
@@ -316,6 +410,9 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       purpose,
       privateTemplate,
     });
+    if (guestPass) {
+      await attachPinterestGuestJob(guestPass.id, result.job.id, bindings.DB);
+    }
     await scheduleTryOnJobProcessing(locals, result.job, {
       userId,
       jobId: result.job.id,
@@ -327,10 +424,22 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       {
         ...toLocalizedJobResponse(result.job, audienceContext),
         quota: result.quota,
+        guestTry: guestPass
+          ? pinterestGuestPassState({
+              ...guestPass,
+              usedAt: new Date().toISOString(),
+              jobId: result.job.id,
+            })
+          : undefined,
       },
       { status: 201 },
     );
   } catch (error) {
+    if (guestReservation && guestPass) {
+      await releasePinterestGuestGeneration(guestPass.id, bindings.DB).catch(
+        () => undefined,
+      );
+    }
     if (error instanceof TryOnJobServiceError) {
       return apiError(
         {

@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import { apiError, apiSuccess } from "../../../lib/http";
+import { resolvePinterestGuestUploadOwner } from "../../../lib/pinterestGuestPass";
 import { getRuntimeBindings } from "../../../lib/runtime";
 import { deleteOwnedUpload, getOwnedUpload } from "../../../lib/uploadRecords";
 
@@ -11,9 +12,23 @@ export const GET: APIRoute = async ({ cookies, params }) => {
 
   const bindings = getRuntimeBindings();
   const auth = await requireAuthenticatedUser(cookies, bindings.DB);
-  if (!auth.ok) return auth.response;
+  const guestPass = auth.ok
+    ? undefined
+    : await resolvePinterestGuestUploadOwner(cookies, uploadId, bindings.DB);
+  if (!auth.ok && !guestPass) return auth.response;
+  const userId = auth.ok ? auth.user.id : guestPass?.guestUserId;
+  if (!userId) {
+    return apiError(
+      {
+        code: "AUTH_REQUIRED",
+        message: "Please sign in before continuing.",
+        retryable: false,
+      },
+      401,
+    );
+  }
 
-  const upload = await getOwnedUpload(auth.user.id, uploadId, bindings.DB);
+  const upload = await getOwnedUpload(userId, uploadId, bindings.DB);
   if (!upload || upload.deletedAt) return uploadNotFound();
 
   return apiSuccess({
@@ -36,11 +51,25 @@ export const DELETE: APIRoute = async ({ cookies, params }) => {
 
   const bindings = getRuntimeBindings();
   const auth = await requireAuthenticatedUser(cookies, bindings.DB);
-  if (!auth.ok) return auth.response;
+  const guestPass = auth.ok
+    ? undefined
+    : await resolvePinterestGuestUploadOwner(cookies, uploadId, bindings.DB);
+  if (!auth.ok && !guestPass) return auth.response;
+  const userId = auth.ok ? auth.user.id : guestPass?.guestUserId;
+  if (!userId) {
+    return apiError(
+      {
+        code: "AUTH_REQUIRED",
+        message: "Please sign in before continuing.",
+        retryable: false,
+      },
+      401,
+    );
+  }
 
   try {
     const result = await deleteOwnedUpload(
-      auth.user.id,
+      userId,
       uploadId,
       bindings.DB,
       bindings.USER_UPLOADS,

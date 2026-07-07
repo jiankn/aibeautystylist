@@ -43,7 +43,7 @@ const currentRoute =
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 const quickTryonHref = localizeAppHref(
-  "/tryon?look=five-minute-beginner&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_5min_01",
+  "/tryon?look=five-minute-beginner&guest_try=1&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_5min_01",
 );
 const quickPricingHref = localizeAppHref("/pricing?source=pinterest_quick5");
 const pinterestQuickCopy = getPinterestConversionCopy("quick5");

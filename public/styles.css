@@ -1857,6 +1857,96 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
   text-align: left;
 }
 .privacy-promise span { display: block; overflow-wrap: anywhere; }
+.guest-tryon-status {
+  border-color: var(--rose-border);
+  background:
+    linear-gradient(135deg, var(--surface-rose), transparent 58%),
+    var(--bg-elevated);
+}
+.guest-tryon-status .workspace-status-plan,
+.guest-tryon-status .workspace-status-perks {
+  color: var(--rose);
+}
+.guest-tryon-pass-copy {
+  display: grid;
+  gap: 4px;
+  width: min(100%, 292px);
+  padding: 10px 11px;
+  border: 1px solid var(--rose-border);
+  border-radius: 10px;
+  background: var(--surface-rose);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.48;
+  text-align: left;
+}
+.guest-tryon-pass-copy b {
+  color: var(--rose);
+  font-size: 12px;
+}
+.upload-box-pinterest-guest {
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+}
+.upload-box-pinterest-guest .upload-camera {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 0;
+}
+.upload-box-pinterest-guest h3 {
+  max-width: 320px;
+  margin: 0;
+  font-size: clamp(22px, 3vw, 28px);
+  line-height: 1.12;
+}
+.upload-box-pinterest-guest > p {
+  max-width: 330px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.42;
+}
+.guest-selfie-fast-guide {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 330px);
+}
+.guest-selfie-fast-guide span {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-soft);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: left;
+}
+.guest-selfie-fast-guide b {
+  color: var(--heading);
+  font-size: 13px;
+}
+.guest-photo-details {
+  width: min(100%, 330px);
+  text-align: left;
+}
+.guest-photo-details summary {
+  min-height: 40px;
+  cursor: pointer;
+  color: var(--rose);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 40px;
+}
+.guest-privacy-promise {
+  width: 100%;
+  margin-top: 4px;
+}
+.upload-box-pinterest-guest > .privacy-promise:not(.guest-privacy-promise),
+.upload-box-pinterest-guest .upload-auth-lock {
+  display: none !important;
+}
 .upload-auth-lock {
   display: grid;
   gap: 4px;
@@ -1969,6 +2059,45 @@ button.featured-card { border: 0; color: inherit; font: inherit; text-align: lef
 .result-share-bar strong { color: var(--navy); font-size: 13px; }
 .result-share-bar span { color: var(--muted); font-size: 11px; }
 .result-share-bar .btn { min-height: 36px; padding-inline: 9px; font-size: 11px; }
+.guest-result-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--rose-border);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, var(--surface-rose), transparent 52%),
+    var(--bg-elevated);
+  box-shadow: var(--btn-shadow);
+}
+.guest-result-cta[hidden] { display: none; }
+.guest-result-cta h3 {
+  margin: 6px 0 4px;
+  color: var(--heading);
+  font-size: 18px;
+  line-height: 1.3;
+}
+.guest-result-cta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.58;
+}
+.guest-result-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.guest-result-cta-actions .btn {
+  min-height: 44px;
+  padding-inline: 14px;
+  font-size: 13px;
+  white-space: normal;
+}
 .explain-panel { padding: 18px; }
 .explain-panel .panel-title { font-size: 18px; }
 .explain-panel .panel-subtitle { display: none; }
@@ -2757,6 +2886,39 @@ i[data-icon="caution"] { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmln
   .workspace-status-main { align-items: flex-start; }
   .workspace-status-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .workspace-status-actions .btn { min-height: 34px; padding-inline: 10px; }
+  .guest-tryon-status {
+    gap: 14px;
+    padding: 14px;
+  }
+  .guest-tryon-status .workspace-status-main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+  .guest-tryon-status .workspace-status-plan {
+    justify-self: start;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 32px;
+    padding-inline: 12px;
+    white-space: normal;
+  }
+  .guest-tryon-status h1 {
+    font-size: 28px;
+    line-height: 1.08;
+  }
+  .guest-tryon-status p {
+    font-size: 16px;
+    line-height: 1.36;
+  }
+  .guest-tryon-status .workspace-status-actions {
+    grid-template-columns: 1fr;
+  }
+  .guest-tryon-status .workspace-status-actions .btn {
+    width: 100%;
+    min-height: 48px;
+    font-size: 16px;
+  }
   .workspace-status[data-active="tryon-pro"],
   .workspace-status[data-active="tryon-premium"] {
     grid-template-columns: auto minmax(0, 1fr);
@@ -2779,6 +2941,21 @@ i[data-icon="caution"] { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmln
   .premium-share-panel > div, .premium-grid .result-panel .panel > div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
   .result-share-bar { grid-template-columns: 1fr; }
   .result-share-bar > div { display: grid; }
+  .guest-result-cta {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 14px;
+  }
+  .guest-result-cta-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+  }
+  .guest-result-cta-actions .btn {
+    width: 100%;
+    min-height: 48px;
+  }
   .result-compare { height: 420px; }
   .upload-preview,
   .upload-preview.has-photo-preview {
@@ -2793,6 +2970,28 @@ i[data-icon="caution"] { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmln
   }
   .upload-box.upload-box-guided {
     min-height: clamp(520px, 150vw, 620px);
+  }
+  .upload-box.upload-box-pinterest-guest {
+    min-height: auto;
+    padding: 20px 18px;
+    gap: 11px;
+  }
+  .upload-box-pinterest-guest .upload-camera {
+    width: 64px;
+    height: 64px;
+  }
+  .upload-box-pinterest-guest h3 {
+    font-size: 24px;
+  }
+  .upload-box-pinterest-guest > p {
+    font-size: 15px;
+  }
+  .guest-selfie-fast-guide,
+  .guest-tryon-pass-copy,
+  .guest-photo-details,
+  .upload-box-pinterest-guest .privacy-consent,
+  .upload-box-pinterest-guest [data-upload] {
+    width: 100%;
   }
   .upload-box.has-photo {
     min-height: clamp(320px, 92vw, 460px);

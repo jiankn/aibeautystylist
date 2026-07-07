@@ -6,21 +6,40 @@ import { apiError, apiSuccess } from "../../../lib/http";
 import {
   deleteOwnedJob,
   getStoredJobById,
+  isRunningJobStatus,
   timeoutStoredJobIfExpired,
   toLocalizedJobResponse,
 } from "../../../lib/jobs";
+import {
+  completePinterestGuestJob,
+  pinterestGuestPassState,
+  resolvePinterestGuestJobOwner,
+} from "../../../lib/pinterestGuestPass";
 import { refundQuota } from "../../../lib/quota";
 import { getRuntimeBindings } from "../../../lib/runtime";
 import { getOwnedUpload } from "../../../lib/uploadRecords";
 
 export const GET: APIRoute = async ({ cookies, locals, params }) => {
   const { DB } = getRuntimeBindings();
+  const jobId = params.id;
+  if (!jobId) return jobNotFound();
   const auth = await requireAuthenticatedUser(cookies, DB);
-  if (!auth.ok) return auth.response;
-  const userId = auth.user.id;
-  const job = params.id
-    ? await getStoredJobById(userId, params.id, DB)
-    : undefined;
+  const guestPass = auth.ok
+    ? undefined
+    : await resolvePinterestGuestJobOwner(cookies, jobId, DB);
+  if (!auth.ok && !guestPass) return auth.response;
+  const userId = auth.ok ? auth.user.id : guestPass?.guestUserId;
+  if (!userId) {
+    return apiError(
+      {
+        code: "AUTH_REQUIRED",
+        message: "Please sign in before continuing.",
+        retryable: false,
+      },
+      401,
+    );
+  }
+  const job = await getStoredJobById(userId, jobId, DB);
 
   if (!job) return jobNotFound();
 
@@ -30,6 +49,9 @@ export const GET: APIRoute = async ({ cookies, locals, params }) => {
   }
   const { quota } = await getEntitlementContext(userId, DB);
   const latestJob = timeoutResult.job;
+  if (guestPass && !isRunningJobStatus(latestJob.status)) {
+    await completePinterestGuestJob(guestPass.id, DB).catch(() => undefined);
+  }
   const upload = await getOwnedUpload(userId, latestJob.uploadId, DB);
   const originalImage =
     upload?.r2Key && !upload.deletedAt
@@ -40,19 +62,40 @@ export const GET: APIRoute = async ({ cookies, locals, params }) => {
     ...toLocalizedJobResponse(latestJob, locals.audienceContext),
     originalImage,
     quota,
+    guestTry: guestPass
+      ? pinterestGuestPassState({
+          ...guestPass,
+          completedAt: isRunningJobStatus(latestJob.status)
+            ? guestPass.completedAt
+            : (guestPass.completedAt ?? new Date().toISOString()),
+        })
+      : undefined,
   });
 };
 
 export const DELETE: APIRoute = async ({ cookies, params }) => {
   const { DB, USER_UPLOADS } = getRuntimeBindings();
+  const jobId = params.id;
+  if (!jobId) return jobNotFound();
   const auth = await requireAuthenticatedUser(cookies, DB);
-  if (!auth.ok) return auth.response;
-  const userId = auth.user.id;
+  const guestPass = auth.ok
+    ? undefined
+    : await resolvePinterestGuestJobOwner(cookies, jobId, DB);
+  if (!auth.ok && !guestPass) return auth.response;
+  const userId = auth.ok ? auth.user.id : guestPass?.guestUserId;
+  if (!userId) {
+    return apiError(
+      {
+        code: "AUTH_REQUIRED",
+        message: "Please sign in before continuing.",
+        retryable: false,
+      },
+      401,
+    );
+  }
   let result;
   try {
-    result = params.id
-      ? await deleteOwnedJob(userId, params.id, DB, USER_UPLOADS)
-      : undefined;
+    result = await deleteOwnedJob(userId, jobId, DB, USER_UPLOADS);
   } catch {
     return apiError(
       {

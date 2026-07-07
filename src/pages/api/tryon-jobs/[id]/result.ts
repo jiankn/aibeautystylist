@@ -8,6 +8,7 @@ import {
   normalizeResultImageVariant,
 } from "../../../../lib/imageVariants";
 import { getStoredJobById } from "../../../../lib/jobs";
+import { resolvePinterestGuestJobOwner } from "../../../../lib/pinterestGuestPass";
 import { getRuntimeBindings } from "../../../../lib/runtime";
 
 const RESULT_CACHE = "private, max-age=3600, stale-while-revalidate=86400";
@@ -17,12 +18,25 @@ const RESULT_VARIANT_CACHE =
 export const GET: APIRoute = async ({ cookies, params, url }) => {
   const bindings = getRuntimeBindings();
   const { DB, USER_UPLOADS } = bindings;
+  const jobId = params.id;
+  if (!jobId) return resultNotFound();
   const auth = await requireAuthenticatedUser(cookies, DB);
-  if (!auth.ok) return auth.response;
-  const userId = auth.user.id;
-  const job = params.id
-    ? await getStoredJobById(userId, params.id, DB)
-    : undefined;
+  const guestPass = auth.ok
+    ? undefined
+    : await resolvePinterestGuestJobOwner(cookies, jobId, DB);
+  if (!auth.ok && !guestPass) return auth.response;
+  const userId = auth.ok ? auth.user.id : guestPass?.guestUserId;
+  if (!userId) {
+    return apiError(
+      {
+        code: "AUTH_REQUIRED",
+        message: "Please sign in before continuing.",
+        retryable: false,
+      },
+      401,
+    );
+  }
+  const job = await getStoredJobById(userId, jobId, DB);
 
   if (!job?.resultR2Key || !USER_UPLOADS) return resultNotFound();
 

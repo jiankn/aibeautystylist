@@ -133,6 +133,12 @@ const APP_MESSAGES = {
     uploadCancelled: "Upload cancelled. Choose again or retry.",
     processFailed: "Processing failed. Please try again later.",
     loginQuotaRequired: "Sign in to use your try-on quota",
+    guestUploadButton: "Upload selfie - free Pinterest preview",
+    guestPreviewPreparing: "Preparing free Pinterest preview...",
+    guestPreviewRetry: "Retry free Pinterest preview",
+    guestPreviewUsed: "Your free Pinterest preview is used. Create an account to keep trying looks.",
+    guestResultTitle: "Like the result?",
+    guestResultDesc: "Create an account to save looks, generate more previews, and unlock member benefits.",
     cancelFailed: "Failed to cancel task",
     retryCreating: "Creating retry task…",
     retryCreateFailed: "Failed to create retry task",
@@ -442,6 +448,59 @@ window.alert = function absStyledAlert(message) {
 
 const PHOTO_CONSENT_VERSION = "2026-06-07";
 let currentSessionPromise;
+let pinterestGuestPassPromise;
+let pinterestGuestPassState;
+let pinterestGuestPassLoaded = false;
+
+const pinterestGuestParams = new URLSearchParams(window.location.search);
+const PINTEREST_GUEST_ELIGIBLE =
+  pinterestGuestParams.get("guest_try") === "1" &&
+  (pinterestGuestParams.get("utm_source") === "pinterest" ||
+    (pinterestGuestParams.get("source") || "").startsWith("pinterest"));
+
+function setPinterestGuestPassState(state) {
+  pinterestGuestPassState = state || undefined;
+  pinterestGuestPassLoaded = true;
+  document.documentElement.toggleAttribute(
+    "data-pinterest-guest-pass",
+    Boolean(pinterestGuestPassState),
+  );
+  document.documentElement.toggleAttribute(
+    "data-pinterest-guest-available",
+    Boolean(pinterestGuestPassState?.available),
+  );
+}
+
+async function getPinterestGuestPass({ refresh = false } = {}) {
+  if (!PINTEREST_GUEST_ELIGIBLE) return pinterestGuestPassState;
+  if (!pinterestGuestPassPromise || refresh) {
+    pinterestGuestPassPromise = fetch("/api/pinterest-guest-pass", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ query: window.location.search }),
+    })
+      .then(async (response) => {
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload?.ok || payload.data?.authenticated) {
+          pinterestGuestPassLoaded = true;
+          setPinterestGuestPassState(undefined);
+          return undefined;
+        }
+        setPinterestGuestPassState(payload.data?.guestTry);
+        return pinterestGuestPassState;
+      })
+      .catch(() => {
+        pinterestGuestPassLoaded = true;
+        setPinterestGuestPassState(undefined);
+        return undefined;
+      });
+  }
+  return pinterestGuestPassPromise;
+}
+
+function hasGuestTryonAvailable() {
+  return Boolean(PINTEREST_GUEST_ELIGIBLE && pinterestGuestPassState?.available);
+}
 
 function getLoginUrl() {
   const login = new URL("/login", window.location.origin);
@@ -487,8 +546,10 @@ function createNativeImagePicker(anchor) {
   return input;
 }
 
-function syncUploadAuthGate(session) {
+function syncUploadAuthGate(session, guestPass = pinterestGuestPassState) {
   const authenticated = isAccountSession(session);
+  const guestAvailable = !authenticated && Boolean(guestPass?.available);
+  const guestEligible = !authenticated && PINTEREST_GUEST_ELIGIBLE;
   const quotaExhausted =
     authenticated && Number(session?.quota?.remaining) <= 0;
   document.querySelectorAll("[data-upload]").forEach((button) => {
@@ -498,10 +559,59 @@ function syncUploadAuthGate(session) {
     const lockPanel = uploadBox?.querySelector("[data-upload-auth-lock]");
     button.dataset.defaultLabel ||= button.textContent.trim();
 
+    if (guestAvailable) {
+      delete button.dataset.loginRequired;
+      delete button.dataset.guestPending;
+      button.dataset.guestTryon = "true";
+      button.textContent =
+        button.dataset.guestLabel || msg("guestUploadButton");
+      if (consent) {
+        consent.disabled = false;
+        button.disabled = !consent.checked;
+      }
+      if (consentRow) consentRow.hidden = false;
+      if (lockPanel) lockPanel.hidden = true;
+      uploadBox?.classList.add("guest-tryon-unlocked");
+      uploadBox?.classList.remove("guest-tryon-pending");
+      return;
+    }
+
+    delete button.dataset.guestTryon;
+    delete button.dataset.guestPending;
+    uploadBox?.classList.remove("guest-tryon-unlocked");
+
+    if (guestEligible) {
+      if (guestPass?.used) {
+        button.dataset.loginRequired = "true";
+        button.disabled = false;
+        button.textContent = msg("guestPreviewUsed");
+      } else {
+        delete button.dataset.loginRequired;
+        button.dataset.guestPending = "true";
+        button.disabled = !pinterestGuestPassLoaded;
+        button.textContent = pinterestGuestPassLoaded
+          ? msg("guestPreviewRetry")
+          : button.dataset.guestPendingLabel || msg("guestPreviewPreparing");
+      }
+      if (consent) {
+        consent.checked = false;
+        consent.disabled = true;
+      }
+      if (consentRow) consentRow.hidden = true;
+      if (lockPanel) lockPanel.hidden = true;
+      uploadBox?.classList.add("guest-tryon-pending");
+      return;
+    }
+
+    uploadBox?.classList.remove("guest-tryon-pending");
+
     if (!authenticated) {
       button.dataset.loginRequired = "true";
       button.disabled = false;
-      button.textContent = button.dataset.loginLabel || msg("loginToUpload");
+      button.textContent =
+        guestPass?.used
+          ? msg("guestPreviewUsed")
+          : button.dataset.loginLabel || msg("loginToUpload");
       if (consent) {
         consent.checked = false;
         consent.disabled = true;
@@ -531,8 +641,11 @@ function syncUploadAuthGate(session) {
 }
 
 if (document.querySelector("[data-upload]")) {
-  getCurrentSession()
-    .then((session) => syncUploadAuthGate(session))
+  Promise.all([
+    getCurrentSession(),
+    getPinterestGuestPass().catch(() => undefined),
+  ])
+    .then(([session, guestPass]) => syncUploadAuthGate(session, guestPass))
     .catch(() => {});
 }
 
@@ -1759,6 +1872,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   };
 
   const renderSuccessfulJob = (job) => {
+    if (job?.guestTry) setPinterestGuestPassState(job.guestTry);
     setCurrentJobInUrl(job.id);
     const resultTarget = document.querySelector("[data-result-target]");
     if (resultTarget && job.resultImage) {
@@ -1804,6 +1918,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         detail: { job },
       }),
     );
+    revealGuestResultCta(job);
     syncTryonBackgroundTask(job, {
       status: "succeeded",
       progress: 100,
@@ -1824,6 +1939,20 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         ? msg("referenceGeneratedNote")
         : msg("tryonGenerated"),
     );
+  };
+
+  const revealGuestResultCta = (job) => {
+    const guestCta = document.querySelector("[data-guest-result-cta]");
+    if (!guestCta || !job?.guestTry) return;
+    const title = guestCta.querySelector("[data-guest-result-title]");
+    const desc = guestCta.querySelector("[data-guest-result-desc]");
+    if (title) title.textContent = msg("guestResultTitle");
+    if (desc) desc.textContent = msg("guestResultDesc");
+    guestCta.hidden = false;
+    guestCta.dataset.visible = "true";
+    window.requestAnimationFrame(() => {
+      guestCta.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
   };
 
   const presentTerminalJob = (job) => {
@@ -1872,6 +2001,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       });
       await new Promise((resolve) => window.setTimeout(resolve, 1200));
       job = await readApiData(await fetch(`/api/tryon-jobs/${job.id}`), msg("statusQueryFailed"));
+      if (job.guestTry) setPinterestGuestPassState(job.guestTry);
       updateQuotaDisplay(job.quota);
     }
 
@@ -1905,13 +2035,15 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     });
 
     try {
-      const consentResponse = await fetch("/api/consents/photo", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ accepted: true, version: PHOTO_CONSENT_VERSION }),
-        signal: controller.signal,
-      });
-      if (!consentResponse.ok) throw new Error("CONSENT_FAILED");
+      if (!hasGuestTryonAvailable()) {
+        const consentResponse = await fetch("/api/consents/photo", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ accepted: true, version: PHOTO_CONSENT_VERSION }),
+          signal: controller.signal,
+        });
+        if (!consentResponse.ok) throw new Error("CONSENT_FAILED");
+      }
       setUploadState(msg("validatingUpload"), 38, {
         cancellable: true,
         stageKey: "upload",
@@ -1939,6 +2071,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       });
       const result = await uploadResponse.json();
       if (!uploadResponse.ok) throw new Error(result.error?.message || "UPLOAD_FAILED");
+      if (result.data?.guestTry) setPinterestGuestPassState(result.data.guestTry);
       trackTryonPerf("tryon_upload_completed", {
         durationMs: Math.round(performance.now() - uploadStartedAt),
         originalBytes: file.size,
@@ -1969,6 +2102,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         }),
         msg("jobCreateFailed"),
       );
+      if (job.guestTry) setPinterestGuestPassState(job.guestTry);
       trackTryonPerf("tryon_job_created", {
         durationMs: Math.round(performance.now() - jobCreateStartedAt),
         jobId: job.id,
@@ -1998,8 +2132,11 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       controller = undefined;
       button.textContent = originalLabel;
       button.disabled = !uploadBox?.querySelector("[data-photo-consent]")?.checked;
-      void getCurrentSession({ refresh: true })
-        .then((session) => syncUploadAuthGate(session))
+      void Promise.all([
+        getCurrentSession({ refresh: true }),
+        getPinterestGuestPass({ refresh: true }).catch(() => undefined),
+      ])
+        .then(([session, guestPass]) => syncUploadAuthGate(session, guestPass))
         .catch(() => {});
       syncTaskNavSuppression();
     }
@@ -2036,9 +2173,16 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     const file = fileInput.files[0];
     const session = await getCurrentSession({ refresh: true });
     if (!isAccountSession(session)) {
-      syncUploadAuthGate(session);
-      redirectToLogin(msg("loginQuotaRequired"));
-      return;
+      const guestPass = await getPinterestGuestPass({ refresh: true }).catch(
+        () => undefined,
+      );
+      syncUploadAuthGate(session, guestPass);
+      if (!guestPass?.available) {
+        redirectToLogin(
+          guestPass?.used ? msg("guestPreviewUsed") : msg("loginQuotaRequired"),
+        );
+        return;
+      }
     }
 
     idempotencyKey = crypto.randomUUID();
@@ -2047,9 +2191,27 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     await runUpload(file);
   });
 
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
+    if (button.dataset.guestPending === "true") {
+      button.disabled = true;
+      button.textContent =
+        button.dataset.guestPendingLabel || msg("guestPreviewPreparing");
+      const [session, guestPass] = await Promise.all([
+        getCurrentSession({ refresh: true }),
+        getPinterestGuestPass({ refresh: true }).catch(() => undefined),
+      ]);
+      syncUploadAuthGate(session, guestPass);
+      if (!guestPass?.available) {
+        showToast(msg("guestPreviewRetry"));
+      }
+      return;
+    }
     if (button.dataset.loginRequired === "true") {
-      redirectToLogin(msg("loginQuotaRequired"));
+      redirectToLogin(
+        PINTEREST_GUEST_ELIGIBLE
+          ? msg("guestPreviewUsed")
+          : msg("loginQuotaRequired"),
+      );
       return;
     }
     fileInput.value = "";
