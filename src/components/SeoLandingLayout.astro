@@ -112,7 +112,14 @@ const englishContentAssets = getEnglishFooterSeoAssets(
             <h2>Validate the direction in three views</h2>
             <div class="visual-guide-grid">
               {englishContentAssets.map((asset) => (
-                <figure class="visual-guide-item">
+                <figure
+                  class="visual-guide-item"
+                  style={
+                    asset.objectPosition
+                      ? `--visual-guide-focus: ${asset.objectPosition};`
+                      : undefined
+                  }
+                >
                   <img src={asset.src} alt={asset.alt} loading="lazy" />
                   <figcaption>{asset.caption}</figcaption>
                 </figure>
@@ -522,6 +529,7 @@ const englishContentAssets = getEnglishFooterSeoAssets(
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+    object-position: var(--visual-guide-focus, center center);
   }
   .visual-guide-item figcaption {
     padding: 0.875rem 1rem 1rem;

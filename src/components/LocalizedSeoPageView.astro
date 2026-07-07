@@ -149,7 +149,14 @@ const tableHeadings = {
                 )}
                 <div class="visual-guide-grid">
                   {page.contentAssets.map((asset) => (
-                    <figure class="visual-guide-item">
+                    <figure
+                      class="visual-guide-item"
+                      style={
+                        asset.objectPosition
+                          ? `--visual-guide-focus: ${asset.objectPosition};`
+                          : undefined
+                      }
+                    >
                       <img src={asset.src} alt={asset.alt} loading="lazy" />
                       <figcaption>{asset.caption}</figcaption>
                     </figure>

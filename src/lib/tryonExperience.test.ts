@@ -13,21 +13,21 @@ describe("resolveTryOnExperience", () => {
       audience: "anonymous",
       planCode: "free",
       authenticated: false,
-      showAdvisor: true,
+      showResultCoach: true,
       showMemberGuidance: false,
       showHistoryPreview: false,
     });
     expect(experience.features.hdDownload).toBe(false);
   });
 
-  it("keeps the free workspace focused on the advisor and share reward", () => {
+  it("keeps the free workspace focused on result coaching and share reward", () => {
     const experience = resolveTryOnExperience({
       authenticated: true,
       planCode: "free",
     });
 
     expect(experience.audience).toBe("free");
-    expect(experience.showAdvisor).toBe(true);
+    expect(experience.showResultCoach).toBe(true);
     expect(experience.features.shareReward).toBe(true);
     expect(experience.features.tutorials).toBe(false);
   });
@@ -41,7 +41,7 @@ describe("resolveTryOnExperience", () => {
     expect(experience).toMatchObject({
       audience: "pro",
       planLabel: "Pro",
-      showAdvisor: false,
+      showResultCoach: true,
       showMemberGuidance: true,
       showHistoryPreview: true,
     });

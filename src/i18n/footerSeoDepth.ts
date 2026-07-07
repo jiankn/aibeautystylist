@@ -1382,6 +1382,15 @@ const globalAssets: Record<string, readonly string[]> = {
   ],
 };
 
+const visualAssetObjectPositions: Record<string, string> = {
+  "/images/look-wedding-guest.webp": "center 32%",
+  "/images/look-summer-wedding-guest.webp": "center 26%",
+};
+
+function getVisualAssetObjectPosition(src: string): string | undefined {
+  return visualAssetObjectPositions[src];
+}
+
 const englishVisualRoles = {
   product: [
     {
@@ -1516,6 +1525,7 @@ export function getEnglishFooterSeoAssets(
   return assetPaths.map((src, index) => ({
     src,
     alt: `${topic}: ${roleGroup[index]?.label ?? "visual reference"}`,
+    objectPosition: getVisualAssetObjectPosition(src),
     caption:
       roleGroup[index]?.caption ??
       "Use this visual reference to validate the direction before applying it.",
@@ -1585,6 +1595,7 @@ export function buildFooterSeoDepth(spec: DepthSpec): {
     contentAssets: assetPaths.map((src, index) => ({
       src,
       alt: `${spec.keyword}: ${copy.visualRoles[index]}`,
+      objectPosition: getVisualAssetObjectPosition(src),
       caption: `${copy.visualRoles[index]}: ${detail[index === 0 ? 0 : index === 1 ? 1 : 3]}`,
     })),
   };

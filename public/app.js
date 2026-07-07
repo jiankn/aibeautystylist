@@ -1680,6 +1680,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   const retryButton = task?.querySelector("[data-upload-retry]");
   const deleteButton = task?.querySelector("[data-upload-delete]");
   const deleteResultButton = task?.querySelector("[data-result-delete]");
+  const resultCoach = document.querySelector("[data-result-coach]");
   const stageItems = Array.from(
     task?.querySelectorAll("[data-upload-stage]") || [],
   );
@@ -1768,6 +1769,18 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   const setWaitingPanelVisible = (visible) => {
     if (waitingPanel) waitingPanel.hidden = !visible;
     syncTaskNavSuppression();
+  };
+  const hideResultCoach = () => {
+    if (!resultCoach) return;
+    resultCoach.hidden = true;
+    resultCoach.open = false;
+    delete resultCoach.dataset.visible;
+  };
+  const revealResultCoach = () => {
+    if (!resultCoach) return;
+    resultCoach.hidden = false;
+    resultCoach.open = false;
+    resultCoach.dataset.visible = "true";
   };
   const setUploadStage = (stageKey) => {
     if (!stageItems.length) return;
@@ -1918,6 +1931,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
         detail: { job },
       }),
     );
+    revealResultCoach();
     revealGuestResultCta(job);
     syncTryonBackgroundTask(job, {
       status: "succeeded",
@@ -1963,6 +1977,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       return;
     }
 
+    hideResultCoach();
     const message = terminalJobMessages[job.status] || msg("taskIncomplete");
     syncTryonBackgroundTask(job, {
       status: job.status,
@@ -2016,6 +2031,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   const runUpload = async (file) => {
     if (!file) return;
     setTaskNavSuppressed(true);
+    hideResultCoach();
     lastFile = file;
     renderUploadPreview(file);
     idempotencyKey ||= crypto.randomUUID();
@@ -2323,6 +2339,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       window.__absLastSucceededJobId = undefined;
       clearCurrentJobInUrl();
       deleteResultButton.hidden = true;
+      hideResultCoach();
       setUploadState(msg("resultDeletedTitle"), 0, { state: "success" });
       removeBackgroundTask(deletedJobId);
       showToast(msg("resultDeletedTitle"));
@@ -2331,6 +2348,10 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
     } finally {
       deleteResultButton.disabled = false;
     }
+  });
+
+  document.addEventListener("abs:look-selected", (event) => {
+    if (event.detail?.changed) hideResultCoach();
   });
 });
 

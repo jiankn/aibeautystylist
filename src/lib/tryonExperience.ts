@@ -8,7 +8,7 @@ export interface TryOnExperience {
   planLabel: "Free" | "Pro" | "Premium";
   authenticated: boolean;
   features: PlanFeatures;
-  showAdvisor: boolean;
+  showResultCoach: boolean;
   showMemberGuidance: boolean;
   showHistoryPreview: boolean;
 }
@@ -29,7 +29,7 @@ export function resolveTryOnExperience(input: {
       planCode === "premium" ? "Premium" : planCode === "pro" ? "Pro" : "Free",
     authenticated: input.authenticated,
     features: { ...definition.features },
-    showAdvisor: !showMemberGuidance,
+    showResultCoach: true,
     showMemberGuidance,
     showHistoryPreview: showMemberGuidance,
   };

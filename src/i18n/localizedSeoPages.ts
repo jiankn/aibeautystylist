@@ -37,6 +37,7 @@ export interface LocalizedSeoAsset {
   readonly src: string;
   readonly alt: string;
   readonly caption: string;
+  readonly objectPosition?: string;
 }
 
 export interface LocalizedSeoPage {

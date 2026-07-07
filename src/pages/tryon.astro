@@ -624,6 +624,62 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
               <a class="btn" href={pricingHref}>See member benefits</a>
             </div>
           </section>
+          {
+            experience.showResultCoach && (
+              <details
+                class="result-coach panel advisor-panel"
+                data-look-advisor
+                data-result-coach
+                hidden
+              >
+                <summary class="result-coach-summary">
+                  <span>
+                    <span class="advisor-kicker">
+                      {t("tryon", "advisorKicker")}
+                    </span>
+                    <strong
+                      class="result-coach-title"
+                      id="look-advisor-title"
+                      data-advisor-title
+                    >
+                      {selected.title}
+                    </strong>
+                  </span>
+                  <span class="result-coach-toggle" aria-hidden="true">+</span>
+                </summary>
+                <div class="result-coach-body">
+                  <section class="advisor-section result-coach-primary">
+                    <h3>{t("tryon", "advisorJudge")}</h3>
+                    <ul data-advisor-judge-list>
+                      {selected.advisor.judge.map((item) => (
+                        <li>{item}</li>
+                      ))}
+                    </ul>
+                  </section>
+                  <section class="advisor-section">
+                    <h3>{t("tryon", "advisorEffect")}</h3>
+                    <p data-advisor-effect-text>{selected.advisor.effect}</p>
+                  </section>
+                  <section class="advisor-section">
+                    <h3>{t("tryon", "advisorFit")}</h3>
+                    <p data-advisor-fit-text>{selected.advisor.fit}</p>
+                  </section>
+                  <section class="advisor-section">
+                    <h3>{t("tryon", "advisorAnchors")}</h3>
+                    <ul data-advisor-anchor-list>
+                      {selected.advisor.anchors.map((item) => (
+                        <li>{item}</li>
+                      ))}
+                    </ul>
+                  </section>
+                  <section class="advisor-section advisor-caution">
+                    <h3>{t("tryon", "advisorCaution")}</h3>
+                    <p data-advisor-caution-text>{selected.advisor.caution}</p>
+                  </section>
+                </div>
+              </details>
+            )
+          }
           <section class="tryon-waiting-panel" data-tryon-waiting hidden>
             <div class="tryon-waiting-copy">
               <span class="section-eyebrow"
@@ -717,56 +773,6 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
             >
           </section>
         </section>
-        {
-          experience.showAdvisor && (
-            <aside
-              class="explain-panel panel advisor-panel"
-              data-look-advisor
-              aria-labelledby="look-advisor-title"
-            >
-              <div class="advisor-head">
-                <span class="advisor-kicker">
-                  {t("tryon", "advisorKicker")}
-                </span>
-                <h2
-                  class="panel-title"
-                  id="look-advisor-title"
-                  data-advisor-title
-                >
-                  {selected.title}
-                </h2>
-              </div>
-              <section class="advisor-section">
-                <h3>{t("tryon", "advisorFit")}</h3>
-                <p data-advisor-fit-text>{selected.advisor.fit}</p>
-              </section>
-              <section class="advisor-section">
-                <h3>{t("tryon", "advisorEffect")}</h3>
-                <p data-advisor-effect-text>{selected.advisor.effect}</p>
-              </section>
-              <section class="advisor-section">
-                <h3>{t("tryon", "advisorAnchors")}</h3>
-                <ul data-advisor-anchor-list>
-                  {selected.advisor.anchors.map((item) => (
-                    <li>{item}</li>
-                  ))}
-                </ul>
-              </section>
-              <section class="advisor-section advisor-caution">
-                <h3>{t("tryon", "advisorCaution")}</h3>
-                <p data-advisor-caution-text>{selected.advisor.caution}</p>
-              </section>
-              <section class="advisor-section">
-                <h3>{t("tryon", "advisorJudge")}</h3>
-                <ul data-advisor-judge-list>
-                  {selected.advisor.judge.map((item) => (
-                    <li>{item}</li>
-                  ))}
-                </ul>
-              </section>
-            </aside>
-          )
-        }
       </div>
       {
         experience.showMemberGuidance && (
