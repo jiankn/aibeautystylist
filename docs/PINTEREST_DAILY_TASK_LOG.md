@@ -14,6 +14,13 @@
 
 ## 2026-07-08
 
+### 2026-07-08 Landing Page Match Update
+
+- [x] Pin 5 `5-Minute Makeup` landing hero now uses the same real morning makeup visual as the Pin.
+- [x] Pin 5 CTA now opens `five-minute-beginner` with `guest_try=1` and `#tryon-upload`.
+- [x] Pin 6 `Office Makeup` landing hero now uses the same real workday makeup visual as the Pin.
+- [x] Pin 6 CTA now opens `commute` with `guest_try=1` and `#tryon-upload`.
+
 ### 当日数据快照
 
 截图来源：Pinterest App Analytics，过去 30 天，时间约 19:20。

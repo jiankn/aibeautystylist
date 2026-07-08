@@ -42,8 +42,9 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
+const pinterestOfficeHeroImage = "/images/pinterest/office-real-workday.webp";
 const officeTryonHref = localizeAppHref(
-  "/tryon?look=commute&guest_try=1&source=pinterest_office&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_office_real_workday_01",
+  "/tryon?look=commute&guest_try=1&source=pinterest_office&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_office_real_workday_01#tryon-upload",
 );
 const officePricingHref = localizeAppHref("/pricing?source=pinterest_office");
 const pinterestOfficeProof = [
@@ -71,29 +72,28 @@ const pinterestOfficeSteps = [
 <SeoLandingLayout
   title={page.title}
   description={page.description}
-  heroImage={page.heroImage}
-  ogImage={page.ogImage}
+  heroImage={pinterestOfficeHeroImage}
+  ogImage={pinterestOfficeHeroImage}
   heroCtaHref={officeTryonHref}
   heroCtaLabel="Try Office Makeup Free"
   faq={page.faq}
 >
   <Fragment slot="hero">
-    <h1>Office Makeup You Can Preview Before Work</h1>
+    <h1>Office Makeup in Real Workday Light</h1>
     <p>
-      Saw this on Pinterest? Preview a polished workday look on your selfie
-      before you choose it for meetings, interviews, video calls, or everyday
-      confidence.
+      Saw this on Pinterest? Preview the same polished office look on your
+      selfie before meetings, interviews, or video calls.
     </p>
   </Fragment>
 
   <PinterestConversionPanel
     kicker="Pinterest office makeup path"
-    title="Make office makeup feel like you"
-    body="Pinterest gives you the idea. AI Beauty Stylist helps you check whether the natural office version flatters your face, your lighting, and your workday routine before you commit."
-    image="/images/look-commute.webp"
-    imageAlt="Polished natural office makeup preview on a model"
+    title="Try the real workday version"
+    body="You clicked for office makeup, so this page opens with the same natural workday look. Preview it on your selfie before choosing it for the day."
+    image={pinterestOfficeHeroImage}
+    imageAlt="Woman wearing polished office makeup in real workday light"
     selectedLook="Office Makeup"
-    selectedLookMeta="Polished, natural, work-ready"
+    selectedLookMeta="Polished, natural, workday-ready"
     primaryHref={officeTryonHref}
     primaryLabel="Try this office look free"
     secondaryHref={officePricingHref}
@@ -102,7 +102,7 @@ const pinterestOfficeSteps = [
     steps={pinterestOfficeSteps}
     membershipHref={officePricingHref}
     membershipTitle="Why membership fits workday makeup"
-    membershipBody="Save the looks that work, generate more office-ready versions, and keep polished makeup directions ready for real mornings."
+    membershipBody="Free preview helps you check the look once. Membership is for saving results, generating more office-ready versions, and keeping polished options ready."
   />
 
   <section class="seo-content">

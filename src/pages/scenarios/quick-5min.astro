@@ -42,33 +42,69 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
+const pinterestQuickHeroImage =
+  "/images/pinterest/quick-5min-real-morning.webp";
 const quickTryonHref = localizeAppHref(
-  "/tryon?look=five-minute-beginner&guest_try=1&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_5min_01",
+  "/tryon?look=five-minute-beginner&guest_try=1&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_5min_real_morning_01#tryon-upload",
 );
 const quickPricingHref = localizeAppHref("/pricing?source=pinterest_quick5");
-const pinterestQuickCopy = getPinterestConversionCopy("quick5");
+const pinterestQuickCopy = {
+  ...getPinterestConversionCopy("quick5"),
+  kicker: "Pinterest five-minute makeup path",
+  title: "Try the real morning version",
+  body: "You clicked for a fast makeup idea, so this page opens with the same natural morning look. Preview it on your selfie before spending time applying it.",
+  imageAlt:
+    "Woman applying fresh five-minute makeup in real morning bathroom light",
+  selectedLook: "5-Minute Makeup",
+  selectedLookMeta: "Natural, fast, morning-light friendly",
+  primaryLabel: "Try this look free",
+  secondaryLabel: "See member benefits",
+  proofPoints: [
+    "Same look as the Pin",
+    "One free selfie preview",
+    "No sign-up first",
+    "Upgrade to save results",
+  ],
+  steps: [
+    {
+      title: "Start from the saved look",
+      body: "The page matches the Pin you clicked, with a quick natural routine instead of a generic makeup catalog.",
+    },
+    {
+      title: "Preview it on your selfie",
+      body: "The try-on opens with 5-Minute Makeup already selected, so you can judge the look without searching again.",
+    },
+    {
+      title: "Subscribe only when it helps",
+      body: "Membership is for saving results, generating more versions, and keeping repeatable morning looks ready.",
+    },
+  ],
+  membershipTitle: "Why membership fits quick makeup",
+  membershipBody:
+    "Free preview helps you decide if the look suits your face. Membership is for saving the result, generating more versions, and downloading polished images.",
+};
 ---
 
 <SeoLandingLayout
   title={page.title}
   description={page.description}
-  ogImage="/images/article-five-minute-commute.webp"
-  heroImage="/images/article-five-minute-commute.webp"
+  ogImage={pinterestQuickHeroImage}
+  heroImage={pinterestQuickHeroImage}
   heroCtaHref={quickTryonHref}
   heroCtaLabel={pinterestQuickCopy.primaryLabel}
   faq={page.faq}
 >
   <Fragment slot="hero">
-    <h1>5-Minute Makeup You Can Preview First</h1>
+    <h1>5-Minute Makeup in Real Morning Light</h1>
     <p>
-      Saw this on Pinterest? Get the quick routine, then test the same natural
-      look on your selfie before you spend time applying it.
+      Saw this on Pinterest? Test the same fresh morning look on your selfie
+      before you spend five minutes applying it.
     </p>
   </Fragment>
 
   <PinterestConversionPanel
     {...pinterestQuickCopy}
-    image="/images/look-card/looks/five-minute-beginner--south-asia-640.webp"
+    image={pinterestQuickHeroImage}
     primaryHref={quickTryonHref}
     secondaryHref={quickPricingHref}
     membershipHref={quickPricingHref}
