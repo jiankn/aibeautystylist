@@ -40,6 +40,7 @@
 - [x] 明确互动规则：点小爱心没有负面影响，但不能替代 `Save`；以后看到符合项目的高质量图，优先保存到相关 Board。
 - [x] 升级 Pinterest 生图规则：所有 Pinterest 图默认走“真实妆容决策图”，不做千篇一律 AI 美女海报。
 - [x] 将生图规则写入 `docs/PINTEREST_1K_DAILY_GROWTH_SYSTEM.md`。
+- [x] 完成 `/scenarios/office` Pinterest 承接页改造，并验证线上页面包含 `look=commute`、`guest_try=1`、`source=pinterest_office`。
 
 ### 今日核心任务
 
@@ -48,7 +49,7 @@
 - [x] 生成第 5 张 Pin 图：`5-Minute Makeup - Real Morning Routine`
 - [ ] 发布第 5 张 Pin 到 `Everyday & 5-Minute Makeup`
 - [x] 改造 `/scenarios/office` Pinterest 承接首屏和 CTA：用户必须能直接进入预选 Office/Commute 试妆
-- [ ] 部署并检查 `/scenarios/office` 线上页面
+- [x] 部署并检查 `/scenarios/office` 线上页面
 - [x] 生成第 6 张 Pin 图：`Office Makeup - Real Workday Light`
 - [ ] 发布第 6 张 Pin 到 `Office Makeup Looks`
 - [ ] 保存 10-15 张高质量相关 Pin 到对应 Board，优先 `5 minute makeup`、`office makeup`、`natural makeup`
