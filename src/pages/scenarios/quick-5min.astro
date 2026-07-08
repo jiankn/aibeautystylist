@@ -44,8 +44,14 @@ const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 const pinterestQuickHeroImage =
   "/images/pinterest/quick-5min-real-morning.webp";
+const quickDecisionImage =
+  "/images/look-card/looks/five-minute-beginner--south-asia-640.webp";
+const incomingQuickUtmContent = Astro.url.searchParams.get("utm_content");
+const quickTryonUtmContent = incomingQuickUtmContent?.startsWith("pin_5min")
+  ? incomingQuickUtmContent
+  : "pin_5min_real_morning_02";
 const quickTryonHref = localizeAppHref(
-  "/tryon?look=five-minute-beginner&guest_try=1&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_5min_real_morning_02#tryon-upload",
+  `/tryon?look=five-minute-beginner&guest_try=1&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=${encodeURIComponent(quickTryonUtmContent)}#tryon-upload`,
 );
 const quickPricingHref = localizeAppHref("/pricing?source=pinterest_quick5");
 const pinterestQuickCopy = {
@@ -104,7 +110,28 @@ const pinterestQuickCopy = {
 
   <PinterestConversionPanel
     {...pinterestQuickCopy}
-    image={pinterestQuickHeroImage}
+    image={quickDecisionImage}
+    visualVariant="decision"
+    visualHighlights={[
+      {
+        title: "Best for",
+        body: "Busy mornings, casual photos, school runs, and quick workday starts.",
+      },
+      {
+        title: "Check on your face",
+        body: "Look for even skin, awake eyes, natural blush, and a lip color that does not overpower.",
+      },
+      {
+        title: "Upload tip",
+        body: "Use front-facing window light so the AI can keep the result close to real morning makeup.",
+      },
+      {
+        title: "Upgrade only if useful",
+        body: "Save the result, compare more versions, and download a cleaner image after the first preview works.",
+      },
+    ]}
+    visualFooterLabel="Next action"
+    visualFooterBody="Open the preselected 5-Minute Makeup try-on and upload one selfie free."
     primaryHref={quickTryonHref}
     secondaryHref={quickPricingHref}
     membershipHref={quickPricingHref}

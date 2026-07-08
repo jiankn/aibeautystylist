@@ -43,6 +43,8 @@ const currentRoute =
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 const pinterestOfficeHeroImage = "/images/pinterest/office-real-workday.webp";
+const officeDecisionImage =
+  "/images/look-card/looks/commute--south-asia-640.webp";
 const officeTryonHref = localizeAppHref(
   "/tryon?look=commute&guest_try=1&source=pinterest_office&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_office_real_workday_01#tryon-upload",
 );
@@ -90,8 +92,29 @@ const pinterestOfficeSteps = [
     kicker="Pinterest office makeup path"
     title="Try the real workday version"
     body="You clicked for office makeup, so this page opens with the same natural workday look. Preview it on your selfie before choosing it for the day."
-    image={pinterestOfficeHeroImage}
+    image={officeDecisionImage}
     imageAlt="Woman wearing polished office makeup in real workday light"
+    visualVariant="decision"
+    visualHighlights={[
+      {
+        title: "Best for",
+        body: "Meetings, interviews, desk days, video calls, and any workday where polished matters.",
+      },
+      {
+        title: "Check on your face",
+        body: "Make sure blush and lip color still register under office light without looking heavy.",
+      },
+      {
+        title: "Upload tip",
+        body: "Use a clear front-facing selfie with even light, not a backlit office snapshot.",
+      },
+      {
+        title: "Upgrade only if useful",
+        body: "Save the version that works, then compare lighter, warmer, or more camera-ready options.",
+      },
+    ]}
+    visualFooterLabel="Next action"
+    visualFooterBody="Open the preselected Office Makeup try-on and upload one selfie free."
     selectedLook="Office Makeup"
     selectedLookMeta="Polished, natural, workday-ready"
     primaryHref={officeTryonHref}

@@ -20,6 +20,10 @@
 - [x] Pin 5 CTA now opens `five-minute-beginner` with `guest_try=1` and `#tryon-upload`.
 - [x] Pin 6 `Office Makeup` landing hero now uses the same real workday makeup visual as the Pin.
 - [x] Pin 6 CTA now opens `commute` with `guest_try=1` and `#tryon-upload`.
+- [x] Pin 1-6 conversion rule updated: show the matching Pin visual once in the hero, then use a decision module instead of repeating the same large image.
+- [x] Pin 1 `/tryon` path now skips the extra Pinterest explainer panel so mobile users reach the selfie upload area faster.
+- [x] Pin 2 and Pin 5 now share the 5-minute page safely while preserving each Pin's own `utm_content`.
+- [x] Pin 3, Pin 4, and Pin 6 now point users straight to the matched no-sign-up try-on section with `#tryon-upload`.
 
 ### 当日数据快照
 

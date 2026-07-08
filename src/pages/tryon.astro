@@ -2,14 +2,12 @@
 import LookSelector from "../components/LookSelector.astro";
 import MobileAppTopBar from "../components/MobileAppTopBar.astro";
 import MobileBottomNav from "../components/MobileBottomNav.astro";
-import PinterestConversionPanel from "../components/PinterestConversionPanel.astro";
 import ResultState from "../components/ResultState.astro";
 import SelfiePhotoGuide from "../components/SelfiePhotoGuide.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import TutorialSteps from "../components/TutorialSteps.astro";
 import TryOnHistoryPreview from "../components/TryOnHistoryPreview.astro";
 import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
-import { getPinterestConversionCopy } from "../data/pinterestConversionCopy";
 import { isValidMarketProfile } from "../data/makeup/audienceTypes";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
@@ -130,11 +128,6 @@ const featuredLooks = requestedLook
     ].slice(0, 4)
   : defaultFeaturedLooks;
 const selected = requestedLook ?? featuredLooks[0];
-const selectedLookTitle = selected?.title ?? "AI Makeup Try-On";
-const selectedLookImage =
-  selected?.image ?? "/images/home-hero-global-commute-after.webp";
-const selectedLookAlt =
-  selected?.imageAlt ?? "AI makeup try-on preview on a model";
 const isPinterestUploadContext = isPinterestTraffic && Boolean(requestedLook);
 const uploadTitle = isPinterestUploadContext
   ? t("tryon", "pinterestUploadTitle")
@@ -146,7 +139,6 @@ const uploadHelper = isPinterestUploadContext
     : planCode === "free"
       ? t("tryon", "uploadHelperFreeDesc")
       : t("tryon", "uploadHelperMemberDesc");
-const pinterestWorkspaceCopy = getPinterestConversionCopy("workspace");
 const tutorial = getTutorialByLookSlug(
   selected.slug,
   currentRoute.language.locale,
@@ -428,20 +420,6 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
           </section>
         )
       }
-      {
-        isPinterestTraffic && (
-          <PinterestConversionPanel
-            tone="workspace"
-            {...pinterestWorkspaceCopy}
-            image={selectedLookImage}
-            imageAlt={selectedLookAlt}
-            selectedLook={selectedLookTitle}
-            primaryHref="#tryon-upload"
-            secondaryHref={pricingHref}
-            membershipHref={pricingHref}
-          />
-        )
-      }
       <div
         class:list={[
           "workspace-grid",
@@ -506,7 +484,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
                 disabled
                 >{
                   isPinterestGuestTryon
-                    ? t("tryon", "guestPreviewPreparing")
+                    ? t("tryon", "guestUploadButton")
                     : t("tryon", "uploadBtn")
                 }</button
               >

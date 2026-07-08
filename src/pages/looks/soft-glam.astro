@@ -43,11 +43,13 @@ const currentRoute =
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
 const softGlamTryonHref = localizeAppHref(
-  "/tryon?look=rose-milk-date&guest_try=1&source=pinterest_soft_glam&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_soft_glam_01",
+  "/tryon?look=rose-milk-date&guest_try=1&source=pinterest_soft_glam&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_soft_glam_01#tryon-upload",
 );
 const softGlamPricingHref = localizeAppHref(
   "/pricing?source=pinterest_soft_glam",
 );
+const softGlamDecisionImage =
+  "/images/look-card/looks/rose-milk-date--global-diverse-640.webp";
 const pinterestSoftGlamCopy = getPinterestConversionCopy("softGlam");
 ---
 
@@ -66,7 +68,28 @@ const pinterestSoftGlamCopy = getPinterestConversionCopy("softGlam");
 
   <PinterestConversionPanel
     {...pinterestSoftGlamCopy}
-    image="/images/style-soft-glam.webp"
+    image={softGlamDecisionImage}
+    visualVariant="decision"
+    visualHighlights={[
+      {
+        title: "Best for",
+        body: "Date nights, dinners, portraits, and days when natural makeup feels too plain.",
+      },
+      {
+        title: "Check on your face",
+        body: "Look at eye softness, cheek warmth, and whether the rose lip balances your whole face.",
+      },
+      {
+        title: "Upload tip",
+        body: "Use a clear selfie without strong filters so the soft glam preview does not turn too heavy.",
+      },
+      {
+        title: "Upgrade only if useful",
+        body: "Compare warmer, cooler, lighter, and stronger glam versions after the first preview works.",
+      },
+    ]}
+    visualFooterLabel="Next action"
+    visualFooterBody="Open the preselected Rose Milk Date try-on and upload one selfie free."
     primaryHref={softGlamTryonHref}
     secondaryHref={softGlamPricingHref}
     membershipHref={softGlamPricingHref}
