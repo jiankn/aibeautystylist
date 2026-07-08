@@ -165,10 +165,75 @@ Pinterest 没有公开“新号每天只能发几张”的固定阈值。本计�
 
 同一 URL 可以被不同原创 Pin 使用，但图片、标题、用户任务和 `utm_content` 必须不同。
 
-## 7. 妆容内容质量规则
+## 7. Pinterest 生图差异化规则：真实妆容决策图
 
-- **Pinterest 生图硬规则**：所有 Pinterest 用图默认按最高质量生成与后期处理，目标是“真实商业美妆摄影感”，不能有明显 AI 塑料皮肤、畸形手指、假背景、过度磨皮、发丝糊边、五官不对称、首饰变形、文字乱码或拼贴感。AI 内容披露照做，不删除元数据、不规避平台 AI 检测；视觉上追求真实可信，合规上如实标记 `AI-Modified`。
-- Pinterest 生图必须先像一张能被真人美妆品牌使用的照片，再考虑文字、CTA 和排版。人脸、眼妆、唇妆、肤质和光线是第一优先级；装饰元素、贴纸、复杂背景和过多文字都必须让位。
+以后所有 Pinterest 生图默认执行本规则。目标不是生成“AI 美女海报”，而是生成“真实场景里的妆容决策图”，让用户产生这个念头：
+
+> 这张图不像假广告，而且我想知道这个妆在我脸上会不会好看。
+
+核心定位：
+
+- 别人做的是“AI 生成的美妆灵感图”。
+- 我们做的是“真实可试的妆容决策图”。
+- 每张图必须服务项目闭环：用户被真实妆容场景吸引，点击后进入对应承接页，并能免费试在自己脸上。
+
+### 7.1 默认摄影方向
+
+- 像真实照片，不像 AI 海报：优先手机拍摄感、自然窗光、浴室镜前、卧室梳妆台、办公室、婚礼现场、餐厅暖光等真实场景。
+- 保留真实皮肤质感：允许毛孔、轻微细纹、唇纹、柔和黑眼圈、自然阴影、少量发丝凌乱；禁止瓷娃娃皮肤、塑料脸、过度磨皮。
+- 妆容必须可执行：底妆、眼妆、腮红、唇色要像真实用户能复刻的妆，不做舞台妆、幻想妆、夸张滤镜妆。
+- 每张图必须带场景心理：5-minute 是早晨赶时间，office 是会议前，wedding guest 是日光和闪光灯，date night 是餐厅暖光与情绪感。
+- AI 只负责干净真实的人像或场景底图；文字、Logo、CTA、排版由我们后期完成，不让 AI 在图里生成文字。
+
+### 7.2 默认正向提示词
+
+```text
+realistic editorial beauty photo, natural window light, real skin texture, visible pores, subtle under-eye texture, fine lip texture, soft flyaway hairs, candid pose, wearable makeup, modern real-life setting, shot on smartphone or mirrorless camera, natural depth of field, vertical 2:3 composition, space for text overlay, contemporary beauty campaign, not airbrushed
+```
+
+按主题补充场景：
+
+- `5-minute makeup`：morning bathroom mirror, towel or simple robe, coffee, soft messy hair, quick natural makeup.
+- `office makeup`：before a work meeting, clean blouse or blazer, natural business makeup, soft daylight.
+- `wedding guest makeup`：daylight wedding venue, elegant guest dress, soft glam, photo-ready but not bridal.
+- `date night makeup`：warm restaurant light, rose nude lipstick, soft glam eyes, relaxed confident expression.
+- `hooded eyes / monolid`：eyes open and visible, makeup placement shown clearly, realistic eyelid fold or monolid structure.
+
+### 7.3 默认负向提示词
+
+```text
+AI generated look, plastic skin, doll face, overly perfect symmetry, CGI, 3D render, fantasy glow, distorted hands, extra fingers, melted jewelry, fake background, over-smoothed skin, airbrushed face, text, watermark, logo, unreadable typography, uncanny eyes, identical face, celebrity resemblance, harsh contour, muddy foundation, beauty filter, fake eyelashes too heavy, overexposed skin, cropped forehead, cropped chin
+```
+
+### 7.4 可用 Pin 图类型
+
+1. 真实场景照：像用户在现实里准备这个妆。
+2. 轻前后对比：左侧素颜或淡妆自拍感，右侧同一人妆后效果；不要夸张换脸。
+3. 问题型 Pin：例如 “Will this soft glam look good on hooded eyes?”
+4. 手机预览感：暗示“可以试在自己脸上”，但不要做复杂假 App 界面。
+5. 妆容细节局部：眼妆、唇色、腮红位置、底妆质感，体现专业度。
+
+### 7.5 交付验收标准
+
+生成后必须先做人工质检，任一项不通过就重做：
+
+- 第一眼是否像真人照片，而不是 AI 美图模板？
+- 皮肤是否还有真实纹理？
+- 眼睛、牙齿、手指、耳饰、头发边缘是否自然？
+- 背景是否像真实空间，而不是假棚景或糊成一团？
+- 妆容是否适合对应 Pinterest 搜索意图？
+- 是否预留 15%–25% 空白给后期标题和 CTA？
+- 是否能承接到对应落地页和预选试妆？
+- 是否按 Pinterest 发布时如实勾选 `AI-Modified` 和 AI-generated person？
+
+### 7.6 合规与平台披露
+
+- AI 内容披露照做，不删除元数据，不规避平台 AI 检测。
+- Pinterest 发布时如实勾选 `Mark as AI-Modified`；如图里人物为 AI 生成，勾选 AI-generated person。
+- 视觉上追求真实可信，合规上诚实披露。
+
+### 7.7 妆容细分规则
+
 - 肿眼泡和单眼皮：强调睁眼后仍可见的位置，不承诺“改变眼型”
 - 橄榄皮：比较低饱和玫瑰、蜜桃与偏蓝粉色，不宣传万能色号
 - 熟龄肌：强调薄层底妆、局部定妆和战略性光泽，不使用“逆龄”承诺

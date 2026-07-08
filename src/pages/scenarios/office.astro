@@ -1,5 +1,7 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "Office Makeup: Polished Everyday Makeup for the Workplace",
@@ -34,6 +36,36 @@ const relatedLinks = [
   { label: "Natural Makeup", url: "/looks/natural-makeup" },
   { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
 ];
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const officeTryonHref = localizeAppHref(
+  "/tryon?look=commute&guest_try=1&source=pinterest_office&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_office_real_workday_01",
+);
+const officePricingHref = localizeAppHref("/pricing?source=pinterest_office");
+const pinterestOfficeProof = [
+  "Workday direction",
+  "No-sign-up preview",
+  "Commute-ready color check",
+  "Upgrade for saved looks",
+] as const;
+const pinterestOfficeSteps = [
+  {
+    title: "Start with the workday look",
+    body: "You clicked for office makeup, so the page opens with a polished, natural direction instead of a generic catalog.",
+  },
+  {
+    title: "Try it on your selfie",
+    body: "The CTA opens the commute look already selected, giving you one free Pinterest preview before sign-up.",
+  },
+  {
+    title: "Subscribe when it works",
+    body: "Membership is for saving looks, generating more versions, and keeping polished workday options ready.",
+  },
+] as const;
 ---
 
 <SeoLandingLayout
@@ -41,17 +73,37 @@ const relatedLinks = [
   description={page.description}
   heroImage={page.heroImage}
   ogImage={page.ogImage}
+  heroCtaHref={officeTryonHref}
+  heroCtaLabel="Try Office Makeup Free"
   faq={page.faq}
 >
   <Fragment slot="hero">
-    <h1>{page.title}</h1>
+    <h1>Office Makeup You Can Preview Before Work</h1>
     <p>
-      Office makeup is not about being boring. It is about looking like the most
-      capable version of yourself. Learn the five-minute routine that gets you
-      out the door, the desk kit that keeps you fresh until 5 PM, and why office
-      lighting changes everything.
+      Saw this on Pinterest? Preview a polished workday look on your selfie
+      before you choose it for meetings, interviews, video calls, or everyday
+      confidence.
     </p>
   </Fragment>
+
+  <PinterestConversionPanel
+    kicker="Pinterest office makeup path"
+    title="Make office makeup feel like you"
+    body="Pinterest gives you the idea. AI Beauty Stylist helps you check whether the natural office version flatters your face, your lighting, and your workday routine before you commit."
+    image="/images/look-commute.webp"
+    imageAlt="Polished natural office makeup preview on a model"
+    selectedLook="Office Makeup"
+    selectedLookMeta="Polished, natural, work-ready"
+    primaryHref={officeTryonHref}
+    primaryLabel="Try this office look free"
+    secondaryHref={officePricingHref}
+    secondaryLabel="See member benefits"
+    proofPoints={pinterestOfficeProof}
+    steps={pinterestOfficeSteps}
+    membershipHref={officePricingHref}
+    membershipTitle="Why membership fits workday makeup"
+    membershipBody="Save the looks that work, generate more office-ready versions, and keep polished makeup directions ready for real mornings."
+  />
 
   <section class="seo-content">
     <h2>Office Makeup Is Not "No Makeup" — It Is "Better Than No Makeup"</h2>
@@ -245,9 +297,9 @@ const relatedLinks = [
           Upload a photo and test your everyday professional makeup with AI. See
           how it reads under different lighting conditions.
         </p>
-        <a href="/tryon" class="cta-btn"
-          >Try Office Makeup on Your Face — Free</a
-        >
+        <a href={officeTryonHref} class="cta-btn">
+          Try Office Makeup on Your Face - Free
+        </a>
       </div>
     </div>
   </Fragment>
