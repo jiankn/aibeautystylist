@@ -1918,6 +1918,7 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
       badge.textContent =
         job.resultKind === "reference-fallback" ? msg("referenceEffect") : msg("tryonEffect");
       const message = document.createElement("p");
+      message.className = "generated-result-note";
       message.textContent = job.disclaimer || msg("resultDisclaimer");
       wrapper.append(badge, image, message);
       revealLoadedImage(wrapper, image);

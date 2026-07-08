@@ -139,7 +139,7 @@ describe("global makeup localization architecture", () => {
     });
   });
 
-  it("keeps locale-sensitive page imagery global while sharing campaign scenarios", () => {
+  it("keeps locale-sensitive page imagery global while using global homepage scenarios for non-east-asia languages", () => {
     const home = resolvePageAssets("home", englishEastAsiaPreferenceContext);
     const login = resolvePageAssets("login", englishEastAsiaPreferenceContext);
     const diagnosis = resolvePageAssets(
@@ -157,13 +157,13 @@ describe("global makeup localization architecture", () => {
       "/images/diagnosis-preview-global.webp",
     );
     expect(home.scenarioImages?.commute).toBe(
-      "/images/home-scenario-commute-editorial-v2.webp",
+      "/images/home-scenario-commute-global.webp",
     );
     expect(home.scenarioImages?.["rose-milk-date"]).toBe(
-      "/images/home-scenario-date-editorial-v3.webp",
+      "/images/home-scenario-date-global.webp",
     );
     expect(home.scenarioImages?.["wedding-guest"]).toBe(
-      "/images/home-scenario-wedding-editorial-v3.webp",
+      "/images/looks/rose-milk-date--global-diverse.webp",
     );
     expect(login.heroImages?.light).toBe(
       "/images/login-hero-global-light.webp",
@@ -282,7 +282,7 @@ describe("global makeup localization architecture", () => {
     const eastLogin = resolvePageAssets("login", eastAsiaContext);
     const globalLogin = resolvePageAssets("login", globalContext);
 
-    expect(eastHome.scenarioImages).toEqual(globalHome.scenarioImages);
+    expect(eastHome.scenarioImages).not.toEqual(globalHome.scenarioImages);
     expect(Object.keys(eastHome.scenarioImages ?? {})).toEqual(
       expect.arrayContaining([
         "commute",
@@ -295,7 +295,21 @@ describe("global makeup localization architecture", () => {
     );
     expect(
       Object.values(eastHome.scenarioImages ?? {}).every((path) =>
-        /-editorial-v\d+\./.test(path),
+        path.includes("-east-asia."),
+      ),
+    ).toBe(true);
+    expect(globalHome.scenarioImages?.commute).toBe(
+      "/images/home-scenario-commute-global.webp",
+    );
+    expect(globalHome.scenarioImages?.["interview-ready"]).toBe(
+      "/images/home-scenario-interview-global.webp",
+    );
+    expect(globalHome.scenarioImages?.["rose-milk-date"]).toBe(
+      "/images/home-scenario-date-global.webp",
+    );
+    expect(
+      Object.values(globalHome.scenarioImages ?? {}).every(
+        (path) => !path.includes("-east-asia."),
       ),
     ).toBe(true);
     expect(globalHome.heroImages?.light).toBe(

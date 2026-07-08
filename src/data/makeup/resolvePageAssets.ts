@@ -36,6 +36,24 @@ function isEastAsianLocale(locale: string): boolean {
   return language === "zh" || language === "ja" || language === "ko";
 }
 
+const eastAsiaHomeScenarioImages = {
+  commute: "/images/home-scenario-commute-east-asia.webp",
+  "interview-ready": "/images/home-scenario-interview-east-asia.webp",
+  "rose-milk-date": "/images/home-scenario-date-east-asia.webp",
+  "flash-proof-satin": "/images/home-scenario-flash-east-asia.webp",
+  "mature-skin-radiance": "/images/home-scenario-radiance-east-asia.webp",
+  "wedding-guest": "/images/home-scenario-wedding-east-asia.webp",
+};
+
+const globalHomeScenarioImages = {
+  commute: "/images/home-scenario-commute-global.webp",
+  "interview-ready": "/images/home-scenario-interview-global.webp",
+  "rose-milk-date": "/images/home-scenario-date-global.webp",
+  "flash-proof-satin": "/images/looks/photogenic--africa.webp",
+  "mature-skin-radiance": "/images/looks/no-makeup--africa.webp",
+  "wedding-guest": "/images/looks/rose-milk-date--global-diverse.webp",
+};
+
 /** 解析页面级资产，页面自身不再按语言或地区硬编码图片。 */
 export function resolvePageAssets(
   pageId: string,
@@ -77,18 +95,9 @@ export function resolvePageAssets(
           "/homepage-look-five-minute-beginner.webp",
           "/homepage-look-flash-proof-satin.webp",
         ],
-        // This campaign set is intentionally shared across locales so the
-        // homepage card and its try-on reference stay visually identical.
-        scenarioImages: {
-          commute: "/images/home-scenario-commute-editorial-v2.webp",
-          "interview-ready":
-            "/images/home-scenario-interview-editorial-v2.webp",
-          "rose-milk-date": "/images/home-scenario-date-editorial-v3.webp",
-          "flash-proof-satin": "/images/home-scenario-flash-editorial-v2.webp",
-          "mature-skin-radiance":
-            "/images/home-scenario-radiance-editorial-v2.webp",
-          "wedding-guest": "/images/home-scenario-wedding-editorial-v3.webp",
-        },
+        scenarioImages: isEastAsianLocale(audienceContext.locale)
+          ? eastAsiaHomeScenarioImages
+          : globalHomeScenarioImages,
       };
 
     case "login":
