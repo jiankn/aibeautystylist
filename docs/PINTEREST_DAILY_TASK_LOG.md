@@ -229,3 +229,11 @@ For each new Pinterest Pin, also record:
 Fixed Google Images judgment:
 
 > Can Google understand this image clearly, and can the visitor click through to try the same makeup look on her own face?
+
+### 2026-07-10 Google Images P1 Retention Module
+
+- [x] Added a reusable Google Images retention module for image visitors.
+- [x] Localized the module for 9 active site languages.
+- [x] Connected the module to the first 8 Google Images landing themes.
+- [x] Kept Pinterest UTM traffic on the Pinterest-specific conversion path.
+- [x] CTA routes users to the matching no-sign-up try-on path with Google Images attribution.

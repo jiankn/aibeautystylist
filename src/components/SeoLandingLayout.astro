@@ -1,7 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import GoogleImageRetentionPanel from "./GoogleImageRetentionPanel.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import { getGoogleImageRetentionTopic } from "../data/googleImageRetentionContent";
 import { getEnglishFooterSeoAssets } from "../i18n/footerSeoDepth";
+import { resolveLocaleRoute } from "../i18n/routing";
 
 /**
  * SEO 落地页通用布局 — 基于 BaseLayout，增加：
@@ -21,6 +24,8 @@ interface Props {
   faqHeading?: string;
   heroCtaHref?: string;
   heroCtaLabel?: string;
+  googleImageRetentionPath?: string;
+  showGoogleImageRetention?: boolean;
 }
 
 const {
@@ -34,6 +39,8 @@ const {
   faqHeading = "Frequently Asked Questions",
   heroCtaHref,
   heroCtaLabel,
+  googleImageRetentionPath,
+  showGoogleImageRetention = true,
 } = Astro.props;
 
 // 自动生成 FAQPage JSON-LD
@@ -58,6 +65,19 @@ const englishContentAssets = getEnglishFooterSeoAssets(
   Astro.url.pathname,
   title,
 );
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(Astro.url.pathname);
+const retentionEnglishPath =
+  googleImageRetentionPath ?? currentRoute.routePathname;
+const trafficSource =
+  Astro.url.searchParams.get("utm_source") ??
+  Astro.url.searchParams.get("source") ??
+  "";
+const suppressGoogleImageRetention = /^pinterest/i.test(trafficSource);
+const shouldShowGoogleImageRetention =
+  showGoogleImageRetention &&
+  !suppressGoogleImageRetention &&
+  Boolean(getGoogleImageRetentionTopic(retentionEnglishPath));
 ---
 
 <BaseLayout
@@ -103,6 +123,16 @@ const englishContentAssets = getEnglishFooterSeoAssets(
     </section>
 
     {/* 主体内容 */}
+    {
+      shouldShowGoogleImageRetention && (
+        <GoogleImageRetentionPanel
+          englishPath={retentionEnglishPath}
+          languageSlug={currentRoute.language.slug}
+          locale={currentRoute.language.locale}
+        />
+      )
+    }
+
     <slot />
 
     {

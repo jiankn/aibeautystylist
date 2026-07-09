@@ -129,6 +129,7 @@ Required page elements:
 - 1-3 sentences explaining who the look is for
 - CTA to the matching no-sign-up try-on path
 - Same visual trust chain into `/tryon`
+- Google Images retention module in the current language
 
 ### Step 5: Add metadata
 
@@ -224,6 +225,7 @@ Decision rules:
 - Do not use unrelated stock-style images.
 - Do not show an image on the landing page and a different image in the `/tryon` selected-look panel.
 - Do not use East Asia assets for English/global pages unless the topic is specifically East Asian beauty.
+- Do not let a Google Images visitor only view a photo with no next action.
 
 ## 8. Current P0 Implementation Backlog
 
@@ -235,7 +237,18 @@ These are required before Google Images becomes a fully operational daily channe
 - [x] Add a daily log section for Google Images companion tasks.
 - [x] Audit the first 8 Pinterest topics and select clean Google Images versions for each.
 
-## 9. Sources
+## 9. Current P1 Retention Backlog
+
+Goal: keep Google Images visitors from bouncing after viewing one image.
+
+- [x] Add a reusable Google Images retention module.
+- [x] Localize the module for all 9 active site languages.
+- [x] Attach the module to the first 8 Google Images landing themes.
+- [x] Hide the module for Pinterest UTM traffic so Pinterest pages do not become overloaded.
+- [x] Route each module CTA to a matching no-sign-up try-on path.
+- [x] Add tests for language coverage, route coverage, and CTA parameters.
+
+## 10. Sources
 
 - Google Images SEO best practices: https://developers.google.com/search/docs/appearance/google-images
 - Google image sitemaps: https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps
