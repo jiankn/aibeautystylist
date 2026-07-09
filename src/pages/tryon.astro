@@ -99,6 +99,8 @@ const defaultFeaturedLooks = featuredSlugs
   .filter(Boolean) as typeof resolvedLooks;
 const requestedSlug = Astro.url.searchParams.get("look");
 const source = Astro.url.searchParams.get("source");
+const utmContent = Astro.url.searchParams.get("utm_content");
+const pinVisual = Astro.url.searchParams.get("pin_visual");
 const isPinterestTraffic =
   Astro.url.searchParams.get("utm_source") === "pinterest" ||
   (source?.startsWith("pinterest") ?? false);
@@ -109,14 +111,52 @@ const isPinterestGuestTryon =
 const requestedLookBase = resolvedLooks.find(
   (look) => look.slug === requestedSlug,
 );
+const pinterestTryonVisualsByKey = {
+  quick5_real_morning: "/images/pinterest/quick-5min-real-morning.webp",
+  office_real_workday: "/images/pinterest/office-real-workday.webp",
+  date_night_candlelight: "/images/pinterest/date-night-real-candlelight.webp",
+  hooded_visible_shadow: "/images/pinterest/hooded-eyes-visible-shadow.webp",
+  soft_glam_refined: "/images/look-refined.webp",
+  wedding_guest_daylight: "/images/look-wedding-guest.webp",
+} as const;
+const pinterestTryonVisualsBySource: Record<string, string> = {
+  pinterest_quick5: pinterestTryonVisualsByKey.quick5_real_morning,
+  pinterest_office: pinterestTryonVisualsByKey.office_real_workday,
+  pinterest_date_night: pinterestTryonVisualsByKey.date_night_candlelight,
+  pinterest_hooded_eyes: pinterestTryonVisualsByKey.hooded_visible_shadow,
+  pinterest_soft_glam: pinterestTryonVisualsByKey.soft_glam_refined,
+  pinterest_wedding_guest: pinterestTryonVisualsByKey.wedding_guest_daylight,
+};
+const pinterestTryonVisualsByUtmContent: Record<string, string> = {
+  ai_makeup_tryon_01: "/images/article-ai-tryon-comparison.webp",
+  pin_5min_01: pinterestTryonVisualsByKey.quick5_real_morning,
+  pin_5min_real_morning_01: pinterestTryonVisualsByKey.quick5_real_morning,
+  pin_5min_real_morning_02: pinterestTryonVisualsByKey.quick5_real_morning,
+  pin_office_real_workday_01: pinterestTryonVisualsByKey.office_real_workday,
+  pin_date_night_candlelight_01:
+    pinterestTryonVisualsByKey.date_night_candlelight,
+  pin_hooded_visible_shadow_01:
+    pinterestTryonVisualsByKey.hooded_visible_shadow,
+  pin_soft_glam_01: pinterestTryonVisualsByKey.soft_glam_refined,
+  pin_wedding_guest_01: pinterestTryonVisualsByKey.wedding_guest_daylight,
+};
+const pinterestTryonVisual =
+  (pinVisual &&
+    pinterestTryonVisualsByKey[
+      pinVisual as keyof typeof pinterestTryonVisualsByKey
+    ]) ||
+  (source ? pinterestTryonVisualsBySource[source] : undefined) ||
+  (utmContent ? pinterestTryonVisualsByUtmContent[utmContent] : undefined);
 const requestedLook = requestedLookBase
   ? {
       ...requestedLookBase,
       image:
-        source === "home_scenario"
-          ? (homeScenarioImages?.[requestedLookBase.slug] ??
-            requestedLookBase.image)
-          : requestedLookBase.image,
+        isPinterestTraffic && pinterestTryonVisual
+          ? pinterestTryonVisual
+          : source === "home_scenario"
+            ? (homeScenarioImages?.[requestedLookBase.slug] ??
+              requestedLookBase.image)
+            : requestedLookBase.image,
     }
   : undefined;
 const featuredLooks = requestedLook

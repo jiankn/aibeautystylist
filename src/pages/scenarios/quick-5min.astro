@@ -51,7 +51,7 @@ const quickTryonUtmContent = incomingQuickUtmContent?.startsWith("pin_5min")
   ? incomingQuickUtmContent
   : "pin_5min_real_morning_02";
 const quickTryonHref = localizeAppHref(
-  `/tryon?look=five-minute-beginner&guest_try=1&source=pinterest_quick5&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=${encodeURIComponent(quickTryonUtmContent)}#tryon-upload`,
+  `/tryon?look=five-minute-beginner&guest_try=1&source=pinterest_quick5&pin_visual=quick5_real_morning&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=${encodeURIComponent(quickTryonUtmContent)}#tryon-upload`,
 );
 const quickPricingHref = localizeAppHref("/pricing?source=pinterest_quick5");
 const pinterestQuickCopy = {

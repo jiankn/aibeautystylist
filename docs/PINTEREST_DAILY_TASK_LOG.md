@@ -144,6 +144,7 @@ AI-generated visualization for beauty inspiration.
 - [x] Updated `/for/hooded-eyes` so Pinterest traffic sees the matching hooded-eyes visual first, then a decision-style conversion module instead of a repeated large image.
 - [x] CTA links now open the preselected no-sign-up try-on path with `guest_try=1`, `marketProfile=global-diverse`, and unique Pinterest UTM values.
 - [x] Mobile verification completed locally for both pages at 390px width.
+- [x] Fixed the trust-chain issue where Pinterest landing visuals and the `/tryon` left selected-look image could diverge. Known Pinterest links now pass `pin_visual`, with `/tryon` fallback mapping by `source` and `utm_content`.
 - [ ] Publish Pin 7 to `Date Night Makeup Ideas`.
 - [ ] Publish Pin 8 to `Hooded Eyes & Monolid Makeup` after creating the board if it does not already exist.
 - [ ] Save 8-12 relevant high-quality Pins after publishing.
