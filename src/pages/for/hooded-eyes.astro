@@ -1,5 +1,7 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "Makeup for Hooded Eyes: Techniques That Actually Show",
@@ -38,21 +40,100 @@ const relatedLinks = [
   },
   { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
 ];
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const pinterestHoodedHeroImage =
+  "/images/pinterest/hooded-eyes-visible-shadow.webp";
+const hoodedDecisionImage =
+  "/images/look-card/looks/hooded-eyes-lift--global-diverse-640.webp";
+const hoodedTryonHref = localizeAppHref(
+  "/tryon?look=hooded-eyes-lift&marketProfile=global-diverse&guest_try=1&source=pinterest_hooded_eyes&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_hooded_visible_shadow_01#tryon-upload",
+);
+const hoodedPricingHref = localizeAppHref(
+  "/pricing?source=pinterest_hooded_eyes",
+);
+const pinterestHoodedProof = [
+  "Open-eye placement",
+  "One free selfie preview",
+  "No sign-up first",
+  "Upgrade to compare looks",
+] as const;
+const pinterestHoodedSteps = [
+  {
+    title: "Start with visible placement",
+    body: "You clicked for hooded-eye makeup, so this page opens with a lifted eye direction instead of a generic article.",
+  },
+  {
+    title: "Try it on your selfie",
+    body: "The CTA opens the hooded-eyes lift look already selected, giving you one free Pinterest preview before sign-up.",
+  },
+  {
+    title: "Subscribe when it works",
+    body: "Membership is for saving results, comparing eye looks, and generating more versions for your eye shape.",
+  },
+] as const;
 ---
 
 <SeoLandingLayout
   title={page.title}
   description={page.description}
+  heroImage={pinterestHoodedHeroImage}
+  ogImage={pinterestHoodedHeroImage}
+  heroCtaHref={hoodedTryonHref}
+  heroCtaLabel="Try Hooded Eyes Makeup Free"
   faq={page.faq}
 >
   <div slot="hero">
-    <h1>{page.title}</h1>
+    <h1>Hooded Eyes Makeup That Stays Visible</h1>
     <p>
-      Hooded eyes aren't a problem to fix; they're an eye shape that requires
-      different techniques. This guide covers everything from understanding the
-      anatomy to practical application methods that keep your makeup visible.
+      Saw this on Pinterest? Preview a lifted eye-makeup direction on your
+      selfie before you spend time blending shadow in the wrong place.
     </p>
   </div>
+
+  <PinterestConversionPanel
+    kicker="Pinterest hooded-eyes makeup path"
+    title="Try open-eye placement first"
+    body="You clicked for hooded-eyes makeup, so this page opens with a visible-shadow direction. Preview the lift on your selfie before changing your routine."
+    image={hoodedDecisionImage}
+    imageAlt="Hooded eyes makeup try-on decision card for visible shadow, lifted liner, and open-eye placement"
+    visualVariant="decision"
+    visualHighlights={[
+      {
+        title: "Best for",
+        body: "Hooded lids, disappearing shadow, liner transfer, and eye looks that vanish when your eyes are open.",
+      },
+      {
+        title: "Check on your face",
+        body: "Look at whether the shadow stays visible above the fold and whether the outer corner feels lifted.",
+      },
+      {
+        title: "Upload tip",
+        body: "Use a straight-on selfie with both eyes open so the preview can judge open-eye placement.",
+      },
+      {
+        title: "Upgrade only if useful",
+        body: "Compare softer, stronger, and more lifted versions after the first free preview works.",
+      },
+    ]}
+    visualFooterLabel="Next action"
+    visualFooterBody="Open the preselected Hooded Eyes Lift try-on and upload one selfie free."
+    selectedLook="Hooded Eyes Makeup"
+    selectedLookMeta="Lifted shadow, thin liner, visible depth"
+    primaryHref={hoodedTryonHref}
+    primaryLabel="Try this eye look free"
+    secondaryHref={hoodedPricingHref}
+    secondaryLabel="See member benefits"
+    proofPoints={pinterestHoodedProof}
+    steps={pinterestHoodedSteps}
+    membershipHref={hoodedPricingHref}
+    membershipTitle="Why membership fits eye-shape makeup"
+    membershipBody="Free preview helps you check one placement. Membership is for saving results, comparing more eye looks, and building a repeatable routine."
+  />
 
   <div class="seo-content">
     <h2>Understanding Hooded Eyes: More Than Just a "Heavy Lid"</h2>
@@ -319,7 +400,8 @@ const relatedLinks = [
           eyeliner styles, and lash looks tailored to your eye shape before
           committing to real products.
         </p>
-        <a href="/tryon" class="cta-btn">Try It Free</a>
+        <a href={hoodedTryonHref} class="cta-btn">Try Hooded Eyes Makeup Free</a
+        >
       </div>
     </div>
   </div>

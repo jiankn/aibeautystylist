@@ -1,5 +1,7 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "First Date Makeup: Romantic, Flattering, and Unforgettable",
@@ -34,24 +36,98 @@ const relatedLinks = [
   { label: "Natural Makeup", url: "/looks/natural-makeup" },
   { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
 ];
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const pinterestDateHeroImage =
+  "/images/pinterest/date-night-real-candlelight.webp";
+const dateDecisionImage =
+  "/images/look-card/looks/date--global-diverse-640.webp";
+const dateTryonHref = localizeAppHref(
+  "/tryon?look=date&marketProfile=global-diverse&guest_try=1&source=pinterest_date_night&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_date_night_candlelight_01#tryon-upload",
+);
+const datePricingHref = localizeAppHref("/pricing?source=pinterest_date_night");
+const pinterestDateProof = [
+  "Same evening direction",
+  "One free selfie preview",
+  "No sign-up first",
+  "Upgrade to save looks",
+] as const;
+const pinterestDateSteps = [
+  {
+    title: "Start with the evening look",
+    body: "You clicked for a warm date-night idea, so the page opens with the same soft low-light direction instead of a generic catalog.",
+  },
+  {
+    title: "Try it on your selfie",
+    body: "The CTA opens the date look already selected, giving you one free Pinterest preview before sign-up.",
+  },
+  {
+    title: "Subscribe when it works",
+    body: "Membership is for saving results, comparing more versions, and keeping date-night looks ready.",
+  },
+] as const;
 ---
 
 <SeoLandingLayout
   title={page.title}
   description={page.description}
-  heroImage={page.heroImage}
-  ogImage={page.ogImage}
+  heroImage={pinterestDateHeroImage}
+  ogImage={pinterestDateHeroImage}
+  heroCtaHref={dateTryonHref}
+  heroCtaLabel="Try Date Night Makeup Free"
   faq={page.faq}
 >
   <Fragment slot="hero">
-    <h1>{page.title}</h1>
+    <h1>Date Night Makeup in Real Low Light</h1>
     <p>
-      First dates are about connection, not perfection. The right makeup makes
-      you feel like the best version of yourself and lets your personality shine
-      through. Learn how to match your look to the date, keep it lasting all
-      evening, and avoid the most common mistakes.
+      Saw this on Pinterest? Preview the same soft mauve evening look on your
+      selfie before you spend time getting ready.
     </p>
   </Fragment>
+
+  <PinterestConversionPanel
+    kicker="Pinterest date-night makeup path"
+    title="Try the warm low-light version"
+    body="You clicked for date-night makeup, so this page opens with the same soft evening direction. Preview it on your selfie before choosing your final look."
+    image={dateDecisionImage}
+    imageAlt="Date-night makeup try-on decision card for warm light, soft mauve color, and saved look comparisons"
+    visualVariant="decision"
+    visualHighlights={[
+      {
+        title: "Best for",
+        body: "Dinner dates, low-light photos, evening plans, and moments where soft definition matters more than heavy glam.",
+      },
+      {
+        title: "Check on your face",
+        body: "Look at eye softness, cheek warmth, and whether the mauve lip still feels like you.",
+      },
+      {
+        title: "Upload tip",
+        body: "Use a clear selfie with even light so the preview can judge color without restaurant shadows.",
+      },
+      {
+        title: "Upgrade only if useful",
+        body: "Save the version that works, then compare softer, warmer, or more photo-ready date looks.",
+      },
+    ]}
+    visualFooterLabel="Next action"
+    visualFooterBody="Open the preselected Date Makeup try-on and upload one selfie free."
+    selectedLook="Date Night Makeup"
+    selectedLookMeta="Soft, warm, evening-light friendly"
+    primaryHref={dateTryonHref}
+    primaryLabel="Try this date look free"
+    secondaryHref={datePricingHref}
+    secondaryLabel="See member benefits"
+    proofPoints={pinterestDateProof}
+    steps={pinterestDateSteps}
+    membershipHref={datePricingHref}
+    membershipTitle="Why membership fits date-night makeup"
+    membershipBody="Free preview helps you check the look once. Membership is for saving results, generating more versions, and comparing looks before real plans."
+  />
 
   <section class="seo-content">
     <h2>The Psychology of First-Impression Makeup</h2>
@@ -245,9 +321,7 @@ const relatedLinks = [
           Preview different makeup styles on your own face and find the one that
           makes you feel unstoppable.
         </p>
-        <a href="/tryon" class="cta-btn"
-          >Try First Date Makeup on Your Face — Free</a
-        >
+        <a href={dateTryonHref} class="cta-btn">Try Date Night Makeup Free</a>
       </div>
     </div>
   </Fragment>

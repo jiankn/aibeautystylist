@@ -131,3 +131,60 @@ AI-generated visualization for beauty inspiration.
 4. 10-15 张相关 Pin 已保存到正确 Board。
 5. 晚上数据已记录。
 6. 不改旧 Pin，不重复发图，不用小爱心替代 Save。
+
+## 2026-07-09
+
+### Day 4 Pinterest Execution
+
+- [x] Re-audited Pin 7 and Pin 8 composite quality after the user flagged weak face framing.
+- [x] Regenerated the source photos for Pin 7 `Date Night Makeup` and Pin 8 `Hooded Eyes Makeup` with fuller head-and-shoulder framing, clearer real-life context, and less AI poster feel.
+- [x] Rebuilt final Pin 7 image: `C:\antigravity\aibeautystylist\artifacts\pinterest\07-date-night-real-candlelight-makeup.png`.
+- [x] Rebuilt final Pin 8 image: `C:\antigravity\aibeautystylist\artifacts\pinterest\08-hooded-eyes-visible-shadow.png`.
+- [x] Updated `/scenarios/first-date` so Pinterest traffic sees the matching date-night visual first, then a decision-style conversion module instead of a repeated large image.
+- [x] Updated `/for/hooded-eyes` so Pinterest traffic sees the matching hooded-eyes visual first, then a decision-style conversion module instead of a repeated large image.
+- [x] CTA links now open the preselected no-sign-up try-on path with `guest_try=1`, `marketProfile=global-diverse`, and unique Pinterest UTM values.
+- [x] Mobile verification completed locally for both pages at 390px width.
+- [ ] Publish Pin 7 to `Date Night Makeup Ideas`.
+- [ ] Publish Pin 8 to `Hooded Eyes & Monolid Makeup` after creating the board if it does not already exist.
+- [ ] Save 8-12 relevant high-quality Pins after publishing.
+- [ ] Record evening analytics once after publishing is complete.
+
+### Pin 7 Publishing Spec
+
+| Field | Content |
+|---|---|
+| Pin theme | `Date Night Makeup - Real Candlelight` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\07-date-night-real-candlelight-makeup.png` |
+| Board | `Date Night Makeup Ideas` |
+| Title | `Date Night Makeup That Still Looks Like You` |
+| Link | `https://aibeautystylist.com/scenarios/first-date?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_date_night_candlelight_01` |
+| Alt text | `Realistic evening portrait of a woman wearing soft mauve date-night makeup in warm low light.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Need a soft date-night makeup look that works in real low light? Try warm mauve eyes, soft cheeks and a natural lip direction before you get ready. Preview the look on your own selfie first with AI Beauty Stylist.
+
+AI-generated visualization for beauty inspiration.
+```
+
+### Pin 8 Publishing Spec
+
+| Field | Content |
+|---|---|
+| Pin theme | `Hooded Eyes Makeup - Visible Shadow` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\08-hooded-eyes-visible-shadow.png` |
+| Board | `Hooded Eyes & Monolid Makeup` |
+| Title | `Hooded Eyes Makeup That Stays Visible` |
+| Link | `https://aibeautystylist.com/for/hooded-eyes?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_hooded_visible_shadow_01` |
+| Alt text | `Realistic portrait showing lifted eyeshadow and thin liner for hooded eyes.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Try a hooded-eyes makeup direction with lifted shadow, thin liner and visible depth. Preview the eye look on your own selfie before spending time blending eyeshadow in the wrong place.
+
+AI-generated visualization for beauty inspiration.
+```
