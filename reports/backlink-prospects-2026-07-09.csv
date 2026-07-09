@@ -1,0 +1,101 @@
+id,domain,target_url,channel,priority,status,angle,next_action
+1,personalcareinsights.com,https://www.personalcareinsights.com/,beauty-trade,P1,pitch-now,cite privacy index in AI beauty risk coverage,pitch editor with MAC lawsuit context
+2,beautymatter.com,https://beautymatter.com/,beauty-trade,P1,pitch-now,beauty AI transparency data source,pitch research desk
+3,beautyindependent.com,https://www.beautyindependent.com/,beauty-trade,P1,pitch-now,indie beauty AI compliance angle,pitch editorial tips
+4,cosmeticsdesign.com,https://www.cosmeticsdesign.com/,beauty-trade,P1,pitch-now,virtual try-on privacy benchmark,pitch news editor
+5,globalcosmeticsnews.com,https://www.globalcosmeticsnews.com/,beauty-trade,P1,pitch-now,biometric privacy and cosmetics AI source,pitch newsroom
+6,gcimagazine.com,https://www.gcimagazine.com/,beauty-trade,P1,pitch-now,beauty tech transparency table,pitch digital editor
+7,beautypackaging.com,https://www.beautypackaging.com/,beauty-trade,P2,warm-queue,AI beauty tool disclosure data,pitch tech feature editor
+8,happi.com,https://www.happi.com/,beauty-trade,P2,warm-queue,personal care AI data handling source,pitch editor
+9,premiumbeautynews.com,https://www.premiumbeautynews.com/,beauty-trade,P2,warm-queue,global beauty tech privacy reference,pitch English editor
+10,retaildive.com,https://www.retaildive.com/,retail-media,P1,pitch-now,retail virtual try-on data risk,pitch retail tech reporter
+11,glossy.co,https://www.glossy.co/,retail-media,P1,pitch-now,beauty retail AI trust angle,pitch beauty business reporter
+12,modernretail.co,https://www.modernretail.co/,retail-media,P2,warm-queue,retail AI privacy dataset,pitch commerce reporter
+13,retailtouchpoints.com,https://www.retailtouchpoints.com/,retail-media,P2,warm-queue,virtual try-on buyer checklist,pitch customer experience editor
+14,pymnts.com,https://www.pymnts.com/,retail-media,P2,warm-queue,consumer data and commerce AI,pitch connected economy editor
+15,theindustry.beauty,https://theindustry.beauty/,beauty-trade,P2,warm-queue,beauty tech risk explainer,pitch newsroom
+16,fashionnetwork.com,https://www.fashionnetwork.com/,fashion-business,P2,warm-queue,AI try-on transparency in beauty retail,pitch beauty technology topic
+17,voguebusiness.com,https://www.voguebusiness.com/,fashion-business,P2,warm-queue,beauty AI trust and data handling,pitch technology desk
+18,businessoffashion.com,https://www.businessoffashion.com/,fashion-business,P2,warm-queue,beauty technology privacy benchmark,pitch insights team
+19,wwd.com,https://wwd.com/,fashion-business,P2,warm-queue,cosmetics AI disclosure data,pitch beauty business reporter
+20,cosmeticsbusiness.com,https://cosmeticsbusiness.com/,beauty-trade,P1,pitch-now,virtual try-on privacy comparison,pitch digital editor
+21,retailboss.co,https://retailboss.co/,retail-media,P2,warm-queue,beauty AI lawsuit follow-up source,pitch retail tech topic
+22,beautystreams.com,https://www.beautystreams.com/,beauty-trend,P3,qualify,trend research citation opportunity,qualify editorial submissions
+23,mintel.com,https://www.mintel.com/,market-research,P3,qualify,consumer trust in AI beauty source,qualify analyst content program
+24,niq.com,https://nielseniq.com/,market-research,P3,qualify,retail data trust and AI beauty source,qualify insights contributor path
+25,euromonitor.com,https://www.euromonitor.com/,market-research,P3,qualify,beauty tech data trust context,qualify analyst content fit
+26,allure.com,https://www.allure.com/,consumer-beauty,P1,pitch-now,consumer guide to AI makeup app privacy,pitch beauty tech writer
+27,byrdie.com,https://www.byrdie.com/,consumer-beauty,P1,pitch-now,update best virtual makeup app guides with privacy table,pitch commerce updates
+28,instyle.com,https://www.instyle.com/,consumer-beauty,P2,warm-queue,AI makeup privacy checklist for shoppers,pitch beauty editor
+29,elle.com,https://www.elle.com/beauty/,consumer-beauty,P2,warm-queue,virtual makeup app safety source,pitch beauty desk
+30,harpersbazaar.com,https://www.harpersbazaar.com/beauty/,consumer-beauty,P2,warm-queue,AI beauty app privacy angle,pitch beauty editor
+31,cosmopolitan.com,https://www.cosmopolitan.com/style-beauty/beauty/,consumer-beauty,P2,warm-queue,what happens to uploaded selfie in makeup apps,pitch beauty commerce editor
+32,glamour.com,https://www.glamour.com/beauty,consumer-beauty,P2,warm-queue,virtual try-on privacy explainer,pitch beauty writer
+33,marieclaire.com,https://www.marieclaire.com/beauty/,consumer-beauty,P2,warm-queue,AI beauty privacy source,pitch beauty editor
+34,refinery29.com,https://www.refinery29.com/en-us/beauty,consumer-beauty,P2,warm-queue,face data and beauty apps,pitch wellness beauty editor
+35,whowhatwear.com,https://www.whowhatwear.com/beauty,consumer-beauty,P2,warm-queue,AI makeup app comparison with privacy,pitch beauty updates
+36,thezoereport.com,https://www.thezoereport.com/beauty,consumer-beauty,P2,warm-queue,beauty tech privacy trend,pitch beauty editor
+37,popsugar.com,https://www.popsugar.com/beauty,consumer-beauty,P2,warm-queue,shopper privacy checklist for AI makeup,pitch beauty contributor
+38,self.com,https://www.self.com/beauty,consumer-beauty,P3,qualify,photo upload safety guide,pitch health privacy angle
+39,womenshealthmag.com,https://www.womenshealthmag.com/beauty/,consumer-beauty,P3,qualify,face data and beauty app safety,pitch service journalism
+40,goodhousekeeping.com,https://www.goodhousekeeping.com/beauty/,consumer-beauty,P3,qualify,consumer safety checklist for AI beauty apps,pitch product review updates
+41,oprahdaily.com,https://www.oprahdaily.com/beauty/,consumer-beauty,P3,qualify,plain-language AI beauty privacy guide,pitch beauty desk
+42,newbeauty.com,https://www.newbeauty.com/,consumer-beauty,P2,warm-queue,AI beauty technology transparency,pitch digital editor
+43,beautycrew.com.au,https://www.beautycrew.com.au/,consumer-beauty,P3,qualify,AI makeup app privacy source,pitch article update
+44,beautyheaven.com.au,https://www.beautyheaven.com.au/,consumer-beauty,P3,qualify,virtual try-on privacy checklist,pitch editorial updates
+45,getthegloss.com,https://www.getthegloss.com/,consumer-beauty,P3,qualify,face scan and beauty app trust,pitch technology beauty topic
+46,lookfantastic.com,https://www.lookfantastic.com/blog/,beauty-retailer-blog,P3,qualify,shopper guide to virtual try-on privacy,pitch blog team
+47,beautybay.com,https://www.beautybay.com/edited/,beauty-retailer-blog,P3,qualify,AI makeup app privacy explainer,pitch editorial team
+48,ipsy.com,https://www.ipsy.com/blog,beauty-retailer-blog,P3,qualify,consumer education for makeup try-on data,pitch blog editor
+49,skinstore.com,https://www.skinstore.com/blog/,beauty-retailer-blog,P3,qualify,photo upload privacy checklist,pitch content team
+50,makeup.com,https://www.makeup.com/,beauty-retailer-blog,P3,qualify,virtual try-on transparency guide,pitch editorial team
+51,wired.com,https://www.wired.com/tag/privacy/,tech-media,P1,pitch-now,face data and AI photo apps source,pitch privacy reporter
+52,theverge.com,https://www.theverge.com/privacy,tech-media,P1,pitch-now,consumer AI image privacy with beauty example,pitch AI privacy desk
+53,techcrunch.com,https://techcrunch.com/,tech-media,P2,warm-queue,AI image apps and biometric transparency,pitch AI reporter
+54,fastcompany.com,https://www.fastcompany.com/technology,tech-media,P2,warm-queue,trust design in AI beauty tools,pitch innovation editor
+55,technologyreview.com,https://www.technologyreview.com/,tech-media,P2,warm-queue,consumer biometric data in AI tools,pitch AI ethics topic
+56,arstechnica.com,https://arstechnica.com/,tech-media,P2,warm-queue,privacy policies and AI photo editing,pitch policy reporter
+57,zdnet.com,https://www.zdnet.com/,tech-media,P2,warm-queue,AI photo upload privacy benchmark,pitch software security desk
+58,cnet.com,https://www.cnet.com/tech/services-and-software/,tech-media,P2,warm-queue,consumer guide to AI app photo retention,pitch service update
+59,pcmag.com,https://www.pcmag.com/,tech-review,P2,warm-queue,AI photo editor privacy scoring source,pitch software reviews
+60,makeuseof.com,https://www.makeuseof.com/,tech-review,P2,warm-queue,AI photo app privacy explainer,pitch how-to editor
+61,lifewire.com,https://www.lifewire.com/,tech-review,P3,qualify,consumer app privacy education,pitch update queue
+62,tomsguide.com,https://www.tomsguide.com/,tech-review,P2,warm-queue,AI app privacy checklist,pitch software editor
+63,digitaltrends.com,https://www.digitaltrends.com/,tech-review,P3,qualify,AI photo editing safety source,pitch mobile apps editor
+64,androidauthority.com,https://www.androidauthority.com/,tech-review,P3,qualify,Android beauty app privacy angle,pitch app feature update
+65,mashable.com,https://mashable.com/tech,tech-media,P3,qualify,AI selfie tools and user consent,pitch tech culture editor
+66,venturebeat.com,https://venturebeat.com/ai/,ai-media,P2,warm-queue,AI data governance in consumer image tools,pitch AI business desk
+67,thenextweb.com,https://thenextweb.com/,tech-media,P3,qualify,AI image privacy and consumer products,pitch tech trends
+68,thedrum.com,https://www.thedrum.com/,marketing-media,P3,qualify,beauty AI trust and customer data,pitch marketing tech editor
+69,adweek.com,https://www.adweek.com/,marketing-media,P3,qualify,brand trust in AI beauty campaigns,pitch brand marketing angle
+70,marketingbrew.com,https://www.marketingbrew.com/,marketing-media,P3,qualify,AI beauty marketing privacy source,pitch newsletter item
+71,darkreading.com,https://www.darkreading.com/,security-media,P3,qualify,AI photo upload privacy risk,pitch data privacy angle
+72,securityweek.com,https://www.securityweek.com/,security-media,P3,qualify,consumer image data retention,pitch privacy research
+73,helpnetsecurity.com,https://www.helpnetsecurity.com/,security-media,P3,qualify,AI image app risk dataset,pitch research note
+74,privacyinternational.org,https://privacyinternational.org/,privacy-org,P2,warm-queue,face data and consumer AI resource,pitch resource page or briefing
+75,eff.org,https://www.eff.org/,privacy-org,P3,qualify,biometric data and AI photo tools,pitch issue researcher
+76,epic.org,https://epic.org/,privacy-org,P3,qualify,consumer biometric privacy reference,pitch resource inclusion
+77,futureofprivacy.org,https://fpf.org/,privacy-org,P3,qualify,consumer AI transparency source,pitch blog or resource team
+78,iapp.org,https://iapp.org/,privacy-org,P3,qualify,privacy professional AI beauty example,pitch article or member update
+79,lexology.com,https://www.lexology.com/,legal-media,P1,pitch-now,update virtual try-on compliance articles with dataset,pitch author or publisher
+80,natlawreview.com,https://natlawreview.com/,legal-media,P2,warm-queue,biometric privacy and virtual try-on source,pitch legal news desk
+81,biometricupdate.com,https://www.biometricupdate.com/,legal-media,P1,pitch-now,consumer biometric app transparency source,pitch editorial tip
+82,classaction.org,https://www.classaction.org/,legal-media,P2,warm-queue,beauty app biometric lawsuit context,pitch news update
+83,topclassactions.com,https://topclassactions.com/,legal-media,P3,qualify,virtual try-on privacy context,pitch article update
+84,insideprivacy.com,https://www.insideprivacy.com/,legal-blog,P2,warm-queue,AI beauty privacy benchmark,pitch blog authors
+85,dataprivacyandsecurityinsider.com,https://www.dataprivacyandsecurityinsider.com/,legal-blog,P3,qualify,biometric retention and AI tools,pitch contributor
+86,shopify.com,https://www.shopify.com/blog,commerce-resource,P2,warm-queue,AR commerce privacy checklist,pitch commerce content update
+87,bigcommerce.com,https://www.bigcommerce.com/articles/,commerce-resource,P2,warm-queue,virtual try-on privacy for merchants,pitch ecommerce guide update
+88,commercetools.com,https://commercetools.com/blog,commerce-resource,P3,qualify,composable commerce and AI data handling,pitch blog editor
+89,salesfire.co.uk,https://www.salesfire.co.uk/blog/,commerce-resource,P3,qualify,retail personalization privacy source,pitch blog update
+90,vue.ai,https://vue.ai/blog/,commerce-resource,P3,qualify,AI retail trust and visual commerce,pitch content team
+91,perfectcorp.com,https://www.perfectcorp.com/business/blog,partner-ecosystem,P3,qualify,industry discussion around disclosure standards,pitch vendor blog with neutral index mention
+92,banuba.com,https://www.banuba.com/blog,partner-ecosystem,P3,qualify,on-device AR privacy comparison,pitch content team
+93,picsart.io,https://picsart.io/blog/,developer-resource,P3,qualify,AI image API privacy benchmark,pitch developer content
+94,photoaid.com,https://photoaid.com/blog/,photo-resource,P3,qualify,AI photo privacy guide source,pitch blog update
+95,shotkit.com,https://shotkit.com/,photo-resource,P2,warm-queue,AI beauty app reviews with privacy data,pitch software review updates
+96,petapixel.com,https://petapixel.com/,photo-media,P2,warm-queue,AI photo editing privacy dataset,pitch news desk
+97,dpreview.com,https://www.dpreview.com/,photo-media,P3,qualify,AI image editing privacy source,pitch software topic
+98,producthunt.com,https://www.producthunt.com/,launch-community,P3,qualify,research-backed product launch update,prepare launch story after page is live
+99,g2.com,https://www.g2.com/categories/photo-editing,review-platform,P3,secondary,software review profile with research link,qualify profile rules
+100,alternativeto.net,https://alternativeto.net/,review-platform,P3,secondary,comparison page profile with privacy index link,qualify submission rules

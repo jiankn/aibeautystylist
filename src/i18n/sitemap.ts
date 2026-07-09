@@ -10,7 +10,7 @@ export interface SitemapPage {
   readonly changefreq: string;
 }
 
-export const sitemapLastmod = "2026-07-07";
+export const sitemapLastmod = "2026-07-09";
 
 const corePages: SitemapPage[] = [
   { url: "/", priority: "1.0", changefreq: "weekly" },
@@ -92,6 +92,14 @@ const guidePages: SitemapPage[] = [
   },
 ];
 
+const researchPages: SitemapPage[] = [
+  {
+    url: "/research/virtual-makeup-privacy-index",
+    priority: "0.6",
+    changefreq: "monthly",
+  },
+];
+
 const englishPages: SitemapPage[] = [
   ...corePages,
   ...productPages,
@@ -99,6 +107,7 @@ const englishPages: SitemapPage[] = [
   ...scenarioPages,
   ...demographicPages,
   ...guidePages,
+  ...researchPages,
   ...blogSlugs.map((slug) => ({
     url: `/blog/${slug}`,
     priority: "0.6",

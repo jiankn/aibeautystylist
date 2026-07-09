@@ -133,6 +133,14 @@ const primaryColumns: FooterColumn[] = [
       { href: "/support", label: t("footer", "contactUs") },
       { href: "/about", label: t("footer", "aboutUs") },
       { href: "/blog", label: t("footer", "blog") },
+      ...(currentRoute.language.slug === "en"
+        ? [
+            {
+              href: "/research/virtual-makeup-privacy-index",
+              label: "Privacy Index",
+            },
+          ]
+        : []),
       { href: "/privacy", label: t("footer", "privacyPolicy") },
       { href: "/terms", label: t("footer", "termsOfService") },
       { href: "/ai-disclaimer", label: t("footer", "aiDisclaimer") },

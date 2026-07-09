@@ -1,0 +1,828 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import {
+  privacyIndexChecks,
+  privacyIndexEntries,
+  researchContextSources,
+  virtualMakeupPrivacyIndexCsvPath,
+  virtualMakeupPrivacyIndexReviewedAt,
+  virtualMakeupPrivacyIndexVersion,
+} from "../../data/virtualMakeupPrivacyIndex";
+
+const title = "Virtual Makeup Privacy Index 2026 | AI Beauty Stylist";
+const description =
+  "A policy-based transparency review of beauty AI and virtual makeup tools, covering photo retention, face data, deletion paths, AI training disclosures, and third-party processing.";
+const pageUrl = new URL(
+  "/research/virtual-makeup-privacy-index",
+  Astro.site ?? Astro.url.origin,
+).href;
+const csvUrl = new URL(
+  virtualMakeupPrivacyIndexCsvPath,
+  Astro.site ?? Astro.url.origin,
+).href;
+const perfectScoreCount = privacyIndexEntries.filter(
+  (entry) => entry.score === privacyIndexChecks.length,
+).length;
+const sortedEntries = [...privacyIndexEntries].sort(
+  (a, b) => b.score - a.score || a.service.localeCompare(b.service),
+);
+const jsonLd = JSON.stringify([
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: "Virtual Makeup Privacy Index 2026",
+    description,
+    url: pageUrl,
+    version: virtualMakeupPrivacyIndexVersion,
+    datePublished: virtualMakeupPrivacyIndexReviewedAt,
+    dateModified: virtualMakeupPrivacyIndexReviewedAt,
+    creator: {
+      "@type": "Organization",
+      name: "AI Beauty Stylist",
+      url: "https://aibeautystylist.com",
+    },
+    measurementTechnique: privacyIndexChecks.join("; "),
+    distribution: {
+      "@type": "DataDownload",
+      encodingFormat: "text/csv",
+      contentUrl: csvUrl,
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Virtual Makeup Privacy Index 2026",
+    description,
+    datePublished: virtualMakeupPrivacyIndexReviewedAt,
+    dateModified: virtualMakeupPrivacyIndexReviewedAt,
+    author: {
+      "@type": "Organization",
+      name: "AI Beauty Stylist",
+      url: "https://aibeautystylist.com",
+    },
+    mainEntityOfPage: pageUrl,
+  },
+]);
+
+const scoreClass = (score: number) =>
+  score === privacyIndexChecks.length ? "score-high" : "score-mid";
+const sourceLabel = (url: string) => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "Source";
+  }
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <SiteHeader active="blog" />
+  <main class="privacy-index-main">
+    <section class="research-hero shell" aria-labelledby="index-title">
+      <div class="hero-copy">
+        <span class="section-kicker">Research asset</span>
+        <h1 id="index-title">Virtual Makeup Privacy Index 2026</h1>
+        <p>
+          A policy-based transparency review of beauty AI and virtual try-on
+          tools. The index checks whether public notices clearly answer what
+          happens to uploaded photos, facial data, deletion requests, AI
+          improvement use, and third-party processing.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={virtualMakeupPrivacyIndexCsvPath}
+            >Download CSV</a
+          >
+          <a class="btn" href="#methodology">View methodology</a>
+        </div>
+      </div>
+      <aside class="index-snapshot" aria-label="Index snapshot">
+        <div class="snapshot-grid">
+          <div>
+            <strong>{privacyIndexEntries.length}</strong>
+            <span>tools reviewed</span>
+          </div>
+          <div>
+            <strong>{privacyIndexChecks.length}</strong>
+            <span>policy checks</span>
+          </div>
+          <div>
+            <strong>{perfectScoreCount}</strong>
+            <span>full disclosures</span>
+          </div>
+          <div>
+            <strong>{virtualMakeupPrivacyIndexReviewedAt}</strong>
+            <span>review date</span>
+          </div>
+        </div>
+        <div class="signal-matrix" aria-hidden="true">
+          {
+            sortedEntries.slice(0, 8).map((entry) => (
+              <div class="signal-row">
+                <span>{entry.service}</span>
+                <i
+                  style={`--score-width: ${(entry.score / privacyIndexChecks.length) * 100}%`}
+                />
+              </div>
+            ))
+          }
+        </div>
+      </aside>
+    </section>
+
+    <section class="summary-band">
+      <div class="shell summary-grid">
+        <article>
+          <b>What the index measures</b>
+          <p>
+            The score measures public transparency, not an audit of backend
+            systems or a ranking of overall safety.
+          </p>
+        </article>
+        <article>
+          <b>What changed in 2026</b>
+          <p>
+            Virtual try-on privacy moved from a niche legal topic into a live
+            beauty-tech risk, especially around biometric consent and retention.
+          </p>
+        </article>
+        <article>
+          <b>Most useful disclosure</b>
+          <p>
+            Specific retention or on-device processing claims are more useful
+            than broad statements that uploaded photos are handled securely.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="research-section shell" id="methodology">
+      <div class="section-heading">
+        <span>01</span>
+        <h2>Methodology</h2>
+        <p>
+          We reviewed public privacy policies, AI terms, biometric sections, and
+          help-center statements available on the review date. Each observable
+          disclosure is worth one point. "Not stated" means the public wording
+          reviewed for this index did not clearly answer the question.
+        </p>
+      </div>
+      <ol class="method-list">
+        {
+          privacyIndexChecks.map((check, index) => (
+            <li>
+              <b>{String(index + 1).padStart(2, "0")}</b>
+              <span>{check}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="research-section shell" aria-labelledby="findings-title">
+      <div class="section-heading">
+        <span>02</span>
+        <h2 id="findings-title">Key Findings</h2>
+      </div>
+      <div class="finding-grid">
+        <article>
+          <h3>Retention windows vary widely</h3>
+          <p>
+            Public policies in this review range from on-device processing or
+            deletion after a task completes to windows such as 24 hours, 21
+            days, 1 year, or 3 years depending on feature and jurisdiction.
+          </p>
+        </article>
+        <article>
+          <h3>AI improvement wording matters</h3>
+          <p>
+            Some providers state that photos or face data are not used for model
+            training. Others describe service improvement, internal research, or
+            generative AI model retention. Those are different disclosures and
+            should not be collapsed into one privacy claim.
+          </p>
+        </article>
+        <article>
+          <h3>SDK claims do not cover every merchant</h3>
+          <p>
+            A privacy-preserving SDK can still be embedded inside a merchant
+            experience with its own analytics, account data, or vendor routing.
+            Buyers should evaluate both the technology provider and deployer.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="research-section shell" aria-labelledby="score-table-title">
+      <div class="section-heading table-heading">
+        <div>
+          <span>03</span>
+          <h2 id="score-table-title">Score Table</h2>
+          <p>
+            Scores reflect whether each policy topic is clearly disclosed in
+            public materials reviewed on {virtualMakeupPrivacyIndexReviewedAt}.
+          </p>
+        </div>
+        <a class="btn btn-outline" href={virtualMakeupPrivacyIndexCsvPath}
+          >CSV dataset</a
+        >
+      </div>
+      <div class="table-wrap" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Tool</th>
+              <th scope="col">Score</th>
+              <th scope="col">Photo or face data</th>
+              <th scope="col">Retention</th>
+              <th scope="col">Deletion</th>
+              <th scope="col">AI use</th>
+              <th scope="col">Third parties</th>
+              <th scope="col">Notable retention detail</th>
+              <th scope="col">Source</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              sortedEntries.map((entry) => (
+                <tr>
+                  <th scope="row">
+                    <strong>{entry.service}</strong>
+                    <span>
+                      {entry.vendor} | {entry.category}
+                    </span>
+                  </th>
+                  <td>
+                    <span class:list={["score-pill", scoreClass(entry.score)]}>
+                      {entry.score}/{privacyIndexChecks.length}
+                    </span>
+                  </td>
+                  <td>{entry.photoFaceData}</td>
+                  <td>{entry.retention}</td>
+                  <td>{entry.deletion}</td>
+                  <td>{entry.aiTraining}</td>
+                  <td>{entry.thirdParties}</td>
+                  <td>{entry.notableRetention}</td>
+                  <td>
+                    <a
+                      href={entry.sourceUrl}
+                      rel="nofollow noopener"
+                      target="_blank"
+                    >
+                      {sourceLabel(entry.sourceUrl)}
+                    </a>
+                    {entry.secondarySourceUrl ? (
+                      <>
+                        <br />
+                        <a
+                          href={entry.secondarySourceUrl}
+                          rel="nofollow noopener"
+                          target="_blank"
+                        >
+                          {sourceLabel(entry.secondarySourceUrl)}
+                        </a>
+                      </>
+                    ) : null}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="research-section shell" aria-labelledby="context-title">
+      <div class="section-heading">
+        <span>04</span>
+        <h2 id="context-title">Why This Is Linkable Now</h2>
+        <p>
+          Editors and industry analysts are already covering virtual try-on,
+          biometric consent, AI photo editing, and face-data handling. This
+          index gives them a compact reference table and CSV they can cite.
+        </p>
+      </div>
+      <div class="context-list">
+        {
+          researchContextSources.map((source) => (
+            <a href={source.url} rel="nofollow noopener" target="_blank">
+              <strong>{source.title}</strong>
+              <span>{source.publisher}</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="citation-band">
+      <div class="shell citation-layout">
+        <div>
+          <span class="section-kicker">Citation</span>
+          <h2>How to cite this index</h2>
+          <p>
+            AI Beauty Stylist, "Virtual Makeup Privacy Index 2026," version {
+              virtualMakeupPrivacyIndexVersion
+            }, reviewed {virtualMakeupPrivacyIndexReviewedAt}.
+          </p>
+        </div>
+        <div class="citation-actions">
+          <a class="btn btn-primary" href="/privacy">Our privacy policy</a>
+          <a class="btn" href="/support">Request a correction</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .privacy-index-main {
+    background: var(--page-surface);
+    color: var(--text);
+  }
+
+  .research-hero {
+    display: grid;
+    min-height: 610px;
+    grid-template-columns: minmax(0, 0.94fr) minmax(360px, 0.72fr);
+    gap: 48px;
+    align-items: center;
+    padding-top: 54px;
+    padding-bottom: 42px;
+  }
+
+  .section-kicker {
+    display: block;
+    margin-bottom: 13px;
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 760;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .hero-copy h1 {
+    max-width: 800px;
+    margin: 0;
+    color: var(--heading);
+    font-family: var(--font-display);
+    font-size: 58px;
+    font-weight: 560;
+    line-height: 1.06;
+    letter-spacing: 0;
+  }
+
+  .hero-copy p {
+    max-width: 720px;
+    margin: 24px 0 0;
+    color: var(--body-secondary);
+    font-size: 18px;
+    line-height: 1.72;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .index-snapshot {
+    display: grid;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .snapshot-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .snapshot-grid div,
+  .finding-grid article,
+  .summary-grid article {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg-elevated);
+    box-shadow: var(--btn-shadow);
+  }
+
+  .snapshot-grid div {
+    min-height: 122px;
+    padding: 18px;
+  }
+
+  .snapshot-grid strong {
+    display: block;
+    color: var(--heading);
+    font-size: 31px;
+    line-height: 1.1;
+  }
+
+  .snapshot-grid span {
+    display: block;
+    margin-top: 8px;
+    color: var(--body-secondary);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .signal-matrix {
+    display: grid;
+    gap: 10px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--surface-rose) 54%, var(--bg-elevated));
+  }
+
+  .signal-row {
+    display: grid;
+    grid-template-columns: minmax(118px, 0.84fr) minmax(120px, 1fr);
+    gap: 12px;
+    align-items: center;
+  }
+
+  .signal-row span {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--heading);
+    font-size: 12px;
+    font-weight: 760;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .signal-row i {
+    position: relative;
+    display: block;
+    height: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--meter-track);
+  }
+
+  .signal-row i::after {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--score-width);
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--rose), var(--teal));
+    content: "";
+  }
+
+  .summary-band {
+    padding: 34px 0;
+    border-block: 1px solid var(--line);
+    background: var(--bg-elevated);
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .summary-grid article {
+    padding: 19px;
+  }
+
+  .summary-grid b,
+  .finding-grid h3 {
+    display: block;
+    color: var(--heading);
+    font-size: 16px;
+    line-height: 1.35;
+  }
+
+  .summary-grid p,
+  .finding-grid p {
+    margin: 9px 0 0;
+    color: var(--body-secondary);
+    font-size: 13px;
+    line-height: 1.68;
+  }
+
+  .research-section {
+    padding-top: 62px;
+    padding-bottom: 12px;
+  }
+
+  .section-heading {
+    max-width: 850px;
+  }
+
+  .section-heading span {
+    color: var(--rose);
+    font-size: var(--content-label-size);
+    font-weight: 780;
+  }
+
+  .section-heading h2 {
+    margin: 9px 0 12px;
+    color: var(--heading);
+    font-size: 32px;
+    line-height: 1.2;
+  }
+
+  .section-heading p {
+    margin: 0;
+    color: var(--body-secondary);
+    font-size: 15px;
+    line-height: 1.76;
+  }
+
+  .method-list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .method-list li {
+    display: grid;
+    min-height: 150px;
+    align-content: start;
+    gap: 16px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg-elevated);
+  }
+
+  .method-list b {
+    color: var(--rose);
+    font-size: 12px;
+  }
+
+  .method-list span {
+    color: var(--heading);
+    font-size: 14px;
+    font-weight: 720;
+    line-height: 1.5;
+  }
+
+  .finding-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  .finding-grid article {
+    min-height: 218px;
+    padding: 22px;
+  }
+
+  .table-heading {
+    display: flex;
+    max-width: none;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .table-wrap {
+    margin-top: 28px;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg-elevated);
+    box-shadow: var(--shadow), var(--panel-inset);
+  }
+
+  table {
+    width: 100%;
+    min-width: 1180px;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 15px 14px;
+    border-bottom: 1px solid var(--line);
+    color: var(--body-secondary);
+    font-size: 13px;
+    line-height: 1.56;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--surface-neutral);
+    color: var(--heading);
+    font-size: 12px;
+    font-weight: 820;
+  }
+
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tbody th {
+    width: 230px;
+  }
+
+  tbody th strong {
+    display: block;
+    color: var(--heading);
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  tbody th span {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 520;
+  }
+
+  td a {
+    color: var(--rose);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .score-pill {
+    display: inline-flex;
+    min-width: 54px;
+    min-height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 820;
+  }
+
+  .score-high {
+    border: 1px solid var(--success-border);
+    background: var(--surface-success);
+    color: var(--success-text);
+  }
+
+  .score-mid {
+    border: 1px solid var(--gold-border);
+    background: var(--surface-gold);
+    color: var(--gold-text);
+  }
+
+  .context-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .context-list a {
+    display: grid;
+    min-height: 142px;
+    align-content: space-between;
+    gap: 16px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg-elevated);
+    color: inherit;
+  }
+
+  .context-list strong {
+    color: var(--heading);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .context-list span {
+    color: var(--rose);
+    font-size: 12px;
+    font-weight: 780;
+  }
+
+  .citation-band {
+    margin-top: 62px;
+    padding: 52px 0;
+    border-top: 1px solid var(--line);
+    background: var(--surface-rose);
+  }
+
+  .citation-layout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 34px;
+  }
+
+  .citation-layout h2 {
+    margin: 0;
+    color: var(--heading);
+    font-size: 30px;
+  }
+
+  .citation-layout p {
+    max-width: 720px;
+    margin: 12px 0 0;
+    color: var(--body-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .citation-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 1020px) {
+    .research-hero,
+    .summary-grid,
+    .finding-grid,
+    .context-list {
+      grid-template-columns: 1fr;
+    }
+
+    .research-hero {
+      min-height: 0;
+      gap: 30px;
+    }
+
+    .method-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .citation-layout,
+    .table-heading {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .citation-actions {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .research-hero {
+      padding-top: 36px;
+      padding-bottom: 28px;
+    }
+
+    .hero-copy h1 {
+      font-size: 34px;
+    }
+
+    .hero-copy p {
+      font-size: 15px;
+      line-height: 1.62;
+    }
+
+    .hero-actions,
+    .citation-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .hero-actions .btn,
+    .citation-actions .btn {
+      width: 100%;
+    }
+
+    .snapshot-grid,
+    .method-list {
+      grid-template-columns: 1fr;
+    }
+
+    .snapshot-grid div,
+    .method-list li,
+    .finding-grid article {
+      min-height: 0;
+    }
+
+    .signal-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+    }
+
+    .research-section {
+      padding-top: 44px;
+    }
+
+    .section-heading h2,
+    .citation-layout h2 {
+      font-size: 25px;
+    }
+  }
+</style>
