@@ -54,35 +54,42 @@ Pitch order:
 First 30 to pitch:
 
 1. personalcareinsights.com
-2. beautymatter.com
-3. beautyindependent.com
-4. cosmeticsdesign.com
-5. globalcosmeticsnews.com
+2. globalcosmeticsnews.com
+3. cosmeticsbusiness.com
+4. beautymatter.com
+5. beautyindependent.com
 6. gcimagazine.com
 7. retaildive.com
 8. glossy.co
-9. cosmeticsbusiness.com
-10. allure.com
-11. byrdie.com
-12. wired.com
-13. theverge.com
-14. lexology.com
-15. biometricupdate.com
-16. techcrunch.com
-17. fastcompany.com
-18. technologyreview.com
-19. arstechnica.com
-20. zdnet.com
-21. cnet.com
-22. pcmag.com
-23. venturebeat.com
-24. privacyinternational.org
-25. natlawreview.com
-26. insideprivacy.com
-27. shopify.com
-28. bigcommerce.com
-29. shotkit.com
-30. petapixel.com
+9. allure.com
+10. byrdie.com
+11. wired.com
+12. theverge.com
+13. lexology.com
+14. biometricupdate.com
+15. techcrunch.com
+16. fastcompany.com
+17. technologyreview.com
+18. arstechnica.com
+19. zdnet.com
+20. cnet.com
+21. pcmag.com
+22. venturebeat.com
+23. privacyinternational.org
+24. natlawreview.com
+25. insideprivacy.com
+26. shopify.com
+27. bigcommerce.com
+28. shotkit.com
+29. petapixel.com
+30. thefashionlaw.com
+
+Execution update on 2026-07-09:
+
+- Use `reports/backlink-first-30-execution-2026-07-09.csv` as the active first-send sheet.
+- CosmeticsDesign was removed from the active first-send batch after current research found William Reed shuttered CosmeticsDesign.com in April 2026.
+- The Fashion Law was added as a replacement because it has direct coverage of Estée Lauder and virtual try-on BIPA litigation.
+- Targets with a recent article about MAC, virtual try-on litigation, AI beauty commerce, or biometric consent should receive article-update outreach before any generic newsroom pitch.
 
 ## Anchor Strategy
 
@@ -169,4 +176,3 @@ Use `reports/backlink-prospects-2026-07-09.csv` as the source of truth. Add thes
 - anchor_text
 - link_type
 - notes
-
