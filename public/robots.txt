@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 
 Sitemap: https://aibeautystylist.com/sitemap.xml
+Sitemap: https://aibeautystylist.com/sitemap-images.xml
 
 # 不索引内部 API 和资源
 Disallow: /api/

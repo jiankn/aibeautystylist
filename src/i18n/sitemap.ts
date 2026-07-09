@@ -10,7 +10,7 @@ export interface SitemapPage {
   readonly changefreq: string;
 }
 
-export const sitemapLastmod = "2026-07-09";
+export const sitemapLastmod = "2026-07-10";
 
 const corePages: SitemapPage[] = [
   { url: "/", priority: "1.0", changefreq: "weekly" },
@@ -175,16 +175,23 @@ export function getSitemapPages(languageSlug: LanguageSlug | string) {
 
 export function renderSitemapIndex(site: string): string {
   const languages = getSitemapLanguages();
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${languages
-  .map(
-    (language) => `  <sitemap>
+  const languageSitemaps = languages
+    .map(
+      (language) => `  <sitemap>
     <loc>${escapeXml(new URL(`/sitemap-${language.slug}.xml`, site).href)}</loc>
     <lastmod>${sitemapLastmod}</lastmod>
   </sitemap>`,
-  )
-  .join("\n")}
+    )
+    .join("\n");
+  const imageSitemap = `  <sitemap>
+    <loc>${escapeXml(new URL("/sitemap-images.xml", site).href)}</loc>
+    <lastmod>${sitemapLastmod}</lastmod>
+  </sitemap>`;
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${languageSitemaps}
+${imageSitemap}
 </sitemapindex>`;
 }
 

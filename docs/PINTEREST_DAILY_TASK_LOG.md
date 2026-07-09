@@ -145,10 +145,23 @@ AI-generated visualization for beauty inspiration.
 - [x] CTA links now open the preselected no-sign-up try-on path with `guest_try=1`, `marketProfile=global-diverse`, and unique Pinterest UTM values.
 - [x] Mobile verification completed locally for both pages at 390px width.
 - [x] Fixed the trust-chain issue where Pinterest landing visuals and the `/tryon` left selected-look image could diverge. Known Pinterest links now pass `pin_visual`, with `/tryon` fallback mapping by `source` and `utm_content`.
-- [ ] Publish Pin 7 to `Date Night Makeup Ideas`.
-- [ ] Publish Pin 8 to `Hooded Eyes & Monolid Makeup` after creating the board if it does not already exist.
-- [ ] Save 8-12 relevant high-quality Pins after publishing.
-- [ ] Record evening analytics once after publishing is complete.
+- [x] Publish Pin 7 to `Date Night Makeup Ideas`.
+- [x] Publish Pin 8 to `Hooded Eyes & Monolid Makeup` after creating the board if it does not already exist.
+- [x] Save 12-15 relevant high-quality Pins after publishing.
+- [x] Record evening analytics once after publishing is complete.
+
+### 2026-07-09 Analytics Snapshot
+
+Screenshot source: Pinterest App Analytics, past 30 days, `2026-06-09` to `2026-07-09`, captured around `2026-07-10 00:13`.
+
+| Metric | Value | Note |
+|---|---:|---|
+| Impressions | 193 | Distribution is increasing from the previous 67-view snapshot. |
+| Engagements | 21 | Engagement rate about 10.9%. |
+| Outbound clicks | 5 | Outbound CTR about 2.59%, good early signal. |
+| Saves | 0 | Still the weak point; keep improving save-worthy visual utility. |
+| Total audience | 1 | Sample still too small for broad conclusions. |
+| Engaged audience | 1 | Sample still too small for broad conclusions. |
 
 ### Pin 7 Publishing Spec
 
@@ -189,3 +202,30 @@ Try a hooded-eyes makeup direction with lifted shadow, thin liner and visible de
 
 AI-generated visualization for beauty inspiration.
 ```
+
+## Google Images Daily Companion Rule
+
+Starting 2026-07-10, every Pinterest daily plan must include a Google Images companion task.
+
+Daily pairing rule:
+
+```text
+One Pinterest Pin topic -> one clean Google Images asset -> one matched landing page -> one image SEO checklist entry
+```
+
+Google Images is not treated as a separate social platform. It is the SEO layer for the same makeup themes we test on Pinterest.
+
+For each new Pinterest Pin, also record:
+
+- [ ] Google Images topic chosen from the same Pin theme.
+- [ ] Clean image version created with no text, no CTA, no logo, and no watermark.
+- [ ] Descriptive filename prepared, for example `office-makeup-natural-workday-look.webp`.
+- [ ] Destination page selected and matched to the same makeup intent.
+- [ ] Image added to the page with a real `<img>` tag, descriptive alt text, and nearby explanatory copy.
+- [ ] Page CTA still opens the same preselected no-sign-up try-on path.
+- [ ] Image sitemap entry added, or marked `pending infrastructure` until `sitemap-images.xml` exists.
+- [ ] Weekly GSC Image performance check scheduled.
+
+Fixed Google Images judgment:
+
+> Can Google understand this image clearly, and can the visitor click through to try the same makeup look on her own face?
