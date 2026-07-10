@@ -237,3 +237,63 @@ Fixed Google Images judgment:
 - [x] Connected the module to the first 8 Google Images landing themes.
 - [x] Kept Pinterest UTM traffic on the Pinterest-specific conversion path.
 - [x] CTA routes users to the matching no-sign-up try-on path with Google Images attribution.
+
+## 2026-07-10
+
+### Day 5 Dual-Channel Execution
+
+Daily production rule:
+
+```text
+Two makeup topics per day.
+Each topic = one Pinterest Pin + one clean Google Images asset + one matched landing page and try-on path.
+```
+
+Infrastructure already completed before today's content work:
+
+- [x] The first 8 Google Images assets are registered in `sitemap-images.xml`.
+- [x] Direct image-document navigation routes visitors to the matching landing page while image and crawler requests still receive the image.
+- [x] Google Images retention modules cover the first 8 themes in all 9 active languages.
+- [ ] Submit `https://aibeautystylist.com/sitemap-images.xml` in Google Search Console once, then let Google recrawl future updates automatically.
+
+### Topic 1: Passport Photo Makeup Without Flashback
+
+- [x] Audit and rebuild `/scenarios/passport-photo` as a matched Pinterest and Google Images conversion page.
+- [x] Create Pin 9 as a realistic 1000 x 1500 photo-plus-copy composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Use the preselected `passport-photo-clean` no-sign-up guest try-on path.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned.
+- [x] Add the clean image to page HTML with descriptive alt text and nearby copy.
+- [x] Add the asset to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify mobile before publishing Pin 9.
+- [ ] Publish Pin 9 to `Photo-Ready & Passport Makeup` and test its link once.
+
+Planned attribution:
+
+- Pinterest: `utm_content=pin_passport_no_flashback_01`
+- Google Images: `utm_content=google_image_passport_photo_01`
+
+### Topic 2: Glass Skin Makeup Without Looking Greasy
+
+- [x] Audit and rebuild `/looks/glass-skin` as a matched Pinterest and Google Images conversion page.
+- [x] Create Pin 10 as a realistic 1000 x 1500 photo-plus-copy composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Use the preselected `korean-dewy-glow` no-sign-up guest try-on path.
+- [x] Use the global-diverse/non-East-Asian visual for English and other non-East-Asian locales; reserve East-Asian assets for Chinese, Japanese, and Korean locales.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned.
+- [x] Add the clean image to page HTML with descriptive alt text and nearby copy.
+- [x] Add the asset to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify mobile before publishing Pin 10.
+- [ ] Publish Pin 10 to `Clean Girl, Dewy & Glass Skin` and test its link once.
+
+Planned attribution:
+
+- Pinterest: `utm_content=pin_glass_skin_not_greasy_01`
+- Google Images: `utm_content=google_image_glass_skin_01`
+
+### Daily Distribution And Measurement
+
+- [ ] Save 10-12 high-quality related Pins across the two matching Boards after publishing.
+- [ ] Do not edit or republish old Pins today.
+- [ ] Record Pinterest impressions, engagements, outbound clicks, saves, and per-Pin impressions once tonight.
+- [ ] Check Google Images performance in GSC weekly, not daily; indexing and image-query data have a longer delay.

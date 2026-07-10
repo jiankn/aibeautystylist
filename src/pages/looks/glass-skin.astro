@@ -1,5 +1,7 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "Glass Skin Makeup: The Korean Beauty Trend Made Easy",
@@ -33,17 +35,151 @@ const page = {
     { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
   ],
 };
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource = Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const glassSkinHeroImage = isEastAsianLocale
+  ? "/images/look-korean-dewy-makeup.webp"
+  : "/images/pinterest/glass-skin-not-greasy.webp";
+const glassSkinDecisionImage = isEastAsianLocale
+  ? "/images/look-card/looks/korean-dewy-glow--east-asia-640.webp"
+  : "/images/look-card/looks/korean-dewy-glow--global-diverse-640.webp";
+const glassSkinPinVisual = isEastAsianLocale
+  ? "glass_skin_east_asia"
+  : "glass_skin_not_greasy";
+const glassSkinMarketProfile = isEastAsianLocale
+  ? "east-asia"
+  : "global-diverse";
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+const glassSkinAttribution = pinterestSource
+  ? {
+      source: "pinterest_glass_skin",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_glass_skin")
+        ? incomingUtmContent
+        : "pin_glass_skin_not_greasy_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_glass_skin",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_glass_skin_01",
+      }
+    : {
+        source: "glass_skin_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "glass_skin",
+        utmContent: "glass_skin_hero",
+      };
+const glassSkinTryonParams = new URLSearchParams({
+  look: "korean-dewy-glow",
+  marketProfile: glassSkinMarketProfile,
+  guest_try: "1",
+  source: glassSkinAttribution.source,
+  pin_visual: glassSkinPinVisual,
+  utm_source: glassSkinAttribution.utmSource,
+  utm_medium: glassSkinAttribution.utmMedium,
+  utm_campaign: glassSkinAttribution.utmCampaign,
+  utm_content: glassSkinAttribution.utmContent,
+});
+const glassSkinTryonHref = localizeAppHref(
+  `/tryon?${glassSkinTryonParams.toString()}#tryon-upload`,
+);
+const glassSkinPricingHref = localizeAppHref(
+  "/pricing?source=glass_skin_preview",
+);
+const glassSkinHeroBody = pinterestSource
+  ? "Saw this on Pinterest? Preview the same targeted glass-skin finish on your selfie before adding glow to your whole face."
+  : googleImageSource
+    ? "Found this look in Google Images? Preview the same targeted glass-skin finish on your selfie before adding glow to your whole face."
+    : "Preview a glass-skin makeup direction that keeps real texture visible and places luminosity where it flatters your face.";
 ---
 
-<SeoLandingLayout {...page}>
+<SeoLandingLayout
+  {...page}
+  heroImage={glassSkinHeroImage}
+  ogImage={glassSkinHeroImage}
+  heroCtaHref={glassSkinTryonHref}
+  heroCtaLabel="Try Glass Skin Free"
+>
   <Fragment slot="hero">
-    <h1>Glass Skin Makeup: The Korean Beauty Trend Made Easy</h1>
-    <p>
-      Glass skin is the K-beauty standard for luminous, poreless-looking
-      complexion. Learn the layering system that creates it, the prep that makes
-      or breaks it, and how it adapts to every skin tone.
-    </p>
+    <h1>Glass Skin Makeup Without Looking Greasy</h1>
+    <p>{glassSkinHeroBody}</p>
   </Fragment>
+
+  {
+    pinterestSource && (
+      <PinterestConversionPanel
+        kicker="Pinterest glass-skin path"
+        title="Put the glow where it helps"
+        body="You clicked for glass-skin makeup, so the page opens with the same real-skin finish. Preview it before turning every reflective point into shine."
+        image={glassSkinDecisionImage}
+        imageAlt="Glass skin makeup placement decision guide"
+        visualVariant="decision"
+        visualHighlights={[
+          {
+            title: "Best for",
+            body: "Fresh daytime makeup, close-up photos, dates, and anyone who wants hydration without a greasy T-zone.",
+          },
+          {
+            title: "Check on your face",
+            body: "Look for controlled light on the cheekbones and temples while pores and natural skin texture remain visible.",
+          },
+          {
+            title: "Avoid",
+            body: "Wet-looking forehead shine, metallic highlighter, thick base layers, and blur that erases the face you recognize.",
+          },
+          {
+            title: "Upgrade only if useful",
+            body: "Save the result and compare softer or brighter finishes after the free preview feels believable.",
+          },
+        ]}
+        visualFooterLabel="Next action"
+        visualFooterBody="Open Glass Skin Makeup already selected and upload one selfie free."
+        selectedLook="Glass Skin Makeup"
+        selectedLookMeta="Targeted luminosity, real texture"
+        primaryHref={glassSkinTryonHref}
+        primaryLabel="Try this finish free"
+        secondaryHref={glassSkinPricingHref}
+        secondaryLabel="See member benefits"
+        proofPoints={[
+          "Same look as the Pin",
+          "One no-sign-up preview",
+          "Upgrade to save results",
+        ]}
+        steps={[
+          {
+            title: "Start with the matched finish",
+            body: "The page keeps the same luminous real-skin direction instead of replacing it with a generic dewy makeup image.",
+          },
+          {
+            title: "Preview it on your selfie",
+            body: "Glass Skin Makeup opens preselected, so you can judge glow placement and intensity without searching again.",
+          },
+          {
+            title: "Subscribe when it helps",
+            body: "Membership is for saving the result, testing more finishes, and building repeatable looks for different lighting.",
+          },
+        ]}
+        membershipHref={glassSkinPricingHref}
+        membershipTitle="Why membership fits finish comparison"
+        membershipBody="The free preview shows whether targeted luminosity suits your face. Membership helps when you want saved comparisons, more generations, and HD results."
+      />
+    )
+  }
 
   <div class="seo-content">
     <h2>The K-Beauty Influence and Why Glass Skin Endures</h2>

@@ -456,7 +456,9 @@ const pinterestGuestParams = new URLSearchParams(window.location.search);
 const PINTEREST_GUEST_ELIGIBLE =
   pinterestGuestParams.get("guest_try") === "1" &&
   (pinterestGuestParams.get("utm_source") === "pinterest" ||
-    (pinterestGuestParams.get("source") || "").startsWith("pinterest"));
+    pinterestGuestParams.get("utm_source") === "google_images" ||
+    (pinterestGuestParams.get("source") || "").startsWith("pinterest") ||
+    (pinterestGuestParams.get("source") || "").startsWith("google_images"));
 
 function setPinterestGuestPassState(state) {
   pinterestGuestPassState = state || undefined;

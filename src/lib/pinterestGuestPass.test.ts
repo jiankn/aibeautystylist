@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  isCampaignGuestTryonParams,
   isPinterestGuestTryonParams,
   pinterestGuestPassState,
   type PinterestGuestPass,
@@ -43,6 +44,21 @@ describe("pinterestGuestPass", () => {
         new URLSearchParams("guest_try=1&utm_source=google"),
       ),
     ).toBe(false);
+  });
+
+  it("also allows Google Images campaign traffic to use the one guest preview", () => {
+    expect(
+      isCampaignGuestTryonParams(
+        new URLSearchParams(
+          "guest_try=1&utm_source=google_images&utm_content=google_image_glass_skin_01",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      isCampaignGuestTryonParams(
+        new URLSearchParams("guest_try=1&source=google_images_passport_photo"),
+      ),
+    ).toBe(true);
   });
 
   it("marks a pass unavailable after it is used, assigned to a job, or expired", () => {

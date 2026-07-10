@@ -1,5 +1,7 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "Passport Photo Makeup: Look Like Yourself, But Your Best Self",
@@ -34,24 +36,153 @@ const relatedLinks = [
   { label: "Natural Makeup", url: "/looks/natural-makeup" },
   { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
 ];
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource = Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const passportHeroImage = isEastAsianLocale
+  ? "/images/look-passport-photo-clean.webp"
+  : "/images/pinterest/passport-photo-no-flashback.webp";
+const passportDecisionImage = isEastAsianLocale
+  ? "/images/look-card/looks/passport-photo-clean--east-asia-640.webp"
+  : "/images/look-card/looks/passport-photo-clean--global-diverse-640.webp";
+const passportPinVisual = isEastAsianLocale
+  ? "passport_clean_east_asia"
+  : "passport_no_flashback";
+const passportMarketProfile = isEastAsianLocale
+  ? "east-asia"
+  : "global-diverse";
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+const passportAttribution = pinterestSource
+  ? {
+      source: "pinterest_passport",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_passport")
+        ? incomingUtmContent
+        : "pin_passport_no_flashback_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_passport_photo",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_passport_photo_01",
+      }
+    : {
+        source: "passport_photo_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "passport_photo",
+        utmContent: "passport_photo_hero",
+      };
+const passportTryonParams = new URLSearchParams({
+  look: "passport-photo-clean",
+  marketProfile: passportMarketProfile,
+  guest_try: "1",
+  source: passportAttribution.source,
+  pin_visual: passportPinVisual,
+  utm_source: passportAttribution.utmSource,
+  utm_medium: passportAttribution.utmMedium,
+  utm_campaign: passportAttribution.utmCampaign,
+  utm_content: passportAttribution.utmContent,
+});
+const passportTryonHref = localizeAppHref(
+  `/tryon?${passportTryonParams.toString()}#tryon-upload`,
+);
+const passportPricingHref = localizeAppHref(
+  "/pricing?source=passport_photo_preview",
+);
+const passportHeroBody = pinterestSource
+  ? "Saw this on Pinterest? Preview the same clean, flash-aware makeup direction on your selfie before your appointment."
+  : googleImageSource
+    ? "Found this look in Google Images? Preview the same clean, flash-aware makeup direction on your selfie before your appointment."
+    : "Preview a natural passport-photo makeup direction that controls shine, preserves your features, and still looks like you.";
 ---
 
 <SeoLandingLayout
   title={page.title}
   description={page.description}
-  heroImage={page.heroImage}
-  ogImage={page.ogImage}
+  heroImage={passportHeroImage}
+  ogImage={passportHeroImage}
+  heroCtaHref={passportTryonHref}
+  heroCtaLabel="Try Passport Makeup Free"
   faq={page.faq}
 >
   <Fragment slot="hero">
-    <h1>{page.title}</h1>
-    <p>
-      Passport photos have strict rules: no filters, no heavy alteration, no
-      glare. Learn exactly what makeup is allowed, what causes photo rejection,
-      and a simple routine that makes you look polished while staying fully
-      compliant.
-    </p>
+    <h1>Passport Photo Makeup Without Flashback</h1>
+    <p>{passportHeroBody}</p>
   </Fragment>
+
+  {
+    pinterestSource && (
+      <PinterestConversionPanel
+        kicker="Pinterest passport-photo path"
+        title="Check the look before the camera does"
+        body="You clicked for passport-photo makeup, so the page opens with the same satin-matte direction. Preview it on your selfie before choosing products for direct flash."
+        image={passportDecisionImage}
+        imageAlt="Passport photo makeup decision guide"
+        visualVariant="decision"
+        visualHighlights={[
+          {
+            title: "Best for",
+            body: "Passport photos, ID photos, visa appointments, and any direct-flash headshot.",
+          },
+          {
+            title: "Check on your face",
+            body: "Look for even tone, controlled T-zone shine, visible eyes, and a lip color close to your natural lip.",
+          },
+          {
+            title: "Avoid",
+            body: "Heavy contour, metallic highlight, thick lashes, and reflective base products that can create glare.",
+          },
+          {
+            title: "Upgrade only if useful",
+            body: "Save the result and compare more natural variations after the free preview works for your face.",
+          },
+        ]}
+        visualFooterLabel="Next action"
+        visualFooterBody="Open Passport Photo Makeup already selected and upload one selfie free."
+        selectedLook="Passport Photo Makeup"
+        selectedLookMeta="Satin-matte, natural, flash-aware"
+        primaryHref={passportTryonHref}
+        primaryLabel="Try this look free"
+        secondaryHref={passportPricingHref}
+        secondaryLabel="See member benefits"
+        proofPoints={[
+          "Same look as the Pin",
+          "One no-sign-up preview",
+          "Upgrade to save results",
+        ]}
+        steps={[
+          {
+            title: "Start with the matched look",
+            body: "The page keeps the same clean passport-photo direction instead of sending you to a generic makeup catalog.",
+          },
+          {
+            title: "Preview it on your selfie",
+            body: "Passport Photo Makeup opens preselected, so you can check shine, color, and feature definition immediately.",
+          },
+          {
+            title: "Subscribe when it helps",
+            body: "Membership is for saving the result, testing more versions, and keeping polished photo-ready looks available.",
+          },
+        ]}
+        membershipHref={passportPricingHref}
+        membershipTitle="Why membership fits photo-day planning"
+        membershipBody="The free preview answers whether this direction suits you. Membership helps when you want saved comparisons, more generations, and HD results."
+      />
+    )
+  }
 
   <section class="seo-content">
     <h2>The Passport Photo Rule: Look Like You on Your Best Day</h2>

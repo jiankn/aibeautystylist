@@ -104,10 +104,23 @@ const pinVisual = Astro.url.searchParams.get("pin_visual");
 const isPinterestTraffic =
   Astro.url.searchParams.get("utm_source") === "pinterest" ||
   (source?.startsWith("pinterest") ?? false);
-const isPinterestGuestTryon =
+const isGoogleImageTraffic =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (source?.startsWith("google_images") ?? false);
+const isMatchedCampaignTraffic = isPinterestTraffic || isGoogleImageTraffic;
+const isCampaignGuestTryon =
   !authenticated &&
-  isPinterestTraffic &&
+  isMatchedCampaignTraffic &&
   Astro.url.searchParams.get("guest_try") === "1";
+const campaignGuestCopy = isGoogleImageTraffic
+  ? {
+      label: "Google Images preview",
+      title: "Free try-on for this Google Images look",
+    }
+  : {
+      label: "Pinterest preview",
+      title: "Free try-on for this Pinterest look",
+    };
 const requestedLookBase = resolvedLooks.find(
   (look) => look.slug === requestedSlug,
 );
@@ -118,6 +131,10 @@ const pinterestTryonVisualsByKey = {
   hooded_visible_shadow: "/images/pinterest/hooded-eyes-visible-shadow.webp",
   soft_glam_refined: "/images/look-refined.webp",
   wedding_guest_daylight: "/images/look-wedding-guest.webp",
+  passport_no_flashback: "/images/pinterest/passport-photo-no-flashback.webp",
+  passport_clean_east_asia: "/images/look-passport-photo-clean.webp",
+  glass_skin_not_greasy: "/images/pinterest/glass-skin-not-greasy.webp",
+  glass_skin_east_asia: "/images/look-korean-dewy-makeup.webp",
 } as const;
 const pinterestTryonVisualsBySource: Record<string, string> = {
   pinterest_quick5: pinterestTryonVisualsByKey.quick5_real_morning,
@@ -126,6 +143,11 @@ const pinterestTryonVisualsBySource: Record<string, string> = {
   pinterest_hooded_eyes: pinterestTryonVisualsByKey.hooded_visible_shadow,
   pinterest_soft_glam: pinterestTryonVisualsByKey.soft_glam_refined,
   pinterest_wedding_guest: pinterestTryonVisualsByKey.wedding_guest_daylight,
+  pinterest_passport: pinterestTryonVisualsByKey.passport_no_flashback,
+  pinterest_glass_skin: pinterestTryonVisualsByKey.glass_skin_not_greasy,
+  google_images_passport_photo:
+    pinterestTryonVisualsByKey.passport_no_flashback,
+  google_images_glass_skin: pinterestTryonVisualsByKey.glass_skin_not_greasy,
 };
 const pinterestTryonVisualsByUtmContent: Record<string, string> = {
   ai_makeup_tryon_01: "/images/article-ai-tryon-comparison.webp",
@@ -139,6 +161,15 @@ const pinterestTryonVisualsByUtmContent: Record<string, string> = {
     pinterestTryonVisualsByKey.hooded_visible_shadow,
   pin_soft_glam_01: pinterestTryonVisualsByKey.soft_glam_refined,
   pin_wedding_guest_01: pinterestTryonVisualsByKey.wedding_guest_daylight,
+  pin_passport_01: pinterestTryonVisualsByKey.passport_no_flashback,
+  pin_passport_no_flashback_01:
+    pinterestTryonVisualsByKey.passport_no_flashback,
+  google_image_passport_photo_01:
+    pinterestTryonVisualsByKey.passport_no_flashback,
+  pin_glass_skin_01: pinterestTryonVisualsByKey.glass_skin_not_greasy,
+  pin_glass_skin_not_greasy_01:
+    pinterestTryonVisualsByKey.glass_skin_not_greasy,
+  google_image_glass_skin_01: pinterestTryonVisualsByKey.glass_skin_not_greasy,
 };
 const pinterestTryonVisual =
   (pinVisual &&
@@ -151,7 +182,7 @@ const requestedLook = requestedLookBase
   ? {
       ...requestedLookBase,
       image:
-        isPinterestTraffic && pinterestTryonVisual
+        isMatchedCampaignTraffic && pinterestTryonVisual
           ? pinterestTryonVisual
           : source === "home_scenario"
             ? (homeScenarioImages?.[requestedLookBase.slug] ??
@@ -168,11 +199,12 @@ const featuredLooks = requestedLook
     ].slice(0, 4)
   : defaultFeaturedLooks;
 const selected = requestedLook ?? featuredLooks[0];
-const isPinterestUploadContext = isPinterestTraffic && Boolean(requestedLook);
-const uploadTitle = isPinterestUploadContext
+const isMatchedUploadContext =
+  isMatchedCampaignTraffic && Boolean(requestedLook);
+const uploadTitle = isMatchedUploadContext
   ? t("tryon", "pinterestUploadTitle")
   : t("tryon", "uploadSelfie");
-const uploadHelper = isPinterestUploadContext
+const uploadHelper = isMatchedUploadContext
   ? t("tryon", "pinterestUploadDesc")
   : !isLoggedIn
     ? t("tryon", "uploadHelperGuestDesc")
@@ -385,7 +417,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     data-tryon-audience={experience.audience}
     data-tryon-plan={experience.planCode}
     data-tryon-market-profile={tryonAudienceContext.marketProfile}
-    data-pinterest-guest-tryon={isPinterestGuestTryon ? "true" : "false"}
+    data-pinterest-guest-tryon={isCampaignGuestTryon ? "true" : "false"}
   >
     <div class="shell">
       {
@@ -400,15 +432,17 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
             note={experienceNote}
             live
           />
-        ) : isPinterestGuestTryon ? (
+        ) : isCampaignGuestTryon ? (
           <section
             class="workspace-status panel guest-tryon-status"
             data-plan="Free"
           >
             <div class="workspace-status-main">
-              <span class="workspace-status-plan">Pinterest preview</span>
+              <span class="workspace-status-plan">
+                {campaignGuestCopy.label}
+              </span>
               <div>
-                <h1>Free try-on for this Pinterest look</h1>
+                <h1>{campaignGuestCopy.title}</h1>
                 <p>
                   Upload one selfie and preview the selected makeup direction
                   before you sign up.
@@ -504,7 +538,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
               class:list={[
                 "upload-box",
                 "upload-box-guided",
-                isPinterestGuestTryon && "upload-box-pinterest-guest",
+                isCampaignGuestTryon && "upload-box-pinterest-guest",
               ]}
             >
               <span class="upload-camera">▣</span>
@@ -523,7 +557,7 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
                 data-guest-pending-label={t("tryon", "guestPreviewPreparing")}
                 disabled
                 >{
-                  isPinterestGuestTryon
+                  isCampaignGuestTryon
                     ? t("tryon", "guestUploadButton")
                     : t("tryon", "uploadBtn")
                 }</button

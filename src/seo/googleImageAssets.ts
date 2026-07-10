@@ -73,6 +73,22 @@ export const googleImageAssets: readonly GoogleImageAsset[] = [
     caption:
       "A realistic hooded-eyes makeup look with lifted eyeshadow placement and thin liner that stays visible.",
   },
+  {
+    sourcePin: "pin_passport_no_flashback_01",
+    pageUrl: "/scenarios/passport-photo",
+    imageUrl: "/images/pinterest/passport-photo-no-flashback.webp",
+    title: "Passport photo makeup preview without flashback",
+    caption:
+      "A realistic satin-matte passport photo makeup direction that keeps skin clean under direct flash without flattening the face.",
+  },
+  {
+    sourcePin: "pin_glass_skin_not_greasy_01",
+    pageUrl: "/looks/glass-skin",
+    imageUrl: "/images/pinterest/glass-skin-not-greasy.webp",
+    title: "Glass skin makeup preview without looking greasy",
+    caption:
+      "A realistic glass-skin makeup look with controlled glow on the high points of the face instead of all-over shine.",
+  },
 ];
 
 function escapeXml(value: string): string {

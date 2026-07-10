@@ -50,15 +50,20 @@ interface PinterestGuestPassRow {
   completed_at: string | null;
 }
 
-export function isPinterestGuestTryonParams(
-  params: URLSearchParams,
-): boolean {
+export function isPinterestGuestTryonParams(params: URLSearchParams): boolean {
+  return isCampaignGuestTryonParams(params);
+}
+
+export function isCampaignGuestTryonParams(params: URLSearchParams): boolean {
   const guestTry = params.get("guest_try") === "1";
   const utmSource = params.get("utm_source")?.toLowerCase();
   const source = params.get("source")?.toLowerCase();
   return (
     guestTry &&
-    (utmSource === "pinterest" || Boolean(source?.startsWith("pinterest")))
+    (utmSource === "pinterest" ||
+      utmSource === "google_images" ||
+      Boolean(source?.startsWith("pinterest")) ||
+      Boolean(source?.startsWith("google_images")))
   );
 }
 

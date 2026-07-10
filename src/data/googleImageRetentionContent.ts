@@ -347,6 +347,42 @@ const googleImageRetentionTopics: readonly GoogleImageRetentionTopic[] = [
       "pt-BR": "maquiagem para pálpebras caídas",
     }),
   },
+  {
+    englishPath: "/scenarios/passport-photo",
+    lookSlug: "passport-photo-clean",
+    sourceKey: "passport_photo",
+    pinVisual: "passport_no_flashback",
+    utmContent: "google_image_passport_photo_01",
+    topic: withLatinFallbacks({
+      en: "passport photo makeup",
+      "zh-CN": "证件照妆容",
+      "de-DE": "Passfoto-Make-up",
+      "fr-FR": "maquillage photo d'identité",
+      "ja-JP": "証明写真メイク",
+      "ko-KR": "증명사진 메이크업",
+      "zh-TW": "證件照妝容",
+      "es-ES": "maquillaje para foto de pasaporte",
+      "pt-BR": "maquiagem para foto de passaporte",
+    }),
+  },
+  {
+    englishPath: "/looks/glass-skin",
+    lookSlug: "korean-dewy-glow",
+    sourceKey: "glass_skin",
+    pinVisual: "glass_skin_not_greasy",
+    utmContent: "google_image_glass_skin_01",
+    topic: withLatinFallbacks({
+      en: "glass skin makeup",
+      "zh-CN": "玻璃肌妆容",
+      "de-DE": "Glass-Skin-Make-up",
+      "fr-FR": "maquillage glass skin",
+      "ja-JP": "水光肌メイク",
+      "ko-KR": "글래스 스킨 메이크업",
+      "zh-TW": "玻璃肌妝容",
+      "es-ES": "maquillaje efecto glass skin",
+      "pt-BR": "maquiagem glass skin",
+    }),
+  },
 ] as const;
 
 const topicsByEnglishPath = new Map(

@@ -20,11 +20,11 @@ function makeRequest(
 }
 
 describe("Google Images direct navigation", () => {
-  it("keeps the Worker-first path list aligned with all 8 indexed images", () => {
+  it("keeps the Worker-first path list aligned with all indexed images", () => {
     expect(getGoogleImageWorkerFirstPaths()).toEqual(
       googleImageAssets.map((asset) => asset.imageUrl),
     );
-    expect(getGoogleImageWorkerFirstPaths()).toHaveLength(8);
+    expect(getGoogleImageWorkerFirstPaths()).toHaveLength(10);
   });
 
   it("redirects a browser document navigation to the matching landing page", () => {
