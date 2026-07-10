@@ -265,7 +265,7 @@ Infrastructure already completed before today's content work:
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned.
 - [x] Add the clean image to page HTML with descriptive alt text and nearby copy.
 - [x] Add the asset to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify mobile before publishing Pin 9.
+- [x] Deploy and verify mobile before publishing Pin 9.
 - [ ] Publish Pin 9 to `Photo-Ready & Passport Makeup` and test its link once.
 
 Planned attribution:
@@ -283,7 +283,7 @@ Planned attribution:
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned.
 - [x] Add the clean image to page HTML with descriptive alt text and nearby copy.
 - [x] Add the asset to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify mobile before publishing Pin 10.
+- [x] Deploy and verify mobile before publishing Pin 10.
 - [ ] Publish Pin 10 to `Clean Girl, Dewy & Glass Skin` and test its link once.
 
 Planned attribution:
