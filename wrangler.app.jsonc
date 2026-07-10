@@ -1,12 +1,23 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "aibeautystylist",
+  "main": "src/worker.ts",
   "account_id": "9679290d9ad455c63c2002a90d381bf7",
   "compatibility_date": "2026-06-07",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
     "directory": "dist/client",
+    "run_worker_first": [
+      "/images/article-ai-tryon-comparison.webp",
+      "/images/look-five-minute-beginner.webp",
+      "/images/look-refined.webp",
+      "/images/look-wedding-guest.webp",
+      "/images/pinterest/quick-5min-real-morning.webp",
+      "/images/pinterest/office-real-workday.webp",
+      "/images/pinterest/date-night-real-candlelight.webp",
+      "/images/pinterest/hooded-eyes-visible-shadow.webp",
+    ],
   },
   "images": {
     "binding": "IMAGES",

@@ -248,7 +248,22 @@ Goal: keep Google Images visitors from bouncing after viewing one image.
 - [x] Route each module CTA to a matching no-sign-up try-on path.
 - [x] Add tests for language coverage, route coverage, and CTA parameters.
 
-## 10. Sources
+## 10. Direct Image Navigation Guard
+
+An indexed image URL must not become a dead-end when a person opens it as a
+browser document.
+
+- Known Google Images assets use selective Cloudflare Worker-first routing.
+- A browser document navigation receives a temporary `302` redirect to the
+  matching landing page with image-specific UTM attribution.
+- Image element requests, Googlebot-Image, and other crawler requests continue
+  to receive the original image with a `200 image/*` response.
+- Redirect responses use `Cache-Control: private, no-store` so a navigation
+  redirect cannot poison normal image loading.
+- Every newly approved Google Images asset must be added to the image registry,
+  the selective Worker-first route list, and the direct-navigation tests.
+
+## 11. Sources
 
 - Google Images SEO best practices: https://developers.google.com/search/docs/appearance/google-images
 - Google image sitemaps: https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps
