@@ -42,61 +42,103 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
-const pinterestDateHeroImage =
-  "/images/pinterest/date-night-real-candlelight.webp";
-const dateDecisionImage =
-  "/images/look-card/looks/date--global-diverse-640.webp";
+const incomingDateUtmContent = Astro.url.searchParams.get("utm_content") ?? "";
+const incomingDateSource = Astro.url.searchParams.get("source") ?? "";
+const isGoogleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  incomingDateSource.startsWith("google_image");
+const isFirstDateSoftDaylight =
+  incomingDateUtmContent.includes("pin_first_date_soft_daylight") ||
+  incomingDateUtmContent.includes("google_image_first_date") ||
+  incomingDateUtmContent.includes(
+    "google_image_direct_pin_first_date_soft_daylight",
+  ) ||
+  incomingDateSource === "pinterest_first_date";
+const pinterestDateHeroImage = isFirstDateSoftDaylight
+  ? "/images/pinterest/first-date-soft-daylight.webp"
+  : "/images/pinterest/date-night-real-candlelight.webp";
+const dateDecisionImage = isFirstDateSoftDaylight
+  ? "/images/look-card/looks/rose-milk-date--global-diverse-640.webp"
+  : "/images/look-card/looks/date--global-diverse-640.webp";
+const dateLookSlug = isFirstDateSoftDaylight ? "rose-milk-date" : "date";
+const datePinVisual = isFirstDateSoftDaylight
+  ? "first_date_soft_daylight"
+  : "date_night_candlelight";
+const dateAttributionSource = isGoogleImageSource
+  ? isFirstDateSoftDaylight
+    ? "google_images_first_date"
+    : "google_images_date_night"
+  : isFirstDateSoftDaylight
+    ? "pinterest_first_date"
+    : "pinterest_date_night";
+const dateTryonUtmContent = isGoogleImageSource
+  ? isFirstDateSoftDaylight
+    ? "google_image_first_date_01"
+    : "google_image_date_night_01"
+  : isFirstDateSoftDaylight
+    ? incomingDateUtmContent.startsWith("pin_first_date")
+      ? incomingDateUtmContent
+      : "pin_first_date_soft_daylight_01"
+    : incomingDateUtmContent.startsWith("pin_date_night")
+      ? incomingDateUtmContent
+      : "pin_date_night_candlelight_01";
+const dateTryonParams = new URLSearchParams({
+  look: dateLookSlug,
+  marketProfile: "global-diverse",
+  guest_try: "1",
+  source: dateAttributionSource,
+  pin_visual: datePinVisual,
+  utm_source: isGoogleImageSource ? "google_images" : "pinterest",
+  utm_medium: isGoogleImageSource ? "organic_search" : "organic_social",
+  utm_campaign: isGoogleImageSource ? "image_retention" : "launch",
+  utm_content: dateTryonUtmContent,
+});
 const dateTryonHref = localizeAppHref(
-  "/tryon?look=date&marketProfile=global-diverse&guest_try=1&source=pinterest_date_night&pin_visual=date_night_candlelight&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_date_night_candlelight_01#tryon-upload",
+  `/tryon?${dateTryonParams.toString()}#tryon-upload`,
 );
-const datePricingHref = localizeAppHref("/pricing?source=pinterest_date_night");
-const pinterestDateProof = [
-  "Same evening direction",
-  "One free selfie preview",
-  "No sign-up first",
-  "Upgrade to save looks",
-] as const;
-const pinterestDateSteps = [
-  {
-    title: "Start with the evening look",
-    body: "You clicked for a warm date-night idea, so the page opens with the same soft low-light direction instead of a generic catalog.",
-  },
-  {
-    title: "Try it on your selfie",
-    body: "The CTA opens the date look already selected, giving you one free Pinterest preview before sign-up.",
-  },
-  {
-    title: "Subscribe when it works",
-    body: "Membership is for saving results, comparing more versions, and keeping date-night looks ready.",
-  },
-] as const;
----
-
-<SeoLandingLayout
-  title={page.title}
-  description={page.description}
-  heroImage={pinterestDateHeroImage}
-  ogImage={pinterestDateHeroImage}
-  heroCtaHref={dateTryonHref}
-  heroCtaLabel="Try Date Night Makeup Free"
-  faq={page.faq}
->
-  <Fragment slot="hero">
-    <h1>Date Night Makeup in Real Low Light</h1>
-    <p>
-      Saw this on Pinterest? Preview the same soft mauve evening look on your
-      selfie before you spend time getting ready.
-    </p>
-  </Fragment>
-
-  <PinterestConversionPanel
-    kicker="Pinterest date-night makeup path"
-    title="Try the warm low-light version"
-    body="You clicked for date-night makeup, so this page opens with the same soft evening direction. Preview it on your selfie before choosing your final look."
-    image={dateDecisionImage}
-    imageAlt="Date-night makeup try-on decision card for warm light, soft mauve color, and saved look comparisons"
-    visualVariant="decision"
-    visualHighlights={[
+const datePricingHref = localizeAppHref(
+  isFirstDateSoftDaylight
+    ? "/pricing?source=pinterest_first_date"
+    : "/pricing?source=pinterest_date_night",
+);
+const dateHeroTitle = isFirstDateSoftDaylight
+  ? "First Date Makeup in Soft Daylight"
+  : "Date Night Makeup in Real Low Light";
+const dateHeroBody = isFirstDateSoftDaylight
+  ? "Saw this on Pinterest? Preview the same soft first-date makeup on your selfie before you decide what to wear."
+  : "Saw this on Pinterest? Preview the same soft mauve evening look on your selfie before you spend time getting ready.";
+const pinterestDateKicker = isFirstDateSoftDaylight
+  ? "Pinterest first-date makeup path"
+  : "Pinterest date-night makeup path";
+const pinterestDateTitle = isFirstDateSoftDaylight
+  ? "Try the soft real-life version"
+  : "Try the warm low-light version";
+const pinterestDateBody = isFirstDateSoftDaylight
+  ? "You clicked for first-date makeup, so this page opens with the same approachable rose-milk direction. Preview it on your selfie before choosing your final look."
+  : "You clicked for date-night makeup, so this page opens with the same soft evening direction. Preview it on your selfie before choosing your final look.";
+const pinterestDateImageAlt = isFirstDateSoftDaylight
+  ? "First-date makeup try-on decision card for rose-milk color, soft daylight, and saved look comparisons"
+  : "Date-night makeup try-on decision card for warm light, soft mauve color, and saved look comparisons";
+const pinterestDateHighlights = isFirstDateSoftDaylight
+  ? ([
+      {
+        title: "Best for",
+        body: "Coffee dates, brunch, casual dinner plans, and moments where you want to look polished without feeling overdone.",
+      },
+      {
+        title: "Check on your face",
+        body: "Look at lip softness, cheek warmth, and whether the eye definition still feels natural in daylight.",
+      },
+      {
+        title: "Upload tip",
+        body: "Use even window light so the preview can judge rose-milk color without strong shadows.",
+      },
+      {
+        title: "Upgrade only if useful",
+        body: "Save the version that feels like you, then compare softer, warmer, or more photo-ready date looks.",
+      },
+    ] as const)
+  : ([
       {
         title: "Best for",
         body: "Dinner dates, low-light photos, evening plans, and moments where soft definition matters more than heavy glam.",
@@ -113,13 +155,74 @@ const pinterestDateSteps = [
         title: "Upgrade only if useful",
         body: "Save the version that works, then compare softer, warmer, or more photo-ready date looks.",
       },
-    ]}
+    ] as const);
+const pinterestDateProof = [
+  isFirstDateSoftDaylight
+    ? "Same first-date direction"
+    : "Same evening direction",
+  "One free selfie preview",
+  "No sign-up first",
+  "Upgrade to save looks",
+] as const;
+const pinterestDateSteps = [
+  {
+    title: isFirstDateSoftDaylight
+      ? "Start with the Pin look"
+      : "Start with the evening look",
+    body: isFirstDateSoftDaylight
+      ? "The page keeps the same soft daylight date direction instead of replacing it with a generic makeup catalog."
+      : "You clicked for a warm date-night idea, so the page opens with the same soft low-light direction instead of a generic catalog.",
+  },
+  {
+    title: "Try it on your selfie",
+    body: isFirstDateSoftDaylight
+      ? "The CTA opens Rose Milk Date Makeup already selected, giving you one free Pinterest preview before sign-up."
+      : "The CTA opens the date look already selected, giving you one free Pinterest preview before sign-up.",
+  },
+  {
+    title: "Subscribe when it works",
+    body: "Membership is for saving results, comparing more versions, and keeping date-night looks ready.",
+  },
+] as const;
+const pinterestSelectedLook = isFirstDateSoftDaylight
+  ? "First Date Makeup"
+  : "Date Night Makeup";
+const pinterestSelectedLookMeta = isFirstDateSoftDaylight
+  ? "Rose-milk, soft, daylight friendly"
+  : "Soft, warm, evening-light friendly";
+const pinterestDatePrimaryLabel = isFirstDateSoftDaylight
+  ? "Try this first-date look free"
+  : "Try this date look free";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={pinterestDateHeroImage}
+  ogImage={pinterestDateHeroImage}
+  heroCtaHref={dateTryonHref}
+  heroCtaLabel="Try Date Night Makeup Free"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{dateHeroTitle}</h1>
+    <p>{dateHeroBody}</p>
+  </Fragment>
+
+  <PinterestConversionPanel
+    kicker={pinterestDateKicker}
+    title={pinterestDateTitle}
+    body={pinterestDateBody}
+    image={dateDecisionImage}
+    imageAlt={pinterestDateImageAlt}
+    visualVariant="decision"
+    visualHighlights={pinterestDateHighlights}
     visualFooterLabel="Next action"
-    visualFooterBody="Open the preselected Date Makeup try-on and upload one selfie free."
-    selectedLook="Date Night Makeup"
-    selectedLookMeta="Soft, warm, evening-light friendly"
+    visualFooterBody={`Open the preselected ${pinterestSelectedLook} try-on and upload one selfie free.`}
+    selectedLook={pinterestSelectedLook}
+    selectedLookMeta={pinterestSelectedLookMeta}
     primaryHref={dateTryonHref}
-    primaryLabel="Try this date look free"
+    primaryLabel={pinterestDatePrimaryLabel}
     secondaryHref={datePricingHref}
     secondaryLabel="See member benefits"
     proofPoints={pinterestDateProof}

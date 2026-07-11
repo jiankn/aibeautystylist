@@ -19,6 +19,8 @@ const requiredLaunchPins = [
   "pin_hooded_visible_shadow_01",
   "pin_passport_no_flashback_01",
   "pin_glass_skin_not_greasy_01",
+  "pin_first_date_soft_daylight_01",
+  "pin_summer_wedding_heatproof_01",
 ] as const;
 
 const publicImageModules = import.meta.glob("../../public/images/**/*", {

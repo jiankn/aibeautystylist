@@ -89,6 +89,22 @@ export const googleImageAssets: readonly GoogleImageAsset[] = [
     caption:
       "A realistic glass-skin makeup look with controlled glow on the high points of the face instead of all-over shine.",
   },
+  {
+    sourcePin: "pin_first_date_soft_daylight_01",
+    pageUrl: "/scenarios/first-date",
+    imageUrl: "/images/pinterest/first-date-soft-daylight.webp",
+    title: "First date makeup preview in soft daylight",
+    caption:
+      "A realistic rose-milk first-date makeup look that feels soft, approachable, and polished in real daylight.",
+  },
+  {
+    sourcePin: "pin_summer_wedding_heatproof_01",
+    pageUrl: "/scenarios/wedding-guest",
+    imageUrl: "/images/pinterest/summer-wedding-guest-heatproof.webp",
+    title: "Summer wedding guest makeup preview for heat and photos",
+    caption:
+      "A realistic summer wedding guest makeup direction with peach-gold eyes, coral warmth, controlled glow, and photo-ready polish.",
+  },
 ];
 
 function escapeXml(value: string): string {

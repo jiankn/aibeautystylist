@@ -266,7 +266,7 @@ Infrastructure already completed before today's content work:
 - [x] Add the clean image to page HTML with descriptive alt text and nearby copy.
 - [x] Add the asset to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
 - [x] Deploy and verify mobile before publishing Pin 9.
-- [ ] Publish Pin 9 to `Photo-Ready & Passport Makeup` and test its link once.
+- [x] Publish Pin 9 to `Photo-Ready & Passport Makeup` and test its link once.
 
 Planned attribution:
 
@@ -284,7 +284,7 @@ Planned attribution:
 - [x] Add the clean image to page HTML with descriptive alt text and nearby copy.
 - [x] Add the asset to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
 - [x] Deploy and verify mobile before publishing Pin 10.
-- [ ] Publish Pin 10 to `Clean Girl, Dewy & Glass Skin` and test its link once.
+- [x] Publish Pin 10 to `Clean Girl, Dewy & Glass Skin` and test its link once.
 
 Planned attribution:
 
@@ -293,7 +293,99 @@ Planned attribution:
 
 ### Daily Distribution And Measurement
 
-- [ ] Save 10-12 high-quality related Pins across the two matching Boards after publishing.
-- [ ] Do not edit or republish old Pins today.
-- [ ] Record Pinterest impressions, engagements, outbound clicks, saves, and per-Pin impressions once tonight.
+- [x] Save 10-12 high-quality related Pins across the two matching Boards after publishing.
+- [x] Do not edit or republish old Pins today.
+- [x] Record Pinterest impressions, engagements, outbound clicks, saves, and per-Pin impressions once tonight.
 - [ ] Check Google Images performance in GSC weekly, not daily; indexing and image-query data have a longer delay.
+
+### 2026-07-10 Analytics Snapshot
+
+Screenshot source: Pinterest App Analytics, past 30 days, `2026-06-10` to `2026-07-10`, captured around `2026-07-11 01:15`.
+
+| Metric | Value | Note |
+|---|---:|---|
+| Impressions | 323 | Distribution continues to grow from the previous 193-view snapshot. |
+| Engagements | 24 | Engagement rate about 7.43%. |
+| Outbound clicks | 6 | Outbound CTR about 1.86%, still a useful early signal. |
+| Saves | 0 | Save rate remains the weak point; keep making Pins more reference-worthy. |
+| Total audience | 1 | Audience sample is still too small for broad conclusions. |
+| Engaged audience | 1 | Sample still too small; keep publishing and collecting longer-tail data. |
+
+Operational note: User confirmed the 2026-07-10 Pinterest task set was completed, including two new Pins and related saves.
+
+## 2026-07-12
+
+### Day 6 Dual-Channel Execution
+
+Daily production rule:
+
+```text
+Two makeup topics per day.
+Each topic = one Pinterest Pin + one clean Google Images asset + one matched landing page and try-on path.
+```
+
+### Topic 1: First Date Makeup in Soft Daylight
+
+- [x] Generate a realistic, attractive, low-AI-feel source photo.
+- [x] Create Pin 11 as a 1000 x 1500 photo-plus-copy composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Update `/scenarios/first-date` so `pin_first_date_soft_daylight_01` opens with the matching visual, not the older candlelight Pin 7 visual.
+- [x] Use the preselected `rose-milk-date` no-sign-up guest try-on path.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=first_date_soft_daylight`.
+- [x] Add the clean image to the Google Images registry and image sitemap.
+- [ ] Publish Pin 11 to `Date Night Makeup Ideas`.
+- [ ] Test the published Pin link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `First Date Makeup - Soft Daylight` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\11-first-date-soft-daylight-makeup.png` |
+| Board | `Date Night Makeup Ideas` |
+| Title | `First Date Makeup That Still Looks Like You` |
+| Link | `https://aibeautystylist.com/scenarios/first-date?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_first_date_soft_daylight_01` |
+| Alt text | `Woman wearing soft rose-milk first-date makeup in warm cafe daylight with natural skin texture and approachable glam.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Want first-date makeup that feels pretty without looking overdone? Preview a soft rose-milk makeup look in real daylight before your date. Test the lip, blush and eye softness on your own selfie free before you choose.
+
+AI-generated visualization for beauty reference.
+```
+
+### Topic 2: Summer Wedding Guest Makeup That Survives Heat
+
+- [x] Generate a realistic, attractive, low-AI-feel source photo.
+- [x] Create Pin 12 as a 1000 x 1500 photo-plus-copy composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Update `/scenarios/wedding-guest` so `pin_summer_wedding_heatproof_01` opens with the matching summer wedding visual.
+- [x] Use the preselected `summer-wedding-guest` no-sign-up guest try-on path.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=summer_wedding_heatproof`.
+- [x] Add the clean image to the Google Images registry and image sitemap.
+- [ ] Publish Pin 12 to `Wedding & Event Makeup`.
+- [ ] Test the published Pin link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Summer Wedding Guest Makeup - Heatproof` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\12-summer-wedding-guest-heatproof.png` |
+| Board | `Wedding & Event Makeup` |
+| Title | `Summer Wedding Guest Makeup That Survives Heat` |
+| Link | `https://aibeautystylist.com/scenarios/wedding-guest?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_summer_wedding_heatproof_01` |
+| Alt text | `Woman wearing peach-gold summer wedding guest makeup with coral blush, controlled glow and a sage guest dress at an outdoor reception.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Need summer wedding guest makeup that stays light in heat and still photographs well? Preview peach-gold eyes, coral blush, controlled glow and a nude glossy lip on your own selfie before the event.
+
+AI-generated visualization for beauty reference.
+```
+
+### Daily Distribution And Measurement
+
+- [ ] Save 10-12 high-quality related Pins after publishing, using `first date makeup`, `date night makeup`, `summer wedding guest makeup`, `outdoor wedding makeup`, and `heat proof makeup`.
+- [ ] Do not edit old Pins today.
+- [ ] Record Pinterest impressions, engagements, outbound clicks, saves, and per-Pin impressions once tonight.

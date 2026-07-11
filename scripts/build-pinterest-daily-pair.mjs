@@ -31,6 +31,31 @@ const pins = [
     cardBody: "Real skin, no grease",
     cta: "TRY GLASS SKIN FREE",
   },
+  {
+    source: "tmp/pinterest-sources/first-date-soft-daylight.png",
+    cleanOutput: "public/images/pinterest/first-date-soft-daylight.webp",
+    pinOutput: "artifacts/pinterest/11-first-date-soft-daylight-makeup.png",
+    titleLine1: "First Date",
+    titleLine2: "Makeup",
+    subtitle: "Soft, real-life pretty",
+    supporting: "Preview before you go",
+    cardTitle: "Still looks like you",
+    cardBody: "Rose-milk softness",
+    cta: "TRY DATE LOOK FREE",
+  },
+  {
+    source: "tmp/pinterest-sources/summer-wedding-guest-heatproof.png",
+    cleanOutput: "public/images/pinterest/summer-wedding-guest-heatproof.webp",
+    pinOutput: "artifacts/pinterest/12-summer-wedding-guest-heatproof.png",
+    titleLine1: "Summer Wedding",
+    titleLine1FontSize: 62,
+    titleLine2: "Makeup",
+    subtitle: "Heat-safe, photo-ready",
+    supporting: "Preview before the event",
+    cardTitle: "Warm daylight",
+    cardBody: "Coral glow, no shine",
+    cta: "TRY EVENT LOOK FREE",
+  },
 ];
 
 function escapeXml(value) {
@@ -61,7 +86,7 @@ function panelSvg(pin) {
       <rect x="700" y="48" width="230" height="48" rx="24" fill="#fffaf8" stroke="#e56b7c" stroke-width="2"/>
       <text x="815" y="79" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#cc5968">AI TRY-ON PREVIEW</text>
 
-      <text x="70" y="185" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" fill="#211d21">${copy.titleLine1}</text>
+      <text x="70" y="185" font-family="Arial, Helvetica, sans-serif" font-size="${pin.titleLine1FontSize ?? 72}" font-weight="800" fill="#211d21">${copy.titleLine1}</text>
       <text x="70" y="270" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" fill="#cc4f62">${copy.titleLine2}</text>
       <text x="70" y="326" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="700" fill="#218878">${copy.subtitle}</text>
       <text x="70" y="368" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="400" fill="#5f565b">${copy.supporting}</text>

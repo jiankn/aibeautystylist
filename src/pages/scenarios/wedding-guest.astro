@@ -43,40 +43,131 @@ const currentRoute =
   Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
 const localizeAppHref = (href: string) =>
   getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const incomingWeddingUtmContent =
+  Astro.url.searchParams.get("utm_content") ?? "";
+const incomingWeddingSource = Astro.url.searchParams.get("source") ?? "";
+const isGoogleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  incomingWeddingSource.startsWith("google_image");
+const isSummerWeddingPin =
+  incomingWeddingUtmContent.includes("pin_summer_wedding_heatproof") ||
+  incomingWeddingUtmContent.includes("google_image_summer_wedding") ||
+  incomingWeddingUtmContent.includes(
+    "google_image_direct_pin_summer_wedding_heatproof",
+  ) ||
+  incomingWeddingSource === "pinterest_summer_wedding";
+const weddingHeroImage = isSummerWeddingPin
+  ? isEastAsianLocale
+    ? "/images/look-card/looks/summer-wedding-guest--east-asia-640.webp"
+    : "/images/pinterest/summer-wedding-guest-heatproof.webp"
+  : page.heroImage;
+const weddingLookSlug = isSummerWeddingPin
+  ? "summer-wedding-guest"
+  : "wedding-guest";
+const weddingMarketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const weddingPinVisual = isSummerWeddingPin
+  ? isEastAsianLocale
+    ? "summer_wedding_east_asia"
+    : "summer_wedding_heatproof"
+  : "wedding_guest_daylight";
+const weddingAttributionSource = isGoogleImageSource
+  ? isSummerWeddingPin
+    ? "google_images_summer_wedding"
+    : "google_images_wedding_guest"
+  : isSummerWeddingPin
+    ? "pinterest_summer_wedding"
+    : "pinterest_wedding_guest";
+const weddingTryonUtmContent = isGoogleImageSource
+  ? isSummerWeddingPin
+    ? "google_image_summer_wedding_01"
+    : "google_image_wedding_guest_01"
+  : isSummerWeddingPin
+    ? incomingWeddingUtmContent.startsWith("pin_summer_wedding")
+      ? incomingWeddingUtmContent
+      : "pin_summer_wedding_heatproof_01"
+    : incomingWeddingUtmContent.startsWith("pin_wedding_guest")
+      ? incomingWeddingUtmContent
+      : "pin_wedding_guest_01";
+const weddingTryonParams = new URLSearchParams({
+  look: weddingLookSlug,
+  marketProfile: weddingMarketProfile,
+  guest_try: "1",
+  source: weddingAttributionSource,
+  pin_visual: weddingPinVisual,
+  utm_source: isGoogleImageSource ? "google_images" : "pinterest",
+  utm_medium: isGoogleImageSource ? "organic_search" : "organic_social",
+  utm_campaign: isGoogleImageSource ? "image_retention" : "launch",
+  utm_content: weddingTryonUtmContent,
+});
 const weddingTryonHref = localizeAppHref(
-  "/tryon?look=wedding-guest&marketProfile=global-diverse&guest_try=1&source=pinterest_wedding_guest&pin_visual=wedding_guest_daylight&utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_wedding_guest_01#tryon-upload",
+  `/tryon?${weddingTryonParams.toString()}#tryon-upload`,
 );
 const weddingPricingHref = localizeAppHref(
-  "/pricing?source=pinterest_wedding_guest",
+  isSummerWeddingPin
+    ? "/pricing?source=pinterest_summer_wedding"
+    : "/pricing?source=pinterest_wedding_guest",
 );
----
-
-<SeoLandingLayout
-  title={page.title}
-  description={page.description}
-  heroImage={page.heroImage}
-  ogImage={page.ogImage}
-  heroCtaHref={weddingTryonHref}
-  heroCtaLabel="Preview this look"
-  faq={page.faq}
->
-  <Fragment slot="hero">
-    <h1>Wedding Guest Makeup for Daylight and Flash</h1>
-    <p>
-      Saw this on Pinterest? Preview an elegant wedding guest look before the
-      event, then check whether the color, shine, and softness work on your own
-      selfie.
-    </p>
-  </Fragment>
-
-  <PinterestConversionPanel
-    kicker="Pinterest wedding guest path"
-    title="Preview it before the event"
-    body="Wedding guest makeup has to look polished in person, soft enough for the ceremony, and balanced under cameras. Start with a refined wedding guest look, then test the same direction on your selfie before choosing your final style."
-    image="/images/article-wedding-guest-plan.webp"
-    imageAlt="Wedding guest try-on decision card for daylight, flash, outfit color, and saved look comparisons"
-    visualVariant="decision"
-    visualHighlights={[
+const weddingHeroTitle = isSummerWeddingPin
+  ? "Summer Wedding Guest Makeup That Survives Heat"
+  : "Wedding Guest Makeup for Daylight and Flash";
+const weddingHeroBody = isSummerWeddingPin
+  ? "Saw this on Pinterest? Preview the same peach-gold summer wedding look on your selfie before the ceremony, photos, and dance floor."
+  : "Saw this on Pinterest? Preview an elegant wedding guest look before the event, then check whether the color, shine, and softness work on your own selfie.";
+const weddingPanelKicker = isSummerWeddingPin
+  ? "Pinterest summer wedding path"
+  : "Pinterest wedding guest path";
+const weddingPanelTitle = isSummerWeddingPin
+  ? "Check heat, glow, and photos first"
+  : "Preview it before the event";
+const weddingPanelBody = isSummerWeddingPin
+  ? "Summer wedding makeup has to stay light in heat, polished in daylight, and balanced in photos. Start with the same peach-gold guest look, then test it on your selfie before choosing your final style."
+  : "Wedding guest makeup has to look polished in person, soft enough for the ceremony, and balanced under cameras. Start with a refined wedding guest look, then test the same direction on your selfie before choosing your final style.";
+const weddingPanelImageAlt = isSummerWeddingPin
+  ? "Summer wedding guest makeup decision card for heat, daylight, coral warmth, and saved look comparisons"
+  : "Wedding guest try-on decision card for daylight, flash, outfit color, and saved look comparisons";
+const weddingSelectedLook = isSummerWeddingPin
+  ? "Summer Wedding Makeup"
+  : "Wedding Guest Makeup";
+const weddingSelectedLookMeta = isSummerWeddingPin
+  ? "Peach-gold, heat-safe, photo-ready"
+  : "Elegant, photo-ready, ceremony-safe";
+const weddingPrimaryLabel = isSummerWeddingPin
+  ? "Try summer wedding makeup free"
+  : "Preview this look";
+const weddingProofPoints = isSummerWeddingPin
+  ? ([
+      "Summer wedding direction",
+      "Heat and photo check",
+      "Selfie-based preview",
+      "Upgrade for saved looks",
+    ] as const)
+  : ([
+      "Wedding guest direction",
+      "Daylight and flash check",
+      "Selfie-based preview",
+      "Upgrade for saved looks",
+    ] as const);
+const weddingVisualHighlights = isSummerWeddingPin
+  ? ([
+      {
+        title: "Heat check",
+        body: "Judge whether the base still looks fresh and controlled instead of shiny in bright daylight.",
+      },
+      {
+        title: "Photo check",
+        body: "Look for peach-gold eyes, coral warmth, and a lip that remains visible without stealing the scene.",
+      },
+      {
+        title: "Outfit match",
+        body: "Compare the makeup direction against sage, coral, champagne, or floral guest dresses before the event.",
+      },
+      {
+        title: "Saved options",
+        body: "Membership helps you keep versions for ceremony, reception, outdoor light, and evening photos.",
+      },
+    ] as const)
+  : ([
       {
         title: "Daylight check",
         body: "See whether the blush, lip, and skin finish still look soft in ceremony light.",
@@ -93,29 +184,52 @@ const weddingPricingHref = localizeAppHref(
         title: "Saved options",
         body: "Membership helps you keep versions for ceremony, reception, and photos.",
       },
-    ]}
+    ] as const);
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={weddingHeroImage}
+  ogImage={weddingHeroImage}
+  heroCtaHref={weddingTryonHref}
+  heroCtaLabel={weddingPrimaryLabel}
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>{weddingHeroTitle}</h1>
+    <p>{weddingHeroBody}</p>
+  </Fragment>
+
+  <PinterestConversionPanel
+    kicker={weddingPanelKicker}
+    title={weddingPanelTitle}
+    body={weddingPanelBody}
+    image="/images/article-wedding-guest-plan.webp"
+    imageAlt={weddingPanelImageAlt}
+    visualVariant="decision"
+    visualHighlights={weddingVisualHighlights}
     visualFooterLabel="Pinterest click path"
-    visualFooterBody="From Pin to wedding page to a preselected Wedding Guest Makeup try-on."
-    selectedLook="Wedding Guest Makeup"
-    selectedLookMeta="Elegant, photo-ready, ceremony-safe"
+    visualFooterBody={`From Pin to wedding page to a preselected ${weddingSelectedLook} try-on.`}
+    selectedLook={weddingSelectedLook}
+    selectedLookMeta={weddingSelectedLookMeta}
     primaryHref={weddingTryonHref}
-    primaryLabel="Preview this look"
+    primaryLabel={weddingPrimaryLabel}
     secondaryHref={weddingPricingHref}
     secondaryLabel="See member benefits"
-    proofPoints={[
-      "Wedding guest direction",
-      "Daylight and flash check",
-      "Selfie-based preview",
-      "Upgrade for saved looks",
-    ]}
+    proofPoints={weddingProofPoints}
     steps={[
       {
         title: "Match the Pin promise",
-        body: "You clicked for wedding guest makeup, so this page stays focused on polished color, soft definition, and photo-safe shine.",
+        body: isSummerWeddingPin
+          ? "You clicked for summer wedding makeup, so this page stays focused on heat-safe base, coral warmth, and photo-ready glow."
+          : "You clicked for wedding guest makeup, so this page stays focused on polished color, soft definition, and photo-safe shine.",
       },
       {
         title: "Try the look first",
-        body: "The CTA opens Wedding Guest Makeup already selected, so you can judge the style on your own face without searching again.",
+        body: isSummerWeddingPin
+          ? "The CTA opens Summer Wedding Makeup already selected, so you can judge the style on your own face without searching again."
+          : "The CTA opens Wedding Guest Makeup already selected, so you can judge the style on your own face without searching again.",
       },
       {
         title: "Subscribe when planning matters",
@@ -318,13 +432,26 @@ const weddingPricingHref = localizeAppHref(
   <Fragment slot="cta">
     <div class="seo-cta">
       <div class="seo-cta-inner">
-        <h2>Preview Your Wedding Guest Look</h2>
+        <h2>
+          {
+            isSummerWeddingPin
+              ? "Preview Your Summer Wedding Guest Look"
+              : "Preview Your Wedding Guest Look"
+          }
+        </h2>
         <p>
-          See how your makeup will look in wedding photos before the big day
-          arrives.
+          {
+            isSummerWeddingPin
+              ? "See how your makeup will look in bright ceremony light and summer photos before the event arrives."
+              : "See how your makeup will look in wedding photos before the big day arrives."
+          }
         </p>
         <a href={weddingTryonHref} class="cta-btn"
-          >Preview Wedding Guest Makeup - Free</a
+          >{
+            isSummerWeddingPin
+              ? "Try Summer Wedding Makeup - Free"
+              : "Preview Wedding Guest Makeup - Free"
+          }</a
         >
       </div>
     </div>
