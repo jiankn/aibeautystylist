@@ -48,7 +48,12 @@ const overviewCopy = {
       subscriptions: "会员",
       goal: "今日目标",
       periodsTitle: "Pinterest 来源访问量",
-      periodsSubtitle: "滚动统计窗口，实时按近 5 分钟估算。",
+      periodsSubtitle: "默认加载 1 天窗口，切换后只读取所选时间维度。",
+      periodSelect: "选择时间维度",
+      periodRefresh: "刷新该窗口",
+      periodLoading: "正在加载所选时间窗口...",
+      periodLoadError: "该时间窗口加载失败，请重试。",
+      periodUpdated: "当前窗口",
       period: "时间窗口",
       pageviews: "浏览量",
       topPins: "近 30 天高效 Pin",
@@ -195,7 +200,13 @@ const overviewCopy = {
       subscriptions: "Members",
       goal: "Daily goal",
       periodsTitle: "Pinterest source traffic",
-      periodsSubtitle: "Rolling windows; realtime uses the last 5 minutes.",
+      periodsSubtitle:
+        "Loads the 1d window by default; switches fetch one window only.",
+      periodSelect: "Select window",
+      periodRefresh: "Refresh window",
+      periodLoading: "Loading selected window...",
+      periodLoadError: "Unable to load this window. Retry.",
+      periodUpdated: "Current window",
       period: "Window",
       pageviews: "Pageviews",
       topPins: "Top Pins, last 30d",
@@ -319,6 +330,10 @@ const overviewCopy = {
 } as const;
 
 const copy = overviewCopy[currentLang];
+const pinterestDefaultPeriod = "1d";
+const pinterestPeriodOptions = Object.entries(copy.pinterest.periodLabels).map(
+  ([value, label]) => ({ value, label }),
+);
 const adminHref = (href: string) => {
   const url = new URL(href, Astro.url.origin);
   if (currentLang === "en") url.searchParams.set("lang", "en");
@@ -485,27 +500,63 @@ const adminHref = (href: string) => {
       </div>
       <div class="pinterest-period-table">
         <div class="pinterest-table-head">
-          <h4>{copy.pinterest.periodsTitle}</h4>
-          <p>{copy.pinterest.periodsSubtitle}</p>
+          <div>
+            <h4>{copy.pinterest.periodsTitle}</h4>
+            <p>{copy.pinterest.periodsSubtitle}</p>
+          </div>
+          <div class="pinterest-period-controls">
+            <label for="pinterestPeriodSelect"
+              >{copy.pinterest.periodSelect}</label
+            >
+            <select id="pinterestPeriodSelect">
+              {
+                pinterestPeriodOptions.map((option) => (
+                  <option
+                    value={option.value}
+                    selected={option.value === pinterestDefaultPeriod}
+                  >
+                    {option.label}
+                  </option>
+                ))
+              }
+            </select>
+            <button
+              class="admin-btn admin-btn-sm"
+              id="pinterestPeriodRefresh"
+              type="button"
+            >
+              {copy.pinterest.periodRefresh}
+            </button>
+          </div>
         </div>
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>{copy.pinterest.period}</th>
-                <th>{copy.pinterest.visitors}</th>
-                <th>{copy.pinterest.pageviews}</th>
-                <th>{copy.pinterest.tryons}</th>
-                <th>{copy.pinterest.registrations}</th>
-                <th>{copy.pinterest.subscriptions}</th>
-              </tr>
-            </thead>
-            <tbody id="pinterestPeriodBody">
-              <tr>
-                <td colspan="6" class="admin-loading">{copy.loading}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="pinterest-period-current">
+          <div>
+            <span id="pinterestSelectedPeriodLabel">-</span>
+            <small id="pinterestSelectedPeriodMeta">-</small>
+          </div>
+          <small id="pinterestPeriodStatus" role="status"></small>
+        </div>
+        <div class="pinterest-period-metrics">
+          <article>
+            <span>{copy.pinterest.visitors}</span>
+            <strong id="pinterestPeriodVisitors">-</strong>
+          </article>
+          <article>
+            <span>{copy.pinterest.pageviews}</span>
+            <strong id="pinterestPeriodPageviews">-</strong>
+          </article>
+          <article>
+            <span>{copy.pinterest.tryons}</span>
+            <strong id="pinterestPeriodTryons">-</strong>
+          </article>
+          <article>
+            <span>{copy.pinterest.registrations}</span>
+            <strong id="pinterestPeriodRegistrations">-</strong>
+          </article>
+          <article>
+            <span>{copy.pinterest.subscriptions}</span>
+            <strong id="pinterestPeriodSubscriptions">-</strong>
+          </article>
         </div>
       </div>
       <div class="pinterest-pin-table">
@@ -722,6 +773,10 @@ const adminHref = (href: string) => {
     }
 
     .pinterest-table-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
       padding: 0 18px;
     }
 
@@ -731,23 +786,105 @@ const adminHref = (href: string) => {
       font-size: 12px;
     }
 
-    .pinterest-period-table .admin-table th:not(:first-child),
-    .pinterest-period-table .admin-table td:not(:first-child),
     .pinterest-pin-table .admin-table th:not(:first-child),
     .pinterest-pin-table .admin-table td:not(:first-child) {
       text-align: right;
     }
 
-    .pinterest-period-label {
-      display: inline-flex;
+    .pinterest-period-controls {
+      display: flex;
       align-items: center;
-      color: var(--admin-text);
-      font-weight: 700;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .pinterest-period-controls label {
+      color: var(--admin-text-muted);
+      font-size: 12px;
+      font-weight: 800;
       white-space: nowrap;
     }
 
-    .pinterest-period-label.realtime {
-      color: #b8001b;
+    .pinterest-period-controls select {
+      min-width: 164px;
+      min-height: 34px;
+      border: 1px solid var(--admin-border);
+      border-radius: var(--admin-radius-sm);
+      background: #fff;
+      color: var(--admin-text);
+      padding: 6px 32px 6px 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .pinterest-period-current {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 14px 18px 0;
+      border: 1px solid var(--admin-border);
+      border-radius: var(--admin-radius);
+      background: var(--admin-surface-soft);
+      padding: 12px 14px;
+    }
+
+    .pinterest-period-current span,
+    .pinterest-period-current small {
+      display: block;
+    }
+
+    .pinterest-period-current span {
+      color: var(--admin-text);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .pinterest-period-current small {
+      color: var(--admin-text-muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    #pinterestPeriodStatus {
+      min-width: 120px;
+      text-align: right;
+    }
+
+    #pinterestPeriodStatus.error {
+      color: var(--admin-red);
+    }
+
+    .pinterest-period-metrics {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 18px 0;
+    }
+
+    .pinterest-period-metrics article {
+      min-width: 0;
+      border: 1px solid var(--admin-border);
+      border-radius: var(--admin-radius);
+      background: #fff;
+      padding: 12px;
+    }
+
+    .pinterest-period-metrics span {
+      display: block;
+      color: var(--admin-text-muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .pinterest-period-metrics strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--admin-text);
+      font-variant-numeric: tabular-nums;
+      font-size: 23px;
+      font-weight: 800;
+      line-height: 1.05;
     }
 
     .pinterest-pin-table h4 {
@@ -759,6 +896,25 @@ const adminHref = (href: string) => {
     }
 
     @media (max-width: 900px) {
+      .pinterest-table-head,
+      .pinterest-period-current {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .pinterest-period-controls {
+        justify-content: flex-start;
+      }
+
+      #pinterestPeriodStatus {
+        min-width: 0;
+        text-align: left;
+      }
+
+      .pinterest-period-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .pinterest-growth-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -769,6 +925,20 @@ const adminHref = (href: string) => {
     }
 
     @media (max-width: 560px) {
+      .pinterest-period-controls {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .pinterest-period-controls select,
+      .pinterest-period-controls .admin-btn {
+        width: 100%;
+      }
+
+      .pinterest-period-metrics {
+        grid-template-columns: 1fr;
+      }
+
       .pinterest-growth-metrics {
         grid-template-columns: 1fr;
       }
@@ -1106,10 +1276,24 @@ const adminHref = (href: string) => {
       var statusTextEl =
         statusEl && statusEl.querySelector("[data-status-text]");
       var updatedEl = document.getElementById("overviewUpdated");
+      var pinterestPeriodSelect = document.getElementById(
+        "pinterestPeriodSelect",
+      );
+      var pinterestPeriodRefresh = document.getElementById(
+        "pinterestPeriodRefresh",
+      );
       var hasLoaded = false;
 
       refreshBtn && refreshBtn.addEventListener("click", loadOverview);
       retryBtn && retryBtn.addEventListener("click", loadOverview);
+      pinterestPeriodSelect &&
+        pinterestPeriodSelect.addEventListener("change", function () {
+          loadPinterestPeriod(pinterestPeriodSelect.value);
+        });
+      pinterestPeriodRefresh &&
+        pinterestPeriodRefresh.addEventListener("click", function () {
+          loadPinterestPeriod(getSelectedPinterestWindow());
+        });
       window.addEventListener("resize", debounce(redrawCharts, 160));
       loadOverview();
 
@@ -1117,7 +1301,10 @@ const adminHref = (href: string) => {
         if (refreshBtn) refreshBtn.disabled = true;
         setStatus("loading", overviewCopy.loading, false);
 
-        fetch("/api/admin/stats")
+        fetch(
+          "/api/admin/stats?pinterestWindow=" +
+            encodeURIComponent(getSelectedPinterestWindow()),
+        )
           .then(function (response) {
             return response.json().then(function (body) {
               return { ok: response.ok, body: body };
@@ -1322,7 +1509,7 @@ const adminHref = (href: string) => {
         var progressBar = document.getElementById("pinterestGoalProgress");
         if (progressBar) progressBar.style.width = progress + "%";
 
-        renderPinterestPeriods(analytics);
+        renderPinterestPeriod(analytics);
 
         var tbody = document.getElementById("pinterestTopPinsBody");
         if (!tbody) return;
@@ -1350,49 +1537,108 @@ const adminHref = (href: string) => {
           .join("");
       }
 
-      function renderPinterestPeriods(analytics) {
-        var tbody = document.getElementById("pinterestPeriodBody");
-        if (!tbody) return;
-        var rows = (analytics && analytics.periods) || [];
-        if (!rows.length) {
-          tbody.innerHTML =
-            '<tr><td colspan="6" class="admin-empty">' +
-            escapeHtml(overviewCopy.pinterest.noPeriods) +
-            "</td></tr>";
-          return;
+      function renderPinterestPeriod(analytics) {
+        var period =
+          (analytics && analytics.selectedPeriod) ||
+          (analytics && analytics.periods && analytics.periods[0]) ||
+          {};
+        var key = period.key || getSelectedPinterestWindow();
+        var label = pinterestPeriodLabel(key);
+        if (pinterestPeriodSelect && pinterestPeriodSelect.value !== key) {
+          pinterestPeriodSelect.value = key;
         }
+        setText("pinterestSelectedPeriodLabel", label);
+        setText(
+          "pinterestSelectedPeriodMeta",
+          overviewCopy.pinterest.periodUpdated +
+            (period.since ? " · " + formatDateTime(period.since) : ""),
+        );
+        setText("pinterestPeriodVisitors", formatNumber(period.visitors || 0));
+        setText(
+          "pinterestPeriodPageviews",
+          formatNumber(period.pageviews || 0),
+        );
+        setText(
+          "pinterestPeriodTryons",
+          formatNumber(period.tryonVisitors || 0),
+        );
+        setText(
+          "pinterestPeriodRegistrations",
+          formatNumber(period.registrations || 0),
+        );
+        setText(
+          "pinterestPeriodSubscriptions",
+          formatNumber(period.subscriptions || 0),
+        );
+        setPinterestPeriodStatus("", false);
+      }
 
-        tbody.innerHTML = rows
-          .map(function (row) {
-            var key = row.key || "";
-            var label =
-              (overviewCopy.pinterest.periodLabels &&
-                overviewCopy.pinterest.periodLabels[key]) ||
-              key ||
-              "-";
-            var labelClass =
-              key === "realtime"
-                ? "pinterest-period-label realtime"
-                : "pinterest-period-label";
-            return (
-              '<tr><td><span class="' +
-              labelClass +
-              '">' +
-              escapeHtml(label) +
-              "</span></td><td>" +
-              formatNumber(row.visitors || 0) +
-              "</td><td>" +
-              formatNumber(row.pageviews || 0) +
-              "</td><td>" +
-              formatNumber(row.tryonVisitors || 0) +
-              "</td><td>" +
-              formatNumber(row.registrations || 0) +
-              "</td><td>" +
-              formatNumber(row.subscriptions || 0) +
-              "</td></tr>"
+      function loadPinterestPeriod(key) {
+        if (!key) return;
+        if (pinterestPeriodSelect) pinterestPeriodSelect.disabled = true;
+        if (pinterestPeriodRefresh) pinterestPeriodRefresh.disabled = true;
+        setPinterestPeriodStatus(overviewCopy.pinterest.periodLoading, false);
+
+        fetch(
+          "/api/admin/stats?scope=pinterestPeriod&pinterestWindow=" +
+            encodeURIComponent(key),
+        )
+          .then(function (response) {
+            return response.json().then(function (body) {
+              return { ok: response.ok, body: body };
+            });
+          })
+          .then(function (payload) {
+            if (!payload.ok || !payload.body || !payload.body.ok) {
+              var message =
+                (payload.body &&
+                  payload.body.error &&
+                  payload.body.error.message) ||
+                overviewCopy.pinterest.periodLoadError;
+              throw new Error(message);
+            }
+            var analytics = payload.body.data.pinterestAnalytics;
+            if (window.__adminOverviewData) {
+              window.__adminOverviewData.pinterestAnalytics = Object.assign(
+                {},
+                window.__adminOverviewData.pinterestAnalytics || {},
+                analytics || {},
+              );
+            }
+            renderPinterestPeriod(analytics);
+          })
+          .catch(function () {
+            setPinterestPeriodStatus(
+              overviewCopy.pinterest.periodLoadError,
+              true,
             );
           })
-          .join("");
+          .finally(function () {
+            if (pinterestPeriodSelect) pinterestPeriodSelect.disabled = false;
+            if (pinterestPeriodRefresh) pinterestPeriodRefresh.disabled = false;
+          });
+      }
+
+      function getSelectedPinterestWindow() {
+        return pinterestPeriodSelect && pinterestPeriodSelect.value
+          ? pinterestPeriodSelect.value
+          : "1d";
+      }
+
+      function pinterestPeriodLabel(key) {
+        return (
+          (overviewCopy.pinterest.periodLabels &&
+            overviewCopy.pinterest.periodLabels[key]) ||
+          key ||
+          "-"
+        );
+      }
+
+      function setPinterestPeriodStatus(message, error) {
+        var el = document.getElementById("pinterestPeriodStatus");
+        if (!el) return;
+        el.textContent = message || "";
+        el.className = error ? "error" : "";
       }
 
       function redrawCharts() {
@@ -1971,6 +2217,17 @@ const adminHref = (href: string) => {
         value = Number(value || 0);
         if (value >= 1000) return "$" + (value / 1000).toFixed(1) + "K";
         return "$" + value.toFixed(value >= 10 ? 0 : 1);
+      }
+
+      function formatDateTime(iso) {
+        if (!iso) return "-";
+        var date = new Date(iso);
+        return date.toLocaleString(overviewLang === "en" ? "en-US" : "zh-CN", {
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
       }
 
       function timeAgo(iso) {

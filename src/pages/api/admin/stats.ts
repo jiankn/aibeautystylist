@@ -25,7 +25,7 @@ interface PinterestPeriodRow extends PinterestSummaryRow {
   since_at: string;
 }
 
-export const GET: APIRoute = async ({ cookies }) => {
+export const GET: APIRoute = async ({ cookies, request }) => {
   const { DB } = getRuntimeBindings();
   if (!DB)
     return apiError(
@@ -42,6 +42,7 @@ export const GET: APIRoute = async ({ cookies }) => {
   }
 
   try {
+    const url = new URL(request.url);
     const now = new Date();
     const monthStart = new Date(
       Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
@@ -74,14 +75,60 @@ export const GET: APIRoute = async ({ cookies }) => {
       sortOrder: index,
       since: new Date(now.getTime() - window.minutes * 60 * 1000).toISOString(),
     }));
-    const pinterestWindowValues = pinterestPeriodWindows
-      .map(() => "(?, ?, ?)")
-      .join(", ");
-    const pinterestWindowBindings = pinterestPeriodWindows.flatMap((window) => [
-      window.key,
-      window.sortOrder,
-      window.since,
-    ]);
+    const requestedPinterestWindow =
+      url.searchParams.get("pinterestWindow") ?? "1d";
+    const selectedPinterestWindow =
+      pinterestPeriodWindows.find(
+        (window) => window.key === requestedPinterestWindow,
+      ) ??
+      pinterestPeriodWindows.find((window) => window.key === "1d") ??
+      pinterestPeriodWindows[0];
+    const loadPinterestPeriod = () =>
+      DB.prepare(
+        `SELECT
+          ? as period_key,
+          ? as sort_order,
+          ? as since_at,
+          COUNT(DISTINCT visitor_key) as visitors,
+          COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
+          COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors,
+          COALESCE(SUM(CASE WHEN event_name = 'registration_completed' THEN 1 ELSE 0 END), 0) as registrations,
+          COALESCE(SUM(CASE WHEN event_name = 'subscription_checkout_success' THEN 1 ELSE 0 END), 0) as subscriptions
+        FROM analytics_events
+        WHERE occurred_at >= ?
+          AND (LOWER(COALESCE(source, '')) LIKE 'pinterest%'
+            OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
+      )
+        .bind(
+          selectedPinterestWindow.key,
+          selectedPinterestWindow.sortOrder,
+          selectedPinterestWindow.since,
+          selectedPinterestWindow.since,
+        )
+        .first<PinterestPeriodRow>();
+
+    const normalizePinterestPeriod = (row: PinterestPeriodRow | null) => ({
+      key: row?.period_key ?? selectedPinterestWindow.key,
+      since: row?.since_at ?? selectedPinterestWindow.since,
+      visitors: Number(row?.visitors ?? 0),
+      pageviews: Number(row?.pageviews ?? 0),
+      tryonVisitors: Number(row?.tryon_visitors ?? 0),
+      registrations: Number(row?.registrations ?? 0),
+      subscriptions: Number(row?.subscriptions ?? 0),
+    });
+
+    if (url.searchParams.get("scope") === "pinterestPeriod") {
+      const pinterestPeriod = await loadPinterestPeriod();
+      const selectedPeriod = normalizePinterestPeriod(pinterestPeriod);
+      return apiSuccess({
+        generatedAt: now.toISOString(),
+        pinterestAnalytics: {
+          availablePeriods: pinterestPeriodWindows.map((window) => window.key),
+          selectedPeriod,
+          periods: [selectedPeriod],
+        },
+      });
+    }
 
     // 并行查询所有统计数据
     const [
@@ -103,7 +150,7 @@ export const GET: APIRoute = async ({ cookies }) => {
       pinterestToday,
       pinterestWeek,
       pinterestMonth,
-      pinterestPeriodRows,
+      pinterestPeriod,
       pinterestDaily,
       pinterestTopPins,
     ] = await Promise.all([
@@ -318,29 +365,7 @@ export const GET: APIRoute = async ({ cookies }) => {
       )
         .bind(pinterestSince)
         .first<PinterestSummaryRow>(),
-      DB.prepare(
-        `WITH windows(period_key, sort_order, since_at) AS (
-        VALUES ${pinterestWindowValues}
-      )
-      SELECT
-        w.period_key,
-        w.sort_order,
-        w.since_at,
-        COUNT(DISTINCT e.visitor_key) as visitors,
-        COALESCE(SUM(CASE WHEN e.event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
-        COUNT(DISTINCT CASE WHEN e.event_name = 'tryon_job_created' THEN e.visitor_key END) as tryon_visitors,
-        COALESCE(SUM(CASE WHEN e.event_name = 'registration_completed' THEN 1 ELSE 0 END), 0) as registrations,
-        COALESCE(SUM(CASE WHEN e.event_name = 'subscription_checkout_success' THEN 1 ELSE 0 END), 0) as subscriptions
-      FROM windows w
-      LEFT JOIN analytics_events e
-        ON e.occurred_at >= w.since_at
-        AND (LOWER(COALESCE(e.source, '')) LIKE 'pinterest%'
-          OR LOWER(COALESCE(e.referrer_host, '')) LIKE '%pinterest.%')
-      GROUP BY w.period_key, w.sort_order, w.since_at
-      ORDER BY w.sort_order`,
-      )
-        .bind(...pinterestWindowBindings)
-        .all<PinterestPeriodRow>(),
+      loadPinterestPeriod(),
       DB.prepare(
         `SELECT day,
         COUNT(DISTINCT visitor_key) as visitors,
@@ -438,15 +463,9 @@ export const GET: APIRoute = async ({ cookies }) => {
         today: normalizePinterestSummary(pinterestToday),
         week: normalizePinterestSummary(pinterestWeek),
         month: normalizePinterestSummary(pinterestMonth),
-        periods: (pinterestPeriodRows?.results ?? []).map((row) => ({
-          key: row.period_key,
-          since: row.since_at,
-          visitors: Number(row.visitors ?? 0),
-          pageviews: Number(row.pageviews ?? 0),
-          tryonVisitors: Number(row.tryon_visitors ?? 0),
-          registrations: Number(row.registrations ?? 0),
-          subscriptions: Number(row.subscriptions ?? 0),
-        })),
+        availablePeriods: pinterestPeriodWindows.map((window) => window.key),
+        selectedPeriod: normalizePinterestPeriod(pinterestPeriod),
+        periods: [normalizePinterestPeriod(pinterestPeriod)],
         daily: (pinterestDaily?.results ?? []).map((row) => ({
           day: row.day,
           visitors: Number(row.visitors ?? 0),
