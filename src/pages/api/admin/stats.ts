@@ -41,100 +41,97 @@ export const GET: APIRoute = async ({ cookies }) => {
     );
   }
 
-  const now = new Date();
-  const monthStart = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
-  ).toISOString();
-  const weekAgo = new Date(
-    now.getTime() - 7 * 24 * 60 * 60 * 1000,
-  ).toISOString();
-  const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-  const chartSince = new Date(
-    now.getTime() - 14 * 24 * 60 * 60 * 1000,
-  ).toISOString();
-  const pinterestSince = new Date(
-    now.getTime() - 30 * 24 * 60 * 60 * 1000,
-  ).toISOString();
-  const pinterestPeriodWindows = [
-    { key: "realtime", minutes: 5 },
-    { key: "10m", minutes: 10 },
-    { key: "30m", minutes: 30 },
-    { key: "1h", minutes: 60 },
-    { key: "1d", minutes: 24 * 60 },
-    { key: "3d", minutes: 3 * 24 * 60 },
-    { key: "5d", minutes: 5 * 24 * 60 },
-    { key: "7d", minutes: 7 * 24 * 60 },
-    { key: "10d", minutes: 10 * 24 * 60 },
-    { key: "1mo", minutes: 30 * 24 * 60 },
-    { key: "1q", minutes: 90 * 24 * 60 },
-    { key: "1y", minutes: 365 * 24 * 60 },
-  ].map((window, index) => ({
-    ...window,
-    sortOrder: index,
-    since: new Date(now.getTime() - window.minutes * 60 * 1000).toISOString(),
-  }));
-  const pinterestWindowCte = pinterestPeriodWindows
-    .map((_, index) =>
-      index === 0
-        ? "SELECT ? AS period_key, ? AS sort_order, ? AS since_at"
-        : "UNION ALL SELECT ?, ?, ?",
-    )
-    .join("\n");
-  const pinterestWindowBindings = pinterestPeriodWindows.flatMap((window) => [
-    window.key,
-    window.sortOrder,
-    window.since,
-  ]);
+  try {
+    const now = new Date();
+    const monthStart = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
+    ).toISOString();
+    const weekAgo = new Date(
+      now.getTime() - 7 * 24 * 60 * 60 * 1000,
+    ).toISOString();
+    const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+    const chartSince = new Date(
+      now.getTime() - 14 * 24 * 60 * 60 * 1000,
+    ).toISOString();
+    const pinterestSince = new Date(
+      now.getTime() - 30 * 24 * 60 * 60 * 1000,
+    ).toISOString();
+    const pinterestPeriodWindows = [
+      { key: "realtime", minutes: 5 },
+      { key: "10m", minutes: 10 },
+      { key: "30m", minutes: 30 },
+      { key: "1h", minutes: 60 },
+      { key: "1d", minutes: 24 * 60 },
+      { key: "3d", minutes: 3 * 24 * 60 },
+      { key: "5d", minutes: 5 * 24 * 60 },
+      { key: "7d", minutes: 7 * 24 * 60 },
+      { key: "10d", minutes: 10 * 24 * 60 },
+      { key: "1mo", minutes: 30 * 24 * 60 },
+      { key: "1q", minutes: 90 * 24 * 60 },
+      { key: "1y", minutes: 365 * 24 * 60 },
+    ].map((window, index) => ({
+      ...window,
+      sortOrder: index,
+      since: new Date(now.getTime() - window.minutes * 60 * 1000).toISOString(),
+    }));
+    const pinterestWindowValues = pinterestPeriodWindows
+      .map(() => "(?, ?, ?)")
+      .join(", ");
+    const pinterestWindowBindings = pinterestPeriodWindows.flatMap((window) => [
+      window.key,
+      window.sortOrder,
+      window.since,
+    ]);
 
-  // 并行查询所有统计数据
-  const [
-    totalUsers,
-    activeUsersWeek,
-    newUsersToday,
-    newUsersWeek,
-    subscriptionCounts,
-    monthlyAiCost,
-    monthlyAiCalls,
-    aiSuccessRate,
-    openTickets,
-    avgAiDuration,
-    recentTickets,
-    recentUsers,
-    dailyNewUsers,
-    dailySubscriptionRevenue,
-    dailyAiCost,
-    pinterestToday,
-    pinterestWeek,
-    pinterestMonth,
-    pinterestPeriodRows,
-    pinterestDaily,
-    pinterestTopPins,
-  ] = await Promise.all([
-    // 总用户数
-    DB.prepare(
-      "SELECT COUNT(*) as cnt FROM users WHERE deleted_at IS NULL",
-    ).first<CountRow>(),
-    // 近 7 天有试妆行为的活跃用户
-    DB.prepare(
-      "SELECT COUNT(DISTINCT user_id) as cnt FROM tryon_jobs WHERE created_at >= ?",
-    )
-      .bind(weekAgo)
-      .first<CountRow>(),
-    // 今日新增
-    DB.prepare(
-      "SELECT COUNT(*) as cnt FROM users WHERE created_at >= ? AND deleted_at IS NULL",
-    )
-      .bind(dayAgo)
-      .first<CountRow>(),
-    // 本周新增
-    DB.prepare(
-      "SELECT COUNT(*) as cnt FROM users WHERE created_at >= ? AND deleted_at IS NULL",
-    )
-      .bind(weekAgo)
-      .first<CountRow>(),
-    // 每用户最高有效订阅（active / trialing / past_due / 未过期 canceled）
-    DB.prepare(
-      `
+    // 并行查询所有统计数据
+    const [
+      totalUsers,
+      activeUsersWeek,
+      newUsersToday,
+      newUsersWeek,
+      subscriptionCounts,
+      monthlyAiCost,
+      monthlyAiCalls,
+      aiSuccessRate,
+      openTickets,
+      avgAiDuration,
+      recentTickets,
+      recentUsers,
+      dailyNewUsers,
+      dailySubscriptionRevenue,
+      dailyAiCost,
+      pinterestToday,
+      pinterestWeek,
+      pinterestMonth,
+      pinterestPeriodRows,
+      pinterestDaily,
+      pinterestTopPins,
+    ] = await Promise.all([
+      // 总用户数
+      DB.prepare(
+        "SELECT COUNT(*) as cnt FROM users WHERE deleted_at IS NULL",
+      ).first<CountRow>(),
+      // 近 7 天有试妆行为的活跃用户
+      DB.prepare(
+        "SELECT COUNT(DISTINCT user_id) as cnt FROM tryon_jobs WHERE created_at >= ?",
+      )
+        .bind(weekAgo)
+        .first<CountRow>(),
+      // 今日新增
+      DB.prepare(
+        "SELECT COUNT(*) as cnt FROM users WHERE created_at >= ? AND deleted_at IS NULL",
+      )
+        .bind(dayAgo)
+        .first<CountRow>(),
+      // 本周新增
+      DB.prepare(
+        "SELECT COUNT(*) as cnt FROM users WHERE created_at >= ? AND deleted_at IS NULL",
+      )
+        .bind(weekAgo)
+        .first<CountRow>(),
+      // 每用户最高有效订阅（active / trialing / past_due / 未过期 canceled）
+      DB.prepare(
+        `
       WITH ranked_subscriptions AS (
         SELECT user_id, plan_code,
           ROW_NUMBER() OVER (
@@ -152,55 +149,57 @@ export const GET: APIRoute = async ({ cookies }) => {
       FROM ranked_subscriptions
       WHERE rn = 1
     `,
-    )
-      .bind(now.toISOString())
-      .first<{
-        active: number | string | null;
-        pro: number | string | null;
-        premium: number | string | null;
+      )
+        .bind(now.toISOString())
+        .first<{
+          active: number | string | null;
+          pro: number | string | null;
+          premium: number | string | null;
+        }>(),
+      // 本月 AI 计量成本：estimated_cost_micros 当前兼容美元 micros 与 provider credits micros。
+      DB.prepare(
+        "SELECT COALESCE(SUM(estimated_cost_micros), 0) as total FROM ai_call_logs WHERE created_at >= ?",
+      )
+        .bind(monthStart)
+        .first<SumRow>(),
+      // 本月 AI 调用总数
+      DB.prepare(
+        "SELECT COUNT(*) as cnt FROM ai_call_logs WHERE created_at >= ?",
+      )
+        .bind(monthStart)
+        .first<CountRow>(),
+      // AI 成功率
+      DB.prepare(
+        "SELECT CASE WHEN COUNT(*) = 0 THEN 100.0 ELSE ROUND(SUM(CASE WHEN status = 'succeeded' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 1) END as total FROM ai_call_logs WHERE created_at >= ?",
+      )
+        .bind(monthStart)
+        .first<SumRow>(),
+      // 未解决工单
+      DB.prepare(
+        "SELECT COUNT(*) as cnt FROM support_requests WHERE status = 'open'",
+      ).first<CountRow>(),
+      // 平均 AI 响应时间
+      DB.prepare(
+        "SELECT ROUND(AVG(duration_ms), 0) as total FROM ai_call_logs WHERE created_at >= ? AND duration_ms IS NOT NULL",
+      )
+        .bind(monthStart)
+        .first<SumRow>(),
+      // 最近 5 条工单
+      DB.prepare(
+        "SELECT id, ticket_code, name, email, topic, status, created_at, updated_at FROM support_requests ORDER BY updated_at DESC LIMIT 5",
+      ).all<{
+        id: string;
+        ticket_code: string;
+        name: string;
+        email: string;
+        topic: string;
+        status: string;
+        created_at: string;
+        updated_at: string;
       }>(),
-    // 本月 AI 计量成本：estimated_cost_micros 当前兼容美元 micros 与 provider credits micros。
-    DB.prepare(
-      "SELECT COALESCE(SUM(estimated_cost_micros), 0) as total FROM ai_call_logs WHERE created_at >= ?",
-    )
-      .bind(monthStart)
-      .first<SumRow>(),
-    // 本月 AI 调用总数
-    DB.prepare("SELECT COUNT(*) as cnt FROM ai_call_logs WHERE created_at >= ?")
-      .bind(monthStart)
-      .first<CountRow>(),
-    // AI 成功率
-    DB.prepare(
-      "SELECT CASE WHEN COUNT(*) = 0 THEN 100.0 ELSE ROUND(SUM(CASE WHEN status = 'succeeded' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 1) END as total FROM ai_call_logs WHERE created_at >= ?",
-    )
-      .bind(monthStart)
-      .first<SumRow>(),
-    // 未解决工单
-    DB.prepare(
-      "SELECT COUNT(*) as cnt FROM support_requests WHERE status = 'open'",
-    ).first<CountRow>(),
-    // 平均 AI 响应时间
-    DB.prepare(
-      "SELECT ROUND(AVG(duration_ms), 0) as total FROM ai_call_logs WHERE created_at >= ? AND duration_ms IS NOT NULL",
-    )
-      .bind(monthStart)
-      .first<SumRow>(),
-    // 最近 5 条工单
-    DB.prepare(
-      "SELECT id, ticket_code, name, email, topic, status, created_at, updated_at FROM support_requests ORDER BY updated_at DESC LIMIT 5",
-    ).all<{
-      id: string;
-      ticket_code: string;
-      name: string;
-      email: string;
-      topic: string;
-      status: string;
-      created_at: string;
-      updated_at: string;
-    }>(),
-    // 最近 10 个用户
-    DB.prepare(
-      `
+      // 最近 10 个用户
+      DB.prepare(
+        `
       WITH ranked_subscriptions AS (
         SELECT user_id, plan_code, status,
           ROW_NUMBER() OVER (
@@ -226,26 +225,26 @@ export const GET: APIRoute = async ({ cookies }) => {
       ORDER BY u.created_at DESC
       LIMIT 10
     `,
-    )
-      .bind(now.toISOString())
-      .all<{
-        id: string;
-        email: string;
-        created_at: string;
-        plan_code: string;
-        subscription_status: string;
-        tryon_count: number;
-        last_tryon_at: string | null;
-      }>(),
-    // 最近 14 天每日新用户
-    DB.prepare(
-      "SELECT DATE(created_at) as day, COUNT(*) as cnt FROM users WHERE created_at >= ? AND deleted_at IS NULL GROUP BY DATE(created_at) ORDER BY day",
-    )
-      .bind(chartSince)
-      .all<{ day: string; cnt: number }>(),
-    // 最近 14 天新增订阅对应的月收入
-    DB.prepare(
-      `
+      )
+        .bind(now.toISOString())
+        .all<{
+          id: string;
+          email: string;
+          created_at: string;
+          plan_code: string;
+          subscription_status: string;
+          tryon_count: number;
+          last_tryon_at: string | null;
+        }>(),
+      // 最近 14 天每日新用户
+      DB.prepare(
+        "SELECT DATE(created_at) as day, COUNT(*) as cnt FROM users WHERE created_at >= ? AND deleted_at IS NULL GROUP BY DATE(created_at) ORDER BY day",
+      )
+        .bind(chartSince)
+        .all<{ day: string; cnt: number }>(),
+      // 最近 14 天新增订阅对应的月收入
+      DB.prepare(
+        `
       SELECT DATE(created_at) as day,
         COALESCE(SUM(CASE plan_code
           WHEN 'pro' THEN ?
@@ -257,16 +256,16 @@ export const GET: APIRoute = async ({ cookies }) => {
       GROUP BY DATE(created_at)
       ORDER BY day
     `,
-    )
-      .bind(
-        PLAN_DEFINITIONS.pro.monthlyPriceUsd,
-        PLAN_DEFINITIONS.premium.monthlyPriceUsd,
-        chartSince,
       )
-      .all<{ day: string; revenue_usd: number }>(),
-    // 最近 14 天 AI 成本趋势
-    DB.prepare(
-      `
+        .bind(
+          PLAN_DEFINITIONS.pro.monthlyPriceUsd,
+          PLAN_DEFINITIONS.premium.monthlyPriceUsd,
+          chartSince,
+        )
+        .all<{ day: string; revenue_usd: number }>(),
+      // 最近 14 天 AI 成本趋势
+      DB.prepare(
+        `
       SELECT DATE(created_at) as day,
         COALESCE(SUM(estimated_cost_micros), 0) as cost_micros
       FROM ai_call_logs
@@ -274,11 +273,11 @@ export const GET: APIRoute = async ({ cookies }) => {
       GROUP BY DATE(created_at)
       ORDER BY day
     `,
-    )
-      .bind(chartSince)
-      .all<{ day: string; cost_micros: number }>(),
-    DB.prepare(
-      `SELECT
+      )
+        .bind(chartSince)
+        .all<{ day: string; cost_micros: number }>(),
+      DB.prepare(
+        `SELECT
         COUNT(DISTINCT visitor_key) as visitors,
         COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
         COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors,
@@ -288,11 +287,11 @@ export const GET: APIRoute = async ({ cookies }) => {
       WHERE occurred_at >= ?
         AND (LOWER(COALESCE(source, '')) LIKE 'pinterest%'
           OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
-    )
-      .bind(dayAgo)
-      .first<PinterestSummaryRow>(),
-    DB.prepare(
-      `SELECT
+      )
+        .bind(dayAgo)
+        .first<PinterestSummaryRow>(),
+      DB.prepare(
+        `SELECT
         COUNT(DISTINCT visitor_key) as visitors,
         COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
         COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors,
@@ -302,11 +301,11 @@ export const GET: APIRoute = async ({ cookies }) => {
       WHERE occurred_at >= ?
         AND (LOWER(COALESCE(source, '')) LIKE 'pinterest%'
           OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
-    )
-      .bind(weekAgo)
-      .first<PinterestSummaryRow>(),
-    DB.prepare(
-      `SELECT
+      )
+        .bind(weekAgo)
+        .first<PinterestSummaryRow>(),
+      DB.prepare(
+        `SELECT
         COUNT(DISTINCT visitor_key) as visitors,
         COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
         COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors,
@@ -316,12 +315,12 @@ export const GET: APIRoute = async ({ cookies }) => {
       WHERE occurred_at >= ?
         AND (LOWER(COALESCE(source, '')) LIKE 'pinterest%'
           OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
-    )
-      .bind(pinterestSince)
-      .first<PinterestSummaryRow>(),
-    DB.prepare(
-      `WITH windows(period_key, sort_order, since_at) AS (
-        ${pinterestWindowCte}
+      )
+        .bind(pinterestSince)
+        .first<PinterestSummaryRow>(),
+      DB.prepare(
+        `WITH windows(period_key, sort_order, since_at) AS (
+        VALUES ${pinterestWindowValues}
       )
       SELECT
         w.period_key,
@@ -339,11 +338,11 @@ export const GET: APIRoute = async ({ cookies }) => {
           OR LOWER(COALESCE(e.referrer_host, '')) LIKE '%pinterest.%')
       GROUP BY w.period_key, w.sort_order, w.since_at
       ORDER BY w.sort_order`,
-    )
-      .bind(...pinterestWindowBindings)
-      .all<PinterestPeriodRow>(),
-    DB.prepare(
-      `SELECT day,
+      )
+        .bind(...pinterestWindowBindings)
+        .all<PinterestPeriodRow>(),
+      DB.prepare(
+        `SELECT day,
         COUNT(DISTINCT visitor_key) as visitors,
         COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
         COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors
@@ -353,16 +352,16 @@ export const GET: APIRoute = async ({ cookies }) => {
           OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')
       GROUP BY day
       ORDER BY day`,
-    )
-      .bind(pinterestSince)
-      .all<{
-        day: string;
-        visitors: number | string;
-        pageviews: number | string;
-        tryon_visitors: number | string;
-      }>(),
-    DB.prepare(
-      `SELECT content,
+      )
+        .bind(pinterestSince)
+        .all<{
+          day: string;
+          visitors: number | string;
+          pageviews: number | string;
+          tryon_visitors: number | string;
+        }>(),
+      DB.prepare(
+        `SELECT content,
         COUNT(DISTINCT visitor_key) as visitors,
         COALESCE(SUM(CASE WHEN event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
         COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors
@@ -374,90 +373,103 @@ export const GET: APIRoute = async ({ cookies }) => {
       GROUP BY content
       ORDER BY visitors DESC, pageviews DESC
       LIMIT 20`,
-    )
-      .bind(pinterestSince)
-      .all<{
-        content: string;
-        visitors: number | string;
-        pageviews: number | string;
-        tryon_visitors: number | string;
-      }>(),
-  ]);
+      )
+        .bind(pinterestSince)
+        .all<{
+          content: string;
+          visitors: number | string;
+          pageviews: number | string;
+          tryon_visitors: number | string;
+        }>(),
+    ]);
 
-  const aiCostMicros = Number(monthlyAiCost?.total ?? 0);
-  const activeSubscriptions = Number(subscriptionCounts?.active ?? 0);
-  const proSubscriptions = Number(subscriptionCounts?.pro ?? 0);
-  const premiumSubscriptions = Number(subscriptionCounts?.premium ?? 0);
-  const estimatedMrrUsd =
-    proSubscriptions * PLAN_DEFINITIONS.pro.monthlyPriceUsd +
-    premiumSubscriptions * PLAN_DEFINITIONS.premium.monthlyPriceUsd;
+    const aiCostMicros = Number(monthlyAiCost?.total ?? 0);
+    const activeSubscriptions = Number(subscriptionCounts?.active ?? 0);
+    const proSubscriptions = Number(subscriptionCounts?.pro ?? 0);
+    const premiumSubscriptions = Number(subscriptionCounts?.premium ?? 0);
+    const estimatedMrrUsd =
+      proSubscriptions * PLAN_DEFINITIONS.pro.monthlyPriceUsd +
+      premiumSubscriptions * PLAN_DEFINITIONS.premium.monthlyPriceUsd;
 
-  const normalizePinterestSummary = (row: PinterestSummaryRow | null) => ({
-    visitors: Number(row?.visitors ?? 0),
-    pageviews: Number(row?.pageviews ?? 0),
-    tryonVisitors: Number(row?.tryon_visitors ?? 0),
-    registrations: Number(row?.registrations ?? 0),
-    subscriptions: Number(row?.subscriptions ?? 0),
-  });
+    const normalizePinterestSummary = (row: PinterestSummaryRow | null) => ({
+      visitors: Number(row?.visitors ?? 0),
+      pageviews: Number(row?.pageviews ?? 0),
+      tryonVisitors: Number(row?.tryon_visitors ?? 0),
+      registrations: Number(row?.registrations ?? 0),
+      subscriptions: Number(row?.subscriptions ?? 0),
+    });
 
-  return apiSuccess({
-    generatedAt: now.toISOString(),
-    period: {
-      aiCostSince: monthStart,
-      userGrowthDays: 14,
-      newUsersSince: {
-        day: dayAgo,
-        week: weekAgo,
+    return apiSuccess({
+      generatedAt: now.toISOString(),
+      period: {
+        aiCostSince: monthStart,
+        userGrowthDays: 14,
+        newUsersSince: {
+          day: dayAgo,
+          week: weekAgo,
+        },
       },
-    },
-    totalUsers: Number(totalUsers?.cnt ?? 0),
-    activeUsersWeek: Number(activeUsersWeek?.cnt ?? 0),
-    newUsersToday: Number(newUsersToday?.cnt ?? 0),
-    newUsersWeek: Number(newUsersWeek?.cnt ?? 0),
-    activeSubscriptions,
-    proSubscriptions,
-    premiumSubscriptions,
-    estimatedMrrUsd: Number(estimatedMrrUsd.toFixed(2)),
-    monthlyAiCostUnits: Number((aiCostMicros / 1_000_000).toFixed(2)),
-    monthlyAiCalls: Number(monthlyAiCalls?.cnt ?? 0),
-    aiSuccessRate: Number(aiSuccessRate?.total ?? 100),
-    openTickets: Number(openTickets?.cnt ?? 0),
-    avgAiDurationMs: Number(avgAiDuration?.total ?? 0),
-    recentTickets: recentTickets?.results ?? [],
-    recentUsers: recentUsers?.results ?? [],
-    dailyNewUsers: dailyNewUsers?.results ?? [],
-    dailySubscriptionRevenue: dailySubscriptionRevenue?.results ?? [],
-    dailyAiCost: (dailyAiCost?.results ?? []).map((row) => ({
-      day: row.day,
-      cost_units: Number((Number(row.cost_micros ?? 0) / 1_000_000).toFixed(2)),
-    })),
-    pinterestAnalytics: {
-      consentedFirstPartyOnly: true,
-      goalDailyVisitors: 1000,
-      today: normalizePinterestSummary(pinterestToday),
-      week: normalizePinterestSummary(pinterestWeek),
-      month: normalizePinterestSummary(pinterestMonth),
-      periods: (pinterestPeriodRows?.results ?? []).map((row) => ({
-        key: row.period_key,
-        since: row.since_at,
-        visitors: Number(row.visitors ?? 0),
-        pageviews: Number(row.pageviews ?? 0),
-        tryonVisitors: Number(row.tryon_visitors ?? 0),
-        registrations: Number(row.registrations ?? 0),
-        subscriptions: Number(row.subscriptions ?? 0),
-      })),
-      daily: (pinterestDaily?.results ?? []).map((row) => ({
+      totalUsers: Number(totalUsers?.cnt ?? 0),
+      activeUsersWeek: Number(activeUsersWeek?.cnt ?? 0),
+      newUsersToday: Number(newUsersToday?.cnt ?? 0),
+      newUsersWeek: Number(newUsersWeek?.cnt ?? 0),
+      activeSubscriptions,
+      proSubscriptions,
+      premiumSubscriptions,
+      estimatedMrrUsd: Number(estimatedMrrUsd.toFixed(2)),
+      monthlyAiCostUnits: Number((aiCostMicros / 1_000_000).toFixed(2)),
+      monthlyAiCalls: Number(monthlyAiCalls?.cnt ?? 0),
+      aiSuccessRate: Number(aiSuccessRate?.total ?? 100),
+      openTickets: Number(openTickets?.cnt ?? 0),
+      avgAiDurationMs: Number(avgAiDuration?.total ?? 0),
+      recentTickets: recentTickets?.results ?? [],
+      recentUsers: recentUsers?.results ?? [],
+      dailyNewUsers: dailyNewUsers?.results ?? [],
+      dailySubscriptionRevenue: dailySubscriptionRevenue?.results ?? [],
+      dailyAiCost: (dailyAiCost?.results ?? []).map((row) => ({
         day: row.day,
-        visitors: Number(row.visitors ?? 0),
-        pageviews: Number(row.pageviews ?? 0),
-        tryonVisitors: Number(row.tryon_visitors ?? 0),
+        cost_units: Number(
+          (Number(row.cost_micros ?? 0) / 1_000_000).toFixed(2),
+        ),
       })),
-      topPins: (pinterestTopPins?.results ?? []).map((row) => ({
-        content: row.content,
-        visitors: Number(row.visitors ?? 0),
-        pageviews: Number(row.pageviews ?? 0),
-        tryonVisitors: Number(row.tryon_visitors ?? 0),
-      })),
-    },
-  });
+      pinterestAnalytics: {
+        consentedFirstPartyOnly: true,
+        goalDailyVisitors: 1000,
+        today: normalizePinterestSummary(pinterestToday),
+        week: normalizePinterestSummary(pinterestWeek),
+        month: normalizePinterestSummary(pinterestMonth),
+        periods: (pinterestPeriodRows?.results ?? []).map((row) => ({
+          key: row.period_key,
+          since: row.since_at,
+          visitors: Number(row.visitors ?? 0),
+          pageviews: Number(row.pageviews ?? 0),
+          tryonVisitors: Number(row.tryon_visitors ?? 0),
+          registrations: Number(row.registrations ?? 0),
+          subscriptions: Number(row.subscriptions ?? 0),
+        })),
+        daily: (pinterestDaily?.results ?? []).map((row) => ({
+          day: row.day,
+          visitors: Number(row.visitors ?? 0),
+          pageviews: Number(row.pageviews ?? 0),
+          tryonVisitors: Number(row.tryon_visitors ?? 0),
+        })),
+        topPins: (pinterestTopPins?.results ?? []).map((row) => ({
+          content: row.content,
+          visitors: Number(row.visitors ?? 0),
+          pageviews: Number(row.pageviews ?? 0),
+          tryonVisitors: Number(row.tryon_visitors ?? 0),
+        })),
+      },
+    });
+  } catch (error) {
+    console.error("[Admin Stats] Failed to load overview stats", error);
+    return apiError(
+      {
+        code: "ADMIN_STATS_UNAVAILABLE",
+        message: "运营数据加载失败，请稍后重试。",
+        retryable: true,
+      },
+      500,
+    );
+  }
 };
