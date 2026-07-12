@@ -47,12 +47,31 @@ const overviewCopy = {
       registrations: "注册",
       subscriptions: "会员",
       goal: "今日目标",
+      periodsTitle: "Pinterest 来源访问量",
+      periodsSubtitle: "滚动统计窗口，实时按近 5 分钟估算。",
+      period: "时间窗口",
+      pageviews: "浏览量",
       topPins: "近 30 天高效 Pin",
       pinId: "UTM 内容标识",
       visitors: "访客",
       tryons: "试妆访客",
+      noPeriods: "还没有 Pinterest 来源访问记录。",
       noPins: "首批 Pin 发布并产生点击后，数据会显示在这里。",
       perDay: "日均",
+      periodLabels: {
+        realtime: "实时（近 5 分钟）",
+        "10m": "10 分钟",
+        "30m": "30 分钟",
+        "1h": "1 小时",
+        "1d": "1 天",
+        "3d": "3 天",
+        "5d": "5 天",
+        "7d": "7 天",
+        "10d": "10 天",
+        "1mo": "1 月",
+        "1q": "1 季度",
+        "1y": "1 年",
+      },
     },
     kpis: {
       activeUsers: "活跃用户",
@@ -175,12 +194,31 @@ const overviewCopy = {
       registrations: "Registrations",
       subscriptions: "Members",
       goal: "Daily goal",
+      periodsTitle: "Pinterest source traffic",
+      periodsSubtitle: "Rolling windows; realtime uses the last 5 minutes.",
+      period: "Window",
+      pageviews: "Pageviews",
       topPins: "Top Pins, last 30d",
       pinId: "UTM content ID",
       visitors: "Visitors",
       tryons: "Try-on visitors",
+      noPeriods: "No Pinterest source visits recorded yet.",
       noPins: "Data will appear after the first Pins begin receiving clicks.",
       perDay: "daily avg",
+      periodLabels: {
+        realtime: "Realtime (last 5m)",
+        "10m": "10m",
+        "30m": "30m",
+        "1h": "1h",
+        "1d": "1d",
+        "3d": "3d",
+        "5d": "5d",
+        "7d": "7d",
+        "10d": "10d",
+        "1mo": "1 month",
+        "1q": "1 quarter",
+        "1y": "1 year",
+      },
     },
     kpis: {
       activeUsers: "Active users",
@@ -445,6 +483,31 @@ const adminHref = (href: string) => {
           <small id="pinterestConversions">-</small>
         </article>
       </div>
+      <div class="pinterest-period-table">
+        <div class="pinterest-table-head">
+          <h4>{copy.pinterest.periodsTitle}</h4>
+          <p>{copy.pinterest.periodsSubtitle}</p>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>{copy.pinterest.period}</th>
+                <th>{copy.pinterest.visitors}</th>
+                <th>{copy.pinterest.pageviews}</th>
+                <th>{copy.pinterest.tryons}</th>
+                <th>{copy.pinterest.registrations}</th>
+                <th>{copy.pinterest.subscriptions}</th>
+              </tr>
+            </thead>
+            <tbody id="pinterestPeriodBody">
+              <tr>
+                <td colspan="6" class="admin-loading">{copy.loading}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <div class="pinterest-pin-table">
         <h4>{copy.pinterest.topPins}</h4>
         <div class="admin-table-wrap">
@@ -653,12 +716,46 @@ const adminHref = (href: string) => {
       transition: width 260ms ease;
     }
 
+    .pinterest-period-table,
     .pinterest-pin-table {
       margin-top: 18px;
     }
 
+    .pinterest-table-head {
+      padding: 0 18px;
+    }
+
+    .pinterest-table-head p {
+      margin: 4px 0 10px;
+      color: var(--admin-text-muted);
+      font-size: 12px;
+    }
+
+    .pinterest-period-table .admin-table th:not(:first-child),
+    .pinterest-period-table .admin-table td:not(:first-child),
+    .pinterest-pin-table .admin-table th:not(:first-child),
+    .pinterest-pin-table .admin-table td:not(:first-child) {
+      text-align: right;
+    }
+
+    .pinterest-period-label {
+      display: inline-flex;
+      align-items: center;
+      color: var(--admin-text);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pinterest-period-label.realtime {
+      color: #b8001b;
+    }
+
     .pinterest-pin-table h4 {
-      margin: 0 0 10px;
+      margin: 0 18px 10px;
+    }
+
+    .pinterest-table-head h4 {
+      margin: 0;
     }
 
     @media (max-width: 900px) {
@@ -1182,9 +1279,7 @@ const adminHref = (href: string) => {
         var monthVisitors = Number(month.visitors || 0);
         var monthTryons = Number(month.tryonVisitors || 0);
         var progress = Math.min(100, (todayVisitors / Math.max(1, goal)) * 100);
-        var tryonRate = monthVisitors
-          ? (monthTryons / monthVisitors) * 100
-          : 0;
+        var tryonRate = monthVisitors ? (monthTryons / monthVisitors) * 100 : 0;
 
         setText("pinterestTodayVisitors", formatNumber(todayVisitors));
         setText("pinterestWeekVisitors", formatNumber(week.visitors || 0));
@@ -1227,6 +1322,8 @@ const adminHref = (href: string) => {
         var progressBar = document.getElementById("pinterestGoalProgress");
         if (progressBar) progressBar.style.width = progress + "%";
 
+        renderPinterestPeriods(analytics);
+
         var tbody = document.getElementById("pinterestTopPinsBody");
         if (!tbody) return;
         var rows = (analytics && analytics.topPins) || [];
@@ -1247,6 +1344,51 @@ const adminHref = (href: string) => {
               formatNumber(row.visitors || 0) +
               "</td><td>" +
               formatNumber(row.tryonVisitors || 0) +
+              "</td></tr>"
+            );
+          })
+          .join("");
+      }
+
+      function renderPinterestPeriods(analytics) {
+        var tbody = document.getElementById("pinterestPeriodBody");
+        if (!tbody) return;
+        var rows = (analytics && analytics.periods) || [];
+        if (!rows.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="6" class="admin-empty">' +
+            escapeHtml(overviewCopy.pinterest.noPeriods) +
+            "</td></tr>";
+          return;
+        }
+
+        tbody.innerHTML = rows
+          .map(function (row) {
+            var key = row.key || "";
+            var label =
+              (overviewCopy.pinterest.periodLabels &&
+                overviewCopy.pinterest.periodLabels[key]) ||
+              key ||
+              "-";
+            var labelClass =
+              key === "realtime"
+                ? "pinterest-period-label realtime"
+                : "pinterest-period-label";
+            return (
+              '<tr><td><span class="' +
+              labelClass +
+              '">' +
+              escapeHtml(label) +
+              "</span></td><td>" +
+              formatNumber(row.visitors || 0) +
+              "</td><td>" +
+              formatNumber(row.pageviews || 0) +
+              "</td><td>" +
+              formatNumber(row.tryonVisitors || 0) +
+              "</td><td>" +
+              formatNumber(row.registrations || 0) +
+              "</td><td>" +
+              formatNumber(row.subscriptions || 0) +
               "</td></tr>"
             );
           })

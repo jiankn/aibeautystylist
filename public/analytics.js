@@ -60,11 +60,17 @@
 
   function currentAttribution() {
     var params = new URLSearchParams(location.search);
+    var sourceParam = params.get("source") || "";
+    var sourceFallback = /^pinterest/i.test(sourceParam)
+      ? "pinterest"
+      : /^google_images/i.test(sourceParam)
+        ? "google_images"
+        : "";
     var incoming = {
-      source: params.get("utm_source") || "",
+      source: params.get("utm_source") || sourceFallback,
       medium: params.get("utm_medium") || "",
       campaign: params.get("utm_campaign") || "",
-      content: params.get("utm_content") || "",
+      content: params.get("utm_content") || (sourceFallback ? sourceParam : ""),
       term: params.get("utm_term") || "",
       referrerHost: externalReferrerHost(),
       landingPath: location.pathname,

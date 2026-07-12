@@ -19,6 +19,11 @@ interface PinterestSummaryRow {
   registrations: number | string | null;
   subscriptions: number | string | null;
 }
+interface PinterestPeriodRow extends PinterestSummaryRow {
+  period_key: string;
+  sort_order: number | string;
+  since_at: string;
+}
 
 export const GET: APIRoute = async ({ cookies }) => {
   const { DB } = getRuntimeBindings();
@@ -50,6 +55,36 @@ export const GET: APIRoute = async ({ cookies }) => {
   const pinterestSince = new Date(
     now.getTime() - 30 * 24 * 60 * 60 * 1000,
   ).toISOString();
+  const pinterestPeriodWindows = [
+    { key: "realtime", minutes: 5 },
+    { key: "10m", minutes: 10 },
+    { key: "30m", minutes: 30 },
+    { key: "1h", minutes: 60 },
+    { key: "1d", minutes: 24 * 60 },
+    { key: "3d", minutes: 3 * 24 * 60 },
+    { key: "5d", minutes: 5 * 24 * 60 },
+    { key: "7d", minutes: 7 * 24 * 60 },
+    { key: "10d", minutes: 10 * 24 * 60 },
+    { key: "1mo", minutes: 30 * 24 * 60 },
+    { key: "1q", minutes: 90 * 24 * 60 },
+    { key: "1y", minutes: 365 * 24 * 60 },
+  ].map((window, index) => ({
+    ...window,
+    sortOrder: index,
+    since: new Date(now.getTime() - window.minutes * 60 * 1000).toISOString(),
+  }));
+  const pinterestWindowCte = pinterestPeriodWindows
+    .map((_, index) =>
+      index === 0
+        ? "SELECT ? AS period_key, ? AS sort_order, ? AS since_at"
+        : "UNION ALL SELECT ?, ?, ?",
+    )
+    .join("\n");
+  const pinterestWindowBindings = pinterestPeriodWindows.flatMap((window) => [
+    window.key,
+    window.sortOrder,
+    window.since,
+  ]);
 
   // 并行查询所有统计数据
   const [
@@ -71,6 +106,7 @@ export const GET: APIRoute = async ({ cookies }) => {
     pinterestToday,
     pinterestWeek,
     pinterestMonth,
+    pinterestPeriodRows,
     pinterestDaily,
     pinterestTopPins,
   ] = await Promise.all([
@@ -250,7 +286,7 @@ export const GET: APIRoute = async ({ cookies }) => {
         COALESCE(SUM(CASE WHEN event_name = 'subscription_checkout_success' THEN 1 ELSE 0 END), 0) as subscriptions
       FROM analytics_events
       WHERE occurred_at >= ?
-        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+        AND (LOWER(COALESCE(source, '')) LIKE 'pinterest%'
           OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
     )
       .bind(dayAgo)
@@ -264,7 +300,7 @@ export const GET: APIRoute = async ({ cookies }) => {
         COALESCE(SUM(CASE WHEN event_name = 'subscription_checkout_success' THEN 1 ELSE 0 END), 0) as subscriptions
       FROM analytics_events
       WHERE occurred_at >= ?
-        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+        AND (LOWER(COALESCE(source, '')) LIKE 'pinterest%'
           OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
     )
       .bind(weekAgo)
@@ -278,11 +314,34 @@ export const GET: APIRoute = async ({ cookies }) => {
         COALESCE(SUM(CASE WHEN event_name = 'subscription_checkout_success' THEN 1 ELSE 0 END), 0) as subscriptions
       FROM analytics_events
       WHERE occurred_at >= ?
-        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+        AND (LOWER(COALESCE(source, '')) LIKE 'pinterest%'
           OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')`,
     )
       .bind(pinterestSince)
       .first<PinterestSummaryRow>(),
+    DB.prepare(
+      `WITH windows(period_key, sort_order, since_at) AS (
+        ${pinterestWindowCte}
+      )
+      SELECT
+        w.period_key,
+        w.sort_order,
+        w.since_at,
+        COUNT(DISTINCT e.visitor_key) as visitors,
+        COALESCE(SUM(CASE WHEN e.event_name = 'page_view' THEN 1 ELSE 0 END), 0) as pageviews,
+        COUNT(DISTINCT CASE WHEN e.event_name = 'tryon_job_created' THEN e.visitor_key END) as tryon_visitors,
+        COALESCE(SUM(CASE WHEN e.event_name = 'registration_completed' THEN 1 ELSE 0 END), 0) as registrations,
+        COALESCE(SUM(CASE WHEN e.event_name = 'subscription_checkout_success' THEN 1 ELSE 0 END), 0) as subscriptions
+      FROM windows w
+      LEFT JOIN analytics_events e
+        ON e.occurred_at >= w.since_at
+        AND (LOWER(COALESCE(e.source, '')) LIKE 'pinterest%'
+          OR LOWER(COALESCE(e.referrer_host, '')) LIKE '%pinterest.%')
+      GROUP BY w.period_key, w.sort_order, w.since_at
+      ORDER BY w.sort_order`,
+    )
+      .bind(...pinterestWindowBindings)
+      .all<PinterestPeriodRow>(),
     DB.prepare(
       `SELECT day,
         COUNT(DISTINCT visitor_key) as visitors,
@@ -290,7 +349,7 @@ export const GET: APIRoute = async ({ cookies }) => {
         COUNT(DISTINCT CASE WHEN event_name = 'tryon_job_created' THEN visitor_key END) as tryon_visitors
       FROM analytics_events
       WHERE occurred_at >= ?
-        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+        AND (LOWER(COALESCE(source, '')) LIKE 'pinterest%'
           OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')
       GROUP BY day
       ORDER BY day`,
@@ -310,7 +369,7 @@ export const GET: APIRoute = async ({ cookies }) => {
       FROM analytics_events
       WHERE occurred_at >= ?
         AND content IS NOT NULL
-        AND (LOWER(COALESCE(source, '')) = 'pinterest'
+        AND (LOWER(COALESCE(source, '')) LIKE 'pinterest%'
           OR LOWER(COALESCE(referrer_host, '')) LIKE '%pinterest.%')
       GROUP BY content
       ORDER BY visitors DESC, pageviews DESC
@@ -378,6 +437,15 @@ export const GET: APIRoute = async ({ cookies }) => {
       today: normalizePinterestSummary(pinterestToday),
       week: normalizePinterestSummary(pinterestWeek),
       month: normalizePinterestSummary(pinterestMonth),
+      periods: (pinterestPeriodRows?.results ?? []).map((row) => ({
+        key: row.period_key,
+        since: row.since_at,
+        visitors: Number(row.visitors ?? 0),
+        pageviews: Number(row.pageviews ?? 0),
+        tryonVisitors: Number(row.tryon_visitors ?? 0),
+        registrations: Number(row.registrations ?? 0),
+        subscriptions: Number(row.subscriptions ?? 0),
+      })),
       daily: (pinterestDaily?.results ?? []).map((row) => ({
         day: row.day,
         visitors: Number(row.visitors ?? 0),
