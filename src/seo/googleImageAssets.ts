@@ -105,6 +105,22 @@ export const googleImageAssets: readonly GoogleImageAsset[] = [
     caption:
       "A realistic summer wedding guest makeup direction with peach-gold eyes, coral warmth, controlled glow, and photo-ready polish.",
   },
+  {
+    sourcePin: "pin_smudged_smoky_night_01",
+    pageUrl: "/scenarios/nighttime",
+    imageUrl: "/images/pinterest/smudged-smoky-eyes-night.webp",
+    title: "Smudged smoky-eye makeup preview in real evening light",
+    caption:
+      "A realistic lived-in smoky-eye direction with diffused espresso-charcoal edges, visible eye shape, satin skin, and a wearable rose-nude lip.",
+  },
+  {
+    sourcePin: "pin_mature_skin_no_caking_01",
+    pageUrl: "/for/mature-skin",
+    imageUrl: "/images/pinterest/mature-skin-no-caking.webp",
+    title: "Luminous makeup preview for mature skin without caking",
+    caption:
+      "A realistic mature-skin makeup direction with a sheer satin base, cream rose blush, softly lifted taupe eyes, and a hydrating rosewood lip.",
+  },
 ];
 
 function escapeXml(value: string): string {

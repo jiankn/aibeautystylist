@@ -56,6 +56,32 @@ const pins = [
     cardBody: "Coral glow, no shine",
     cta: "TRY EVENT LOOK FREE",
   },
+  {
+    source: "tmp/pinterest-sources/smudged-smoky-eyes-night.png",
+    cleanOutput: "public/images/pinterest/smudged-smoky-eyes-night.webp",
+    pinOutput: "artifacts/pinterest/13-smudged-smoky-eyes-night.png",
+    titleLine1: "Smudged Smoky",
+    titleLine1FontSize: 61,
+    titleLine2: "Eyes",
+    subtitle: "Soft edges. Strong impact.",
+    supporting: "Preview the trend on your face",
+    cardTitle: "2026 night trend",
+    cardBody: "Lived-in, not messy",
+    cta: "TRY SMOKY EYES FREE",
+  },
+  {
+    source: "tmp/pinterest-sources/mature-skin-no-caking.png",
+    cleanOutput: "public/images/pinterest/mature-skin-no-caking.webp",
+    pinOutput: "artifacts/pinterest/14-mature-skin-no-caking.png",
+    titleLine1: "Mature Skin",
+    titleLine1FontSize: 67,
+    titleLine2: "Makeup",
+    subtitle: "Luminous, never cakey",
+    supporting: "Preview before you apply",
+    cardTitle: "Texture-friendly",
+    cardBody: "Thin layers, real skin",
+    cta: "TRY THIS LOOK FREE",
+  },
 ];
 
 function escapeXml(value) {

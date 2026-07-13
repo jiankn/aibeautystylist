@@ -1,5 +1,7 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "Makeup for Mature Skin: Techniques That Don't Settle Into Lines",
@@ -30,21 +32,152 @@ const relatedLinks = [
   },
   { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
 ];
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+const matureHeroImage = isEastAsianLocale
+  ? "/images/home-scenario-radiance-east-asia.webp"
+  : "/images/pinterest/mature-skin-no-caking.webp";
+const matureDecisionImage = isEastAsianLocale
+  ? "/images/look-card/looks/mature-skin-radiance--east-asia-640.webp"
+  : matureHeroImage;
+const maturePinVisual = isEastAsianLocale
+  ? "mature_skin_radiance_east_asia"
+  : "mature_skin_no_caking";
+const matureMarketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const matureAttribution = pinterestSource
+  ? {
+      source: "pinterest_mature_skin",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_mature_skin")
+        ? incomingUtmContent
+        : "pin_mature_skin_no_caking_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_mature_skin",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_mature_skin_01",
+      }
+    : {
+        source: "mature_skin_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "mature_skin_makeup",
+        utmContent: "mature_skin_hero",
+      };
+const matureTryonParams = new URLSearchParams({
+  look: "mature-skin-radiance",
+  marketProfile: matureMarketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: matureAttribution.source,
+  pin_visual: maturePinVisual,
+  utm_source: matureAttribution.utmSource,
+  utm_medium: matureAttribution.utmMedium,
+  utm_campaign: matureAttribution.utmCampaign,
+  utm_content: matureAttribution.utmContent,
+});
+const matureTryonHref = localizeAppHref(
+  `/tryon?${matureTryonParams.toString()}#tryon-upload`,
+);
+const maturePricingHref = localizeAppHref(
+  "/pricing?source=pinterest_mature_skin",
+);
+const matureHeroBody = pinterestSource
+  ? "Saw this on Pinterest? Preview the same luminous, thin-layer mature-skin makeup direction on your selfie before you apply it."
+  : googleImageSource
+    ? "Found this look in Google Images? Preview the same luminous mature-skin makeup direction on your selfie before you apply it."
+    : "Mature skin needs different techniques, not less makeup. Preview a hydrating, texture-friendly direction before choosing your routine.";
 ---
 
 <SeoLandingLayout
   title={page.title}
   description={page.description}
+  heroImage={matureHeroImage}
+  ogImage={matureHeroImage}
+  heroCtaHref={matureTryonHref}
+  heroCtaLabel="Try Mature Skin Makeup Free"
   faq={page.faq}
 >
   <div slot="hero">
-    <h1>{page.title}</h1>
-    <p>
-      Mature skin needs different techniques, not less makeup. From
-      cream-versus-powder decisions to hydration-first prep, this guide covers
-      the methods that keep makeup looking smooth and fresh.
-    </p>
+    <h1>Mature Skin Makeup That Stays Luminous, Never Cakey</h1>
+    <p>{matureHeroBody}</p>
   </div>
+
+  {
+    pinterestSource && (
+      <PinterestConversionPanel
+        kicker="Pinterest mature-skin path"
+        title="Use less product, keep more radiance"
+        body="You clicked for makeup that respects real skin texture, so this page keeps the same thin-layer, cream-color direction. Preview it on your own face before choosing coverage."
+        image={matureDecisionImage}
+        imageAlt="Luminous makeup for mature skin with visible natural texture"
+        visualVariant="decision"
+        visualHighlights={[
+          {
+            title: "What makes it flattering",
+            body: "A sheer satin base evens tone while leaving natural texture visible instead of masking it with powder.",
+          },
+          {
+            title: "Where color helps",
+            body: "Cream rose blush, soft taupe eyes, and a hydrating rosewood lip bring definition without harsh edges.",
+          },
+          {
+            title: "What to check",
+            body: "Look closely at the under-eye area, smile lines, and cheek texture before deciding whether the finish feels fresh.",
+          },
+          {
+            title: "Upgrade only if useful",
+            body: "Save the result and compare more texture-friendly versions after the free preview works for your face.",
+          },
+        ]}
+        visualFooterLabel="Next action"
+        visualFooterBody="Open Mature Skin Radiance already selected and upload one selfie free."
+        selectedLook="Mature Skin Radiance"
+        selectedLookMeta="Hydrating, thin-layer, texture-friendly"
+        primaryHref={matureTryonHref}
+        primaryLabel="Try this look free"
+        secondaryHref={maturePricingHref}
+        secondaryLabel="See member benefits"
+        proofPoints={[
+          "Same look as the Pin",
+          "One no-sign-up preview",
+          "Upgrade to save results",
+        ]}
+        steps={[
+          {
+            title: "Start with the matched look",
+            body: "The page keeps the same luminous mature-skin direction instead of sending you to a generic makeup catalog.",
+          },
+          {
+            title: "Preview it on your selfie",
+            body: "Mature Skin Radiance opens preselected so you can judge texture, color placement, and finish immediately.",
+          },
+          {
+            title: "Subscribe when it helps",
+            body: "Membership is for saving the result, comparing more versions, and keeping HD references for future routines.",
+          },
+        ]}
+        membershipHref={maturePricingHref}
+        membershipTitle="Why membership fits routine planning"
+        membershipBody="The free preview answers whether this finish suits your skin. Membership helps when you want saved comparisons, more generations, and HD results."
+      />
+    )
+  }
 
   <div class="seo-content">
     <h2>Why Mature Skin Requires a Different Approach</h2>
@@ -279,7 +412,7 @@ const relatedLinks = [
           Our AI analyzes your skin type and recommends makeup techniques,
           product types, and shades that work beautifully with mature skin.
         </p>
-        <a href="/tryon" class="cta-btn">Try It Free</a>
+        <a href={matureTryonHref} class="cta-btn">Try This Look Free</a>
       </div>
     </div>
   </div>

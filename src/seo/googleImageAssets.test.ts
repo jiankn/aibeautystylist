@@ -21,6 +21,8 @@ const requiredLaunchPins = [
   "pin_glass_skin_not_greasy_01",
   "pin_first_date_soft_daylight_01",
   "pin_summer_wedding_heatproof_01",
+  "pin_smudged_smoky_night_01",
+  "pin_mature_skin_no_caking_01",
 ] as const;
 
 const publicImageModules = import.meta.glob("../../public/images/**/*", {
@@ -35,7 +37,7 @@ const publicImagePaths = new Set(
 );
 
 describe("googleImageAssets", () => {
-  it("covers the first 10 Pinterest and Google Images topics", () => {
+  it("covers the first 14 Pinterest and Google Images topics", () => {
     const sourcePins = new Set(
       googleImageAssets.map((asset) => asset.sourcePin),
     );

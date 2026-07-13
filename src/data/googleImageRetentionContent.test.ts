@@ -58,4 +58,25 @@ describe("googleImageRetentionContent", () => {
       "/pricing?source=google_images_office",
     );
   });
+
+  it("keeps new campaign visuals aligned with locale asset packs", () => {
+    const globalContent = getGoogleImageRetentionContent(
+      "/for/mature-skin",
+      "en",
+    );
+    const eastAsiaContent = getGoogleImageRetentionContent(
+      "/for/mature-skin",
+      "zh-CN",
+    );
+
+    const globalPath = getGoogleImageRetentionTryOnPath(globalContent!.topic);
+    const eastAsiaPath = getGoogleImageRetentionTryOnPath(
+      eastAsiaContent!.topic,
+    );
+
+    expect(globalPath).toContain("pin_visual=mature_skin_no_caking");
+    expect(globalPath).toContain("marketProfile=global-diverse");
+    expect(eastAsiaPath).toContain("pin_visual=mature_skin_radiance_east_asia");
+    expect(eastAsiaPath).toContain("marketProfile=east-asia");
+  });
 });

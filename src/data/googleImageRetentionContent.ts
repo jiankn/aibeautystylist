@@ -21,6 +21,9 @@ export interface GoogleImageRetentionTopic {
   readonly lookSlug: string;
   readonly sourceKey: string;
   readonly pinVisual: string;
+  readonly marketProfile?: string;
+  readonly eastAsiaPinVisual?: string;
+  readonly eastAsiaMarketProfile?: string;
   readonly utmContent: string;
   readonly topic: TopicCopy;
 }
@@ -383,6 +386,48 @@ const googleImageRetentionTopics: readonly GoogleImageRetentionTopic[] = [
       "pt-BR": "maquiagem glass skin",
     }),
   },
+  {
+    englishPath: "/scenarios/nighttime",
+    lookSlug: "evening",
+    sourceKey: "smudged_smoky",
+    pinVisual: "smudged_smoky_night",
+    marketProfile: "global-diverse",
+    eastAsiaPinVisual: "smudged_smoky_east_asia",
+    eastAsiaMarketProfile: "east-asia",
+    utmContent: "google_image_smudged_smoky_01",
+    topic: withLatinFallbacks({
+      en: "smudged smoky-eye makeup",
+      "zh-CN": "晕染烟熏眼妆",
+      "de-DE": "verrauchtes Smokey-Eye-Make-up",
+      "fr-FR": "maquillage smoky diffus",
+      "ja-JP": "ぼかしスモーキーアイメイク",
+      "ko-KR": "스머지 스모키 아이 메이크업",
+      "zh-TW": "暈染煙燻眼妝",
+      "es-ES": "maquillaje de ojos ahumado difuminado",
+      "pt-BR": "maquiagem esfumada de olhos smoky",
+    }),
+  },
+  {
+    englishPath: "/for/mature-skin",
+    lookSlug: "mature-skin-radiance",
+    sourceKey: "mature_skin",
+    pinVisual: "mature_skin_no_caking",
+    marketProfile: "global-diverse",
+    eastAsiaPinVisual: "mature_skin_radiance_east_asia",
+    eastAsiaMarketProfile: "east-asia",
+    utmContent: "google_image_mature_skin_01",
+    topic: withLatinFallbacks({
+      en: "luminous makeup for mature skin",
+      "zh-CN": "熟龄肌焕亮妆",
+      "de-DE": "leuchtendes Make-up für reife Haut",
+      "fr-FR": "maquillage lumineux pour peau mature",
+      "ja-JP": "大人肌向けツヤメイク",
+      "ko-KR": "성숙한 피부를 위한 광채 메이크업",
+      "zh-TW": "熟齡肌煥亮妝",
+      "es-ES": "maquillaje luminoso para piel madura",
+      "pt-BR": "maquiagem luminosa para pele madura",
+    }),
+  },
 ] as const;
 
 const topicsByEnglishPath = new Map(
@@ -420,9 +465,20 @@ export function getGoogleImageRetentionContent(
   const normalizedLocale = normalizeLocale(locale);
   const copy = copyByLocale[normalizedLocale] ?? copyByLocale.en;
   const topicName = topic.topic[normalizedLocale] ?? topic.topic.en;
+  const isEastAsianLocale = ["zh-CN", "zh-TW", "ja-JP", "ko-KR"].includes(
+    normalizedLocale,
+  );
+  const localizedTopic: GoogleImageRetentionTopic = isEastAsianLocale
+    ? {
+        ...topic,
+        pinVisual: topic.eastAsiaPinVisual ?? topic.pinVisual,
+        marketProfile:
+          topic.eastAsiaMarketProfile ?? topic.marketProfile ?? "east-asia",
+      }
+    : topic;
 
   return {
-    topic,
+    topic: localizedTopic,
     copy,
     topicName,
     title: formatTemplate(copy.titleTemplate, topicName),
@@ -444,6 +500,9 @@ export function getGoogleImageRetentionTryOnPath(
     utm_campaign: "image_retention",
     utm_content: topic.utmContent,
   });
+  if (topic.marketProfile) {
+    params.set("marketProfile", topic.marketProfile);
+  }
 
   return `/tryon?${params.toString()}#tryon-upload`;
 }

@@ -333,8 +333,8 @@ Each topic = one Pinterest Pin + one clean Google Images asset + one matched lan
 - [x] Use the preselected `rose-milk-date` no-sign-up guest try-on path.
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=first_date_soft_daylight`.
 - [x] Add the clean image to the Google Images registry and image sitemap.
-- [ ] Publish Pin 11 to `Date Night Makeup Ideas`.
-- [ ] Test the published Pin link once.
+- [x] Publish Pin 11 to `Date Night Makeup Ideas`.
+- [x] Test the published Pin link once.
 
 | Field | Content |
 |---|---|
@@ -363,8 +363,8 @@ AI-generated visualization for beauty reference.
 - [x] Use the preselected `summer-wedding-guest` no-sign-up guest try-on path.
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=summer_wedding_heatproof`.
 - [x] Add the clean image to the Google Images registry and image sitemap.
-- [ ] Publish Pin 12 to `Wedding & Event Makeup`.
-- [ ] Test the published Pin link once.
+- [x] Publish Pin 12 to `Wedding & Event Makeup`.
+- [x] Test the published Pin link once.
 
 | Field | Content |
 |---|---|
@@ -386,6 +386,100 @@ AI-generated visualization for beauty reference.
 
 ### Daily Distribution And Measurement
 
-- [ ] Save 10-12 high-quality related Pins after publishing, using `first date makeup`, `date night makeup`, `summer wedding guest makeup`, `outdoor wedding makeup`, and `heat proof makeup`.
-- [ ] Do not edit old Pins today.
+- [x] Save 10-12 high-quality related Pins after publishing, using `first date makeup`, `date night makeup`, `summer wedding guest makeup`, `outdoor wedding makeup`, and `heat proof makeup`.
+- [x] Do not edit old Pins today.
+- [x] Record Pinterest impressions, engagements, outbound clicks, saves, and per-Pin impressions once tonight.
+
+Analytics snapshot:
+
+Screenshot source: Pinterest App Analytics, past 30 days, `2026-06-12` to `2026-07-12`, captured around `2026-07-12 11:08`.
+
+| Metric | Value |
+|---|---:|
+| Impressions | 409 |
+| Engagements | 31 |
+| Outbound clicks | 7 |
+| Saves | 0 |
+| Total audience | 1 |
+| Engaged audience | 1 |
+
+## 2026-07-13
+
+### Day 7 Dual-Channel Execution
+
+Daily production rule:
+
+```text
+Two makeup topics per day.
+Each topic = one Pinterest Pin + one clean Google Images asset + one matched landing page and try-on path.
+```
+
+### Topic 1: Smudged Smoky Eyes in Real Night Light
+
+- [x] Validate the theme against Pinterest's Summer 2026 smoky-eye trend signal.
+- [x] Generate a realistic, attractive, low-AI-feel source photo.
+- [x] Create Pin 13 as a 1000 x 1500 photo-plus-copy composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Rebuild `/scenarios/nighttime` as a matched Pinterest and Google Images conversion page.
+- [x] Use the preselected `evening` no-sign-up campaign try-on path.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=smudged_smoky_night`.
+- [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify mobile before publishing Pin 13.
+- [ ] Publish Pin 13 to `Date Night Makeup Ideas` and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Smudged Smoky Eyes - Real Night Light` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\13-smudged-smoky-eyes-night.png` |
+| Board | `Date Night Makeup Ideas` |
+| Title | `Smudged Smoky Eyes That Look Better Lived-In` |
+| Link | `https://aibeautystylist.com/scenarios/nighttime?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_smudged_smoky_night_01` |
+| Alt text | `Woman wearing softly smudged espresso-charcoal smoky-eye makeup with satin skin and a rose-nude lip in real evening light.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Smoky eyes are back with softer, lived-in edges. Preview diffused espresso-charcoal shadow, lifted outer corners, satin skin and a rose-nude lip on your own selfie before your night out.
+
+AI-generated visualization for beauty reference.
+```
+
+### Topic 2: Mature Skin Makeup Without Caking
+
+- [x] Generate a realistic, attractive mature model with authentic skin texture and low AI feel.
+- [x] Create Pin 14 as a 1000 x 1500 photo-plus-copy composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Rebuild `/for/mature-skin` as a matched Pinterest and Google Images conversion page.
+- [x] Use the preselected `mature-skin-radiance` no-sign-up campaign try-on path.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=mature_skin_no_caking`.
+- [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify mobile before publishing Pin 14.
+- [ ] Publish Pin 14 to `Makeup for Skin Tone & Mature Skin` and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Mature Skin Makeup - Luminous, Never Cakey` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\14-mature-skin-no-caking.png` |
+| Board | `Makeup for Skin Tone & Mature Skin` |
+| Title | `Mature Skin Makeup That Looks Luminous, Not Cakey` |
+| Link | `https://aibeautystylist.com/for/mature-skin?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_mature_skin_no_caking_01` |
+| Alt text | `Attractive mature woman wearing luminous thin-layer makeup with cream rose blush, soft taupe eyes and a hydrating rosewood lip.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Mature skin makeup looks fresher with hydration, thin layers and cream color instead of heavy powder. Preview a luminous satin base, soft taupe eyes, rose blush and a hydrating lip on your own selfie before you apply it.
+
+AI-generated visualization for beauty reference.
+```
+
+### Daily Distribution And Measurement
+
+- [ ] Save 10-12 high-quality related Pins after publishing, split between the two matching Boards.
+- [ ] Do not edit or republish old Pins today.
 - [ ] Record Pinterest impressions, engagements, outbound clicks, saves, and per-Pin impressions once tonight.
+- [ ] Check Google Images performance in GSC on the weekly schedule, not daily.

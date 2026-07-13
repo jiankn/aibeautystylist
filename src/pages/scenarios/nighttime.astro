@@ -1,5 +1,7 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "Nighttime Makeup: From Day to Night in 10 Minutes",
@@ -32,22 +34,151 @@ const relatedLinks = [
   { label: "Natural Makeup", url: "/looks/natural-makeup" },
   { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
 ];
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+const nighttimeHeroImage = isEastAsianLocale
+  ? "/images/look-card/looks/evening--east-asia-640.webp"
+  : "/images/pinterest/smudged-smoky-eyes-night.webp";
+const nighttimePinVisual = isEastAsianLocale
+  ? "smudged_smoky_east_asia"
+  : "smudged_smoky_night";
+const nighttimeMarketProfile = isEastAsianLocale
+  ? "east-asia"
+  : "global-diverse";
+const nighttimeAttribution = pinterestSource
+  ? {
+      source: "pinterest_smudged_smoky",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_smudged_smoky")
+        ? incomingUtmContent
+        : "pin_smudged_smoky_night_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_smudged_smoky",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_smudged_smoky_01",
+      }
+    : {
+        source: "nighttime_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "nighttime_makeup",
+        utmContent: "nighttime_hero",
+      };
+const nighttimeTryonParams = new URLSearchParams({
+  look: "evening",
+  marketProfile: nighttimeMarketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: nighttimeAttribution.source,
+  pin_visual: nighttimePinVisual,
+  utm_source: nighttimeAttribution.utmSource,
+  utm_medium: nighttimeAttribution.utmMedium,
+  utm_campaign: nighttimeAttribution.utmCampaign,
+  utm_content: nighttimeAttribution.utmContent,
+});
+const nighttimeTryonHref = localizeAppHref(
+  `/tryon?${nighttimeTryonParams.toString()}#tryon-upload`,
+);
+const nighttimePricingHref = localizeAppHref(
+  "/pricing?source=pinterest_smudged_smoky",
+);
+const nighttimeHeroBody = pinterestSource
+  ? "Saw this on Pinterest? Preview the same softly smudged smoky-eye direction on your selfie before your night out."
+  : googleImageSource
+    ? "Found this look in Google Images? Preview the same softly smudged smoky-eye direction on your selfie before you apply it."
+    : "Build a modern smoky eye with diffused edges, visible eye shape, and enough definition for real nighttime lighting.";
 ---
 
 <SeoLandingLayout
   title={page.title}
   description={page.description}
+  heroImage={nighttimeHeroImage}
+  ogImage={nighttimeHeroImage}
+  heroCtaHref={nighttimeTryonHref}
+  heroCtaLabel="Try Smoky Eyes Free"
   faq={page.faq}
 >
   <Fragment slot="hero">
-    <h1>{page.title}</h1>
-    <p>
-      You do not need to wipe everything off and start over. The best nighttime
-      transformations build on your daytime base, adding depth, intensity, and
-      dimension where it matters. Learn the 10-minute routine that takes you
-      from desk to dinner, office to club, or afternoon to party.
-    </p>
+    <h1>Smudged Smoky Eyes for a Real Night Out</h1>
+    <p>{nighttimeHeroBody}</p>
   </Fragment>
+
+  {
+    pinterestSource && (
+      <PinterestConversionPanel
+        kicker="Pinterest smoky-eye path"
+        title="Keep the smoke, not the heaviness"
+        body="You clicked for a lived-in smoky eye, so this page keeps the same diffused espresso-charcoal direction. Preview the intensity on your own face before you commit."
+        image={nighttimeHeroImage}
+        imageAlt="Smudged smoky-eye makeup in realistic evening light"
+        visualVariant="decision"
+        visualHighlights={[
+          {
+            title: "What makes it modern",
+            body: "Soft edges and a lifted outer corner create impact without turning the eye into a solid black shape.",
+          },
+          {
+            title: "Check on your face",
+            body: "Make sure both eyes stay open-looking and the lower lash line adds definition instead of drag.",
+          },
+          {
+            title: "Real-light test",
+            body: "The contrast should remain visible in dim light while the skin and lip still look believable up close.",
+          },
+          {
+            title: "Upgrade only if useful",
+            body: "Save the result and compare more evening variations after the free preview works for your features.",
+          },
+        ]}
+        visualFooterLabel="Next action"
+        visualFooterBody="Open Smudged Smoky Eyes already selected and upload one selfie free."
+        selectedLook="Smudged Smoky Eyes"
+        selectedLookMeta="Diffused, lifted, nighttime-ready"
+        primaryHref={nighttimeTryonHref}
+        primaryLabel="Try this look free"
+        secondaryHref={nighttimePricingHref}
+        secondaryLabel="See member benefits"
+        proofPoints={[
+          "Same look as the Pin",
+          "One no-sign-up preview",
+          "Upgrade to save results",
+        ]}
+        steps={[
+          {
+            title: "Start with the matched look",
+            body: "The page keeps the same smoky-eye direction instead of sending you to a generic makeup catalog.",
+          },
+          {
+            title: "Preview it on your selfie",
+            body: "The evening look opens preselected so you can judge eye shape, intensity, and balance immediately.",
+          },
+          {
+            title: "Subscribe when it helps",
+            body: "Membership is for saving the result, testing more evening versions, and keeping HD comparisons.",
+          },
+        ]}
+        membershipHref={nighttimePricingHref}
+        membershipTitle="Why membership fits event planning"
+        membershipBody="The free preview answers whether this smoky-eye intensity suits you. Membership helps when you want saved comparisons, more generations, and HD results."
+      />
+    )
+  }
 
   <section class="seo-content">
     <h2>The Day-to-Night Philosophy: Add, Do Not Replace</h2>
@@ -293,8 +424,8 @@ const relatedLinks = [
         <p>
           See how your evening makeup looks on your face before you head out.
         </p>
-        <a href="/tryon" class="cta-btn"
-          >Try Nighttime Makeup on Your Face — Free</a
+        <a href={nighttimeTryonHref} class="cta-btn"
+          >Try Smoky Eyes on Your Face — Free</a
         >
       </div>
     </div>
