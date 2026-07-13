@@ -425,7 +425,7 @@ Each topic = one Pinterest Pin + one clean Google Images asset + one matched lan
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=smudged_smoky_night`.
 - [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify mobile before publishing Pin 13.
+- [x] Deploy and verify mobile before publishing Pin 13.
 - [ ] Publish Pin 13 to `Date Night Makeup Ideas` and test its link once.
 
 | Field | Content |
@@ -456,7 +456,7 @@ AI-generated visualization for beauty reference.
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=mature_skin_no_caking`.
 - [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify mobile before publishing Pin 14.
+- [x] Deploy and verify mobile before publishing Pin 14.
 - [ ] Publish Pin 14 to `Makeup for Skin Tone & Mature Skin` and test its link once.
 
 | Field | Content |
