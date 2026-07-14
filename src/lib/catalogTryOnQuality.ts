@@ -127,6 +127,7 @@ export function catalogTryOnQualityPrompt(target: string): string {
     "Act as a strict production quality gate for a photorealistic virtual makeup result.",
     `Target makeup: ${target}`,
     "Score makeupExecution for clearly visible, tasteful execution of the target makeup; an unchanged selfie or generic near-invisible edit must score below 55.",
+    "When the target requests localized complexion correction, lower makeupExecution if focal red or brown discoloration remains nearly unchanged while the surrounding complexion is visibly corrected; do not reward blur or texture loss as coverage.",
     "Score identityPreservation by comparing facial geometry, eyes, nose, lips, jaw, age, expression, head angle and body position. Beautification or face reshaping is a serious defect.",
     "Score scenePreservation by comparing crop, camera perspective, hands, arms, hair, ears, jewelry, clothing, background, seats, windows, lighting and every non-makeup object.",
     "Score skinTexturePreservation by comparing pores, fine lines, moles, freckles, natural skin grain, under-eye texture and lip lines. Smoothing, de-aging, airbrushing or porcelain skin is a serious defect.",

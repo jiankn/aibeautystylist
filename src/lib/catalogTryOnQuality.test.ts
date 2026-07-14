@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   CATALOG_TRYON_QUALITY_VERSION,
   catalogTryOnCorrectionPrompt,
+  catalogTryOnQualityPrompt,
   isAcceptableCatalogTryOnFallback,
   parseCatalogTryOnQuality,
   passesCatalogTryOnQuality,
@@ -58,6 +59,16 @@ describe("catalog try-on quality", () => {
     });
     expect(parsed.overallScore).toBe(100);
     expect(catalogTryOnCorrectionPrompt(parsed)).toContain("restore pores");
+  });
+
+  it("checks localized correction without accepting smoothing as coverage", () => {
+    const prompt = catalogTryOnQualityPrompt(
+      "localized correction of forehead discoloration",
+    );
+    expect(prompt).toContain(
+      "focal red or brown discoloration remains nearly unchanged",
+    );
+    expect(prompt).toContain("do not reward blur or texture loss as coverage");
   });
 });
 

@@ -2203,6 +2203,9 @@ function makeupQualityTarget(look: LookCatalogItem | ResolvedLook): string {
     isMatureSkinLook(look)
       ? "sheer hydrating satin base with real mature skin texture, softly lifted taupe eyes, outer-cheek cream rose blush, and textured rosewood satin lips"
       : "",
+    isCommuteLook(look)
+      ? "sheer breathable complexion with localized medium-coverage correction of visible red or brown post-blemish discoloration, especially on the forehead; substantially reduce color contrast while preserving pores, skin grain, moles and freckles; keep forehead-to-hairline coverage continuous without smoothing or an opaque mask"
+      : "",
   ]
     .filter(Boolean)
     .join("; ");
@@ -2386,6 +2389,9 @@ function makeupImagePrompt(look: LookCatalogItem | ResolvedLook): string {
     isMatureSkinLook(look)
       ? "Highest-priority mature-skin no-caking direction: use a sheer hydrating satin base only where visibly needed; never replace the face with an opaque, uniformly porcelain complexion. Keep every visible pore, fine line, under-eye texture, natural skin-grain variation, mole, freckle, and lip line recognizable. Use softly lifted taupe eye makeup, fine natural brow definition, cream rose blush placed high on the outer cheeks with subtle diffused edges, and a hydrating rosewood satin lip that retains natural lip texture. Keep the T-zone softly luminous but controlled: no white stripe or blown highlight on the nose or forehead, and no broad pink blush across the under-eye area or center face. Do not make the person look younger; show flattering makeup on the same real skin."
       : "",
+    isCommuteLook(look)
+      ? "Highest-priority sheer commute complexion direction: keep the base sheer and breathable across the whole face, then use localized medium-coverage pinpoint concealing only on visible red or brown post-blemish discoloration, especially on the forehead. Substantially reduce the color contrast of these marks without blurring, healing, erasing, or flattening skin. Preserve pores, fine lines, skin grain, and surface contours at their exact locations. Preserve stable moles and natural freckles; when uncertain, soften a mark instead of removing it. Keep the forehead, temples, and hairline naturally continuous with the rest of the complexion, with no opaque mask, bright forehead patch, or unfinished forehead while the center face is corrected."
+      : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -2395,6 +2401,13 @@ function isMatureSkinLook(look: LookCatalogItem | ResolvedLook): boolean {
   return (
     look.slug === "mature-skin-radiance" ||
     (isResolvedLook(look) && look.recipeId === "mature-skin-radiance")
+  );
+}
+
+function isCommuteLook(look: LookCatalogItem | ResolvedLook): boolean {
+  return (
+    look.slug === "commute" ||
+    (isResolvedLook(look) && look.recipeId === "commute")
   );
 }
 

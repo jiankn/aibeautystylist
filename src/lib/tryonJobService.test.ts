@@ -1204,6 +1204,11 @@ describe("createTryOnJob", () => {
       });
       expect(completed?.job.status).toBe("succeeded");
     }
+    expect(evaluateEvolinkCatalogTryOnQuality).toHaveBeenCalledWith(
+      expect.objectContaining({
+        target: expect.stringContaining("localized medium-coverage correction"),
+      }),
+    );
     await grantShareReward("visitor_1", "share_reward_job");
     vi.mocked(generateEvolinkMakeupImage).mockClear();
     vi.mocked(evaluateEvolinkCatalogTryOnQuality).mockClear();
@@ -1225,6 +1230,18 @@ describe("createTryOnJob", () => {
 
     expect(generateEvolinkMakeupImage).toHaveBeenCalledWith(
       expect.objectContaining({ model: "qwen-image-edit-plus" }),
+    );
+    const generationPrompt = vi.mocked(generateEvolinkMakeupImage).mock
+      .calls[0]?.[0].prompt;
+    expect(generationPrompt).toContain(
+      "localized medium-coverage pinpoint concealing",
+    );
+    expect(generationPrompt).toContain("especially on the forehead");
+    expect(generationPrompt).toContain(
+      "Preserve stable moles and natural freckles",
+    );
+    expect(generationPrompt).toContain(
+      "no opaque mask, bright forehead patch, or unfinished forehead",
     );
     expect(evaluateEvolinkCatalogTryOnQuality).not.toHaveBeenCalled();
   });
