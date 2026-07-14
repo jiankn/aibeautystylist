@@ -94,6 +94,9 @@ vi.mock("./geminiMakeupTransfer", async (importOriginal) => {
 });
 
 const look = lookCatalog.find((item) => item.slug === "commute")!;
+const matureLook = lookCatalog.find(
+  (item) => item.slug === "mature-skin-radiance",
+)!;
 const jaAudienceContext: AudienceContext = {
   locale: "ja-JP",
   marketProfile: "east-asia",
@@ -909,7 +912,7 @@ describe("createTryOnJob", () => {
     );
   });
 
-  it("generates an Evolink makeup image and stores the private result in R2", async () => {
+  it("adds strict identity and texture constraints to the mature-skin Evolink prompt", async () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
     );
@@ -937,7 +940,7 @@ describe("createTryOnJob", () => {
     const created = await createTryOnJob({
       userId: "visitor_1",
       uploadId: "upload_1",
-      look,
+      look: matureLook,
       idempotencyKey: "request_1",
       bindings,
     });
@@ -946,7 +949,7 @@ describe("createTryOnJob", () => {
     const result = await processTryOnJob({
       userId: "visitor_1",
       jobId: created.job.id,
-      look,
+      look: matureLook,
       bindings,
     });
 
@@ -979,6 +982,23 @@ describe("createTryOnJob", () => {
       getDiagnosisRecordByJobId(result!.job.id),
     ).resolves.toBeUndefined();
     expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
+    expect(generateEvolinkMakeupImage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prompt: expect.stringContaining(
+          "Do not remove, add, move, or redraw hands, arms",
+        ),
+      }),
+    );
+    const prompt = vi.mocked(generateEvolinkMakeupImage).mock.calls[0]?.[0]
+      .prompt;
+    expect(prompt).toContain("Highest-priority mature-skin no-caking");
+    expect(prompt).toContain("sheer hydrating satin base");
+    expect(prompt).toContain("softly lifted taupe eye makeup");
+    expect(prompt).toContain(
+      "cream rose blush placed high on the outer cheeks",
+    );
+    expect(prompt).toContain("hydrating rosewood satin lip");
+    expect(prompt).toContain("no white stripe or blown highlight");
   });
 
   it("falls back to a reference image when Evolink image generation fails", async () => {

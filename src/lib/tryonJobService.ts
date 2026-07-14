@@ -1875,9 +1875,10 @@ function makeupImagePrompt(look: LookCatalogItem | ResolvedLook): string {
     : undefined;
   return [
     "Use the input selfie as the only person reference and create a realistic makeup try-on preview.",
-    "Preserve the person's facial structure, expression, hairstyle, clothing, background, and lighting.",
+    "Preserve the exact identity, facial proportions, eye size and shape, nose width, natural lip shape, jawline, chin, expression, head angle, pose, camera perspective, crop, framing, hairstyle, clothing, jewelry, background, and lighting from the input photo.",
+    "Do not remove, add, move, or redraw hands, arms, ears, hair strands, jewelry, clothing, seats, windows, or any other non-makeup object. Keep the scene and body position unchanged.",
     "Critically preserve the original skin texture: keep visible pores, fine lines, natural skin grain, moles, freckles and real surface detail from the input photo.",
-    "Do NOT beautify, smooth, retouch, airbrush, blur, or apply any skin-smoothing / face-slimming / 'beauty filter' effect. The skin must look like a real unfiltered photo, only with makeup added.",
+    "Do NOT beautify, de-age, smooth, retouch, airbrush, blur, symmetrize, enlarge the eyes, narrow the nose, reshape the lips, slim the face, or apply any beauty-filter effect. The skin must look like the same real unfiltered photo with makeup added.",
     "Only change makeup: base finish, blush placement, eye makeup, brows, lip color, and subtle highlight/contour. Keep the base finish thin and natural so underlying skin texture stays visible.",
     "Silently use visible cues from the input selfie to adapt the makeup placement and palette: apparent skin depth, undertone cues from lighting, face proportions, eye shape, brow shape, natural lip color, and contrast level.",
     "Do not output, draw, or embed any diagnosis, labels, face-shape terms, skin-tone terms, color-season terms, captions, or analysis text in the image.",
@@ -1899,9 +1900,19 @@ function makeupImagePrompt(look: LookCatalogItem | ResolvedLook): string {
     variant?.promptAdditions.length
       ? `Market styling context: ${variant.promptAdditions.join(", ")}.`
       : "",
+    isMatureSkinLook(look)
+      ? "Highest-priority mature-skin no-caking direction: use a sheer hydrating satin base only where visibly needed; never replace the face with an opaque, uniformly porcelain complexion. Keep every visible pore, fine line, under-eye texture, natural skin-grain variation, mole, freckle, and lip line recognizable. Use softly lifted taupe eye makeup, fine natural brow definition, cream rose blush placed high on the outer cheeks with subtle diffused edges, and a hydrating rosewood satin lip that retains natural lip texture. Keep the T-zone softly luminous but controlled: no white stripe or blown highlight on the nose or forehead, and no broad pink blush across the under-eye area or center face. Do not make the person look younger; show flattering makeup on the same real skin."
+      : "",
   ]
     .filter(Boolean)
     .join(" ");
+}
+
+function isMatureSkinLook(look: LookCatalogItem | ResolvedLook): boolean {
+  return (
+    look.slug === "mature-skin-radiance" ||
+    (isResolvedLook(look) && look.recipeId === "mature-skin-radiance")
+  );
 }
 
 function privateMakeupImagePrompt(
