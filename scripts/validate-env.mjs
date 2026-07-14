@@ -5,13 +5,6 @@ const requiredKeys = [
   "APP_PUBLIC_URL",
   "AI_PROVIDER",
   "UPLOAD_PROVIDER",
-  "GEMINI_API_KEY",
-  "GEMINI_MODEL",
-  "GEMINI_MODEL_FREE",
-  "GEMINI_IMAGE_MODEL",
-  "GEMINI_TIMEOUT_MS",
-  "GEMINI_IMAGE_TIMEOUT_MS",
-  "GEMINI_THINKING_LEVEL",
   "EVOLINK_API_KEY",
   "GOOGLE_OAUTH_CLIENT_ID",
   "GOOGLE_OAUTH_CLIENT_SECRET",
@@ -55,9 +48,9 @@ const providerValues = new Map(
     }),
 );
 const invalidProviders = [
-  ["AI_PROVIDER", ["mock", "gemini"]],
+  ["AI_PROVIDER", ["mock", "gemini", "evolink"]],
   ["UPLOAD_PROVIDER", ["mock", "r2"]],
-  ["TRYON_PROVIDER", ["mock", "gemini"]],
+  ["TRYON_PROVIDER", ["mock", "gemini", "evolink"]],
   ["IMAGE_PROVIDER", ["gemini", "evolink"]],
 ].filter(
   ([key, allowed]) =>
@@ -75,7 +68,7 @@ if (missing.length > 0) {
 } else {
   const tryOnProvider = providerValues.get("TRYON_PROVIDER") ?? "mock(default)";
   const imageProvider =
-    providerValues.get("IMAGE_PROVIDER") ?? "gemini(default)";
+    providerValues.get("IMAGE_PROVIDER") ?? "evolink(default)";
   console.log(
     `环境变量检查通过，共确认 ${requiredKeys.length} 个必需配置项；AI=${providerValues.get("AI_PROVIDER")}，上传=${providerValues.get("UPLOAD_PROVIDER")}，任务=${tryOnProvider}，出图=${imageProvider}。`,
   );

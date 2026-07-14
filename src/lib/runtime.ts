@@ -44,11 +44,16 @@ export interface RuntimeBindings {
   GEMINI_IMAGE_TIMEOUT_MS?: string;
   GEMINI_THINKING_LEVEL?: string;
   EVOLINK_API_KEY?: string;
+  EVOLINK_VISION_MODEL?: string;
+  EVOLINK_VISION_TIMEOUT_MS?: string;
   EVOLINK_IMAGE_MODEL?: string;
+  EVOLINK_IMAGE_FALLBACK_MODEL?: string;
+  EVOLINK_PRIVATE_IMAGE_MODEL?: string;
+  EVOLINK_PRIVATE_FALLBACK_IMAGE_MODEL?: string;
   EVOLINK_IMAGE_SIZE?: string;
   EVOLINK_IMAGE_QUALITY?: string;
   EVOLINK_IMAGE_TIMEOUT_MS?: string;
-  // 妆效图生成 Provider：默认 gemini（gemini-2.5-flash-image），可设为 evolink 使用 Wan Image。
+  // 妆效图生成 Provider：生产固定为 evolink；保留 gemini 仅用于回滚。
   IMAGE_PROVIDER?: string;
   ENABLE_CF_IMAGE_VARIANTS?: string;
   CLEANUP_SECRET?: string;
@@ -83,7 +88,7 @@ export function getRuntimeBindings(): RuntimeBindings {
   const requestedTryOnProvider =
     runtime.TRYON_PROVIDER ?? import.meta.env.TRYON_PROVIDER ?? "mock";
   const tryOnProvider =
-    requestedTryOnProvider === "gemini" && uploadProvider !== "r2"
+    isRemoteTryOnProvider(requestedTryOnProvider) && uploadProvider !== "r2"
       ? "mock"
       : requestedTryOnProvider;
   return {
@@ -97,6 +102,10 @@ export function getRuntimeBindings(): RuntimeBindings {
     // task mode to keep local/mock environments coherent and avoid paid calls.
     TRYON_PROVIDER: tryOnProvider,
   };
+}
+
+export function isRemoteTryOnProvider(provider?: string): boolean {
+  return provider === "gemini" || provider === "evolink";
 }
 
 import { env } from "cloudflare:workers";

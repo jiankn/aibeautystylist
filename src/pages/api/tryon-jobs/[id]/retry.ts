@@ -15,7 +15,10 @@ import {
   type StoredTryOnJob,
 } from "../../../../lib/jobs";
 import { refundQuota } from "../../../../lib/quota";
-import { getRuntimeBindings } from "../../../../lib/runtime";
+import {
+  getRuntimeBindings,
+  isRemoteTryOnProvider,
+} from "../../../../lib/runtime";
 import { enqueueTryOnJob } from "../../../../lib/tryonQueue";
 import {
   getOwnedPrivateLookTemplate,
@@ -211,7 +214,7 @@ async function scheduleTryOnJobProcessing(
   options: ProcessTryOnJobOptions,
 ): Promise<void> {
   if (
-    (options.bindings.TRYON_PROVIDER ?? "mock") !== "gemini" ||
+    !isRemoteTryOnProvider(options.bindings.TRYON_PROVIDER ?? "mock") ||
     job.status !== "created"
   ) {
     return;

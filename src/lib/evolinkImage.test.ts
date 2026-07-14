@@ -110,6 +110,73 @@ describe("Evolink image provider", () => {
     );
   });
 
+  it("uploads multiple ordered inputs and passes GPT Image 2 route options", async () => {
+    let upload = 0;
+    const fetcher = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (url.endsWith("/api/v1/files/upload/stream")) {
+          upload += 1;
+          return Response.json({
+            success: true,
+            data: { file_url: `https://files.evolink.ai/input-${upload}.jpg` },
+          });
+        }
+        if (url.endsWith("/v1/images/generations")) {
+          expect(JSON.parse(String(init?.body))).toMatchObject({
+            model: "gpt-image-2",
+            image_urls: [
+              "https://files.evolink.ai/input-1.jpg",
+              "https://files.evolink.ai/input-2.jpg",
+              "https://files.evolink.ai/input-3.jpg",
+            ],
+            size: "2:3",
+            quality: "medium",
+            resolution: "1K",
+            n: 1,
+          });
+          return Response.json({ id: "task_multi", status: "pending" });
+        }
+        if (url.endsWith("/v1/tasks/task_multi")) {
+          return Response.json({
+            id: "task_multi",
+            model: "gpt-image-2",
+            status: "completed",
+            results: ["https://cdn.evolink.ai/multi.webp"],
+          });
+        }
+        if (url === "https://cdn.evolink.ai/multi.webp") {
+          return new Response(new Uint8Array([4, 5, 6]), {
+            headers: { "content-type": "image/webp" },
+          });
+        }
+        throw new Error(`unexpected request: ${url}`);
+      },
+    );
+
+    await expect(
+      generateEvolinkMakeupImage({
+        apiKey: "secret",
+        model: "gpt-image-2",
+        prompt: "correct the current candidate",
+        images: [
+          { data: new ArrayBuffer(1), mimeType: "image/jpeg" },
+          { data: new ArrayBuffer(1), mimeType: "image/jpeg" },
+          { data: new ArrayBuffer(1), mimeType: "image/png" },
+        ],
+        size: "2:3",
+        quality: "medium",
+        resolution: "1K",
+        fetcher: fetcher as typeof fetch,
+      }),
+    ).resolves.toMatchObject({
+      model: "gpt-image-2",
+      taskId: "task_multi",
+      image: { contentType: "image/webp" },
+    });
+    expect(fetcher).toHaveBeenCalledTimes(6);
+  });
+
   it("requires an API key", async () => {
     await expect(
       generateEvolinkMakeupImage({

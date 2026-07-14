@@ -232,7 +232,7 @@ async function structuredGeminiRequest<T>(options: {
   };
 }
 
-function referenceAnalysisPrompt(): string {
+export function referenceAnalysisPrompt(): string {
   return [
     "Analyze only the visible cosmetic design in the reference portrait.",
     "Do not identify the person or infer age, ethnicity, health, or other sensitive traits.",
@@ -249,7 +249,7 @@ function referenceAnalysisPrompt(): string {
   ].join(" ");
 }
 
-function qualityReviewPrompt(spec: MakeupReferenceSpec): string {
+export function qualityReviewPrompt(spec: MakeupReferenceSpec): string {
   return [
     "Act as a strict quality gate for a private makeup transfer.",
     "Compare the generated result against the reference makeup and the structured specification, while using the selfie only to verify identity preservation.",

@@ -1,13 +1,13 @@
 // Controlled real-AI acceptance smoke test.
 //
 // 安全约束（默认不烧钱）：
-// - 只有在显式设置 RUN_REAL_AI=1 时才会触发真实 Gemini / Evolink 付费调用。
+// - 只有在显式设置 RUN_REAL_AI=1 时才会触发真实 EvoLink 付费调用。
 // - 缺省直接退出，不发起任何真实调用，也不修改任何配置。
 // - 只使用 1 张测试自拍（.local/smoke-selfie.jpg）。
 // - 不打印 .dev.vars 内的真实密钥。
 //
-// 链路：写入照片同意 -> 上传自拍到 R2 -> 创建 tryon job（同步触发 Gemini 诊断 +
-// Evolink 妆效图）-> 等待成功或降级 -> 校验私有结果可读 -> 删除结果与诊断 ->
+// 链路：写入照片同意 -> 上传自拍到 R2 -> 创建 tryon job（同步触发 EvoLink 诊断 +
+// 妆效图）-> 等待成功或降级 -> 校验私有结果可读 -> 删除结果与诊断 ->
 // 校验删除后不可读 -> 审计 ai_call_logs。
 //
 // 用法：
@@ -123,7 +123,7 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// .dev.vars 临时切换为真实模式（UPLOAD_PROVIDER=r2、TRYON_PROVIDER=gemini），
+// .dev.vars 临时切换为真实模式（UPLOAD_PROVIDER=r2、TRYON_PROVIDER=evolink），
 // 退出时无条件还原，避免后续默认 smoke 误用真实模式。
 async function enableRealModeDevVars() {
   const original = await readFile(DEV_VARS, "utf8");
@@ -136,12 +136,14 @@ async function enableRealModeDevVars() {
     if (index >= 0) lines[index] = `${key}=${value}`;
     else lines.push(`${key}=${value}`);
   };
+  setVar("AI_PROVIDER", "evolink");
   setVar("UPLOAD_PROVIDER", "r2");
-  setVar("TRYON_PROVIDER", "gemini");
+  setVar("TRYON_PROVIDER", "evolink");
+  setVar("IMAGE_PROVIDER", "evolink");
   setVar("OUTBOUND_PROXY_URL", RELAY_URL);
   await writeFile(DEV_VARS, lines.join("\n"), "utf8");
   log(
-    ".dev.vars 已临时切换为真实模式（UPLOAD_PROVIDER=r2, TRYON_PROVIDER=gemini, OUTBOUND_PROXY_URL=中继）。",
+    ".dev.vars 已临时切换为真实模式（UPLOAD_PROVIDER=r2, TRYON_PROVIDER=evolink, IMAGE_PROVIDER=evolink, OUTBOUND_PROXY_URL=中继）。",
   );
 }
 

@@ -33,7 +33,10 @@ import {
   getOwnedPrivateLookTemplate,
   privateTemplateToLook,
 } from "../../../lib/privateLookTemplates";
-import { getRuntimeBindings } from "../../../lib/runtime";
+import {
+  getRuntimeBindings,
+  isRemoteTryOnProvider,
+} from "../../../lib/runtime";
 import { enqueueTryOnJob } from "../../../lib/tryonQueue";
 import {
   createTryOnJob,
@@ -286,7 +289,8 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
     return apiError(
       {
         code: "INVALID_JOB_PURPOSE",
-        message: "The free Pinterest preview can only be used for makeup try-on.",
+        message:
+          "The free Pinterest preview can only be used for makeup try-on.",
         retryable: false,
       },
       422,
@@ -298,7 +302,8 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       return apiError(
         {
           code: "GUEST_TRY_USED",
-          message: "Your free Pinterest preview has already been used. Create an account to keep trying looks.",
+          message:
+            "Your free Pinterest preview has already been used. Create an account to keep trying looks.",
           retryable: false,
         },
         403,
@@ -308,7 +313,8 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       return apiError(
         {
           code: "GUEST_UPLOAD_REQUIRED",
-          message: "Upload one selfie from this Pinterest preview before generating.",
+          message:
+            "Upload one selfie from this Pinterest preview before generating.",
           retryable: false,
         },
         409,
@@ -391,7 +397,8 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       return apiError(
         {
           code: "GUEST_TRY_USED",
-          message: "Your free Pinterest preview has already been used. Create an account to keep trying looks.",
+          message:
+            "Your free Pinterest preview has already been used. Create an account to keep trying looks.",
           retryable: false,
         },
         403,
@@ -539,7 +546,7 @@ function shouldScheduleTryOnJob(
   options: ProcessTryOnJobOptions,
 ): boolean {
   return (
-    (options.bindings.TRYON_PROVIDER ?? "mock") === "gemini" &&
+    isRemoteTryOnProvider(options.bindings.TRYON_PROVIDER ?? "mock") &&
     job.status === "created"
   );
 }

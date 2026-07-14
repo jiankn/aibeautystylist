@@ -189,7 +189,7 @@ const diagnosisOutputLanguages: Record<
   },
 };
 
-function diagnosisPrompt(options: {
+export function diagnosisPrompt(options: {
   preferredLookSlug?: string;
   locale?: string;
 }): string {

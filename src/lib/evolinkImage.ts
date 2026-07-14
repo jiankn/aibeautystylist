@@ -18,15 +18,20 @@ export interface EvolinkImageOptions {
   apiKey: string;
   model?: string;
   prompt: string;
-  photo: {
-    data: ArrayBuffer;
-    mimeType: string;
-  };
+  photo?: EvolinkImageInput;
+  images?: EvolinkImageInput[];
   size?: string;
-  quality?: "low" | "medium" | "high";
+  quality?: "low" | "medium" | "high" | "1K" | "2K" | "4K";
+  resolution?: "1K" | "2K" | "4K";
   timeoutMs?: number;
   pollIntervalMs?: number;
   fetcher?: typeof fetch;
+}
+
+export interface EvolinkImageInput {
+  data: ArrayBuffer;
+  mimeType: string;
+  filename?: string;
 }
 
 export interface EvolinkImageResponse {
@@ -69,7 +74,7 @@ interface EvolinkTaskPayload {
 
 const EVOLINK_API_BASE = "https://api.evolink.ai";
 const EVOLINK_FILE_API_BASE = "https://files-api.evolink.ai";
-const DEFAULT_EVOLINK_IMAGE_MODEL = "wan2.5-image-to-image";
+const DEFAULT_EVOLINK_IMAGE_MODEL = "qwen-image-edit-plus";
 const DEFAULT_WAN_IMAGE_SIZE = "1280x1280";
 
 export async function generateEvolinkMakeupImage(
@@ -78,14 +83,25 @@ export async function generateEvolinkMakeupImage(
   if (!options.apiKey) {
     throw new EvolinkImageError("EVOLINK_UNAVAILABLE", "Evolink 配置不完整");
   }
+  const inputs = resolveImageInputs(options);
 
   const startedAt = Date.now();
-  const timeoutMs = options.timeoutMs ?? 75_000;
+  const timeoutMs = options.timeoutMs ?? 180_000;
   const fetcher = options.fetcher ?? fetch;
-  const uploaded = await uploadSourceImage(options, fetcher, timeoutMs);
+  const uploaded = await Promise.all(
+    inputs.map((input, index) =>
+      uploadSourceImage(
+        options.apiKey,
+        input,
+        index,
+        fetcher,
+        remainingTimeout(timeoutMs, startedAt),
+      ),
+    ),
+  );
   const task = await createImageTask(
     options,
-    uploaded.fileUrl,
+    uploaded.map((item) => item.fileUrl),
     fetcher,
     timeoutMs,
     startedAt,
@@ -129,16 +145,18 @@ export async function generateEvolinkMakeupImage(
 }
 
 async function uploadSourceImage(
-  options: EvolinkImageOptions,
+  apiKey: string,
+  image: EvolinkImageInput,
+  index: number,
   fetcher: typeof fetch,
   timeoutMs: number,
 ): Promise<{ fileUrl: string }> {
   const form = new FormData();
-  const extension = extensionForMimeType(options.photo.mimeType);
+  const extension = extensionForMimeType(image.mimeType);
   form.append(
     "file",
-    new Blob([options.photo.data], { type: options.photo.mimeType }),
-    `selfie.${extension}`,
+    new Blob([image.data], { type: image.mimeType }),
+    image.filename ?? `input-${index + 1}.${extension}`,
   );
   form.append("upload_path", "aibeautystylist");
 
@@ -147,7 +165,7 @@ async function uploadSourceImage(
     `${EVOLINK_FILE_API_BASE}/api/v1/files/upload/stream`,
     {
       method: "POST",
-      headers: { Authorization: `Bearer ${options.apiKey}` },
+      headers: { Authorization: `Bearer ${apiKey}` },
       body: form,
     },
     timeoutMs,
@@ -175,7 +193,7 @@ function extensionForMimeType(mimeType: string): string {
 
 async function createImageTask(
   options: EvolinkImageOptions,
-  sourceImageUrl: string,
+  sourceImageUrls: string[],
   fetcher: typeof fetch,
   timeoutMs: number,
   startedAt: number,
@@ -190,7 +208,7 @@ async function createImageTask(
         Authorization: `Bearer ${options.apiKey}`,
         "content-type": "application/json",
       },
-      body: JSON.stringify(imageTaskBody(model, options, sourceImageUrl)),
+      body: JSON.stringify(imageTaskBody(model, options, sourceImageUrls)),
     },
     remainingTimeout(timeoutMs, startedAt),
   );
@@ -211,16 +229,18 @@ async function createImageTask(
 function imageTaskBody(
   model: string,
   options: EvolinkImageOptions,
-  sourceImageUrl: string,
+  sourceImageUrls: string[],
 ): Record<string, unknown> {
   const body: Record<string, unknown> = {
     model,
     prompt: options.prompt,
-    image_urls: [sourceImageUrl],
-    size: options.size ?? defaultSizeForModel(model),
+    image_urls: sourceImageUrls,
     n: 1,
   };
-  if (!isWanImageModel(model)) body.quality = options.quality ?? "low";
+  const size = options.size ?? defaultSizeForModel(model);
+  if (size) body.size = size;
+  if (options.quality) body.quality = options.quality;
+  if (options.resolution) body.resolution = options.resolution;
   return body;
 }
 
@@ -330,12 +350,27 @@ function estimatedCostMicros(value?: number): number | undefined {
     : undefined;
 }
 
-function defaultSizeForModel(model: string): string {
-  return isWanImageModel(model) ? DEFAULT_WAN_IMAGE_SIZE : "2:3";
+function defaultSizeForModel(model: string): string | undefined {
+  return isWanImageModel(model) ? DEFAULT_WAN_IMAGE_SIZE : undefined;
 }
 
 function isWanImageModel(model: string): boolean {
-  return model.startsWith("wan2.5-");
+  return model.startsWith("wan2.");
+}
+
+function resolveImageInputs(options: EvolinkImageOptions): EvolinkImageInput[] {
+  const images = options.images?.length
+    ? options.images
+    : options.photo
+      ? [options.photo]
+      : [];
+  if (!images.length) {
+    throw new EvolinkImageError(
+      "EVOLINK_UNAVAILABLE",
+      "Evolink 图像任务至少需要一张输入图片",
+    );
+  }
+  return images;
 }
 
 function inferContentType(url: string): string {

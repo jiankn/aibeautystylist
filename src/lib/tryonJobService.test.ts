@@ -14,6 +14,11 @@ import {
 } from "./diagnosisRecords";
 import { EvolinkImageError, generateEvolinkMakeupImage } from "./evolinkImage";
 import {
+  analyzeEvolinkMakeupReference,
+  evaluateEvolinkMakeupTransfer,
+  generateEvolinkDiagnosis,
+} from "./evolinkVision";
+import {
   DiagnosisProviderError,
   generateGeminiDiagnosis,
 } from "./geminiDiagnosis";
@@ -60,6 +65,16 @@ vi.mock("./evolinkImage", async (importOriginal) => {
   };
 });
 
+vi.mock("./evolinkVision", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./evolinkVision")>();
+  return {
+    ...actual,
+    analyzeEvolinkMakeupReference: vi.fn(),
+    evaluateEvolinkMakeupTransfer: vi.fn(),
+    generateEvolinkDiagnosis: vi.fn(),
+  };
+});
+
 vi.mock("./geminiImage", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./geminiImage")>();
   return {
@@ -98,6 +113,9 @@ describe("createTryOnJob", () => {
     resetMockUploads();
     vi.mocked(generateGeminiDiagnosis).mockReset();
     vi.mocked(generateEvolinkMakeupImage).mockReset();
+    vi.mocked(analyzeEvolinkMakeupReference).mockReset();
+    vi.mocked(evaluateEvolinkMakeupTransfer).mockReset();
+    vi.mocked(generateEvolinkDiagnosis).mockReset();
     vi.mocked(generateGeminiMakeupImage).mockReset();
     vi.mocked(analyzeMakeupReference).mockReset();
     vi.mocked(evaluateMakeupTransfer).mockReset();
@@ -254,24 +272,25 @@ describe("createTryOnJob", () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
     );
-    vi.mocked(generateGeminiMakeupImage).mockResolvedValue({
+    vi.mocked(generateEvolinkMakeupImage).mockResolvedValue({
       image: {
         data: new Uint8Array([9, 9]).buffer,
         contentType: "image/png",
+        sourceUrl: "https://cdn.evolink.ai/private-result.png",
       },
-      model: "gemini-image-test",
+      taskId: "private_task_1",
+      model: "doubao-seedream-5.0-pro",
       durationMs: 800,
-      usage: {},
     });
-    vi.mocked(analyzeMakeupReference).mockResolvedValue({
+    vi.mocked(analyzeEvolinkMakeupReference).mockResolvedValue({
       result: reflectiveMakeupSpec(),
-      model: "gemini-analysis-test",
+      model: "doubao-seed-2.0-lite",
       durationMs: 300,
       usage: {},
     });
-    vi.mocked(evaluateMakeupTransfer).mockResolvedValue({
+    vi.mocked(evaluateEvolinkMakeupTransfer).mockResolvedValue({
       result: passingMakeupQuality(),
-      model: "gemini-analysis-test",
+      model: "doubao-seed-2.0-lite",
       durationMs: 300,
       usage: {},
     });
@@ -290,12 +309,12 @@ describe("createTryOnJob", () => {
       delete: vi.fn(async () => undefined),
     };
     const bindings: RuntimeBindings = {
-      TRYON_PROVIDER: "gemini",
+      TRYON_PROVIDER: "evolink",
       IMAGE_PROVIDER: "evolink",
-      GEMINI_API_KEY: "secret",
-      GEMINI_IMAGE_MODEL: "gemini-2.5-flash-image",
-      GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL: "gemini-3.1-flash-image",
       EVOLINK_API_KEY: "evolink-secret",
+      EVOLINK_VISION_MODEL: "doubao-seed-2.0-lite",
+      EVOLINK_PRIVATE_IMAGE_MODEL: "doubao-seedream-5.0-pro",
+      EVOLINK_PRIVATE_FALLBACK_IMAGE_MODEL: "gpt-image-2",
       USER_UPLOADS: bucket,
     };
     const privateLook = privateTemplateToLook(privateTemplate);
@@ -321,32 +340,31 @@ describe("createTryOnJob", () => {
       privateTemplateId: privateTemplate.id,
       resultKind: "ai-generated",
     });
-    expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
-    expect(generateGeminiMakeupImage).toHaveBeenCalledWith(
+    expect(generateGeminiMakeupImage).not.toHaveBeenCalled();
+    expect(generateEvolinkMakeupImage).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: "gemini-3.1-flash-image",
+        model: "doubao-seedream-5.0-pro",
         prompt: expect.stringContaining(
           "output must visibly change the selfie's makeup",
         ),
-        labeledImages: [
+        images: [
           expect.objectContaining({
-            label: expect.stringContaining("MAKEUP REFERENCE IMAGE"),
             mimeType: "image/webp",
           }),
           expect.objectContaining({
-            label: expect.stringContaining("USER SELFIE"),
             mimeType: "image/jpeg",
           }),
         ],
+        size: "2:3",
+        quality: "1K",
       }),
     );
     const images =
-      vi.mocked(generateGeminiMakeupImage).mock.calls[0]?.[0].labeledImages ??
-      [];
+      vi.mocked(generateEvolinkMakeupImage).mock.calls[0]?.[0].images ?? [];
     expect([...new Uint8Array(images[0]!.data)]).toEqual([1, 2]);
     expect([...new Uint8Array(images[1]!.data)]).toEqual([3, 4]);
-    expect(analyzeMakeupReference).toHaveBeenCalledOnce();
-    expect(evaluateMakeupTransfer).toHaveBeenCalledOnce();
+    expect(analyzeEvolinkMakeupReference).toHaveBeenCalledOnce();
+    expect(evaluateEvolinkMakeupTransfer).toHaveBeenCalledOnce();
     expect(result?.job).toMatchObject({
       makeupSpecVersion: MAKEUP_REFERENCE_SPEC_VERSION,
       makeupQualityScore: 92,
@@ -379,33 +397,38 @@ describe("createTryOnJob", () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
     );
-    vi.mocked(analyzeMakeupReference).mockResolvedValue({
+    vi.mocked(analyzeEvolinkMakeupReference).mockResolvedValue({
       result: reflectiveMakeupSpec(),
-      model: "gemini-analysis-test",
+      model: "doubao-seed-2.0-lite",
       durationMs: 300,
       usage: {},
     });
-    vi.mocked(generateGeminiMakeupImage)
-      .mockResolvedValueOnce(generatedImage([7]))
-      .mockResolvedValueOnce(generatedImage([8]));
-    vi.mocked(evaluateMakeupTransfer)
+    vi.mocked(generateEvolinkMakeupImage)
+      .mockResolvedValueOnce(
+        generatedEvolinkImage([7], "doubao-seedream-5.0-pro"),
+      )
+      .mockResolvedValueOnce(generatedEvolinkImage([8], "gpt-image-2"));
+    vi.mocked(evaluateEvolinkMakeupTransfer)
       .mockResolvedValueOnce({
         result: failingMakeupQuality(),
-        model: "gemini-analysis-test",
+        model: "doubao-seed-2.0-lite",
         durationMs: 300,
         usage: {},
       })
       .mockResolvedValueOnce({
         result: passingMakeupQuality(),
-        model: "gemini-analysis-test",
+        model: "doubao-seed-2.0-lite",
         durationMs: 300,
         usage: {},
       });
     const bucket = bucketWithBytes([1, 2]);
     const bindings: RuntimeBindings = {
-      TRYON_PROVIDER: "gemini",
-      GEMINI_API_KEY: "secret",
-      GEMINI_IMAGE_MODEL: "gemini-image-test",
+      TRYON_PROVIDER: "evolink",
+      IMAGE_PROVIDER: "evolink",
+      EVOLINK_API_KEY: "evolink-secret",
+      EVOLINK_VISION_MODEL: "doubao-seed-2.0-lite",
+      EVOLINK_PRIVATE_IMAGE_MODEL: "doubao-seedream-5.0-pro",
+      EVOLINK_PRIVATE_FALLBACK_IMAGE_MODEL: "gpt-image-2",
       USER_UPLOADS: bucket,
     };
     const privateLook = privateTemplateToLook(privateTemplate);
@@ -430,20 +453,27 @@ describe("createTryOnJob", () => {
       makeupGenerationAttempts: 2,
       makeupQualityScore: 92,
     });
-    expect(generateGeminiMakeupImage).toHaveBeenCalledTimes(2);
+    expect(generateEvolinkMakeupImage).toHaveBeenCalledTimes(2);
     expect(
-      vi.mocked(generateGeminiMakeupImage).mock.calls[1]?.[0].prompt,
+      vi
+        .mocked(generateEvolinkMakeupImage)
+        .mock.calls.map(([request]) => request.model),
+    ).toEqual(["doubao-seedream-5.0-pro", "gpt-image-2"]);
+    expect(
+      vi.mocked(generateEvolinkMakeupImage).mock.calls[1]?.[0].prompt,
     ).toContain("Retry corrections: wet-look silver lid shimmer");
     expect(
-      vi.mocked(generateGeminiMakeupImage).mock.calls[1]?.[0].prompt,
+      vi.mocked(generateEvolinkMakeupImage).mock.calls[1]?.[0].prompt,
     ).toContain("Do not restart from or revert to the USER SELFIE");
     const retryImages =
-      vi.mocked(generateGeminiMakeupImage).mock.calls[1]?.[0].labeledImages ??
-      [];
+      vi.mocked(generateEvolinkMakeupImage).mock.calls[1]?.[0].images ?? [];
     expect(retryImages).toHaveLength(3);
-    expect(retryImages[2]?.label).toContain("CURRENT TRY-ON CANDIDATE");
+    expect(retryImages[2]?.filename).toBe("current-candidate.jpg");
     expect([...new Uint8Array(retryImages[2]!.data)]).toEqual([7]);
-    expect(evaluateMakeupTransfer).toHaveBeenCalledTimes(2);
+    expect(
+      vi.mocked(generateEvolinkMakeupImage).mock.calls[1]?.[0],
+    ).toMatchObject({ quality: "medium", resolution: "1K", size: "2:3" });
+    expect(evaluateEvolinkMakeupTransfer).toHaveBeenCalledTimes(2);
   });
 
   it("retries when full-face base makeup leaves the forehead untreated", async () => {
@@ -753,6 +783,57 @@ describe("createTryOnJob", () => {
     expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
   });
 
+  it("routes diagnosis through EvoLink Doubao Seed 2.0 Lite", async () => {
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(generateEvolinkDiagnosis).mockResolvedValue({
+      result: validDiagnosis(),
+      model: "doubao-seed-2.0-lite",
+      durationMs: 900,
+      usage: { promptTokens: 8, outputTokens: 16, totalTokens: 24 },
+    });
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "evolink",
+      EVOLINK_API_KEY: "evolink-secret",
+      EVOLINK_VISION_MODEL: "doubao-seed-2.0-lite",
+      USER_UPLOADS: bucketWithBytes([1, 2, 3]),
+    };
+    const created = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look,
+      idempotencyKey: "evolink_diagnosis_request",
+      bindings,
+      purpose: "diagnosis",
+    });
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look,
+      bindings,
+    });
+
+    expect(result?.job.status).toBe("succeeded");
+    expect(generateEvolinkDiagnosis).toHaveBeenCalledWith(
+      expect.objectContaining({
+        apiKey: "evolink-secret",
+        model: "doubao-seed-2.0-lite",
+      }),
+    );
+    expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
+    expect(getMockAiCallLogs()).toMatchObject([
+      {
+        provider: "evolink",
+        operation: "diagnosis",
+        model: "doubao-seed-2.0-lite",
+        status: "succeeded",
+        totalTokens: 24,
+      },
+    ]);
+  });
+
   it("generates a Gemini makeup image and stores the private result in R2", async () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
@@ -839,19 +920,18 @@ describe("createTryOnJob", () => {
         sourceUrl: "https://cdn.evolink.ai/result.png",
       },
       taskId: "evolink_task_1",
-      model: "wan2.5-image-to-image",
+      model: "qwen-image-edit-plus",
       durationMs: 4500,
       estimatedCostMicros: 140_000,
     });
     const bucket = bucketWithBytes([1, 2, 3]);
 
     const bindings: RuntimeBindings = {
-      TRYON_PROVIDER: "gemini",
-      GEMINI_API_KEY: "secret",
-      GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
+      TRYON_PROVIDER: "evolink",
       IMAGE_PROVIDER: "evolink",
       EVOLINK_API_KEY: "evolink-secret",
-      EVOLINK_IMAGE_MODEL: "wan2.5-image-to-image",
+      EVOLINK_IMAGE_MODEL: "qwen-image-edit-plus",
+      EVOLINK_IMAGE_FALLBACK_MODEL: "doubao-seedream-5.0-lite",
       USER_UPLOADS: bucket,
     };
     const created = await createTryOnJob({
@@ -910,9 +990,7 @@ describe("createTryOnJob", () => {
     );
 
     const bindings: RuntimeBindings = {
-      TRYON_PROVIDER: "gemini",
-      GEMINI_API_KEY: "secret",
-      GEMINI_MODEL_FREE: "gemini-2.5-flash-lite",
+      TRYON_PROVIDER: "evolink",
       IMAGE_PROVIDER: "evolink",
       EVOLINK_API_KEY: "evolink-secret",
       USER_UPLOADS: bucketWithBytes([1]),
@@ -944,7 +1022,18 @@ describe("createTryOnJob", () => {
         status: "failed",
         errorCode: "EVOLINK_TASK_FAILED",
       },
+      {
+        provider: "evolink",
+        operation: "image_generation",
+        status: "failed",
+        errorCode: "EVOLINK_TASK_FAILED",
+      },
     ]);
+    expect(
+      vi
+        .mocked(generateEvolinkMakeupImage)
+        .mock.calls.map(([request]) => request.model),
+    ).toEqual(["qwen-image-edit-plus", "doubao-seedream-5.0-lite"]);
     await expect(
       getDiagnosisRecordByJobId(result!.job.id),
     ).resolves.toBeUndefined();
@@ -1198,6 +1287,19 @@ function generatedImage(bytes: number[]) {
     model: "gemini-image-test",
     durationMs: 800,
     usage: {},
+  };
+}
+
+function generatedEvolinkImage(bytes: number[], model: string) {
+  return {
+    image: {
+      data: new Uint8Array(bytes).buffer,
+      contentType: "image/png",
+      sourceUrl: `https://cdn.evolink.ai/${model}.png`,
+    },
+    taskId: `task_${model}`,
+    model,
+    durationMs: 800,
   };
 }
 

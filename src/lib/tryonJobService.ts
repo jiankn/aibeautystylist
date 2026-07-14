@@ -8,7 +8,17 @@ import { getRecipeById } from "../data/makeup/recipes";
 import { recordAiCall } from "./aiCallLogs";
 import { saveDiagnosisRecord } from "./diagnosisRecords";
 import { quotaPeriodForEffectivePlan } from "./entitlements";
-import { EvolinkImageError, generateEvolinkMakeupImage } from "./evolinkImage";
+import {
+  EvolinkImageError,
+  generateEvolinkMakeupImage,
+  type EvolinkImageOptions,
+} from "./evolinkImage";
+import {
+  analyzeEvolinkMakeupReference,
+  evaluateEvolinkMakeupTransfer,
+  EvolinkVisionError,
+  generateEvolinkDiagnosis,
+} from "./evolinkVision";
 import {
   DiagnosisProviderError,
   generateGeminiDiagnosis,
@@ -132,7 +142,7 @@ export async function createTryOnJob(
   } = options;
   const provider = bindings.TRYON_PROVIDER ?? "mock";
 
-  if (provider !== "mock" && provider !== "gemini") {
+  if (provider !== "mock" && !isRemoteTryOnProvider(provider)) {
     throw new TryOnJobServiceError(
       "TRYON_PROVIDER_UNSUPPORTED",
       "当前试妆任务 Provider 暂不支持",
@@ -173,8 +183,8 @@ export async function createTryOnJob(
   const monthlyQuota = getMonthlyQuota(plan.planCode);
   const quotaPeriod = quotaPeriodForEffectivePlan(plan);
 
-  if (provider === "gemini") {
-    return createGeminiQueuedJob({
+  if (isRemoteTryOnProvider(provider)) {
+    return createQueuedJob({
       userId,
       upload,
       look,
@@ -267,7 +277,7 @@ async function createMockReferenceJob(options: {
   return { job: storedJob, quota: reservation.snapshot };
 }
 
-async function createGeminiQueuedJob(options: {
+async function createQueuedJob(options: {
   userId: string;
   upload: StoredUploadRecord;
   look: LookCatalogItem | ResolvedLook;
@@ -353,7 +363,10 @@ export async function processTryOnJob(
   );
   if (!existingJob) return undefined;
 
-  if (provider !== "gemini" || !isRunningJobStatus(existingJob.status)) {
+  if (
+    !isRemoteTryOnProvider(provider) ||
+    !isRunningJobStatus(existingJob.status)
+  ) {
     return {
       job: existingJob,
       quota: await quotaSnapshotFor(options.userId, options.bindings),
@@ -423,7 +436,7 @@ export async function processTryOnJob(
   };
 
   return getTryOnJobPurpose(existingJob) === "diagnosis"
-    ? runGeminiDiagnosisJob(runOptions)
+    ? runDiagnosisJob(runOptions)
     : runGeminiImageTryOnJob(runOptions);
 }
 
@@ -524,11 +537,18 @@ async function runGeminiImageTryOnJob(options: {
         userId: options.userId,
         jobId: currentJob.id,
         provider:
-          options.bindings.IMAGE_PROVIDER === "evolink" ? "evolink" : "gemini",
+          (options.bindings.IMAGE_PROVIDER ??
+            options.bindings.TRYON_PROVIDER) === "evolink"
+            ? "evolink"
+            : "gemini",
         operation: "image_generation",
         model:
-          options.bindings.IMAGE_PROVIDER === "evolink"
-            ? (options.bindings.EVOLINK_IMAGE_MODEL ?? "wan2.5-image-to-image")
+          (options.bindings.IMAGE_PROVIDER ??
+            options.bindings.TRYON_PROVIDER) === "evolink"
+            ? options.job.lookSource === "private-template"
+              ? (options.bindings.EVOLINK_PRIVATE_FALLBACK_IMAGE_MODEL ??
+                "gpt-image-2")
+              : (options.bindings.EVOLINK_IMAGE_MODEL ?? "qwen-image-edit-plus")
             : options.job.lookSource === "private-template"
               ? (options.bindings.GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL ??
                 options.bindings.GEMINI_IMAGE_MODEL ??
@@ -568,7 +588,7 @@ async function runGeminiImageTryOnJob(options: {
   }
 }
 
-async function runGeminiDiagnosisJob(options: {
+async function runDiagnosisJob(options: {
   userId: string;
   upload: StoredUploadRecord;
   look: LookCatalogItem | ResolvedLook;
@@ -579,6 +599,14 @@ async function runGeminiDiagnosisJob(options: {
   audienceContext?: ProcessingAudienceContext;
 }): Promise<CreateTryOnJobResult> {
   let currentJob = options.job;
+  const provider =
+    options.bindings.TRYON_PROVIDER === "evolink" ? "evolink" : "gemini";
+  const model =
+    provider === "evolink"
+      ? (options.bindings.EVOLINK_VISION_MODEL ?? "doubao-seed-2.0-lite")
+      : (options.bindings.GEMINI_MODEL_FREE ??
+        options.bindings.GEMINI_MODEL ??
+        "gemini-2.5-flash");
   if (!options.upload.r2Key || !options.bindings.USER_UPLOADS) {
     return failRunningJob(currentJob, {
       userId: options.userId,
@@ -604,31 +632,41 @@ async function runGeminiDiagnosisJob(options: {
     if (!object) throw new Error("UPLOAD_OBJECT_NOT_FOUND");
 
     const photoData = await r2BodyToArrayBuffer(object.body);
-    const model =
-      options.bindings.GEMINI_MODEL_FREE ??
-      options.bindings.GEMINI_MODEL ??
-      "gemini-2.5-flash";
     const proxyFetcher = options.bindings.OUTBOUND_PROXY_URL
       ? createProxyFetcher(options.bindings.OUTBOUND_PROXY_URL)
       : undefined;
-    const diagnosis = await generateGeminiDiagnosis({
-      apiKey: options.bindings.GEMINI_API_KEY ?? "",
-      model,
-      photo: {
-        data: photoData,
-        mimeType: options.upload.contentType,
-      },
-      preferredLookSlug: options.look.slug,
-      locale: options.audienceContext?.locale ?? currentJob.locale,
-      timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
-      fetcher: proxyFetcher,
-    });
+    const diagnosis =
+      provider === "evolink"
+        ? await generateEvolinkDiagnosis({
+            apiKey: options.bindings.EVOLINK_API_KEY ?? "",
+            model,
+            photo: {
+              data: photoData,
+              mimeType: options.upload.contentType,
+            },
+            preferredLookSlug: options.look.slug,
+            locale: options.audienceContext?.locale ?? currentJob.locale,
+            timeoutMs: parseTimeout(options.bindings.EVOLINK_VISION_TIMEOUT_MS),
+            fetcher: proxyFetcher,
+          })
+        : await generateGeminiDiagnosis({
+            apiKey: options.bindings.GEMINI_API_KEY ?? "",
+            model,
+            photo: {
+              data: photoData,
+              mimeType: options.upload.contentType,
+            },
+            preferredLookSlug: options.look.slug,
+            locale: options.audienceContext?.locale ?? currentJob.locale,
+            timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
+            fetcher: proxyFetcher,
+          });
 
     await recordAiCall(
       {
         userId: options.userId,
         jobId: currentJob.id,
-        provider: "gemini",
+        provider,
         operation: "diagnosis",
         model: diagnosis.model,
         status: "succeeded",
@@ -691,12 +729,9 @@ async function runGeminiDiagnosisJob(options: {
       {
         userId: options.userId,
         jobId: currentJob.id,
-        provider: "gemini",
+        provider,
         operation: "diagnosis",
-        model:
-          options.bindings.GEMINI_MODEL_FREE ??
-          options.bindings.GEMINI_MODEL ??
-          "gemini-2.5-flash",
+        model,
         status: "failed",
         durationMs: Date.now() - new Date(currentJob.updatedAt).getTime(),
         errorCode,
@@ -839,9 +874,9 @@ async function completeImageStage(options: {
   }
 
   const provider =
-    options.job.lookSource === "private-template"
-      ? "gemini"
-      : (options.bindings.IMAGE_PROVIDER ?? "gemini");
+    options.bindings.IMAGE_PROVIDER ??
+    options.bindings.TRYON_PROVIDER ??
+    "gemini";
   if (provider === "evolink") {
     return completeImageStageWithEvolink(options);
   }
@@ -875,7 +910,7 @@ async function completeImageStageWithGemini(options: {
   }
 
   if (options.job.lookSource === "private-template") {
-    return completePrivateImageStageWithGemini(options);
+    return completePrivateImageStage({ ...options, provider: "gemini" });
   }
 
   const model = options.bindings.GEMINI_IMAGE_MODEL ?? "gemini-2.5-flash-image";
@@ -955,7 +990,7 @@ async function completeImageStageWithGemini(options: {
   }
 }
 
-async function completePrivateImageStageWithGemini(options: {
+async function completePrivateImageStage(options: {
   job: StoredTryOnJob;
   userId: string;
   look: LookCatalogItem | ResolvedLook;
@@ -965,8 +1000,12 @@ async function completePrivateImageStageWithGemini(options: {
   referenceMimeType?: string;
   privateTemplate?: PrivateLookTemplate;
   bindings: RuntimeBindings;
+  provider: "gemini" | "evolink";
 }): Promise<StoredTryOnJob> {
-  const apiKey = options.bindings.GEMINI_API_KEY;
+  const apiKey =
+    options.provider === "evolink"
+      ? options.bindings.EVOLINK_API_KEY
+      : options.bindings.GEMINI_API_KEY;
   const bucket = options.bindings.USER_UPLOADS;
   if (
     !apiKey ||
@@ -975,7 +1014,8 @@ async function completePrivateImageStageWithGemini(options: {
     !options.referenceMimeType ||
     !options.privateTemplate
   ) {
-    throw new GeminiMakeupTransferError(
+    throw makeupTransferFailure(
+      options.provider,
       "MAKEUP_REFERENCE_ANALYSIS_UNAVAILABLE",
       "私有参考妆容生成输入不完整",
     );
@@ -985,13 +1025,11 @@ async function completePrivateImageStageWithGemini(options: {
     ? createProxyFetcher(options.bindings.OUTBOUND_PROXY_URL)
     : undefined;
   const analysisModel =
-    options.bindings.GEMINI_MODEL ??
-    options.bindings.GEMINI_MODEL_FREE ??
-    "gemini-2.5-flash";
-  const imageModel =
-    options.bindings.GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL ??
-    options.bindings.GEMINI_IMAGE_MODEL ??
-    "gemini-2.5-flash-image";
+    options.provider === "evolink"
+      ? (options.bindings.EVOLINK_VISION_MODEL ?? "doubao-seed-2.0-lite")
+      : (options.bindings.GEMINI_MODEL ??
+        options.bindings.GEMINI_MODEL_FREE ??
+        "gemini-2.5-flash");
   const referenceSha256 =
     options.privateTemplate.referenceSha256 ??
     (await sha256Hex(options.referenceData));
@@ -1004,17 +1042,30 @@ async function completePrivateImageStageWithGemini(options: {
     referenceSha256,
     apiKey,
     model: analysisModel,
+    provider: options.provider,
     bindings: options.bindings,
     fetcher,
   });
 
   const candidates: Array<{
-    generated: Awaited<ReturnType<typeof generateGeminiMakeupImage>>;
+    generated:
+      | Awaited<ReturnType<typeof generateGeminiMakeupImage>>
+      | Awaited<ReturnType<typeof generateEvolinkMakeupImage>>;
     quality: MakeupTransferQuality;
     attempt: number;
   }> = [];
   let correction: MakeupTransferQuality | undefined;
   for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const imageModel =
+      options.provider === "evolink"
+        ? attempt === 1
+          ? (options.bindings.EVOLINK_PRIVATE_IMAGE_MODEL ??
+            "doubao-seedream-5.0-pro")
+          : (options.bindings.EVOLINK_PRIVATE_FALLBACK_IMAGE_MODEL ??
+            "gpt-image-2")
+        : (options.bindings.GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL ??
+          options.bindings.GEMINI_IMAGE_MODEL ??
+          "gemini-2.5-flash-image");
     const previousCandidate =
       candidates[candidates.length - 1]?.generated.image;
     const prompt = privateMakeupImagePrompt(
@@ -1023,51 +1074,92 @@ async function completePrivateImageStageWithGemini(options: {
       correction,
       Boolean(previousCandidate),
     );
-    let generated: Awaited<ReturnType<typeof generateGeminiMakeupImage>>;
+    let generated:
+      | Awaited<ReturnType<typeof generateGeminiMakeupImage>>
+      | Awaited<ReturnType<typeof generateEvolinkMakeupImage>>;
     try {
-      generated = await generateGeminiMakeupImage({
-        apiKey,
-        model: imageModel,
-        prompt,
-        labeledImages: [
-          {
-            label:
-              "MAKEUP REFERENCE IMAGE — use only its cosmetic colors, placement, finish, texture, and intensity:",
-            data: options.referenceData,
-            mimeType: options.referenceMimeType,
-          },
-          {
-            label:
-              "USER SELFIE — the only identity, facial structure, hair, clothing, pose, framing, background, and scene source:",
-            data: options.photoData,
-            mimeType: options.photoMimeType,
-          },
-          ...(previousCandidate
-            ? [
+      generated =
+        options.provider === "evolink"
+          ? await generateEvolinkMakeupImage({
+              apiKey,
+              model: imageModel,
+              prompt,
+              images: [
+                {
+                  data: options.referenceData,
+                  mimeType: options.referenceMimeType,
+                  filename: "makeup-reference.jpg",
+                },
+                {
+                  data: options.photoData,
+                  mimeType: options.photoMimeType,
+                  filename: "user-selfie.jpg",
+                },
+                ...(previousCandidate
+                  ? [
+                      {
+                        data: previousCandidate.data,
+                        mimeType: previousCandidate.contentType,
+                        filename: "current-candidate.jpg",
+                      },
+                    ]
+                  : []),
+              ],
+              ...privateEvolinkImageOptions(imageModel),
+              timeoutMs: parseTimeout(
+                options.bindings.EVOLINK_IMAGE_TIMEOUT_MS,
+              ),
+              fetcher,
+            })
+          : await generateGeminiMakeupImage({
+              apiKey,
+              model: imageModel,
+              prompt,
+              labeledImages: [
                 {
                   label:
-                    "CURRENT TRY-ON CANDIDATE — edit this image directly, retaining successful makeup and correcting only the listed fidelity issues:",
-                  data: previousCandidate.data,
-                  mimeType: previousCandidate.contentType,
+                    "MAKEUP REFERENCE IMAGE — use only its cosmetic colors, placement, finish, texture, and intensity:",
+                  data: options.referenceData,
+                  mimeType: options.referenceMimeType,
                 },
-              ]
-            : []),
-        ],
-        timeoutMs: parseTimeout(options.bindings.GEMINI_IMAGE_TIMEOUT_MS),
-        fetcher,
-      });
+                {
+                  label:
+                    "USER SELFIE — the only identity, facial structure, hair, clothing, pose, framing, background, and scene source:",
+                  data: options.photoData,
+                  mimeType: options.photoMimeType,
+                },
+                ...(previousCandidate
+                  ? [
+                      {
+                        label:
+                          "CURRENT TRY-ON CANDIDATE — edit this image directly, retaining successful makeup and correcting only the listed fidelity issues:",
+                        data: previousCandidate.data,
+                        mimeType: previousCandidate.contentType,
+                      },
+                    ]
+                  : []),
+              ],
+              timeoutMs: parseTimeout(options.bindings.GEMINI_IMAGE_TIMEOUT_MS),
+              fetcher,
+            });
+      const usage = "usage" in generated ? generated.usage : undefined;
       await recordAiCall(
         {
           userId: options.userId,
           jobId: options.job.id,
-          provider: "gemini",
+          provider: options.provider,
           operation: "image_generation",
           model: generated.model,
           status: "succeeded",
           durationMs: generated.durationMs,
-          promptTokens: generated.usage.promptTokens,
-          outputTokens: generated.usage.outputTokens,
-          totalTokens: generated.usage.totalTokens,
+          promptTokens: usage?.promptTokens,
+          outputTokens: usage?.outputTokens,
+          totalTokens: usage?.totalTokens,
+          estimatedCostMicros:
+            "estimatedCostMicros" in generated
+              ? (generated.estimatedCostMicros ??
+                creditsToMicros(generated.creditsUsed))
+              : undefined,
           metadata: {
             privateTemplateId: options.privateTemplate.id,
             referenceSha256,
@@ -1083,11 +1175,14 @@ async function completePrivateImageStageWithGemini(options: {
         {
           userId: options.userId,
           jobId: options.job.id,
-          provider: "gemini",
+          provider: options.provider,
           operation: "image_generation",
           model: imageModel,
           status: "failed",
-          errorCode: geminiImageErrorCode(error),
+          errorCode:
+            options.provider === "evolink"
+              ? evolinkErrorCode(error)
+              : geminiImageErrorCode(error),
           metadata: {
             privateTemplateId: options.privateTemplate.id,
             referenceSha256,
@@ -1097,6 +1192,7 @@ async function completePrivateImageStageWithGemini(options: {
         },
         options.bindings.DB,
       ).catch(() => undefined);
+      if (options.provider === "evolink" && attempt === 1) continue;
       throw error;
     }
 
@@ -1108,6 +1204,7 @@ async function completePrivateImageStageWithGemini(options: {
       attempt,
       apiKey,
       model: analysisModel,
+      provider: options.provider,
       spec,
       referenceData: options.referenceData,
       referenceMimeType: options.referenceMimeType,
@@ -1129,6 +1226,7 @@ async function completePrivateImageStageWithGemini(options: {
         selectedAttempt: attempt,
         generationAttempts: attempt,
         spec,
+        provider: options.provider,
         bindings: options.bindings,
       });
     }
@@ -1190,7 +1288,7 @@ async function completePrivateImageStageWithGemini(options: {
         jobId: options.job.id,
         privateTemplateId: options.privateTemplate.id,
         selectedAttempt: bestCandidate.attempt,
-        generationAttempts: candidates.length,
+        generationAttempts: 2,
         overallScore: bestCandidate.quality.overallScore,
         makeupSimilarityScore: bestCandidate.quality.makeupSimilarityScore,
         identityPreservationScore:
@@ -1207,13 +1305,15 @@ async function completePrivateImageStageWithGemini(options: {
       generated: bestCandidate.generated,
       quality: bestCandidate.quality,
       selectedAttempt: bestCandidate.attempt,
-      generationAttempts: candidates.length,
+      generationAttempts: 2,
       spec,
+      provider: options.provider,
       bindings: options.bindings,
     });
   }
 
-  throw new GeminiMakeupTransferError(
+  throw makeupTransferFailure(
+    options.provider,
     "MAKEUP_TRANSFER_QUALITY_FAILED",
     [
       "生成结果未通过参考妆容一致性检查",
@@ -1232,6 +1332,7 @@ async function resolvePrivateMakeupSpec(options: {
   referenceSha256: string;
   apiKey: string;
   model: string;
+  provider: "gemini" | "evolink";
   bindings: RuntimeBindings;
   fetcher?: typeof fetch;
 }): Promise<MakeupReferenceSpec> {
@@ -1244,16 +1345,28 @@ async function resolvePrivateMakeupSpec(options: {
   }
 
   try {
-    const analyzed = await analyzeMakeupReference({
-      apiKey: options.apiKey,
-      model: options.model,
-      reference: {
-        data: options.referenceData,
-        mimeType: options.referenceMimeType,
-      },
-      timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
-      fetcher: options.fetcher,
-    });
+    const analyzed =
+      options.provider === "evolink"
+        ? await analyzeEvolinkMakeupReference({
+            apiKey: options.apiKey,
+            model: options.model,
+            reference: {
+              data: options.referenceData,
+              mimeType: options.referenceMimeType,
+            },
+            timeoutMs: parseTimeout(options.bindings.EVOLINK_VISION_TIMEOUT_MS),
+            fetcher: options.fetcher,
+          })
+        : await analyzeMakeupReference({
+            apiKey: options.apiKey,
+            model: options.model,
+            reference: {
+              data: options.referenceData,
+              mimeType: options.referenceMimeType,
+            },
+            timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
+            fetcher: options.fetcher,
+          });
     await updatePrivateLookTemplateMakeupSpec(
       options.userId,
       options.template.id,
@@ -1268,7 +1381,7 @@ async function resolvePrivateMakeupSpec(options: {
       {
         userId: options.userId,
         jobId: options.jobId,
-        provider: "gemini",
+        provider: options.provider,
         operation: "makeup_reference_analysis",
         model: analyzed.model,
         status: "succeeded",
@@ -1300,7 +1413,7 @@ async function resolvePrivateMakeupSpec(options: {
       {
         userId: options.userId,
         jobId: options.jobId,
-        provider: "gemini",
+        provider: options.provider,
         operation: "makeup_reference_analysis",
         model: options.model,
         status: "failed",
@@ -1325,6 +1438,7 @@ async function reviewPrivateMakeupTransfer(options: {
   attempt: number;
   apiKey: string;
   model: string;
+  provider: "gemini" | "evolink";
   spec: MakeupReferenceSpec;
   referenceData: ArrayBuffer;
   referenceMimeType: string;
@@ -1336,31 +1450,52 @@ async function reviewPrivateMakeupTransfer(options: {
   fetcher?: typeof fetch;
 }): Promise<MakeupTransferQuality> {
   try {
-    const reviewed = await evaluateMakeupTransfer({
-      apiKey: options.apiKey,
-      model: options.model,
-      reference: {
-        data: options.referenceData,
-        mimeType: options.referenceMimeType,
-      },
-      selfie: {
-        data: options.photoData,
-        mimeType: options.photoMimeType,
-      },
-      result: {
-        data: options.resultData,
-        mimeType: options.resultMimeType,
-      },
-      spec: options.spec,
-      timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
-      fetcher: options.fetcher,
-    });
+    const reviewed =
+      options.provider === "evolink"
+        ? await evaluateEvolinkMakeupTransfer({
+            apiKey: options.apiKey,
+            model: options.model,
+            reference: {
+              data: options.referenceData,
+              mimeType: options.referenceMimeType,
+            },
+            selfie: {
+              data: options.photoData,
+              mimeType: options.photoMimeType,
+            },
+            generated: {
+              data: options.resultData,
+              mimeType: options.resultMimeType,
+            },
+            spec: options.spec,
+            timeoutMs: parseTimeout(options.bindings.EVOLINK_VISION_TIMEOUT_MS),
+            fetcher: options.fetcher,
+          })
+        : await evaluateMakeupTransfer({
+            apiKey: options.apiKey,
+            model: options.model,
+            reference: {
+              data: options.referenceData,
+              mimeType: options.referenceMimeType,
+            },
+            selfie: {
+              data: options.photoData,
+              mimeType: options.photoMimeType,
+            },
+            result: {
+              data: options.resultData,
+              mimeType: options.resultMimeType,
+            },
+            spec: options.spec,
+            timeoutMs: parseTimeout(options.bindings.GEMINI_TIMEOUT_MS),
+            fetcher: options.fetcher,
+          });
     const passed = passesMakeupTransferQuality(reviewed.result);
     await recordAiCall(
       {
         userId: options.userId,
         jobId: options.jobId,
-        provider: "gemini",
+        provider: options.provider,
         operation: "makeup_transfer_quality",
         model: reviewed.model,
         status: "succeeded",
@@ -1392,7 +1527,7 @@ async function reviewPrivateMakeupTransfer(options: {
       {
         userId: options.userId,
         jobId: options.jobId,
-        provider: "gemini",
+        provider: options.provider,
         operation: "makeup_transfer_quality",
         model: options.model,
         status: "failed",
@@ -1414,15 +1549,19 @@ async function storePrivateMakeupResult(options: {
   job: StoredTryOnJob;
   userId: string;
   templateId: string;
-  generated: Awaited<ReturnType<typeof generateGeminiMakeupImage>>;
+  generated:
+    | Awaited<ReturnType<typeof generateGeminiMakeupImage>>
+    | Awaited<ReturnType<typeof generateEvolinkMakeupImage>>;
   quality: MakeupTransferQuality;
   selectedAttempt: number;
   generationAttempts: number;
   spec: MakeupReferenceSpec;
+  provider: "gemini" | "evolink";
   bindings: RuntimeBindings;
 }): Promise<StoredTryOnJob> {
   if (!options.bindings.USER_UPLOADS) {
-    throw new GeminiMakeupTransferError(
+    throw makeupTransferFailure(
+      options.provider,
       "MAKEUP_TRANSFER_QUALITY_UNAVAILABLE",
       "私有结果存储不可用",
     );
@@ -1440,7 +1579,7 @@ async function storePrivateMakeupResult(options: {
       customMetadata: {
         userId: options.userId,
         jobId: options.job.id,
-        provider: "gemini",
+        provider: options.provider,
         model: options.generated.model,
         privateTemplateId: options.templateId,
         makeupSpecVersion: options.spec.schemaVersion,
@@ -1476,8 +1615,14 @@ async function completeImageStageWithEvolink(options: {
   look: LookCatalogItem | ResolvedLook;
   photoData: ArrayBuffer;
   photoMimeType: string;
+  referenceData?: ArrayBuffer;
+  referenceMimeType?: string;
+  privateTemplate?: PrivateLookTemplate;
   bindings: RuntimeBindings;
 }): Promise<StoredTryOnJob> {
+  if (options.job.lookSource === "private-template") {
+    return completePrivateImageStage({ ...options, provider: "evolink" });
+  }
   if (!options.bindings.EVOLINK_API_KEY || !options.bindings.USER_UPLOADS) {
     return completeWithReferenceFallback(
       options.job,
@@ -1486,87 +1631,98 @@ async function completeImageStageWithEvolink(options: {
     );
   }
 
-  const model = options.bindings.EVOLINK_IMAGE_MODEL ?? "wan2.5-image-to-image";
-  try {
-    const generated = await generateEvolinkMakeupImage({
-      apiKey: options.bindings.EVOLINK_API_KEY,
-      model,
-      prompt: makeupImagePrompt(options.look),
-      photo: {
-        data: options.photoData,
-        mimeType: options.photoMimeType,
-      },
-      size: options.bindings.EVOLINK_IMAGE_SIZE ?? "1280x1280",
-      quality: evolinkQuality(options.bindings.EVOLINK_IMAGE_QUALITY),
-      timeoutMs: parseTimeout(
-        options.bindings.EVOLINK_IMAGE_TIMEOUT_MS ??
-          options.bindings.GEMINI_IMAGE_TIMEOUT_MS,
-      ),
-      fetcher: options.bindings.OUTBOUND_PROXY_URL
-        ? createProxyFetcher(options.bindings.OUTBOUND_PROXY_URL)
-        : undefined,
-    });
-    const resultR2Key = resultObjectKey(
-      options.userId,
-      options.job.id,
-      generated.image.contentType,
-    );
-    await options.bindings.USER_UPLOADS.put(resultR2Key, generated.image.data, {
-      httpMetadata: { contentType: generated.image.contentType },
-      customMetadata: {
-        userId: options.userId,
-        jobId: options.job.id,
-        provider: "evolink",
-        sourceUrl: generated.image.sourceUrl,
-        taskId: generated.taskId,
-      },
-    });
-    await recordAiCall(
-      {
-        userId: options.userId,
-        jobId: options.job.id,
-        provider: "evolink",
-        operation: "image_generation",
-        model: generated.model,
-        status: "succeeded",
-        durationMs: generated.durationMs,
-        estimatedCostMicros:
-          generated.estimatedCostMicros ??
-          creditsToMicros(generated.creditsUsed),
-      },
-      options.bindings.DB,
-    );
-
-    const completedAt = new Date().toISOString();
-    return {
-      ...options.job,
-      status: "succeeded",
-      resultImage: `/api/tryon-jobs/${options.job.id}/result`,
-      resultKind: "ai-generated",
-      resultR2Key,
-      disclaimer: localizedTryOnDisclaimer("generated", options.job.locale),
-      updatedAt: completedAt,
-      completedAt,
-    };
-  } catch (error) {
-    await recordAiCall(
-      {
-        userId: options.userId,
-        jobId: options.job.id,
-        provider: "evolink",
-        operation: "image_generation",
+  const models = [
+    options.bindings.EVOLINK_IMAGE_MODEL ?? "qwen-image-edit-plus",
+    options.bindings.EVOLINK_IMAGE_FALLBACK_MODEL ?? "doubao-seedream-5.0-lite",
+  ].filter((model, index, values) => values.indexOf(model) === index);
+  const fetcher = options.bindings.OUTBOUND_PROXY_URL
+    ? createProxyFetcher(options.bindings.OUTBOUND_PROXY_URL)
+    : undefined;
+  let generated:
+    | Awaited<ReturnType<typeof generateEvolinkMakeupImage>>
+    | undefined;
+  for (const [index, model] of models.entries()) {
+    try {
+      generated = await generateEvolinkMakeupImage({
+        apiKey: options.bindings.EVOLINK_API_KEY,
         model,
-        status: "failed",
-        errorCode: evolinkErrorCode(error),
-      },
-      options.bindings.DB,
-    ).catch(() => undefined);
+        prompt: makeupImagePrompt(options.look),
+        photo: {
+          data: options.photoData,
+          mimeType: options.photoMimeType,
+        },
+        ...standardEvolinkImageOptions(model, options.bindings),
+        timeoutMs: parseTimeout(options.bindings.EVOLINK_IMAGE_TIMEOUT_MS),
+        fetcher,
+      });
+      await recordAiCall(
+        {
+          userId: options.userId,
+          jobId: options.job.id,
+          provider: "evolink",
+          operation: "image_generation",
+          model: generated.model,
+          status: "succeeded",
+          durationMs: generated.durationMs,
+          estimatedCostMicros:
+            generated.estimatedCostMicros ??
+            creditsToMicros(generated.creditsUsed),
+          metadata: { route: "standard", attempt: index + 1 },
+        },
+        options.bindings.DB,
+      );
+      break;
+    } catch (error) {
+      await recordAiCall(
+        {
+          userId: options.userId,
+          jobId: options.job.id,
+          provider: "evolink",
+          operation: "image_generation",
+          model,
+          status: "failed",
+          errorCode: evolinkErrorCode(error),
+          metadata: { route: "standard", attempt: index + 1 },
+        },
+        options.bindings.DB,
+      ).catch(() => undefined);
+    }
+  }
+  if (!generated) {
     return completeWithReferenceFallback(
       options.job,
       options.look,
       localizedTryOnDisclaimer("referenceFallback", options.job.locale),
     );
   }
+
+  const resultR2Key = resultObjectKey(
+    options.userId,
+    options.job.id,
+    generated.image.contentType,
+  );
+  await options.bindings.USER_UPLOADS.put(resultR2Key, generated.image.data, {
+    httpMetadata: { contentType: generated.image.contentType },
+    customMetadata: {
+      userId: options.userId,
+      jobId: options.job.id,
+      provider: "evolink",
+      model: generated.model,
+      sourceUrl: generated.image.sourceUrl,
+      taskId: generated.taskId,
+    },
+  });
+  const completedAt = new Date().toISOString();
+  return {
+    ...options.job,
+    status: "succeeded",
+    resultImage: `/api/tryon-jobs/${options.job.id}/result`,
+    resultKind: "ai-generated",
+    resultR2Key,
+    disclaimer: localizedTryOnDisclaimer("generated", options.job.locale),
+    updatedAt: completedAt,
+    completedAt,
+  };
 }
 
 function completeWithReferenceFallback(
@@ -1595,6 +1751,10 @@ function quotaError(duplicate: boolean): TryOnJobServiceError {
   );
 }
 
+function isRemoteTryOnProvider(provider?: string): boolean {
+  return provider === "gemini" || provider === "evolink";
+}
+
 function creditCostForJob(
   purpose: TryOnJobPurpose,
   hasPrivateTemplate: boolean,
@@ -1607,6 +1767,7 @@ function creditCostForJob(
 
 function providerErrorCode(error: unknown): string {
   if (error instanceof DiagnosisProviderError) return error.code;
+  if (error instanceof EvolinkVisionError) return error.code;
   if (error instanceof GeminiImageError) return error.code;
   if (error instanceof GeminiMakeupTransferError) return error.code;
   if (
@@ -1632,10 +1793,21 @@ function geminiImageErrorCode(error: unknown): string {
 
 function makeupTransferErrorCode(error: unknown): string {
   if (error instanceof GeminiMakeupTransferError) return error.code;
+  if (error instanceof EvolinkVisionError) return error.code;
   return error instanceof Error ? error.name : "MAKEUP_TRANSFER_UNAVAILABLE";
 }
 
-// Evolink wan2.5 任务返回 credits_used（积分计费）而非 estimated_cost（美元）。
+function makeupTransferFailure(
+  provider: "gemini" | "evolink",
+  code: GeminiMakeupTransferError["code"],
+  message: string,
+): GeminiMakeupTransferError | EvolinkVisionError {
+  return provider === "evolink"
+    ? new EvolinkVisionError(code, message)
+    : new GeminiMakeupTransferError(code, message);
+}
+
+// 部分 EvoLink 图像模型返回 credits_used（积分计费）而非 estimated_cost（美元）。
 // 沿用 estimated_cost_micros 列做可审计成本记录：1 credit = 1_000_000 micro-credits。
 function creditsToMicros(credits?: number): number | undefined {
   return typeof credits === "number" && Number.isFinite(credits)
@@ -1669,8 +1841,29 @@ function extensionForContentType(contentType: string): string {
   return "png";
 }
 
-function evolinkQuality(value?: string): "low" | "medium" | "high" {
-  return value === "medium" || value === "high" ? value : "low";
+function standardEvolinkImageOptions(
+  model: string,
+  bindings: RuntimeBindings,
+): Pick<EvolinkImageOptions, "size" | "quality"> {
+  if (model === "doubao-seedream-5.0-lite") {
+    return { size: "2:3", quality: "2K" };
+  }
+  return {
+    size: bindings.EVOLINK_IMAGE_SIZE,
+    quality:
+      bindings.EVOLINK_IMAGE_QUALITY === "medium" ||
+      bindings.EVOLINK_IMAGE_QUALITY === "high"
+        ? bindings.EVOLINK_IMAGE_QUALITY
+        : undefined,
+  };
+}
+
+function privateEvolinkImageOptions(
+  model: string,
+): Pick<EvolinkImageOptions, "size" | "quality" | "resolution"> {
+  return model === "gpt-image-2"
+    ? { size: "2:3", quality: "medium", resolution: "1K" }
+    : { size: "2:3", quality: "1K" };
 }
 
 function makeupImagePrompt(look: LookCatalogItem | ResolvedLook): string {
@@ -1718,6 +1911,9 @@ function privateMakeupImagePrompt(
   editsPreviousCandidate = false,
 ): string {
   return [
+    editsPreviousCandidate
+      ? "Input image order: Image 1 = MAKEUP REFERENCE; Image 2 = USER SELFIE; Image 3 = CURRENT TRY-ON CANDIDATE."
+      : "Input image order: Image 1 = MAKEUP REFERENCE; Image 2 = USER SELFIE.",
     editsPreviousCandidate
       ? "Edit the CURRENT TRY-ON CANDIDATE directly. Retain its successful makeup and correct the listed fidelity issues."
       : "Edit the USER SELFIE by applying the cosmetic design from the MAKEUP REFERENCE.",
