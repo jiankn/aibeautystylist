@@ -4,6 +4,10 @@ import { lookCatalog } from "../data/lookCatalog";
 import type { AudienceContext } from "../data/makeup/audienceTypes";
 import { getMockAiCallLogs, resetMockAiCallLogs } from "./aiCallLogs";
 import {
+  CATALOG_TRYON_QUALITY_VERSION,
+  type CatalogTryOnQuality,
+} from "./catalogTryOnQuality";
+import {
   DIAGNOSIS_DISCLAIMER,
   DIAGNOSIS_SCHEMA_VERSION,
   type DiagnosisResult,
@@ -15,6 +19,7 @@ import {
 import { EvolinkImageError, generateEvolinkMakeupImage } from "./evolinkImage";
 import {
   analyzeEvolinkMakeupReference,
+  evaluateEvolinkCatalogTryOnQuality,
   evaluateEvolinkMakeupTransfer,
   generateEvolinkDiagnosis,
 } from "./evolinkVision";
@@ -39,7 +44,7 @@ import {
   resetMockPrivateLookTemplates,
   savePrivateLookTemplate,
 } from "./privateLookTemplates";
-import { getQuotaSnapshot, resetMockQuota } from "./quota";
+import { getQuotaSnapshot, grantShareReward, resetMockQuota } from "./quota";
 import type { RuntimeBindings } from "./runtime";
 import { resetMockSubscriptions, upsertSubscription } from "./subscriptions";
 import {
@@ -70,6 +75,7 @@ vi.mock("./evolinkVision", async (importOriginal) => {
   return {
     ...actual,
     analyzeEvolinkMakeupReference: vi.fn(),
+    evaluateEvolinkCatalogTryOnQuality: vi.fn(),
     evaluateEvolinkMakeupTransfer: vi.fn(),
     generateEvolinkDiagnosis: vi.fn(),
   };
@@ -117,6 +123,7 @@ describe("createTryOnJob", () => {
     vi.mocked(generateGeminiDiagnosis).mockReset();
     vi.mocked(generateEvolinkMakeupImage).mockReset();
     vi.mocked(analyzeEvolinkMakeupReference).mockReset();
+    vi.mocked(evaluateEvolinkCatalogTryOnQuality).mockReset();
     vi.mocked(evaluateEvolinkMakeupTransfer).mockReset();
     vi.mocked(generateEvolinkDiagnosis).mockReset();
     vi.mocked(generateGeminiMakeupImage).mockReset();
@@ -248,6 +255,71 @@ describe("createTryOnJob", () => {
       vi.mocked(generateGeminiMakeupImage).mock.calls[0]?.[0].prompt ?? "";
     expect(imagePrompt).not.toContain("Beauty diagnosis context");
     expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
+  });
+
+  it("pins paid catalog jobs to Pro high quality and Premium 2K routing", async () => {
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "evolink",
+      IMAGE_PROVIDER: "evolink",
+      EVOLINK_API_KEY: "evolink-secret",
+      EVOLINK_ACQUISITION_IMAGE_MODEL: "doubao-seedream-5.0-pro",
+      USER_UPLOADS: bucketWithBytes([1, 2, 3]),
+    };
+    await upsertSubscription({
+      userId: "visitor_1",
+      stripeSubscriptionId: "sub_quality_route",
+      planCode: "pro",
+      status: "active",
+      currentPeriodEnd: "2026-07-30T00:00:00.000Z",
+    });
+    const pro = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look,
+      idempotencyKey: "pro_quality_route",
+      bindings,
+    });
+    expect(pro.job.qualityTier).toBe("pro");
+
+    await upsertSubscription({
+      userId: "visitor_1",
+      stripeSubscriptionId: "sub_quality_route",
+      planCode: "premium",
+      status: "active",
+      currentPeriodEnd: "2026-07-30T00:00:00.000Z",
+    });
+    const premium = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look,
+      idempotencyKey: "premium_quality_route",
+      bindings,
+    });
+    expect(premium.job.qualityTier).toBe("premium");
+    vi.mocked(generateEvolinkMakeupImage).mockResolvedValue(
+      generatedEvolinkImage([4, 5, 6], "doubao-seedream-5.0-pro"),
+    );
+    vi.mocked(evaluateEvolinkCatalogTryOnQuality).mockResolvedValue({
+      result: passingCatalogQuality(),
+      model: "doubao-seed-2.0-lite",
+      durationMs: 180,
+      usage: {},
+    });
+    await processTryOnJob({
+      userId: "visitor_1",
+      jobId: premium.job.id,
+      look,
+      bindings,
+    });
+    expect(generateEvolinkMakeupImage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        model: "doubao-seedream-5.0-pro",
+        quality: "2K",
+      }),
+    );
   });
 
   it("uses a Premium private reference as image 1 and the selfie as image 2", async () => {
@@ -866,7 +938,10 @@ describe("createTryOnJob", () => {
       idempotencyKey: "request_1",
       bindings,
     });
-    expect(created.job.status).toBe("created");
+    expect(created.job).toMatchObject({
+      status: "created",
+      qualityTier: "acquisition",
+    });
 
     const result = await processTryOnJob({
       userId: "visitor_1",
@@ -923,9 +998,15 @@ describe("createTryOnJob", () => {
         sourceUrl: "https://cdn.evolink.ai/result.png",
       },
       taskId: "evolink_task_1",
-      model: "qwen-image-edit-plus",
+      model: "doubao-seedream-5.0-pro",
       durationMs: 4500,
       estimatedCostMicros: 140_000,
+    });
+    vi.mocked(evaluateEvolinkCatalogTryOnQuality).mockResolvedValue({
+      result: passingCatalogQuality(),
+      model: "doubao-seed-2.0-lite",
+      durationMs: 180,
+      usage: {},
     });
     const bucket = bucketWithBytes([1, 2, 3]);
 
@@ -935,6 +1016,8 @@ describe("createTryOnJob", () => {
       EVOLINK_API_KEY: "evolink-secret",
       EVOLINK_IMAGE_MODEL: "qwen-image-edit-plus",
       EVOLINK_IMAGE_FALLBACK_MODEL: "doubao-seedream-5.0-lite",
+      EVOLINK_ACQUISITION_IMAGE_MODEL: "doubao-seedream-5.0-pro",
+      EVOLINK_ACQUISITION_FALLBACK_IMAGE_MODEL: "gpt-image-2",
       USER_UPLOADS: bucket,
     };
     const created = await createTryOnJob({
@@ -944,7 +1027,10 @@ describe("createTryOnJob", () => {
       idempotencyKey: "request_1",
       bindings,
     });
-    expect(created.job.status).toBe("created");
+    expect(created.job).toMatchObject({
+      status: "created",
+      qualityTier: "acquisition",
+    });
 
     const result = await processTryOnJob({
       userId: "visitor_1",
@@ -967,6 +1053,7 @@ describe("createTryOnJob", () => {
         customMetadata: expect.objectContaining({
           provider: "evolink",
           taskId: "evolink_task_1",
+          qualityTier: "acquisition",
         }),
       }),
     );
@@ -977,6 +1064,11 @@ describe("createTryOnJob", () => {
         status: "succeeded",
         estimatedCostMicros: 140_000,
       },
+      {
+        provider: "evolink",
+        operation: "makeup_transfer_quality",
+        status: "succeeded",
+      },
     ]);
     await expect(
       getDiagnosisRecordByJobId(result!.job.id),
@@ -984,6 +1076,8 @@ describe("createTryOnJob", () => {
     expect(generateGeminiDiagnosis).not.toHaveBeenCalled();
     expect(generateEvolinkMakeupImage).toHaveBeenCalledWith(
       expect.objectContaining({
+        model: "doubao-seedream-5.0-pro",
+        quality: "1K",
         prompt: expect.stringContaining(
           "Do not remove, add, move, or redraw hands, arms",
         ),
@@ -1001,7 +1095,141 @@ describe("createTryOnJob", () => {
     expect(prompt).toContain("no white stripe or blown highlight");
   });
 
-  it("falls back to a reference image when Evolink image generation fails", async () => {
+  it("silently repairs a rejected acquisition result without charging another credit", async () => {
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(generateEvolinkMakeupImage)
+      .mockResolvedValueOnce(
+        generatedEvolinkImage([4, 5, 6], "doubao-seedream-5.0-pro"),
+      )
+      .mockResolvedValueOnce(generatedEvolinkImage([7, 8, 9], "gpt-image-2"));
+    vi.mocked(evaluateEvolinkCatalogTryOnQuality)
+      .mockResolvedValueOnce({
+        result: failingCatalogQuality(),
+        model: "doubao-seed-2.0-lite",
+        durationMs: 180,
+        usage: {},
+      })
+      .mockResolvedValueOnce({
+        result: passingCatalogQuality(),
+        model: "doubao-seed-2.0-lite",
+        durationMs: 180,
+        usage: {},
+      });
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "evolink",
+      IMAGE_PROVIDER: "evolink",
+      EVOLINK_API_KEY: "evolink-secret",
+      EVOLINK_ACQUISITION_IMAGE_MODEL: "doubao-seedream-5.0-pro",
+      EVOLINK_ACQUISITION_FALLBACK_IMAGE_MODEL: "gpt-image-2",
+      USER_UPLOADS: bucketWithBytes([1, 2, 3]),
+    };
+    const created = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look: matureLook,
+      idempotencyKey: "acquisition_repair_1",
+      bindings,
+    });
+
+    const result = await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look: matureLook,
+      bindings,
+    });
+
+    expect(result?.job).toMatchObject({
+      status: "succeeded",
+      qualityTier: "acquisition",
+      makeupQualityScore: 91,
+      makeupGenerationAttempts: 2,
+    });
+    expect(result?.quota).toMatchObject({ remaining: 2 });
+    expect(
+      vi
+        .mocked(generateEvolinkMakeupImage)
+        .mock.calls.map(([request]) => request.model),
+    ).toEqual(["doubao-seedream-5.0-pro", "gpt-image-2"]);
+    expect(vi.mocked(generateEvolinkMakeupImage).mock.calls[1]?.[0]).toEqual(
+      expect.objectContaining({
+        images: [
+          expect.objectContaining({ filename: "original-selfie.jpg" }),
+          expect.objectContaining({ filename: "current-candidate.jpg" }),
+        ],
+        prompt: expect.stringContaining("Restore the exact face geometry"),
+      }),
+    );
+  });
+
+  it("uses economy routing only after a free user's first three successful results", async () => {
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(generateEvolinkMakeupImage).mockResolvedValue(
+      generatedEvolinkImage([4, 5, 6], "doubao-seedream-5.0-pro"),
+    );
+    vi.mocked(evaluateEvolinkCatalogTryOnQuality).mockResolvedValue({
+      result: passingCatalogQuality(),
+      model: "doubao-seed-2.0-lite",
+      durationMs: 180,
+      usage: {},
+    });
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "evolink",
+      IMAGE_PROVIDER: "evolink",
+      EVOLINK_API_KEY: "evolink-secret",
+      EVOLINK_ACQUISITION_IMAGE_MODEL: "doubao-seedream-5.0-pro",
+      EVOLINK_ACQUISITION_FALLBACK_IMAGE_MODEL: "gpt-image-2",
+      EVOLINK_IMAGE_MODEL: "qwen-image-edit-plus",
+      EVOLINK_IMAGE_FALLBACK_MODEL: "doubao-seedream-5.0-lite",
+      USER_UPLOADS: bucketWithBytes([1, 2, 3]),
+    };
+
+    for (let index = 1; index <= 3; index += 1) {
+      const created = await createTryOnJob({
+        userId: "visitor_1",
+        uploadId: "upload_1",
+        look,
+        idempotencyKey: `first_three_${index}`,
+        bindings,
+      });
+      expect(created.job.qualityTier).toBe("acquisition");
+      const completed = await processTryOnJob({
+        userId: "visitor_1",
+        jobId: created.job.id,
+        look,
+        bindings,
+      });
+      expect(completed?.job.status).toBe("succeeded");
+    }
+    await grantShareReward("visitor_1", "share_reward_job");
+    vi.mocked(generateEvolinkMakeupImage).mockClear();
+    vi.mocked(evaluateEvolinkCatalogTryOnQuality).mockClear();
+
+    const fourth = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look,
+      idempotencyKey: "shared_fourth",
+      bindings,
+    });
+    expect(fourth.job.qualityTier).toBe("standard");
+    await processTryOnJob({
+      userId: "visitor_1",
+      jobId: fourth.job.id,
+      look,
+      bindings,
+    });
+
+    expect(generateEvolinkMakeupImage).toHaveBeenCalledWith(
+      expect.objectContaining({ model: "qwen-image-edit-plus" }),
+    );
+    expect(evaluateEvolinkCatalogTryOnQuality).not.toHaveBeenCalled();
+  });
+
+  it("refunds an acquisition try when both high-quality image models fail", async () => {
     await saveUploadRecord(
       uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
     );
@@ -1031,10 +1259,10 @@ describe("createTryOnJob", () => {
     });
 
     expect(result?.job).toMatchObject({
-      status: "succeeded",
-      resultKind: "reference-fallback",
-      resultImage: look.image,
+      status: "failed",
+      errorCode: "MAKEUP_TRANSFER_QUALITY_FAILED",
     });
+    expect(result?.quota).toMatchObject({ remaining: 3 });
     expect(getMockAiCallLogs()).toMatchObject([
       {
         provider: "evolink",
@@ -1053,7 +1281,7 @@ describe("createTryOnJob", () => {
       vi
         .mocked(generateEvolinkMakeupImage)
         .mock.calls.map(([request]) => request.model),
-    ).toEqual(["qwen-image-edit-plus", "doubao-seedream-5.0-lite"]);
+    ).toEqual(["doubao-seedream-5.0-pro", "gpt-image-2"]);
     await expect(
       getDiagnosisRecordByJobId(result!.job.id),
     ).resolves.toBeUndefined();
@@ -1234,6 +1462,34 @@ function passingMakeupQuality(): MakeupTransferQuality {
     criticalMissing: [],
     conflicts: [],
     correctionInstructions: [],
+  };
+}
+
+function passingCatalogQuality(): CatalogTryOnQuality {
+  return {
+    schemaVersion: CATALOG_TRYON_QUALITY_VERSION,
+    overallScore: 91,
+    makeupExecutionScore: 88,
+    identityPreservationScore: 97,
+    scenePreservationScore: 98,
+    skinTexturePreservationScore: 93,
+    criticalDefects: [],
+    correctionInstructions: [],
+  };
+}
+
+function failingCatalogQuality(): CatalogTryOnQuality {
+  return {
+    schemaVersion: CATALOG_TRYON_QUALITY_VERSION,
+    overallScore: 54,
+    makeupExecutionScore: 72,
+    identityPreservationScore: 76,
+    scenePreservationScore: 88,
+    skinTexturePreservationScore: 61,
+    criticalDefects: ["Face shape drift and skin smoothing"],
+    correctionInstructions: [
+      "Restore the exact face geometry and real pore texture from the selfie",
+    ],
   };
 }
 

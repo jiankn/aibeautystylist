@@ -6,6 +6,13 @@ import type {
 import { getVariantById } from "../data/makeup/marketVariants";
 import { getRecipeById } from "../data/makeup/recipes";
 import { recordAiCall } from "./aiCallLogs";
+import {
+  catalogTryOnCandidateScore,
+  catalogTryOnCorrectionPrompt,
+  isAcceptableCatalogTryOnFallback,
+  passesCatalogTryOnQuality,
+  type CatalogTryOnQuality,
+} from "./catalogTryOnQuality";
 import { saveDiagnosisRecord } from "./diagnosisRecords";
 import { quotaPeriodForEffectivePlan } from "./entitlements";
 import {
@@ -15,6 +22,7 @@ import {
 } from "./evolinkImage";
 import {
   analyzeEvolinkMakeupReference,
+  evaluateEvolinkCatalogTryOnQuality,
   evaluateEvolinkMakeupTransfer,
   EvolinkVisionError,
   generateEvolinkDiagnosis,
@@ -48,6 +56,7 @@ import {
   STANDARD_TRYON_CREDIT_COST,
 } from "./tryonCosts";
 import {
+  countQualityEligibleCatalogJobs,
   createReferenceFallbackJob,
   getTryOnJobPurpose,
   getStoredJobById,
@@ -57,6 +66,7 @@ import {
   updateStoredJob,
   type StoredTryOnJob,
   type TryOnJobPurpose,
+  type TryOnQualityTier,
 } from "./jobs";
 import {
   getQuotaSnapshot,
@@ -67,7 +77,7 @@ import {
 } from "./quota";
 import type { RuntimeBindings } from "./runtime";
 import { getEffectivePlan } from "./subscriptions";
-import { getMonthlyQuota, planHasFeature } from "./plans";
+import { getMonthlyQuota, planHasFeature, type PlanCode } from "./plans";
 import { getOwnedUpload, type StoredUploadRecord } from "./uploadRecords";
 import {
   getOwnedPrivateLookTemplate,
@@ -192,6 +202,7 @@ export async function createTryOnJob(
       retryOfJobId,
       bindings,
       monthlyQuota,
+      planCode: plan.planCode,
       quotaPeriod,
       audienceContext,
       purpose,
@@ -285,6 +296,7 @@ async function createQueuedJob(options: {
   retryOfJobId?: string;
   bindings: RuntimeBindings;
   monthlyQuota: number;
+  planCode: PlanCode;
   quotaPeriod?: QuotaPeriodInput;
   audienceContext?: AudienceContext;
   purpose: TryOnJobPurpose;
@@ -299,6 +311,13 @@ async function createQueuedJob(options: {
   }
 
   const timestamp = new Date().toISOString();
+  const qualityTier = await resolveNewTryOnQualityTier({
+    userId: options.userId,
+    planCode: options.planCode,
+    purpose: options.purpose,
+    privateTemplate: options.privateTemplate,
+    DB: options.bindings.DB,
+  });
   const job: StoredTryOnJob = {
     id: crypto.randomUUID(),
     userId: options.userId,
@@ -316,6 +335,7 @@ async function createQueuedJob(options: {
     marketProfile: options.audienceContext?.marketProfile,
     lookSource: options.privateTemplate ? "private-template" : "catalog",
     privateTemplateId: options.privateTemplate?.id,
+    qualityTier,
   };
   const reservation = await reserveQuota(
     options.userId,
@@ -352,6 +372,52 @@ async function createQueuedJob(options: {
   return { job, quota: reservation.snapshot };
 }
 
+async function resolveNewTryOnQualityTier(options: {
+  userId: string;
+  planCode: PlanCode;
+  purpose: TryOnJobPurpose;
+  privateTemplate?: PrivateLookTemplate;
+  DB?: RuntimeBindings["DB"];
+}): Promise<TryOnQualityTier | undefined> {
+  if (options.purpose !== "tryon" || options.privateTemplate) return undefined;
+  if (options.planCode === "premium") return "premium";
+  if (options.planCode === "pro") return "pro";
+  if (isPinterestGuestUser(options.userId)) return "acquisition";
+
+  const committedSlots = await countQualityEligibleCatalogJobs(
+    options.userId,
+    options.DB,
+  );
+  return committedSlots < 3 ? "acquisition" : "standard";
+}
+
+async function resolveExistingTryOnQualityTier(options: {
+  job: StoredTryOnJob;
+  planCode: PlanCode;
+  DB?: RuntimeBindings["DB"];
+}): Promise<TryOnQualityTier | undefined> {
+  if (
+    getTryOnJobPurpose(options.job) !== "tryon" ||
+    options.job.lookSource === "private-template"
+  ) {
+    return undefined;
+  }
+  if (options.job.qualityTier) return options.job.qualityTier;
+  if (options.planCode === "premium") return "premium";
+  if (options.planCode === "pro") return "pro";
+  if (isPinterestGuestUser(options.job.userId)) return "acquisition";
+
+  const committedSlots = await countQualityEligibleCatalogJobs(
+    options.job.userId,
+    options.DB,
+  );
+  return committedSlots <= 3 ? "acquisition" : "standard";
+}
+
+function isPinterestGuestUser(userId: string): boolean {
+  return userId.startsWith("guest_pguest_");
+}
+
 export async function processTryOnJob(
   options: ProcessTryOnJobOptions,
 ): Promise<CreateTryOnJobResult | undefined> {
@@ -376,6 +442,14 @@ export async function processTryOnJob(
   const plan = await getEffectivePlan(options.userId, options.bindings.DB);
   const monthlyQuota = getMonthlyQuota(plan.planCode);
   const quotaPeriod = quotaPeriodForEffectivePlan(plan);
+  const qualityTier = await resolveExistingTryOnQualityTier({
+    job: existingJob,
+    planCode: plan.planCode,
+    DB: options.bindings.DB,
+  });
+  const jobForProcessing = qualityTier
+    ? { ...existingJob, qualityTier }
+    : existingJob;
   const upload = await getOwnedUpload(
     options.userId,
     existingJob.uploadId,
@@ -400,16 +474,16 @@ export async function processTryOnJob(
     });
   }
   const privateTemplate =
-    existingJob.lookSource === "private-template" &&
-    existingJob.privateTemplateId
+    jobForProcessing.lookSource === "private-template" &&
+    jobForProcessing.privateTemplateId
       ? await getOwnedPrivateLookTemplate(
           options.userId,
-          existingJob.privateTemplateId,
+          jobForProcessing.privateTemplateId,
           options.bindings.DB,
         )
       : undefined;
   if (
-    existingJob.lookSource === "private-template" &&
+    jobForProcessing.lookSource === "private-template" &&
     (!privateTemplate || !privateTemplate.r2Key)
   ) {
     return failRunningJob(existingJob, {
@@ -425,7 +499,7 @@ export async function processTryOnJob(
     userId: options.userId,
     upload,
     look: options.look,
-    job: existingJob,
+    job: jobForProcessing,
     bindings: options.bindings,
     monthlyQuota,
     quotaPeriod,
@@ -435,7 +509,7 @@ export async function processTryOnJob(
     privateTemplate,
   };
 
-  return getTryOnJobPurpose(existingJob) === "diagnosis"
+  return getTryOnJobPurpose(jobForProcessing) === "diagnosis"
     ? runDiagnosisJob(runOptions)
     : runGeminiImageTryOnJob(runOptions);
 }
@@ -532,35 +606,40 @@ async function runGeminiImageTryOnJob(options: {
     }
     currentJob = latestRunningJob;
 
-    await recordAiCall(
-      {
-        userId: options.userId,
-        jobId: currentJob.id,
-        provider:
-          (options.bindings.IMAGE_PROVIDER ??
-            options.bindings.TRYON_PROVIDER) === "evolink"
-            ? "evolink"
-            : "gemini",
-        operation: "image_generation",
-        model:
-          (options.bindings.IMAGE_PROVIDER ??
-            options.bindings.TRYON_PROVIDER) === "evolink"
-            ? options.job.lookSource === "private-template"
-              ? (options.bindings.EVOLINK_PRIVATE_FALLBACK_IMAGE_MODEL ??
-                "gpt-image-2")
-              : (options.bindings.EVOLINK_IMAGE_MODEL ?? "qwen-image-edit-plus")
-            : options.job.lookSource === "private-template"
-              ? (options.bindings.GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL ??
-                options.bindings.GEMINI_IMAGE_MODEL ??
-                "gemini-2.5-flash-image")
-              : (options.bindings.GEMINI_IMAGE_MODEL ??
-                "gemini-2.5-flash-image"),
-        status: "failed",
-        durationMs: Date.now() - new Date(currentJob.updatedAt).getTime(),
-        errorCode,
-      },
-      options.bindings.DB,
-    ).catch(() => undefined);
+    if (!(error instanceof EvolinkVisionError)) {
+      await recordAiCall(
+        {
+          userId: options.userId,
+          jobId: currentJob.id,
+          provider:
+            (options.bindings.IMAGE_PROVIDER ??
+              options.bindings.TRYON_PROVIDER) === "evolink"
+              ? "evolink"
+              : "gemini",
+          operation: "image_generation",
+          model:
+            (options.bindings.IMAGE_PROVIDER ??
+              options.bindings.TRYON_PROVIDER) === "evolink"
+              ? options.job.lookSource === "private-template"
+                ? (options.bindings.EVOLINK_PRIVATE_FALLBACK_IMAGE_MODEL ??
+                  "gpt-image-2")
+                : (catalogEvolinkModels(
+                    options.job.qualityTier ?? "standard",
+                    options.bindings,
+                  ).at(-1) ?? "qwen-image-edit-plus")
+              : options.job.lookSource === "private-template"
+                ? (options.bindings.GEMINI_PRIVATE_REFERENCE_IMAGE_MODEL ??
+                  options.bindings.GEMINI_IMAGE_MODEL ??
+                  "gemini-2.5-flash-image")
+                : (options.bindings.GEMINI_IMAGE_MODEL ??
+                  "gemini-2.5-flash-image"),
+          status: "failed",
+          durationMs: Date.now() - new Date(currentJob.updatedAt).getTime(),
+          errorCode,
+        },
+        options.bindings.DB,
+      ).catch(() => undefined);
+    }
     const failed = await transitionStoredJob(
       currentJob,
       "failed",
@@ -1620,6 +1699,26 @@ async function completeImageStageWithEvolink(options: {
   privateTemplate?: PrivateLookTemplate;
   bindings: RuntimeBindings;
 }): Promise<StoredTryOnJob> {
+  if (
+    options.job.lookSource === "private-template" ||
+    (options.job.qualityTier ?? "standard") === "standard"
+  ) {
+    return completeStandardImageStageWithEvolink(options);
+  }
+  return completeQualityGatedImageStageWithEvolink(options);
+}
+
+async function completeStandardImageStageWithEvolink(options: {
+  job: StoredTryOnJob;
+  userId: string;
+  look: LookCatalogItem | ResolvedLook;
+  photoData: ArrayBuffer;
+  photoMimeType: string;
+  referenceData?: ArrayBuffer;
+  referenceMimeType?: string;
+  privateTemplate?: PrivateLookTemplate;
+  bindings: RuntimeBindings;
+}): Promise<StoredTryOnJob> {
   if (options.job.lookSource === "private-template") {
     return completePrivateImageStage({ ...options, provider: "evolink" });
   }
@@ -1723,6 +1822,390 @@ async function completeImageStageWithEvolink(options: {
     updatedAt: completedAt,
     completedAt,
   };
+}
+
+async function completeQualityGatedImageStageWithEvolink(options: {
+  job: StoredTryOnJob;
+  userId: string;
+  look: LookCatalogItem | ResolvedLook;
+  photoData: ArrayBuffer;
+  photoMimeType: string;
+  bindings: RuntimeBindings;
+}): Promise<StoredTryOnJob> {
+  if (!options.bindings.EVOLINK_API_KEY || !options.bindings.USER_UPLOADS) {
+    throw new EvolinkVisionError(
+      "MAKEUP_TRANSFER_QUALITY_UNAVAILABLE",
+      "高质量试妆服务暂时不可用",
+    );
+  }
+  const qualityTier = options.job.qualityTier ?? "acquisition";
+  const models = catalogEvolinkModels(qualityTier, options.bindings);
+  const fetcher = options.bindings.OUTBOUND_PROXY_URL
+    ? createProxyFetcher(options.bindings.OUTBOUND_PROXY_URL)
+    : undefined;
+  const candidates: Array<{
+    generated: Awaited<ReturnType<typeof generateEvolinkMakeupImage>>;
+    quality: CatalogTryOnQuality;
+    attempt: number;
+  }> = [];
+  let correction: CatalogTryOnQuality | undefined;
+  let generatedAny = false;
+
+  for (const [index, model] of models.entries()) {
+    const attempt = index + 1;
+    const previousCandidate =
+      candidates[candidates.length - 1]?.generated.image;
+    let generated: Awaited<ReturnType<typeof generateEvolinkMakeupImage>>;
+    try {
+      generated = await generateEvolinkMakeupImage({
+        apiKey: options.bindings.EVOLINK_API_KEY,
+        model,
+        prompt: [
+          makeupImagePrompt(options.look),
+          previousCandidate
+            ? "Input image order: Image 1 is the ORIGINAL USER SELFIE; Image 2 is the CURRENT TRY-ON CANDIDATE. Edit the current candidate directly and do not restart the makeup from scratch."
+            : "",
+          correction ? catalogTryOnCorrectionPrompt(correction) : "",
+        ]
+          .filter(Boolean)
+          .join(" "),
+        ...(previousCandidate
+          ? {
+              images: [
+                {
+                  data: options.photoData,
+                  mimeType: options.photoMimeType,
+                  filename: "original-selfie.jpg",
+                },
+                {
+                  data: previousCandidate.data,
+                  mimeType: previousCandidate.contentType,
+                  filename: "current-candidate.jpg",
+                },
+              ],
+            }
+          : {
+              photo: {
+                data: options.photoData,
+                mimeType: options.photoMimeType,
+              },
+            }),
+        ...qualityEvolinkImageOptions(model, qualityTier),
+        timeoutMs: parseTimeout(options.bindings.EVOLINK_IMAGE_TIMEOUT_MS),
+        fetcher,
+      });
+      generatedAny = true;
+      await recordAiCall(
+        {
+          userId: options.userId,
+          jobId: options.job.id,
+          provider: "evolink",
+          operation: "image_generation",
+          model: generated.model,
+          status: "succeeded",
+          durationMs: generated.durationMs,
+          estimatedCostMicros:
+            generated.estimatedCostMicros ??
+            creditsToMicros(generated.creditsUsed),
+          metadata: {
+            route: qualityTier,
+            attempt,
+            editsPreviousCandidate: Boolean(previousCandidate),
+          },
+        },
+        options.bindings.DB,
+      );
+    } catch (error) {
+      await recordAiCall(
+        {
+          userId: options.userId,
+          jobId: options.job.id,
+          provider: "evolink",
+          operation: "image_generation",
+          model,
+          status: "failed",
+          errorCode: evolinkErrorCode(error),
+          metadata: { route: qualityTier, attempt },
+        },
+        options.bindings.DB,
+      ).catch(() => undefined);
+      continue;
+    }
+
+    const quality = await reviewCatalogTryOnQuality({
+      userId: options.userId,
+      jobId: options.job.id,
+      qualityTier,
+      attempt,
+      target: makeupQualityTarget(options.look),
+      photoData: options.photoData,
+      photoMimeType: options.photoMimeType,
+      resultData: generated.image.data,
+      resultMimeType: generated.image.contentType,
+      bindings: options.bindings,
+      fetcher,
+    });
+    // The QA model is a guardrail, not a new single point of failure. If it is
+    // unavailable, keep the high-quality generation and record degraded-open.
+    if (!quality) {
+      return storeCatalogEvolinkResult({
+        ...options,
+        generated,
+        qualityTier,
+        generationAttempts: attempt,
+      });
+    }
+    candidates.push({ generated, quality, attempt });
+    if (passesCatalogTryOnQuality(quality)) {
+      return storeCatalogEvolinkResult({
+        ...options,
+        generated,
+        quality,
+        qualityTier,
+        generationAttempts: attempt,
+      });
+    }
+
+    correction = quality;
+    console.warn(
+      JSON.stringify({
+        event: "catalog_tryon_quality_rejected",
+        jobId: options.job.id,
+        qualityTier,
+        attempt,
+        overallScore: quality.overallScore,
+        makeupExecutionScore: quality.makeupExecutionScore,
+        identityPreservationScore: quality.identityPreservationScore,
+        scenePreservationScore: quality.scenePreservationScore,
+        skinTexturePreservationScore: quality.skinTexturePreservationScore,
+        criticalDefects: quality.criticalDefects,
+      }),
+    );
+  }
+
+  const bestCandidate = candidates.reduce<
+    (typeof candidates)[number] | undefined
+  >(
+    (best, candidate) =>
+      !best ||
+      catalogTryOnCandidateScore(candidate.quality) >
+        catalogTryOnCandidateScore(best.quality)
+        ? candidate
+        : best,
+    undefined,
+  );
+  if (
+    bestCandidate &&
+    isAcceptableCatalogTryOnFallback(bestCandidate.quality)
+  ) {
+    return storeCatalogEvolinkResult({
+      ...options,
+      generated: bestCandidate.generated,
+      quality: bestCandidate.quality,
+      qualityTier,
+      generationAttempts: models.length,
+    });
+  }
+
+  throw new EvolinkVisionError(
+    "MAKEUP_TRANSFER_QUALITY_FAILED",
+    generatedAny
+      ? "生成结果未通过身份、场景和皮肤纹理质量检查"
+      : "高质量图像生成暂时不可用",
+  );
+}
+
+async function reviewCatalogTryOnQuality(options: {
+  userId: string;
+  jobId: string;
+  qualityTier: TryOnQualityTier;
+  attempt: number;
+  target: string;
+  photoData: ArrayBuffer;
+  photoMimeType: string;
+  resultData: ArrayBuffer;
+  resultMimeType: string;
+  bindings: RuntimeBindings;
+  fetcher?: typeof fetch;
+}): Promise<CatalogTryOnQuality | undefined> {
+  const model = options.bindings.EVOLINK_VISION_MODEL ?? "doubao-seed-2.0-lite";
+  try {
+    const reviewed = await evaluateEvolinkCatalogTryOnQuality({
+      apiKey: options.bindings.EVOLINK_API_KEY ?? "",
+      model,
+      selfie: { data: options.photoData, mimeType: options.photoMimeType },
+      generated: {
+        data: options.resultData,
+        mimeType: options.resultMimeType,
+      },
+      target: options.target,
+      timeoutMs: parseTimeout(options.bindings.EVOLINK_VISION_TIMEOUT_MS),
+      fetcher: options.fetcher,
+    });
+    const passed = passesCatalogTryOnQuality(reviewed.result);
+    await recordAiCall(
+      {
+        userId: options.userId,
+        jobId: options.jobId,
+        provider: "evolink",
+        operation: "makeup_transfer_quality",
+        model: reviewed.model,
+        status: "succeeded",
+        durationMs: reviewed.durationMs,
+        promptTokens: reviewed.usage.promptTokens,
+        outputTokens: reviewed.usage.outputTokens,
+        totalTokens: reviewed.usage.totalTokens,
+        metadata: {
+          route: options.qualityTier,
+          attempt: options.attempt,
+          passed,
+          ...reviewed.result,
+        },
+      },
+      options.bindings.DB,
+    );
+    return reviewed.result;
+  } catch (error) {
+    await recordAiCall(
+      {
+        userId: options.userId,
+        jobId: options.jobId,
+        provider: "evolink",
+        operation: "makeup_transfer_quality",
+        model,
+        status: "failed",
+        errorCode: makeupTransferErrorCode(error),
+        metadata: {
+          route: options.qualityTier,
+          attempt: options.attempt,
+          degradedOpen: true,
+        },
+      },
+      options.bindings.DB,
+    ).catch(() => undefined);
+    return undefined;
+  }
+}
+
+async function storeCatalogEvolinkResult(options: {
+  job: StoredTryOnJob;
+  userId: string;
+  generated: Awaited<ReturnType<typeof generateEvolinkMakeupImage>>;
+  quality?: CatalogTryOnQuality;
+  qualityTier: TryOnQualityTier;
+  generationAttempts: number;
+  bindings: RuntimeBindings;
+}): Promise<StoredTryOnJob> {
+  if (!options.bindings.USER_UPLOADS) {
+    throw new EvolinkVisionError(
+      "MAKEUP_TRANSFER_QUALITY_UNAVAILABLE",
+      "结果存储不可用",
+    );
+  }
+  const resultR2Key = resultObjectKey(
+    options.userId,
+    options.job.id,
+    options.generated.image.contentType,
+  );
+  await options.bindings.USER_UPLOADS.put(
+    resultR2Key,
+    options.generated.image.data,
+    {
+      httpMetadata: { contentType: options.generated.image.contentType },
+      customMetadata: {
+        userId: options.userId,
+        jobId: options.job.id,
+        provider: "evolink",
+        model: options.generated.model,
+        sourceUrl: options.generated.image.sourceUrl,
+        taskId: options.generated.taskId,
+        qualityTier: options.qualityTier,
+        generationAttempts: String(options.generationAttempts),
+        ...(options.quality
+          ? {
+              qualityScore: String(options.quality.overallScore),
+              identityPreservationScore: String(
+                options.quality.identityPreservationScore,
+              ),
+              scenePreservationScore: String(
+                options.quality.scenePreservationScore,
+              ),
+              skinTexturePreservationScore: String(
+                options.quality.skinTexturePreservationScore,
+              ),
+            }
+          : {}),
+      },
+    },
+  );
+  const completedAt = new Date().toISOString();
+  return {
+    ...options.job,
+    status: "succeeded",
+    resultImage: `/api/tryon-jobs/${options.job.id}/result`,
+    resultKind: "ai-generated",
+    resultR2Key,
+    makeupQualityScore: options.quality?.overallScore,
+    makeupGenerationAttempts: options.generationAttempts,
+    disclaimer: localizedTryOnDisclaimer("generated", options.job.locale),
+    updatedAt: completedAt,
+    completedAt,
+  };
+}
+
+function catalogEvolinkModels(
+  qualityTier: TryOnQualityTier,
+  bindings: RuntimeBindings,
+): string[] {
+  const models =
+    qualityTier === "standard"
+      ? [
+          bindings.EVOLINK_IMAGE_MODEL ?? "qwen-image-edit-plus",
+          bindings.EVOLINK_IMAGE_FALLBACK_MODEL ?? "doubao-seedream-5.0-lite",
+        ]
+      : [
+          bindings.EVOLINK_ACQUISITION_IMAGE_MODEL ??
+            bindings.EVOLINK_PRIVATE_IMAGE_MODEL ??
+            "doubao-seedream-5.0-pro",
+          bindings.EVOLINK_ACQUISITION_FALLBACK_IMAGE_MODEL ??
+            bindings.EVOLINK_PRIVATE_FALLBACK_IMAGE_MODEL ??
+            "gpt-image-2",
+        ];
+  return models.filter(
+    (model, index, values) => values.indexOf(model) === index,
+  );
+}
+
+function qualityEvolinkImageOptions(
+  model: string,
+  qualityTier: TryOnQualityTier,
+): Pick<EvolinkImageOptions, "size" | "quality" | "resolution"> {
+  const premium = qualityTier === "premium";
+  return model === "gpt-image-2"
+    ? {
+        size: "2:3",
+        quality: premium ? "high" : "medium",
+        resolution: premium ? "2K" : "1K",
+      }
+    : { size: "2:3", quality: premium ? "2K" : "1K" };
+}
+
+function makeupQualityTarget(look: LookCatalogItem | ResolvedLook): string {
+  const recipe = isResolvedLook(look)
+    ? getRecipeById(look.recipeId)
+    : undefined;
+  return [
+    `${look.title}: ${look.intent}`,
+    `finish=${look.finish.join(", ")}`,
+    recipe
+      ? `palette=${recipe.palette.join(", ")}; coverage=${recipe.coverage}; contrast=${recipe.contrast}`
+      : "",
+    isMatureSkinLook(look)
+      ? "sheer hydrating satin base with real mature skin texture, softly lifted taupe eyes, outer-cheek cream rose blush, and textured rosewood satin lips"
+      : "",
+  ]
+    .filter(Boolean)
+    .join("; ");
 }
 
 function completeWithReferenceFallback(

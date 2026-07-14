@@ -3,6 +3,12 @@ import {
   parseDiagnosisResult,
   type DiagnosisResult,
 } from "./diagnosis";
+import {
+  catalogTryOnQualityJsonSchema,
+  catalogTryOnQualityPrompt,
+  parseCatalogTryOnQuality,
+  type CatalogTryOnQuality,
+} from "./catalogTryOnQuality";
 import { diagnosisPrompt } from "./geminiDiagnosis";
 import {
   qualityReviewPrompt,
@@ -134,6 +140,24 @@ export async function evaluateEvolinkMakeupTransfer(
     schemaName: "makeup_transfer_quality",
     schema: makeupTransferQualityJsonSchema,
     parse: parseMakeupTransferQuality,
+  });
+}
+
+export async function evaluateEvolinkCatalogTryOnQuality(
+  options: EvolinkVisionBaseOptions & {
+    selfie: ImageInput;
+    generated: ImageInput;
+    target: string;
+  },
+): Promise<EvolinkVisionResponse<CatalogTryOnQuality>> {
+  return requestStructuredVision({
+    ...options,
+    operation: "quality",
+    prompt: catalogTryOnQualityPrompt(options.target),
+    images: [options.selfie, options.generated],
+    schemaName: "catalog_tryon_quality",
+    schema: catalogTryOnQualityJsonSchema,
+    parse: parseCatalogTryOnQuality,
   });
 }
 

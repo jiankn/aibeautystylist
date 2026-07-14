@@ -35,6 +35,7 @@ export const TRYON_JOB_TIMEOUT_MS = 10 * 60_000;
 export type JobStatus = (typeof jobStatuses)[number];
 export type TryOnJobPurpose = "tryon" | "diagnosis";
 export type TryOnLookSource = "catalog" | "private-template";
+export type TryOnQualityTier = "standard" | "acquisition" | "pro" | "premium";
 
 export interface TryOnJobResult {
   id: string;
@@ -71,6 +72,7 @@ export interface StoredTryOnJob extends TryOnJobResult {
   referenceAssetId?: string;
   locale?: string;
   marketProfile?: string;
+  qualityTier?: TryOnQualityTier;
 }
 
 export interface JobTimeoutResult {
@@ -90,6 +92,10 @@ const mockJobsByIdempotency = new Map<string, StoredTryOnJob>();
 
 interface StoredJobRow {
   result_json: string | null;
+}
+
+interface CountRow {
+  count: number | string;
 }
 
 interface DeletionJobRow extends StoredJobRow {
@@ -179,6 +185,7 @@ export function toJobResponse(job: StoredTryOnJob): TryOnJobResult {
     idempotencyKey: _idempotencyKey,
     resultR2Key: _resultR2Key,
     deletedAt: _deletedAt,
+    qualityTier: _qualityTier,
     ...response
   } = job;
   return {
@@ -187,6 +194,33 @@ export function toJobResponse(job: StoredTryOnJob): TryOnJobResult {
       response.resultDisplayImage ??
       resultDisplayImageUrl(response.resultImage),
   };
+}
+
+export async function countQualityEligibleCatalogJobs(
+  userId: string,
+  DB?: D1DatabaseLike,
+): Promise<number> {
+  if (DB) {
+    const row = await DB.prepare(
+      `SELECT COUNT(*) AS count
+       FROM tryon_jobs
+       WHERE user_id = ?
+         AND status IN ('created', 'upload_validating', 'image_running', 'succeeded')
+         AND COALESCE(json_extract(result_json, '$.purpose'), 'tryon') = 'tryon'
+         AND COALESCE(json_extract(result_json, '$.lookSource'), 'catalog') = 'catalog'`,
+    )
+      .bind(userId)
+      .first<CountRow>();
+    return Number(row?.count ?? 0);
+  }
+
+  return [...mockJobsById.values()].filter(
+    (job) =>
+      job.userId === userId &&
+      getTryOnJobPurpose(job) === "tryon" &&
+      job.lookSource !== "private-template" &&
+      (isRunningJobStatus(job.status) || job.status === "succeeded"),
+  ).length;
 }
 
 export function toLocalizedJobResponse(
