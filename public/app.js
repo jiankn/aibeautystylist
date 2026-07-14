@@ -451,6 +451,7 @@ let currentSessionPromise;
 let pinterestGuestPassPromise;
 let pinterestGuestPassState;
 let pinterestGuestPassLoaded = false;
+const PINTEREST_GUEST_DEVICE_KEY = "abs_pinterest_guest_device";
 
 const pinterestGuestParams = new URLSearchParams(window.location.search);
 const PINTEREST_GUEST_ELIGIBLE =
@@ -473,13 +474,29 @@ function setPinterestGuestPassState(state) {
   );
 }
 
+function getPinterestGuestDeviceId() {
+  try {
+    const existing = window.localStorage.getItem(PINTEREST_GUEST_DEVICE_KEY);
+    if (/^[a-zA-Z0-9_-]{16,128}$/.test(existing || "")) return existing;
+    if (!window.crypto?.randomUUID) return undefined;
+    const deviceId = window.crypto.randomUUID();
+    window.localStorage.setItem(PINTEREST_GUEST_DEVICE_KEY, deviceId);
+    return deviceId;
+  } catch {
+    return undefined;
+  }
+}
+
 async function getPinterestGuestPass({ refresh = false } = {}) {
   if (!PINTEREST_GUEST_ELIGIBLE) return pinterestGuestPassState;
   if (!pinterestGuestPassPromise || refresh) {
     pinterestGuestPassPromise = fetch("/api/pinterest-guest-pass", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ query: window.location.search }),
+      body: JSON.stringify({
+        query: window.location.search,
+        deviceId: getPinterestGuestDeviceId(),
+      }),
     })
       .then(async (response) => {
         const payload = await response.json().catch(() => ({}));

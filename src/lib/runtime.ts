@@ -69,6 +69,8 @@ export interface RuntimeBindings {
   STRIPE_PRICE_CREDITS_20?: string;
   STRIPE_PRICE_CREDITS_60?: string;
   APP_PUBLIC_URL?: string;
+  PINTEREST_GUEST_IP_DAILY_LIMIT?: string;
+  PINTEREST_GUEST_DAILY_LIMIT?: string;
   // 邮件（Postal）与第三方登录（OAuth）
   POSTAL_API_URL?: string;
   POSTAL_API_KEY?: string;

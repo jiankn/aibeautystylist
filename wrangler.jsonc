@@ -73,5 +73,7 @@
     "EVOLINK_PRIVATE_FALLBACK_IMAGE_MODEL": "gpt-image-2",
     "EVOLINK_IMAGE_TIMEOUT_MS": "180000",
     "SUPPORT_EMAIL": "support@aibeautystylist.com",
+    "PINTEREST_GUEST_IP_DAILY_LIMIT": "3",
+    "PINTEREST_GUEST_DAILY_LIMIT": "100",
   },
 }

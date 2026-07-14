@@ -4,9 +4,13 @@ import { resolveCurrentUser } from "../../lib/currentUser";
 import { apiError, apiSuccess } from "../../lib/http";
 import {
   getOrCreatePinterestGuestPass,
+  getPinterestGuestAllowance,
+  getPinterestGuestGenerationLimits,
+  getPinterestGuestIdentity,
   isPinterestGuestTryonParams,
-  PINTEREST_GUEST_COOKIE,
+  isSameOriginGuestPassRequest,
   pinterestGuestPassState,
+  resolvePinterestGuestPass,
   setPinterestGuestCookie,
 } from "../../lib/pinterestGuestPass";
 import {
@@ -18,6 +22,7 @@ import { getRuntimeBindings } from "../../lib/runtime";
 
 interface GuestPassBody {
   query?: string;
+  deviceId?: string;
 }
 
 const GUEST_PASS_RATE_LIMIT: RateLimitConfig = {
@@ -27,7 +32,8 @@ const GUEST_PASS_RATE_LIMIT: RateLimitConfig = {
 
 export const POST: APIRoute = async ({ cookies, request }) => {
   try {
-    const { DB } = getRuntimeBindings();
+    const bindings = getRuntimeBindings();
+    const { DB } = bindings;
     if (!DB) {
       return apiError(
         {
@@ -47,11 +53,14 @@ export const POST: APIRoute = async ({ cookies, request }) => {
       });
     }
 
-    const body = (await request.json().catch(() => null)) as
-      | GuestPassBody
-      | null;
+    const body = (await request
+      .json()
+      .catch(() => null)) as GuestPassBody | null;
     const params = paramsFromBody(body);
-    if (!isPinterestGuestTryonParams(params)) {
+    if (
+      !isPinterestGuestTryonParams(params) ||
+      !isSameOriginGuestPassRequest(request)
+    ) {
       return apiError(
         {
           code: "GUEST_PASS_NOT_ELIGIBLE",
@@ -62,24 +71,58 @@ export const POST: APIRoute = async ({ cookies, request }) => {
       );
     }
 
-    const existingCookie = cookies.get(PINTEREST_GUEST_COOKIE)?.value;
-    if (!existingCookie) {
-      const ip = getClientIp(request);
-      const rateLimit = await checkRateLimit(
-        `pinterest-guest:${ip}`,
-        GUEST_PASS_RATE_LIMIT,
-        DB,
-      );
-      if (!rateLimit.allowed) {
-        return apiError(
-          {
-            code: "GUEST_PASS_RATE_LIMITED",
-            message: "Too many free preview requests. Please try again later.",
-            retryable: true,
-          },
-          429,
-        );
+    const limits = getPinterestGuestGenerationLimits(
+      bindings.PINTEREST_GUEST_IP_DAILY_LIMIT,
+      bindings.PINTEREST_GUEST_DAILY_LIMIT,
+    );
+    const existingPass = await resolvePinterestGuestPass(cookies, DB);
+    if (existingPass) {
+      const state = pinterestGuestPassState(existingPass);
+      if (!state.available) {
+        return apiSuccess({ authenticated: false, guestTry: state });
       }
+      const allowance = await getPinterestGuestAllowance({
+        DB,
+        clientKeyHash: existingPass.clientKeyHash,
+        deviceKeyHash: existingPass.deviceKeyHash,
+        limits,
+      });
+      return apiSuccess({
+        authenticated: false,
+        guestTry: allowance.allowed
+          ? state
+          : unavailableState(allowance.retryAt),
+      });
+    }
+
+    const identity = await getPinterestGuestIdentity(request, body?.deviceId);
+    const allowance = await getPinterestGuestAllowance({
+      DB,
+      ...identity,
+      limits,
+    });
+    if (!allowance.allowed) {
+      return apiSuccess({
+        authenticated: false,
+        guestTry: unavailableState(allowance.retryAt),
+      });
+    }
+
+    const ip = getClientIp(request);
+    const rateLimit = await checkRateLimit(
+      `pinterest-guest:${ip}`,
+      GUEST_PASS_RATE_LIMIT,
+      DB,
+    );
+    if (!rateLimit.allowed) {
+      return apiError(
+        {
+          code: "GUEST_PASS_RATE_LIMITED",
+          message: "Too many free preview requests. Please try again later.",
+          retryable: true,
+        },
+        429,
+      );
     }
 
     const { pass, token } = await getOrCreatePinterestGuestPass({
@@ -87,6 +130,8 @@ export const POST: APIRoute = async ({ cookies, request }) => {
       request,
       DB,
       params,
+      deviceId: body?.deviceId,
+      identity,
     });
     if (token) setPinterestGuestCookie(cookies, token, import.meta.env.PROD);
 
@@ -106,6 +151,15 @@ export const POST: APIRoute = async ({ cookies, request }) => {
     );
   }
 };
+
+function unavailableState(expiresAt: string) {
+  return {
+    available: false,
+    used: true,
+    remaining: 0 as const,
+    expiresAt,
+  };
+}
 
 function paramsFromBody(body: GuestPassBody | null): URLSearchParams {
   const query = body?.query ?? "";

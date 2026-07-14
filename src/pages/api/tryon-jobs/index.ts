@@ -24,6 +24,7 @@ import {
 import { isPlanCode, type PlanCode } from "../../../lib/plans";
 import {
   attachPinterestGuestJob,
+  getPinterestGuestGenerationLimits,
   pinterestGuestPassState,
   releasePinterestGuestGeneration,
   reservePinterestGuestGeneration,
@@ -392,6 +393,12 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       guestPass,
       body.uploadId,
       bindings.DB,
+      {
+        limits: getPinterestGuestGenerationLimits(
+          bindings.PINTEREST_GUEST_IP_DAILY_LIMIT,
+          bindings.PINTEREST_GUEST_DAILY_LIMIT,
+        ),
+      },
     );
     if (!guestReservation) {
       return apiError(

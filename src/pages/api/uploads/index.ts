@@ -4,6 +4,8 @@ import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import { apiError, apiSuccess } from "../../../lib/http";
 import {
   assignPinterestGuestUpload,
+  getPinterestGuestAllowance,
+  getPinterestGuestGenerationLimits,
   pinterestGuestPassState,
   resolvePinterestGuestPass,
 } from "../../../lib/pinterestGuestPass";
@@ -33,6 +35,27 @@ export const POST: APIRoute = async ({ cookies, request }) => {
       },
       403,
     );
+  }
+  if (guestPass && bindings.DB) {
+    const allowance = await getPinterestGuestAllowance({
+      DB: bindings.DB,
+      clientKeyHash: guestPass.clientKeyHash,
+      deviceKeyHash: guestPass.deviceKeyHash,
+      limits: getPinterestGuestGenerationLimits(
+        bindings.PINTEREST_GUEST_IP_DAILY_LIMIT,
+        bindings.PINTEREST_GUEST_DAILY_LIMIT,
+      ),
+    });
+    if (!allowance.allowed) {
+      return apiError(
+        {
+          code: "GUEST_TRY_USED",
+          message: "Your free preview has already been used. Create an account to keep trying looks.",
+          retryable: false,
+        },
+        403,
+      );
+    }
   }
   const userId = auth.ok ? auth.user.id : guestPass?.guestUserId;
   if (!userId) {
