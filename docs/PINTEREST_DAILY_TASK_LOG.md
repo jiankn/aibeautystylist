@@ -506,7 +506,7 @@ Each topic = one Pinterest Pin + one clean Google Images asset + one matched lan
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=no_makeup_real_daylight`.
 - [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify mobile before publishing Pin 15.
+- [x] Deploy and verify mobile before publishing Pin 15.
 - [ ] Publish Pin 15 to `Everyday & 5-Minute Makeup` and test its link once.
 
 | Field | Content |
@@ -537,7 +537,7 @@ AI-generated visualization for beauty reference.
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=olive_skin_muted_rose`.
 - [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify mobile before publishing Pin 16.
+- [x] Deploy and verify mobile before publishing Pin 16.
 - [ ] Publish Pin 16 to `Makeup for Skin Tone & Mature Skin` and test its link once.
 
 | Field | Content |
