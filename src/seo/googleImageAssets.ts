@@ -121,6 +121,22 @@ export const googleImageAssets: readonly GoogleImageAsset[] = [
     caption:
       "A realistic mature-skin makeup direction with a sheer satin base, cream rose blush, softly lifted taupe eyes, and a hydrating rosewood lip.",
   },
+  {
+    sourcePin: "pin_no_makeup_real_daylight_01",
+    pageUrl: "/looks/no-makeup-makeup",
+    imageUrl: "/images/pinterest/no-makeup-real-daylight.webp",
+    title: "No-makeup makeup preview in honest morning daylight",
+    caption:
+      "A realistic skin-first makeup direction with sheer coverage, natural brows, a restrained rose flush, and a tinted balm while real skin texture stays visible.",
+  },
+  {
+    sourcePin: "pin_olive_skin_muted_rose_01",
+    pageUrl: "/for/olive-skin",
+    imageUrl: "/images/pinterest/olive-skin-muted-rose.webp",
+    title: "Muted rose makeup preview for olive skin",
+    caption:
+      "A realistic olive-undertone makeup direction with plum-taupe eyes, dusty-rose cheeks, and a rosewood lip designed to avoid orange or grey color casts.",
+  },
 ];
 
 function escapeXml(value: string): string {

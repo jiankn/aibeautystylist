@@ -1,5 +1,7 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "No-Makeup Makeup Look: The Art of Barely-There Beauty",
@@ -33,17 +35,149 @@ const page = {
     { label: "Virtual Makeup App", url: "/virtual-makeup-app" },
   ],
 };
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+const noMakeupHeroImage = isEastAsianLocale
+  ? "/images/look-card/looks/no-makeup--east-asia-640.webp"
+  : "/images/pinterest/no-makeup-real-daylight.webp";
+const noMakeupPinVisual = isEastAsianLocale
+  ? "no_makeup_east_asia"
+  : "no_makeup_real_daylight";
+const noMakeupMarketProfile = isEastAsianLocale
+  ? "east-asia"
+  : "global-diverse";
+const noMakeupAttribution = pinterestSource
+  ? {
+      source: "pinterest_no_makeup",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_no_makeup")
+        ? incomingUtmContent
+        : "pin_no_makeup_real_daylight_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_no_makeup",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_no_makeup_01",
+      }
+    : {
+        source: "no_makeup_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "no_makeup_makeup",
+        utmContent: "no_makeup_hero",
+      };
+const noMakeupTryonParams = new URLSearchParams({
+  look: "no-makeup",
+  marketProfile: noMakeupMarketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: noMakeupAttribution.source,
+  pin_visual: noMakeupPinVisual,
+  utm_source: noMakeupAttribution.utmSource,
+  utm_medium: noMakeupAttribution.utmMedium,
+  utm_campaign: noMakeupAttribution.utmCampaign,
+  utm_content: noMakeupAttribution.utmContent,
+});
+const noMakeupTryonHref = localizeAppHref(
+  `/tryon?${noMakeupTryonParams.toString()}#tryon-upload`,
+);
+const noMakeupPricingHref = localizeAppHref(
+  "/pricing?source=pinterest_no_makeup",
+);
+const noMakeupHeroBody = pinterestSource
+  ? "Saw this on Pinterest? Preview the same sheer, skin-first makeup direction on your selfie and judge it in honest daylight."
+  : googleImageSource
+    ? "Found this look in Google Images? Preview the same barely-there makeup direction on your selfie before you apply it."
+    : "Build a polished, better-rested look with sheer coverage, targeted color, and real skin texture still visible.";
 ---
 
-<SeoLandingLayout {...page}>
+<SeoLandingLayout
+  {...page}
+  heroImage={noMakeupHeroImage}
+  ogImage={noMakeupHeroImage}
+  heroCtaHref={noMakeupTryonHref}
+  heroCtaLabel="Try No-Makeup Makeup Free"
+>
   <Fragment slot="hero">
-    <h1>No-Makeup Makeup Look: The Art of Barely-There Beauty</h1>
-    <p>
-      The most difficult makeup look to master is the one that looks like you
-      are not wearing any. Here is why less is genuinely more, and how to pull
-      off the barely-there aesthetic without looking unfinished.
-    </p>
+    <h1>No-Makeup Makeup That Still Works in Real Daylight</h1>
+    <p>{noMakeupHeroBody}</p>
   </Fragment>
+
+  {
+    pinterestSource && (
+      <PinterestConversionPanel
+        kicker="Pinterest no-makeup path"
+        title="Keep your skin visible, just better rested"
+        body="You clicked for makeup that does not announce itself, so this page keeps the same sheer base, soft rose flush, natural brows, and tinted-balm direction."
+        image={noMakeupHeroImage}
+        imageAlt="No-makeup makeup with real skin texture in honest morning daylight"
+        visualVariant="decision"
+        visualHighlights={[
+          {
+            title: "What makes it believable",
+            body: "Coverage stays targeted around uneven tone instead of masking the entire face.",
+          },
+          {
+            title: "Where color belongs",
+            body: "A restrained cream flush and sheer lip tint make the face look rested without reading as full makeup.",
+          },
+          {
+            title: "What to check",
+            body: "Look at the skin around the nose, under-eyes, brows, and lips in daylight before deciding whether it still feels like you.",
+          },
+          {
+            title: "Upgrade only if useful",
+            body: "Save the result and compare more natural versions after the free preview works on your face.",
+          },
+        ]}
+        visualFooterLabel="Next action"
+        visualFooterBody="Open No-Makeup Makeup already selected and upload one selfie free."
+        selectedLook="No-Makeup Makeup"
+        selectedLookMeta="Sheer, rested, real-skin friendly"
+        primaryHref={noMakeupTryonHref}
+        primaryLabel="Try this look free"
+        secondaryHref={noMakeupPricingHref}
+        secondaryLabel="See member benefits"
+        proofPoints={[
+          "Same look as the Pin",
+          "One no-sign-up preview",
+          "Upgrade to save results",
+        ]}
+        steps={[
+          {
+            title: "Start with the matched look",
+            body: "The page keeps the same daylight no-makeup direction instead of sending you to a generic catalog.",
+          },
+          {
+            title: "Preview it on your selfie",
+            body: "No-Makeup Makeup opens preselected so you can judge whether the subtle change is worth applying.",
+          },
+          {
+            title: "Subscribe when it helps",
+            body: "Membership is for saving the result, testing more natural versions, and keeping HD references.",
+          },
+        ]}
+        membershipHref={noMakeupPricingHref}
+        membershipTitle="Why membership fits daily look planning"
+        membershipBody="The free preview answers whether this subtle finish suits you. Membership helps when you want saved comparisons, more generations, and HD results."
+      />
+    )
+  }
 
   <div class="seo-content">
     <h2>The Philosophy of "Less Is More" — and Why It Is Hard</h2>
@@ -179,7 +313,9 @@ const page = {
       <p>
         See how no-makeup makeup renders on your actual skin tone and features.
       </p>
-      <a href="/tryon" class="cta-btn">Try This Style on Your Face — Free</a>
+      <a href={noMakeupTryonHref} class="cta-btn"
+        >Try This Style on Your Face — Free</a
+      >
     </div>
   </div>
 

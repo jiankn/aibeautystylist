@@ -82,6 +82,32 @@ const pins = [
     cardBody: "Thin layers, real skin",
     cta: "TRY THIS LOOK FREE",
   },
+  {
+    source: "tmp/pinterest-sources/no-makeup-real-daylight.png",
+    cleanOutput: "public/images/pinterest/no-makeup-real-daylight.webp",
+    pinOutput: "artifacts/pinterest/15-no-makeup-real-daylight.png",
+    titleLine1: "No-Makeup",
+    titleLine1FontSize: 64,
+    titleLine2: "Makeup",
+    subtitle: "Real skin. Better rested.",
+    supporting: "Check it in honest daylight",
+    cardTitle: "2026 skin-first",
+    cardBody: "Sheer, not bare",
+    cta: "TRY THIS LOOK FREE",
+  },
+  {
+    source: "tmp/pinterest-sources/olive-skin-muted-rose.png",
+    cleanOutput: "public/images/pinterest/olive-skin-muted-rose.webp",
+    pinOutput: "artifacts/pinterest/16-olive-skin-muted-rose.png",
+    titleLine1: "Olive Skin",
+    titleLine1FontSize: 67,
+    titleLine2: "Rose Makeup",
+    subtitle: "Muted rose. Never orange.",
+    supporting: "Preview your undertone match",
+    cardTitle: "Color harmony",
+    cardBody: "No orange or grey",
+    cta: "TRY OLIVE ROSE FREE",
+  },
 ];
 
 function escapeXml(value) {

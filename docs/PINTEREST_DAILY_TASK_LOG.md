@@ -483,3 +483,84 @@ AI-generated visualization for beauty reference.
 - [ ] Do not edit or republish old Pins today.
 - [ ] Record Pinterest impressions, engagements, outbound clicks, saves, and per-Pin impressions once tonight.
 - [ ] Check Google Images performance in GSC on the weekly schedule, not daily.
+
+## 2026-07-16
+
+### Day 8 Dual-Channel Execution
+
+Daily production rule:
+
+```text
+Two makeup topics per day.
+Each topic = one Pinterest Pin + one clean Google Images asset + one matched landing page and try-on path.
+```
+
+### Topic 1: No-Makeup Makeup in Real Daylight
+
+- [x] Validate the theme against the Summer 2026 skin-first and no-makeup makeup trend.
+- [x] Generate a realistic, attractive, low-AI-feel source photo with authentic dark-skin texture.
+- [x] Create Pin 15 as a 1000 x 1500 photo-plus-copy composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Rebuild `/looks/no-makeup-makeup` as a matched Pinterest and Google Images conversion page.
+- [x] Use the preselected `no-makeup` no-sign-up campaign try-on path.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=no_makeup_real_daylight`.
+- [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify mobile before publishing Pin 15.
+- [ ] Publish Pin 15 to `Everyday & 5-Minute Makeup` and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `No-Makeup Makeup - Real Daylight` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\15-no-makeup-real-daylight.png` |
+| Board | `Everyday & 5-Minute Makeup` |
+| Title | `No-Makeup Makeup That Still Looks Like You` |
+| Link | `https://aibeautystylist.com/looks/no-makeup-makeup?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_no_makeup_real_daylight_01` |
+| Alt text | `Attractive Black woman wearing sheer no-makeup makeup with natural brows, a soft rose flush and tinted balm in honest morning daylight.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Want no-makeup makeup that still looks believable in real daylight? Preview a sheer skin tint, targeted concealer, soft rose cream blush, natural brows and a tinted balm on your own selfie before you apply it.
+
+AI-generated visualization for beauty reference.
+```
+
+### Topic 2: Muted Rose Makeup for Olive Skin
+
+- [x] Generate a realistic, attractive olive-skin model with authentic texture and low AI feel.
+- [x] Create Pin 16 as a 1000 x 1500 photo-plus-copy composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Rebuild `/for/olive-skin` as a matched Pinterest and Google Images conversion page.
+- [x] Use the preselected `olive-undertone-rose` no-sign-up campaign try-on path.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=olive_skin_muted_rose`.
+- [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify mobile before publishing Pin 16.
+- [ ] Publish Pin 16 to `Makeup for Skin Tone & Mature Skin` and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Olive Skin Makeup - Muted Rose, Never Orange` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\16-olive-skin-muted-rose.png` |
+| Board | `Makeup for Skin Tone & Mature Skin` |
+| Title | `Olive Skin Makeup That Never Turns Orange` |
+| Link | `https://aibeautystylist.com/for/olive-skin?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_olive_skin_muted_rose_01` |
+| Alt text | `Attractive olive-skinned woman wearing muted dusty-rose blush, plum-taupe eyes and a rosewood lip in neutral window light.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Olive skin can make warm makeup turn orange and cool makeup look grey. Preview a balanced muted-rose palette with plum-taupe eyes, dusty-rose blush and a rosewood lip on your own selfie before choosing color.
+
+AI-generated visualization for beauty reference.
+```
+
+### Daily Distribution And Measurement
+
+- [ ] Save 10-12 high-quality related Pins after publishing, split between the two matching Boards.
+- [ ] Do not edit or republish old Pins today.
+- [ ] Record Pinterest impressions, engagements, outbound clicks, saves, and per-Pin impressions once tonight.
+- [ ] Check Google Images performance in GSC on the weekly schedule, not daily.

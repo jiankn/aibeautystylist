@@ -1,5 +1,7 @@
 ---
+import PinterestConversionPanel from "../../components/PinterestConversionPanel.astro";
 import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
 
 const page = {
   title: "Makeup for Olive Skin Tone: Find Your Most Flattering Shades",
@@ -34,21 +36,149 @@ const relatedLinks = [
   },
   { label: "Makeup for Beginners", url: "/guides/beginner-tutorial" },
 ];
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+const oliveHeroImage = isEastAsianLocale
+  ? "/images/look-card/looks/olive-undertone-rose--east-asia-640.webp"
+  : "/images/pinterest/olive-skin-muted-rose.webp";
+const olivePinVisual = isEastAsianLocale
+  ? "olive_skin_muted_rose_east_asia"
+  : "olive_skin_muted_rose";
+const oliveMarketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const oliveAttribution = pinterestSource
+  ? {
+      source: "pinterest_olive_skin",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_olive_skin")
+        ? incomingUtmContent
+        : "pin_olive_skin_muted_rose_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_olive_skin",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_olive_skin_01",
+      }
+    : {
+        source: "olive_skin_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "olive_skin_makeup",
+        utmContent: "olive_skin_hero",
+      };
+const oliveTryonParams = new URLSearchParams({
+  look: "olive-undertone-rose",
+  marketProfile: oliveMarketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: oliveAttribution.source,
+  pin_visual: olivePinVisual,
+  utm_source: oliveAttribution.utmSource,
+  utm_medium: oliveAttribution.utmMedium,
+  utm_campaign: oliveAttribution.utmCampaign,
+  utm_content: oliveAttribution.utmContent,
+});
+const oliveTryonHref = localizeAppHref(
+  `/tryon?${oliveTryonParams.toString()}#tryon-upload`,
+);
+const olivePricingHref = localizeAppHref(
+  "/pricing?source=pinterest_olive_skin",
+);
+const oliveHeroBody = pinterestSource
+  ? "Saw this on Pinterest? Preview the same muted rose makeup direction on your olive undertone before a warm shade turns orange or a cool shade turns grey."
+  : googleImageSource
+    ? "Found this look in Google Images? Preview the same muted rose direction on your olive undertone before choosing color."
+    : "Olive undertones need muted, balanced color. Preview rosewood lips, dusty-rose cheeks, and plum-taupe eyes before choosing your palette.";
 ---
 
 <SeoLandingLayout
   title={page.title}
   description={page.description}
+  heroImage={oliveHeroImage}
+  ogImage={oliveHeroImage}
+  heroCtaHref={oliveTryonHref}
+  heroCtaLabel="Try Olive Rose Makeup Free"
   faq={page.faq}
 >
   <div slot="hero">
-    <h1>{page.title}</h1>
-    <p>
-      Olive skin's unique green-gold undertones make shade matching one of the
-      most complex challenges in makeup. This guide breaks down exactly which
-      shades complement your undertone and which to avoid.
-    </p>
+    <h1>Olive Skin Rose Makeup That Never Turns Orange</h1>
+    <p>{oliveHeroBody}</p>
   </div>
+
+  {
+    pinterestSource && (
+      <PinterestConversionPanel
+        kicker="Pinterest olive-skin path"
+        title="Choose color that works with the green-gold undertone"
+        body="You clicked for flattering olive-skin color, so this page keeps the same muted dusty rose, plum-taupe, and rosewood direction. Preview the harmony on your face before buying or applying."
+        image={oliveHeroImage}
+        imageAlt="Muted rose makeup designed for an olive skin undertone"
+        visualVariant="decision"
+        visualHighlights={[
+          {
+            title: "Why muted rose works",
+            body: "Low-saturation rose balances the green-gold undertone without becoming neon pink, orange, or chalky.",
+          },
+          {
+            title: "Keep the face connected",
+            body: "Plum-taupe eyes, dusty-rose cheeks, and a rosewood lip share one muted color family.",
+          },
+          {
+            title: "What to check",
+            body: "Judge whether the base stays neutral, the cheek looks blended into skin, and the lip keeps enough depth.",
+          },
+          {
+            title: "Upgrade only if useful",
+            body: "Save the result and compare more olive-friendly colors after the free preview works for your undertone.",
+          },
+        ]}
+        visualFooterLabel="Next action"
+        visualFooterBody="Open Olive Undertone Rose already selected and upload one selfie free."
+        selectedLook="Olive Undertone Rose"
+        selectedLookMeta="Muted rose, plum-taupe, no orange cast"
+        primaryHref={oliveTryonHref}
+        primaryLabel="Try this look free"
+        secondaryHref={olivePricingHref}
+        secondaryLabel="See member benefits"
+        proofPoints={[
+          "Same look as the Pin",
+          "One no-sign-up preview",
+          "Upgrade to save results",
+        ]}
+        steps={[
+          {
+            title: "Start with the matched look",
+            body: "The page keeps the same olive-friendly rose palette instead of sending you to a generic makeup catalog.",
+          },
+          {
+            title: "Preview it on your selfie",
+            body: "Olive Undertone Rose opens preselected so you can judge undertone, saturation, and balance immediately.",
+          },
+          {
+            title: "Subscribe when it helps",
+            body: "Membership is for saving the result, comparing more palettes, and keeping HD color references.",
+          },
+        ]}
+        membershipHref={olivePricingHref}
+        membershipTitle="Why membership fits color comparison"
+        membershipBody="The free preview answers whether muted rose suits your undertone. Membership helps when you want saved comparisons, more generations, and HD results."
+      />
+    )
+  }
 
   <div class="seo-content">
     <h2>The Olive Undertone Puzzle</h2>
@@ -248,7 +378,7 @@ const relatedLinks = [
           shades on your olive skin tone and see which colors complement your
           unique undertones.
         </p>
-        <a href="/tryon" class="cta-btn">Try It Free</a>
+        <a href={oliveTryonHref} class="cta-btn">Try It Free</a>
       </div>
     </div>
   </div>
