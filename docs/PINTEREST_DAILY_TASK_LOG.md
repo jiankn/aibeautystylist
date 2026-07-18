@@ -507,7 +507,8 @@ Each topic = one Pinterest Pin + one clean Google Images asset + one matched lan
 - [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
 - [x] Deploy and verify mobile before publishing Pin 15.
-- [ ] Publish Pin 15 to `Everyday & 5-Minute Makeup` and test its link once.
+- [x] Publish Pin 15 to `Everyday & 5-Minute Makeup` on 2026-07-17.
+- [ ] Test the Pin 15 link once and confirm the matched no-sign-up try-on path.
 
 | Field | Content |
 |---|---|
@@ -538,7 +539,8 @@ AI-generated visualization for beauty reference.
 - [x] Add locale-aware East Asian and global-diverse try-on visual mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
 - [x] Deploy and verify mobile before publishing Pin 16.
-- [ ] Publish Pin 16 to `Makeup for Skin Tone & Mature Skin` and test its link once.
+- [x] Publish Pin 16 to `Makeup for Skin Tone & Mature Skin` on 2026-07-17.
+- [ ] Test the Pin 16 link once and confirm the matched no-sign-up try-on path.
 
 | Field | Content |
 |---|---|
@@ -563,4 +565,117 @@ AI-generated visualization for beauty reference.
 - [ ] Save 10-12 high-quality related Pins after publishing, split between the two matching Boards.
 - [ ] Do not edit or republish old Pins today.
 - [ ] Record Pinterest impressions, engagements, outbound clicks, saves, and per-Pin impressions once tonight.
+- [ ] Check Google Images performance in GSC on the weekly schedule, not daily.
+
+## 2026-07-18
+
+### Pinterest Analytics Snapshot
+
+| Metric | Value |
+|---|---:|
+| Impressions | 570 |
+| Engagements | 37 |
+| Reported outbound clicks | 8 |
+| Confirmed external outbound clicks | 0 |
+| Saves | 0 |
+| Total audience | 4 |
+| Engaged audience | 1 |
+| Reported engagement rate | 6.49% |
+| Confirmed external outbound click rate | 0% |
+| Save rate | 0% |
+
+Data-quality note:
+
+- The account owner confirmed that all eight reported outbound clicks were link tests.
+- Treat reported outbound clicks and part of the engagement count as self-activity, not customer demand.
+- `Total audience` is not real time and is not a website unique-visitor metric.
+
+Interpretation:
+
+- Pinterest has started small-scale distribution testing, but 570 total impressions across the account is still a very small sample.
+- There is no confirmed organic outbound click or save yet, so paid-conversion performance cannot be evaluated.
+- Zero saves is the clearest early creative weakness because the current Pins may look more like SaaS ads than ideas people want to keep.
+- The evidence does not yet isolate photo quality, audience interest, and targeting. The next test must change creative intent, not merely generate prettier portraits.
+- Next creative test: publish one direct-response try-on Pin and one save-first utility Pin with a makeup map, shade logic, checklist, or step sequence.
+
+### Day 9 Dual-Channel Production
+
+Creative-test rule:
+
+```text
+Pin 17 tests save intent with a useful makeup map.
+Pin 18 tests conversion intent with a realistic trend-led try-on.
+Each Pin also receives a clean Google Images asset and a matched no-sign-up try-on path.
+```
+
+#### Topic 1: Watercolor Blush Placement Map
+
+- [x] Generate a realistic, attractive, low-AI-feel source photo in honest window light.
+- [x] Create Pin 17 as a 1000 x 1500 photo-plus-utility composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Build `/guides/blush-placement-map` as a dedicated conversion page without repeating the hero photo.
+- [x] Use the preselected `watercolor-blush` no-sign-up campaign try-on path.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=blush_placement_map`.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify the production URL before publishing Pin 17.
+- [ ] Publish Pin 17 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Blush Placement Map - Lift, Soften, or Freshen` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\17-blush-placement-map.png` |
+| Board | `Blush Placement & Face Shape Makeup` |
+| Board description | `Blush placement maps, face-shape makeup ideas, cream blush techniques and realistic makeup references for lifting, softening or freshening the face.` |
+| Title | `Blush Placement Map: Lift, Soften or Freshen` |
+| Link | `https://aibeautystylist.com/guides/blush-placement-map?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_blush_placement_map_01` |
+| Alt text | `Attractive woman wearing soft watercolor blush in natural window light above a three-part blush placement map for lifting, softening and freshening the face.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Where you place blush can lift, soften or freshen the face. Save this blush placement map, compare three easy directions, then preview a sheer watercolor blush on your own selfie before you apply it.
+
+AI-generated visualization for beauty reference.
+```
+
+#### Topic 2: Jelly Lip Tint in Real Daylight
+
+- [x] Generate a realistic, attractive, low-AI-feel source photo with visible natural lip texture.
+- [x] Create Pin 18 as a 1000 x 1500 photo-plus-copy composition.
+- [x] Create a clean Google Images version with no text, CTA, logo, or watermark.
+- [x] Build `/looks/jelly-lip-tint` as a dedicated conversion page without repeating the hero photo.
+- [x] Use the preselected `jelly-lip-tint` no-sign-up campaign try-on path.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=jelly_lip_real_daylight`.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify the production URL before publishing Pin 18.
+- [ ] Publish Pin 18 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Jelly Lip Tint - Sheer Cherry in Real Daylight` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\18-jelly-lip-real-daylight.png` |
+| Board | `Lip Color & Glossy Makeup` |
+| Board description | `Lip color ideas, glossy lip looks, jelly tints, berry stains and realistic lipstick previews for choosing shades in real light.` |
+| Title | `Jelly Lip Tint That Still Looks Real in Daylight` |
+| Link | `https://aibeautystylist.com/looks/jelly-lip-tint?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_jelly_lip_real_daylight_01` |
+| Alt text | `Attractive woman wearing translucent cherry jelly lip tint with visible natural lip texture in soft real daylight.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+A jelly lip should look sheer, glossy and softly stained, not plastic. Preview this translucent cherry tint on your own selfie and judge the color in real daylight before choosing your lip look.
+
+AI-generated visualization for beauty reference.
+```
+
+### Day 9 Distribution And Measurement
+
+- [ ] Save 10-12 high-quality related Pins after publishing, split between the two matching Boards.
+- [ ] Do not edit or republish old Pins today.
+- [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
+- [ ] Record Pinterest impressions, engagements, confirmed external outbound clicks, saves, total audience, and per-Pin impressions once tonight.
 - [ ] Check Google Images performance in GSC on the weekly schedule, not daily.

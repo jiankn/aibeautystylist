@@ -151,6 +151,12 @@ const pinterestTryonVisualsByKey = {
   olive_skin_muted_rose: "/images/pinterest/olive-skin-muted-rose.webp",
   olive_skin_muted_rose_east_asia:
     "/images/look-card/looks/olive-undertone-rose--east-asia-640.webp",
+  blush_placement_map: "/images/pinterest/blush-placement-map.webp",
+  watercolor_blush_east_asia:
+    "/images/look-card/looks/watercolor-blush--east-asia-640.webp",
+  jelly_lip_real_daylight: "/images/pinterest/jelly-lip-real-daylight.webp",
+  jelly_lip_east_asia:
+    "/images/look-card/looks/jelly-lip-tint--east-asia-640.webp",
 } as const;
 const pinterestTryonVisualsBySource: Record<string, string> = {
   pinterest_quick5: pinterestTryonVisualsByKey.quick5_real_morning,
@@ -167,6 +173,8 @@ const pinterestTryonVisualsBySource: Record<string, string> = {
   pinterest_mature_skin: pinterestTryonVisualsByKey.mature_skin_no_caking,
   pinterest_no_makeup: pinterestTryonVisualsByKey.no_makeup_real_daylight,
   pinterest_olive_skin: pinterestTryonVisualsByKey.olive_skin_muted_rose,
+  pinterest_blush_placement: pinterestTryonVisualsByKey.blush_placement_map,
+  pinterest_jelly_lip: pinterestTryonVisualsByKey.jelly_lip_real_daylight,
   google_images_first_date: pinterestTryonVisualsByKey.first_date_soft_daylight,
   google_images_date_night: pinterestTryonVisualsByKey.date_night_candlelight,
   google_images_wedding_guest:
@@ -180,6 +188,8 @@ const pinterestTryonVisualsBySource: Record<string, string> = {
   google_images_mature_skin: pinterestTryonVisualsByKey.mature_skin_no_caking,
   google_images_no_makeup: pinterestTryonVisualsByKey.no_makeup_real_daylight,
   google_images_olive_skin: pinterestTryonVisualsByKey.olive_skin_muted_rose,
+  google_images_blush_placement: pinterestTryonVisualsByKey.blush_placement_map,
+  google_images_jelly_lip: pinterestTryonVisualsByKey.jelly_lip_real_daylight,
 };
 const pinterestTryonVisualsByUtmContent: Record<string, string> = {
   ai_makeup_tryon_01: "/images/article-ai-tryon-comparison.webp",
@@ -223,6 +233,12 @@ const pinterestTryonVisualsByUtmContent: Record<string, string> = {
   pin_olive_skin_muted_rose_01:
     pinterestTryonVisualsByKey.olive_skin_muted_rose,
   google_image_olive_skin_01: pinterestTryonVisualsByKey.olive_skin_muted_rose,
+  pin_blush_placement_map_01: pinterestTryonVisualsByKey.blush_placement_map,
+  google_image_blush_placement_01:
+    pinterestTryonVisualsByKey.blush_placement_map,
+  pin_jelly_lip_real_daylight_01:
+    pinterestTryonVisualsByKey.jelly_lip_real_daylight,
+  google_image_jelly_lip_01: pinterestTryonVisualsByKey.jelly_lip_real_daylight,
 };
 const pinterestTryonVisual =
   (pinVisual &&

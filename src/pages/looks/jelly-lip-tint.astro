@@ -1,0 +1,197 @@
+---
+import PinterestExperimentPanel from "../../components/PinterestExperimentPanel.astro";
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+
+const page = {
+  title: "Jelly Lip Tint in Real Daylight: Sheer Color, Glossy Finish",
+  description:
+    "See how a translucent cherry jelly lip tint looks in honest daylight, then preview the same glossy soft-stain direction on your own selfie free.",
+  faq: [
+    {
+      q: "What makes a lip tint look jelly-like?",
+      a: "A jelly tint combines translucent pigment with a hydrated surface. The natural lip and its texture remain visible, while the finish reflects light like a thin layer of gloss.",
+    },
+    {
+      q: "How is a jelly lip tint different from lipstick?",
+      a: "Traditional lipstick creates a more opaque layer. Jelly tint is lighter, glossier, and designed to leave a soft stain as the surface shine wears down.",
+    },
+    {
+      q: "How should I judge a jelly lip color?",
+      a: "Check the color in neutral daylight. Look for enough contrast to brighten the face without making the lips appear detached from the cheeks and natural undertone.",
+    },
+  ],
+};
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+
+const heroImage = isEastAsianLocale
+  ? "/images/look-card/looks/jelly-lip-tint--east-asia-640.webp"
+  : "/images/pinterest/jelly-lip-real-daylight.webp";
+const pinVisual = isEastAsianLocale
+  ? "jelly_lip_east_asia"
+  : "jelly_lip_real_daylight";
+const marketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const attribution = pinterestSource
+  ? {
+      source: "pinterest_jelly_lip",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_jelly_lip")
+        ? incomingUtmContent
+        : "pin_jelly_lip_real_daylight_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_jelly_lip",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_jelly_lip_01",
+      }
+    : {
+        source: "jelly_lip_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "jelly_lip_tint",
+        utmContent: "jelly_lip_hero",
+      };
+
+const tryonParams = new URLSearchParams({
+  look: "jelly-lip-tint",
+  marketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: attribution.source,
+  pin_visual: pinVisual,
+  utm_source: attribution.utmSource,
+  utm_medium: attribution.utmMedium,
+  utm_campaign: attribution.utmCampaign,
+  utm_content: attribution.utmContent,
+});
+const tryonHref = localizeAppHref(
+  `/tryon?${tryonParams.toString()}#tryon-upload`,
+);
+const pricingHref = localizeAppHref("/pricing?source=pinterest_jelly_lip");
+const heroBody = pinterestSource
+  ? "You clicked for translucent cherry color in real daylight. Preview the same jelly finish on your own lips before choosing the shade."
+  : googleImageSource
+    ? "Found this finish in Google Images? Preview the same sheer cherry jelly tint on your own selfie."
+    : "A believable jelly lip keeps natural texture visible beneath sheer color and a hydrated surface.";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={heroImage}
+  ogImage={heroImage}
+  heroCtaHref={tryonHref}
+  heroCtaLabel="Try Jelly Lip Tint Free"
+  googleImageRetentionPath="/looks/jelly-lip-tint"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>Jelly Lip Tint That Still Looks Real in Daylight</h1>
+    <p>{heroBody}</p>
+  </Fragment>
+
+  {
+    pinterestSource && (
+      <PinterestExperimentPanel
+        mode="lip-finish"
+        kicker="Pinterest jelly-lip path"
+        title="Judge the color after the shine catches the light"
+        body="This page keeps the same translucent cherry tint, glassy surface, and soft-stain direction from the Pin. Jelly Lip Tint opens already selected for one no-sign-up selfie preview."
+        primaryHref={tryonHref}
+        primaryLabel="Try this lip free"
+        secondaryHref={pricingHref}
+        secondaryLabel="See member benefits"
+        proofPoints={[
+          "Same finish as the Pin",
+          "One no-sign-up preview",
+          "Upgrade to save results",
+        ]}
+        membershipTitle="Compare more lip colors only when useful"
+        membershipBody="The free preview answers whether this jelly tint brightens your face. Membership is for saved results, more shade comparisons, and HD references."
+      />
+    )
+  }
+
+  <section class="seo-content">
+    <h2>The three parts of a believable jelly lip</h2>
+    <p>
+      Jelly tint works when sheer pigment, reflected light, and a soft residual
+      stain feel like one finish. If the pigment is too opaque it reads as
+      lipstick. If the surface is too reflective it looks plastic. The useful
+      test is whether your natural lip texture still looks like part of the
+      result.
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>What to look for</th>
+          <th>What to avoid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Sheer color</strong></td>
+          <td>Natural lip depth remains visible through the tint.</td>
+          <td>A flat, opaque block around the mouth.</td>
+        </tr>
+        <tr>
+          <td><strong>Glassy surface</strong></td>
+          <td>Light catches the center without erasing lip lines.</td>
+          <td>White glare and inflated, waxy edges.</td>
+        </tr>
+        <tr>
+          <td><strong>Soft stain</strong></td>
+          <td>Color remains connected to the cheeks and undertone.</td>
+          <td>A ring of color around a faded center.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Why real daylight matters</h2>
+    <p>
+      Indoor warmth can make a cherry tint look more orange, while cool phone
+      lighting can make it appear more purple. Judge the preview in neutral
+      daylight and look at the entire face, not only the lips. The right tint
+      should make the eyes and skin look clearer without becoming the only
+      feature you see.
+    </p>
+  </section>
+
+  <section class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Preview the jelly finish on your lips</h2>
+      <p>
+        Jelly Lip Tint opens preselected. Upload one selfie and preview it free
+        before choosing the color.
+      </p>
+      <a href={tryonHref} class="cta-btn">Try Jelly Lip Tint Free</a>
+    </div>
+  </section>
+</SeoLandingLayout>
+
+<style is:global>
+  @media (max-width: 820px) {
+    .seo-hero-image {
+      order: -1;
+      width: min(100%, 340px);
+    }
+  }
+</style>

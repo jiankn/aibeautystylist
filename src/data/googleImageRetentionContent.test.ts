@@ -111,4 +111,36 @@ describe("googleImageRetentionContent", () => {
       expect(eastAsiaPath).toContain("marketProfile=east-asia");
     }
   });
+
+  it("keeps Pins 17 and 18 aligned with global and East Asian visuals", () => {
+    const cases = [
+      {
+        page: "/guides/blush-placement-map",
+        globalVisual: "blush_placement_map",
+        eastAsiaVisual: "watercolor_blush_east_asia",
+      },
+      {
+        page: "/looks/jelly-lip-tint",
+        globalVisual: "jelly_lip_real_daylight",
+        eastAsiaVisual: "jelly_lip_east_asia",
+      },
+    ] as const;
+
+    for (const item of cases) {
+      const globalContent = getGoogleImageRetentionContent(item.page, "en");
+      const eastAsiaContent = getGoogleImageRetentionContent(
+        item.page,
+        "zh-CN",
+      );
+      const globalPath = getGoogleImageRetentionTryOnPath(globalContent!.topic);
+      const eastAsiaPath = getGoogleImageRetentionTryOnPath(
+        eastAsiaContent!.topic,
+      );
+
+      expect(globalPath).toContain(`pin_visual=${item.globalVisual}`);
+      expect(globalPath).toContain("marketProfile=global-diverse");
+      expect(eastAsiaPath).toContain(`pin_visual=${item.eastAsiaVisual}`);
+      expect(eastAsiaPath).toContain("marketProfile=east-asia");
+    }
+  });
 });

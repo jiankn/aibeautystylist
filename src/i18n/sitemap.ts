@@ -10,7 +10,7 @@ export interface SitemapPage {
   readonly changefreq: string;
 }
 
-export const sitemapLastmod = "2026-07-10";
+export const sitemapLastmod = "2026-07-18";
 
 const corePages: SitemapPage[] = [
   { url: "/", priority: "1.0", changefreq: "weekly" },
@@ -44,6 +44,7 @@ const lookPages: SitemapPage[] = [
   { url: "/looks/soft-glam", priority: "0.7", changefreq: "monthly" },
   { url: "/looks/natural-makeup", priority: "0.7", changefreq: "monthly" },
   { url: "/looks/no-makeup-makeup", priority: "0.7", changefreq: "monthly" },
+  { url: "/looks/jelly-lip-tint", priority: "0.7", changefreq: "monthly" },
   { url: "/looks/dewy-skin", priority: "0.7", changefreq: "monthly" },
   { url: "/looks/matte-makeup", priority: "0.7", changefreq: "monthly" },
   { url: "/looks/date-night", priority: "0.7", changefreq: "monthly" },
@@ -79,6 +80,11 @@ const demographicPages: SitemapPage[] = [
 
 const guidePages: SitemapPage[] = [
   { url: "/guides/beginner-tutorial", priority: "0.7", changefreq: "monthly" },
+  {
+    url: "/guides/blush-placement-map",
+    priority: "0.7",
+    changefreq: "monthly",
+  },
   { url: "/guides/apply-step-by-step", priority: "0.6", changefreq: "monthly" },
   { url: "/guides/beginner-routine", priority: "0.6", changefreq: "monthly" },
   { url: "/guides/easy-everyday", priority: "0.6", changefreq: "monthly" },

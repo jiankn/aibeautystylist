@@ -137,6 +137,22 @@ export const googleImageAssets: readonly GoogleImageAsset[] = [
     caption:
       "A realistic olive-undertone makeup direction with plum-taupe eyes, dusty-rose cheeks, and a rosewood lip designed to avoid orange or grey color casts.",
   },
+  {
+    sourcePin: "pin_blush_placement_map_01",
+    pageUrl: "/guides/blush-placement-map",
+    imageUrl: "/images/pinterest/blush-placement-map.webp",
+    title: "Blush placement map for lifted, soft, or fresh cheeks",
+    caption:
+      "A realistic watercolor-blush reference for comparing lifted temple placement, softened apple placement, and a fresh high-cheek placement.",
+  },
+  {
+    sourcePin: "pin_jelly_lip_real_daylight_01",
+    pageUrl: "/looks/jelly-lip-tint",
+    imageUrl: "/images/pinterest/jelly-lip-real-daylight.webp",
+    title: "Jelly lip tint preview in real daylight",
+    caption:
+      "A realistic translucent cherry jelly lip tint with visible natural lip texture, a glassy surface, and a soft residual stain.",
+  },
 ];
 
 function escapeXml(value: string): string {

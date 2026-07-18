@@ -21,6 +21,23 @@ describe("localized route switching", () => {
     expect(resolveLocaleRoute("/zh-cn/tryon").routePathname).toBe("/tryon");
   });
 
+  it("rewrites the Pinterest experiment pages for all locale prefixes", () => {
+    const pages = [
+      "/guides/blush-placement-map",
+      "/looks/jelly-lip-tint",
+    ] as const;
+
+    for (const language of languageConfigs.filter(
+      (candidate) => candidate.slug !== "en",
+    )) {
+      for (const page of pages) {
+        const localizedPath = `/${language.pathPrefix}${page}`;
+        expect(shouldRewriteLocaleRoute(localizedPath)).toBe(true);
+        expect(resolveLocaleRoute(localizedPath).routePathname).toBe(page);
+      }
+    }
+  });
+
   it("maps the Korean makeup order guide to the Simplified Chinese article", () => {
     const href = getLanguageSwitchPathname("/ko/guides/메이크업-순서", "zh-cn");
     const route = resolveLocaleRoute(href);
