@@ -618,7 +618,7 @@ Each Pin also receives a clean Google Images asset and a matched no-sign-up try-
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=blush_placement_map`.
 - [x] Add locale-aware East Asian and global-diverse image mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify the production URL before publishing Pin 17.
+- [x] Deploy and verify the production URL before publishing Pin 17.
 - [ ] Publish Pin 17 and test its link once.
 
 | Field | Content |
@@ -650,7 +650,7 @@ AI-generated visualization for beauty reference.
 - [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=jelly_lip_real_daylight`.
 - [x] Add locale-aware East Asian and global-diverse image mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify the production URL before publishing Pin 18.
+- [x] Deploy and verify the production URL before publishing Pin 18.
 - [ ] Publish Pin 18 and test its link once.
 
 | Field | Content |
@@ -674,6 +674,8 @@ AI-generated visualization for beauty reference.
 
 ### Day 9 Distribution And Measurement
 
+- [x] Deploy production Worker version `a75fb570-7e75-4a14-82ca-c0509a26ebbb` on 2026-07-19.
+- [x] Verify both production landing pages, matched selected-look images, UTM values, locale asset packs, and visible no-sign-up upload controls.
 - [ ] Save 10-12 high-quality related Pins after publishing, split between the two matching Boards.
 - [ ] Do not edit or republish old Pins today.
 - [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
