@@ -5,6 +5,7 @@ import {
   resolveBySnapshot,
 } from "../../../data/makeup/resolveCatalog";
 import { isValidMarketProfile } from "../../../data/makeup/audienceTypes";
+import { getPinterestCampaignLook } from "../../../data/makeup/pinterestCampaignLooks";
 import { requireAuthenticatedUser } from "../../../lib/authGuard";
 import {
   getEntitlementContext,
@@ -50,6 +51,7 @@ interface CreateJobBody {
   uploadId?: string;
   lookSlug?: string;
   marketProfile?: string;
+  campaignLookId?: string;
   privateTemplateId?: string;
   idempotencyKey?: string;
   requiredPlan?: string;
@@ -242,6 +244,19 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       404,
     );
   }
+  const campaignLook = body.campaignLookId
+    ? getPinterestCampaignLook(body.campaignLookId, look.slug)
+    : undefined;
+  if (body.campaignLookId && !campaignLook) {
+    return apiError(
+      {
+        code: "INVALID_CAMPAIGN_LOOK",
+        message: "The selected campaign look does not match this makeup.",
+        retryable: false,
+      },
+      422,
+    );
+  }
   const requiredPlan = normalizeRequiredPlan(body.requiredPlan);
   if (!requiredPlan) {
     return apiError(
@@ -348,6 +363,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
         uploadId: body.uploadId,
         purpose,
         lookSlug: body.lookSlug,
+        campaignLookId: campaignLook?.id,
         privateTemplateId: body.privateTemplateId,
       })
     ) {
@@ -423,6 +439,7 @@ export const POST: APIRoute = async ({ cookies, locals, request }) => {
       audienceContext,
       purpose,
       privateTemplate,
+      campaignLookId: campaignLook?.id,
     });
     if (guestPass) {
       await attachPinterestGuestJob(guestPass.id, result.job.id, bindings.DB);

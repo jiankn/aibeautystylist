@@ -143,4 +143,36 @@ describe("googleImageRetentionContent", () => {
       expect(eastAsiaPath).toContain("marketProfile=east-asia");
     }
   });
+
+  it("keeps Pins 19 and 20 aligned with global and East Asian visuals", () => {
+    const cases = [
+      {
+        page: "/looks/burgundy-velvet-makeup",
+        globalVisual: "burgundy_velvet_editorial",
+        eastAsiaVisual: "burgundy_velvet_east_asia",
+      },
+      {
+        page: "/looks/champagne-eye-glow",
+        globalVisual: "champagne_eye_glow_editorial",
+        eastAsiaVisual: "champagne_eye_glow_east_asia",
+      },
+    ] as const;
+
+    for (const item of cases) {
+      const globalContent = getGoogleImageRetentionContent(item.page, "en");
+      const eastAsiaContent = getGoogleImageRetentionContent(
+        item.page,
+        "zh-CN",
+      );
+      const globalPath = getGoogleImageRetentionTryOnPath(globalContent!.topic);
+      const eastAsiaPath = getGoogleImageRetentionTryOnPath(
+        eastAsiaContent!.topic,
+      );
+
+      expect(globalPath).toContain(`pin_visual=${item.globalVisual}`);
+      expect(globalPath).toContain("marketProfile=global-diverse");
+      expect(eastAsiaPath).toContain(`pin_visual=${item.eastAsiaVisual}`);
+      expect(eastAsiaPath).toContain("marketProfile=east-asia");
+    }
+  });
 });

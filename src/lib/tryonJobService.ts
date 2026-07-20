@@ -4,6 +4,7 @@ import type {
   ResolvedLook,
 } from "../data/makeup/audienceTypes";
 import { getVariantById } from "../data/makeup/marketVariants";
+import { getPinterestCampaignLook } from "../data/makeup/pinterestCampaignLooks";
 import { getRecipeById } from "../data/makeup/recipes";
 import { recordAiCall } from "./aiCallLogs";
 import {
@@ -96,6 +97,7 @@ export interface CreateTryOnJobOptions {
   audienceContext?: AudienceContext;
   purpose?: TryOnJobPurpose;
   privateTemplate?: PrivateLookTemplate;
+  campaignLookId?: string;
 }
 
 interface ProcessingAudienceContext {
@@ -123,6 +125,7 @@ export type TryOnJobServiceErrorCode =
   | "JOB_ALREADY_EXISTS"
   | "FEATURE_UNAVAILABLE"
   | "PRIVATE_TEMPLATE_NOT_FOUND"
+  | "INVALID_CAMPAIGN_LOOK"
   | "QUOTA_EXHAUSTED";
 
 export class TryOnJobServiceError extends Error {
@@ -149,8 +152,21 @@ export async function createTryOnJob(
     audienceContext,
     purpose = "tryon",
     privateTemplate,
+    campaignLookId,
   } = options;
   const provider = bindings.TRYON_PROVIDER ?? "mock";
+  const campaignLook = campaignLookId
+    ? getPinterestCampaignLook(campaignLookId, look.slug)
+    : undefined;
+
+  if (campaignLookId && !campaignLook) {
+    throw new TryOnJobServiceError(
+      "INVALID_CAMPAIGN_LOOK",
+      "The selected campaign look does not match this makeup.",
+      false,
+      422,
+    );
+  }
 
   if (provider !== "mock" && !isRemoteTryOnProvider(provider)) {
     throw new TryOnJobServiceError(
@@ -207,6 +223,7 @@ export async function createTryOnJob(
       audienceContext,
       purpose,
       privateTemplate,
+      campaignLookId: campaignLook?.id,
     });
   }
 
@@ -222,6 +239,7 @@ export async function createTryOnJob(
     audienceContext,
     purpose,
     privateTemplate,
+    campaignLookId: campaignLook?.id,
   });
 }
 
@@ -237,6 +255,7 @@ async function createMockReferenceJob(options: {
   audienceContext?: AudienceContext;
   purpose: TryOnJobPurpose;
   privateTemplate?: PrivateLookTemplate;
+  campaignLookId?: string;
 }): Promise<CreateTryOnJobResult> {
   const job = createReferenceFallbackJob(options.look);
   const reservation = await reserveQuota(
@@ -265,6 +284,7 @@ async function createMockReferenceJob(options: {
     marketProfile: options.audienceContext?.marketProfile,
     lookSource: options.privateTemplate ? "private-template" : "catalog",
     privateTemplateId: options.privateTemplate?.id,
+    campaignLookId: options.campaignLookId,
   };
 
   try {
@@ -301,6 +321,7 @@ async function createQueuedJob(options: {
   audienceContext?: AudienceContext;
   purpose: TryOnJobPurpose;
   privateTemplate?: PrivateLookTemplate;
+  campaignLookId?: string;
 }): Promise<CreateTryOnJobResult> {
   if (!options.upload.r2Key || !options.bindings.USER_UPLOADS) {
     throw new TryOnJobServiceError(
@@ -336,6 +357,7 @@ async function createQueuedJob(options: {
     lookSource: options.privateTemplate ? "private-template" : "catalog",
     privateTemplateId: options.privateTemplate?.id,
     qualityTier,
+    campaignLookId: options.campaignLookId,
   };
   const reservation = await reserveQuota(
     options.userId,
@@ -997,7 +1019,7 @@ async function completeImageStageWithGemini(options: {
     const generated = await generateGeminiMakeupImage({
       apiKey,
       model,
-      prompt: makeupImagePrompt(options.look),
+      prompt: makeupImagePrompt(options.look, options.job.campaignLookId),
       photo: {
         data: options.photoData,
         mimeType: options.photoMimeType,
@@ -1745,7 +1767,7 @@ async function completeStandardImageStageWithEvolink(options: {
       generated = await generateEvolinkMakeupImage({
         apiKey: options.bindings.EVOLINK_API_KEY,
         model,
-        prompt: makeupImagePrompt(options.look),
+        prompt: makeupImagePrompt(options.look, options.job.campaignLookId),
         photo: {
           data: options.photoData,
           mimeType: options.photoMimeType,
@@ -1861,7 +1883,7 @@ async function completeQualityGatedImageStageWithEvolink(options: {
         apiKey: options.bindings.EVOLINK_API_KEY,
         model,
         prompt: [
-          makeupImagePrompt(options.look),
+          makeupImagePrompt(options.look, options.job.campaignLookId),
           previousCandidate
             ? "Input image order: Image 1 is the ORIGINAL USER SELFIE; Image 2 is the CURRENT TRY-ON CANDIDATE. Edit the current candidate directly and do not restart the makeup from scratch."
             : "",
@@ -1937,7 +1959,7 @@ async function completeQualityGatedImageStageWithEvolink(options: {
       jobId: options.job.id,
       qualityTier,
       attempt,
-      target: makeupQualityTarget(options.look),
+      target: makeupQualityTarget(options.look, options.job.campaignLookId),
       photoData: options.photoData,
       photoMimeType: options.photoMimeType,
       resultData: generated.image.data,
@@ -2190,10 +2212,14 @@ function qualityEvolinkImageOptions(
     : { size: "2:3", quality: premium ? "2K" : "1K" };
 }
 
-function makeupQualityTarget(look: LookCatalogItem | ResolvedLook): string {
+function makeupQualityTarget(
+  look: LookCatalogItem | ResolvedLook,
+  campaignLookId?: string,
+): string {
   const recipe = isResolvedLook(look)
     ? getRecipeById(look.recipeId)
     : undefined;
+  const campaignLook = getPinterestCampaignLook(campaignLookId, look.slug);
   return [
     `${look.title}: ${look.intent}`,
     `finish=${look.finish.join(", ")}`,
@@ -2206,6 +2232,7 @@ function makeupQualityTarget(look: LookCatalogItem | ResolvedLook): string {
     isCommuteLook(look)
       ? "sheer breathable complexion with localized medium-coverage correction of visible red or brown post-blemish discoloration, especially on the forehead; substantially reduce color contrast while preserving pores, skin grain, moles and freckles; keep forehead-to-hairline coverage continuous without smoothing or an opaque mask"
       : "",
+    campaignLook ? `campaign fidelity=${campaignLook.qualityTarget}` : "",
   ]
     .filter(Boolean)
     .join("; ");
@@ -2352,13 +2379,17 @@ function privateEvolinkImageOptions(
     : { size: "2:3", quality: "1K" };
 }
 
-function makeupImagePrompt(look: LookCatalogItem | ResolvedLook): string {
+function makeupImagePrompt(
+  look: LookCatalogItem | ResolvedLook,
+  campaignLookId?: string,
+): string {
   const recipe = isResolvedLook(look)
     ? getRecipeById(look.recipeId)
     : undefined;
   const variant = isResolvedLook(look)
     ? getVariantById(look.marketVariantId)
     : undefined;
+  const campaignLook = getPinterestCampaignLook(campaignLookId, look.slug);
   return [
     "Use the input selfie as the only person reference and create a realistic makeup try-on preview.",
     "Preserve the exact identity, facial proportions, eye size and shape, nose width, natural lip shape, jawline, chin, expression, head angle, pose, camera perspective, crop, framing, hairstyle, clothing, jewelry, background, and lighting from the input photo.",
@@ -2386,6 +2417,7 @@ function makeupImagePrompt(look: LookCatalogItem | ResolvedLook): string {
     variant?.promptAdditions.length
       ? `Market styling context: ${variant.promptAdditions.join(", ")}.`
       : "",
+    campaignLook?.generationDirection ?? "",
     isMatureSkinLook(look)
       ? "Highest-priority mature-skin no-caking direction: use a sheer hydrating satin base only where visibly needed; never replace the face with an opaque, uniformly porcelain complexion. Keep every visible pore, fine line, under-eye texture, natural skin-grain variation, mole, freckle, and lip line recognizable. Use softly lifted taupe eye makeup, fine natural brow definition, cream rose blush placed high on the outer cheeks with subtle diffused edges, and a hydrating rosewood satin lip that retains natural lip texture. Keep the T-zone softly luminous but controlled: no white stripe or blown highlight on the nose or forehead, and no broad pink blush across the under-eye area or center face. Do not make the person look younger; show flattering makeup on the same real skin."
       : "",

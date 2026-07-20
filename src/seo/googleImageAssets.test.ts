@@ -27,6 +27,8 @@ const requiredLaunchPins = [
   "pin_olive_skin_muted_rose_01",
   "pin_blush_placement_map_01",
   "pin_jelly_lip_real_daylight_01",
+  "pin_burgundy_velvet_editorial_01",
+  "pin_champagne_eye_glow_editorial_01",
 ] as const;
 
 const publicImageModules = import.meta.glob("../../public/images/**/*", {
@@ -41,7 +43,7 @@ const publicImagePaths = new Set(
 );
 
 describe("googleImageAssets", () => {
-  it("covers the first 18 Pinterest and Google Images topics", () => {
+  it("covers the first 20 Pinterest and Google Images topics", () => {
     const sourcePins = new Set(
       googleImageAssets.map((asset) => asset.sourcePin),
     );

@@ -165,6 +165,7 @@ export const POST: APIRoute = async ({ cookies, locals, params, request }) => {
       audienceContext,
       purpose: getTryOnJobPurpose(originalJob),
       privateTemplate,
+      campaignLookId: originalJob.campaignLookId,
     });
     await scheduleTryOnJobProcessing(locals, result.job, {
       userId,

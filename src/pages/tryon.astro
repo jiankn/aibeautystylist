@@ -9,6 +9,7 @@ import TutorialSteps from "../components/TutorialSteps.astro";
 import TryOnHistoryPreview from "../components/TryOnHistoryPreview.astro";
 import WorkspaceStatusBar from "../components/WorkspaceStatusBar.astro";
 import { isValidMarketProfile } from "../data/makeup/audienceTypes";
+import { resolvePinterestCampaignLook } from "../data/makeup/pinterestCampaignLooks";
 import { resolveLookCatalog } from "../data/makeup/resolveCatalog";
 import { resolvePageAssets } from "../data/makeup/resolvePageAssets";
 import { getTutorialByLookSlug, getTutorialUiCopy } from "../data/tutorials";
@@ -157,6 +158,13 @@ const pinterestTryonVisualsByKey = {
   jelly_lip_real_daylight: "/images/pinterest/jelly-lip-real-daylight.webp",
   jelly_lip_east_asia:
     "/images/look-card/looks/jelly-lip-tint--east-asia-640.webp",
+  burgundy_velvet_editorial: "/images/pinterest/burgundy-velvet-editorial.webp",
+  burgundy_velvet_east_asia:
+    "/images/look-card/looks/burgundy-velvet--east-asia-640.webp",
+  champagne_eye_glow_editorial:
+    "/images/pinterest/champagne-eye-glow-editorial.webp",
+  champagne_eye_glow_east_asia:
+    "/images/look-card/looks/reflective-lid-glow--east-asia-640.webp",
 } as const;
 const pinterestTryonVisualsBySource: Record<string, string> = {
   pinterest_quick5: pinterestTryonVisualsByKey.quick5_real_morning,
@@ -175,6 +183,10 @@ const pinterestTryonVisualsBySource: Record<string, string> = {
   pinterest_olive_skin: pinterestTryonVisualsByKey.olive_skin_muted_rose,
   pinterest_blush_placement: pinterestTryonVisualsByKey.blush_placement_map,
   pinterest_jelly_lip: pinterestTryonVisualsByKey.jelly_lip_real_daylight,
+  pinterest_burgundy_velvet:
+    pinterestTryonVisualsByKey.burgundy_velvet_editorial,
+  pinterest_champagne_eye:
+    pinterestTryonVisualsByKey.champagne_eye_glow_editorial,
   google_images_first_date: pinterestTryonVisualsByKey.first_date_soft_daylight,
   google_images_date_night: pinterestTryonVisualsByKey.date_night_candlelight,
   google_images_wedding_guest:
@@ -190,6 +202,10 @@ const pinterestTryonVisualsBySource: Record<string, string> = {
   google_images_olive_skin: pinterestTryonVisualsByKey.olive_skin_muted_rose,
   google_images_blush_placement: pinterestTryonVisualsByKey.blush_placement_map,
   google_images_jelly_lip: pinterestTryonVisualsByKey.jelly_lip_real_daylight,
+  google_images_burgundy_velvet:
+    pinterestTryonVisualsByKey.burgundy_velvet_editorial,
+  google_images_champagne_eye:
+    pinterestTryonVisualsByKey.champagne_eye_glow_editorial,
 };
 const pinterestTryonVisualsByUtmContent: Record<string, string> = {
   ai_makeup_tryon_01: "/images/article-ai-tryon-comparison.webp",
@@ -239,6 +255,14 @@ const pinterestTryonVisualsByUtmContent: Record<string, string> = {
   pin_jelly_lip_real_daylight_01:
     pinterestTryonVisualsByKey.jelly_lip_real_daylight,
   google_image_jelly_lip_01: pinterestTryonVisualsByKey.jelly_lip_real_daylight,
+  pin_burgundy_velvet_editorial_01:
+    pinterestTryonVisualsByKey.burgundy_velvet_editorial,
+  google_image_burgundy_velvet_01:
+    pinterestTryonVisualsByKey.burgundy_velvet_editorial,
+  pin_champagne_eye_glow_editorial_01:
+    pinterestTryonVisualsByKey.champagne_eye_glow_editorial,
+  google_image_champagne_eye_01:
+    pinterestTryonVisualsByKey.champagne_eye_glow_editorial,
 };
 const pinterestTryonVisual =
   (pinVisual &&
@@ -247,6 +271,14 @@ const pinterestTryonVisual =
     ]) ||
   (source ? pinterestTryonVisualsBySource[source] : undefined) ||
   (utmContent ? pinterestTryonVisualsByUtmContent[utmContent] : undefined);
+const pinterestCampaignLook = isMatchedCampaignTraffic
+  ? resolvePinterestCampaignLook({
+      lookSlug: requestedSlug ?? undefined,
+      visualKey: pinVisual,
+      source,
+      utmContent,
+    })
+  : undefined;
 const requestedLook = requestedLookBase
   ? {
       ...requestedLookBase,
@@ -486,6 +518,8 @@ const experienceNote = workspaceStatusCopy.notes[experience.planCode];
     data-tryon-audience={experience.audience}
     data-tryon-plan={experience.planCode}
     data-tryon-market-profile={tryonAudienceContext.marketProfile}
+    data-campaign-look-id={pinterestCampaignLook?.id}
+    data-campaign-look-slug={pinterestCampaignLook?.lookSlug}
     data-pinterest-guest-tryon={isCampaignGuestTryon ? "true" : "false"}
   >
     <div class="shell">

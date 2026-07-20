@@ -25,6 +25,8 @@ describe("localized route switching", () => {
     const pages = [
       "/guides/blush-placement-map",
       "/looks/jelly-lip-tint",
+      "/looks/burgundy-velvet-makeup",
+      "/looks/champagne-eye-glow",
     ] as const;
 
     for (const language of languageConfigs.filter(

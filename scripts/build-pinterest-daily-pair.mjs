@@ -130,6 +130,27 @@ const pins = [
     supporting: "See the finish on your face",
     cta: "TRY THIS LIP FREE",
   },
+  {
+    variant: "full-bleed-editorial",
+    source: "tmp/pinterest-sources/burgundy-velvet-editorial.png",
+    cleanOutput: "public/images/pinterest/burgundy-velvet-editorial.webp",
+    pinOutput: "artifacts/pinterest/19-burgundy-velvet-makeup.png",
+    titleLine1: "BURGUNDY",
+    titleLine2: "VELVET",
+    accent: "#e3a0ad",
+    cta: "TRY IT ON FREE",
+  },
+  {
+    variant: "full-bleed-editorial",
+    source: "tmp/pinterest-sources/champagne-eye-glow-editorial.png",
+    cleanOutput: "public/images/pinterest/champagne-eye-glow-editorial.webp",
+    pinOutput: "artifacts/pinterest/20-champagne-eye-glow.png",
+    titleLine1: "CHAMPAGNE",
+    titleLine2: "EYE GLOW",
+    titleLine1FontSize: 66,
+    accent: "#f0c684",
+    cta: "TRY IT ON FREE",
+  },
 ];
 
 function escapeXml(value) {
@@ -287,6 +308,41 @@ function panelSvg(pin) {
   `);
 }
 
+function editorialOverlaySvg(pin) {
+  const copy = Object.fromEntries(
+    Object.entries(pin).map(([key, value]) => [
+      key,
+      typeof value === "string" ? escapeXml(value) : value,
+    ]),
+  );
+
+  return Buffer.from(`
+    <svg width="1000" height="1500" viewBox="0 0 1000 1500" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="editorial-shade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#09070a" stop-opacity="0"/>
+          <stop offset="64%" stop-color="#09070a" stop-opacity="0"/>
+          <stop offset="100%" stop-color="#09070a" stop-opacity="0.76"/>
+        </linearGradient>
+      </defs>
+
+      <rect width="1000" height="1500" fill="url(#editorial-shade)"/>
+
+      <g transform="translate(58 56)">
+        <rect width="330" height="54" rx="27" fill="#120f13" fill-opacity="0.64" stroke="#ffffff" stroke-opacity="0.26"/>
+        <text x="28" y="35" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" fill="#ffffff">AI BEAUTY STYLIST</text>
+      </g>
+
+      <text x="58" y="1255" font-family="Arial, Helvetica, sans-serif" font-size="${pin.titleLine1FontSize ?? 76}" font-weight="800" fill="#ffffff" stroke="#171117" stroke-opacity="0.3" stroke-width="2" paint-order="stroke">${copy.titleLine1}</text>
+      <text x="58" y="1345" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="800" fill="${copy.accent}" stroke="#171117" stroke-opacity="0.32" stroke-width="2" paint-order="stroke">${copy.titleLine2}</text>
+
+      <line x1="58" y1="1385" x2="942" y2="1385" stroke="#ffffff" stroke-opacity="0.42" stroke-width="2"/>
+      <text x="58" y="1436" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="800" letter-spacing="0.6" fill="#ffffff">${copy.cta}</text>
+      <text x="942" y="1436" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#ffffff">aibeautystylist.com</text>
+    </svg>
+  `);
+}
+
 const requestedPins = new Set(process.argv.slice(2));
 const pinsToBuild =
   requestedPins.size === 0
@@ -305,8 +361,9 @@ for (const pin of pinsToBuild) {
   const sourcePath = path.join(root, pin.source);
   const cleanOutputPath = path.join(root, pin.cleanOutput);
   const pinOutputPath = path.join(root, pin.pinOutput);
-  const photoHeight = pin.photoHeight ?? 1000;
-  const panelHeight = pin.panelHeight ?? 500;
+  const isFullBleedEditorial = pin.variant === "full-bleed-editorial";
+  const photoHeight = isFullBleedEditorial ? 1500 : (pin.photoHeight ?? 1000);
+  const panelHeight = isFullBleedEditorial ? 0 : (pin.panelHeight ?? 500);
   if (photoHeight + panelHeight !== 1500) {
     throw new Error(`Invalid 2:3 layout for ${pin.pinOutput}`);
   }
@@ -328,8 +385,30 @@ for (const pin of pinsToBuild) {
     })
     .png()
     .toBuffer();
-  const logo = await sharp(logoPath).resize(52, 52).png().toBuffer();
+  const logo = isFullBleedEditorial
+    ? undefined
+    : await sharp(logoPath).resize(52, 52).png().toBuffer();
   const logoTop = photoHeight + (pin.variant === "save-guide" ? 39 : 49);
+
+  const layers = isFullBleedEditorial
+    ? [
+        { input: photo, top: 0, left: 0 },
+        { input: editorialOverlaySvg(pin), top: 0, left: 0 },
+      ]
+    : [
+        { input: photo, top: 0, left: 0 },
+        { input: panelSvg(pin), top: photoHeight, left: 0 },
+        {
+          input: logo,
+          top: logoTop,
+          left:
+            pin.variant === "save-guide"
+              ? 52
+              : pin.variant === "lip-conversion"
+                ? 64
+                : 70,
+        },
+      ];
 
   await sharp({
     create: {
@@ -339,20 +418,7 @@ for (const pin of pinsToBuild) {
       background: "#fffaf8",
     },
   })
-    .composite([
-      { input: photo, top: 0, left: 0 },
-      { input: panelSvg(pin), top: photoHeight, left: 0 },
-      {
-        input: logo,
-        top: logoTop,
-        left:
-          pin.variant === "save-guide"
-            ? 52
-            : pin.variant === "lip-conversion"
-              ? 64
-              : 70,
-      },
-    ])
+    .composite(layers)
     .png({ compressionLevel: 9, adaptiveFiltering: true })
     .toFile(pinOutputPath);
 

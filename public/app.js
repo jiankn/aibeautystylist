@@ -681,12 +681,19 @@ window.__absCreateTryOnJob = async function createTryOnJobFlow({
   lookSlug,
   marketProfile = document.querySelector("[data-tryon-market-profile]")?.dataset
     .tryonMarketProfile,
+  campaignLookId = document.querySelector("[data-campaign-look-id]")?.dataset
+    .campaignLookId,
   requiredPlan = "free",
   purpose = "tryon",
   idempotencyKey,
   signal,
 }) {
   if (!file) throw new Error(msg("chooseFile"));
+  const campaignLookSlug = document.querySelector(
+    "[data-campaign-look-slug]",
+  )?.dataset.campaignLookSlug;
+  const activeCampaignLookId =
+    campaignLookSlug === lookSlug ? campaignLookId : undefined;
   const session = await getCurrentSession({ refresh: true });
   if (!isAccountSession(session)) {
     throw new Error(msg("loginRequired"));
@@ -739,6 +746,7 @@ window.__absCreateTryOnJob = async function createTryOnJobFlow({
         uploadId: upload.id,
         lookSlug,
         marketProfile,
+        campaignLookId: activeCampaignLookId,
         idempotencyKey: idempotencyKey || crypto.randomUUID(),
         requiredPlan,
         purpose,
@@ -1777,6 +1785,12 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
   const getActiveMarketProfile = () =>
     document.querySelector("[data-tryon-market-profile]")?.dataset
       .tryonMarketProfile;
+  const getActiveCampaignLookId = (lookSlug) => {
+    const workspace = document.querySelector("[data-campaign-look-id]");
+    return workspace?.dataset.campaignLookSlug === lookSlug
+      ? workspace.dataset.campaignLookId
+      : undefined;
+  };
   const setTaskNavSuppressed = (suppressed) => {
     window.absSetMobileBottomNavSuppressed?.("tryon-task", suppressed);
   };
@@ -2133,6 +2147,9 @@ document.querySelectorAll("[data-upload]").forEach((button) => {
             uploadId: result.data.id,
             lookSlug: activeLook?.dataset.lookSlug,
             marketProfile: getActiveMarketProfile(),
+            campaignLookId: getActiveCampaignLookId(
+              activeLook?.dataset.lookSlug,
+            ),
             idempotencyKey,
           }),
         }),

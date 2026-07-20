@@ -153,6 +153,22 @@ export const googleImageAssets: readonly GoogleImageAsset[] = [
     caption:
       "A realistic translucent cherry jelly lip tint with visible natural lip texture, a glassy surface, and a soft residual stain.",
   },
+  {
+    sourcePin: "pin_burgundy_velvet_editorial_01",
+    pageUrl: "/looks/burgundy-velvet-makeup",
+    imageUrl: "/images/pinterest/burgundy-velvet-editorial.webp",
+    title: "Burgundy velvet makeup with wine-plum eyes and berry lips",
+    caption:
+      "A realistic editorial burgundy makeup look with diffused wine-plum eyes, velvet berry lips, restrained cheeks, and visible natural skin texture.",
+  },
+  {
+    sourcePin: "pin_champagne_eye_glow_editorial_01",
+    pageUrl: "/looks/champagne-eye-glow",
+    imageUrl: "/images/pinterest/champagne-eye-glow-editorial.webp",
+    title: "Champagne eye glow with reflective metallic lids",
+    caption:
+      "A realistic champagne eye makeup look with controlled metallic reflection, cocoa depth, luminous deep skin, and natural texture.",
+  },
 ];
 
 function escapeXml(value: string): string {

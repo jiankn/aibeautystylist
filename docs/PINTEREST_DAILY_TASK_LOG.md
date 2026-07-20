@@ -681,3 +681,93 @@ AI-generated visualization for beauty reference.
 - [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
 - [ ] Record Pinterest impressions, engagements, confirmed external outbound clicks, saves, total audience, and per-Pin impressions once tonight.
 - [ ] Check Google Images performance in GSC on the weekly schedule, not daily.
+
+## 2026-07-20
+
+### Day 10 Creative Strategy Shift
+
+Creative rule:
+
+```text
+Pins 19 and 20 replace the split photo-and-white-panel template with full-bleed editorial beauty photography.
+The image carries the emotional impact; overlay copy is limited to the look name, a free try-on cue, and the domain.
+Every Pin still keeps the matched Pin -> landing page -> preselected no-sign-up try-on path.
+```
+
+#### Topic 1: Burgundy Velvet Makeup
+
+- [x] Generate a premium, realistic full-frame beauty portrait with visible skin and lip texture.
+- [x] Create Pin 19 as a 1000 x 1500 full-bleed editorial composition without a white copy panel.
+- [x] Create a clean Google Images asset with no text, CTA, logo, or watermark.
+- [x] Build `/looks/burgundy-velvet-makeup` as a dedicated conversion page without repeating the hero image.
+- [x] Preselect `burgundy-velvet` for one no-sign-up campaign try-on.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=burgundy_velvet_editorial`.
+- [x] Bind `burgundy_velvet_editorial_v1` to the generated try-on prompt and quality target without adding a new catalog recipe.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify production before publishing Pin 19.
+- [ ] Publish Pin 19 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Burgundy Velvet Makeup - Wine-Plum Editorial` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\19-burgundy-velvet-makeup.png` |
+| Board | `Date Night Makeup Ideas` |
+| Title | `Burgundy Velvet Makeup That Looks Expensive` |
+| Link | `https://aibeautystylist.com/looks/burgundy-velvet-makeup?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_burgundy_velvet_editorial_01` |
+| Alt text | `Attractive woman wearing diffused wine-plum eye makeup, rich burgundy velvet lipstick and satin skin in a realistic evening beauty portrait.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Deep burgundy makeup can look rich instead of harsh when wine-plum eyes, berry lips and satin skin stay balanced. Preview this velvet evening look on your own selfie before you apply it.
+
+AI-generated visualization for beauty reference.
+```
+
+#### Topic 2: Champagne Eye Glow
+
+- [x] Generate a premium, realistic close beauty portrait with controlled reflective lids and real skin texture.
+- [x] Create Pin 20 as a 1000 x 1500 full-bleed editorial composition without a white copy panel.
+- [x] Create a clean Google Images asset with no text, CTA, logo, or watermark.
+- [x] Build `/looks/champagne-eye-glow` as a dedicated conversion page without repeating the hero image.
+- [x] Preselect `reflective-lid-glow` for one no-sign-up campaign try-on.
+- [x] Keep the Pin, landing hero, and `/tryon` selected-look visual aligned with `pin_visual=champagne_eye_glow_editorial`.
+- [x] Bind `champagne_eye_glow_editorial_v1` to the generated try-on prompt and quality target without adding a new catalog recipe.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify production before publishing Pin 20.
+- [ ] Publish Pin 20 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Champagne Eye Glow - Reflective Lids` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\20-champagne-eye-glow.png` |
+| Board | `Eye Makeup & Eyeshadow Ideas` |
+| New Board description | `Eye makeup ideas, wearable eyeshadow looks, reflective lids, smoky eyes and realistic AI try-on previews for choosing color and placement.` |
+| Title | `Champagne Eye Makeup With a Real Reflective Glow` |
+| Link | `https://aibeautystylist.com/looks/champagne-eye-glow?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_champagne_eye_glow_editorial_01` |
+| Alt text | `Attractive Black woman wearing reflective champagne-gold eyelid makeup, softly smoked cocoa corners and luminous natural skin in a realistic studio portrait.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Champagne eye makeup looks refined when the metallic reflection stays on the lids and cocoa depth shapes the outer corners. Preview this luminous eye look on your own selfie before choosing the shimmer intensity.
+
+AI-generated visualization for beauty reference.
+```
+
+### Day 10 Distribution And Measurement
+
+- [x] Verify both landing pages at a 390 x 844 mobile viewport: hero image loads, appears once, and CTA stays visible.
+- [x] Verify both CTA paths keep the same campaign image, preselect the correct look, and expose no-sign-up selfie upload.
+- [x] Verify Simplified Chinese routes use East Asian hero and try-on assets.
+- [x] Fix Worker-first image handling so page image requests and Googlebot-Image receive the WebP while direct browser navigation redirects to the matching landing page.
+- [ ] Deploy and verify both production landing pages before publishing.
+- [ ] Create `Eye Makeup & Eyeshadow Ideas` only if it does not already exist.
+- [ ] Save 10-12 high-quality related Pins after publishing, split between the two matching Boards.
+- [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
+- [ ] Record Pinterest impressions, engagements, confirmed external outbound clicks, saves, total audience, and per-Pin impressions once tonight.
+- [ ] Check Google Images performance in GSC on the weekly schedule, not daily.

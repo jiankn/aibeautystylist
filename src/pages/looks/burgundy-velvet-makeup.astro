@@ -1,0 +1,156 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+
+const page = {
+  title: "Burgundy Velvet Makeup: Rich Color Without Harsh Edges",
+  description:
+    "See a realistic burgundy velvet makeup look with wine-plum eyes and a deep berry lip, then preview the same direction on your own selfie free.",
+  faq: [
+    {
+      q: "Who suits burgundy makeup?",
+      a: "Burgundy can work across warm, neutral, olive, and cool undertones because it sits between red, plum, and brown. The useful test is whether the color makes the eyes and skin look clearer rather than grey or tired.",
+    },
+    {
+      q: "How do you keep burgundy eye makeup wearable?",
+      a: "Concentrate the deepest color close to the lashes and outer corner, then diffuse the edge with a muted brown-plum. Keeping the center lid and inner corner lighter prevents the eye from looking closed in.",
+    },
+    {
+      q: "Can burgundy eyes and lips be worn together?",
+      a: "Yes, when the skin and cheek stay restrained. Repeat the same wine family at different intensities instead of adding another strong color competing for attention.",
+    },
+  ],
+};
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+
+const heroImage = isEastAsianLocale
+  ? "/images/look-card/looks/burgundy-velvet--east-asia-640.webp"
+  : "/images/pinterest/burgundy-velvet-editorial.webp";
+const pinVisual = isEastAsianLocale
+  ? "burgundy_velvet_east_asia"
+  : "burgundy_velvet_editorial";
+const marketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const attribution = pinterestSource
+  ? {
+      source: "pinterest_burgundy_velvet",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_burgundy_velvet")
+        ? incomingUtmContent
+        : "pin_burgundy_velvet_editorial_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_burgundy_velvet",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_burgundy_velvet_01",
+      }
+    : {
+        source: "burgundy_velvet_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "burgundy_velvet",
+        utmContent: "burgundy_velvet_hero",
+      };
+
+const tryonParams = new URLSearchParams({
+  look: "burgundy-velvet",
+  marketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: attribution.source,
+  pin_visual: pinVisual,
+  utm_source: attribution.utmSource,
+  utm_medium: attribution.utmMedium,
+  utm_campaign: attribution.utmCampaign,
+  utm_content: attribution.utmContent,
+});
+const tryonHref = localizeAppHref(
+  `/tryon?${tryonParams.toString()}#tryon-upload`,
+);
+const heroBody = pinterestSource
+  ? "You clicked for this wine-plum editorial look. Preview the same velvet eyes and burgundy lip on your own selfie before you apply it."
+  : googleImageSource
+    ? "Found this look in Google Images? Preview the same wine-plum direction on your own selfie."
+    : "Burgundy looks most expensive when the color is rich, the edges stay soft, and real skin remains visible.";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={heroImage}
+  ogImage={heroImage}
+  heroCtaHref={tryonHref}
+  heroCtaLabel="Try Burgundy Velvet Free"
+  googleImageRetentionPath="/looks/burgundy-velvet-makeup"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>Burgundy Velvet Makeup With Real Depth</h1>
+    <p>{heroBody}</p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>Three details make the look feel intentional</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Area</th>
+          <th>Keep</th>
+          <th>Avoid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Eyes</strong></td>
+          <td>Wine-plum depth close to lashes with diffused edges.</td>
+          <td>A solid red block extending to the brow.</td>
+        </tr>
+        <tr>
+          <td><strong>Lips</strong></td>
+          <td>Velvet berry color with natural lip lines still visible.</td>
+          <td>Overdrawn, glossy-black edges that detach from the face.</td>
+        </tr>
+        <tr>
+          <td><strong>Skin</strong></td>
+          <td>Satin texture and a restrained berry flush.</td>
+          <td>Heavy contour competing with the wine color.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>See whether burgundy brings your features forward</h2>
+      <p>
+        Burgundy Velvet opens preselected. Upload one selfie and preview it free
+        before choosing the intensity.
+      </p>
+      <a href={tryonHref} class="cta-btn">Try Burgundy Velvet Free</a>
+    </div>
+  </section>
+</SeoLandingLayout>
+
+<style is:global>
+  @media (max-width: 820px) {
+    .seo-hero-image {
+      order: -1;
+      width: min(100%, 360px);
+    }
+  }
+</style>

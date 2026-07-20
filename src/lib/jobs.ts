@@ -73,6 +73,7 @@ export interface StoredTryOnJob extends TryOnJobResult {
   locale?: string;
   marketProfile?: string;
   qualityTier?: TryOnQualityTier;
+  campaignLookId?: string;
 }
 
 export interface JobTimeoutResult {
@@ -156,6 +157,7 @@ export function matchesTryOnJobRequest(
     uploadId: string;
     purpose: TryOnJobPurpose;
     lookSlug?: string;
+    campaignLookId?: string;
     privateTemplateId?: string;
   },
 ): boolean {
@@ -174,7 +176,8 @@ export function matchesTryOnJobRequest(
   return (
     job.lookSource !== "private-template" &&
     Boolean(request.lookSlug) &&
-    job.lookSlug === request.lookSlug
+    job.lookSlug === request.lookSlug &&
+    job.campaignLookId === request.campaignLookId
   );
 }
 

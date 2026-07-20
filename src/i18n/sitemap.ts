@@ -10,7 +10,7 @@ export interface SitemapPage {
   readonly changefreq: string;
 }
 
-export const sitemapLastmod = "2026-07-18";
+export const sitemapLastmod = "2026-07-20";
 
 const corePages: SitemapPage[] = [
   { url: "/", priority: "1.0", changefreq: "weekly" },
@@ -45,6 +45,16 @@ const lookPages: SitemapPage[] = [
   { url: "/looks/natural-makeup", priority: "0.7", changefreq: "monthly" },
   { url: "/looks/no-makeup-makeup", priority: "0.7", changefreq: "monthly" },
   { url: "/looks/jelly-lip-tint", priority: "0.7", changefreq: "monthly" },
+  {
+    url: "/looks/burgundy-velvet-makeup",
+    priority: "0.7",
+    changefreq: "monthly",
+  },
+  {
+    url: "/looks/champagne-eye-glow",
+    priority: "0.7",
+    changefreq: "monthly",
+  },
   { url: "/looks/dewy-skin", priority: "0.7", changefreq: "monthly" },
   { url: "/looks/matte-makeup", priority: "0.7", changefreq: "monthly" },
   { url: "/looks/date-night", priority: "0.7", changefreq: "monthly" },

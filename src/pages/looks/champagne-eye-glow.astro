@@ -1,0 +1,156 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+
+const page = {
+  title: "Champagne Eye Glow: Reflective Lids That Stay Refined",
+  description:
+    "See realistic champagne eye makeup with controlled reflective lids, then preview the same luminous eye direction on your own selfie free.",
+  faq: [
+    {
+      q: "What is champagne eye makeup?",
+      a: "Champagne shadow blends pale gold, beige, and a restrained peach warmth. It reflects light more softly than bright silver and is easier to connect to warm or neutral skin.",
+    },
+    {
+      q: "How do you make metallic eyeshadow look smooth?",
+      a: "Use a thin cream or finely milled shimmer layer and keep the strongest reflection on the center lid. A softly matte crease gives the reflective area a clean boundary.",
+    },
+    {
+      q: "Will reflective shadow emphasize eyelid texture?",
+      a: "Chunky glitter and thick product can emphasize texture. A thin, controlled layer with a smooth base usually looks more refined, especially when the reflection is limited to the mobile lid.",
+    },
+  ],
+};
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+
+const heroImage = isEastAsianLocale
+  ? "/images/look-card/looks/reflective-lid-glow--east-asia-640.webp"
+  : "/images/pinterest/champagne-eye-glow-editorial.webp";
+const pinVisual = isEastAsianLocale
+  ? "champagne_eye_glow_east_asia"
+  : "champagne_eye_glow_editorial";
+const marketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const attribution = pinterestSource
+  ? {
+      source: "pinterest_champagne_eye",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_champagne_eye")
+        ? incomingUtmContent
+        : "pin_champagne_eye_glow_editorial_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_champagne_eye",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_champagne_eye_01",
+      }
+    : {
+        source: "champagne_eye_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "champagne_eye_glow",
+        utmContent: "champagne_eye_hero",
+      };
+
+const tryonParams = new URLSearchParams({
+  look: "reflective-lid-glow",
+  marketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: attribution.source,
+  pin_visual: pinVisual,
+  utm_source: attribution.utmSource,
+  utm_medium: attribution.utmMedium,
+  utm_campaign: attribution.utmCampaign,
+  utm_content: attribution.utmContent,
+});
+const tryonHref = localizeAppHref(
+  `/tryon?${tryonParams.toString()}#tryon-upload`,
+);
+const heroBody = pinterestSource
+  ? "You clicked for luminous champagne lids. Preview the same controlled metallic reflection on your own eyes before choosing the finish."
+  : googleImageSource
+    ? "Found this eye look in Google Images? Preview the same champagne reflection on your own selfie."
+    : "Reflective eye makeup works when the light catches the lid without turning the rest of the face into glitter.";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={heroImage}
+  ogImage={heroImage}
+  heroCtaHref={tryonHref}
+  heroCtaLabel="Try Champagne Eye Glow Free"
+  googleImageRetentionPath="/looks/champagne-eye-glow"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>Champagne Eye Glow Without Chunky Glitter</h1>
+    <p>{heroBody}</p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>Where the light should land</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Zone</th>
+          <th>Purpose</th>
+          <th>Control</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Center lid</strong></td>
+          <td>Creates the clearest champagne reflection.</td>
+          <td>Keep the layer thin enough to preserve lid texture.</td>
+        </tr>
+        <tr>
+          <td><strong>Outer corner</strong></td>
+          <td>Adds cocoa depth so the eye does not look flat.</td>
+          <td>Diffuse the edge instead of extending a hard wing.</td>
+        </tr>
+        <tr>
+          <td><strong>Inner corner</strong></td>
+          <td>Connects the light without overpowering the eye.</td>
+          <td>Use less product than the center lid.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Check the reflection on your own eyelids</h2>
+      <p>
+        Reflective Lid Glow opens preselected. Upload one selfie and preview it
+        free before choosing the shimmer intensity.
+      </p>
+      <a href={tryonHref} class="cta-btn">Try Champagne Eye Glow Free</a>
+    </div>
+  </section>
+</SeoLandingLayout>
+
+<style is:global>
+  @media (max-width: 820px) {
+    .seo-hero-image {
+      order: -1;
+      width: min(100%, 360px);
+    }
+  }
+</style>

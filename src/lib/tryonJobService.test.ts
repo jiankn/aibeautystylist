@@ -100,6 +100,9 @@ vi.mock("./geminiMakeupTransfer", async (importOriginal) => {
 });
 
 const look = lookCatalog.find((item) => item.slug === "commute")!;
+const burgundyLook = lookCatalog.find(
+  (item) => item.slug === "burgundy-velvet",
+)!;
 const matureLook = lookCatalog.find(
   (item) => item.slug === "mature-skin-radiance",
 )!;
@@ -255,6 +258,42 @@ describe("createTryOnJob", () => {
       vi.mocked(generateGeminiMakeupImage).mock.calls[0]?.[0].prompt ?? "";
     expect(imagePrompt).not.toContain("Beauty diagnosis context");
     expect(generateEvolinkMakeupImage).not.toHaveBeenCalled();
+  });
+
+  it("persists a vetted Pinterest campaign direction in the generation prompt", async () => {
+    await saveUploadRecord(
+      uploadRecord({ r2Key: "originals/visitor_1/upload_1/original.jpg" }),
+    );
+    vi.mocked(generateGeminiMakeupImage).mockRejectedValue(
+      new GeminiImageError("GEMINI_IMAGE_UNAVAILABLE", "no image"),
+    );
+    const bindings: RuntimeBindings = {
+      TRYON_PROVIDER: "gemini",
+      GEMINI_API_KEY: "secret",
+      USER_UPLOADS: bucketWithBytes([1, 2, 3]),
+    };
+
+    const created = await createTryOnJob({
+      userId: "visitor_1",
+      uploadId: "upload_1",
+      look: burgundyLook,
+      idempotencyKey: "pinterest_burgundy_1",
+      campaignLookId: "burgundy_velvet_editorial_v1",
+      bindings,
+    });
+
+    expect(created.job.campaignLookId).toBe("burgundy_velvet_editorial_v1");
+    await processTryOnJob({
+      userId: "visitor_1",
+      jobId: created.job.id,
+      look: burgundyLook,
+      bindings,
+    });
+
+    const prompt = vi.mocked(generateGeminiMakeupImage).mock.calls[0]?.[0]
+      .prompt;
+    expect(prompt).toContain("Campaign-specific Burgundy Velvet direction");
+    expect(prompt).toContain("deep burgundy-berry velvet lip");
   });
 
   it("pins paid catalog jobs to Pro high quality and Premium 2K routing", async () => {
