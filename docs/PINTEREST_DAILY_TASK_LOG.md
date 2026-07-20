@@ -705,7 +705,7 @@ Every Pin still keeps the matched Pin -> landing page -> preselected no-sign-up 
 - [x] Bind `burgundy_velvet_editorial_v1` to the generated try-on prompt and quality target without adding a new catalog recipe.
 - [x] Add locale-aware East Asian and global-diverse image mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify production before publishing Pin 19.
+- [x] Deploy and verify production before publishing Pin 19.
 - [ ] Publish Pin 19 and test its link once.
 
 | Field | Content |
@@ -737,7 +737,7 @@ AI-generated visualization for beauty reference.
 - [x] Bind `champagne_eye_glow_editorial_v1` to the generated try-on prompt and quality target without adding a new catalog recipe.
 - [x] Add locale-aware East Asian and global-diverse image mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify production before publishing Pin 20.
+- [x] Deploy and verify production before publishing Pin 20.
 - [ ] Publish Pin 20 and test its link once.
 
 | Field | Content |
@@ -765,7 +765,7 @@ AI-generated visualization for beauty reference.
 - [x] Verify both CTA paths keep the same campaign image, preselect the correct look, and expose no-sign-up selfie upload.
 - [x] Verify Simplified Chinese routes use East Asian hero and try-on assets.
 - [x] Fix Worker-first image handling so page image requests and Googlebot-Image receive the WebP while direct browser navigation redirects to the matching landing page.
-- [ ] Deploy and verify both production landing pages before publishing.
+- [x] Deploy and verify both production landing pages before publishing.
 - [ ] Create `Eye Makeup & Eyeshadow Ideas` only if it does not already exist.
 - [ ] Save 10-12 high-quality related Pins after publishing, split between the two matching Boards.
 - [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
