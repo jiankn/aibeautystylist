@@ -771,3 +771,88 @@ AI-generated visualization for beauty reference.
 - [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
 - [ ] Record Pinterest impressions, engagements, confirmed external outbound clicks, saves, total audience, and per-Pin impressions once tonight.
 - [ ] Check Google Images performance in GSC on the weekly schedule, not daily.
+
+## 2026-07-28
+
+### Day 11 Full-Bleed Editorial Pair
+
+Daily production rule:
+
+```text
+Two makeup topics.
+Each topic = one photorealistic full-bleed Pinterest Pin + one clean Google Images asset + one dedicated matched landing page + one preselected no-sign-up campaign try-on.
+The existing 44-look Discover catalog remains unchanged.
+```
+
+#### Topic 1: Sunset Bronze Makeup
+
+- [x] Generate a premium, realistic golden-hour beauty portrait with visible skin and lip texture.
+- [x] Create Pin 21 as a 1000 x 1500 full-bleed editorial composition with minimal overlay copy.
+- [x] Create a clean Google Images WebP with no text, CTA, logo, or watermark.
+- [x] Build `/looks/sunset-bronze-makeup` as a dedicated conversion page.
+- [x] Map the campaign to the existing `vacation-bronze` catalog recipe without adding or replacing a Discover look.
+- [x] Preselect one no-sign-up campaign try-on for matched Pinterest and Google Images traffic.
+- [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=sunset_bronze_editorial`.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify production before publishing Pin 21.
+- [ ] Publish Pin 21 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Sunset Bronze Makeup - Antique Gold at Golden Hour` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\21-sunset-bronze-makeup.png` |
+| Board | `Bronzed & Summer Makeup` |
+| Title | `Sunset Bronze Makeup That Never Looks Orange` |
+| Link | `https://aibeautystylist.com/looks/sunset-bronze-makeup?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_sunset_bronze_editorial_01` |
+| Alt text | `Attractive woman wearing warm bronze and antique-gold eye makeup, terracotta-peach blush and a caramel-rose nude lip in real golden-hour light.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Warm bronze makeup looks expensive when antique-gold lids, cocoa depth and terracotta-peach cheeks stay dimensional instead of turning orange. Preview this sunset bronze direction on your own selfie before you apply it.
+
+AI-generated visualization for beauty reference.
+```
+
+#### Topic 2: Cloud Skin Makeup
+
+- [x] Generate a premium, realistic close beauty portrait with texture-preserving satin-matte skin.
+- [x] Create Pin 22 as a 1000 x 1500 full-bleed editorial composition with minimal overlay copy.
+- [x] Create a clean Google Images WebP with no text, CTA, logo, or watermark.
+- [x] Build `/looks/cloud-skin-makeup` as a dedicated conversion page.
+- [x] Map the campaign to the existing `cloud-skin-matte` catalog recipe without adding or replacing a Discover look.
+- [x] Preselect one no-sign-up campaign try-on for matched Pinterest and Google Images traffic.
+- [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=cloud_skin_editorial`.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify production before publishing Pin 22.
+- [ ] Publish Pin 22 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Cloud Skin Makeup - Soft Matte, Real Texture` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\22-cloud-skin-makeup.png` |
+| Board | `Everyday & 5-Minute Makeup` |
+| Title | `Cloud Skin Makeup That Still Looks Like Real Skin` |
+| Link | `https://aibeautystylist.com/looks/cloud-skin-makeup?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_cloud_skin_editorial_01` |
+| Alt text | `Attractive Black woman wearing texture-preserving cloud skin makeup with softly blurred rose-plum cheeks, taupe eyes and a muted rose-brown lip.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Cloud skin sits between dewy and fully matte: softly diffused, shine-controlled and still visibly real. Preview this texture-preserving satin-matte finish with rose-plum cheeks and a muted lip on your own selfie.
+
+AI-generated visualization for beauty reference.
+```
+
+### Day 11 Distribution And Measurement
+
+- [ ] Create `Bronzed & Summer Makeup` only if it does not already exist.
+- [ ] Publish Pins 21 and 22 about three hours apart.
+- [ ] Save 10-12 high-quality related Pins after publishing, split between the matching Boards.
+- [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
+- [ ] Record impressions, engagements, confirmed external outbound clicks, saves, total audience, and per-Pin impressions once tonight.
+- [ ] Check Google Images performance in GSC on the weekly schedule, not daily.

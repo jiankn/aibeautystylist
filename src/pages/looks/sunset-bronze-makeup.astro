@@ -1,0 +1,156 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+
+const page = {
+  title: "Sunset Bronze Makeup: Warm Depth Without Turning Orange",
+  description:
+    "See realistic sunset bronze makeup with antique-gold eyes and terracotta warmth, then preview the same direction on your own selfie free.",
+  faq: [
+    {
+      q: "How do you keep bronze makeup from looking orange?",
+      a: "Balance warm bronze with cocoa-brown depth and keep the brightest gold limited to the mobile lid. A caramel-rose lip and terracotta-peach cheek connect the warmth without making every part of the face orange.",
+    },
+    {
+      q: "Where should bronzer and blush sit?",
+      a: "Keep bronzer around the outer face and place terracotta-peach blush slightly higher on the cheeks. The two colors can meet softly, but the blush should still read as fresh color rather than contour.",
+    },
+    {
+      q: "Does sunset bronze makeup work outside vacation photos?",
+      a: "Yes. Reduce the metallic reflection and keep the skin satin rather than glossy for dinners, summer events, and evening portraits.",
+    },
+  ],
+};
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+
+const heroImage = isEastAsianLocale
+  ? "/images/look-card/looks/vacation-bronze--east-asia-640.webp"
+  : "/images/pinterest/sunset-bronze-editorial.webp";
+const pinVisual = isEastAsianLocale
+  ? "sunset_bronze_east_asia"
+  : "sunset_bronze_editorial";
+const marketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const attribution = pinterestSource
+  ? {
+      source: "pinterest_sunset_bronze",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_sunset_bronze")
+        ? incomingUtmContent
+        : "pin_sunset_bronze_editorial_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_sunset_bronze",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_sunset_bronze_01",
+      }
+    : {
+        source: "sunset_bronze_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "sunset_bronze",
+        utmContent: "sunset_bronze_hero",
+      };
+
+const tryonParams = new URLSearchParams({
+  look: "vacation-bronze",
+  marketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: attribution.source,
+  pin_visual: pinVisual,
+  utm_source: attribution.utmSource,
+  utm_medium: attribution.utmMedium,
+  utm_campaign: attribution.utmCampaign,
+  utm_content: attribution.utmContent,
+});
+const tryonHref = localizeAppHref(
+  `/tryon?${tryonParams.toString()}#tryon-upload`,
+);
+const heroBody = pinterestSource
+  ? "You clicked for this warm bronze look. Preview the same antique-gold eyes, terracotta cheeks, and caramel-rose lip on your own selfie before you apply it."
+  : googleImageSource
+    ? "Found this bronze look in Google Images? Preview the same warm direction on your own selfie."
+    : "Bronze makeup looks polished when the warmth stays dimensional instead of turning the whole face orange.";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={heroImage}
+  ogImage={heroImage}
+  heroCtaHref={tryonHref}
+  heroCtaLabel="Try Sunset Bronze Free"
+  googleImageRetentionPath="/looks/sunset-bronze-makeup"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>Sunset Bronze Makeup With Real Warmth</h1>
+    <p>{heroBody}</p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>Keep the bronze dimensional</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Area</th>
+          <th>Use</th>
+          <th>Avoid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Eyes</strong></td>
+          <td>Antique-gold lids with cocoa depth at the outer corners.</td>
+          <td>One flat orange shimmer from lash line to brow.</td>
+        </tr>
+        <tr>
+          <td><strong>Cheeks</strong></td>
+          <td>Terracotta-peach color placed high with restrained glow.</td>
+          <td>Heavy dark bronzer covering the center of the face.</td>
+        </tr>
+        <tr>
+          <td><strong>Lips</strong></td>
+          <td>Caramel-rose nude with natural lip texture.</td>
+          <td>An opaque orange-brown lip competing with the eyes.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>See whether warm bronze brings your features forward</h2>
+      <p>
+        Vacation Bronze opens preselected. Upload one selfie and preview this
+        direction free before choosing the warmth.
+      </p>
+      <a href={tryonHref} class="cta-btn">Try Sunset Bronze Free</a>
+    </div>
+  </section>
+</SeoLandingLayout>
+
+<style is:global>
+  @media (max-width: 820px) {
+    .seo-hero-image {
+      order: -1;
+      width: min(100%, 360px);
+    }
+  }
+</style>

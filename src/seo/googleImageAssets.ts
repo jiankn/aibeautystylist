@@ -169,6 +169,22 @@ export const googleImageAssets: readonly GoogleImageAsset[] = [
     caption:
       "A realistic champagne eye makeup look with controlled metallic reflection, cocoa depth, luminous deep skin, and natural texture.",
   },
+  {
+    sourcePin: "pin_sunset_bronze_editorial_01",
+    pageUrl: "/looks/sunset-bronze-makeup",
+    imageUrl: "/images/pinterest/sunset-bronze-editorial.webp",
+    title: "Sunset bronze makeup with antique-gold eyes",
+    caption:
+      "A realistic sunset bronze makeup look with antique-gold lids, cocoa depth, terracotta-peach cheeks, satin skin, and a caramel-rose nude lip.",
+  },
+  {
+    sourcePin: "pin_cloud_skin_editorial_01",
+    pageUrl: "/looks/cloud-skin-makeup",
+    imageUrl: "/images/pinterest/cloud-skin-editorial.webp",
+    title: "Cloud skin makeup with a texture-preserving soft-matte finish",
+    caption:
+      "A realistic cloud skin makeup look with visible natural texture, softly blurred rose-plum cheeks, quiet taupe eyes, and a muted rose-brown lip.",
+  },
 ];
 
 function escapeXml(value: string): string {

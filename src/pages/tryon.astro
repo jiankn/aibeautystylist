@@ -165,6 +165,12 @@ const pinterestTryonVisualsByKey = {
     "/images/pinterest/champagne-eye-glow-editorial.webp",
   champagne_eye_glow_east_asia:
     "/images/look-card/looks/reflective-lid-glow--east-asia-640.webp",
+  sunset_bronze_editorial: "/images/pinterest/sunset-bronze-editorial.webp",
+  sunset_bronze_east_asia:
+    "/images/look-card/looks/vacation-bronze--east-asia-640.webp",
+  cloud_skin_editorial: "/images/pinterest/cloud-skin-editorial.webp",
+  cloud_skin_east_asia:
+    "/images/look-card/looks/cloud-skin-matte--east-asia-640.webp",
 } as const;
 const pinterestTryonVisualsBySource: Record<string, string> = {
   pinterest_quick5: pinterestTryonVisualsByKey.quick5_real_morning,
@@ -187,6 +193,8 @@ const pinterestTryonVisualsBySource: Record<string, string> = {
     pinterestTryonVisualsByKey.burgundy_velvet_editorial,
   pinterest_champagne_eye:
     pinterestTryonVisualsByKey.champagne_eye_glow_editorial,
+  pinterest_sunset_bronze: pinterestTryonVisualsByKey.sunset_bronze_editorial,
+  pinterest_cloud_skin: pinterestTryonVisualsByKey.cloud_skin_editorial,
   google_images_first_date: pinterestTryonVisualsByKey.first_date_soft_daylight,
   google_images_date_night: pinterestTryonVisualsByKey.date_night_candlelight,
   google_images_wedding_guest:
@@ -206,6 +214,9 @@ const pinterestTryonVisualsBySource: Record<string, string> = {
     pinterestTryonVisualsByKey.burgundy_velvet_editorial,
   google_images_champagne_eye:
     pinterestTryonVisualsByKey.champagne_eye_glow_editorial,
+  google_images_sunset_bronze:
+    pinterestTryonVisualsByKey.sunset_bronze_editorial,
+  google_images_cloud_skin: pinterestTryonVisualsByKey.cloud_skin_editorial,
 };
 const pinterestTryonVisualsByUtmContent: Record<string, string> = {
   ai_makeup_tryon_01: "/images/article-ai-tryon-comparison.webp",
@@ -263,6 +274,12 @@ const pinterestTryonVisualsByUtmContent: Record<string, string> = {
     pinterestTryonVisualsByKey.champagne_eye_glow_editorial,
   google_image_champagne_eye_01:
     pinterestTryonVisualsByKey.champagne_eye_glow_editorial,
+  pin_sunset_bronze_editorial_01:
+    pinterestTryonVisualsByKey.sunset_bronze_editorial,
+  google_image_sunset_bronze_01:
+    pinterestTryonVisualsByKey.sunset_bronze_editorial,
+  pin_cloud_skin_editorial_01: pinterestTryonVisualsByKey.cloud_skin_editorial,
+  google_image_cloud_skin_01: pinterestTryonVisualsByKey.cloud_skin_editorial,
 };
 const pinterestTryonVisual =
   (pinVisual &&

@@ -151,6 +151,26 @@ const pins = [
     accent: "#f0c684",
     cta: "TRY IT ON FREE",
   },
+  {
+    variant: "full-bleed-editorial",
+    source: "tmp/pinterest-sources/sunset-bronze-editorial.png",
+    cleanOutput: "public/images/pinterest/sunset-bronze-editorial.webp",
+    pinOutput: "artifacts/pinterest/21-sunset-bronze-makeup.png",
+    titleLine1: "SUNSET",
+    titleLine2: "BRONZE",
+    accent: "#f0b16f",
+    cta: "TRY IT ON FREE",
+  },
+  {
+    variant: "full-bleed-editorial",
+    source: "tmp/pinterest-sources/cloud-skin-editorial.png",
+    cleanOutput: "public/images/pinterest/cloud-skin-editorial.webp",
+    pinOutput: "artifacts/pinterest/22-cloud-skin-makeup.png",
+    titleLine1: "CLOUD",
+    titleLine2: "SKIN",
+    accent: "#dfb3c1",
+    cta: "TRY IT ON FREE",
+  },
 ];
 
 function escapeXml(value) {

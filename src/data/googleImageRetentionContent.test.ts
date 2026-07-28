@@ -144,7 +144,7 @@ describe("googleImageRetentionContent", () => {
     }
   });
 
-  it("keeps Pins 19 and 20 aligned with global and East Asian visuals", () => {
+  it("keeps Pins 19 through 22 aligned with global and East Asian visuals", () => {
     const cases = [
       {
         page: "/looks/burgundy-velvet-makeup",
@@ -155,6 +155,16 @@ describe("googleImageRetentionContent", () => {
         page: "/looks/champagne-eye-glow",
         globalVisual: "champagne_eye_glow_editorial",
         eastAsiaVisual: "champagne_eye_glow_east_asia",
+      },
+      {
+        page: "/looks/sunset-bronze-makeup",
+        globalVisual: "sunset_bronze_editorial",
+        eastAsiaVisual: "sunset_bronze_east_asia",
+      },
+      {
+        page: "/looks/cloud-skin-makeup",
+        globalVisual: "cloud_skin_editorial",
+        eastAsiaVisual: "cloud_skin_east_asia",
       },
     ] as const;
 

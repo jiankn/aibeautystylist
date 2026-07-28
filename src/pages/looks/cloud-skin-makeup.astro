@@ -1,0 +1,156 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+
+const page = {
+  title: "Cloud Skin Makeup: Soft Matte Without Flat, Cakey Texture",
+  description:
+    "See realistic cloud skin makeup with a texture-preserving satin-matte finish, then preview the same complexion direction on your own selfie free.",
+  faq: [
+    {
+      q: "What is cloud skin makeup?",
+      a: "Cloud skin sits between dewy and fully matte. It softens shine and diffuses contrast while preserving the small variations that make skin look real.",
+    },
+    {
+      q: "How do you stop soft-matte foundation from looking cakey?",
+      a: "Use thin layers, add coverage only where it is needed, and set the center of the face before the outer cheeks. Texture becomes more obvious when every area receives the same heavy layer.",
+    },
+    {
+      q: "Can cloud skin work on deep skin tones?",
+      a: "Yes. The base and setting powder must match the undertone so the finish stays velvety without a grey or ashy cast.",
+    },
+  ],
+};
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+
+const heroImage = isEastAsianLocale
+  ? "/images/look-card/looks/cloud-skin-matte--east-asia-640.webp"
+  : "/images/pinterest/cloud-skin-editorial.webp";
+const pinVisual = isEastAsianLocale
+  ? "cloud_skin_east_asia"
+  : "cloud_skin_editorial";
+const marketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const attribution = pinterestSource
+  ? {
+      source: "pinterest_cloud_skin",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_cloud_skin")
+        ? incomingUtmContent
+        : "pin_cloud_skin_editorial_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_cloud_skin",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_cloud_skin_01",
+      }
+    : {
+        source: "cloud_skin_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "cloud_skin",
+        utmContent: "cloud_skin_hero",
+      };
+
+const tryonParams = new URLSearchParams({
+  look: "cloud-skin-matte",
+  marketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: attribution.source,
+  pin_visual: pinVisual,
+  utm_source: attribution.utmSource,
+  utm_medium: attribution.utmMedium,
+  utm_campaign: attribution.utmCampaign,
+  utm_content: attribution.utmContent,
+});
+const tryonHref = localizeAppHref(
+  `/tryon?${tryonParams.toString()}#tryon-upload`,
+);
+const heroBody = pinterestSource
+  ? "You clicked for this texture-preserving soft-matte finish. Preview the same cloud skin, rose-plum cheek, and muted lip direction on your own selfie before you apply it."
+  : googleImageSource
+    ? "Found this finish in Google Images? Preview the same cloud-skin direction on your own selfie."
+    : "Cloud skin should control shine without erasing pores, dimension, or the natural character of your face.";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={heroImage}
+  ogImage={heroImage}
+  heroCtaHref={tryonHref}
+  heroCtaLabel="Try Cloud Skin Free"
+  googleImageRetentionPath="/looks/cloud-skin-makeup"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>Cloud Skin Makeup That Still Looks Like Skin</h1>
+    <p>{heroBody}</p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>Soft focus without losing real texture</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Area</th>
+          <th>Keep</th>
+          <th>Avoid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Complexion</strong></td>
+          <td>Thin satin-matte coverage with pores and tonal variation.</td>
+          <td>A flat opaque mask or grey powder cast.</td>
+        </tr>
+        <tr>
+          <td><strong>Cheeks</strong></td>
+          <td>Blurred rose-plum color that restores dimension.</td>
+          <td>Dry powder sitting visibly above skin texture.</td>
+        </tr>
+        <tr>
+          <td><strong>Lips</strong></td>
+          <td>Muted rose-brown with a softly diffused edge.</td>
+          <td>Overlined matte color with cracked texture.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>Check the finish on your own skin</h2>
+      <p>
+        Cloud Skin Matte opens preselected. Upload one selfie and preview it
+        free before choosing your coverage.
+      </p>
+      <a href={tryonHref} class="cta-btn">Try Cloud Skin Free</a>
+    </div>
+  </section>
+</SeoLandingLayout>
+
+<style is:global>
+  @media (max-width: 820px) {
+    .seo-hero-image {
+      order: -1;
+      width: min(100%, 360px);
+    }
+  }
+</style>

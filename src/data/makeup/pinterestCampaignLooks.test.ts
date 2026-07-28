@@ -20,6 +20,20 @@ describe("Pinterest campaign looks", () => {
         utmContent: "pin_champagne_eye_glow_editorial_01",
       })?.id,
     ).toBe("champagne_eye_glow_editorial_v1");
+
+    expect(
+      resolvePinterestCampaignLook({
+        lookSlug: "vacation-bronze",
+        visualKey: "sunset_bronze_editorial",
+      })?.id,
+    ).toBe("sunset_bronze_editorial_v1");
+
+    expect(
+      resolvePinterestCampaignLook({
+        lookSlug: "cloud-skin-matte",
+        utmContent: "pin_cloud_skin_editorial_01",
+      })?.id,
+    ).toBe("cloud_skin_editorial_v1");
   });
 
   it("never applies a campaign direction to a different catalog look", () => {

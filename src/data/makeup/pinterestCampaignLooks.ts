@@ -1,6 +1,8 @@
 export const pinterestCampaignLookIds = [
   "burgundy_velvet_editorial_v1",
   "champagne_eye_glow_editorial_v1",
+  "sunset_bronze_editorial_v1",
+  "cloud_skin_editorial_v1",
 ] as const;
 
 export type PinterestCampaignLookId = (typeof pinterestCampaignLookIds)[number];
@@ -43,6 +45,31 @@ const pinterestCampaignLooks: readonly PinterestCampaignLook[] = [
       "Campaign-specific Champagne Eye Glow direction: apply a thin, refined champagne-gold reflective layer to the mobile lid, strongest at the center lid and lighter at the inner corner. Define the crease and outer corner with softly diffused warm cocoa-brown matte shadow so the metallic light has a clean boundary. Add precise lash definition without a heavy black wing or chunky glitter. Keep real eyelid and skin texture visible, use a quiet warm-apricot blush, softly luminous satin skin, and a sheer neutral caramel-nude lip so the eyes remain the focal point. The result must look polished and photographic, never frosted, glittery, oily, or metallic across the whole face.",
     qualityTarget:
       "controlled champagne-gold reflection centered on the mobile lids, softly diffused cocoa-brown crease depth, precise lashes, warm-apricot cheeks, realistic satin skin, and a sheer neutral nude lip",
+  },
+  {
+    id: "sunset_bronze_editorial_v1",
+    lookSlug: "vacation-bronze",
+    visualKey: "sunset_bronze_editorial",
+    sources: ["pinterest_sunset_bronze", "google_images_sunset_bronze"],
+    utmContents: [
+      "pin_sunset_bronze_editorial_01",
+      "google_image_sunset_bronze_01",
+    ],
+    generationDirection:
+      "Campaign-specific Sunset Bronze direction: create softly diffused warm bronze and muted antique-gold eyes concentrated on the mobile lids, with cocoa-brown depth at the outer corners and clean separated lashes. Keep the bronze warm but never orange, metallic across the whole eye, or heavily smoked. Use realistic satin skin with natural tonal variation and visible texture, sun-warmed terracotta-peach blush swept high on the cheeks, restrained golden light only on facial high points, natural full brows, and a caramel-rose nude lip with visible lip lines. The result should feel polished by real late-afternoon light, not heavily contoured, greasy, filtered, or beach-costume themed.",
+    qualityTarget:
+      "warm bronze and muted antique-gold lids with cocoa outer-corner depth, terracotta-peach cheeks, realistic satin skin, restrained golden highlights, and a caramel-rose nude lip with natural texture",
+  },
+  {
+    id: "cloud_skin_editorial_v1",
+    lookSlug: "cloud-skin-matte",
+    visualKey: "cloud_skin_editorial",
+    sources: ["pinterest_cloud_skin", "google_images_cloud_skin"],
+    utmContents: ["pin_cloud_skin_editorial_01", "google_image_cloud_skin_01"],
+    generationDirection:
+      "Campaign-specific Cloud Skin direction: create a thin, softly diffused satin-matte complexion that controls shine while preserving pores, fine facial texture, natural tonal variation, and subtle expression lines. Keep coverage even but never flat, chalky, blurred, grey, or mask-like. Add a softly blurred cool rose-plum blush, quiet taupe-brown matte eyes with delicate lash definition, natural feathered brows, and a muted rose-brown lip with visible lip lines. Preserve dimensional facial structure through realistic light and shadow instead of strong contour or glossy highlight.",
+    qualityTarget:
+      "texture-preserving satin-matte cloud skin without ashiness, softly blurred rose-plum cheeks, quiet taupe eyes, feathered brows, and a muted rose-brown lip with natural texture",
   },
 ];
 
