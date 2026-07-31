@@ -919,7 +919,7 @@ AI-generated visualization for beauty reference.
 |---|---|
 | Pin theme | `Soft Berry Stain - Translucent Lip and Cheek Color` |
 | Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\24-soft-berry-stain.png` |
-| Board | `Soft Glam & Date Night Makeup` |
+| Board | `Date Night Makeup Ideas` |
 | Title | `Soft Berry Stain Makeup With Real Lip Texture` |
 | Link | `https://aibeautystylist.com/looks/soft-berry-stain?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_soft_berry_stain_editorial_01` |
 | Alt text | `Attractive South Asian woman wearing a translucent berry lip stain, sheer berry-plum cheeks, cocoa-taupe eyes and realistic satin skin in soft window light.` |
