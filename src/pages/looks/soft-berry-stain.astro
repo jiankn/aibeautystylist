@@ -1,0 +1,170 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+
+const page = {
+  title: "Soft Berry Stain Makeup: Fresh Color Without Heavy Lipstick",
+  description:
+    "See a realistic soft berry stain with translucent lips, berry-plum cheeks, and real skin texture, then preview the same direction on your selfie free.",
+  faq: [
+    {
+      q: "How do you make a berry lip look soft instead of heavy?",
+      a: "Use a translucent stain and concentrate the richest color toward the inner lips. Diffuse the edge with a fingertip or brush while keeping natural lip lines visible.",
+    },
+    {
+      q: "What blush works with a berry lip stain?",
+      a: "A sheer berry-plum or cool rose blush creates harmony without competing with the lips. Apply it lightly and build only where your complexion needs color.",
+    },
+    {
+      q: "Will berry makeup look ashy on deeper skin?",
+      a: "Choose a berry with enough red or wine depth and keep the complexion true to its natural warmth. Avoid pale grey-purple products that sit on top of the skin instead of blending into it.",
+    },
+  ],
+};
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+
+const heroImage = isEastAsianLocale
+  ? "/images/look-card/looks/soft-berry-stain--east-asia-640.webp"
+  : "/images/pinterest/soft-berry-stain-editorial.webp";
+const pinVisual = isEastAsianLocale
+  ? "soft_berry_stain_east_asia"
+  : "soft_berry_stain_editorial";
+const marketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const attribution = pinterestSource
+  ? {
+      source: "pinterest_soft_berry",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_soft_berry_stain")
+        ? incomingUtmContent
+        : "pin_soft_berry_stain_editorial_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_soft_berry",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_soft_berry_01",
+      }
+    : {
+        source: "soft_berry_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "soft_berry",
+        utmContent: "soft_berry_hero",
+      };
+
+const tryonParams = new URLSearchParams({
+  look: "soft-berry-stain",
+  marketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: attribution.source,
+  pin_visual: pinVisual,
+  utm_source: attribution.utmSource,
+  utm_medium: attribution.utmMedium,
+  utm_campaign: attribution.utmCampaign,
+  utm_content: attribution.utmContent,
+});
+const tryonHref = localizeAppHref(
+  `/tryon?${tryonParams.toString()}#tryon-upload`,
+);
+const heroBody = pinterestSource
+  ? "You clicked for this soft berry stain. Preview the same translucent lip, berry-plum cheek, and realistic satin skin on your own selfie before choosing the color."
+  : googleImageSource
+    ? "Found this berry stain in Google Images? Preview the same fresh lip-and-cheek direction on your own selfie."
+    : "A berry stain looks modern when the color stays translucent and the rest of the face remains dimensional.";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={heroImage}
+  ogImage={heroImage}
+  heroCtaHref={tryonHref}
+  heroCtaLabel="Try Soft Berry Free"
+  googleImageRetentionPath="/looks/soft-berry-stain"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>Soft Berry Stain With Real Lip Texture</h1>
+    <p>{heroBody}</p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>Keep the berry translucent, not opaque</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Area</th>
+          <th>Use</th>
+          <th>Avoid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Lips</strong></td>
+          <td>Crushed-berry color with softly diffused edges.</td>
+          <td>An opaque magenta block or exaggerated overline.</td>
+        </tr>
+        <tr>
+          <td><strong>Cheeks</strong></td>
+          <td>A sheer berry-plum flush placed high and blended thinly.</td>
+          <td>A grey-purple patch disconnected from the lip.</td>
+        </tr>
+        <tr>
+          <td><strong>Skin</strong></td>
+          <td>Realistic satin texture and true natural skin depth.</td>
+          <td>Ashy powder, blur filters, or all-over shine.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>See whether berry color lifts your whole face</h2>
+      <p>
+        Soft Berry Stain opens preselected. Upload one selfie and preview this
+        direction free before choosing the depth.
+      </p>
+      <a href={tryonHref} class="cta-btn">Try Soft Berry Free</a>
+    </div>
+  </section>
+</SeoLandingLayout>
+
+<style is:global>
+  @media (max-width: 820px) {
+    .seo-hero-shell {
+      gap: 0.9rem;
+      padding: 1rem 0 1.25rem;
+    }
+    .seo-hero-image {
+      order: -1;
+      width: min(100%, 300px);
+    }
+    .seo-hero h1 {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+    }
+    .seo-hero p {
+      line-height: 1.45;
+    }
+    .seo-hero-actions {
+      margin-top: 0.85rem;
+    }
+  }
+</style>

@@ -185,6 +185,22 @@ export const googleImageAssets: readonly GoogleImageAsset[] = [
     caption:
       "A realistic cloud skin makeup look with visible natural texture, softly blurred rose-plum cheeks, quiet taupe eyes, and a muted rose-brown lip.",
   },
+  {
+    sourcePin: "pin_french_natural_editorial_01",
+    pageUrl: "/looks/french-natural-chic",
+    imageUrl: "/images/pinterest/french-natural-chic-editorial.webp",
+    title: "French natural makeup with sheer satin skin and rosewood lips",
+    caption:
+      "A realistic French natural makeup look with visible skin texture, softly defined taupe eyes, muted rose cheeks, and a blurred rosewood lip.",
+  },
+  {
+    sourcePin: "pin_soft_berry_stain_editorial_01",
+    pageUrl: "/looks/soft-berry-stain",
+    imageUrl: "/images/pinterest/soft-berry-stain-editorial.webp",
+    title: "Soft berry stain makeup with translucent lips and plum cheeks",
+    caption:
+      "A realistic soft berry stain makeup look with a translucent crushed-berry lip, sheer berry-plum cheeks, cocoa-taupe eyes, and visible natural skin texture.",
+  },
 ];
 
 function escapeXml(value: string): string {

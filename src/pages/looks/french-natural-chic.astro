@@ -1,0 +1,170 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+
+const page = {
+  title: "French Natural Makeup: Effortless Definition in Real Light",
+  description:
+    "See realistic French natural makeup with sheer satin skin, taupe eyes, muted rose cheeks, and a rosewood lip, then preview it on your selfie free.",
+  faq: [
+    {
+      q: "What makes French natural makeup look effortless?",
+      a: "It keeps the complexion sheer, defines the lash line without a heavy wing, and repeats one muted rose family across cheeks and lips. The result looks intentional without making every feature equally strong.",
+    },
+    {
+      q: "Which lip color works for this look?",
+      a: "Choose a rosewood or muted rosy nude close to your natural lip depth. Blur the edge slightly and preserve natural lip texture instead of drawing an opaque, overlined shape.",
+    },
+    {
+      q: "Can French natural makeup work for everyday wear?",
+      a: "Yes. It is especially useful for work, coffee dates, travel, and daytime events because it stays polished in window light without relying on strong contour or shimmer.",
+    },
+  ],
+};
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+
+const heroImage = isEastAsianLocale
+  ? "/images/look-card/looks/french-natural-chic--east-asia-640.webp"
+  : "/images/pinterest/french-natural-chic-editorial.webp";
+const pinVisual = isEastAsianLocale
+  ? "french_natural_east_asia"
+  : "french_natural_editorial";
+const marketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const attribution = pinterestSource
+  ? {
+      source: "pinterest_french_natural",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_french_natural")
+        ? incomingUtmContent
+        : "pin_french_natural_editorial_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_french_natural",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_french_natural_01",
+      }
+    : {
+        source: "french_natural_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "french_natural",
+        utmContent: "french_natural_hero",
+      };
+
+const tryonParams = new URLSearchParams({
+  look: "french-natural-chic",
+  marketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: attribution.source,
+  pin_visual: pinVisual,
+  utm_source: attribution.utmSource,
+  utm_medium: attribution.utmMedium,
+  utm_campaign: attribution.utmCampaign,
+  utm_content: attribution.utmContent,
+});
+const tryonHref = localizeAppHref(
+  `/tryon?${tryonParams.toString()}#tryon-upload`,
+);
+const heroBody = pinterestSource
+  ? "You clicked for this effortless French natural look. Preview the same sheer skin, taupe definition, muted rose cheeks, and rosewood lip on your own selfie."
+  : googleImageSource
+    ? "Found this French natural look in Google Images? Preview the same quiet, realistic direction on your own selfie."
+    : "French natural makeup works by refining a few details while allowing real skin and expression to remain visible.";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={heroImage}
+  ogImage={heroImage}
+  heroCtaHref={tryonHref}
+  heroCtaLabel="Try French Natural Free"
+  googleImageRetentionPath="/looks/french-natural-chic"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>French Natural Makeup That Still Looks Like You</h1>
+    <p>{heroBody}</p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>Keep every detail quiet and intentional</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Area</th>
+          <th>Use</th>
+          <th>Avoid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Skin</strong></td>
+          <td>Sheer satin coverage with natural texture visible.</td>
+          <td>Flat full coverage or all-over glossy highlight.</td>
+        </tr>
+        <tr>
+          <td><strong>Eyes</strong></td>
+          <td>Taupe-brown definition kept close to the lashes.</td>
+          <td>A heavy black wing or obvious cut crease.</td>
+        </tr>
+        <tr>
+          <td><strong>Lips</strong></td>
+          <td>Soft rosewood color with a slightly blurred edge.</td>
+          <td>Opaque overlining that changes the natural shape.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>See whether quiet definition suits your features</h2>
+      <p>
+        French Natural Chic opens preselected. Upload one selfie and preview
+        this direction free before choosing your everyday balance.
+      </p>
+      <a href={tryonHref} class="cta-btn">Try French Natural Free</a>
+    </div>
+  </section>
+</SeoLandingLayout>
+
+<style is:global>
+  @media (max-width: 820px) {
+    .seo-hero-shell {
+      gap: 0.9rem;
+      padding: 1rem 0 1.25rem;
+    }
+    .seo-hero-image {
+      order: -1;
+      width: min(100%, 300px);
+    }
+    .seo-hero h1 {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+    }
+    .seo-hero p {
+      line-height: 1.45;
+    }
+    .seo-hero-actions {
+      margin-top: 0.85rem;
+    }
+  }
+</style>

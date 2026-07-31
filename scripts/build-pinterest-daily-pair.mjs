@@ -171,6 +171,26 @@ const pins = [
     accent: "#dfb3c1",
     cta: "TRY IT ON FREE",
   },
+  {
+    variant: "full-bleed-editorial",
+    source: "tmp/pinterest-sources/french-natural-chic-editorial.png",
+    cleanOutput: "public/images/pinterest/french-natural-chic-editorial.webp",
+    pinOutput: "artifacts/pinterest/23-french-natural-chic.png",
+    titleLine1: "FRENCH",
+    titleLine2: "NATURAL",
+    accent: "#e4b7ad",
+    cta: "TRY IT ON FREE",
+  },
+  {
+    variant: "full-bleed-editorial",
+    source: "tmp/pinterest-sources/soft-berry-stain-editorial.png",
+    cleanOutput: "public/images/pinterest/soft-berry-stain-editorial.webp",
+    pinOutput: "artifacts/pinterest/24-soft-berry-stain.png",
+    titleLine1: "BERRY",
+    titleLine2: "STAIN",
+    accent: "#e58ca9",
+    cta: "TRY IT ON FREE",
+  },
 ];
 
 function escapeXml(value) {

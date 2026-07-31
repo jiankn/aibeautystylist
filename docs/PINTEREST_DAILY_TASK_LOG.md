@@ -856,3 +856,87 @@ AI-generated visualization for beauty reference.
 - [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
 - [ ] Record impressions, engagements, confirmed external outbound clicks, saves, total audience, and per-Pin impressions once tonight.
 - [ ] Check Google Images performance in GSC on the weekly schedule, not daily.
+
+## 2026-07-31
+
+### Day 12 Full-Bleed Editorial Pair
+
+Daily production rule:
+
+```text
+Two makeup topics.
+Each topic = one photorealistic full-bleed Pinterest Pin + one clean Google Images asset + one dedicated matched landing page + one preselected no-sign-up campaign try-on.
+The existing 44-look Discover catalog remains unchanged.
+```
+
+#### Topic 1: French Natural Chic
+
+- [x] Generate a premium, realistic cafe-window beauty portrait with visible skin and lip texture.
+- [x] Create Pin 23 as a 1000 x 1500 full-bleed editorial composition with minimal overlay copy.
+- [x] Create a clean Google Images WebP with no text, CTA, logo, or watermark.
+- [x] Build `/looks/french-natural-chic` as a dedicated conversion page.
+- [x] Map the campaign to the existing `french-natural-chic` catalog recipe without adding or replacing a Discover look.
+- [x] Preselect one no-sign-up campaign try-on for matched Pinterest and Google Images traffic.
+- [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=french_natural_editorial`.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify production before publishing Pin 23.
+- [ ] Publish Pin 23 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `French Natural Makeup - Effortless Real-Skin Definition` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\23-french-natural-chic.png` |
+| Board | `Everyday & 5-Minute Makeup` |
+| Title | `French Natural Makeup That Looks Effortless` |
+| Link | `https://aibeautystylist.com/looks/french-natural-chic?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_french_natural_editorial_01` |
+| Alt text | `Attractive woman wearing sheer French natural makeup with taupe eyes, muted rose cheeks, realistic satin skin and a softly blurred rosewood lip in cafe window light.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+French natural makeup works because no single feature looks overworked. Sheer satin skin, soft taupe definition, muted rose cheeks and a blurred rosewood lip stay polished in real window light. Preview the same direction on your selfie before you apply it.
+
+AI-generated visualization for beauty reference.
+```
+
+#### Topic 2: Soft Berry Stain
+
+- [x] Generate a premium, realistic window-light beauty portrait with a translucent berry lip and visible medium-deep skin texture.
+- [x] Create Pin 24 as a 1000 x 1500 full-bleed editorial composition with minimal overlay copy.
+- [x] Create a clean Google Images WebP with no text, CTA, logo, or watermark.
+- [x] Build `/looks/soft-berry-stain` as a dedicated conversion page.
+- [x] Map the campaign to the existing `soft-berry-stain` catalog recipe without adding or replacing a Discover look.
+- [x] Preselect one no-sign-up campaign try-on for matched Pinterest and Google Images traffic.
+- [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=soft_berry_stain_editorial`.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify production before publishing Pin 24.
+- [ ] Publish Pin 24 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Soft Berry Stain - Translucent Lip and Cheek Color` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\24-soft-berry-stain.png` |
+| Board | `Soft Glam & Date Night Makeup` |
+| Title | `Soft Berry Stain Makeup With Real Lip Texture` |
+| Link | `https://aibeautystylist.com/looks/soft-berry-stain?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_soft_berry_stain_editorial_01` |
+| Alt text | `Attractive South Asian woman wearing a translucent berry lip stain, sheer berry-plum cheeks, cocoa-taupe eyes and realistic satin skin in soft window light.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+A soft berry stain gives lips and cheeks fresh color without the weight of opaque lipstick. See how translucent berry, cocoa-taupe eyes and a sheer plum flush work on your own selfie before choosing the depth.
+
+AI-generated visualization for beauty reference.
+```
+
+### Day 12 Distribution And Measurement
+
+- [ ] Publish Pins 23 and 24 about three hours apart.
+- [ ] Save 10-12 high-quality related Pins after publishing, split between the matching Boards.
+- [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
+- [ ] Record impressions, engagements, confirmed external outbound clicks, saves, total audience, and per-Pin impressions once tonight.
+- [ ] Check Google Images performance in GSC on the weekly schedule, not daily.

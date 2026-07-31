@@ -3,6 +3,8 @@ export const pinterestCampaignLookIds = [
   "champagne_eye_glow_editorial_v1",
   "sunset_bronze_editorial_v1",
   "cloud_skin_editorial_v1",
+  "french_natural_editorial_v1",
+  "soft_berry_stain_editorial_v1",
 ] as const;
 
 export type PinterestCampaignLookId = (typeof pinterestCampaignLookIds)[number];
@@ -70,6 +72,34 @@ const pinterestCampaignLooks: readonly PinterestCampaignLook[] = [
       "Campaign-specific Cloud Skin direction: create a thin, softly diffused satin-matte complexion that controls shine while preserving pores, fine facial texture, natural tonal variation, and subtle expression lines. Keep coverage even but never flat, chalky, blurred, grey, or mask-like. Add a softly blurred cool rose-plum blush, quiet taupe-brown matte eyes with delicate lash definition, natural feathered brows, and a muted rose-brown lip with visible lip lines. Preserve dimensional facial structure through realistic light and shadow instead of strong contour or glossy highlight.",
     qualityTarget:
       "texture-preserving satin-matte cloud skin without ashiness, softly blurred rose-plum cheeks, quiet taupe eyes, feathered brows, and a muted rose-brown lip with natural texture",
+  },
+  {
+    id: "french_natural_editorial_v1",
+    lookSlug: "french-natural-chic",
+    visualKey: "french_natural_editorial",
+    sources: ["pinterest_french_natural", "google_images_french_natural"],
+    utmContents: [
+      "pin_french_natural_editorial_01",
+      "google_image_french_natural_01",
+    ],
+    generationDirection:
+      "Campaign-specific French Natural Chic direction: keep the complexion sheer and satin with pores, freckles, fine facial texture, and natural tonal variation visible. Define the eyes with a thin veil of taupe-brown close to the lashes, clean separated lashes, and softly brushed brows; avoid a dark wing, smoky eye, or obvious cut crease. Add a restrained muted rose flush that looks like real circulation and a softly blurred rosewood lip with visible natural lip lines. Preserve subtle asymmetry and quiet elegance so the result feels effortless in real window light, never heavily contoured, glossy, beige-washed, or filtered.",
+    qualityTarget:
+      "sheer realistic satin skin, softly defined taupe-brown eyes, separated lashes, naturally brushed brows, a restrained muted rose flush, and a blurred rosewood lip with natural texture",
+  },
+  {
+    id: "soft_berry_stain_editorial_v1",
+    lookSlug: "soft-berry-stain",
+    visualKey: "soft_berry_stain_editorial",
+    sources: ["pinterest_soft_berry", "google_images_soft_berry"],
+    utmContents: [
+      "pin_soft_berry_stain_editorial_01",
+      "google_image_soft_berry_01",
+    ],
+    generationDirection:
+      "Campaign-specific Soft Berry Stain direction: create a translucent crushed-berry lip stain with the richest color softly concentrated toward the inner lips and diffused edges, while preserving natural lip lines and avoiding an opaque lipstick shape. Echo the lip with a sheer cool berry-plum flush placed high on the cheeks. Keep the eyes quiet with softly diffused cocoa-taupe shadow, precise separated lashes, and natural full brows. Preserve medium-deep skin depth, pores, tonal variation, and realistic satin light; never make the complexion ashy, purple-washed, blurred, heavily contoured, or glossy.",
+    qualityTarget:
+      "a translucent crushed-berry lip stain with diffused edges, sheer berry-plum cheeks, quiet cocoa-taupe eyes, precise lashes, and realistic medium-deep satin skin without ashiness",
   },
 ];
 

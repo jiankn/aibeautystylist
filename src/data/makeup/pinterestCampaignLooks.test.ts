@@ -34,6 +34,20 @@ describe("Pinterest campaign looks", () => {
         utmContent: "pin_cloud_skin_editorial_01",
       })?.id,
     ).toBe("cloud_skin_editorial_v1");
+
+    expect(
+      resolvePinterestCampaignLook({
+        lookSlug: "french-natural-chic",
+        visualKey: "french_natural_editorial",
+      })?.id,
+    ).toBe("french_natural_editorial_v1");
+
+    expect(
+      resolvePinterestCampaignLook({
+        lookSlug: "soft-berry-stain",
+        utmContent: "pin_soft_berry_stain_editorial_01",
+      })?.id,
+    ).toBe("soft_berry_stain_editorial_v1");
   });
 
   it("never applies a campaign direction to a different catalog look", () => {

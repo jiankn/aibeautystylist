@@ -171,6 +171,14 @@ const pinterestTryonVisualsByKey = {
   cloud_skin_editorial: "/images/pinterest/cloud-skin-editorial.webp",
   cloud_skin_east_asia:
     "/images/look-card/looks/cloud-skin-matte--east-asia-640.webp",
+  french_natural_editorial:
+    "/images/pinterest/french-natural-chic-editorial.webp",
+  french_natural_east_asia:
+    "/images/look-card/looks/french-natural-chic--east-asia-640.webp",
+  soft_berry_stain_editorial:
+    "/images/pinterest/soft-berry-stain-editorial.webp",
+  soft_berry_stain_east_asia:
+    "/images/look-card/looks/soft-berry-stain--east-asia-640.webp",
 } as const;
 const pinterestTryonVisualsBySource: Record<string, string> = {
   pinterest_quick5: pinterestTryonVisualsByKey.quick5_real_morning,
@@ -195,6 +203,8 @@ const pinterestTryonVisualsBySource: Record<string, string> = {
     pinterestTryonVisualsByKey.champagne_eye_glow_editorial,
   pinterest_sunset_bronze: pinterestTryonVisualsByKey.sunset_bronze_editorial,
   pinterest_cloud_skin: pinterestTryonVisualsByKey.cloud_skin_editorial,
+  pinterest_french_natural: pinterestTryonVisualsByKey.french_natural_editorial,
+  pinterest_soft_berry: pinterestTryonVisualsByKey.soft_berry_stain_editorial,
   google_images_first_date: pinterestTryonVisualsByKey.first_date_soft_daylight,
   google_images_date_night: pinterestTryonVisualsByKey.date_night_candlelight,
   google_images_wedding_guest:
@@ -217,6 +227,10 @@ const pinterestTryonVisualsBySource: Record<string, string> = {
   google_images_sunset_bronze:
     pinterestTryonVisualsByKey.sunset_bronze_editorial,
   google_images_cloud_skin: pinterestTryonVisualsByKey.cloud_skin_editorial,
+  google_images_french_natural:
+    pinterestTryonVisualsByKey.french_natural_editorial,
+  google_images_soft_berry:
+    pinterestTryonVisualsByKey.soft_berry_stain_editorial,
 };
 const pinterestTryonVisualsByUtmContent: Record<string, string> = {
   ai_makeup_tryon_01: "/images/article-ai-tryon-comparison.webp",
@@ -280,6 +294,14 @@ const pinterestTryonVisualsByUtmContent: Record<string, string> = {
     pinterestTryonVisualsByKey.sunset_bronze_editorial,
   pin_cloud_skin_editorial_01: pinterestTryonVisualsByKey.cloud_skin_editorial,
   google_image_cloud_skin_01: pinterestTryonVisualsByKey.cloud_skin_editorial,
+  pin_french_natural_editorial_01:
+    pinterestTryonVisualsByKey.french_natural_editorial,
+  google_image_french_natural_01:
+    pinterestTryonVisualsByKey.french_natural_editorial,
+  pin_soft_berry_stain_editorial_01:
+    pinterestTryonVisualsByKey.soft_berry_stain_editorial,
+  google_image_soft_berry_01:
+    pinterestTryonVisualsByKey.soft_berry_stain_editorial,
 };
 const pinterestTryonVisual =
   (pinVisual &&
