@@ -880,7 +880,7 @@ The existing 44-look Discover catalog remains unchanged.
 - [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=french_natural_editorial`.
 - [x] Add locale-aware East Asian and global-diverse image mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify production before publishing Pin 23.
+- [x] Deploy and verify production before publishing Pin 23.
 - [ ] Publish Pin 23 and test its link once.
 
 | Field | Content |
@@ -912,7 +912,7 @@ AI-generated visualization for beauty reference.
 - [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=soft_berry_stain_editorial`.
 - [x] Add locale-aware East Asian and global-diverse image mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify production before publishing Pin 24.
+- [x] Deploy and verify production before publishing Pin 24.
 - [ ] Publish Pin 24 and test its link once.
 
 | Field | Content |
@@ -935,6 +935,7 @@ AI-generated visualization for beauty reference.
 
 ### Day 12 Distribution And Measurement
 
+- [x] Deploy production Worker version `ee837a14-5038-48c9-9631-67252d963e99` and verify both matched landing and try-on paths.
 - [ ] Publish Pins 23 and 24 about three hours apart.
 - [ ] Save 10-12 high-quality related Pins after publishing, split between the matching Boards.
 - [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
