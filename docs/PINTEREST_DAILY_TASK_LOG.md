@@ -965,7 +965,7 @@ The existing 44-look Discover catalog remains unchanged.
 - [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=peach_morning_glow_editorial`.
 - [x] Add locale-aware East Asian and global-diverse image mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify production before publishing Pin 25.
+- [x] Deploy and verify production Worker version `15418e45-d932-4780-a4e3-672d2b75bd32` before publishing Pin 25.
 - [ ] Publish Pin 25 and test its link once.
 
 | Field | Content |
@@ -997,7 +997,7 @@ AI-generated visualization for beauty reference.
 - [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=executive_rose_editorial`.
 - [x] Add locale-aware East Asian and global-diverse image mapping.
 - [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
-- [ ] Deploy and verify production before publishing Pin 26.
+- [x] Deploy and verify production Worker version `15418e45-d932-4780-a4e3-672d2b75bd32` before publishing Pin 26.
 - [ ] Publish Pin 26 and test its link once.
 
 | Field | Content |
