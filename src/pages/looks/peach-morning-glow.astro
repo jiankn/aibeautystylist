@@ -1,0 +1,166 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+
+const page = {
+  title: "Peach Morning Glow Makeup: Fresh Color Without Looking Orange",
+  description:
+    "See realistic peach morning makeup with sheer apricot eyes, fresh cheeks, and a peach-rose lip, then preview the same direction on your selfie free.",
+  faq: [
+    {
+      q: "How do you keep peach makeup from looking orange?",
+      a: "Keep the peach sheer and localized to the lids, high cheeks, and lips. Let your real skin tone remain visible instead of covering the whole face with one warm color.",
+    },
+    {
+      q: "What eye definition works with peach makeup?",
+      a: "Use warm brown close to the upper lash line and keep lashes separated. Heavy black liner can overpower the soft morning effect.",
+    },
+    {
+      q: "Is peach makeup good for a quick morning routine?",
+      a: "Yes. Repeating one translucent peach family across eyes, cheeks, and lips creates a coordinated look with fewer products and less blending time.",
+    },
+  ],
+};
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+
+const heroImage = isEastAsianLocale
+  ? "/images/look-card/looks/peach-morning-glow--east-asia-640.webp"
+  : "/images/pinterest/peach-morning-glow-editorial.webp";
+const pinVisual = isEastAsianLocale
+  ? "peach_morning_glow_east_asia"
+  : "peach_morning_glow_editorial";
+const marketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const attribution = pinterestSource
+  ? {
+      source: "pinterest_peach_morning",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_peach_morning")
+        ? incomingUtmContent
+        : "pin_peach_morning_glow_editorial_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_peach_morning",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_peach_morning_01",
+      }
+    : {
+        source: "peach_morning_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "peach_morning",
+        utmContent: "peach_morning_hero",
+      };
+
+const tryonParams = new URLSearchParams({
+  look: "peach-morning-glow",
+  marketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: attribution.source,
+  pin_visual: pinVisual,
+  utm_source: attribution.utmSource,
+  utm_medium: attribution.utmMedium,
+  utm_campaign: attribution.utmCampaign,
+  utm_content: attribution.utmContent,
+});
+const tryonHref = localizeAppHref(
+  `/tryon?${tryonParams.toString()}#tryon-upload`,
+);
+const heroBody = pinterestSource
+  ? "You clicked for this fresh peach glow. Preview the same sheer apricot eyes, bright cheeks, realistic skin, and peach-rose lip on your own selfie."
+  : googleImageSource
+    ? "Found this peach glow in Google Images? Preview the same light, coordinated morning direction on your own selfie."
+    : "Peach makeup looks fresh when the warmth stays translucent and your real complexion remains visible.";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={heroImage}
+  ogImage={heroImage}
+  heroCtaHref={tryonHref}
+  heroCtaLabel="Try Peach Glow Free"
+  googleImageRetentionPath="/looks/peach-morning-glow"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>Peach Morning Glow Without the Orange Cast</h1>
+    <p>{heroBody}</p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>Keep the warmth sheer and intentional</h2>
+    <table class="compare-table">
+      <thead>
+        <tr><th>Area</th><th>Use</th><th>Avoid</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Eyes</strong></td>
+          <td>A thin apricot wash with warm brown lash definition.</td>
+          <td>Opaque orange shadow or a heavy black wing.</td>
+        </tr>
+        <tr>
+          <td><strong>Cheeks</strong></td>
+          <td>Translucent peach placed high enough to lift.</td>
+          <td>One flat orange tone across the whole cheek.</td>
+        </tr>
+        <tr>
+          <td><strong>Lips</strong></td>
+          <td>Peach-rose balm with natural texture visible.</td>
+          <td>Chalky nude lipstick that drains the face.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>See whether peach wakes up your complexion</h2>
+      <p>
+        Peach Morning Glow opens preselected. Upload one selfie and preview this
+        direction free before applying it tomorrow morning.
+      </p>
+      <a href={tryonHref} class="cta-btn">Try Peach Glow Free</a>
+    </div>
+  </section>
+</SeoLandingLayout>
+
+<style is:global>
+  @media (max-width: 820px) {
+    .seo-hero-shell {
+      gap: 0.9rem;
+      padding: 1rem 0 1.25rem;
+    }
+    .seo-hero-image {
+      order: -1;
+      width: min(100%, 300px);
+    }
+    .seo-hero h1 {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+    }
+    .seo-hero p {
+      line-height: 1.45;
+    }
+    .seo-hero-actions {
+      margin-top: 0.85rem;
+    }
+  }
+</style>

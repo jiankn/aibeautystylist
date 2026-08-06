@@ -31,6 +31,8 @@ describe("localized route switching", () => {
       "/looks/cloud-skin-makeup",
       "/looks/french-natural-chic",
       "/looks/soft-berry-stain",
+      "/looks/peach-morning-glow",
+      "/looks/executive-rose",
     ] as const;
 
     for (const language of languageConfigs.filter(

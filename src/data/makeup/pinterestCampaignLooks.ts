@@ -5,6 +5,8 @@ export const pinterestCampaignLookIds = [
   "cloud_skin_editorial_v1",
   "french_natural_editorial_v1",
   "soft_berry_stain_editorial_v1",
+  "peach_morning_glow_editorial_v1",
+  "executive_rose_editorial_v1",
 ] as const;
 
 export type PinterestCampaignLookId = (typeof pinterestCampaignLookIds)[number];
@@ -100,6 +102,34 @@ const pinterestCampaignLooks: readonly PinterestCampaignLook[] = [
       "Campaign-specific Soft Berry Stain direction: create a translucent crushed-berry lip stain with the richest color softly concentrated toward the inner lips and diffused edges, while preserving natural lip lines and avoiding an opaque lipstick shape. Echo the lip with a sheer cool berry-plum flush placed high on the cheeks. Keep the eyes quiet with softly diffused cocoa-taupe shadow, precise separated lashes, and natural full brows. Preserve medium-deep skin depth, pores, tonal variation, and realistic satin light; never make the complexion ashy, purple-washed, blurred, heavily contoured, or glossy.",
     qualityTarget:
       "a translucent crushed-berry lip stain with diffused edges, sheer berry-plum cheeks, quiet cocoa-taupe eyes, precise lashes, and realistic medium-deep satin skin without ashiness",
+  },
+  {
+    id: "peach_morning_glow_editorial_v1",
+    lookSlug: "peach-morning-glow",
+    visualKey: "peach_morning_glow_editorial",
+    sources: ["pinterest_peach_morning", "google_images_peach_morning"],
+    utmContents: [
+      "pin_peach_morning_glow_editorial_01",
+      "google_image_peach_morning_01",
+    ],
+    generationDirection:
+      "Campaign-specific Peach Morning Glow direction: apply a sheer peach-apricot wash across the mobile lids and high on the cheeks, keeping every edge softly diffused and translucent. Define the upper lash line with warm brown and keep lashes separated, never heavy or blackened. Preserve realistic pores, freckles, fine texture, and natural tonal variation beneath a light satin finish. Use a peach-rose balm lip with visible lip lines and restrained shine. The result should wake up the complexion in real morning light without turning the entire face orange, greasy, blurred, or over-highlighted.",
+    qualityTarget:
+      "a sheer peach-apricot eye and cheek wash, warm brown lash definition, realistic lightly luminous skin with visible texture, and a peach-rose balm lip without an orange cast",
+  },
+  {
+    id: "executive_rose_editorial_v1",
+    lookSlug: "executive-rose",
+    visualKey: "executive_rose_editorial",
+    sources: ["pinterest_executive_rose", "google_images_executive_rose"],
+    utmContents: [
+      "pin_executive_rose_editorial_01",
+      "google_image_executive_rose_01",
+    ],
+    generationDirection:
+      "Campaign-specific Executive Rose direction: create polished rose-brown and soft mauve eyes with controlled depth at the outer corners, clean boundaries, and precise separated lashes. Keep brows groomed but naturally textured. Sweep a lifted rosewood blush high on the cheeks and use a muted rosewood lip with visible natural lip texture. Preserve deep skin depth, pores, tonal variation, and realistic satin light without ashiness. The result should feel assured and professional, never severe, heavily contoured, purple-washed, glossy, filtered, or like generic corporate makeup.",
+    qualityTarget:
+      "controlled rose-brown and mauve eyes, precise lashes, naturally groomed brows, lifted rosewood cheeks, a muted rosewood lip, and realistic deep satin skin without ashiness",
   },
 ];
 

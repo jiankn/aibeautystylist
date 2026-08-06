@@ -24,7 +24,7 @@ describe("Google Images direct navigation", () => {
     expect(getGoogleImageWorkerFirstPaths()).toEqual(
       googleImageAssets.map((asset) => asset.imageUrl),
     );
-    expect(getGoogleImageWorkerFirstPaths()).toHaveLength(24);
+    expect(getGoogleImageWorkerFirstPaths()).toHaveLength(26);
   });
 
   it("redirects a browser document navigation to the matching landing page", () => {

@@ -201,6 +201,22 @@ export const googleImageAssets: readonly GoogleImageAsset[] = [
     caption:
       "A realistic soft berry stain makeup look with a translucent crushed-berry lip, sheer berry-plum cheeks, cocoa-taupe eyes, and visible natural skin texture.",
   },
+  {
+    sourcePin: "pin_peach_morning_glow_editorial_01",
+    pageUrl: "/looks/peach-morning-glow",
+    imageUrl: "/images/pinterest/peach-morning-glow-editorial.webp",
+    title: "Peach morning glow makeup with sheer apricot color",
+    caption:
+      "A realistic peach morning makeup look with sheer apricot eyes and cheeks, warm brown lash definition, visible skin texture, and a peach-rose balm lip.",
+  },
+  {
+    sourcePin: "pin_executive_rose_editorial_01",
+    pageUrl: "/looks/executive-rose",
+    imageUrl: "/images/pinterest/executive-rose-editorial.webp",
+    title: "Executive rose makeup with polished rosewood definition",
+    caption:
+      "A realistic executive rose makeup look with rose-brown and mauve eyes, lifted rosewood cheeks, a muted lip, and visible deep-skin texture.",
+  },
 ];
 
 function escapeXml(value: string): string {

@@ -941,3 +941,109 @@ AI-generated visualization for beauty reference.
 - [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
 - [ ] Record impressions, engagements, confirmed external outbound clicks, saves, total audience, and per-Pin impressions once tonight.
 - [ ] Check Google Images performance in GSC on the weekly schedule, not daily.
+
+## 2026-08-07
+
+### Day 13 Full-Bleed Editorial Pair
+
+Daily production rule:
+
+```text
+Two makeup topics.
+Each topic = one photorealistic full-bleed Pinterest Pin + one clean Google Images asset + one dedicated matched landing page + one preselected no-sign-up campaign try-on.
+The existing 44-look Discover catalog remains unchanged.
+```
+
+#### Topic 1: Peach Morning Glow
+
+- [x] Generate a premium, realistic morning-window portrait with visible pores, freckles, and lip texture.
+- [x] Create Pin 25 as a 1000 x 1500 full-bleed editorial composition with minimal overlay copy.
+- [x] Create a clean Google Images WebP with no text, CTA, logo, or watermark.
+- [x] Build `/looks/peach-morning-glow` as a dedicated conversion page.
+- [x] Map the campaign to the existing `peach-morning-glow` catalog recipe without adding or replacing a Discover look.
+- [x] Preselect one no-sign-up campaign try-on for matched Pinterest and Google Images traffic.
+- [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=peach_morning_glow_editorial`.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify production before publishing Pin 25.
+- [ ] Publish Pin 25 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Peach Morning Glow - Sheer Apricot in Real Morning Light` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\25-peach-morning-glow.png` |
+| Board | `Everyday & 5-Minute Makeup` |
+| Title | `Peach Makeup That Brightens Without Turning Orange` |
+| Link | `https://aibeautystylist.com/looks/peach-morning-glow?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_peach_morning_glow_editorial_01` |
+| Alt text | `Attractive woman wearing sheer peach-apricot eye makeup, fresh peach blush, realistic luminous skin and a peach-rose lip in natural morning window light.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Peach makeup looks fresh when the apricot warmth stays sheer across the eyes and cheeks instead of turning the whole face orange. Preview this soft morning glow with realistic skin and a peach-rose lip on your own selfie before you apply it.
+
+AI-generated visualization for beauty reference.
+```
+
+#### Topic 2: Executive Rose
+
+- [x] Generate a premium, realistic office-window portrait with accurate deep-skin color and visible texture.
+- [x] Create Pin 26 as a 1000 x 1500 full-bleed editorial composition with minimal overlay copy.
+- [x] Create a clean Google Images WebP with no text, CTA, logo, or watermark.
+- [x] Build `/looks/executive-rose` as a dedicated conversion page.
+- [x] Map the campaign to the existing `executive-rose` catalog recipe without adding or replacing a Discover look.
+- [x] Preselect one no-sign-up campaign try-on for matched Pinterest and Google Images traffic.
+- [x] Keep the Pin, landing hero, `/tryon` selected-look visual, and campaign generation direction aligned with `pin_visual=executive_rose_editorial`.
+- [x] Add locale-aware East Asian and global-diverse image mapping.
+- [x] Add the clean image to the Google Images registry, image sitemap, retention route, and direct-navigation guard.
+- [ ] Deploy and verify production before publishing Pin 26.
+- [ ] Publish Pin 26 and test its link once.
+
+| Field | Content |
+|---|---|
+| Pin theme | `Executive Rose - Polished Rosewood Definition` |
+| Image path | `C:\antigravity\aibeautystylist\artifacts\pinterest\26-executive-rose.png` |
+| Board | `Office Makeup Looks` |
+| Title | `Executive Rose Makeup That Looks Polished, Not Heavy` |
+| Link | `https://aibeautystylist.com/looks/executive-rose?utm_source=pinterest&utm_medium=organic_social&utm_campaign=launch&utm_content=pin_executive_rose_editorial_01` |
+| Alt text | `Attractive Black woman wearing polished executive rose makeup with rose-brown eyes, lifted rosewood blush, realistic satin skin and a muted rose lip in office window light.` |
+| AI settings | `Mark as AI-Modified` on; AI-generated person checked; Show similar products off; Allow comments on |
+
+Description:
+
+```text
+Executive rose makeup adds professional definition without making the face look severe. Preview softly sculpted rose-brown eyes, lifted rosewood cheeks and a muted rose lip on your own selfie before work or an important meeting.
+
+AI-generated visualization for beauty reference.
+```
+
+### Day 13 Distribution And Measurement
+
+- [ ] Publish Pins 25 and 26 about three hours apart.
+- [ ] Save 10-12 high-quality related Pins after publishing, split between the matching Boards.
+- [ ] Test each new Pin link once only; do not count owner tests as customer clicks.
+- [ ] Record impressions, engagements, confirmed external outbound clicks, saves, total audience, and per-Pin impressions once tonight.
+- [ ] Check Google Images performance in GSC on the weekly schedule, not daily.
+
+Saved-search keywords for `Everyday & 5-Minute Makeup`:
+
+```text
+peach makeup look
+peach blush makeup
+apricot makeup look
+fresh morning makeup
+peach eye makeup
+natural glowy makeup
+```
+
+Saved-search keywords for `Office Makeup Looks`:
+
+```text
+professional makeup look
+executive makeup
+office makeup look
+rose brown makeup
+rosewood makeup look
+business makeup women
+```

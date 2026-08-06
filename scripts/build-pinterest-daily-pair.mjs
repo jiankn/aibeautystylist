@@ -191,6 +191,27 @@ const pins = [
     accent: "#e58ca9",
     cta: "TRY IT ON FREE",
   },
+  {
+    variant: "full-bleed-editorial",
+    source: "tmp/pinterest-sources/peach-morning-glow-editorial.png",
+    cleanOutput: "public/images/pinterest/peach-morning-glow-editorial.webp",
+    pinOutput: "artifacts/pinterest/25-peach-morning-glow.png",
+    titleLine1: "PEACH",
+    titleLine2: "GLOW",
+    accent: "#f2ad8e",
+    cta: "TRY IT ON FREE",
+  },
+  {
+    variant: "full-bleed-editorial",
+    source: "tmp/pinterest-sources/executive-rose-editorial.png",
+    cleanOutput: "public/images/pinterest/executive-rose-editorial.webp",
+    pinOutput: "artifacts/pinterest/26-executive-rose.png",
+    titleLine1: "EXECUTIVE",
+    titleLine2: "ROSE",
+    titleLine1FontSize: 62,
+    accent: "#df8fa6",
+    cta: "TRY IT ON FREE",
+  },
 ];
 
 function escapeXml(value) {

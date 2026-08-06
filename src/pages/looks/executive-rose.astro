@@ -1,0 +1,166 @@
+---
+import SeoLandingLayout from "../../components/SeoLandingLayout.astro";
+import { getLocalizedAppHref, resolveLocaleRoute } from "../../i18n/routing";
+
+const page = {
+  title: "Executive Rose Makeup: Professional Definition Without Heaviness",
+  description:
+    "See realistic executive rose makeup with rose-brown eyes, lifted rosewood cheeks, and a muted lip, then preview the same direction on your selfie free.",
+  faq: [
+    {
+      q: "What makes rose makeup look professional?",
+      a: "Use controlled rose-brown depth around the eyes, keep edges clean, and repeat a muted rosewood tone on cheeks and lips. Avoid making every feature equally dark.",
+    },
+    {
+      q: "Does executive makeup need to be matte?",
+      a: "No. A realistic satin finish looks polished while preserving dimension. Control shine through the center of the face instead of flattening the entire complexion.",
+    },
+    {
+      q: "Can rose tones work on deep skin?",
+      a: "Yes. Choose rosewood and mauve shades with enough brown or red depth to stay rich on the skin, and avoid pale grey-pink formulas that can look ashy.",
+    },
+  ],
+};
+
+const currentPathname = Astro.originPathname || Astro.url.pathname;
+const currentRoute =
+  Astro.locals.localeRoute ?? resolveLocaleRoute(currentPathname);
+const localizeAppHref = (href: string) =>
+  getLocalizedAppHref(href, currentRoute.language.slug);
+const isEastAsianLocale = /^(zh|ja|ko)/i.test(currentRoute.language.locale);
+const pinterestSource =
+  Astro.url.searchParams.get("utm_source") === "pinterest";
+const googleImageSource =
+  Astro.url.searchParams.get("utm_source") === "google_images" ||
+  (Astro.url.searchParams.get("source")?.startsWith("google_image") ?? false);
+const incomingUtmContent = Astro.url.searchParams.get("utm_content");
+
+const heroImage = isEastAsianLocale
+  ? "/images/look-card/looks/executive-rose--east-asia-640.webp"
+  : "/images/pinterest/executive-rose-editorial.webp";
+const pinVisual = isEastAsianLocale
+  ? "executive_rose_east_asia"
+  : "executive_rose_editorial";
+const marketProfile = isEastAsianLocale ? "east-asia" : "global-diverse";
+const attribution = pinterestSource
+  ? {
+      source: "pinterest_executive_rose",
+      utmSource: "pinterest",
+      utmMedium: "organic_social",
+      utmCampaign: "launch",
+      utmContent: incomingUtmContent?.startsWith("pin_executive_rose")
+        ? incomingUtmContent
+        : "pin_executive_rose_editorial_01",
+    }
+  : googleImageSource
+    ? {
+        source: "google_images_executive_rose",
+        utmSource: "google_images",
+        utmMedium: "organic_search",
+        utmCampaign: "image_retention",
+        utmContent: "google_image_executive_rose_01",
+      }
+    : {
+        source: "executive_rose_page",
+        utmSource: "onsite",
+        utmMedium: "seo_landing",
+        utmCampaign: "executive_rose",
+        utmContent: "executive_rose_hero",
+      };
+
+const tryonParams = new URLSearchParams({
+  look: "executive-rose",
+  marketProfile,
+  guest_try: pinterestSource || googleImageSource ? "1" : "0",
+  source: attribution.source,
+  pin_visual: pinVisual,
+  utm_source: attribution.utmSource,
+  utm_medium: attribution.utmMedium,
+  utm_campaign: attribution.utmCampaign,
+  utm_content: attribution.utmContent,
+});
+const tryonHref = localizeAppHref(
+  `/tryon?${tryonParams.toString()}#tryon-upload`,
+);
+const heroBody = pinterestSource
+  ? "You clicked for this polished rose direction. Preview the same rose-brown eyes, lifted rosewood cheeks, realistic skin, and muted lip on your own selfie."
+  : googleImageSource
+    ? "Found this executive rose look in Google Images? Preview the same confident, balanced direction on your own selfie."
+    : "Executive rose makeup adds authority through clean definition and coordinated color, not through heavier coverage.";
+---
+
+<SeoLandingLayout
+  title={page.title}
+  description={page.description}
+  heroImage={heroImage}
+  ogImage={heroImage}
+  heroCtaHref={tryonHref}
+  heroCtaLabel="Try Executive Rose Free"
+  googleImageRetentionPath="/looks/executive-rose"
+  faq={page.faq}
+>
+  <Fragment slot="hero">
+    <h1>Executive Rose Makeup That Looks Assured, Not Heavy</h1>
+    <p>{heroBody}</p>
+  </Fragment>
+
+  <section class="seo-content">
+    <h2>Build authority with controlled rose definition</h2>
+    <table class="compare-table">
+      <thead>
+        <tr><th>Area</th><th>Use</th><th>Avoid</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Eyes</strong></td>
+          <td>Rose-brown and mauve depth with clean edges.</td>
+          <td>A dark smoky block that closes the eyes.</td>
+        </tr>
+        <tr>
+          <td><strong>Cheeks</strong></td>
+          <td>Lifted rosewood color that supports facial structure.</td>
+          <td>Harsh contour or pale pink that turns ashy.</td>
+        </tr>
+        <tr>
+          <td><strong>Lips</strong></td>
+          <td>A muted rosewood finish with real lip texture.</td>
+          <td>Overdrawn glossy color that competes with the eyes.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="seo-cta" slot="cta">
+    <div class="seo-cta-inner">
+      <h2>See whether executive rose strengthens your features</h2>
+      <p>
+        Executive Rose opens preselected. Upload one selfie and preview this
+        direction free before your next meeting or interview.
+      </p>
+      <a href={tryonHref} class="cta-btn">Try Executive Rose Free</a>
+    </div>
+  </section>
+</SeoLandingLayout>
+
+<style is:global>
+  @media (max-width: 820px) {
+    .seo-hero-shell {
+      gap: 0.9rem;
+      padding: 1rem 0 1.25rem;
+    }
+    .seo-hero-image {
+      order: -1;
+      width: min(100%, 300px);
+    }
+    .seo-hero h1 {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+    }
+    .seo-hero p {
+      line-height: 1.45;
+    }
+    .seo-hero-actions {
+      margin-top: 0.85rem;
+    }
+  }
+</style>

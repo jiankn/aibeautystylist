@@ -159,6 +159,8 @@ const localizableAppRoutes = new Set([
   "/looks/cloud-skin-makeup",
   "/looks/french-natural-chic",
   "/looks/soft-berry-stain",
+  "/looks/peach-morning-glow",
+  "/looks/executive-rose",
   "/pricing",
   "/reference-tryon",
   "/privacy",
