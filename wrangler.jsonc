@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "aibeautystylist",
   "main": "dist/server/entry.mjs",
-  "account_id": "9679290d9ad455c63c2002a90d381bf7",
+  "account_id": "62ca98e53f85ec589d9f64e5365055d3",
   "compatibility_date": "2026-06-07",
   "compatibility_flags": ["nodejs_compat"],
   "no_bundle": true,
@@ -48,7 +48,7 @@
   "kv_namespaces": [
     {
       "binding": "SESSION",
-      "id": "85c0b835a20847719af0256e50d7f726",
+      "id": "824f7af0b39c4991b4afc16cef188ebe",
     },
   ],
   // Local development uses these bindings with `.wrangler/state`.
@@ -56,7 +56,7 @@
     {
       "binding": "DB",
       "database_name": "ai-beauty-stylist-db",
-      "database_id": "b4ca2fa7-49ea-410e-b802-bb710975d01a",
+      "database_id": "8865fafc-4f99-4fb4-adac-c853ef5bb2a4",
     },
   ],
   "r2_buckets": [
